@@ -8,7 +8,6 @@ __pycache__/
 
 # Distribution / packaging
 .Python
-build/
 develop-eggs/
 dist/
 downloads/
@@ -26,6 +25,9 @@ share/python-wheels/
 .installed.cfg
 *.egg
 MANIFEST
+
+CMakeLists.txt
+cmake-build-debug/
 
 # PyInstaller
 #  Usually these files are written by a python script from a template
@@ -50,6 +52,9 @@ coverage.xml
 *.py,cover
 .hypothesis/
 .pytest_cache/
+.idea/
+.__pycache__/
+.ipynb_checkpoints/
 
 # Translations
 *.mo
