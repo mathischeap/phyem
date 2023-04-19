@@ -23,10 +23,6 @@ Jupyter notebooks
    jupyter/test1
 
 
-===========
-Admonitions
-===========
-
 Sphinx provides several different types of admonitions.
 
 ``topic``
