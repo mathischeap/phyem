@@ -24,7 +24,10 @@ release = '0.0.1'
 
 extensions = [
     "nbsphinx",  # use Jupyter notebooks in Sphinx.
+    "sphinx.ext.todo", # Sphinx todo extension.
 ]
+
+todo_include_todos = True
 
 templates_path = ['_templates']
 exclude_patterns = []
@@ -33,5 +36,5 @@ exclude_patterns = []
 # -- Options for HTML output -------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#options-for-html-output
 
-html_theme = 'alabaster'
+html_theme = 'sphinx_book_theme'
 html_static_path = ['_static']
