@@ -89,7 +89,7 @@ if __name__ == '__main__':
     a3, b2 = oph.unknowns
     # oph.pr()
 
-    wf = oph.test_with(oph.unknowns, sym_repr=[r'v^3', r'u^2'])
+    wf = oph.test_with([a3, b2], sym_repr=[r'v^3', r'u^2'])
 
     wf = wf.derive.integration_by_parts('1-1')
     # wf.pr(indexing=True)
@@ -226,7 +226,8 @@ if __name__ == '__main__':
         # )
         ls = mp.ls()
 
-    wf.pr()
+    mp.pr()
+    ls.pr()
     mesh = oph.mesh
     space = a3.space
     msepy, obj = ph.fem.apply('msepy', locals())

@@ -62,6 +62,7 @@ def _find_form(lin_repr, upon=None):
 
                 except:
                     continue
+
                 else:
                     if operator_of_f._lin_repr == lin_repr:
                         the_one = form
@@ -127,3 +128,4 @@ def _list_forms(variable_range=None):
         table.set_fontsize(50)
         fig.tight_layout()
         plt.show()
+        return fig

@@ -130,7 +130,7 @@ class Form(Frozen):
             pti_text = rf"\\(${base_form._sym_repr}$ at abstract time instant ${ati._sym_repr}$"
         space_text = f'spaces: ${self.space._sym_repr}$'
         space_text += rf"\ \ \ \ on ({self.mesh._lin_repr})"
-        plt.figure(figsize=figsize)
+        fig = plt.figure(figsize=figsize)
         plt.axis([0, 1, 0, 5])
         plt.text(0, 4.5, f'form id: {my_id}', ha='left', va='center', size=15)
         plt.text(0, 3.5, space_text, ha='left', va='center', size=15)
@@ -140,6 +140,7 @@ class Form(Frozen):
         plt.text(0, 0.5, root_text, ha='left', va='center', size=15)
         plt.axis('off')
         plt.show()
+        return fig
 
     def pr(self):
         """A wrapper of print_representations"""

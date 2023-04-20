@@ -296,7 +296,7 @@ class PartialDifferentialEquations(Frozen):
         else:
             bc_text = self.bc._bc_text()
 
-        plt.figure(figsize=figsize)
+        fig = plt.figure(figsize=figsize)
         plt.axis([0, 1, 0, 1])
         plt.axis('off')
         if indicator == '':
@@ -307,6 +307,7 @@ class PartialDifferentialEquations(Frozen):
         plt.text(0.05, 0.5, text, ha='left', va='center', size=15)
         plt.tight_layout()
         plt.show()
+        return fig
 
     def pr(self, **kwargs):
         """A wrapper of print_representations"""
@@ -439,10 +440,10 @@ if __name__ == '__main__':
     mesh = ph.mesh(manifold)
 
     ph.space.set_mesh(mesh)
-    O0 = ph.space.new('Omega', 0)
-    O1 = ph.space.new('Omega', 1)
-    O2 = ph.space.new('Omega', 2)
-    O3 = ph.space.new('Omega', 3)
+    O0 = ph.space.new('Lambda', 0)
+    O1 = ph.space.new('Lambda', 1)
+    O2 = ph.space.new('Lambda', 2)
+    O3 = ph.space.new('Lambda', 3)
 
     w = O1.make_form(r'\omega^1', "vorticity1")
     u = O2.make_form(r'u^2', r"velocity2")
@@ -460,7 +461,7 @@ if __name__ == '__main__':
 
     du_dt = ph.time_derivative(u)
 
-    # ph.list_forms(globals())
+    ph.list_forms(globals())
     # du_dt.print_representations()
 
     exp = [
@@ -468,16 +469,6 @@ if __name__ == '__main__':
         'w = dsu',
         'du = 0',
     ]
-
-    # interpreter = {
-    #     'du_dt': du_dt,
-    #     'wXu': wXu,
-    #     'dsP': dsP,
-    #     'f': f,
-    #     'w': w,
-    #     'dsu': dsu,
-    #     'du': du,
-    # }
 
     pde = ph.pde(exp, locals())
     pde.unknowns = [u, w, P]

@@ -7,8 +7,14 @@
 PHYEM
 =====
 
+
 Documentation
 =============
+
+.. toctree::
+   :maxdepth: 1
+
+   documentation/index
 
 Tutorial
 ========
@@ -18,130 +24,27 @@ Jupyter notebooks
 
 
 .. toctree::
-   :maxdepth: 1
+   :maxdepth: 2
 
    jupyter/test1
+   jupyter/test2
+   jupyter/test3
 
 
-Sphinx provides several different types of admonitions.
-
-``topic``
-=========
-
-.. topic:: This is a topic.
-
-   This is what admonitions are a special case of, according to the docutils
-   documentation.
-
-``admonition``
-==============
-
-.. admonition:: The one with the custom titles
-
-   It's got a certain charm to it.
-
-``attention``
-=============
-
-.. attention::
-
-   Climate change is real.
-
-``caution``
-===========
-
-.. caution::
-
-   Cliff ahead: Don't drive off it.
-
-``danger``
-==========
-
-.. danger::
-
-   Mad scientist at work!
-
-``error``
-=========
-
-.. error::
-
-   Does not compute.
-
-``hint``
-========
-
-.. hint::
-
-   Insulators insulate, until they are subject to ______ voltage.
-
-``important``
-=============
-
-.. important::
-
-   Tech is not neutral, nor is it apolitical.
-
-``note``
-========
-
-.. note::
-
-   This is a note.
-
-``seealso``
-===========
-
-.. seealso::
-
-   Other relevant information.
-
-``tip``
+Gallery
 =======
 
-.. tip::
 
-   25% if the service is good.
-
-
-``todo``
-========
-
-.. todo::
-
-   This needs the ``sphinx.ext.todo`` extension.
-
-``warning``
-===========
-
-.. warning::
-
-   Reader discretion is strongly advised.
-
-``versionadded``
-================
-
-.. versionadded:: v0.1.1
-
-   Here's a version added message.
-
-``versionchanged``
+Contributing guide
 ==================
 
-.. versionchanged:: v0.1.1
 
-   Here's a version changed message.
+Acknowledgement
+===============
 
-``deprecated``
-==============
 
-.. deprecated:: v0.1.1
+.. admonition:: Privacy statement
 
-   Here's a deprecation message.
-
-Indices and tables
-==================
-
-* :ref:`genindex`
-* :ref:`modindex`
-* :ref:`search`
+   Site traffic is measured only for statistic.
+   Absolutely no data which may lead to minimal leak of your privacy is ever recorded.
+   Thank you very much for visiting *PHYEM*.

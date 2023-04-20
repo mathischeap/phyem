@@ -134,7 +134,7 @@ class MsePyMesh(Frozen):
 if __name__ == '__main__':
     # python msepy/mesh/main.py
     import __init__ as ph
-    space_dim = 1
+    space_dim = 3
     ph.config.set_embedding_space_dim(space_dim)
 
     manifold = ph.manifold(space_dim)
@@ -145,10 +145,11 @@ if __name__ == '__main__':
     mnf = obj['manifold']
     msh = obj['mesh']
 
-    msepy.config(mnf)('crazy', c=0., periodic=True, bounds=[[0, 2] for _ in range(space_dim)])
+    msepy.config(mnf)('crazy', c=0.3, periodic=False, bounds=[[0, 2] for _ in range(space_dim)])
     # msepy.config(mnf)('backward_step')
-    msepy.config(msh)([3 for _ in range(space_dim)])
+    msepy.config(msh)([3, 5, 3])
 
-    # msh.visualize()
-    # print(msh.elements._layout_cache_key)
     msh.visualize()
+    mnf.visualize()
+    # print(msh.elements._layout_cache_key)
+    # msh.visualize()
