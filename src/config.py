@@ -11,12 +11,15 @@ _global_variables = {
 }
 
 
-# MPI config
-from mpi4py import MPI
-COMM = MPI.COMM_WORLD
-RANK: int = COMM.Get_rank()
-SIZE: int = COMM.Get_size()
-MASTER_RANK: int = 0  # you can, but you do not need to change this!
+# MPI
+try:
+    from mpi4py import MPI
+    COMM = MPI.COMM_WORLD
+    RANK: int = COMM.Get_rank()
+    SIZE: int = COMM.Get_size()
+    MASTER_RANK: int = 0  # you can, but you do not need to change this!
+except ModuleNotFoundError:  # if no `mpi4py` installed, just skip it for now.
+    SIZE: int = 1
 
 
 # space config

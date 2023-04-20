@@ -276,34 +276,19 @@ document.write(`
                   
   <section id="Quick-start">
 <h1>Quick-start<a class="headerlink" href="#Quick-start" title="Permalink to this heading">#</a></h1>
-<p>This is what admonitions are a special case of, according to the docutils documentation.This is what admonitions are a special case of, according to the docutils documentation.This is what admonitions are a special case of, according to the docutils documentation.This is what admonitions are a special case of, according to the docutils documentation.This is what admonitions are a special case of, according to the docutils documentation.This is what admonitions are a special case of, according to
-the docutils documentation.</p>
+<p>This is a jupyter notebook serving as a quick tutorial for the usage of phyem. Before</p>
 <div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[10]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[1]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">sys</span>
+<span class="n">path_to_phyem</span> <span class="o">=</span> <span class="s1">&#39;../../../../&#39;</span>   <span class="c1"># the dir to phyem package</span>
+<span class="n">sys</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">path_to_phyem</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
 <div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[11]:
-</pre></div>
-</div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">path_to_pHlib</span> <span class="o">=</span> <span class="s1">&#39;../../../../&#39;</span>
-</pre></div>
-</div>
-</div>
-<div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[12]:
-</pre></div>
-</div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">sys</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">path_to_pHlib</span><span class="p">)</span>
-</pre></div>
-</div>
-</div>
-<div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[13]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[2]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">phyem</span> <span class="k">as</span> <span class="nn">ph</span>
@@ -311,7 +296,7 @@ the docutils documentation.</p>
 </div>
 </div>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[14]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[3]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="n">ph</span><span class="o">.</span><span class="n">manifold</span><span class="p">)</span>
@@ -323,7 +308,7 @@ the docutils documentation.</p>
 </div>
 <div class="output_area docutils container">
 <div class="highlight"><pre>
-&lt;function manifold at 0x00000237AA300E00&gt;
+&lt;function manifold at 0x00000225C25AADE0&gt;
 </pre></div></div>
 </div>
 <div class="nbinput nblast docutils container">

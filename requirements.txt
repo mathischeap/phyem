@@ -2,3 +2,4 @@ numpy >= 1.20.0
 scipy >= 1.10.0
 latex >= 0.7.0
 matplotlib >= 3.6.3
+mpi4py~=3.1.4
