@@ -43,18 +43,30 @@ html_theme = 'sphinx_book_theme'
 html_static_path = ['_static']
 html_title = "PHYEM"
 html_help_basename = 'PHYEM'
-html_logo = '_static/logo.png'
-html_favicon = '_static/logo.png'
+html_logo = '_static/logo-light.png'
+html_favicon = '_static/favicon.png'
 
 html_theme_options = {
     "announcement": """
         <p style='color:white;'> &#127867 PHYEM is coming</p>
     """,
-    # "logo": {
-    #     "alt_text": "foo",
-    #     "text": "My awesome documentation",
-    # },
+    "logo": {
+        # "alt_text": "foo",
+        # "text": "My awesome documentation",
+        "image_light": "_static/logo-light.png",
+        "image_dark": "_static/logo-dark.png",
+    },
     "icon_links": [
+        {
+            # Label for this link
+            "name": "mathischeap",
+            # URL where the link will redirect
+            "url": "https://www.mathischeap.com/",  # required
+            # Icon class (if "type": "fontawesome"), or path to local image (if "type": "local")
+            "icon": "_static/favicon-mic.png",
+            # The type of image to be used (see below for details)
+            "type": "local",
+        },
         {
             # Label for this link
             "name": "GitHub",
@@ -78,7 +90,7 @@ html_theme_options = {
     ],
     "icon_links_label": "Quick Links",
     "repository_url": "https://github.com/mathischeap/phyem",
-    "path_to_docs": "web/",
+    "path_to_docs": "web/source",
     "use_issues_button": True,
     "use_edit_page_button": True,
     "use_repository_button": True,
