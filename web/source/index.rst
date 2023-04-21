@@ -3,6 +3,11 @@
    You can adapt this file completely to your liking, but it should at least
    contain the root `toctree` directive.
 
+.. .. image:: https://requires.io/github/giocaizzi/mplStrater/requirements.svg?branch=main
+      :alt: Requirements Status
+      :target: https://requires.io/github/giocaizzi/mplStrater/requirements/?branch=main
+
+
 =====
 PHYEM
 =====

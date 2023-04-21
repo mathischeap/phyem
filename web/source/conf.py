@@ -27,7 +27,7 @@ release = '0.0.1'
 
 extensions = [
     "nbsphinx",  # use Jupyter notebooks in Sphinx.
-    "sphinx.ext.todo",  # Sphinx todo extension.
+    "sphinx.ext.todo",
 ]
 
 todo_include_todos = True
