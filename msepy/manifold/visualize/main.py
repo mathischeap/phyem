@@ -9,7 +9,7 @@ import sys
 
 if './' not in sys.path:
     sys.path.append('./')
-from src.tools.frozen import Frozen
+from tools.frozen import Frozen
 from msepy.manifold.visualize.matplot import MsePyManifoldVisualizeMatplot
 import numpy as np
 

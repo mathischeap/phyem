@@ -8,7 +8,7 @@ import sys
 if './' not in sys.path:
     sys.path.append('./')
 
-from src.tools.frozen import Frozen
+from tools.frozen import Frozen
 from src.config import _parse_lin_repr
 from src.config import _check_sym_repr
 from src.config import _global_operator_lin_repr_setting

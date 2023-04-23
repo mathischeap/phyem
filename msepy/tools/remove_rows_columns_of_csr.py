@@ -48,7 +48,8 @@ def delete_from_csr(mat, _rows, _cols):
 
 if __name__ == '__main__':
     # python msepy/tools/remove_rows_columns_of_csr.py
-
-    a = csr_matrix((10, 10))
-    b = delete_from_csr(a, [0,1,2], [3,4,5,6])
-    print(b.shape)
+    import scipy.sparse as spa
+    a = spa.random(10, 10, density=0.1, format='lil').tocsr()
+    print(a)
+    b = delete_from_csr(a, [0, 1, 2], [3, 4, 5, 6])
+    print(a.shape, b.shape)

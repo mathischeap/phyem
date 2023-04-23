@@ -8,7 +8,7 @@ import sys
 if './' not in sys.path:
     sys.path.append('./')
 from importlib import import_module
-from src.tools.frozen import Frozen
+from tools.frozen import Frozen
 from src.config import get_embedding_space_dim
 from msepy.manifold.regions.main import MseManifoldRegions
 from msepy.manifold.coordinate_transformation import MsePyManifoldsCoordinateTransformation

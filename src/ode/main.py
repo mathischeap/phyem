@@ -8,7 +8,7 @@ import sys
 
 if './' not in sys.path:
     sys.path.append('./')
-from src.tools.frozen import Frozen
+from tools.frozen import Frozen
 from src.form.tools import _find_form
 from src.config import _wf_term_default_simple_patterns as _simple_patterns
 import matplotlib.pyplot as plt

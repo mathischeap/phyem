@@ -38,10 +38,10 @@ def apply(fe_name, obj_dict):
 
     implementation = _implemented_finite_elements[fe_name]
     implementation._check_config()
-    implementation._parse_manifolds(_global_manifolds)
-    implementation._parse_meshes(_global_meshes)
-    implementation._parse_spaces(_space_set)
-    implementation._parse_root_forms(_global_root_forms_lin_dict)
+    implementation._parse_manifolds(_global_manifolds)  # important, for all manifolds
+    implementation._parse_meshes(_global_meshes)        # important, for all meshes
+    implementation._parse_spaces(_space_set)            # important, for all spaces
+    implementation._parse_root_forms(_global_root_forms_lin_dict)   # important, for all root-forms
 
     obj_space = dict()
     for obj_name in obj_dict:
@@ -226,8 +226,8 @@ if __name__ == '__main__':
         # )
         ls = mp.ls()
 
-    mp.pr()
-    ls.pr()
+    # mp.pr()
+    # ls.pr()
     mesh = oph.mesh
     space = a3.space
     msepy, obj = ph.fem.apply('msepy', locals())

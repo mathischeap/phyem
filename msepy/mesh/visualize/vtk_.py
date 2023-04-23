@@ -3,8 +3,7 @@ import sys
 if './' not in sys.path:
     sys.path.append('./')
 
-from src.tools.frozen import Frozen
-import numpy as np
+from tools.frozen import Frozen
 
 
 class MsePyMeshVisualizeVTK(Frozen):

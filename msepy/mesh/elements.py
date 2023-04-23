@@ -8,7 +8,7 @@ if './' not in sys.path:
     sys.path.append('./')
 
 import numpy as np
-from src.tools.frozen import Frozen
+from tools.frozen import Frozen
 
 
 class MsePyMeshElements(Frozen):
