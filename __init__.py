@@ -34,6 +34,7 @@ __all__ = [
     'constant_scalar',
 
     'fem',
+    'vc',
 ]
 
 import src.config as config
@@ -62,3 +63,5 @@ from src.tools.time_sequence import abstract_time_sequence as time_sequence
 from src.form.parameters import constant_scalar
 
 import src.fem as fem
+
+import tools.vector_calculus as vc
