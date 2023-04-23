@@ -17,7 +17,7 @@ plt.rcParams.update({
 })
 matplotlib.use('TkAgg')
 
-from src.tools.frozen import Frozen
+from tools.frozen import Frozen
 from src.config import _parse_lin_repr, _abstract_array_factor_sep, _abstract_array_connector
 from src.config import _transpose_text
 from src.form.parameters import constant_scalar

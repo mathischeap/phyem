@@ -10,7 +10,7 @@ import sys
 if './' not in sys.path:
     sys.path.append('./')
 
-from src.tools.frozen import Frozen
+from tools.frozen import Frozen
 from typing import Dict
 from src.config import _mesh_partition_sym_repr, _mesh_partition_lin_repr
 

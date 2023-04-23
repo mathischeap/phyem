@@ -9,7 +9,7 @@ import sys
 if './' not in sys.path:
     sys.path.append('./')
 
-from src.tools.frozen import Frozen
+from tools.frozen import Frozen
 from src.config import _mesh_default_sym_repr
 from src.config import _check_sym_repr
 from src.config import _parse_lin_repr
@@ -48,7 +48,9 @@ class Mesh(Frozen):   # Mesh -
         sym_repr :
             We can customize the sym_repr of the mesh.
         """
-        self._objective = None  # when initializing, it has no objective instance.
+        self._objective = None
+        # when initializing, it has no objective instance. And when we generate an objective of this
+        # abstract mesh, we store the last objective one with this attribute.
 
         assert manifold.__class__.__name__ == 'Manifold', f"I need a manifold."
         self._manifold = manifold

@@ -8,7 +8,7 @@ import sys
 if './' not in sys.path:
     sys.path.append('./')
 
-from src.tools.frozen import Frozen
+from tools.frozen import Frozen
 import matplotlib.pyplot as plt
 import matplotlib
 matplotlib.use('TkAgg')

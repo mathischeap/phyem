@@ -3,7 +3,7 @@
 @author: Yi Zhang
 @contact: zhangyi_aero@hotmail.com
 """
-from src.tools.frozen import Frozen
+from tools.frozen import Frozen
 from numpy import ones_like
 
 

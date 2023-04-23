@@ -8,7 +8,7 @@
 from numpy import sin, pi, cos, ones_like
 
 import warnings
-from src.tools.frozen import Frozen
+from tools.frozen import Frozen
 
 
 class CrazyMeshCurvatureWarning(UserWarning):

@@ -17,7 +17,7 @@ plt.rcParams.update({
 })
 matplotlib.use('TkAgg')
 
-from src.tools.frozen import Frozen
+from tools.frozen import Frozen
 from src.form.tools import _find_form
 from src.form.operators import codifferential, d, trace, Hodge
 from src.config import _global_operator_lin_repr_setting

@@ -15,7 +15,7 @@ plt.rcParams.update({
     "text.latex.preamble": r"\usepackage{amsmath, amssymb}",
 })
 matplotlib.use('TkAgg')
-from src.tools.frozen import Frozen
+from tools.frozen import Frozen
 from src.algebra.array import AbstractArray
 from src.wf.term.ap import TermLinearAlgebraicProxy
 from src.algebra.linear_system import BlockMatrix, BlockColVector, LinearSystem

@@ -4,7 +4,7 @@
 @contact: zhangyi_aero@hotmail.com
 @time: 11/26/2022 2:56 PM
 """
-from src.tools.frozen import Frozen
+from tools.frozen import Frozen
 from copy import deepcopy
 
 

@@ -8,7 +8,7 @@ import sys
 
 if './' not in sys.path:
     sys.path.append('./')
-from src.tools.frozen import Frozen
+from tools.frozen import Frozen
 from src.tools.time_sequence import AbstractTimeSequence
 from typing import Dict
 
@@ -95,13 +95,13 @@ class TemporalDiscretization(Frozen):
         assert ts.__class__.__name__ == 'AbstractTimeSequence', f"I need an abstract time sequence object."
         assert self._ats is None, f"time_sequence existing, change it may leads to unexpected issue."
         self._ats = ts
-        for i in self._valid_ode:
-            self._valid_ode[i].discretize.set_time_sequence(self._ats)
+        for i in self:
+            self[i].set_time_sequence(self._ats)
 
     def define_abstract_time_instants(self, *atis):
         """Define abstract time instants for all valid odes."""
-        for i_ode in self:
-            self[i_ode].define_abstract_time_instants(*atis)
+        for i in self:
+            self[i].define_abstract_time_instants(*atis)
 
     def differentiate(self, index, *args):
         """

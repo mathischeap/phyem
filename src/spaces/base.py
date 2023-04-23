@@ -5,7 +5,7 @@
 @time: 11/26/2022 2:56 PM
 """
 
-from src.tools.frozen import Frozen
+from tools.frozen import Frozen
 from src.config import get_embedding_space_dim
 from src.form.main import Form
 from src.spaces.finite import SpaceFiniteSetting
@@ -16,6 +16,10 @@ class SpaceBase(Frozen):
 
     def __init__(self, mesh, orientation):
         """"""
+        self._objective = None
+        # when initializing, it has no objective instance. And when we generate an objective of a
+        # abstract space, we store the last objective one with this attribute.
+
         self._mesh = mesh
         assert orientation in ('inner', 'outer', 'i', 'o', None, 'None'), \
             f"orientation={orientation} is wrong, must be one of ('inner', 'outer', 'i', 'o', None)."

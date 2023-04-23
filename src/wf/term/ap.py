@@ -11,7 +11,7 @@ from src.spaces.ap import _parse_wedge_vector
 from src.spaces.ap import _parse_trace_matrix
 
 
-from src.tools.frozen import Frozen
+from tools.frozen import Frozen
 
 
 class TermLinearAlgebraicProxy(Frozen):

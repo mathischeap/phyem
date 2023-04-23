@@ -8,7 +8,7 @@ import sys
 if './' not in sys.path:
     sys.path.append('./')
 
-from src.tools.frozen import Frozen
+from tools.frozen import Frozen
 from msepy.mesh.visualize.matplot import MsePyMeshVisualizeMatplot
 from msepy.mesh.visualize.vtk_ import MsePyMeshVisualizeVTK
 

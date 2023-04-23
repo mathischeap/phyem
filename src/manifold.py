@@ -8,7 +8,7 @@ import sys
 if './' not in sys.path:
     sys.path.append('./')
 
-from src.tools.frozen import Frozen
+from tools.frozen import Frozen
 from src.config import get_embedding_space_dim
 from src.config import _manifold_default_sym_repr
 from src.config import _check_sym_repr

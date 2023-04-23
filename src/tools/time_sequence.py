@@ -10,7 +10,7 @@ import sys
 if './' not in sys.path:
     sys.path.append('./')
 
-from src.tools.frozen import Frozen
+from tools.frozen import Frozen
 import traceback
 from src.config import _parse_lin_repr
 from src.config import _abstract_time_sequence_default_sym_repr

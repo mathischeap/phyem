@@ -7,7 +7,7 @@ import sys
 
 if './' not in sys.path:
     sys.path.append('./')
-from src.tools.frozen import Frozen
+from tools.frozen import Frozen
 from msepy.manifold.main import MsePyManifold
 from msepy.mesh.main import MsePyMesh
 from msepy.space.main import MsePySpace
