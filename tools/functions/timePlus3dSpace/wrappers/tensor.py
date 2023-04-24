@@ -9,6 +9,7 @@ import sys
 if './' not in sys.path:
     sys.path.append('./')
 from tools.frozen import Frozen
+from functools import partial
 
 from tools.numerical.timePlus3dSpace.partial_derivative_as_functions import \
     NumericalPartialDerivative_txyz_Functions
@@ -43,6 +44,10 @@ class t3dTensor(Frozen):
         return self._t00_(t, x, y, z), self._t01_(t, x, y, z), self._t02_(t, x, y, z), \
                self._t10_(t, x, y, z), self._t11_(t, x, y, z), self._t12_(t, x, y, z), \
                self._t20_(t, x, y, z), self._t21_(t, x, y, z), self._t22_(t, x, y, z)
+
+    def __getitem__(self, t):
+        """return functions evaluated at time `t`."""
+        return partial(self, t)
 
     @property
     def ndim(self):

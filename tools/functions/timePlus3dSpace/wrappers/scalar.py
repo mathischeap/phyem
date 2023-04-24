@@ -14,6 +14,7 @@ from tools.numerical.timePlus3dSpace.partial_derivative_as_functions import \
     NumericalPartialDerivative_txyz_Functions
 
 from importlib import import_module
+from functools import partial
 
 from tools.functions.timePlus3dSpace.wrappers.helpers.scalar_mul import t3d_ScalarMultiply
 from tools.functions.timePlus3dSpace.wrappers.helpers._3scalars_add import t3d_3ScalarAdd
@@ -33,6 +34,10 @@ class t3dScalar(Frozen):
 
     def __call__(self, t, x, y, z):
         return self._s_(t, x, y, z)
+
+    def __getitem__(self, t):
+        """return functions evaluated at time `t`."""
+        return partial(self, t)
 
     def visualize(self, mesh, t):
         """Return a visualize class for a mesh at t=`t`.

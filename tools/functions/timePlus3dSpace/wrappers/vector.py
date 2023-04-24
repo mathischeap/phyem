@@ -9,6 +9,7 @@ import sys
 if './' not in sys.path:
     sys.path.append('./')
 from tools.frozen import Frozen
+from functools import partial
 
 from tools.numerical.timePlus3dSpace.partial_derivative_as_functions import \
     NumericalPartialDerivative_txyz_Functions
@@ -47,8 +48,9 @@ class t3dVector(Frozen):
         """Evaluate the vector at (t, x, y, z)"""
         return self._v0_(t, x, y, z), self._v1_(t, x, y, z), self._v2_(t, x, y, z)
 
-    def __getitem__(self, item):
-        return self._vs_[item]
+    def __getitem__(self, t):
+        """return functions evaluated at time `t`."""
+        return partial(self, t)
 
     def visualize(self, mesh, t):
         """Return a visualize class for a mesh at t=`t`.
@@ -108,7 +110,7 @@ class t3dVector(Frozen):
 
     @property
     def curl(self):
-        """The curl of a 3d vector. Lets say self is (u, v, w):
+        """The curl of a 3d vector. Let's say self is (u, v, w):
 
         (pw/py - pv/pz, pu/pz - pw/px, pv/px - pu/py)
 

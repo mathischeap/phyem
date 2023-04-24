@@ -5,6 +5,7 @@
 @time: 11/3/2022 6:33 PM
 """
 from tools.frozen import Frozen
+from functools import partial
 
 from tools.numerical.timePlus2dSpace.partial_derivative_as_functions import \
     NumericalPartialDerivative_txy_Functions
@@ -39,6 +40,10 @@ class t2dTensor(Frozen):
         return \
             self._t00_(t, x, y), self._t01_(t, x, y), \
             self._t10_(t, x, y), self._t11_(t, x, y)
+
+    def __getitem__(self, t):
+        """return functions evaluated at time `t`."""
+        return partial(self, t)
 
     @property
     def ndim(self):

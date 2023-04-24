@@ -48,6 +48,7 @@ class Form(Frozen):
             sym_repr, lin_repr,
             is_root,
     ):
+        self._objective = None
         if is_root is None:  # we will parse is_root from lin_repr
             assert isinstance(lin_repr, str) and len(lin_repr) > 0, f"lin_repr={lin_repr} illegal."
             is_root, lin_repr = self._parse_is_root(lin_repr)
@@ -86,7 +87,7 @@ class Form(Frozen):
             'ats': None,
             'ati': None
         }
-        self._abstract_forms = dict()   # the abstract forms based on this form.
+        self._ats_forms = dict()   # the abstract ats forms based on this form.
         self._degree = None
         self._ap = None
         self._freeze()
@@ -356,7 +357,7 @@ class Form(Frozen):
             sym_repr = s[0] + sym_repr + s[1] + ati.k + s[2]
             lin_repr += _form_evaluate_at_repr_setting['lin'] + ati._pure_lin_repr
 
-            if lin_repr in self._abstract_forms:   # we must cache it, this is very important.
+            if lin_repr in self._ats_forms:   # we must cache it, this is very important.
                 pass
             else:
                 ftk = Form(
@@ -367,9 +368,9 @@ class Form(Frozen):
                 ftk._pAti_form['base_form'] = self
                 ftk._pAti_form['ats'] = ati.time_sequence
                 ftk._pAti_form['ati'] = ati
-                self._abstract_forms[lin_repr] = ftk
+                self._ats_forms[lin_repr] = ftk
 
-            return self._abstract_forms[lin_repr]
+            return self._ats_forms[lin_repr]
 
         else:
             raise NotImplementedError(f"Cannot evaluate {self} at {other}.")

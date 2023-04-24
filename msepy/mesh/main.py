@@ -55,6 +55,11 @@ class MsePyMesh(Frozen):
         return self._manifold
 
     @property
+    def regions(self):
+        """regions"""
+        return self.manifold.regions
+
+    @property
     def ndim(self):
         return self.manifold.ndim
 

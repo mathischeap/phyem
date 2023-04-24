@@ -7,6 +7,7 @@
 
 from tools.frozen import Frozen
 from importlib import import_module
+from functools import partial
 
 from tools.functions.timePlus2dSpace.wrappers.helpers.scalar_add import t2d_ScalarAdd
 from tools.functions.timePlus2dSpace.wrappers.helpers.scalar_sub import t2d_ScalarSub
@@ -40,8 +41,9 @@ class t2dVector(Frozen):
         """Evaluate the vector at (t, x, y)"""
         return self._v0_(t, x, y), self._v1_(t, x, y)
 
-    def __getitem__(self, item):
-        return self._vs_[item]
+    def __getitem__(self, t):
+        """return functions evaluated at time `t`."""
+        return partial(self, t)
 
     def visualize(self, mesh, t):
         """Return a visualize class for a mesh at t=`t`.

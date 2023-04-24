@@ -229,7 +229,20 @@ if __name__ == '__main__':
     # mp.pr()
     # ls.pr()
     mesh = oph.mesh
-    space = a3.space
+    manifold = mesh.manifold
+
+    a3k = a3 @ td.ts['k']
     msepy, obj = ph.fem.apply('msepy', locals())
 
-    # print(obj)
+    mnf = obj['manifold']
+    msh = obj['mesh']
+
+    msepy.config(mnf)('backward_step')
+    msepy.config(msh)([3, 5, 3])
+
+    a = obj['a3']
+    b = obj['b2']
+    ak = obj['a3k']
+
+    ak[0].cochain = 100
+    print(a.cochain[0])

@@ -78,13 +78,34 @@ def _parse_spaces(abstract_spaces):
 def _parse_root_forms(abstract_rfs):
     """"""
     rf_dict = {}
-    for rf_lin_repr in abstract_rfs:
+    for rf_lin_repr in abstract_rfs:  # do it for all general root-forms
         rf = abstract_rfs[rf_lin_repr]
+
         if rf._pAti_form['base_form'] is None:  # this is not a root-form at a particular time-instant.
             prf = MsePyRootForm(rf)
             rf_dict[rf_lin_repr] = prf
         else:
             pass
+
+    for rf_lin_repr in abstract_rfs:  # then do it for all root-forms at particular time instant
+        rf = abstract_rfs[rf_lin_repr]
+        if rf._pAti_form['base_form'] is None:
+            pass
+        else:
+            base_form = rf._pAti_form['base_form']
+            ats = rf._pAti_form['ats']
+            ati = rf._pAti_form['ati']
+
+            particular_base_form = rf_dict[base_form._lin_repr]
+            prf = MsePyRootForm(rf)
+            prf._pAti_form['base_form'] = particular_base_form
+            prf._pAti_form['ats'] = ats
+            prf._pAti_form['ati'] = ati
+            rf_dict[rf_lin_repr] = prf
+
+            assert rf_lin_repr not in particular_base_form._ats_particular_forms
+            particular_base_form._ats_particular_forms[rf_lin_repr] = prf
+
     base['forms'] = rf_dict
 
 

@@ -20,6 +20,7 @@ from tools.functions.timePlus2dSpace.wrappers.helpers.scalar_neg import t2d_Scal
 from tools.functions.timePlus2dSpace.wrappers.helpers.scalar_mul import t2d_ScalarMultiply
 
 from importlib import import_module
+from functools import partial
 
 
 class t2dScalar(Frozen):
@@ -33,6 +34,10 @@ class t2dScalar(Frozen):
 
     def __call__(self, t, x, y):
         return self._s_(t, x, y)
+
+    def __getitem__(self, t):
+        """return functions evaluated at time `t`."""
+        return partial(self, t)
 
     def visualize(self, mesh, t):
         """Return a `visualize` class for a mesh at t=`t`.
