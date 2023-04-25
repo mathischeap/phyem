@@ -244,5 +244,5 @@ if __name__ == '__main__':
     b = obj['b2']
     ak = obj['a3k']
 
-    ak[1].cochain = 100
-    print(a[1].cochain)
+    print(a.space.local_numbering(3))
+    print(a[10].vec)

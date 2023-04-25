@@ -18,20 +18,20 @@ _space_set = dict()
 
 # whenever new space is implemented, add it below.
 _implemented_spaces = {
-    #indicator: (class path                    ,  class name            , description                 , parameters),
-    'Lambda':   ('src.spaces.continuous.scalar', 'ScalarValuedFormSpace', 'scalar valued k-form space', ['k', ]),
+    # indicator: (class path                    ,  class name            , description                 , parameters),
+    'Lambda':    ('src.spaces.continuous.Lambda', 'ScalarValuedFormSpace', 'scalar valued k-form space', ['k', ]),
 }
 
 _default_mass_matrix_reprs = {
-    'Lambda': (r"\mathsf{M}", "Mass:Mat:Lambda-n{n}-k{k}-d{(d0,d1)}"),
+    'Lambda': (r"\mathsf{M}", "Mass:Mat:Lambda-m{m}-n{n}-k{k}-d{(d0,d1)}"),
 }
 
 _default_d_matrix_reprs = {
-    'Lambda': (r"\mathsf{D}", "d:Mat:Lambda-n{n}-k{k}-d{d}"),
+    'Lambda': (r"\mathsf{D}", "d:Mat:Lambda-m{m}-n{n}-k{k}-d{d}"),
 }
 
 _default_d_matrix_transpose_reprs = {
-    'Lambda': (r"\mathsf{D}", "d:T:Mat:Lambda-n{n}-k{k}-d{d}"),
+    'Lambda': (r"\mathsf{D}", "d:T:Mat:Lambda-m{m}-n{n}-k{k}-d{d}"),
 }
 
 _default_wedge_vector_repr = {
@@ -39,7 +39,7 @@ _default_wedge_vector_repr = {
 }
 
 _default_trace_matrix_repr = {
-    'Lambda': (r"\mathsf{N}", "Trace:Mat:Lambda-n{n}-k{k}-d{d}"),
+    'Lambda': (r"\mathsf{N}", "Trace:Mat:Lambda-m{m}-n{n}-k{k}-d{d}"),
 }
 
 _default_space_degree_repr = ':d'

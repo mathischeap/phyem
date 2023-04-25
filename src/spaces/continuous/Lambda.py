@@ -41,4 +41,4 @@ class ScalarValuedFormSpace(SpaceBase):
     def __repr__(self):
         """By construction, it will be unique."""
         super_repr = super().__repr__().split('object')[-1]
-        return f'<Space {self._sym_repr} {self.orientation}-oriented' + super_repr
+        return f'<{self.orientation}-oriented {self._sym_repr}' + super_repr

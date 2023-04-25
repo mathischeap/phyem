@@ -106,6 +106,14 @@ class MsePyManifold(Frozen):
         return get_embedding_space_dim()
 
     @property
+    def m(self):
+        return self.esd
+
+    @property
+    def n(self):
+        return self.ndim
+
+    @property
     def ct(self):
         if self._ct is None:
             self._ct = MsePyManifoldsCoordinateTransformation(self)

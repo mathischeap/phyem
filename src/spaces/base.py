@@ -49,7 +49,10 @@ class SpaceBase(Frozen):
 
     @property
     def n(self):
-        """"""
+        return self.mesh.ndim
+
+    @property
+    def m(self):
         return get_embedding_space_dim()
 
     def make_form(self, sym_repr, lin_repr):

@@ -61,11 +61,21 @@ class MsePyMesh(Frozen):
 
     @property
     def ndim(self):
+        """n"""
         return self.manifold.ndim
 
     @property
     def esd(self):
+        """m"""
         return self.manifold.esd
+
+    @property
+    def m(self):
+        return self.esd
+
+    @property
+    def n(self):
+        return self.ndim
 
     def _parse_elements_from_element_layout(self, element_layout):
         """"""

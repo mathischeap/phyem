@@ -7,6 +7,7 @@ import sys
 if './' not in sys.path:
     sys.path.append('./')
 from tools.frozen import Frozen
+from msepy.space.gathering_matrix.Lambda import MsePyGatheringMatrixLambda
 
 
 class MsePyGatheringMatrix(Frozen):
@@ -17,6 +18,10 @@ class MsePyGatheringMatrix(Frozen):
         self._space = space
         self._freeze()
 
-    @property
-    def Lambda(self):
-        return ""
+    def __call__(self, degree):
+        """"""
+        indicator = self._space.abstract.indicator
+        if indicator == 'Lambda':
+            return MsePyGatheringMatrixLambda(self._space)(degree)
+        else:
+            raise NotImplementedError()

@@ -7,6 +7,7 @@ import sys
 if './' not in sys.path:
     sys.path.append('./')
 from tools.frozen import Frozen
+from msepy.space.incidence_matrix.Lambda import MsePyIncidenceMatrixLambda
 
 
 class MsePyIncidenceMatrix(Frozen):
@@ -17,3 +18,10 @@ class MsePyIncidenceMatrix(Frozen):
         self._space = space
         self._freeze()
 
+    def __call__(self, degree):
+        """"""
+        indicator = self._space.abstract.indicator
+        if indicator == 'Lambda':
+            return MsePyIncidenceMatrixLambda(self._space)(degree)
+        else:
+            raise NotImplementedError()

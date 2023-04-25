@@ -7,6 +7,7 @@ import sys
 if './' not in sys.path:
     sys.path.append('./')
 from tools.frozen import Frozen
+from msepy.space.local_numbering.Lambda import MsePyLocalNumberingLambda
 
 
 class MsePyLocalNumbering(Frozen):
@@ -16,3 +17,11 @@ class MsePyLocalNumbering(Frozen):
         """"""
         self._space = space
         self._freeze()
+
+    def __call__(self, degree):
+        """"""
+        indicator = self._space.abstract.indicator
+        if indicator == 'Lambda':
+            return MsePyLocalNumberingLambda(self._space)(degree)
+        else:
+            raise NotImplementedError()

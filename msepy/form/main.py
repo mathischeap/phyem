@@ -68,6 +68,14 @@ class MsePyRootForm(Frozen):
         return self._pAti_form['base_form']
 
     @property
+    def m(self):
+        return self.space.m  # esd
+
+    @property
+    def n(self):
+        return self.space.n  # mesh.ndim
+
+    @property
     def space(self):
         """The `MsePySpace` I am in."""
         return self._space
@@ -84,14 +92,17 @@ class MsePyRootForm(Frozen):
 
     @property
     def cf(self):
-        """Continuous form of this root-form"""
+        """Continuous form (a shell, the real `cf` is in `cf.field`) of this root-form"""
         if self._cf is None:
             self._cf = MsePyContinuousForm(self)
         return self._cf
 
     @cf.setter
     def cf(self, cf):
-        """Setter of `cf`."""
+        """Setter of `cf`.
+
+        We actually set `cf.field`, use a shell `cf` to enabling extra checkers and so on.
+        """
         self.cf.field = cf
 
     @property

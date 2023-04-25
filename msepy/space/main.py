@@ -50,6 +50,14 @@ class MsePySpace(Frozen):
         return self.abstract.mesh.ndim
 
     @property
+    def m(self):
+        return self.esd
+
+    @property
+    def n(self):
+        return self.ndim
+
+    @property
     def mesh(self):
         """The mesh"""
         return self._mesh
