@@ -5,6 +5,7 @@ Yi Zhang
 """
 
 from tools.frozen import Frozen
+from msepy.form.cochain.time_instant import _CochainAtOneTime
 
 
 class MsePyRootFormCochain(Frozen):
@@ -48,36 +49,15 @@ class MsePyRootFormCochain(Frozen):
         else:
             return rf._base.cochain[t]
 
-
-class _CochainAtOneTime(Frozen):
-    """"""
-
-    def __init__(self, rf, t):
-        """"""
-        assert rf._is_base, f"rf must be a base root-form."
-        self._f = rf
-        self._t = t
-        self._local_cochain = None
-        self._freeze()
-
-    def __repr__(self):
-        """"""
-        rf_repr = self._f.__repr__()
-        my_repr = rf"<Cochain at time={self._t} of "
-        super_repr = super().__repr__().split(' object')[1]
-        return my_repr + rf_repr + super_repr
-
-    def _receive(self, cochain):
-        """"""
-        # TODO parse cochain to make it `local` type.
-        self._local_cochain = cochain
+    def __contains__(self, t):
+        """if rf has cochain at time`t`?"""
+        t = self._parse_t(t)
+        return t in self._tcd
 
     @property
-    def local(self):
-        """"""
-        return self._local_cochain
+    def gathering_matrix(self):
+        return None
 
-    @local.setter
-    def local(self, local_cochain):
-        """"""
-        self._local_cochain = local_cochain
+    @property
+    def local_numbering(self):
+        return None

@@ -18,8 +18,8 @@ _space_set = dict()
 
 # whenever new space is implemented, add it below.
 _implemented_spaces = {
-    # abbr  : (class path                    ,  class name            , description                 , parameters),
-    'Lambda': ('src.spaces.continuous.scalar', 'ScalarValuedFormSpace', 'scalar valued k-form space', ['k', ]),
+    #indicator: (class path                    ,  class name            , description                 , parameters),
+    'Lambda':   ('src.spaces.continuous.scalar', 'ScalarValuedFormSpace', 'scalar valued k-form space', ['k', ]),
 }
 
 _default_mass_matrix_reprs = {

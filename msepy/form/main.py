@@ -12,7 +12,7 @@ if './' not in sys.path:
     sys.path.append('./')
 from tools.frozen import Frozen
 from msepy.form.cf import MsePyContinuousForm
-from msepy.form.cochain import MsePyRootFormCochain
+from msepy.form.cochain.main import MsePyRootFormCochain
 from msepy.form.realtime import MsePyRootFormRealTimeCopy
 
 
@@ -38,6 +38,7 @@ class MsePyRootForm(Frozen):
             'ati': None
         }
         self._ats_particular_forms = dict()   # the abstract forms based on this form.
+        self._numbering = None
         self._freeze()
 
     @property

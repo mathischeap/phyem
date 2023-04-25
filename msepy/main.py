@@ -105,7 +105,8 @@ def _parse_root_forms(abstract_rfs):
 
             assert rf_lin_repr not in particular_base_form._ats_particular_forms
             particular_base_form._ats_particular_forms[rf_lin_repr] = prf
-
+    for rf_lin_repr in rf_dict:
+        assert rf_dict[rf_lin_repr].degree is not None
     base['forms'] = rf_dict
 
 
