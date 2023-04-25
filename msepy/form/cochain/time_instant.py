@@ -1,7 +1,13 @@
-
+# -*- coding: utf-8 -*-
+"""
+pH-lib@RAM-EEMCS-UT
+created at: 3/16/2023 5:29 PM
+"""
 
 from tools.frozen import Frozen
 import numpy as np
+from msepy.tools.vector.local import MsePyLocalVector
+from msepy.tools.vector.assembled import MsePyAssembledVector
 
 
 class _CochainAtOneTime(Frozen):
@@ -24,12 +30,16 @@ class _CochainAtOneTime(Frozen):
 
     def _receive(self, cochain):
         """"""
-        # TODO check what we cochain we receive, convert it to `local` type any way.
+        # check what we kind of cochain we receive, and convert it to `local` type any way.
         if cochain.__class__.__name__ == 'ndarray' and np.ndim(cochain) == 2:
-            # TODO check shhape with gathering_matrix
+            # TODO check shape with gathering_matrix
             self._local_cochain = cochain
-        else:
+        elif cochain.__class__ is MsePyLocalVector:
             raise NotImplementedError()
+        elif cochain.__class__ is MsePyAssembledVector:
+            raise NotImplementedError()
+        else:
+            raise Exception(f"Cannot receive cochain from {cochain}")
 
     @property
     def local(self):

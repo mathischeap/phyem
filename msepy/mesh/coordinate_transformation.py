@@ -153,7 +153,6 @@ class MsePyMeshCoordinateTransformation(Frozen):
                 for j in range(s1):
                     jm_ij = jm[i][j]
                     if isinstance(jm_ij, int) and jm_ij == 0:
-
                         pass
 
                     else:
