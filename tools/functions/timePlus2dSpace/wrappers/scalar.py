@@ -33,7 +33,7 @@ class t2dScalar(Frozen):
         self._freeze()
 
     def __call__(self, t, x, y):
-        return self._s_(t, x, y)
+        return [self._s_(t, x, y), ]
 
     def __getitem__(self, t):
         """return functions evaluated at time `t`."""

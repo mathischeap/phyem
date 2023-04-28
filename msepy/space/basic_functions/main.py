@@ -7,10 +7,10 @@ import sys
 if './' not in sys.path:
     sys.path.append('./')
 from tools.frozen import Frozen
-from msepy.space.incidence_matrix.Lambda import MsePyIncidenceMatrixLambda
+from msepy.space.basic_functions.Lambda import MsePyBasicFunctionsLambda
 
 
-class MsePyIncidenceMatrix(Frozen):
+class MsePyBasicFunctions(Frozen):
     """"""
 
     def __init__(self, space):
@@ -19,16 +19,17 @@ class MsePyIncidenceMatrix(Frozen):
         self._Lambda = None
         self._freeze()
 
-    def __call__(self, degree):
-        """"""
+    def __getitem__(self, degree):
+        """Return"""
         indicator = self._space.abstract.indicator
         if indicator == 'Lambda':
-            return self.Lambda(degree)
+            self.Lambda._set_degree(degree)
+            return self.Lambda
         else:
             raise NotImplementedError()
 
     @property
     def Lambda(self):
         if self._Lambda is None:
-            self._Lambda = MsePyIncidenceMatrixLambda(self._space)
+            self._Lambda = MsePyBasicFunctionsLambda(self._space)
         return self._Lambda

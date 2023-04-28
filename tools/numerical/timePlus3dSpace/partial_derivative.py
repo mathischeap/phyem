@@ -4,7 +4,7 @@ if './' not in sys.path:
     sys.path.append('./')
 
 from abc import ABC
-from scipy.misc import derivative
+import numdifftools as nd
 import numpy as np
 from types import FunctionType, MethodType
 
@@ -15,12 +15,12 @@ class NumericalPartialDerivative_txyz(ABC):
     ``A=f(t,x,y,z)``. And we will evaluate dA/dt, dA/dx, dA/dy, dA/dz at `(t, x, y, z)`. Note that `(x,y,z)`
     must be of the same shape; no matter the dimensions (we do not do mesh grid to them). And t must be 1-d.
     """
-    def __init__(self, func, t, x, y, z, dtdxdydz=1e-6, n=1, order=3):
+    def __init__(self, func, t, x, y, z, step=None, n=1, order=2):
         self.___PRIVATE_check_func___(func)
         self.___PRIVATE_check_txyz___(t, x, y, z)
-        self.___PRIVATE_check_dtdxdydz___(dtdxdydz)
-        self.___PRIVATE_check_n___(n)
-        self.___PRIVATE_check_order___(order)
+        self._step_ = step
+        self._n_ = n
+        self._order_ = order
 
     def ___PRIVATE_check_func___(self, func):
         assert callable(func), " <PartialDerivative> : func is not callable."
@@ -42,23 +42,6 @@ class NumericalPartialDerivative_txyz(ABC):
         assert isinstance(t, (int, float)), f"t need to be a number, now t={t} is a {t.__class__}."
         self._t_ = t
 
-    def ___PRIVATE_check_dtdxdydz___(self, dtdxdydz):
-        if isinstance(dtdxdydz, (int, float)):
-            self._dt_ = self._dx_ = self._dy_ = self._dz_ = dtdxdydz
-        else:
-            assert np.shape(dtdxdydz) == (4,), " <PartialDerivative> : dtdxdydz shape wrong."
-            self._dt_, self._dx_, self._dy_, self._dz_ = dtdxdydz
-        assert all([isinstance(d, (int, float)) and d > 0 for d in (self._dt_, self._dx_, self._dy_, self._dz_)]), \
-            f"dt, dx, dy, dz must be positive number."
-
-    def ___PRIVATE_check_n___(self, n):
-        assert n % 1 == 0 and n >= 1, " <PartialDerivative> : n = {} is wrong.".format(n)
-        self._n_ = n
-
-    def ___PRIVATE_check_order___(self, order):
-        assert order % 2 == 1 and order > 0, " <PartialDerivative> : order needs to be odd positive."
-        self._order_ = order
-
     def ___PRIVATE_evaluate_func_for_t___(self, t):
         return self._func_(t, self._x_, self._y_, self._z_)
 
@@ -75,20 +58,28 @@ class NumericalPartialDerivative_txyz(ABC):
         """We compute the partial derivative, i.e. ``df/d_``, at points ``*txyz``."""
         if d_ == 't':
             # noinspection PyTypeChecker
-            return derivative(self.___PRIVATE_evaluate_func_for_t___, self._t_, dx=self._dt_,
-                              n=self._n_, order=self._order_)
+            return nd.Derivative(
+                self.___PRIVATE_evaluate_func_for_t___,
+                step=self._step_, n=self._n_, order=self._order_
+            )(self._t_)
         elif d_ == 'x':
             # noinspection PyTypeChecker
-            return derivative(self.___PRIVATE_evaluate_func_for_x___, self._x_, dx=self._dx_,
-                              n=self._n_, order=self._order_)
+            return nd.Derivative(
+                self.___PRIVATE_evaluate_func_for_x___,
+                step=self._step_, n=self._n_, order=self._order_
+            )(self._x_)
         elif d_ == 'y':
             # noinspection PyTypeChecker
-            return derivative(self.___PRIVATE_evaluate_func_for_y___, self._y_, dx=self._dy_,
-                              n=self._n_, order=self._order_)
+            return nd.Derivative(
+                self.___PRIVATE_evaluate_func_for_y___,
+                step=self._step_, n=self._n_, order=self._order_
+            )(self._y_)
         elif d_ == 'z':
             # noinspection PyTypeChecker
-            return derivative(self.___PRIVATE_evaluate_func_for_z___, self._z_, dx=self._dz_,
-                              n=self._n_, order=self._order_)
+            return nd.Derivative(
+                self.___PRIVATE_evaluate_func_for_z___,
+                step=self._step_, n=self._n_, order=self._order_
+            )(self._z_)
         else:
             raise Exception(" <PartialDerivative> : dt, dx or dy or dz? give me 't', 'x', 'y' or 'z'.")
 

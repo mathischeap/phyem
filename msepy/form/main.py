@@ -105,6 +105,10 @@ class MsePyRootForm(Frozen):
         """
         self.cf.field = cf
 
+    def set_cf(self, cf):
+        """A more reasonable method name."""
+        self.cf = cf
+
     @property
     def cochain(self):
         """The cochain class."""
@@ -115,4 +119,28 @@ class MsePyRootForm(Frozen):
 
 if __name__ == '__main__':
     # python msepy/form/main.py
-    pass
+    import numpy as np
+    import __init__ as ph
+    space_dim = 1
+    ph.config.set_embedding_space_dim(space_dim)
+
+    manifold = ph.manifold(space_dim)
+    mesh = ph.mesh(manifold)
+    L0 = ph.space.new('Lambda', 0)
+    f0 = L0.make_form('0-f', 'f^0')
+    ph.space.finite(5)
+
+    msepy, obj = ph.fem.apply('msepy', locals())
+
+    manifold = obj['manifold']
+    mesh = obj['mesh']
+    f0 = obj['f0']
+
+    msepy.config(manifold)('crazy', c=0.3, periodic=False, bounds=[[0, 2] for _ in range(space_dim)])
+    # msepy.config(mnf)('backward_step')
+    msepy.config(mesh)([3 for _ in range(space_dim)])
+
+    def fx(t, x):
+        return np.sin(2*np.pi*x) + t
+    scalar = ph.vc.scalar(fx)
+    f0.cf = fx

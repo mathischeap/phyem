@@ -18,8 +18,8 @@ sys.path.insert(0, os.path.abspath('./'))
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#project-information
 
 project = 'PHYEM'
-copyright = '2023, Yi Zhang'
-author = 'Yi Zhang, RaM, EEMCS, University of Twente'
+copyright = '2023, Yi Zhang, Ramy Rashad, Andrea Brugnoli, Stefano Stramigioli'
+author = 'RaM, EEMCS, University of Twente'
 release = '0.0.1'
 
 # -- General configuration ---------------------------------------------------

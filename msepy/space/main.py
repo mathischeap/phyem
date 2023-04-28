@@ -10,6 +10,7 @@ from tools.frozen import Frozen
 from msepy.space.gathering_matrix.main import MsePyGatheringMatrix
 from msepy.space.incidence_matrix.main import MsePyIncidenceMatrix
 from msepy.space.local_numbering.main import MsePyLocalNumbering
+from msepy.space.basic_functions.main import MsePyBasicFunctions
 from src.spaces.finite import SpaceFiniteSetting
 from msepy.mesh.main import MsePyMesh
 
@@ -29,6 +30,7 @@ class MsePySpace(Frozen):
         self._local_numbering = None
         self._gathering_matrix = None
         self._incidence_matrix = None
+        self._basic_functions = None
         self._freeze()
 
     @property
@@ -92,3 +94,9 @@ class MsePySpace(Frozen):
         if self._gathering_matrix is None:
             self._gathering_matrix = MsePyGatheringMatrix(self)
         return self._gathering_matrix
+
+    @property
+    def basic_functions(self):
+        if self._basic_functions is None:
+            self._basic_functions = MsePyBasicFunctions(self)
+        return self._basic_functions

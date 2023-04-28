@@ -33,7 +33,7 @@ class t3dScalar(Frozen):
         self._freeze()
 
     def __call__(self, t, x, y, z):
-        return self._s_(t, x, y, z)
+        return [self._s_(t, x, y, z), ]
 
     def __getitem__(self, t):
         """return functions evaluated at time `t`."""

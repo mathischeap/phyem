@@ -162,7 +162,7 @@ if __name__ == '__main__':
 
     msepy.config(mnf)('crazy', c=0.3, periodic=False, bounds=[[0, 2] for _ in range(space_dim)])
     # msepy.config(mnf)('backward_step')
-    msepy.config(msh)([3, 5, 3])
+    msepy.config(msh)([3 for _ in range(space_dim)])
 
     msh.visualize()
     mnf.visualize()

@@ -8,6 +8,7 @@ if './' not in sys.path:
     sys.path.append('./')
 from tools.frozen import Frozen
 import numpy as np
+from scipy.sparse import csr_matrix
 
 
 class MsePyIncidenceMatrixLambda(Frozen):
@@ -15,6 +16,7 @@ class MsePyIncidenceMatrixLambda(Frozen):
 
     def __init__(self, space):
         """Store required info."""
+        self._space = space
         self._k = space.abstract.k
         self._n = space.abstract.n  # manifold dimensions
         assert self._k != self._n, f"top form has no incidence matrix."
@@ -24,64 +26,162 @@ class MsePyIncidenceMatrixLambda(Frozen):
     def __call__(self, degree):
         """Making the local numbering for degree."""
         assert isinstance(degree, (int, float)) and degree % 1 == 0 and degree > 0, f"degree wrong."
-        if self._n == 2 and self._k == 1:
+        if self._n == 2:
             return getattr(self, f"_n{self._n}_k{self._k}_{self._orientation}")(degree)
         else:
             return getattr(self, f"_n{self._n}_k{self._k}")(degree)
 
-    @staticmethod
-    def _n3_k2(p):
-        """"""
-        P = p*p*(p+1)
-        # faces perp to x-axis
-        local_numbering_dy_dz = np.arange(0 * P, 1 * P).reshape((p+1, p, p), order='F')
-        # faces perp to y-axis
-        local_numbering_dz_dx = np.arange(1 * P, 2 * P).reshape((p, p+1, p), order='F')
-        # faces perp to z-axis
-        local_numbering_dx_dy = np.arange(2 * P, 3 * P).reshape((p, p, p+1), order='F')
-        return local_numbering_dy_dz, local_numbering_dz_dx, local_numbering_dx_dy
+    def _n3_k2(self, p):
+        """div or d of 2-form"""
+        sn = self._space.local_numbering.Lambda._n3_k2(p)
+        dn = self._space.local_numbering.Lambda._n3_k3(p)
+        E = np.zeros((p**3, 3*(p+1)*p**2), dtype=int)
 
-    @staticmethod
-    def _n3_k1(p):
-        """"""
-        P = p * (p+1) * (p+1)
-        local_numbering_dx = np.arange(0 * P, 1 * P).reshape((p, p+1, p+1), order='F')
-        local_numbering_dy = np.arange(1 * P, 2 * P).reshape((p+1, p, p+1), order='F')
-        local_numbering_dz = np.arange(2 * P, 3 * P).reshape((p+1, p+1, p), order='F')
-        return local_numbering_dx, local_numbering_dy, local_numbering_dz
+        I, J, K = np.shape(dn[0])
+        for k in range(K):
+            for j in range(J):
+                for i in range(I):
+                    E[dn[0][i, j, k], sn[0][i, j, k]] = -1    # x-
+                    E[dn[0][i, j, k], sn[0][i+1, j, k]] = +1  # x+
+                    E[dn[0][i, j, k], sn[1][i, j, k]] = -1    # y-
+                    E[dn[0][i, j, k], sn[1][i, j+1, k]] = +1  # y+
+                    E[dn[0][i, j, k], sn[2][i, j, k]] = -1    # z-
+                    E[dn[0][i, j, k], sn[2][i, j, k+1]] = +1  # z+
+        return csr_matrix(E)
 
-    @staticmethod
-    def _n3_k0(p):
-        """"""
-        local_numbering = np.arange(0, (p+1)**3).reshape((p+1, p+1, p+1), order='F')
-        return (local_numbering,)  # do not remove (,)
+    def _n3_k1(self, p):
+        """curl or d of 1-form"""
+        sn = self._space.local_numbering.Lambda._n3_k1(p)
+        dn = self._space.local_numbering.Lambda._n3_k2(p)
+        E = np.zeros((3*(p+1)*p**2, 3*p*(p+1)**2), dtype=int)
 
-    @staticmethod
-    def _n2_k0(p):
-        """"""
-        local_numbering = np.arange(0, (p+1)**2).reshape((p+1, p+1), order='F')
-        return (local_numbering,)  # do not remove (,)
+        I, J, K = np.shape(dn[0])
+        for k in range(K):
+            for j in range(J):
+                for i in range(I):
+                    E[dn[0][i, j, k], sn[1][i, j, k]] = +1   # Back
+                    E[dn[0][i, j, k], sn[1][i, j, k+1]] = -1   # Front
+                    E[dn[0][i, j, k], sn[2][i, j, k]] = -1   # West
+                    E[dn[0][i, j, k], sn[2][i, j+1, k]] = +1   # East
 
-    @staticmethod
-    def _n2_k1_outer(p):
-        """"""
-        P = p * (p+1)
-        # segments perp to x-axis
-        local_numbering_dy = np.arange(0 * P, 1 * P).reshape((p+1, p), order='F')
-        # segments perp to y-axis
-        local_numbering_dx = np.arange(1 * P, 2 * P).reshape((p, p+1), order='F')
-        return local_numbering_dy, local_numbering_dx
+        I, J, K = np.shape(dn[1])
+        for k in range(K):
+            for j in range(J):
+                for i in range(I):
+                    E[dn[1][i, j, k], sn[0][i, j, k]] = -1    # Back
+                    E[dn[1][i, j, k], sn[0][i, j, k+1]] = +1    # Front
+                    E[dn[1][i, j, k], sn[2][i, j, k]] = +1    # North
+                    E[dn[1][i, j, k], sn[2][i+1, j, k]] = -1    # South
 
-    @staticmethod
-    def _n2_k1_inner(p):
-        """"""
-        P = p * (p+1)
-        local_numbering_dx = np.arange(0 * P, 1 * P).reshape((p, p+1), order='F')
-        local_numbering_dy = np.arange(1 * P, 2 * P).reshape((p+1, p), order='F')
-        return local_numbering_dx, local_numbering_dy
+        I, J, K = np.shape(dn[2])
+        for k in range(K):
+            for j in range(J):
+                for i in range(I):
+                    E[dn[2][i, j, k], sn[0][i, j, k]] = +1    # West
+                    E[dn[2][i, j, k], sn[0][i, j+1, k]] = -1    # East
+                    E[dn[2][i, j, k], sn[1][i, j, k]] = -1    # North
+                    E[dn[2][i, j, k], sn[1][i+1, j, k]] = +1    # South
+
+        return csr_matrix(E)
+
+    def _n3_k0(self, p):
+        """grad or d of 0-form"""
+        sn = self._space.local_numbering.Lambda._n3_k0(p)
+        dn = self._space.local_numbering.Lambda._n3_k1(p)
+        E = np.zeros((3*p*(p+1)**2, (p+1)**3), dtype=int)
+
+        I, J, K = np.shape(dn[0])
+        for k in range(K):
+            for j in range(J):
+                for i in range(I):
+                    E[dn[0][i, j, k], sn[0][i, j, k]] = -1   # North
+                    E[dn[0][i, j, k], sn[0][i+1, j, k]] = +1   # South
+
+        I, J, K = np.shape(dn[1])
+        for k in range(K):
+            for j in range(J):
+                for i in range(I):
+                    E[dn[1][i, j, k], sn[0][i, j, k]] = -1    # West
+                    E[dn[1][i, j, k], sn[0][i, j+1, k]] = +1    # East
+
+        I, J, K = np.shape(dn[2])
+        for k in range(K):
+            for j in range(J):
+                for i in range(I):
+                    E[dn[2][i, j, k], sn[0][i, j, k]] = -1    # Back
+                    E[dn[2][i, j, k], sn[0][i, j, k+1]] = +1    # Front
+
+        return csr_matrix(E)
+
+    def _n2_k0_inner(self, p):
+        """grad or d of inner 0-form"""
+        sn = self._space.local_numbering.Lambda._n2_k0(p)
+        dn = self._space.local_numbering.Lambda._n2_k1_inner(p)
+        E = np.zeros((2*p*(p+1), (p+1)**2), dtype=int)
+        I, J = np.shape(dn[0])  # dx edges
+        for j in range(J):
+            for i in range(I):
+                E[dn[0][i, j], sn[0][i, j]] = -1     # x-
+                E[dn[0][i, j], sn[0][i+1, j]] = +1   # x+
+        I, J = np.shape(dn[1])  # dy edges
+        for j in range(J):
+            for i in range(I):
+                E[dn[1][i, j], sn[0][i, j]] = -1      # y-
+                E[dn[1][i, j], sn[0][i, j+1]] = +1    # y+
+        return csr_matrix(E)
+
+    def _n2_k1_inner(self, p):
+        """rot or d of inner 1-form"""
+        sn = self._space.local_numbering.Lambda._n2_k1_inner(p)
+        dn = self._space.local_numbering.Lambda._n2_k2(p)
+        E = np.zeros((p**2,
+                      2*p*(p+1)), dtype=int)
+        I, J = np.shape(dn[0])
+        for j in range(J):
+            for i in range(I):
+                E[dn[0][i, j], sn[1][i, j]] = -1      # x-
+                E[dn[0][i, j], sn[1][i+1, j]] = +1    # x+
+                E[dn[0][i, j], sn[0][i, j]] = +1      # y-
+                E[dn[0][i, j], sn[0][i, j+1]] = -1    # y+
+        return csr_matrix(E)
+
+    def _n2_k0_outer(self, p):
+        """curl or d of outer-0-form"""
+        sn = self._space.local_numbering.Lambda._n2_k0(p)
+        dn = self._space.local_numbering.Lambda._n2_k1_outer(p)
+        E = np.zeros((2*p*(p+1), (p+1)**2), dtype=int)
+        I, J = np.shape(dn[0])    # dy edges
+        for j in range(J):
+            for i in range(I):
+                E[dn[0][i, j], sn[0][i, j]] = -1     # y-
+                E[dn[0][i, j], sn[0][i, j+1]] = +1   # y+
+        I, J = np.shape(dn[1])    # dx edges
+        for j in range(J):
+            for i in range(I):
+                E[dn[1][i, j], sn[0][i, j]] = +1     # x-
+                E[dn[1][i, j], sn[0][i+1, j]] = -1   # x+
+        return csr_matrix(E)
+
+    def _n2_k1_outer(self, p):
+        """div or d of outer-1-form"""
+        sn = self._space.local_numbering.Lambda._n2_k1_outer(p)
+        dn = self._space.local_numbering.Lambda._n2_k2(p)
+        E = np.zeros((p**2,
+                      2*p*(p+1)), dtype=int)
+        I, J = np.shape(dn[0])
+        for j in range(J):
+            for i in range(I):
+                E[dn[0][i, j], sn[0][i, j]] = -1      # x-
+                E[dn[0][i, j], sn[0][i+1, j]] = +1    # x+
+                E[dn[0][i, j], sn[1][i, j]] = -1      # y-
+                E[dn[0][i, j], sn[1][i, j+1]] = +1    # y+
+        return csr_matrix(E)
 
     @staticmethod
     def _n1_k0(p):
         """"""
-        local_numbering = np.arange(0, p+1)
-        return (local_numbering,)  # do not remove (,)
+        E = np.zeros((p, p+1), dtype=int)
+        for i in range(p):
+            E[i, i] = -1   # x-
+            E[i, i+1] = 1  # x+
+        return csr_matrix(E)
