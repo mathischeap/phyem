@@ -18,8 +18,8 @@ class MsePyMeshCoordinateTransformation(Frozen):
     def __init__(self, mesh):
         """"""
         self._mesh = mesh
-        self.___cache_mapping_od___ = dict()  # cache #1 for mapping.
-        self.___cache_JM_od___ = dict()  # cache #1 for mapping.
+        self.___cache_mapping_od___ = dict()  # cache for mapping.
+        self.___cache_JM___ = None
         self._freeze()
 
     def mapping(self, *xi_et_sg, regions=None):
@@ -94,43 +94,47 @@ class MsePyMeshCoordinateTransformation(Frozen):
             for j, _ in enumerate(xyz):
                 xyz[j] = np.concatenate(list(_), axis=-1)
 
-            return xyz
+            return xyz   # x, y, z, ... = xyz and a[..., i] (a in {x, y, z, ...})for element #i
 
     def Jacobian_matrix(self, *xi_et_sg):
         """The Jacobian matrix for each element.
 
         As it is computed through element index mapping, it will be computed for all elements.
         """
-        eim = self._mesh.elements._index_mapping
-        reference_elements = eim._reference_elements
-        reference_delta = eim._reference_delta
-        reference_origin = eim._reference_origin
-        reference_regions = eim._reference_regions
+        if self.___cache_JM___ is None:
+            eim = self._mesh.elements._index_mapping
+            reference_elements = eim._reference_elements
+            reference_delta = eim._reference_delta
+            reference_origin = eim._reference_origin
+            reference_regions = eim._reference_regions
 
-        elements: Dict[int] = dict()  # Dict keys: region index
-        origin: Dict[int] = dict()    # Dict keys: region index
-        delta: Dict[int] = dict()     # Dict keys: region index
-        for i, re in enumerate(reference_elements):
-            region = reference_regions[i]
-            if region not in origin:
-                elements[region] = list()
-                origin[region] = list()
-                delta[region] = list()
-            else:
-                pass
+            elements: Dict[int] = dict()  # Dict keys: region index
+            origin: Dict[int] = dict()    # Dict keys: region index
+            delta: Dict[int] = dict()     # Dict keys: region index
+            for i, re in enumerate(reference_elements):
+                region = reference_regions[i]
+                if region not in origin:
+                    elements[region] = list()
+                    origin[region] = list()
+                    delta[region] = list()
+                else:
+                    pass
 
-            elements[region].append(re)
-            origin[region].append(reference_origin[i])
-            delta[region].append(reference_delta[i])
+                elements[region].append(re)
+                origin[region].append(reference_origin[i])
+                delta[region].append(reference_delta[i])
 
-        for r in origin:
-            origin[r] = np.array(origin[r]).T
-            delta[r] = np.array(delta[r]).T
+            for r in origin:
+                origin[r] = np.array(origin[r]).T
+                delta[r] = np.array(delta[r]).T
+
+            self.___cache_JM___ = [elements, origin, delta]
+        else:
+            elements, origin, delta = self.___cache_JM___
 
         JM = dict()
         for r in elements:
             ele = elements[r]
-
             ori = origin[r]
             dta = delta[r]
 
@@ -156,12 +160,233 @@ class MsePyMeshCoordinateTransformation(Frozen):
                         pass
 
                     else:
-                        assert jm_ij.__class__.__name__ == 'ndarray', 'Trivial check. Make sure we use ones_like.'
+                        assert jm_ij.__class__.__name__ == 'ndarray', \
+                            'Trivial check. Make sure we use ones_like.'
                         jm_ij *= ref_Jacobian[j]
                         for k, e in enumerate(ele):
                             JM[e][i][j] = jm_ij[..., k]
 
         return self._mesh.elements._index_mapping.distribute_according_to_reference_elements_dict(JM)
+
+    def Jacobian(self, *xi_et_sg, JM=None):
+        """the Determinant of the Jacobian matrix. When Jacobian matrix is square, Jacobian = sqrt(g)."""
+        if JM is None:
+            JM = self.Jacobian_matrix(*xi_et_sg)
+        else:
+            pass
+
+        m, n = self._mesh.m, self._mesh.n
+
+        Jacobian_dict = {}
+        for re in JM:
+            jm = JM[re]
+
+            if m == n == 1:
+                Ji = jm[0][0]
+
+            elif m == n == 2:
+                Ji = jm[0][0]*jm[1][1] - jm[0][1]*jm[1][0]
+
+            elif m == n == 3:
+                Ji = + jm[0][0]*jm[1][1]*jm[2][2] + jm[0][1]*jm[1][2]*jm[2][0] \
+                    + jm[0][2]*jm[1][0]*jm[2][1] - jm[0][0]*jm[1][2]*jm[2][1] \
+                    - jm[0][1]*jm[1][0]*jm[2][2] - jm[0][2]*jm[1][1]*jm[2][0]
+            else:
+                raise Exception()
+
+            Jacobian_dict[re] = Ji
+
+        return self._mesh.elements._index_mapping.distribute_according_to_reference_elements_dict(Jacobian_dict)
+
+    def metric(self, *xi_et_sg, detJ=None):
+        """ For square Jacobian matrix,
+        the metric ``g:= det(G):=(det(J))**2``, where ``G`` is the metric matrix, or metric tensor.
+        """
+        m, n = self._mesh.m, self._mesh.n
+
+        if detJ is None:
+            detJ = self.Jacobian(*xi_et_sg)
+        else:
+            pass
+
+        metric = dict()
+
+        for re in detJ:
+            det_j = detJ[re]
+
+            if m == n:
+
+                metric_re = det_j ** 2
+
+            else:
+                raise NotImplementedError()
+
+            metric[re] = metric_re
+
+        return self._mesh.elements._index_mapping.distribute_according_to_reference_elements_dict(metric)
+
+    def inverse_Jacobian_matrix(self, *xi_et_sg, JM=None):
+        """The inverse Jacobian matrix. """
+        m, n = self._mesh.m, self._mesh.n
+
+        if JM is None:
+            JM = self.Jacobian_matrix(*xi_et_sg)
+        else:
+            pass
+
+        inverse_Jacobian_matrix_dict = {}
+
+        for re in JM:
+
+            jm = JM[re]
+
+            if m == n == 1:
+                iJM00 = 1 / jm[0][0]
+                inverse_Jacobian_matrix_dict[re] = [[iJM00, ], ]
+
+            elif m == n == 2:
+                reciprocalJacobian = 1 / (jm[0][0] * jm[1][1] - jm[0][1] * jm[1][0])
+                iJ00 = + reciprocalJacobian * jm[1][1]
+                iJ01 = - reciprocalJacobian * jm[0][1]
+                iJ10 = - reciprocalJacobian * jm[1][0]
+                iJ11 = + reciprocalJacobian * jm[0][0]
+                inverse_Jacobian_matrix_dict[re] = \
+                    [
+                        [iJ00, iJ01],
+                        [iJ10, iJ11]
+                    ]
+            elif m == n == 3:
+
+                Jacobian = \
+                    + jm[0][0] * jm[1][1] * jm[2][2] + jm[0][1] * jm[1][2] * jm[2][0] \
+                    + jm[0][2] * jm[1][0] * jm[2][1] - jm[0][0] * jm[1][2] * jm[2][1] \
+                    - jm[0][1] * jm[1][0] * jm[2][2] - jm[0][2] * jm[1][1] * jm[2][0]
+                reciprocalJacobian = 1 / Jacobian
+                iJ00 = reciprocalJacobian * (jm[1][1] * jm[2][2] - jm[1][2] * jm[2][1])
+                iJ01 = reciprocalJacobian * (jm[2][1] * jm[0][2] - jm[2][2] * jm[0][1])
+                iJ02 = reciprocalJacobian * (jm[0][1] * jm[1][2] - jm[0][2] * jm[1][1])
+                iJ10 = reciprocalJacobian * (jm[1][2] * jm[2][0] - jm[1][0] * jm[2][2])
+                iJ11 = reciprocalJacobian * (jm[2][2] * jm[0][0] - jm[2][0] * jm[0][2])
+                iJ12 = reciprocalJacobian * (jm[0][2] * jm[1][0] - jm[0][0] * jm[1][2])
+                iJ20 = reciprocalJacobian * (jm[1][0] * jm[2][1] - jm[1][1] * jm[2][0])
+                iJ21 = reciprocalJacobian * (jm[2][0] * jm[0][1] - jm[2][1] * jm[0][0])
+                iJ22 = reciprocalJacobian * (jm[0][0] * jm[1][1] - jm[0][1] * jm[1][0])
+                inverse_Jacobian_matrix_dict[re] = [
+                    [iJ00, iJ01, iJ02],
+                    [iJ10, iJ11, iJ12],
+                    [iJ20, iJ21, iJ22]
+                ]
+            else:
+                raise NotImplementedError()
+
+        return self._mesh.elements._index_mapping.distribute_according_to_reference_elements_dict(
+            inverse_Jacobian_matrix_dict
+        )
+
+    def inverse_Jacobian(self, *xi_et_sg, iJM=None):
+        """the Determinant of the inverse Jacobian matrix."""
+        m, n = self._mesh.m, self._mesh.n
+
+        if iJM is None:
+            iJM = self.inverse_Jacobian_matrix(*xi_et_sg)
+        else:
+            pass
+
+        inverse_Jacobian_dict = {}
+
+        for re in iJM:
+            ijm = iJM[re]
+
+            if m == n == 1:
+                iJ = ijm[0][0]
+
+            elif m == n == 2:
+                iJ = ijm[0][0]*ijm[1][1] - ijm[0][1]*ijm[1][0]
+
+            elif m == n == 3:
+                iJ = + ijm[0][0]*ijm[1][1]*ijm[2][2] + ijm[0][1]*ijm[1][2]*ijm[2][0] \
+                    + ijm[0][2]*ijm[1][0]*ijm[2][1] - ijm[0][0]*ijm[1][2]*ijm[2][1] \
+                    - ijm[0][1]*ijm[1][0]*ijm[2][2] - ijm[0][2]*ijm[1][1]*ijm[2][0]
+            else:
+                raise Exception()
+
+            inverse_Jacobian_dict[re] = iJ
+
+        return self._mesh.elements._index_mapping.distribute_according_to_reference_elements_dict(
+            inverse_Jacobian_dict
+        )
+
+    def metric_matrix(self, *xi_et_sg, JM=None):
+        """
+        Also called metric tensor. Let J be the Jacobian matrix. The ``metricMatrix`` is
+        denoted by G, G := J^T.dot(J). And the metric is ``g := (det(J))**2 or g := det(G).``
+        Which means for a square Jacobian matrix, the metric turns out to be the square of the
+        determinant of the Jacobian matrix.
+
+        The entries of G are normally denoted as g_{i,j}.
+        """
+        if JM is None:
+            JM = self.Jacobian_matrix(*xi_et_sg)
+        else:
+            pass
+
+        m, n = self._mesh.m, self._mesh.n
+
+        metric_matrix_dict = {}
+
+        for re in JM:
+            jm = JM[re]
+
+            G = [[None for _ in range(n)] for __ in range(n)]
+
+            for i in range(n):
+                for j in range(i, n):
+                    G[i][j] = jm[0][i] * jm[0][j]
+                    for L in range(1, m):
+                        G[i][j] += jm[L][i] * jm[L][j]
+                    if i != j:
+                        G[j][i] = G[i][j]
+
+            metric_matrix_dict[re] = G
+
+        return self._mesh.elements._index_mapping.distribute_according_to_reference_elements_dict(
+            metric_matrix_dict
+        )
+
+    def inverse_metric_matrix(self, *xi_et_sg, iJM=None):
+        """
+        The ``inverseMetricMatrix`` is the metric matrix of the inverse Jacobian matrix
+        or the metric of the inverse mapping. It is usually denoted as G^{-1}.
+
+        The entries of G^{-1} is normally denoted as g^{i,j}.
+        """
+        if iJM is None:
+            iJM = self.inverse_Jacobian_matrix(*xi_et_sg)
+        else:
+            pass
+
+        m, n = self._mesh.m, self._mesh.n
+
+        inverse_metric_matrix_dict = {}
+
+        for re in iJM:
+            ijm = iJM[re]
+
+            iG = [[None for _ in range(m)] for __ in range(m)]
+            for i in range(m):
+                for j in range(i, m):
+                    # noinspection PyTypeChecker
+                    iG[i][j] = ijm[i][0] * ijm[j][0]
+                    for L in range(1, n):
+                        iG[i][j] += ijm[i][L] * ijm[j][L]
+                    if i != j:
+                        iG[j][i] = iG[i][j]
+
+            inverse_metric_matrix_dict[re] = iG
+
+        return self._mesh.elements._index_mapping.distribute_according_to_reference_elements_dict(
+            inverse_metric_matrix_dict
+        )
 
 
 if __name__ == '__main__':
@@ -179,7 +404,7 @@ if __name__ == '__main__':
     mnf = obj['manifold']
     msh = obj['mesh']
 
-    msepy.config(mnf)('crazy', c=0.3, periodic=False, bounds=[[0, 2] for _ in range(space_dim)])
+    msepy.config(mnf)('crazy', c=0., periodic=False, bounds=[[0, 2] for _ in range(space_dim)])
     # msepy.config(mnf)('backward_step')
     msepy.config(msh)([5 for _ in range(space_dim)])
     # msepy.config(msh)(([1, 2, 1], [2, 3], [1, 2, 2, 4]))
@@ -190,7 +415,7 @@ if __name__ == '__main__':
     xi_et_sg = [np.random.rand(7, 11) for _ in range(space_dim)]
 
     xyz = msh.ct.mapping(*xi_et_sg)
-    jm = msh.ct.Jacobian_matrix(*xi_et_sg)
-    print(jm(2))
+    jm = msh.ct.inverse_metric_matrix(*xi_et_sg)
+    jm = msh.ct.inverse_metric_matrix(*xi_et_sg)
 
-    # msh.visualize(refining_factor=1)
+    msh.visualize(sampling_factor=1)

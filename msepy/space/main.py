@@ -10,7 +10,9 @@ from tools.frozen import Frozen
 from msepy.space.gathering_matrix.main import MsePyGatheringMatrix
 from msepy.space.incidence_matrix.main import MsePyIncidenceMatrix
 from msepy.space.local_numbering.main import MsePyLocalNumbering
-from msepy.space.basic_functions.main import MsePyBasicFunctions
+from msepy.space.num_local_dofs.main import MsePyNumLocalDofs
+from msepy.space.basis_functions.main import MsePyBasisFunctions
+from msepy.space.degree import MsePySpaceDegree
 from src.spaces.finite import SpaceFiniteSetting
 from msepy.mesh.main import MsePyMesh
 
@@ -30,7 +32,9 @@ class MsePySpace(Frozen):
         self._local_numbering = None
         self._gathering_matrix = None
         self._incidence_matrix = None
-        self._basic_functions = None
+        self._basis_functions = None
+        self._num_local_dofs = None
+        self._degree_cache = {}
         self._freeze()
 
     @property
@@ -74,12 +78,27 @@ class MsePySpace(Frozen):
         """The finite setting."""
         return self._finite
 
+    def __getitem__(self, degree):
+        """"""
+        if degree in self._degree_cache:
+            pass
+        else:
+            self._degree_cache[degree] = MsePySpaceDegree(self, degree)
+        return self._degree_cache[degree]
+
     @property
     def local_numbering(self):
         """local numbering"""
         if self._local_numbering is None:
             self._local_numbering = MsePyLocalNumbering(self)
         return self._local_numbering
+
+    @property
+    def num_local_dofs(self):
+        """local numbering"""
+        if self._num_local_dofs is None:
+            self._num_local_dofs = MsePyNumLocalDofs(self)
+        return self._num_local_dofs
 
     @property
     def incidence_matrix(self):
@@ -96,7 +115,7 @@ class MsePySpace(Frozen):
         return self._gathering_matrix
 
     @property
-    def basic_functions(self):
-        if self._basic_functions is None:
-            self._basic_functions = MsePyBasicFunctions(self)
-        return self._basic_functions
+    def basis_functions(self):
+        if self._basis_functions is None:
+            self._basis_functions = MsePyBasisFunctions(self)
+        return self._basis_functions

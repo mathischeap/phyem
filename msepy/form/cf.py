@@ -16,6 +16,15 @@ class MsePyContinuousForm(Frozen):
         self._field = None
         self._freeze()
 
+    def __iter__(self):
+        """iter over all region indices."""
+        for i in self._f.mesh.regions:
+            yield i
+
+    def __getitem__(self, region_index):
+        """get the cf for region #`region_index`."""
+        return self.field[region_index]
+
     @property
     def field(self):
         """the cf."""

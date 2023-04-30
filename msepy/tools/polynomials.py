@@ -10,18 +10,11 @@ import numpy as np
 class _1dPolynomial(object):
     """
     The 1d polynomial basis function space.
-
-    :param p:
     """
-    def __init__(self, p):
+    def __init__(self, nodes):
         """I accept inputs like:
             (1) _1dPolynomial(3) # we will be default use Lobatto nodes!
         """
-        assert isinstance(p, int) and p >= 0, f" <Polynomials1D> : p = {p} wrong."
-        self._category_ = 'Lobatto'
-        quad = Quadrature(p, category=self.category)
-        nodes = quad.quad[0]
-
         assert np.ndim(nodes) == 1, \
             " <Polynomials1D> : nodes={} wrong.".format(nodes)
         assert np.all(np.diff(nodes) > 0) and np.max(nodes) == 1 and np.min(nodes) == -1, \
@@ -35,10 +28,6 @@ class _1dPolynomial(object):
     @property
     def isKronecker(self):
         return self._isKronecker_
-
-    @property
-    def category(self):
-        return self._category_
 
     @property
     def p(self):

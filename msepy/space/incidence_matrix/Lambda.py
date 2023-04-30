@@ -25,17 +25,23 @@ class MsePyIncidenceMatrixLambda(Frozen):
 
     def __call__(self, degree):
         """Making the local numbering for degree."""
-        assert isinstance(degree, (int, float)) and degree % 1 == 0 and degree > 0, f"degree wrong."
+        p = self._space[degree].p
         if self._n == 2:
-            return getattr(self, f"_n{self._n}_k{self._k}_{self._orientation}")(degree)
+            return getattr(self, f"_n{self._n}_k{self._k}_{self._orientation}")(p)
         else:
-            return getattr(self, f"_n{self._n}_k{self._k}")(degree)
+            return getattr(self, f"_n{self._n}_k{self._k}")(p)
 
     def _n3_k2(self, p):
         """div or d of 2-form"""
         sn = self._space.local_numbering.Lambda._n3_k2(p)
         dn = self._space.local_numbering.Lambda._n3_k3(p)
-        E = np.zeros((p**3, 3*(p+1)*p**2), dtype=int)
+        E = np.zeros(
+            (
+                self._space.num_local_dofs.Lambda._n3_k3(p),
+                self._space.num_local_dofs.Lambda._n3_k2(p)
+            ),
+            dtype=int
+        )
 
         I, J, K = np.shape(dn[0])
         for k in range(K):
@@ -53,7 +59,13 @@ class MsePyIncidenceMatrixLambda(Frozen):
         """curl or d of 1-form"""
         sn = self._space.local_numbering.Lambda._n3_k1(p)
         dn = self._space.local_numbering.Lambda._n3_k2(p)
-        E = np.zeros((3*(p+1)*p**2, 3*p*(p+1)**2), dtype=int)
+        E = np.zeros(
+            (
+                self._space.num_local_dofs.Lambda._n3_k2(p),
+                self._space.num_local_dofs.Lambda._n3_k1(p)
+            ),
+            dtype=int
+        )
 
         I, J, K = np.shape(dn[0])
         for k in range(K):
@@ -88,7 +100,13 @@ class MsePyIncidenceMatrixLambda(Frozen):
         """grad or d of 0-form"""
         sn = self._space.local_numbering.Lambda._n3_k0(p)
         dn = self._space.local_numbering.Lambda._n3_k1(p)
-        E = np.zeros((3*p*(p+1)**2, (p+1)**3), dtype=int)
+        E = np.zeros(
+            (
+                self._space.num_local_dofs.Lambda._n3_k1(p),
+                self._space.num_local_dofs.Lambda._n3_k0(p)
+            ),
+            dtype=int
+        )
 
         I, J, K = np.shape(dn[0])
         for k in range(K):
@@ -117,7 +135,13 @@ class MsePyIncidenceMatrixLambda(Frozen):
         """grad or d of inner 0-form"""
         sn = self._space.local_numbering.Lambda._n2_k0(p)
         dn = self._space.local_numbering.Lambda._n2_k1_inner(p)
-        E = np.zeros((2*p*(p+1), (p+1)**2), dtype=int)
+        E = np.zeros(
+            (
+                self._space.num_local_dofs.Lambda._n2_k1(p),
+                self._space.num_local_dofs.Lambda._n2_k0(p)
+            ),
+            dtype=int
+        )
         I, J = np.shape(dn[0])  # dx edges
         for j in range(J):
             for i in range(I):
@@ -134,8 +158,13 @@ class MsePyIncidenceMatrixLambda(Frozen):
         """rot or d of inner 1-form"""
         sn = self._space.local_numbering.Lambda._n2_k1_inner(p)
         dn = self._space.local_numbering.Lambda._n2_k2(p)
-        E = np.zeros((p**2,
-                      2*p*(p+1)), dtype=int)
+        E = np.zeros(
+            (
+                self._space.num_local_dofs.Lambda._n2_k2(p),
+                self._space.num_local_dofs.Lambda._n2_k1(p)
+            ),
+            dtype=int
+        )
         I, J = np.shape(dn[0])
         for j in range(J):
             for i in range(I):
@@ -149,7 +178,13 @@ class MsePyIncidenceMatrixLambda(Frozen):
         """curl or d of outer-0-form"""
         sn = self._space.local_numbering.Lambda._n2_k0(p)
         dn = self._space.local_numbering.Lambda._n2_k1_outer(p)
-        E = np.zeros((2*p*(p+1), (p+1)**2), dtype=int)
+        E = np.zeros(
+            (
+                self._space.num_local_dofs.Lambda._n2_k1(p),
+                self._space.num_local_dofs.Lambda._n2_k0(p)
+            ),
+            dtype=int
+        )
         I, J = np.shape(dn[0])    # dy edges
         for j in range(J):
             for i in range(I):
@@ -166,8 +201,13 @@ class MsePyIncidenceMatrixLambda(Frozen):
         """div or d of outer-1-form"""
         sn = self._space.local_numbering.Lambda._n2_k1_outer(p)
         dn = self._space.local_numbering.Lambda._n2_k2(p)
-        E = np.zeros((p**2,
-                      2*p*(p+1)), dtype=int)
+        E = np.zeros(
+            (
+                self._space.num_local_dofs.Lambda._n2_k2(p),
+                self._space.num_local_dofs.Lambda._n2_k1(p)
+            ),
+            dtype=int
+        )
         I, J = np.shape(dn[0])
         for j in range(J):
             for i in range(I):
@@ -177,10 +217,15 @@ class MsePyIncidenceMatrixLambda(Frozen):
                 E[dn[0][i, j], sn[1][i, j+1]] = +1    # y+
         return csr_matrix(E)
 
-    @staticmethod
-    def _n1_k0(p):
+    def _n1_k0(self, p):
         """"""
-        E = np.zeros((p, p+1), dtype=int)
+        E = np.zeros(
+            (
+                self._space.num_local_dofs.Lambda._n1_k1(p),
+                self._space.num_local_dofs.Lambda._n1_k0(p)
+            ),
+            dtype=int
+        )
         for i in range(p):
             E[i, i] = -1   # x-
             E[i, i+1] = 1  # x+

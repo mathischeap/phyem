@@ -56,8 +56,9 @@ class MsePyRootFormCochain(Frozen):
 
     @property
     def gathering_matrix(self):
-        return None
+        """"""
+        return self._f.space.gathering_matrix(self._f.degree)
 
     @property
     def local_numbering(self):
-        return None
+        return self._f.space.local_numbering(self._f.degree)

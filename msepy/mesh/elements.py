@@ -20,9 +20,9 @@ class MsePyMeshElements(Frozen):
         self._origin = None
         self._nodes = None   # like _origin, but have 1 at the ends. So it means the distribution of grid lines.
         self._delta = None
-        self._distribution = None   # how many elements along each axis?
+        self._distribution = None   # how many elements along each axis in each region?
         self._numbering = None
-        self._num = None
+        self._num = None            # how many elements in total?
         self._num_accumulation = None
         self._index_mapping = None
         self._map = None
@@ -32,6 +32,15 @@ class MsePyMeshElements(Frozen):
     @property
     def map(self):
         return self._map
+
+    def _elements_in_region(self, ri):
+        """return the range of elements in region"""
+        start = self._num_accumulation[ri]
+        if ri == len(self._mesh.regions) - 1:
+            end = self._num
+        else:
+            end = self._num_accumulation[ri+1]
+        return start, end
 
     @property
     def _layout_cache_key(self):
@@ -431,13 +440,13 @@ class _DataDictDistributor(Frozen):
         return self.get_data_of_element(i)
 
     def __getitem__(self, re):
-        """return the data for reference element #i."""
+        """return the data for reference element #re."""
         return self._dd[re]
 
     def __iter__(self):
         """Go through all reference elements."""
         for re in self._dd:
-            return re
+            yield re
 
     def __len__(self):
         """How many reference element/data."""

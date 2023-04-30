@@ -36,19 +36,19 @@ class MsePyMeshVisualize(Frozen):
 
     def _generate_mesh_grid_data(
             self,
-            refining_factor=1,
+            sampling_factor=1,
     ):
         """"""
-        if refining_factor <= 0.1:
-            refining_factor = 0.1
-        samples = 2 ** self._mesh.esd * 50000 * refining_factor
-        samples = int((np.ceil(samples / self._mesh.elements._num))**(1/self._mesh.esd))
+        if sampling_factor <= 0.1:
+            sampling_factor = 0.1
+        samples = 2 ** self._mesh.m * 50000 * sampling_factor
+        samples = int((np.ceil(samples / self._mesh.elements._num))**(1/self._mesh.m))
         if samples >= 100:
             samples = 100
         elif samples < 2:
             samples = 2
         else:
-            pass
+            samples = int(samples)
 
         ndim = self._mesh.ndim
         linspace = np.linspace(0, 1, samples)

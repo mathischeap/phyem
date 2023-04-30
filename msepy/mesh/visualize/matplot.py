@@ -23,7 +23,7 @@ class MsePyMeshVisualizeMatplot(Frozen):
 
     def __call__(
             self,
-            refining_factor=1,
+            sampling_factor=1,
             figsize=(10, 6),
             aspect='equal',
             usetex=True,
@@ -37,7 +37,7 @@ class MsePyMeshVisualizeMatplot(Frozen):
     ):
         """Default matplot method."""
 
-        mesh_data_Lines = self._mesh.visualize._generate_mesh_grid_data(refining_factor=refining_factor)
+        mesh_data_Lines = self._mesh.visualize._generate_mesh_grid_data(sampling_factor=sampling_factor)
         plt.rc('text', usetex=usetex)
 
         ndim = self._mesh.ndim

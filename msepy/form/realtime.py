@@ -41,3 +41,7 @@ class MsePyRootFormRealTimeCopy(Frozen):
             return MsePyLocalVector(local, gm)  # it is a separate object
         else:
             return MsePyLocalVector(None, gm)  # it is a separate object.
+
+    def reconstruct(self, *meshgrid_xi_et_sg):
+        """"""
+        return self._f.reconstruct[self._t](*meshgrid_xi_et_sg)

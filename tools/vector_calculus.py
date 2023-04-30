@@ -10,9 +10,13 @@ from types import FunctionType, MethodType
 if './' not in sys.path:
     sys.path.append('./')
 
+
 __all__ = [
+    "scalar",
     "vector",
+    "tensor",
 ]
+
 
 from tools.functions.timePlus1dSpace.wrappers.scalar import t1dScalar as _1dt_scalar
 from tools.functions.timePlus2dSpace.wrappers.scalar import t2dScalar as _2dt_scalar
@@ -29,11 +33,11 @@ def scalar(func):
     if isinstance(func, FunctionType):
         # noinspection PyUnresolvedReferences
         num_arg = func.__code__.co_argcount
-        n = num_arg
+        n = num_arg - 1  # because we have time
     elif isinstance(func, MethodType):
         # noinspection PyUnresolvedReferences
         num_arg = func.__code__.co_argcount
-        n = num_arg - 1
+        n = num_arg - 2  # because we have time and `self`.
     else:
         raise NotImplementedError(func.__class__.__name__)
 
@@ -61,9 +65,9 @@ def vector(*funcs):
 def tensor(*funcs):
     """"""
 
-    if len(funcs) == 2:
+    if len(funcs) == 4:
         return _2dt_tensor(*funcs)
-    elif len(funcs) == 3:
+    elif len(funcs) == 9:
         return _3dt_tensor(*funcs)
     else:
         raise NotImplementedError()

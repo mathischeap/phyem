@@ -32,7 +32,8 @@ class _CochainAtOneTime(Frozen):
         """"""
         # check what we kind of cochain we receive, and convert it to `local` type any way.
         if cochain.__class__.__name__ == 'ndarray' and np.ndim(cochain) == 2:
-            # TODO check shape with gathering_matrix
+            gm = self._f.cochain.gathering_matrix
+            assert np.shape(cochain) == np.shape(gm), f"local cochain shape wrong."
             self._local_cochain = cochain
         elif cochain.__class__ is MsePyLocalVector:
             raise NotImplementedError()

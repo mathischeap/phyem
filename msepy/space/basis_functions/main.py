@@ -7,29 +7,27 @@ import sys
 if './' not in sys.path:
     sys.path.append('./')
 from tools.frozen import Frozen
-from msepy.space.basic_functions.Lambda import MsePyBasicFunctionsLambda
+from msepy.space.basis_functions.Lambda import MsePyBasisFunctionsLambda
 
 
-class MsePyBasicFunctions(Frozen):
+class MsePyBasisFunctions(Frozen):
     """"""
 
     def __init__(self, space):
         """"""
         self._space = space
-        self._Lambda = None
+        self._Lambda_cache = {}
         self._freeze()
 
     def __getitem__(self, degree):
         """Return"""
         indicator = self._space.abstract.indicator
         if indicator == 'Lambda':
-            self.Lambda._set_degree(degree)
-            return self.Lambda
+            if degree in self._Lambda_cache:
+                return self._Lambda_cache[degree]
+            else:
+                Lambda_bf = MsePyBasisFunctionsLambda(self._space, degree)
+                self._Lambda_cache[degree] = Lambda_bf
+                return Lambda_bf
         else:
             raise NotImplementedError()
-
-    @property
-    def Lambda(self):
-        if self._Lambda is None:
-            self._Lambda = MsePyBasicFunctionsLambda(self._space)
-        return self._Lambda

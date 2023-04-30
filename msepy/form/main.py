@@ -14,6 +14,9 @@ from tools.frozen import Frozen
 from msepy.form.cf import MsePyContinuousForm
 from msepy.form.cochain.main import MsePyRootFormCochain
 from msepy.form.realtime import MsePyRootFormRealTimeCopy
+from msepy.form.reduce.main import MsePyRootFormReduce
+from msepy.form.reconstruct.main import MsePyRootFormReconstruct
+from msepy.form.visualize.main import MsePyRootFormVisualize
 
 
 class MsePyRootForm(Frozen):
@@ -39,6 +42,9 @@ class MsePyRootForm(Frozen):
         }
         self._ats_particular_forms = dict()   # the abstract forms based on this form.
         self._numbering = None
+        self._reduce = None
+        self._reconstruct = None
+        self._visualize = None
         self._freeze()
 
     @property
@@ -116,6 +122,33 @@ class MsePyRootForm(Frozen):
             self._cochain = MsePyRootFormCochain(self)
         return self._cochain
 
+    @property
+    def reduce(self):
+        """The cochain class."""
+        if self._reduce is None:
+            self._reduce = MsePyRootFormReduce(self)
+        return self._reduce
+
+    @property
+    def reconstruct(self):
+        """The cochain class."""
+        if self._reconstruct is None:
+            self._reconstruct = MsePyRootFormReconstruct(self)
+        return self._reconstruct
+
+    def _evaluate_bf_on(self, *meshgrid_xi_et_sg):
+        """"""
+        space = self._space
+        bf = space.basis_functions[self.degree]
+        return bf(*meshgrid_xi_et_sg)
+
+    @property
+    def visualize(self):
+        """visualize"""
+        if self._visualize is None:
+            self._visualize = MsePyRootFormVisualize(self)
+        return self._visualize
+
 
 if __name__ == '__main__':
     # python msepy/form/main.py
@@ -136,11 +169,15 @@ if __name__ == '__main__':
     mesh = obj['mesh']
     f0 = obj['f0']
 
-    msepy.config(manifold)('crazy', c=0.3, periodic=False, bounds=[[0, 2] for _ in range(space_dim)])
+    msepy.config(manifold)('crazy', c=0.0, periodic=False, bounds=[[0, 2] for _ in range(space_dim)])
     # msepy.config(mnf)('backward_step')
     msepy.config(mesh)([3 for _ in range(space_dim)])
 
     def fx(t, x):
         return np.sin(2*np.pi*x) + t
     scalar = ph.vc.scalar(fx)
-    f0.cf = fx
+    f0.cf = scalar
+    f0.reduce(0)
+    # mesh.visualize()
+    # f0.reconstruct[0](np.linspace(-1, 1, 100))
+    f0.visualize[0]()

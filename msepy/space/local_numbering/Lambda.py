@@ -15,6 +15,7 @@ class MsePyLocalNumberingLambda(Frozen):
 
     def __init__(self, space):
         """Store required info."""
+        self._space = space
         self._k = space.abstract.k
         self._n = space.abstract.n  # manifold dimensions
         self._orientation = space.abstract.orientation
@@ -22,83 +23,99 @@ class MsePyLocalNumberingLambda(Frozen):
 
     def __call__(self, degree):
         """Making the local numbering for degree."""
-        assert isinstance(degree, (int, float)) and degree % 1 == 0 and degree > 0, f"degree wrong."
+        p = self._space[degree].p
         if self._n == 2 and self._k == 1:
-            return getattr(self, f"_n{self._n}_k{self._k}_{self._orientation}")(degree)
+            return getattr(self, f"_n{self._n}_k{self._k}_{self._orientation}")(p)
         else:
-            return getattr(self, f"_n{self._n}_k{self._k}")(degree)
+            return getattr(self, f"_n{self._n}_k{self._k}")(p)
 
     @staticmethod
     def _n3_k3(p):
         """"""
-        local_numbering = np.arange(0, p**3).reshape((p, p, p), order='F')
+        px, py, pz = p
+        local_numbering = np.arange(0, px * py * pz).reshape((px, py, pz), order='F')
         return (local_numbering,)  # do not remove (,)
 
     @staticmethod
     def _n3_k2(p):
         """"""
-        P = p*p*(p+1)
+        px, py, pz = p
+        Px = (px+1) * py * pz
+        Py = px * (py+1) * pz
+        Pz = px * py * (pz+1)
         # faces perp to x-axis
-        local_numbering_dy_dz = np.arange(0 * P, 1 * P).reshape((p+1, p, p), order='F')
+        local_numbering_dy_dz = np.arange(0, Px).reshape((px+1, py, pz), order='F')
         # faces perp to y-axis
-        local_numbering_dz_dx = np.arange(1 * P, 2 * P).reshape((p, p+1, p), order='F')
+        local_numbering_dz_dx = np.arange(Px, Px + Py).reshape((px, py+1, pz), order='F')
         # faces perp to z-axis
-        local_numbering_dx_dy = np.arange(2 * P, 3 * P).reshape((p, p, p+1), order='F')
+        local_numbering_dx_dy = np.arange(Px + Py, Px + Py + Pz).reshape((px, py, pz+1), order='F')
         return local_numbering_dy_dz, local_numbering_dz_dx, local_numbering_dx_dy
 
     @staticmethod
     def _n3_k1(p):
         """"""
-        P = p * (p+1) * (p+1)
-        local_numbering_dx = np.arange(0 * P, 1 * P).reshape((p, p+1, p+1), order='F')
-        local_numbering_dy = np.arange(1 * P, 2 * P).reshape((p+1, p, p+1), order='F')
-        local_numbering_dz = np.arange(2 * P, 3 * P).reshape((p+1, p+1, p), order='F')
+        px, py, pz = p
+        Px = px * (py+1) * (pz+1)
+        Py = (px+1) * py * (pz+1)
+        Pz = (px+1) * (py+1) * pz
+        local_numbering_dx = np.arange(0, Px).reshape((px, py+1, pz+1), order='F')
+        local_numbering_dy = np.arange(Px, Px + Py).reshape((px+1, py, pz+1), order='F')
+        local_numbering_dz = np.arange(Px + Py, Px + Py + Pz).reshape((px+1, py+1, pz), order='F')
         return local_numbering_dx, local_numbering_dy, local_numbering_dz
 
     @staticmethod
     def _n3_k0(p):
         """"""
-        local_numbering = np.arange(0, (p+1)**3).reshape((p+1, p+1, p+1), order='F')
+        px, py, pz = p
+        local_numbering = np.arange(0, (px+1) * (py+1) * (pz+1)).reshape((px+1, py+1, pz+1), order='F')
         return (local_numbering,)  # do not remove (,)
 
     @staticmethod
     def _n2_k0(p):
         """"""
-        local_numbering = np.arange(0, (p+1)**2).reshape((p+1, p+1), order='F')
+        px, py = p
+        local_numbering = np.arange(0, (px+1) * (py+1)).reshape((px+1, py+1), order='F')
         return (local_numbering,)  # do not remove (,)
 
     @staticmethod
     def _n2_k1_outer(p):
         """"""
-        P = p * (p+1)
+        px, py = p
+        Px = (px+1) * py
+        Py = px * (py+1)
         # segments perp to x-axis
-        local_numbering_dy = np.arange(0 * P, 1 * P).reshape((p+1, p), order='F')
+        local_numbering_dy = np.arange(0, Px).reshape((px+1, py), order='F')
         # segments perp to y-axis
-        local_numbering_dx = np.arange(1 * P, 2 * P).reshape((p, p+1), order='F')
+        local_numbering_dx = np.arange(Px, Px + Py).reshape((px, py+1), order='F')
         return local_numbering_dy, local_numbering_dx
 
     @staticmethod
     def _n2_k1_inner(p):
         """"""
-        P = p * (p+1)
-        local_numbering_dx = np.arange(0 * P, 1 * P).reshape((p, p+1), order='F')
-        local_numbering_dy = np.arange(1 * P, 2 * P).reshape((p+1, p), order='F')
+        px, py = p
+        Px = px * (py+1)
+        Py = (px+1) * py
+        local_numbering_dx = np.arange(0, Px).reshape((px, py+1), order='F')
+        local_numbering_dy = np.arange(Px, Px + Py).reshape((px+1, py), order='F')
         return local_numbering_dx, local_numbering_dy
 
     @staticmethod
     def _n2_k2(p):
         """"""
-        local_numbering = np.arange(0, p**2).reshape((p, p), order='F')
+        px, py = p
+        local_numbering = np.arange(0, px * py).reshape((px, py), order='F')
         return (local_numbering,)  # do not remove (,)
 
     @staticmethod
     def _n1_k0(p):
         """"""
+        p = p[0]
         local_numbering = np.arange(0, p+1)
         return (local_numbering,)  # do not remove (,)
 
     @staticmethod
     def _n1_k1(p):
         """"""
+        p = p[0]
         local_numbering = np.arange(0, p)
         return (local_numbering,)  # do not remove (,)
