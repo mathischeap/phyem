@@ -11,13 +11,18 @@ class MsePyRootFormVisualize(Frozen):
     def __init__(self, rf):
         """"""
         self._f = rf
+        self._t = None
         self._matplot = None
         self._vtk = None
         self._freeze()
 
     def __getitem__(self, t):
         """"""
-        return self.matplot[t]
+        self._t = t
+        return self
+
+    def __call__(self, *args, **kwargs):
+        return self.matplot(*args, **kwargs)
 
     @property
     def matplot(self):

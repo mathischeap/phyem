@@ -19,7 +19,7 @@ sys.path.insert(0, os.path.abspath('./'))
 
 project = 'PHYEM'
 copyright = '2023, RaM, EEMCS, University of Twente'
-author = 'Yi Zhang, Ramy Rashad, Andrea Brugnoli, Stefano Stramigioli'
+author = 'Andrea Brugnoli, Ramy Rashad, Stefano Stramigioli, Yi Zhang'
 release = '0.0.1'
 
 # -- General configuration ---------------------------------------------------

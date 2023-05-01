@@ -15,13 +15,7 @@ class MsePyRootFormVisualizeMatplot(Frozen):
         """"""
         self._f = rf
         self._mesh = rf.mesh
-        self._t = None
         self._freeze()
-
-    def __getitem__(self, t):
-        """"""
-        self._t = t
-        return self
 
     def __call__(self, *args, **kwargs):
         """"""
@@ -53,8 +47,8 @@ class MsePyRootFormVisualizeMatplot(Frozen):
             samples = int(samples)
 
         linspace = np.linspace(-1, 1, samples)
-
-        x, v = self._f.reconstruct[self._t](linspace)
+        t = self._f.visualize._t
+        x, v = self._f.reconstruct[t](linspace)
 
         x = x[0].T
         v = v[0]

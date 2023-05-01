@@ -177,7 +177,5 @@ if __name__ == '__main__':
         return np.sin(2*np.pi*x) + t
     scalar = ph.vc.scalar(fx)
     f0.cf = scalar
-    f0.reduce(0)
-    # mesh.visualize()
-    # f0.reconstruct[0](np.linspace(-1, 1, 100))
-    f0.visualize[0]()
+    f0[0].reduce()
+    f0[0].visualize()
