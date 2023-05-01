@@ -48,18 +48,18 @@ class MsePyManifoldVisualize(Frozen):
         else:
             pass
         manifold = self._manifold
-        ndim = manifold.ndim
+        ndim = manifold.n
         linspace = np.linspace(0, 1, samples)
         zeros = np.zeros(samples)
         ones = np.ones(samples)
         Lines = dict()
+
         for i in manifold.regions:  # region #i
             ct = manifold.ct
             if ndim == 1:   # manifold ndim == 1
                 rst = np.array([0, 1])
                 line = ct.mapping(rst, regions=i)[i]
                 Lines[i] = (line, )  # for 1-d region, no matter what esd is, it contains one line.
-
             elif ndim == 2:  # manifold ndim == 2
                 # there will be four lines
                 line_upper = ct.mapping(zeros, linspace, regions=i)[i]

@@ -53,5 +53,9 @@ class MsePyRootFormVisualizeMatplot(Frozen):
         x = x[0].T
         v = v[0]
         num_lines = len(x)  # also num elements
-        plot(x, v, num_lines=num_lines, colors=color, xlabel='$x$', labels=False, styles='-',
+        return plot(x, v, num_lines=num_lines, colors=color, xlabel='$x$', labels=False, styles='-',
              figsize=figsize, **kwargs)
+
+    def _m1_n1_k1(self, *args, **kwargs):
+        """"""
+        return self._m1_n1_k0(*args, **kwargs)

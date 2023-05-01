@@ -17,6 +17,7 @@ from msepy.form.realtime import MsePyRootFormRealTimeCopy
 from msepy.form.reduce.main import MsePyRootFormReduce
 from msepy.form.reconstruct.main import MsePyRootFormReconstruct
 from msepy.form.visualize.main import MsePyRootFormVisualize
+from msepy.form.error.main import MsePyRootFormError
 
 
 class MsePyRootForm(Frozen):
@@ -45,6 +46,7 @@ class MsePyRootForm(Frozen):
         self._reduce = None
         self._reconstruct = None
         self._visualize = None
+        self._error = None
         self._freeze()
 
     @property
@@ -149,6 +151,13 @@ class MsePyRootForm(Frozen):
             self._visualize = MsePyRootFormVisualize(self)
         return self._visualize
 
+    @property
+    def error(self):
+        """visualize"""
+        if self._error is None:
+            self._error = MsePyRootFormError(self)
+        return self._error
+
 
 if __name__ == '__main__':
     # python msepy/form/main.py
@@ -161,6 +170,8 @@ if __name__ == '__main__':
     mesh = ph.mesh(manifold)
     L0 = ph.space.new('Lambda', 0)
     f0 = L0.make_form('0-f', 'f^0')
+    L1 = ph.space.new('Lambda', 1)
+    f1 = L1.make_form('1-f', 'f^1')
     ph.space.finite(5)
 
     msepy, obj = ph.fem.apply('msepy', locals())
@@ -168,14 +179,20 @@ if __name__ == '__main__':
     manifold = obj['manifold']
     mesh = obj['mesh']
     f0 = obj['f0']
+    f1 = obj['f1']
 
-    msepy.config(manifold)('crazy', c=0.0, periodic=False, bounds=[[0, 2] for _ in range(space_dim)])
+    # msepy.config(manifold)('crazy', c=0., periodic=False, bounds=[[0, 2] for _ in range(space_dim)])
+    msepy.config(manifold)('crazy_multi', c=0.3, bounds=[[0, 2] for _ in range(space_dim)])
     # msepy.config(mnf)('backward_step')
-    msepy.config(mesh)([3 for _ in range(space_dim)])
+    msepy.config(mesh)(6)
+    mesh.visualize()
 
     def fx(t, x):
         return np.sin(2*np.pi*x) + t
     scalar = ph.vc.scalar(fx)
-    f0.cf = scalar
-    f0[0].reduce()
-    f0[0].visualize()
+
+    f1.cf = scalar
+    f1[2].reduce()
+    f1[2].visualize()
+    error = f1[2].error()
+    print(error)

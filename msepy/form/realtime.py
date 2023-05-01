@@ -53,3 +53,8 @@ class MsePyRootFormRealTimeCopy(Frozen):
     def visualize(self):
         """"""
         return self._f.visualize[self._t]
+
+    @property
+    def error(self):
+        """"""
+        return self._f.error[self._t]

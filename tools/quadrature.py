@@ -66,12 +66,10 @@ class Quadrature(object):
     def ___PRIVATE_check_p___(self):
         """ """
         for i, ci in enumerate(self.category):
-            if ci in ('Chebyshev', 'Gauss'):
+            if ci == 'Gauss':
                 pass
             elif ci == 'Lobatto':
                 assert self.p[i] >= 1
-            elif ci == 'extended_Gauss':
-                assert self.p[i] >= 2
             else:
                 raise Exception()
 

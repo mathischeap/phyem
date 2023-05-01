@@ -84,7 +84,7 @@ class MsePyMeshCoordinateTransformation(Frozen):
             _xyz[i] = md_ref_coo
 
         if len(regions) == 1:
-            return _xyz[0]
+            return _xyz[regions[0]]
         else:
             xyz = [list() for _ in range(len(_xyz[0]))]
             for i in regions:
@@ -415,7 +415,6 @@ if __name__ == '__main__':
     xi_et_sg = [np.random.rand(7, 11) for _ in range(space_dim)]
 
     xyz = msh.ct.mapping(*xi_et_sg)
+    # jm = msh.ct.inverse_metric_matrix(*xi_et_sg)
     jm = msh.ct.inverse_metric_matrix(*xi_et_sg)
-    jm = msh.ct.inverse_metric_matrix(*xi_et_sg)
-
     msh.visualize(sampling_factor=1)

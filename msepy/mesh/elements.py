@@ -395,6 +395,15 @@ class MsePyMeshElementsIndexMapping(Frozen):
         self._freeze()
 
     @property
+    def num_elements(self):
+        """the total num of elements"""
+        return len(self._e2c)
+
+    @property
+    def num_cache_indices(self):
+        return len(self._c2e)
+
+    @property
     def _involved_regions(self):
         """The involved regions."""
         if self.___involved_regions___ is None:
@@ -417,6 +426,46 @@ class MsePyMeshElementsIndexMapping(Frozen):
             assert re in data_dict, f"data_dict miss data for reference element {re}."
         return _DataDictDistributor(self, data_dict)
 
+    def split(self, ndarray, axis=0):
+        """We split a `ndarray` into batches according to `c2e`. and the `axis` of `ndarray` is according to
+        element indexing. And it will be split into "num of cache indices" batches. #ith batch well be for the
+        elements of `c2e[i]` (axis does not change.)
+        """
+        batches = list()
+        for ci, elements in enumerate(self._c2e):
+            if axis == 0:
+                batch = ndarray[elements, ...]
+            elif axis == 1:
+                batch = ndarray[:, elements, ...]
+            elif axis == 2:
+                batch = ndarray[:, :, elements, ...]
+            elif axis == -1:
+                batch = ndarray[..., elements]
+            else:
+                raise NotImplementedError()
+
+            batches.append(batch)
+
+        return batches
+
+    def merge(self, batches, axis=0):
+        """The opposite of split."""
+        shape = list(batches[0].shape)
+        shape[axis] = self.num_elements
+        ndarray = np.zeros(shape)
+        for ci, elements in enumerate(self._c2e):
+            if axis == 0:
+                ndarray[elements, ...] = batches[ci]
+            elif axis == 1:
+                ndarray[:, elements, ...] = batches[ci]
+            elif axis == 2:
+                ndarray[:, :, elements, ...] = batches[ci]
+            elif axis == -1:
+                ndarray[..., elements] = batches[ci]
+            else:
+                raise NotImplementedError()
+        return ndarray
+
 
 class _DataDictDistributor(Frozen):
     """"""
@@ -427,6 +476,14 @@ class _DataDictDistributor(Frozen):
         self._dd = data_dict
         self._freeze()
 
+    def split(self, ndarray, axis=0):
+        """"""
+        return self._mp.split(ndarray, axis=axis)
+
+    def merge(self, batches, axis=0):
+        """"""
+        return self._mp.merge(batches, axis=axis)
+
     def get_data_of_element(self, i):
         """return the data for element #i."""
         return self._dd[
@@ -435,13 +492,51 @@ class _DataDictDistributor(Frozen):
             ]
         ]
 
+    def get_data_of_elements(self, rg):
+        """
+
+        Parameters
+        ----------
+        rg: range
+
+        Returns
+        -------
+
+        """
+        indices = [i for i in rg]
+        cache_indices = self._mp._e2c[indices]
+        reference_elements = self._mp._reference_elements[cache_indices]
+        data = list()
+        for ri in reference_elements:
+            data.append(self._dd[ri])  # append data of reference element #i to a list
+
+        if all([isinstance(_, np.ndarray) for _ in data]):
+            return np.array(data)
+        else:
+            raise NotImplementedError()
+
     def __call__(self, i):
         """return the data for element #i."""
-        return self.get_data_of_element(i)
+        if isinstance(i, int):
+            return self.get_data_of_element(i)
+        elif i.__class__ is range:
+            return self.get_data_of_elements(i)
+        else:
+            raise NotImplementedError(i.__class__)
 
     def __getitem__(self, re):
         """return the data for reference element #re."""
         return self._dd[re]
+
+    @property
+    def cache_indices(self):
+        return range(self._mp.num_cache_indices)
+
+    def get_data_of_cache_index(self, ci):
+        """"""
+        return self[
+            self._mp._reference_elements[ci]
+        ]
 
     def __iter__(self):
         """Go through all reference elements."""

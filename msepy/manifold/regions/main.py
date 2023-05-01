@@ -75,7 +75,11 @@ class MseManifoldRegions(Frozen):
             for i in self:
                 Rmap = self.map[i]
                 is_structured_regions.append(
-                    isinstance(Rmap, list) and all([isinstance(_, int) or _ is None for _ in Rmap])
+                    isinstance(Rmap, list) and all(
+                        [
+                            not isinstance(_, str) and (_ is None or _ % 1 == 0) for _ in Rmap
+                        ]
+                    )
                 )
             self._is_structured_regions = all(is_structured_regions)
         return self._is_structured_regions

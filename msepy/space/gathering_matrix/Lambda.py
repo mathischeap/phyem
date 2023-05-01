@@ -7,6 +7,7 @@ import sys
 if './' not in sys.path:
     sys.path.append('./')
 from tools.frozen import Frozen
+from msepy.tools.gathering_matrix import RegularGatheringMatrix
 import numpy as np
 
 
@@ -19,12 +20,19 @@ class MsePyGatheringMatrixLambda(Frozen):
         self._mesh = space.mesh
         self._k = space.abstract.k
         self._n = space.abstract.n  # manifold dimensions
+        self._cache = dict()
         self._freeze()
 
     def __call__(self, degree):
         """Making the local numbering for degree."""
         p = self._space[degree].p
-        return getattr(self, f"_n{self._n}_k{self._k}")(p)
+        method_name = f"_n{self._n}_k{self._k}"
+        cache_key = method_name + ':' + str(p)
+        if cache_key not in self._cache:
+            self._cache[cache_key] = getattr(self, method_name)(p)
+        else:
+            pass
+        return self._cache[cache_key]
 
     @staticmethod
     def _n3_k3(p):
@@ -86,9 +94,16 @@ class MsePyGatheringMatrixLambda(Frozen):
                 current += 1
             else:
                 gm[e, -1] = gm[x_p, 0]
-        return gm
+        return RegularGatheringMatrix(gm)
 
-    @staticmethod
-    def _n1_k1(p):
+    def _n1_k1(self, p):
         """"""
-        raise NotImplementedError
+        element_map = self._mesh.elements.map
+        gm = - np.ones((self._mesh.elements._num, self._space.num_local_dofs.Lambda._n1_k1(p)), dtype=int)
+        current = 0
+        p = p[0]
+        for e, mp in enumerate(element_map):
+            gm[e, :] = np.arange(current, current + p)
+            current += p
+
+        return RegularGatheringMatrix(gm)

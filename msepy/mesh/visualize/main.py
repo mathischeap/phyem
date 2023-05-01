@@ -61,7 +61,9 @@ class MsePyMeshVisualize(Frozen):
             if len(nodes) == 1:   # mesh ndim == 1
                 # we do not use region mapping for this because we want to see the line segments.
                 linspace_segment = np.array([-1, 1])
+
                 coo_lines = self._mesh.ct.mapping(linspace_segment, regions=i)
+
                 Lines[i].append(coo_lines)
 
             elif len(nodes) == 2:   # mesh ndim == 2

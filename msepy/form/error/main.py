@@ -2,6 +2,7 @@
 """
 pH-lib@RAM-EEMCS-UT
 Yi Zhang
+Created at 4:13 PM on 5/1/2023
 """
 
 import sys
@@ -9,25 +10,29 @@ import sys
 if './' not in sys.path:
     sys.path.append('./')
 from tools.frozen import Frozen
-from msepy.form.reduce.Lambda import MsePyReduceLambda
+from msepy.form.error.Lambda import MsePyRootFormErrorLambda
 
 
-class MsePyRootFormReduce(Frozen):
+class MsePyRootFormError(Frozen):
     """"""
 
     def __init__(self, rf):
         """"""
         self._f = rf
-        self._reduce = None
         self._freeze()
 
-    def __call__(self, t, update_cochain=True, **kwargs):
-        """"""
+    def __getitem__(self, t):
+        """Reconstruct using cochain at time `t`."""
         space = self._f.space
         indicator = space.abstract.indicator
         if indicator == 'Lambda':
-            self._reduce = MsePyReduceLambda(self._f)
+            reconstruct = MsePyRootFormErrorLambda(self._f, t)
         else:
             raise NotImplementedError(f"{indicator}.")
 
-        return self._reduce(t, update_cochain=update_cochain, **kwargs)
+        return reconstruct
+
+
+if __name__ == '__main__':
+    # python 
+    pass

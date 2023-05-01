@@ -9,7 +9,7 @@ import sys
 if './' not in sys.path:
     sys.path.append('./')
 from tools.frozen import Frozen
-from msepy.form.reconstruct.Lambda import MsePyReconstructLambda
+from msepy.form.reconstruct.Lambda import MsePyRootFormReconstructLambda
 
 
 class MsePyRootFormReconstruct(Frozen):
@@ -25,7 +25,7 @@ class MsePyRootFormReconstruct(Frozen):
         space = self._f.space
         indicator = space.abstract.indicator
         if indicator == 'Lambda':
-            reconstruct = MsePyReconstructLambda(self._f, t)
+            reconstruct = MsePyRootFormReconstructLambda(self._f, t)
         else:
             raise NotImplementedError(f"{indicator}.")
 

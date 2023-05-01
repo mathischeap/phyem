@@ -5,14 +5,14 @@ import numpy as np
 from tools.frozen import Frozen
 
 
-class MsePyReconstructLambda(Frozen):
+class MsePyRootFormReconstructLambda(Frozen):
     """"""
 
-    def __init__(self, f, t):
+    def __init__(self, rf, t):
         """"""
-        self._f = f
-        self._mesh = f.mesh
-        self._space = f.space
+        self._f = rf
+        self._mesh = rf.mesh
+        self._space = rf.space
         self._t = t
         self._freeze()
 
@@ -38,4 +38,22 @@ class MsePyReconstructLambda(Frozen):
         x = self._mesh.ct.mapping(xi)
         cochain = self._f.cochain[t].local
         v = np.einsum('ij, ei -> ej', bf, cochain, optimize='optimal')
+        return x, (v, )
+
+    def _m1_n1_k1(self, *meshgrid_xi_et_sg):
+        """"""
+        t = self._t
+        xi, bf = self._f._evaluate_bf_on(*meshgrid_xi_et_sg)
+        bf = bf[0]   # bf, value
+        xi = xi[0]
+        x = self._mesh.ct.mapping(xi)
+        iJ = self._mesh.ct.inverse_Jacobian(xi)
+        cochain = self._f.cochain[t].local
+        cochain_batches = iJ.split(cochain, axis=0)
+        value_batches = list()
+        for ci, cochain_batch in enumerate(cochain_batches):
+            iJ_ci = iJ.get_data_of_cache_index(ci)
+            v = np.einsum('ij, ei -> ej', bf * iJ_ci, cochain_batch, optimize='optimal')
+            value_batches.append(v)
+        v = iJ.merge(value_batches, axis=0)
         return x, (v, )
