@@ -26,8 +26,6 @@ for jf in jupyter_files:
     os.popen(rf'jupyter nbconvert --to notebook --inplace --execute  {jupyter_path}/{jf}.ipynb').read()
 
 
-
-
 if __name__ == '__main__':
     # python tests/jupyter_notebooks.py
     pass
