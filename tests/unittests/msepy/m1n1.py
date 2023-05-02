@@ -9,7 +9,6 @@ import sys
 
 if './' not in sys.path:
     sys.path.append('./')
-from tools.frozen import Frozen
 
 print(111)
 print(222)

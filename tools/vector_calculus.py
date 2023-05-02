@@ -18,13 +18,13 @@ __all__ = [
 ]
 
 
-from tools.functions.timePlus1dSpace.wrappers.scalar import t1dScalar as _1dt_scalar
-from tools.functions.timePlus2dSpace.wrappers.scalar import t2dScalar as _2dt_scalar
-from tools.functions.timePlus3dSpace.wrappers.scalar import t3dScalar as _3dt_scalar
-from tools.functions.timePlus2dSpace.wrappers.vector import t2dVector as _2dt_vector
-from tools.functions.timePlus3dSpace.wrappers.vector import t3dVector as _3dt_vector
-from tools.functions.timePlus2dSpace.wrappers.tensor import t2dTensor as _2dt_tensor
-from tools.functions.timePlus3dSpace.wrappers.tensor import t3dTensor as _3dt_tensor
+from tools.functions.time_space._1d.wrappers.scalar import T1dScalar as _1dt_scalar
+from tools.functions.time_space._2d.wrappers.scalar import T2dScalar as _2dt_scalar
+from tools.functions.time_space._3d.wrappers.scalar import T3dScalar as _3dt_scalar
+from tools.functions.time_space._2d.wrappers.vector import T2dVector as _2dt_vector
+from tools.functions.time_space._3d.wrappers.vector import T3dVector as _3dt_vector
+from tools.functions.time_space._2d.wrappers.tensor import T2dTensor as _2dt_tensor
+from tools.functions.time_space._3d.wrappers.tensor import T3dTensor as _3dt_tensor
 
 
 def scalar(func):

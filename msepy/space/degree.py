@@ -10,7 +10,7 @@ if './' not in sys.path:
     sys.path.append('./')
 from tools.frozen import Frozen
 from tools.quadrature import Quadrature
-from msepy.tools.polynomials import _1dPolynomial
+from msepy.tools.polynomials import _OneDimPolynomial
 
 
 class MsePySpaceDegree(Frozen):
@@ -81,5 +81,5 @@ class MsePySpaceDegree(Frozen):
     def bfs(self):
         """1d basis functions."""
         if self._bfs is None:
-            self._bfs = tuple([_1dPolynomial(nodes) for nodes in self.nodes])
+            self._bfs = tuple([_OneDimPolynomial(nodes) for nodes in self.nodes])
         return self._bfs

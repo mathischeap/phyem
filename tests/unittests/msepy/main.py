@@ -10,8 +10,11 @@ import sys
 if './' not in sys.path:
     sys.path.append('./')
 
+__all__ = [
+    'm1n1',
+]
 
-import tests.unittests.msepy.m1n1
+import tests.unittests.msepy.m1n1 as m1n1
 
 
 if __name__ == '__main__':

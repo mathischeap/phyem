@@ -254,8 +254,8 @@ def __matplot__(
     if saveto is not None and saveto != '':
         plt.savefig(saveto, bbox_inches='tight', pad_inches=pad_inches)
     else:
-        plt.show()
-    plt.close()
+        from src.config import _matplot_setting
+        plt.show(block=_matplot_setting['block'])
     # =============================================================================================1
     return 0
 

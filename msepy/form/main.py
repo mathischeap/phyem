@@ -201,12 +201,12 @@ if __name__ == '__main__':
     msepy.config(mesh)(([3, 3, 2], [2, 2, 3]))
     # mesh.visualize()
 
-    # def fx(t, x, y):
-    #     return np.sin(2*np.pi*x) * np.sin(2*np.pi*y) + t
-    # scalar = ph.vc.scalar(fx)
-    # f0.cf = scalar
-    # f0[2].reduce()
-    # f0[2].visualize()
+    def fx(t, x, y):
+        return np.sin(2*np.pi*x) * np.sin(2*np.pi*y) + t
+    scalar = ph.vc.scalar(fx)
+    f0.cf = scalar
+    f0[2].reduce()
+    f0[2].visualize()
 
     def ux(t, x, y):
         return np.sin(2*np.pi*x) * np.cos(2*np.pi*y) + t
@@ -218,7 +218,7 @@ if __name__ == '__main__':
 
     # f1o.cf = vector
     # f1o[2].reduce()
-    # mesh.visualize()
+    mesh.visualize()
     f1i.cf = vector
     f1i[2].reduce()
 

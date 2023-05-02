@@ -7,7 +7,7 @@ from tools.quadrature import Quadrature
 import numpy as np
 
 
-class _1dPolynomial(object):
+class _OneDimPolynomial(object):
     """
     The 1d polynomial basis function space.
     """
@@ -221,8 +221,8 @@ class _1dPolynomial(object):
             plt.ylabel(r"$l^{i}(\xi)$", fontsize=label_size)
         if saveto is not None:
             plt.savefig(saveto, bbox_inches='tight')
-        plt.show()
-        plt.close()
+        from src.config import _matplot_setting
+        plt.show(block=_matplot_setting['block'])
 
     def plot_edge_basis(
             self, dual=False, plot_density=300, ylim_ratio=0.1,
@@ -342,13 +342,13 @@ class _1dPolynomial(object):
         # ------------------------------------------------------------------------------
         if saveto is not None:
             plt.savefig(saveto, bbox_inches='tight')
-        plt.show()
-        plt.close()
+        from src.config import _matplot_setting
+        plt.show(block=_matplot_setting['block'])
 
 
 if __name__ == "__main__":
     # python msepy/tools/polynomials.py
-    p1 = _1dPolynomial(4)
+    p1 = _OneDimPolynomial([-1, -0.5, 0, 0.5, 1])
     p1.plot_lagrange_basis(  # plot_lagrange_basis
         dual=False,
         title=False,

@@ -416,6 +416,7 @@ document.write(`
 <span class="n">path_to_phyem</span> <span class="o">=</span> <span class="s1">&#39;../../../../&#39;</span>   <span class="c1"># the path to dir that containing the phyem package.</span>
 <span class="n">sys</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">path_to_phyem</span><span class="p">)</span>
 <span class="kn">import</span> <span class="nn">phyem</span> <span class="k">as</span> <span class="nn">ph</span>  <span class="c1"># import the phyem package</span>
+<span class="n">ph</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">_set_matplot_block</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -463,7 +464,7 @@ document.write(`
 
  Existing meshes:
 ---------------- symbolic - &lt;manifold&gt; -------------------------
-             \mathfrak{M} | &lt;Manifold \mathcal{M} at 0x000001AB74EBC9D0&gt;
+             \mathfrak{M} | &lt;Manifold \mathcal{M} at 0x0000018B37769290&gt;
 </pre></div></div>
 </div>
 <p>where we can see the symbolic representation of the mesh and the manifold on which it is built. If we render the symbolic representation of the mesh with an equation environment, we see <span class="math notranslate nohighlight">\(\mathfrak{M}\)</span>.</p>
@@ -493,10 +494,10 @@ document.write(`
 
  Existing spaces:
         On mesh \mathfrak{M}
-              0: \Lambda^{(0)}(\mathcal{M})
-              1: \Lambda^{(1)}(\mathcal{M})
-              2: \Lambda^{(2)}(\mathcal{M})
-              3: \Lambda^{(3)}(\mathcal{M})
+              0: \widetilde{\Lambda}^{(0)}(\mathcal{M})
+              1: \widetilde{\Lambda}^{(1)}(\mathcal{M})
+              2: \widetilde{\Lambda}^{(2)}(\mathcal{M})
+              3: \widetilde{\Lambda}^{(3)}(\mathcal{M})
 </pre></div></div>
 </div>
 <p>where we see first a list of all implemented spaces and then the existing spaces till this moment.</p>
@@ -519,7 +520,7 @@ document.write(`
 </div>
 <div class="output_area docutils container">
 <div class="highlight"><pre>
-&lt;Figure size 2000x625 with 1 Axes&gt;
+&lt;Figure size 1600x500 with 1 Axes&gt;
 </pre></div></div>
 </div>
 <p>where we have used function <code class="docutils literal notranslate"><span class="pre">list_forms</span></code> to visualize/list the exsiting forms. Note that, when forms are not many, a separete plot will be generated where the forms are visualized in a table. As this process invokes <em>matplotlib</em> and <em>latex</em>, make sure they are installed. When the forms are many, instead of plotting, a text list will appear in the default console.</p>
@@ -544,7 +545,7 @@ document.write(`
 </div>
 <div class="output_area docutils container">
 <div class="highlight"><pre>
-&lt;Figure size 1500x750 with 1 Axes&gt;
+&lt;Figure size 1200x600 with 1 Axes&gt;
 </pre></div></div>
 </div>
 <p>Furthermore, we can use these root forms to build other forms through operators like <span class="math notranslate nohighlight">\(\wedge\)</span>, <span class="math notranslate nohighlight">\(\star\)</span>, <span class="math notranslate nohighlight">\(\mathrm{d}^\ast\)</span>, <span class="math notranslate nohighlight">\(\mathrm{d}\)</span>, <span class="math notranslate nohighlight">\(\partial_t\)</span> and so on.</p>
@@ -567,7 +568,7 @@ document.write(`
 </div>
 <div class="output_area docutils container">
 <div class="highlight"><pre>
-&lt;Figure size 2000x1250 with 1 Axes&gt;
+&lt;Figure size 1600x1000 with 1 Axes&gt;
 </pre></div></div>
 </div>
 <p>Now, if you try <code class="docutils literal notranslate"><span class="pre">ph.list_forms()</span></code> which does not restrict the range of <code class="docutils literal notranslate"><span class="pre">list_forms</span></code> function to the local environment, the outputs are different.</p>
@@ -584,16 +585,16 @@ document.write(`
 </div>
 <div class="output_area docutils container">
 <div class="highlight"><pre>
----&gt; 1835918940944 | \omega^1 = \textsf{vorticity1}
----&gt; 1835250991696 | u^2 = \textsf{velocity2}
----&gt; 1835913530320 | f^2 = \textsf{body-force}
----&gt; 1835918941264 | P^3 = \textsf{total-pressure3}
----&gt; 1835969429392 | {\star}u^2 = $\star$ \textsf{velocity2}
----&gt; 1835919342544 | \omega^1{\wedge}\left({\star}u^2\right) = \textsf{vorticity1} $\wedge$ \{$\star$ \textsf{velocity2}\}
----&gt; 1835919332304 | \mathrm{d}^{\ast}P^3 = $\mathrm{d}^{\ast}$ \textsf{total-pressure3}
----&gt; 1835919334224 | \mathrm{d}^{\ast}u^2 = $\mathrm{d}^{\ast}$ \textsf{velocity2}
----&gt; 1835919332496 | \mathrm{d}u^2 = $\mathrm{d}$ \textsf{velocity2}
----&gt; 1835918940176 | \partial_{t}u^2 = $\partial_{t}$ \textsf{velocity2}
+---&gt; 1698650831568 | \omega^1 = \textsf{vorticity1}
+---&gt; 1698648983696 | u^2 = \textsf{velocity2}
+---&gt; 1698239414096 | f^2 = \textsf{body-force}
+---&gt; 1698650832592 | P^3 = \textsf{total-pressure3}
+---&gt; 1698237468240 | {\star}u^2 = $\star$ \textsf{velocity2}
+---&gt; 1698652548944 | \omega^1{\wedge}\left({\star}u^2\right) = \textsf{vorticity1} $\wedge$ \{$\star$ \textsf{velocity2}\}
+---&gt; 1698652814096 | \mathrm{d}^{\ast}P^3 = $\mathrm{d}^{\ast}$ \textsf{total-pressure3}
+---&gt; 1696963357008 | \mathrm{d}^{\ast}u^2 = $\mathrm{d}^{\ast}$ \textsf{velocity2}
+---&gt; 1698652537040 | \mathrm{d}u^2 = $\mathrm{d}$ \textsf{velocity2}
+---&gt; 1698652502992 | \partial_{t}u^2 = $\partial_{t}$ \textsf{velocity2}
 </pre></div></div>
 </div>
 <p>Basically, we see the <code class="docutils literal notranslate"><span class="pre">id</span></code> and then <em>symbolic representation</em> = <em>linguistic representation</em> of all forms.</p>
@@ -653,7 +654,7 @@ document.write(`
 </div>
 <div class="output_area docutils container">
 <div class="highlight"><pre>
-&lt;Figure size 1000x750 with 1 Axes&gt;
+&lt;Figure size 800x600 with 1 Axes&gt;
 </pre></div></div>
 </div>
 <div class="nbinput nblast docutils container">
@@ -738,7 +739,7 @@ By Andrea Brugnoli, Ramy Rashad, Stefano Stramigioli, Yi Zhang
   <div class="footer-item">
     
 <div class="extra_footer">
-  <div>Last updated on May 01, 2023, 11:01:29, W. Europe Daylight Time</div>
+  <div>Last updated on May 02, 2023, 22:57:08, W. Europe Daylight Time</div>
 </div>
   </div>
   
