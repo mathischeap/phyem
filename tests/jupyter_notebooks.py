@@ -23,7 +23,7 @@ jupyter_files = [
 ]
 
 for jf in jupyter_files:
-    stream = os.popen(rf'jupyter nbconvert --to notebook --inplace --execute  {jupyter_path}/{jf}.ipynb')
+    stream = os.popen(rf'jupyter nbconvert --to notebook --inplace --execute {jupyter_path}/{jf}.ipynb')
     output = stream.read()
     print(jf, ' output: \n', output)
 

@@ -7,10 +7,9 @@ Created at 7:20 PM on 5/2/2023
 By run this file, we
     - do all tests (doctests and unittests)
     - re-compile the all jupyter notebooks
-    - re-generate the web page.
+    - re-generate the web page if possible.
 
 """
-
 import sys
 if './' not in sys.path:
     sys.path.append('./')

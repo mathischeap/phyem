@@ -1,7 +1,9 @@
 # -*- coding: utf-8 -*-
-"""
+r"""
 pH-lib@RAM-EEMCS-UT
 Yi Zhang
+
+$ sphinx-build -b html web\source web\build\html
 
 Regenerate the web page.
 """
@@ -12,9 +14,11 @@ import sys
 if './' not in sys.path:
     sys.path.append('./')
 
-stream = os.popen(rf'sphinx-build -b html web\source web\build\html')
-output = stream.read()
-print(output)
+
+if os.path.isfile(f"./web/source/conf.py"):
+    stream = os.popen(rf'sphinx-build -b html web\source web\build\html')
+    output = stream.read()
+    print(output)
 
 
 if __name__ == '__main__':

@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-"""Global configuring variables and methods.
+r"""Global configuring variables and methods.
 
 @author: Yi Zhang
 @contact: zhangyi_aero@hotmail.com
