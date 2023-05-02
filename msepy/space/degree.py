@@ -30,10 +30,15 @@ class MsePySpaceDegree(Frozen):
     def p(self):
         """(px, py, ...) of all elements."""
         if self._p is None:
-
             if isinstance(self._degree, (int, float)):
+                # degree = 3
                 assert self._degree % 1 == 0 and self._degree > 0, f"degree wrong."
-                p = [self._degree for _ in range(self._space.n)]
+                p = tuple([self._degree for _ in range(self._space.n)])
+
+            elif isinstance(self._degree, (list, tuple)) and all([isinstance(_, int) for _ in self._degree]):
+                # degree = (3, 2, ...)
+                assert len(self._degree) == self._space.n, f"degree dimension wrong."
+                p = tuple(self._degree)
 
             else:
                 raise NotImplementedError()
@@ -47,9 +52,19 @@ class MsePySpaceDegree(Frozen):
         """nodes"""
         if self._nodes is None:
             if isinstance(self._degree, int):
-                nodes = Quadrature(self._degree, category='Lobatto').quad[0]
-                nodes = [nodes for _ in range(self._space.n)]
-                self._nodes = nodes
+                # degree = 3
+                assert self._degree % 1 == 0 and self._degree > 0, f"degree wrong."
+                self._nodes = tuple(
+                    [Quadrature(self._degree, category='Lobatto').quad[0] for _ in range(self._space.n)]
+                )
+
+            elif isinstance(self._degree, (list, tuple)) and all([isinstance(_, int) for _ in self._degree]):
+                # degree = (3, 2, ...)
+                assert len(self._degree) == self._space.n, f"degree dimension wrong."
+                self._nodes = tuple(
+                    [Quadrature(_, category='Lobatto').quad[0] for _ in self.p]
+                )
+
             else:
                 raise NotImplementedError()
 
@@ -59,16 +74,12 @@ class MsePySpaceDegree(Frozen):
     def edges(self):
         """edges"""
         if self._edges is None:
-            self._edges = list()
-            for nodes in self._nodes:
-                self._edges.append(nodes[1:]-nodes[:-1])
+            self._edges = tuple([nodes[1:]-nodes[:-1] for nodes in self._nodes])
         return self._edges
 
     @property
     def bfs(self):
         """1d basis functions."""
         if self._bfs is None:
-            self._bfs = list()
-            for nodes in self.nodes:
-                self._bfs.append(_1dPolynomial(nodes))
+            self._bfs = tuple([_1dPolynomial(nodes) for nodes in self.nodes])
         return self._bfs

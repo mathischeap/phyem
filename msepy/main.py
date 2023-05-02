@@ -23,13 +23,14 @@ __all__ = [
     '_parse',
 
     'config',
+    "new",
 ]
 
 
 base = {
     'manifolds': dict(),
     'meshes': dict(),
-    'spaces': dict(),
+    'spaces': dict(),  # keys: abstract space sym_repr, values: MsePy spaces
     'forms': dict(),  # root-forms
 }
 
@@ -114,6 +115,7 @@ def _parse(obj):
     """The objects other than manifolds, meshes, spaces, root-forms that should be parsed for this
     particular fem setting.
     """
+    _ = obj
 
 
 from msepy.manifold.main import config as _mf_config
@@ -121,6 +123,7 @@ from msepy.mesh.main import config as _mh_config
 
 
 def config(obj):
+    """wrapper of _Config class."""
     return _Config(obj)
 
 
@@ -146,3 +149,19 @@ class _Config(Frozen):
             return _mh_config(self._obj, mnf, *args, **kwargs)
         else:
             raise NotImplementedError()
+
+
+# make new stuffs later on ...
+def new(abstract_obj):
+    """"""
+    if abstract_obj._is_space():   #
+        ab_sp_sym_repr = abstract_obj._sym_repr
+        if ab_sp_sym_repr in base['spaces']:
+            space = base['spaces'][ab_sp_sym_repr]
+        else:
+            space = MsePySpace(abstract_obj)
+            base['spaces'][ab_sp_sym_repr] = space
+        assert abstract_obj._objective is space, f"Make sure we did not switch implementation!"
+        return space
+    else:
+        raise NotImplementedError()

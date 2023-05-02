@@ -23,8 +23,8 @@ class _CochainAtOneTime(Frozen):
 
     def __repr__(self):
         """"""
-        rf_repr = self._f.__repr__()
         my_repr = rf"<Cochain at time={self._t} of "
+        rf_repr = self._f.__repr__()
         super_repr = super().__repr__().split(' object')[1]
         return my_repr + rf_repr + super_repr
 
@@ -41,7 +41,7 @@ class _CochainAtOneTime(Frozen):
         elif cochain.__class__ is MsePyAssembledVector:
             raise NotImplementedError()
         else:
-            raise Exception(f"Cannot receive cochain from {cochain}")
+            raise Exception(f"Cannot receive cochain from {cochain.__class__}")
 
     @property
     def local(self):

@@ -155,8 +155,8 @@ class MsePyMeshVisualizeMatplot(Frozen):
         if saveto is not None and saveto != '':
             plt.savefig(saveto, bbox_inches='tight')
         else:
-            plt.show()
-        plt.close('all')
+            from src.config import _matplot_setting
+            plt.show(block=_matplot_setting['block'])
         return fig
 
 

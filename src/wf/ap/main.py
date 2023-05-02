@@ -191,12 +191,14 @@ class AlgebraicProxy(Frozen):
         else:
             figsize = (12, 3 * len(self._term_dict))
 
-        plt.figure(figsize=figsize)
+        fig = plt.figure(figsize=figsize)
         plt.axis([0, 1, 0, 1])
         plt.axis('off')
         plt.text(0.05, 0.5, seek_text + '\n' + symbolic + bc_text, ha='left', va='center', size=15)
         plt.tight_layout()
-        plt.show()
+        from src.config import _matplot_setting
+        plt.show(block=_matplot_setting['block'])
+        return fig
 
 
 if __name__ == '__main__':

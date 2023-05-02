@@ -19,15 +19,27 @@ class MsePyLocalNumberingLambda(Frozen):
         self._k = space.abstract.k
         self._n = space.abstract.n  # manifold dimensions
         self._orientation = space.abstract.orientation
+        self._cache = dict()
         self._freeze()
 
     def __call__(self, degree):
         """Making the local numbering for degree."""
         p = self._space[degree].p
-        if self._n == 2 and self._k == 1:
-            return getattr(self, f"_n{self._n}_k{self._k}_{self._orientation}")(p)
+
+        key = f"{p}"
+
+        if key in self._cache:
+            LN = self._cache[key]
         else:
-            return getattr(self, f"_n{self._n}_k{self._k}")(p)
+            if self._n == 2 and self._k == 1:
+                method_name = f"_n{self._n}_k{self._k}_{self._orientation}"
+            else:
+                method_name = f"_n{self._n}_k{self._k}"
+
+            LN = getattr(self, method_name)(p)
+            self._cache[key] = LN
+
+        return LN
 
     @staticmethod
     def _n3_k3(p):

@@ -124,12 +124,14 @@ class _WeakFormulationTerm(Frozen):
 
     def pr(self):
         """Print the representations of this term."""
-        plt.figure(figsize=(5 + len(self._lin_repr)/20, 2))
+        fig = plt.figure(figsize=(5 + len(self._lin_repr)/20, 2))
         plt.axis([0, 1, 0, 1])
         plt.text(0, 0.75, 'linguistic : ' + f"{self._lin_repr}", ha='left', va='center', size=15)
         plt.text(0, 0.25, 'symbolic : ' + f"${self._sym_repr}$", ha='left', va='center', size=15)
         plt.axis('off')
-        plt.show()
+        from src.config import _matplot_setting
+        plt.show(block=_matplot_setting['block'])
+        return fig
 
     def replace(self, f, by, which='all', change_sign=False):
         """replace form `f` in this term by `by`,

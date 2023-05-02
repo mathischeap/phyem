@@ -306,7 +306,8 @@ class PartialDifferentialEquations(Frozen):
 
         plt.text(0.05, 0.5, text, ha='left', va='center', size=15)
         plt.tight_layout()
-        plt.show()
+        from src.config import _matplot_setting
+        plt.show(block=_matplot_setting['block'])
         return fig
 
     def pr(self, **kwargs):

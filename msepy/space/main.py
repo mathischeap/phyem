@@ -44,8 +44,7 @@ class MsePySpace(Frozen):
     def __repr__(self):
         """repr"""
         ab_space_repr = self.abstract.__repr__().split(' at ')[0][1:]
-        repr = '<MsePy ' + ab_space_repr + super().__repr__().split('object')[1]
-        return repr
+        return '<MsePy ' + ab_space_repr + super().__repr__().split('object')[1]
 
     @property
     def esd(self):

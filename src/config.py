@@ -22,6 +22,15 @@ except ModuleNotFoundError:  # if no `mpi4py` installed, just skip it for now.
     SIZE: int = 1
 
 
+_matplot_setting = {
+    'block': True
+}
+
+
+def _set_matplot_block(block):
+    _matplot_setting['block'] = block
+
+
 # space config
 def set_embedding_space_dim(ndim):
     """"""

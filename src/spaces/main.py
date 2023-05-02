@@ -23,23 +23,24 @@ _implemented_spaces = {
 }
 
 _default_mass_matrix_reprs = {
-    'Lambda': (r"\mathsf{M}", "Mass:Mat:Lambda-m{m}-n{n}-k{k}-d{(d0,d1)}"),
+    'Lambda': (r"\mathsf{M}", "Mass:Mat:{space_pure_lin_repr}=d{(d0,d1)}"),
 }
 
 _default_d_matrix_reprs = {
-    'Lambda': (r"\mathsf{D}", "d:Mat:Lambda-m{m}-n{n}-k{k}-d{d}"),
+    'Lambda': (r"\mathsf{D}", "d:Mat:{space_pure_lin_repr}=d{d}"),
 }
 
 _default_d_matrix_transpose_reprs = {
-    'Lambda': (r"\mathsf{D}", "d:T:Mat:Lambda-m{m}-n{n}-k{k}-d{d}"),
+    'Lambda': (r"\mathsf{D}", "d:T:Mat:{space_pure_lin_repr}=d{d}"),
 }
 
 _default_wedge_vector_repr = {
+    # For Lambda, once we know f0, we can find the correct basis functions it wedged with
     'Lambda': (r"\boldsymbol{b}", "Wedge:Vec:Lambda:traceHodge[{f0}]-wedge-d{d}"),
 }
 
 _default_trace_matrix_repr = {
-    'Lambda': (r"\mathsf{N}", "Trace:Mat:Lambda-m{m}-n{n}-k{k}-d{d}"),
+    'Lambda': (r"\mathsf{N}", "Trace:Mat:{space_pure_lin_repr}=d{d}"),
 }
 
 _default_space_degree_repr = ':d'

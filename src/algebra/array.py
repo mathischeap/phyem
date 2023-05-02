@@ -24,7 +24,7 @@ from src.form.parameters import constant_scalar
 _cs1 = constant_scalar(1)
 
 
-_global_root_arrays = dict()  # using lin_repr as cache keys
+_global_root_arrays = dict()  # using pure_lin_repr as cache keys
 
 
 def _root_array(sym_repr, pure_lin_repr, shape, symmetric=None, transposed=None):
@@ -178,7 +178,8 @@ class AbstractArray(Frozen):
         plt.axis('off')
         plt.text(0.05, 0.5, text, ha='left', va='center', size=15)
         plt.tight_layout()
-        plt.show()
+        from src.config import _matplot_setting
+        plt.show(block=_matplot_setting['block'])
 
     def __repr__(self):
         """repr"""

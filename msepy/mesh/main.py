@@ -14,6 +14,7 @@ from msepy.manifold.main import MsePyManifold
 from msepy.mesh.elements import MsePyMeshElements
 from msepy.mesh.coordinate_transformation import MsePyMeshCoordinateTransformation
 from msepy.mesh.visualize.main import MsePyMeshVisualize
+from msepy.mesh.topology.main import MsePyMeshTopology
 
 
 def config(mesh, manifold, element_layout):
@@ -42,6 +43,7 @@ class MsePyMesh(Frozen):
         self._elements = None
         self._ct = MsePyMeshCoordinateTransformation(self)
         self._visualize = None
+        self._topology = None
         self._freeze()
 
     @property
@@ -58,6 +60,53 @@ class MsePyMesh(Frozen):
     def regions(self):
         """regions"""
         return self.manifold.regions
+
+    def _regionwsie_stack(self, *ndas):
+        """We use this method to stack a ndarray regions-wise. This function is very useful
+        in plotting reconstruction data. Since in a region, the date are structured mesh element wise,
+        so we can only plot element by element. But if we group data from elements of the same
+        region, then we can plot region by region. This very much increases the plotting speed.
+
+        Parameters
+        ----------
+        ndas :
+            nd-arrays.
+
+        """
+        if self.n == 2:
+            _SD = tuple()
+            for nda in ndas:
+                if isinstance(nda, dict):
+                    for _ in nda:
+                        assert np.ndim(nda[_]) == 2
+                elif nda.__class__ is np.ndarray:
+                    assert np.ndim(nda) == 2 + 1
+                else:
+                    raise NotImplementedError(nda.__class__)
+
+                assert len(nda) == self._elements._num
+                _sd = {}
+                if isinstance(nda, dict):
+                    ij = np.shape(nda[0])
+                else:
+                    ij = np.shape(nda)[1:]
+                I, J = ij
+                EGN = self.elements._numbering
+                for Rn in EGN:
+                    layout = self.elements._distribution[Rn]
+                    region_data_shape = [ij[i] * layout[i] for i in range(2)]
+                    _sd[Rn] = np.zeros(region_data_shape)
+                    for j in range(layout[1]):
+                        for i in range(layout[0]):
+                            _sd[Rn][i * I:(i + 1) * I, j * J:(j + 1) * J] = \
+                                nda[EGN[Rn][i, j]]
+                _SD += (_sd,)
+
+            _SD = _SD[0] if len(ndas) == 1 else _SD
+            return _SD
+
+        else:
+            raise NotImplementedError()
 
     @property
     def ndim(self):
@@ -144,6 +193,12 @@ class MsePyMesh(Frozen):
         if self._visualize is None:
             self._visualize = MsePyMeshVisualize(self)
         return self._visualize
+
+    @property
+    def topology(self):
+        if self._topology is None:
+            self._topology = MsePyMeshTopology(self)
+        return self._topology
 
 
 if __name__ == '__main__':

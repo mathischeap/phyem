@@ -18,6 +18,7 @@ from msepy.form.reduce.main import MsePyRootFormReduce
 from msepy.form.reconstruct.main import MsePyRootFormReconstruct
 from msepy.form.visualize.main import MsePyRootFormVisualize
 from msepy.form.error.main import MsePyRootFormError
+from msepy.form.coboundary import MsePyRootFormCoboundary
 
 
 class MsePyRootForm(Frozen):
@@ -26,14 +27,12 @@ class MsePyRootForm(Frozen):
     def __init__(self, abstract_root_form):
         """"""
         self._abstract = abstract_root_form
-        abstract_root_form._objective = self
         abstract_space = abstract_root_form.space
         self._space = abstract_space._objective
         degree = self.abstract._degree
         assert degree is not None, f"{abstract_root_form} has no degree."
         self._degree = None
-        self.space.finite.new(degree)
-        self.space.finite.specify_form(self, degree)
+        self.space.finite.specify_form(self, degree)  # will make new degree if this degree is not saved.
         self._cf = None
         self._cochain = None  # do not initialize cochain here!
         self._pAti_form: Dict = {
@@ -47,6 +46,7 @@ class MsePyRootForm(Frozen):
         self._reconstruct = None
         self._visualize = None
         self._error = None
+        self._coboundary = None
         self._freeze()
 
     @property
@@ -158,41 +158,77 @@ class MsePyRootForm(Frozen):
             self._error = MsePyRootFormError(self)
         return self._error
 
+    @property
+    def coboundary(self):
+        """visualize"""
+        if self._coboundary is None:
+            self._coboundary = MsePyRootFormCoboundary(self)
+        return self._coboundary
+
 
 if __name__ == '__main__':
     # python msepy/form/main.py
     import numpy as np
     import __init__ as ph
-    space_dim = 1
+
+    space_dim = 2
     ph.config.set_embedding_space_dim(space_dim)
 
     manifold = ph.manifold(space_dim)
     mesh = ph.mesh(manifold)
     L0 = ph.space.new('Lambda', 0)
-    f0 = L0.make_form('0-f', 'f^0')
-    L1 = ph.space.new('Lambda', 1)
-    f1 = L1.make_form('1-f', 'f^1')
-    ph.space.finite(5)
+    f0 = L0.make_form('f^0', '0-f')
+    L1o = ph.space.new('Lambda', 1, orientation='outer')
+    f1o = L1o.make_form('f^1', '1-f-o')
+    L1i = ph.space.new('Lambda', 1, orientation='inner')
+    f1i = L1i.make_form('h^1', '1-f-i')
+
+    df0 = ph.exterior_derivative(f0)
+
+    ph.space.finite(3)
 
     msepy, obj = ph.fem.apply('msepy', locals())
 
     manifold = obj['manifold']
     mesh = obj['mesh']
     f0 = obj['f0']
-    f1 = obj['f1']
+    f1o = obj['f1o']
+    f1i = obj['f1i']
 
-    # msepy.config(manifold)('crazy', c=0., periodic=False, bounds=[[0, 2] for _ in range(space_dim)])
-    msepy.config(manifold)('crazy_multi', c=0.3, bounds=[[0, 2] for _ in range(space_dim)])
+    msepy.config(manifold)('crazy', c=0., periodic=False, bounds=[[0, 2] for _ in range(space_dim)])
+    # msepy.config(manifold)('crazy_multi', c=0.1, bounds=[[0, 2] for _ in range(space_dim)])
     # msepy.config(mnf)('backward_step')
-    msepy.config(mesh)(6)
-    mesh.visualize()
+    msepy.config(mesh)(([3, 3, 2], [2, 2, 3]))
+    # mesh.visualize()
 
-    def fx(t, x):
-        return np.sin(2*np.pi*x) + t
-    scalar = ph.vc.scalar(fx)
+    # def fx(t, x, y):
+    #     return np.sin(2*np.pi*x) * np.sin(2*np.pi*y) + t
+    # scalar = ph.vc.scalar(fx)
+    # f0.cf = scalar
+    # f0[2].reduce()
+    # f0[2].visualize()
 
-    f1.cf = scalar
-    f1[2].reduce()
-    f1[2].visualize()
-    error = f1[2].error()
-    print(error)
+    def ux(t, x, y):
+        return np.sin(2*np.pi*x) * np.cos(2*np.pi*y) + t
+
+    def uy(t, x, y):
+        return np.cos(2*np.pi*x) * np.sin(2*np.pi*y) + t
+
+    vector = ph.vc.vector(ux, uy)
+
+    # f1o.cf = vector
+    # f1o[2].reduce()
+    # mesh.visualize()
+    f1i.cf = vector
+    f1i[2].reduce()
+
+    # f_error = f0[2].error()  # by default, we will compute the L^2 error.
+    # # print(error)
+    #
+    # df0 = f0.coboundary[2]()
+    # df_error = df0[3].error()
+    # print(f_error, df_error)
+    #
+    # # df0[2].visualize()
+    # # df0 = f0[2].coboundary()
+    # # print(df0)

@@ -7,6 +7,7 @@ if './' not in sys.path:
 
 from tools.frozen import Frozen
 from tools.matplot.plot import plot
+from tools.matplot.contour import contour, contourf
 
 
 class MsePyRootFormVisualizeMatplot(Frozen):
@@ -53,9 +54,43 @@ class MsePyRootFormVisualizeMatplot(Frozen):
         x = x[0].T
         v = v[0]
         num_lines = len(x)  # also num elements
-        return plot(x, v, num_lines=num_lines, colors=color, xlabel='$x$', labels=False, styles='-',
-             figsize=figsize, **kwargs)
+        fig = plot(
+            x, v, num_lines=num_lines, xlabel='$x$', labels=False, styles='-',
+            figsize=figsize, colors=color,
+            **kwargs
+        )
+        return fig
 
     def _m1_n1_k1(self, *args, **kwargs):
         """"""
         return self._m1_n1_k0(*args, **kwargs)
+
+    def _m2_n2_k0(
+            self, sampling_factor=1,
+            plot_type='contourf',
+            **kwargs
+    ):
+        """"""
+        samples = 10000 * sampling_factor
+        samples = int((np.ceil(samples / self._mesh.elements._num))**(1/self._mesh.m))
+        if samples > 100:
+            samples = 100
+        elif samples < 5:
+            samples = 5
+        else:
+            samples = int(samples)
+
+        xi_et = np.linspace(-1, 1, samples)
+        t = self._f.visualize._t
+        xy, v = self._f.reconstruct[t](xi_et, xi_et)
+        x, y = xy
+        x, y, v = self._mesh._regionwsie_stack(x, y, v[0])
+
+        if plot_type == 'contourf':
+            fig = contourf(x, y, v, **kwargs)
+        elif plot_type == 'contour':
+            fig = contour(x, y, v, **kwargs)
+        else:
+            raise Exception()
+
+        return fig

@@ -58,8 +58,8 @@ class MsePyRootFormErrorLambda(Frozen):
 
         cf = self._f.cf
         integral = list()
-        for ri in cf:
-            scalar = cf[ri][self._t]  # the scalar evaluated at time `t`.
+        for ri in cf.field:
+            scalar = cf.field[ri][self._t]  # the scalar evaluated at time `t`.
             start, end = self._mesh.elements._elements_in_region(ri)
             x_region = x[start:end, :]
             ext_v = scalar(x_region)[0]

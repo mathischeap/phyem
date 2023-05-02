@@ -33,7 +33,7 @@ from src.spaces.main import _default_space_degree_repr
 _global_forms = dict()   # cache keys are id
 _global_root_forms_lin_dict = dict()
 _global_form_variables = {
-    'update_cache': True
+    'update_cache': True   # the global switcher  ---------- (1)
 }
 
 
@@ -47,8 +47,8 @@ class Form(Frozen):
             self, space,
             sym_repr, lin_repr,
             is_root,
+            update_cache=True,   # the local switcher  ------------ (1)
     ):
-        self._objective = None
         if is_root is None:  # we will parse is_root from lin_repr
             assert isinstance(lin_repr, str) and len(lin_repr) > 0, f"lin_repr={lin_repr} illegal."
             is_root, lin_repr = self._parse_is_root(lin_repr)
@@ -74,10 +74,13 @@ class Form(Frozen):
         self._is_root = is_root
         self._efs = None   # elementary elements
         self._orientation = space.orientation
-        if _global_form_variables['update_cache']:  # cache it
-            _global_forms[id(self)] = self
-            if self._is_root:
-                _global_root_forms_lin_dict[self._lin_repr] = self
+        if update_cache:
+            if _global_form_variables['update_cache']:  # cache it
+                _global_forms[id(self)] = self
+                if self._is_root:
+                    _global_root_forms_lin_dict[self._lin_repr] = self
+                else:
+                    pass
             else:
                 pass
         else:
@@ -140,7 +143,8 @@ class Form(Frozen):
         root_text = rf'is_root: {self.is_root()}'
         plt.text(0, 0.5, root_text, ha='left', va='center', size=15)
         plt.axis('off')
-        plt.show()
+        from src.config import _matplot_setting
+        plt.show(block=_matplot_setting['block'])
         return fig
 
     def pr(self):

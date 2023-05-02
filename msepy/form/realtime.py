@@ -34,7 +34,7 @@ class MsePyRootFormRealTimeCopy(Frozen):
 
     @property
     def vec(self):
-        """The vector of dofs (cochains) of the form at time `t`, \vec{f}^{t}."""
+        """The vector of dofs (cochain) of the form at time `t`, \vec{f}^{t}."""
         gm = self._f.cochain.gathering_matrix
         if self._t in self._f.cochain:
             local = self._f.cochain[self._t].local
@@ -58,3 +58,8 @@ class MsePyRootFormRealTimeCopy(Frozen):
     def error(self):
         """"""
         return self._f.error[self._t]
+
+    @property
+    def coboundary(self):
+        """"""
+        return self._f.coboundary[self._t]

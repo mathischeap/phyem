@@ -246,12 +246,14 @@ class OrdinaryDifferentialEquation(Frozen):
                 sym += '='
 
         sym += '$'
-        plt.figure(figsize=figsize)
+        fig = plt.figure(figsize=figsize)
         plt.axis([0, 1, 0, 1])
         plt.axis('off')
         plt.text(0.05, 0.5, sym, ha='left', va='center', size=15)
         plt.tight_layout()
-        plt.show()
+        from src.config import _matplot_setting
+        plt.show(block=_matplot_setting['block'])
+        return fig
 
     def pr(self, **kwargs):
         """A wrapper of print_representations"""

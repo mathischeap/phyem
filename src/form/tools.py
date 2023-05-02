@@ -127,5 +127,6 @@ def _list_forms(variable_range=None):
         table.scale(1, 8)
         table.set_fontsize(50)
         fig.tight_layout()
-        plt.show()
+        from src.config import _matplot_setting
+        plt.show(block=_matplot_setting['block'])
         return fig

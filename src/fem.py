@@ -147,18 +147,18 @@ if __name__ == '__main__':
         wf = wf.derive.rearrange(
             {
                 0: '0, 3 = 2, 1',
-                1: '3, 0 = 2, 1, 4',
+                1: '3, 0, 4 = 2, 1',
             }
         )
 
         ph.space.finite(3)
-
+        wf.pr()
         mp = wf.mp()
         # mp.parse([
         #     a3 @ td.time_sequence['k-1'],
         #     b2 @ td.time_sequence['k-1']]
         # )
-        ls = mp.ls()
+        # ls = mp.ls()
 
     else:
 
@@ -226,23 +226,30 @@ if __name__ == '__main__':
         # )
         ls = mp.ls()
 
-    # mp.pr()
+    # ap = wf.ap()
+    # ap.pr()
+    mp.pr()
+
+    # term = mp['0-0,0'][0][0]
+    # term.pr()
+
     # ls.pr()
-    mesh = oph.mesh
-    manifold = mesh.manifold
+    # ls.A.pr()
+    # mesh = oph.mesh
+    # manifold = mesh.manifold
+    #
+    # a3k = a3 @ td.ts['k']
+    # msepy, obj = ph.fem.apply('msepy', locals())
+    #
+    # mnf = obj['manifold']
+    # msh = obj['mesh']
+    #
+    # msepy.config(mnf)('backward_step')
+    # msepy.config(msh)([3, 5, 3])
+    #
+    # a = obj['a3']
+    # b = obj['b2']
+    # ak = obj['a3k']
 
-    a3k = a3 @ td.ts['k']
-    msepy, obj = ph.fem.apply('msepy', locals())
-
-    mnf = obj['manifold']
-    msh = obj['mesh']
-
-    msepy.config(mnf)('backward_step')
-    msepy.config(msh)([3, 5, 3])
-
-    a = obj['a3']
-    b = obj['b2']
-    ak = obj['a3k']
-
-    print(a.space.local_numbering(3))
-    print(a[10].vec)
+    # print(a.space.local_numbering(3))
+    # print(a[10].vec)

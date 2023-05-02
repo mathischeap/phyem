@@ -19,17 +19,28 @@ class MsePyIncidenceMatrixLambda(Frozen):
         self._space = space
         self._k = space.abstract.k
         self._n = space.abstract.n  # manifold dimensions
-        assert self._k != self._n, f"top form has no incidence matrix."
+        assert self._k != self._n, f"top form space has no incidence matrix."
         self._orientation = space.abstract.orientation
+        self._cache = dict()
         self._freeze()
 
     def __call__(self, degree):
         """Making the local numbering for degree."""
         p = self._space[degree].p
-        if self._n == 2:
-            return getattr(self, f"_n{self._n}_k{self._k}_{self._orientation}")(p)
+
+        key = f"{p}"
+
+        if key in self._cache:
+            E = self._cache[key]
         else:
-            return getattr(self, f"_n{self._n}_k{self._k}")(p)
+            if self._n == 2:  # for k == 0 and k == 1.
+                method_name = f"_n{self._n}_k{self._k}_{self._orientation}"
+            else:
+                method_name = f"_n{self._n}_k{self._k}"
+            E = getattr(self, method_name)(p)
+            self._cache[key] = E
+
+        return E
 
     def _n3_k2(self, p):
         """div or d of 2-form"""
@@ -226,7 +237,7 @@ class MsePyIncidenceMatrixLambda(Frozen):
             ),
             dtype=int
         )
-        for i in range(p):
+        for i in range(p[0]):
             E[i, i] = -1   # x-
             E[i, i+1] = 1  # x+
         return csr_matrix(E)

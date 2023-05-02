@@ -8,6 +8,10 @@ from tools.frozen import Frozen
 from msepy.form.cochain.time_instant import _CochainAtOneTime
 
 
+class MsePyLockCochainError(Exception):
+    """Raise when we try to access standard property ``statistic`` but ``___statistic___`` is not defined."""
+
+
 class MsePyRootFormCochain(Frozen):
     """"""
 
@@ -18,6 +22,7 @@ class MsePyRootFormCochain(Frozen):
             self._tcd = dict()  # time-cochain-dict
         else:
             pass
+        self._locker = False
         self._freeze()
 
     @staticmethod
@@ -27,7 +32,11 @@ class MsePyRootFormCochain(Frozen):
 
     def _set(self, t, cochain):
         """add to time-cochain-dict."""
+        if self._locker:
+            raise MsePyLockCochainError(f"Cochain of {self._f} is locked!")
+
         rf = self._f
+
         if rf._is_base():
             t = self._parse_t(t)
 
@@ -44,7 +53,7 @@ class MsePyRootFormCochain(Frozen):
         rf = self._f
         if rf._is_base():
             t = self._parse_t(t)
-            assert t in self._tcd, f"t={t} is not in cochain."
+            assert t in self._tcd, f"t={t} is not in cochain of form {self._f}."
             return self._tcd[t]
         else:
             return rf._base.cochain[t]

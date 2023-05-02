@@ -35,6 +35,11 @@ class SpaceBase(Frozen):
         self._finite = None  # the finite setting
 
     @property
+    def _pure_lin_repr(self):
+        """"""
+        raise NotImplementedError()
+
+    @property
     def mesh(self):
         """"""
         return self._mesh
@@ -70,7 +75,7 @@ class SpaceBase(Frozen):
 
     @staticmethod
     def _is_space():
-        """A private tag."""
+        """A private signature/tag."""
         return True
 
     @property
@@ -78,3 +83,8 @@ class SpaceBase(Frozen):
         if self._finite is None:
             self._finite = SpaceFiniteSetting(self)
         return self._finite
+
+    def d(self):
+        """d (self)"""
+        from src.spaces.operators import d
+        return d(self)

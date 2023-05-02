@@ -31,6 +31,7 @@ class MsePyMeshElements(Frozen):
 
     @property
     def map(self):
+        """using -1 when the neighbour is a boundary."""
         return self._map
 
     def _elements_in_region(self, ri):
@@ -257,7 +258,7 @@ class MsePyMeshElements(Frozen):
 
         if structured_regions:  # `map_type = 0` region map. See `_check_map` of `regions`.
 
-            element_map = self._generate_element_map_form_structured_regions(layouts)
+            element_map = self._generate_element_map_for_structured_regions(layouts)
             # return a 2-d array as the element-map
 
         else:
@@ -266,7 +267,7 @@ class MsePyMeshElements(Frozen):
 
         return element_map
 
-    def _generate_element_map_form_structured_regions(self, layouts):
+    def _generate_element_map_for_structured_regions(self, layouts):
         """"""
         numbering = self._numbering
         total_num_elements = self._num
