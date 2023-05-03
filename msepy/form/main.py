@@ -185,7 +185,7 @@ if __name__ == '__main__':
 
     df0 = ph.exterior_derivative(f0)
 
-    ph.space.finite(3)
+    ph.space.finite([15, 15])
 
     msepy, obj = ph.fem.apply('msepy', locals())
 
@@ -195,18 +195,19 @@ if __name__ == '__main__':
     f1o = obj['f1o']
     f1i = obj['f1i']
 
-    msepy.config(manifold)('crazy', c=0., periodic=False, bounds=[[0, 2] for _ in range(space_dim)])
-    # msepy.config(manifold)('crazy_multi', c=0.1, bounds=[[0, 2] for _ in range(space_dim)])
+    # msepy.config(manifold)('crazy', c=0., periodic=False, bounds=[[0, 2] for _ in range(space_dim)])
+    msepy.config(manifold)('crazy_multi', c=0.3, bounds=[[0, 2] for _ in range(space_dim)])
     # msepy.config(mnf)('backward_step')
-    msepy.config(mesh)(([3, 3, 2], [2, 2, 3]))
-    # mesh.visualize()
+    msepy.config(mesh)(([3,3,3,3, 3, 3], [1,1,1,1,1,1,1]))
+    mesh.visualize()
 
-    def fx(t, x, y):
-        return np.sin(2*np.pi*x) * np.sin(2*np.pi*y) + t
-    scalar = ph.vc.scalar(fx)
-    f0.cf = scalar
-    f0[2].reduce()
-    f0[2].visualize()
+    # def fx(t, x, y):
+    #     return np.sin(2*np.pi*x) * np.sin(2*np.pi*y) + t
+    #
+    # scalar = ph.vc.scalar(fx)
+    # f0.cf = scalar
+    # f0[2].reduce()
+    # f0[2].visualize()
 
     def ux(t, x, y):
         return np.sin(2*np.pi*x) * np.cos(2*np.pi*y) + t
@@ -218,9 +219,10 @@ if __name__ == '__main__':
 
     # f1o.cf = vector
     # f1o[2].reduce()
-    mesh.visualize()
+    # mesh.visualize()
     f1i.cf = vector
     f1i[2].reduce()
+    f1i[2].visualize()
 
     # f_error = f0[2].error()  # by default, we will compute the L^2 error.
     # # print(error)

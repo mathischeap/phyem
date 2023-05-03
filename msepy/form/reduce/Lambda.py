@@ -138,22 +138,73 @@ class MsePyReduceLambda(Frozen):
             quad_degree = [p + 2 for p in self._space[self._f.degree].p]
         else:
             pass
-        xi_x, et_x, edge_size_d_xi, quad_weights = self._n2_k1_preparation('x', quad_degree)
-        xi_y, et_y, edge_size_d_et, quad_weights = self._n2_k1_preparation('y', quad_degree)
 
         # dx edge cochain, x-axis direction component.
-        x, y = self._mesh.ct.mapping(xi_x, et_x)
-        # u, v = self._f.cf[t](x, y)
-        J = self._mesh.ct.Jacobian_matrix(xi_x, et_x)
-        # x = J.split(x, axis=2)
-        # y = J.split(y, axis=2)
+        xi, et, edge_size_d, quad_weights = self._n2_k1_preparation('x', quad_degree)
+        x, y = self._mesh.ct.mapping(xi, et)
+        J = self._mesh.ct.Jacobian_matrix(xi, et)
+        u, v = self._f.cf[t](x, y, axis=-1)
+        u = J.split(u, axis=2)
+        v = J.split(v, axis=2)
+        cochain_local_dx = list()
+
         for ci in J.cache_indices:
             Jci = J.get_data_of_cache_index(ci)
-            J0, J1 = Jci
-            J00, J01 = J0
-            J10, J11 = J1
+            J00, J01 = Jci[0]
+            J10, J11 = Jci[1]
 
+            if not isinstance(J10, np.ndarray) and J10 == 0:
+                vdx = np.einsum('ij, ijk -> ijk', J00, u[ci], optimize='optimal')
+            else:
+                vdx = np.einsum('ij, ijk -> ijk', J00, u[ci], optimize='optimal') + \
+                      np.einsum('ij, ijk -> ijk', J10, v[ci], optimize='optimal')
 
+            cochain_local_dx.append(
+                np.einsum(
+                    'ijk, i, j -> kj',
+                    vdx, quad_weights[0], edge_size_d*0.5,
+                    optimize='optimal'
+                )
+            )
+        cochain_local_dx = J.merge(cochain_local_dx, axis=0)
+
+        # dy edge cochain, y-axis direction component.
+        xi, et, edge_size_d, quad_weights = self._n2_k1_preparation('y', quad_degree)
+        x, y = self._mesh.ct.mapping(xi, et)
+        J = self._mesh.ct.Jacobian_matrix(xi, et)
+        u, v = self._f.cf[t](x, y, axis=-1)
+        u = J.split(u, axis=2)
+        v = J.split(v, axis=2)
+        cochain_local_dy = list()
+
+        for ci in J.cache_indices:
+            Jci = J.get_data_of_cache_index(ci)
+            J00, J01 = Jci[0]
+            J10, J11 = Jci[1]
+
+            if not isinstance(J01, np.ndarray) and J01 == 0:
+                vdy = np.einsum('ij, ijk -> ijk', J11, v[ci], optimize='optimal')
+            else:
+                vdy = np.einsum('ij, ijk -> ijk', J01, u[ci], optimize='optimal') + \
+                      np.einsum('ij, ijk -> ijk', J11, v[ci], optimize='optimal')
+
+            cochain_local_dy.append(
+                np.einsum(
+                    'ijk, i, j -> kj',
+                    vdy, quad_weights[1], edge_size_d*0.5,
+                    optimize='optimal'
+                )
+            )
+        cochain_local_dy = J.merge(cochain_local_dy, axis=0)
+
+        # time to merge the two cochain components
+        cochain_local = np.hstack((cochain_local_dx, cochain_local_dy))
+
+        if update_cochain:
+            self._f[t].cochain = cochain_local
+        else:
+            pass
+        return cochain_local
 
     def _n2_k1_preparation(self, d_, quad_degree):
         key = d_ + str(quad_degree)

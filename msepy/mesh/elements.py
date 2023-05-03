@@ -332,7 +332,8 @@ class MsePyMeshElements(Frozen):
         rmp = self._mesh.manifold.regions.map[i]
         return rmp[2*axis + side]
 
-    def _find_on_layer(self, numbering, axis, layer):
+    @staticmethod
+    def _find_on_layer(numbering, axis, layer):
         """
 
         Parameters
@@ -345,14 +346,7 @@ class MsePyMeshElements(Frozen):
         -------
 
         """
-        if axis == 0:
-            return numbering[layer, ...]
-        elif axis == 1:
-            return numbering[:, layer, ...]
-        elif axis == 2:
-            return numbering[:, :, layer, ...]
-        else:
-            raise NotImplementedError()
+        return numbering.take(indices=layer, axis=axis)
 
 
 class MsePyMeshElementsIndexMapping(Frozen):
@@ -432,20 +426,14 @@ class MsePyMeshElementsIndexMapping(Frozen):
         element indexing. And it will be split into "num of cache indices" batches. #ith batch well be for the
         elements of `c2e[i]` (axis does not change.)
         """
+        assert ndarray.shape[axis] == self.num_elements, \
+            f"ndarray does not {self.num_elements} slices on axis {axis}."
         batches = list()
         for ci, elements in enumerate(self._c2e):
-            if axis == 0:
-                batch = ndarray[elements, ...]
-            elif axis == 1:
-                batch = ndarray[:, elements, ...]
-            elif axis == 2:
-                batch = ndarray[:, :, elements, ...]
-            elif axis == -1:
-                batch = ndarray[..., elements]
-            else:
-                raise NotImplementedError()
 
-            batches.append(batch)
+            batches.append(
+                ndarray.take(indices=elements, axis=axis)
+            )
 
         return batches
 
@@ -455,6 +443,7 @@ class MsePyMeshElementsIndexMapping(Frozen):
         shape[axis] = self.num_elements
         ndarray = np.zeros(shape)
         for ci, elements in enumerate(self._c2e):
+            # find a method like ndarray.take
             if axis == 0:
                 ndarray[elements, ...] = batches[ci]
             elif axis == 1:
@@ -525,10 +514,6 @@ class _DataDictDistributor(Frozen):
         else:
             raise NotImplementedError(i.__class__)
 
-    def __getitem__(self, re):
-        """return the data for reference element #re."""
-        return self._dd[re]
-
     @property
     def cache_indices(self):
         return range(self._mp.num_cache_indices)
@@ -538,6 +523,10 @@ class _DataDictDistributor(Frozen):
         return self[
             self._mp._reference_elements[ci]
         ]
+
+    def __getitem__(self, re):
+        """return the data for reference element #re."""
+        return self._dd[re]
 
     def __iter__(self):
         """Go through all reference elements."""

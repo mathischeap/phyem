@@ -84,3 +84,67 @@ class MsePyRootFormReconstructLambda(Frozen):
             x, y, v = [np.array(cache[_]) for _ in range(n+1)]
 
         return (x, y), (v, )
+
+    def _m2_n2_k1_inner(self, *meshgrid_xi_et, ravel=False):
+        """"""
+        n = 2
+        t = self._t
+        xi, et = meshgrid_xi_et
+        shape: list = [len(xi), len(et)]
+        xi_et, bf = self._f._evaluate_bf_on(*meshgrid_xi_et)
+        cochain = self._f.cochain[t].local
+
+        num_components = self._space.num_local_dof_components(self._f.degree)
+        local_0 = cochain[:, :num_components[0]]
+        local_1 = cochain[:, num_components[0]:]
+
+        xy = self._mesh.ct.mapping(*xi_et)
+        x, y = xy
+        x, y = x.T, y.T
+
+        u = np.einsum('ij, ki -> kj', bf[0], local_0, optimize='optimal')
+        v = np.einsum('ij, ki -> kj', bf[1], local_1, optimize='optimal')
+
+        iJ = self._mesh.ct.inverse_Jacobian_matrix(*xi_et)
+        u = iJ.split(u, axis=0)
+        v = iJ.split(v, axis=0)
+
+        vx, vy = list(), list()
+        for ci in iJ.cache_indices:
+
+            iJci = iJ.get_data_of_cache_index(ci)
+            iJ0, iJ1 = iJci
+            iJ00, iJ01 = iJ0
+            iJ10, iJ11 = iJ1
+
+            uci = u[ci]
+            vci = v[ci]
+
+            if not isinstance(iJ10, np.ndarray) and iJ10 == 0:
+                v0 = uci * iJ00
+            else:
+                v0 = uci * iJ00 + vci * iJ10
+
+            if not isinstance(iJ01, np.ndarray) and iJ01 == 0:
+                v1 = vci * iJ11
+            else:
+                v1 = uci * iJ01 + vci * iJ11
+
+            vx.append(v0)
+            vy.append(v1)
+
+        vx = iJ.merge(vx, axis=0)
+        vy = iJ.merge(vy, axis=0)
+
+        if ravel:
+            pass
+        else:
+            cache = [[] for _ in range(n+2)]  # + 2 because it is a vector
+            for i in range(len(x)):
+                cache[0].append(x[i].reshape(shape, order='F'))
+                cache[1].append(y[i].reshape(shape, order='F'))
+                cache[2].append(vx[i].reshape(shape, order='F'))
+                cache[3].append(vy[i].reshape(shape, order='F'))
+            x, y, vx, vy = [np.array(cache[_]) for _ in range(n+2)]
+
+        return (x, y), (vx, vy)

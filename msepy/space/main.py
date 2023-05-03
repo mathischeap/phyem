@@ -11,6 +11,7 @@ from msepy.space.gathering_matrix.main import MsePyGatheringMatrix
 from msepy.space.incidence_matrix.main import MsePyIncidenceMatrix
 from msepy.space.local_numbering.main import MsePyLocalNumbering
 from msepy.space.num_local_dofs.main import MsePyNumLocalDofs
+from msepy.space.num_local_dof_components.main import MsePyNumLocalDofComponents
 from msepy.space.basis_functions.main import MsePyBasisFunctions
 from msepy.space.degree import MsePySpaceDegree
 from src.spaces.finite import SpaceFiniteSetting
@@ -34,6 +35,7 @@ class MsePySpace(Frozen):
         self._incidence_matrix = None
         self._basis_functions = None
         self._num_local_dofs = None
+        self._num_local_dof_components = None
         self._degree_cache = {}
         self._freeze()
 
@@ -79,11 +81,12 @@ class MsePySpace(Frozen):
 
     def __getitem__(self, degree):
         """"""
-        if degree in self._degree_cache:
+        key = str(degree)
+        if key in self._degree_cache:
             pass
         else:
-            self._degree_cache[degree] = MsePySpaceDegree(self, degree)
-        return self._degree_cache[degree]
+            self._degree_cache[key] = MsePySpaceDegree(self, degree)
+        return self._degree_cache[key]
 
     @property
     def local_numbering(self):
@@ -98,6 +101,13 @@ class MsePySpace(Frozen):
         if self._num_local_dofs is None:
             self._num_local_dofs = MsePyNumLocalDofs(self)
         return self._num_local_dofs
+
+    @property
+    def num_local_dof_components(self):
+        """local numbering"""
+        if self._num_local_dof_components is None:
+            self._num_local_dof_components = MsePyNumLocalDofComponents(self)
+        return self._num_local_dof_components
 
     @property
     def incidence_matrix(self):

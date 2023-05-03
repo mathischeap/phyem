@@ -19,7 +19,7 @@ class MsePyRootFormVisualizeMatplot(Frozen):
         self._freeze()
 
     def __call__(self, *args, **kwargs):
-        """"""
+        """Call the default plotter coded in this module as well."""
         abs_sp = self._f.space.abstract
         m = abs_sp.m
         n = abs_sp.n
@@ -82,7 +82,7 @@ class MsePyRootFormVisualizeMatplot(Frozen):
 
         xi_et = np.linspace(-1, 1, samples)
         t = self._f.visualize._t
-        xy, v = self._f.reconstruct[t](xi_et, xi_et)
+        xy, v = self._f.reconstruct[t](xi_et, xi_et)  # ravel=False by default
         x, y = xy
         x, y, v = self._mesh._regionwsie_stack(x, y, v[0])
 
@@ -94,3 +94,41 @@ class MsePyRootFormVisualizeMatplot(Frozen):
             raise Exception()
 
         return fig
+
+    def _m2_n2_k1_inner(
+            self, sampling_factor=1,
+            plot_type='contourf',
+            **kwargs
+    ):
+        """"""
+        samples = 10000 * sampling_factor
+        samples = int((np.ceil(samples / self._mesh.elements._num))**(1/self._mesh.m))
+        if samples > 100:
+            samples = 100
+        elif samples < 5:
+            samples = 5
+        else:
+            samples = int(samples)
+
+        xi_et = np.linspace(-1, 1, samples)
+        t = self._f.visualize._t
+        xy, uv = self._f.reconstruct[t](xi_et, xi_et)  # ravel=False by default
+        x, y = xy
+        u, v = uv
+        x, y, u, v = self._mesh._regionwsie_stack(x, y, u, v)
+
+        if plot_type == 'contourf':
+            fig0 = contourf(x, y, u, **kwargs)
+        elif plot_type == 'contour':
+            fig0 = contour(x, y, u, **kwargs)
+        else:
+            raise Exception()
+
+        if plot_type == 'contourf':
+            fig1 = contourf(x, y, v, **kwargs)
+        elif plot_type == 'contour':
+            fig1 = contour(x, y, v, **kwargs)
+        else:
+            raise Exception()
+
+        return fig0, fig1

@@ -22,12 +22,13 @@ class MsePyBasisFunctions(Frozen):
     def __getitem__(self, degree):
         """Return"""
         indicator = self._space.abstract.indicator
+        key = str(degree)
         if indicator == 'Lambda':
-            if degree in self._Lambda_cache:
-                return self._Lambda_cache[degree]
+            if key in self._Lambda_cache:
+                Lambda_bf = self._Lambda_cache[key]
             else:
                 Lambda_bf = MsePyBasisFunctionsLambda(self._space, degree)
-                self._Lambda_cache[degree] = Lambda_bf
-                return Lambda_bf
+                self._Lambda_cache[key] = Lambda_bf
+            return Lambda_bf
         else:
             raise NotImplementedError()

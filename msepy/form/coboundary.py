@@ -73,6 +73,7 @@ class MsePyRootFormCoboundaryTimeInstant(Frozen):
         df.cochain._set(self._t, d_cochain_at_t)
         df.cochain._locker = True  # lock the cochain, this df is only for `self._t`.
         cf = self._f.cf.field
+
         if cf is None:
             pass
         else:
@@ -81,6 +82,7 @@ class MsePyRootFormCoboundaryTimeInstant(Frozen):
             for i in cf:
                 new_cf[i] = getattr(cf[i], vc_operator)
             df.cf = new_cf
+
         return df
     
     @property
