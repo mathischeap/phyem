@@ -198,7 +198,7 @@ if __name__ == '__main__':
     # msepy.config(manifold)('crazy', c=0., periodic=False, bounds=[[0, 2] for _ in range(space_dim)])
     msepy.config(manifold)('crazy_multi', c=0.3, bounds=[[0, 2] for _ in range(space_dim)])
     # msepy.config(mnf)('backward_step')
-    msepy.config(mesh)(([3,3,3,3, 3, 3], [1,1,1,1,1,1,1]))
+    msepy.config(mesh)(([3, 3, 3], [1, 1, 1]))
     mesh.visualize()
 
     # def fx(t, x, y):
