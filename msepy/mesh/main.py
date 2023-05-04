@@ -202,7 +202,7 @@ class MsePyMesh(Frozen):
 
 
 if __name__ == '__main__':
-    # python msepy/mesh/main.py
+    # python msepy/mesh/matplot.py
     import __init__ as ph
     space_dim = 3
     ph.config.set_embedding_space_dim(space_dim)

@@ -42,12 +42,12 @@ class MsePyRootFormRealTimeCopy(Frozen):
         else:
             return MsePyLocalVector(None, gm)  # it is a separate object.
 
-    def reduce(self, update_cochain=True):
-        self._f.reduce(self._t, update_cochain=update_cochain)
+    def reduce(self, update_cochain=True, **kwargs):
+        self._f.reduce(self._t, update_cochain=update_cochain, **kwargs)
 
-    def reconstruct(self, *meshgrid_xi_et_sg):
+    def reconstruct(self, *meshgrid, **kwargs):
         """"""
-        return self._f.reconstruct[self._t](*meshgrid_xi_et_sg)
+        return self._f.reconstruct(self._t, *meshgrid, **kwargs)
 
     @property
     def visualize(self):

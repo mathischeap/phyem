@@ -1,8 +1,8 @@
 
 
 from tools.frozen import Frozen
-from msepy.form.visualize.matplot.main import MsePyRootFormVisualizeMatplot
-from msepy.form.visualize.vtk_.main import MsePyRootFormVisualizeVTK
+from msepy.form.visualize.matplot import MsePyRootFormVisualizeMatplot
+from msepy.form.visualize.vtk_ import MsePyRootFormVisualizeVTK
 
 
 class MsePyRootFormVisualize(Frozen):
@@ -22,7 +22,11 @@ class MsePyRootFormVisualize(Frozen):
         return self
 
     def __call__(self, *args, **kwargs):
-        return self.matplot(*args, **kwargs)
+        n = self._f.space.n
+        if n == 3:
+            return self.vtk(*args, **kwargs)
+        else:
+            return self.matplot(*args, **kwargs)
 
     @property
     def matplot(self):

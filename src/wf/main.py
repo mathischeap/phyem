@@ -390,7 +390,7 @@ class WeakFormulation(Frozen):
 
 
 if __name__ == '__main__':
-    # python src/wf/main.py
+    # python src/wf/matplot.py
 
     import __init__ as ph
     # import phlib as ph

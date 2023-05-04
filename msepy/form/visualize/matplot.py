@@ -3,7 +3,7 @@
 import numpy as np
 import sys
 if './' not in sys.path:
-    sys.path.append('./')
+    sys.path.append('matplot/')
 
 from tools.frozen import Frozen
 from tools.matplot.plot import plot
@@ -49,7 +49,7 @@ class MsePyRootFormVisualizeMatplot(Frozen):
 
         linspace = np.linspace(-1, 1, samples)
         t = self._f.visualize._t
-        x, v = self._f.reconstruct[t](linspace)
+        x, v = self._f[t].reconstruct(linspace)
 
         x = x[0].T
         v = v[0]
@@ -73,8 +73,8 @@ class MsePyRootFormVisualizeMatplot(Frozen):
         """"""
         samples = 10000 * sampling_factor
         samples = int((np.ceil(samples / self._mesh.elements._num))**(1/self._mesh.m))
-        if samples > 100:
-            samples = 100
+        if samples > 75:
+            samples = 75
         elif samples < 5:
             samples = 5
         else:
@@ -82,7 +82,7 @@ class MsePyRootFormVisualizeMatplot(Frozen):
 
         xi_et = np.linspace(-1, 1, samples)
         t = self._f.visualize._t
-        xy, v = self._f.reconstruct[t](xi_et, xi_et)  # ravel=False by default
+        xy, v = self._f[t].reconstruct(xi_et, xi_et)  # ravel=False by default
         x, y = xy
         x, y, v = self._mesh._regionwsie_stack(x, y, v[0])
 
@@ -103,8 +103,8 @@ class MsePyRootFormVisualizeMatplot(Frozen):
         """"""
         samples = 10000 * sampling_factor
         samples = int((np.ceil(samples / self._mesh.elements._num))**(1/self._mesh.m))
-        if samples > 100:
-            samples = 100
+        if samples > 75:
+            samples = 75
         elif samples < 5:
             samples = 5
         else:
@@ -112,23 +112,24 @@ class MsePyRootFormVisualizeMatplot(Frozen):
 
         xi_et = np.linspace(-1, 1, samples)
         t = self._f.visualize._t
-        xy, uv = self._f.reconstruct[t](xi_et, xi_et)  # ravel=False by default
+        xy, uv = self._f[t].reconstruct(xi_et, xi_et)  # ravel=False by default
         x, y = xy
         u, v = uv
         x, y, u, v = self._mesh._regionwsie_stack(x, y, u, v)
 
         if plot_type == 'contourf':
-            fig0 = contourf(x, y, u, **kwargs)
+            fig = [contourf(x, y, u, **kwargs), contourf(x, y, v, **kwargs)]
         elif plot_type == 'contour':
-            fig0 = contour(x, y, u, **kwargs)
+            fig = [contour(x, y, u, **kwargs), contour(x, y, v, **kwargs)]
         else:
             raise Exception()
 
-        if plot_type == 'contourf':
-            fig1 = contourf(x, y, v, **kwargs)
-        elif plot_type == 'contour':
-            fig1 = contour(x, y, v, **kwargs)
-        else:
-            raise Exception()
+        return fig
 
-        return fig0, fig1
+    def _m2_n2_k1_outer(self, **kwargs):
+        """"""
+        return self._m2_n2_k1_inner(**kwargs)
+
+    def _m2_n2_k2(self, **kwargs):
+        """"""
+        return self._m2_n2_k0(**kwargs)

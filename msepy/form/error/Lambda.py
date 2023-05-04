@@ -38,7 +38,7 @@ class MsePyRootFormErrorLambda(Frozen):
         assert isinstance(d, int) and d > 0, f"d={d} is wrong."
 
         if quad_degree is None:
-            quad_degree = [i + 2 for i in self._space[self._f.degree].p]
+            quad_degree = [i + 3 for i in self._space[self._f.degree].p]  # + 3 for higher accuracy.
         else:
             pass
 
@@ -51,7 +51,7 @@ class MsePyRootFormErrorLambda(Frozen):
     def _m1_n1_k1(self, d, quad_degree):
         """"""
         quad_nodes, quad_weights = Quadrature(quad_degree).quad
-        x, v = self._f.reconstruct[self._t](quad_nodes)
+        x, v = self._f[self._t].reconstruct(quad_nodes)
         J = self._mesh.ct.Jacobian(quad_nodes)
         x = x[0].T
         v = v[0]
@@ -73,6 +73,70 @@ class MsePyRootFormErrorLambda(Frozen):
             )
 
         return np.sum(integral) ** (1/d)
+
+    def _m3_n3_k0(self, d, quad_degree):
+        """"""
+        quad_nodes, quad_weights = Quadrature(quad_degree).quad
+        xyz, v = self._f[self._t].reconstruct(*quad_nodes)
+        quad_nodes = np.meshgrid(*quad_nodes, indexing='ij')
+        J = self._mesh.ct.Jacobian(*quad_nodes)
+        x, y, z = xyz
+        v = v[0]
+
+        cf = self._f.cf
+        integral = list()
+        for ri in cf.field:
+            scalar = cf.field[ri][self._t]  # the scalar evaluated at time `t`.
+            start, end = self._mesh.elements._elements_in_region(ri)
+            x_region = x[start:end, :]
+            y_region = y[start:end, :]
+            z_region = z[start:end, :]
+            ext_v = scalar(x_region, y_region, z_region)[0]
+            dis_v = v[start:end, :]
+            metric = J(range(start, end))
+
+            diff = (dis_v - ext_v) ** d
+            integral.extend(
+                np.einsum('eijk, eijk, i, j, k -> i', diff, metric, *quad_weights, optimize='optimal')
+            )
+
+        return np.sum(integral) ** (1/d)
+
+    def _m3_n3_k1(self, d, quad_degree):
+        """"""
+        return self._m3_n3_k2(d, quad_degree)
+
+    def _m3_n3_k2(self, d, quad_degree):
+        """"""
+        quad_nodes, quad_weights = Quadrature(quad_degree).quad
+        xyz, v = self._f[self._t].reconstruct(*quad_nodes)
+        quad_nodes = np.meshgrid(*quad_nodes, indexing='ij')
+        J = self._mesh.ct.Jacobian(*quad_nodes)
+        x, y, z = xyz
+        u, v, w = v
+        cf = self._f.cf
+        integral = list()
+        for ri in cf.field:
+            vector = cf.field[ri][self._t]  # the vector evaluated at time `t`.
+            start, end = self._mesh.elements._elements_in_region(ri)
+            x_region = x[start:end, :]
+            y_region = y[start:end, :]
+            z_region = z[start:end, :]
+            ext_u, ext_v, ext_w = vector(x_region, y_region, z_region)
+            dis_u = u[start:end, :]
+            dis_v = v[start:end, :]
+            dis_w = w[start:end, :]
+            metric = J(range(start, end))
+            diff = (dis_u - ext_u) ** d + (dis_v - ext_v) ** d + (dis_w - ext_w) ** d
+            integral.extend(
+                np.einsum('eijk, eijk, i, j, k -> i', diff, metric, *quad_weights, optimize='optimal')
+            )
+
+        return np.sum(integral) ** (1/d)
+
+    def _m3_n3_k3(self, d, quad_degree):
+        """"""
+        return self._m3_n3_k0(d, quad_degree)
 
 
 if __name__ == '__main__':

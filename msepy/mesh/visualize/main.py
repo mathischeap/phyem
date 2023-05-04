@@ -98,7 +98,7 @@ class MsePyMeshVisualize(Frozen):
 
 
 if __name__ == '__main__':
-    # python msepy/mesh/visualize/main.py
+    # python msepy/mesh/visualize/matplot.py
     import __init__ as ph
     space_dim = 2
     ph.config.set_embedding_space_dim(space_dim)

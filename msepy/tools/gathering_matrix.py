@@ -11,14 +11,14 @@ class RegularGatheringMatrix(Frozen):
 
     def __init__(self, _2d_array):
         """"""
-        self._gathering_matrix = _2d_array
+        self._gm = _2d_array
         self._freeze()
 
     def __getitem__(self, i):
         """Return the global_numbering for dofs in element #i."""
-        return self._gathering_matrix[i]
+        return self._gm[i]
 
     @property
     def shape(self):
         """the shape of the 2d array gm."""
-        return self._gathering_matrix.shape
+        return self._gm.shape

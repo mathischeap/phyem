@@ -14,8 +14,6 @@ from tools.frozen import Frozen
 from msepy.form.cf import MsePyContinuousForm
 from msepy.form.cochain.main import MsePyRootFormCochain
 from msepy.form.realtime import MsePyRootFormRealTimeCopy
-from msepy.form.reduce.main import MsePyRootFormReduce
-from msepy.form.reconstruct.main import MsePyRootFormReconstruct
 from msepy.form.visualize.main import MsePyRootFormVisualize
 from msepy.form.error.main import MsePyRootFormError
 from msepy.form.coboundary import MsePyRootFormCoboundary
@@ -124,25 +122,24 @@ class MsePyRootForm(Frozen):
             self._cochain = MsePyRootFormCochain(self)
         return self._cochain
 
-    @property
-    def reduce(self):
-        """The cochain class."""
-        if self._reduce is None:
-            self._reduce = MsePyRootFormReduce(self)
-        return self._reduce
+    def reduce(self, t, update_cochain=True, **kwargs):
+        """reduce `self.cf` at time `t` and decide whether update the cochain."""
+        cochain_local = self.space.reduce(self.cf, t, self.degree, **kwargs)
+        if update_cochain:
+            self[t].cochain = cochain_local
+        else:
+            pass
+        return cochain_local
 
-    @property
-    def reconstruct(self):
-        """The cochain class."""
-        if self._reconstruct is None:
-            self._reconstruct = MsePyRootFormReconstruct(self)
-        return self._reconstruct
+    def reconstruct(self, t, *meshgrid, **kwargs):
+        """Reconstruct self at time `t`."""
+        local_cochain = self.cochain[t].local
+        degree = self.degree
+        return self.space.reconstruct(local_cochain, degree, *meshgrid, **kwargs)
 
-    def _evaluate_bf_on(self, *meshgrid_xi_et_sg):
-        """"""
-        space = self._space
-        bf = space.basis_functions[self.degree]
-        return bf(*meshgrid_xi_et_sg)
+    def _evaluate_bf_on(self, *meshgrid):
+        """Evaluate the basis functions of this form (the space)."""
+        return self._space.basis_functions[self.degree](*meshgrid)
 
     @property
     def visualize(self):
@@ -167,70 +164,129 @@ class MsePyRootForm(Frozen):
 
 
 if __name__ == '__main__':
-    # python msepy/form/main.py
+    # python msepy/form/matplot.py
     import numpy as np
     import __init__ as ph
 
-    space_dim = 2
+    space_dim = 3
     ph.config.set_embedding_space_dim(space_dim)
 
     manifold = ph.manifold(space_dim)
     mesh = ph.mesh(manifold)
     L0 = ph.space.new('Lambda', 0)
     f0 = L0.make_form('f^0', '0-f')
-    L1o = ph.space.new('Lambda', 1, orientation='outer')
-    f1o = L1o.make_form('f^1', '1-f-o')
-    L1i = ph.space.new('Lambda', 1, orientation='inner')
-    f1i = L1i.make_form('h^1', '1-f-i')
+    L1 = ph.space.new('Lambda', 1)
+    f1 = L1.make_form('f^1', '1-f')
+    # L1o = ph.space.new('Lambda', 1, orientation='outer')
+    # f1o = L1o.make_form('f^1', '1-f-o')
+    # L1i = ph.space.new('Lambda', 1, orientation='inner')
+    # f1i = L1i.make_form('h^1', '1-f-i')
+    L2 = ph.space.new('Lambda', 2)
+    f2 = L2.make_form('f^2', '2-f')
+    L3 = ph.space.new('Lambda', 3)
+    f3 = L3.make_form('f^3', '3-f')
 
     df0 = ph.exterior_derivative(f0)
 
-    ph.space.finite([15, 15])
+    ph.space.finite([3, 4, 5])
 
     msepy, obj = ph.fem.apply('msepy', locals())
 
     manifold = obj['manifold']
     mesh = obj['mesh']
     f0 = obj['f0']
-    f1o = obj['f1o']
-    f1i = obj['f1i']
+    f1 = obj['f1']
+    # f1o = obj['f1o']
+    # f1i = obj['f1i']
+    f2 = obj['f2']
+    f3 = obj['f3']
 
     # msepy.config(manifold)('crazy', c=0., periodic=False, bounds=[[0, 2] for _ in range(space_dim)])
-    msepy.config(manifold)('crazy_multi', c=0.3, bounds=[[0, 2] for _ in range(space_dim)])
+    msepy.config(manifold)('crazy_multi', c=0., bounds=[[0, 2] for _ in range(space_dim)])
     # msepy.config(mnf)('backward_step')
-    msepy.config(mesh)(([3, 3, 3], [1, 1, 1]))
-    mesh.visualize()
+    msepy.config(mesh)(([3, 3, 3, 3], [1, 1, 1, 1], [2, 2, 3]))
+    # msepy.config(mesh)(([3, 3, 2], ))
+    # mesh.visualize()
+
+    def fx(t, x, y, z):
+        return np.sin(2*np.pi*x) * np.sin(np.pi*y) * np.sin(np.pi*z) + t
+
+    def ux(t, x, y, z):
+        return np.sin(np.pi*x) * np.cos(2*np.pi*y) * np.cos(2*np.pi*z) + t
+
+    def uy(t, x, y, z):
+        return np.cos(2*np.pi*x) * np.sin(np.pi*y) * np.cos(2*np.pi*z) + t
+
+    def uz(t, x, y, z):
+        return np.cos(2*np.pi*x) * np.cos(2*np.pi*y) * np.sin(np.pi*z) + t
+
+    scalar = ph.vc.scalar(fx)
+    vector = ph.vc.vector(ux, uy, uz)
+    f0.cf = scalar
+    f0[2].reduce()
+    f0[2].visualize()
+    # print(f0[2].error())
+
+    # f1.cf = vector
+    # f1[2].reduce()
+    # # print(f1[2].error())
+    #
+    # f2.cf = vector
+    # f2[2].reduce()
+    # # print(f2[2].error())
+    #
+    # f3.cf = scalar
+    # f3[2].reduce()
+    # # print(f3[2].error())
+
+    # print()
 
     # def fx(t, x, y):
-    #     return np.sin(2*np.pi*x) * np.sin(2*np.pi*y) + t
+    #     return np.sin(2*np.pi*x) * np.sin(np.pi*y) + t
     #
     # scalar = ph.vc.scalar(fx)
     # f0.cf = scalar
     # f0[2].reduce()
     # f0[2].visualize()
+    # f2.cf = scalar
+    # f2[2].reduce()
+    # f2[2].visualize()
 
-    def ux(t, x, y):
-        return np.sin(2*np.pi*x) * np.cos(2*np.pi*y) + t
-
-    def uy(t, x, y):
-        return np.cos(2*np.pi*x) * np.sin(2*np.pi*y) + t
-
-    vector = ph.vc.vector(ux, uy)
-
+    # def ux(t, x, y):
+    #     return np.sin(2*np.pi*x) * np.cos(2*np.pi*y) + t
+    #
+    # def uy(t, x, y):
+    #     return np.cos(np.pi*x) * np.sin(np.pi*y) + t
+    #
+    # vector = ph.vc.vector(ux, uy)
+    #
     # f1o.cf = vector
     # f1o[2].reduce()
-    # mesh.visualize()
-    f1i.cf = vector
-    f1i[2].reduce()
-    f1i[2].visualize()
+    # f1o[2].visualize()
+    #
+    # # mesh.visualize()
+    # f1i.cf = vector
+    # f1i[2].reduce()
+    # f1i[2].visualize()
 
+    # def fx(t, x):
+    #     return np.sin(2*np.pi*x) + t
+    # scalar = ph.vc.scalar(fx)
+    #
+    # f1.cf = scalar
+    # f1[2].reduce()
+    # f1[2].visualize()
+    #
+    # f0.cf = scalar
+    # f0[2].reduce()
+    # f0[2].visualize()
     # f_error = f0[2].error()  # by default, we will compute the L^2 error.
-    # # print(error)
+    # print(f_error)
     #
     # df0 = f0.coboundary[2]()
-    # df_error = df0[3].error()
+    # df_error = df0[2].error()
     # print(f_error, df_error)
     #
-    # # df0[2].visualize()
-    # # df0 = f0[2].coboundary()
-    # # print(df0)
+    # df0[2].visualize()
+    # # # df0 = f0[2].coboundary()
+    # # # print(df0)

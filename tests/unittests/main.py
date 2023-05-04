@@ -18,5 +18,5 @@ import tests.unittests.msepy.main as msepy
 
 
 if __name__ == '__main__':
-    # python tests/unittests/main.py
+    # python tests/unittests/matplot.py
     pass

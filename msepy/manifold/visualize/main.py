@@ -95,7 +95,7 @@ class MsePyManifoldVisualize(Frozen):
 
 
 if __name__ == '__main__':
-    # python msepy/manifold/visualize/main.py
+    # python msepy/manifold/visualize/matplot.py
     import __init__ as ph
     space_dim = 3
     ph.config.set_embedding_space_dim(space_dim)

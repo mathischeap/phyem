@@ -27,5 +27,5 @@ import tests.web as web
 
 
 if __name__ == '__main__':
-    # python tests/main.py
+    # python tests/matplot.py
     pass

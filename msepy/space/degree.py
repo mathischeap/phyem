@@ -83,3 +83,26 @@ class MsePySpaceDegree(Frozen):
         if self._bfs is None:
             self._bfs = tuple([_OneDimPolynomial(nodes) for nodes in self.nodes])
         return self._bfs
+
+    @property
+    def num_local_dof_components(self):
+        """"""
+        return self._space.num_local_dof_components(self._degree)
+
+    @property
+    def num_local_dofs(self):
+        """"""
+        return self._space.num_local_dofs(self._degree)
+
+    @property
+    def gathering_matrix(self):
+        """"""
+        return self._space.gathering_matrix(self._degree)
+
+    @property
+    def incidence_matrix(self):
+        return self._space.incidence_matrix(self._degree)
+
+    @property
+    def local_numbering(self):
+        return self._space.local_numbering(self._degree)
