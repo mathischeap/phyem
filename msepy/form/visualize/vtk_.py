@@ -35,47 +35,11 @@ class MsePyRootFormVisualizeVTK(Frozen):
 
     def _m3_n3_k1(self, sampling_factor=1):
         """"""
-        samples = 100000 * sampling_factor
-        samples = int((np.ceil(samples / self._mesh.elements._num))**(1/self._mesh.m))
-        if samples > 50:
-            samples = 50
-        elif samples < 5:
-            samples = 5
-        else:
-            samples = int(samples)
-
-        xi_et_sg = np.linspace(-1, 1, samples)
-        t = self._f.visualize._t
-        xyz, uvw = self._f[t].reconstruct(xi_et_sg, xi_et_sg, xi_et_sg)  # ravel=False by default
 
 
     def _m3_n3_k2(self, sampling_factor=1):
         """"""
-        samples = 100000 * sampling_factor
-        samples = int((np.ceil(samples / self._mesh.elements._num))**(1/self._mesh.m))
-        if samples > 50:
-            samples = 50
-        elif samples < 5:
-            samples = 5
-        else:
-            samples = int(samples)
-
-        xi_et_sg = np.linspace(-1, 1, samples)
-        t = self._f.visualize._t
-        xyz, uvw = self._f[t].reconstruct(xi_et_sg, xi_et_sg, xi_et_sg)  # ravel=False by default
 
 
     def _m3_n3_k3(self, sampling_factor=1):
         """"""
-        samples = 100000 * sampling_factor
-        samples = int((np.ceil(samples / self._mesh.elements._num))**(1/self._mesh.m))
-        if samples > 50:
-            samples = 50
-        elif samples < 5:
-            samples = 5
-        else:
-            samples = int(samples)
-
-        xi_et_sg = np.linspace(-1, 1, samples)
-        t = self._f.visualize._t
-        xyz, u = self._f[t].reconstruct(xi_et_sg, xi_et_sg, xi_et_sg)  # ravel=False by default
