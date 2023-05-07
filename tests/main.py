@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-"""
+r"""
 pH-lib@RAM-EEMCS-UT
 Yi Zhang
 Created at 7:20 PM on 5/2/2023
@@ -9,6 +9,7 @@ By run this file, we
     - re-compile the all jupyter notebooks
     - re-generate the web page if possible.
 
+$ python tests/main.py
 """
 import sys
 if './' not in sys.path:
@@ -27,5 +28,5 @@ import tests.web as web
 
 
 if __name__ == '__main__':
-    # python tests/matplot.py
+    # python tests/main.py
     pass

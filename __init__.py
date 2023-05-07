@@ -20,6 +20,7 @@ __version__ = '0.0.0'
 __all__ = [
     'config',
     'list_forms', 'list_spaces', 'list_meshes',
+    'clear_forms',
     'samples',
     'manifold',
     'mesh',
@@ -42,6 +43,8 @@ import src.config as config
 from src.form.tools import _list_forms as list_forms
 from src.spaces.main import _list_spaces as list_spaces
 from src.mesh import _list_meshes as list_meshes
+
+from src.form.main import _clear_forms as clear_forms
 
 import tests.samples.main as samples
 

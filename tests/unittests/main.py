@@ -12,11 +12,17 @@ __all__ = [
     'msepy',
 ]
 
-import tests.unittests.msepy.main as msepy
+from src.config import SIZE
 
+if SIZE == 1:
 
+    import tests.unittests.msepy.main as msepy
+
+else:
+
+    pass
 
 
 if __name__ == '__main__':
-    # python tests/unittests/matplot.py
+    # python .\tests\unittests\main.py
     pass

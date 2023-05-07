@@ -74,6 +74,11 @@ class MsePyRootForm(Frozen):
         return self._pAti_form['base_form']
 
     @property
+    def name(self):
+        """name of this form is the pure linguistic representation."""
+        return self._abstract._pure_lin_repr
+
+    @property
     def m(self):
         return self.space.m  # esd
 
@@ -164,7 +169,7 @@ class MsePyRootForm(Frozen):
 
 
 if __name__ == '__main__':
-    # python msepy/form/matplot.py
+    # python msepy/form/main.py
     import numpy as np
     import __init__ as ph
 
@@ -204,12 +209,12 @@ if __name__ == '__main__':
     # msepy.config(manifold)('crazy', c=0., periodic=False, bounds=[[0, 2] for _ in range(space_dim)])
     msepy.config(manifold)('crazy_multi', c=0., bounds=[[0, 2] for _ in range(space_dim)])
     # msepy.config(mnf)('backward_step')
-    msepy.config(mesh)(([3, 3, 3, 3], [1, 1, 1, 1], [2, 2, 3]))
+    msepy.config(mesh)(([3, 3, 3, 3, 3], [1, 1, 1, 1, 1], [2, 2, 3, 3]))
     # msepy.config(mesh)(([3, 3, 2], ))
     # mesh.visualize()
 
     def fx(t, x, y, z):
-        return np.sin(2*np.pi*x) * np.sin(np.pi*y) * np.sin(np.pi*z) + t
+        return np.cos(2*np.pi*x) * np.cos(np.pi*y) * np.cos(np.pi*z) + t
 
     def ux(t, x, y, z):
         return np.sin(np.pi*x) * np.cos(2*np.pi*y) * np.cos(2*np.pi*z) + t
@@ -224,20 +229,27 @@ if __name__ == '__main__':
     vector = ph.vc.vector(ux, uy, uz)
     f0.cf = scalar
     f0[2].reduce()
-    f0[2].visualize()
+    # f0[2].visualize()
     # print(f0[2].error())
+    df0 = f0[2].coboundary()
+    print(df0[2].error())
 
-    # f1.cf = vector
-    # f1[2].reduce()
+    f1.cf = vector
+    f1[2].reduce()
+    # f1[2].visualize()
     # # print(f1[2].error())
     #
-    # f2.cf = vector
-    # f2[2].reduce()
+    f2.cf = vector
+    f2[2].reduce()
+    f2[2].visualize()
     # # print(f2[2].error())
     #
-    # f3.cf = scalar
-    # f3[2].reduce()
+    f3.cf = scalar
+    f3[2].reduce()
+    # f3[2].visualize()
     # # print(f3[2].error())
+
+    # f0[2].visualize(f1, f2, f3)
 
     # print()
 

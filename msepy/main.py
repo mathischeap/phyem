@@ -27,6 +27,7 @@ __all__ = [
 ]
 
 
+# will be cleared whenever new msepy implementation is called.
 base = {
     'manifolds': dict(),
     'meshes': dict(),

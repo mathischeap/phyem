@@ -37,6 +37,15 @@ _global_form_variables = {
 }
 
 
+def _clear_forms():
+    """"""
+    for key in list(_global_forms.keys()):
+        del _global_forms[key]
+    for key in list(_global_root_forms_lin_dict.keys()):
+        del _global_root_forms_lin_dict[key]
+
+
+
 from src.form.ap import _parse_root_form_ap
 
 

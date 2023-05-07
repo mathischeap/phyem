@@ -11,15 +11,18 @@ _global_variables = {
 }
 
 
-# MPI
+# MPI setting
 try:
     from mpi4py import MPI
     COMM = MPI.COMM_WORLD
     RANK: int = COMM.Get_rank()
     SIZE: int = COMM.Get_size()
     MASTER_RANK: int = 0  # you can, but you do not need to change this!
-except ModuleNotFoundError:  # if no `mpi4py` installed, just skip it for now.
+except ModuleNotFoundError:  # no `mpi4py` installed.
+    COMM = None
+    RANK = 0
     SIZE: int = 1
+    MASTER_RANK = 0
 
 
 _matplot_setting = {
@@ -56,7 +59,7 @@ _global_lin_repr_setting = {
     'form': [r'\textsf{', r'}'],
     'scalar_parameter': [r'\textsc{', r'}'],
     'abstract_time_sequence': [r'\textit{', r'}'],
-    'abstract_time_interval': [r'\texttt{', r'}'],   # do not use `textsc` as scalar.
+    'abstract_time_interval': [r'\texttt{', r'}'],   # do not use `textsc`.
     'abstract_time_instant': [r'\textsl{', r'}'],
     'array': [r'\textbf{', r'}'],
 }

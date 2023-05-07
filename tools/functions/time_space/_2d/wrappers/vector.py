@@ -6,7 +6,6 @@
 """
 
 from tools.frozen import Frozen
-from importlib import import_module
 from functools import partial
 
 from tools.functions.time_space._2d.wrappers.helpers.scalar_add import t2d_ScalarAdd
@@ -85,10 +84,9 @@ class T2dVector(Frozen):
     def divergence(self):
         pv0_px = self._NPD0_('x')
         pv1_py = self._NPD1_('y')
-        base_path = '.'.join(str(self).split(' ')[0][1:].split('.')[:-2]) + '.'
-        S_CLASS = getattr(import_module(base_path + "scalar"), "t2dScalar")
-        dv0 = S_CLASS(pv0_px)
-        dv1 = S_CLASS(pv1_py)
+        from tools.functions.time_space._2d.wrappers.scalar import T2dScalar
+        dv0 = T2dScalar(pv0_px)
+        dv1 = T2dScalar(pv1_py)
         return dv0 + dv1
 
     @property
@@ -101,10 +99,9 @@ class T2dVector(Frozen):
         """
         pv1_px = self._NPD1_('x')
         pv0_py = self._NPD0_('y')
-        base_path = '.'.join(str(self).split(' ')[0][1:].split('.')[:-2]) + '.'
-        S_CLASS = getattr(import_module(base_path + "scalar"), "t2dScalar")
-        dv0 = S_CLASS(pv1_px)
-        dv1 = S_CLASS(pv0_py)
+        from tools.functions.time_space._2d.wrappers.scalar import T2dScalar
+        dv0 = T2dScalar(pv1_px)
+        dv1 = T2dScalar(pv0_py)
         return dv0 - dv1
 
     def convection_by(self, u):
@@ -211,9 +208,8 @@ class T2dVector(Frozen):
             V1 = t2d_ScalarMultiply(v01, v11)
 
             V0V1 = t2d_ScalarAdd(V0, V1)
-            base_path = '.'.join(str(self).split(' ')[0][1:].split('.')[:-2]) + '.'
-            S_CLASS = getattr(import_module(base_path + "scalar"), "t2dScalar")
-            return S_CLASS(V0V1)
+            from tools.functions.time_space._2d.wrappers.scalar import T2dScalar
+            return T2dScalar(V0V1)
 
         else:
             raise NotImplementedError()

@@ -19,7 +19,6 @@ from tools.functions.time_space._2d.wrappers.helpers.scalar_sub import t2d_Scala
 from tools.functions.time_space._2d.wrappers.helpers.scalar_neg import t2d_ScalarNeg
 from tools.functions.time_space._2d.wrappers.helpers.scalar_mul import t2d_ScalarMultiply
 
-from importlib import import_module
 from functools import partial
 
 
@@ -78,10 +77,9 @@ class T2dScalar(Frozen):
         px = self._NPD_('x')
         py = self._NPD_('y')
 
-        base_path = '.'.join(str(self.__class__).split(' ')[1][1:].split('.')[:-2]) + '.'
-        V_CLASS = getattr(import_module(base_path + "vector"), "t2dVector")
+        from tools.functions.time_space._2d.wrappers.vector import T2dVector
 
-        return V_CLASS(px, py)
+        return T2dVector(px, py)
     
     @property
     def curl(self):
@@ -91,10 +89,9 @@ class T2dScalar(Frozen):
 
         neg_px = - self.__class__(px)
 
-        base_path = '.'.join(str(self.__class__).split(' ')[1][1:].split('.')[:-2]) + '.'
-        V_CLASS = getattr(import_module(base_path + "vector"), "t2dVector")
+        from tools.functions.time_space._2d.wrappers.vector import T2dVector
 
-        return V_CLASS(py, neg_px)
+        return T2dVector(py, neg_px)
 
     def convection_by(self, u):
         """We compute (u cdot nabla) of self.

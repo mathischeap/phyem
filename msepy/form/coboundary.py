@@ -92,8 +92,28 @@ class MsePyRootFormCoboundaryTimeInstant(Frozen):
         space_indicator = space.indicator
         if space_indicator == 'Lambda':  # scalar valued form spaces.
             m, n, k = space.m, space.n, space.k
+            ori = space.orientation
             if m == n == 1 and k == 0:  # 0-form on 1d manifold in 1d space.
                 return 'derivative'
+            elif m == n == 2 and k == 0:
+                if ori == 'inner':
+                    return 'gradient'
+                else:
+                    return 'curl'
+            elif m == n == 2 and k == 1:
+                if ori == 'inner':
+                    return 'rot'
+                else:
+                    return 'divergence'
+            elif m == n == 3:
+                if k == 0:
+                    return 'gradient'
+                elif k == 1:
+                    return 'curl'
+                elif k == 2:
+                    return 'divergence'
+                else:
+                    raise Exception()
             else:
                 raise NotImplementedError()
         else:

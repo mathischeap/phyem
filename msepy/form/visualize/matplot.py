@@ -1,9 +1,13 @@
-
+# -*- coding: utf-8 -*-
+"""
+phyem@RAM-EEMCS-UT
+Yi Zhang
+"""
 
 import numpy as np
 import sys
 if './' not in sys.path:
-    sys.path.append('matplot/')
+    sys.path.append('./')
 
 from tools.frozen import Frozen
 from tools.matplot.plot import plot

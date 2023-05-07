@@ -14,7 +14,6 @@ from functools import partial
 from tools.numerical.time_space._3d.partial_derivative_as_functions import \
     NumericalPartialDerivative_txyz_Functions
 
-from importlib import import_module
 from tools.functions.time_space._3d.wrappers.helpers._3scalars_add import t3d_3ScalarAdd
 from tools.functions.time_space._3d.wrappers.helpers.scalar_sub import t3d_ScalarSub
 from tools.functions.time_space._3d.wrappers.helpers.scalar_mul import t3d_ScalarMultiply
@@ -103,10 +102,9 @@ class T3dVector(Frozen):
 
         scalar_function = t3d_3ScalarAdd(pv0_px, pv1_py, pv2_pz)
 
-        base_path = '.'.join(str(self).split(' ')[0][1:].split('.')[:-2]) + '.'
-        S_CLASS = getattr(import_module(base_path + "scalar"), "t3dScalar")
+        from tools.functions.time_space._3d.wrappers.scalar import T3dScalar
 
-        return S_CLASS(scalar_function)
+        return T3dScalar(scalar_function)
 
     @property
     def curl(self):
@@ -251,9 +249,8 @@ class T3dVector(Frozen):
             V2 = t3d_ScalarMultiply(v02, v12)
 
             V0V1V2 = t3d_3ScalarAdd(V0, V1, V2)
-            base_path = '.'.join(str(self).split(' ')[0][1:].split('.')[:-2]) + '.'
-            S_CLASS = getattr(import_module(base_path + "scalar"), "t3dScalar")
-            return S_CLASS(V0V1V2)
+            from tools.functions.time_space._3d.wrappers.scalar import T3dScalar
+            return T3dScalar(V0V1V2)
 
         else:
             raise NotImplementedError()

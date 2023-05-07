@@ -13,7 +13,6 @@ from tools.frozen import Frozen
 from tools.numerical.time_space._3d.partial_derivative_as_functions import \
     NumericalPartialDerivative_txyz_Functions
 
-from importlib import import_module
 from functools import partial
 
 from tools.functions.time_space._3d.wrappers.helpers.scalar_mul import t3d_ScalarMultiply
@@ -76,10 +75,9 @@ class T3dScalar(Frozen):
         py = self._NPD_('y')
         pz = self._NPD_('z')
 
-        base_path = '.'.join(str(self.__class__).split(' ')[1][1:].split('.')[:-2]) + '.'
-        V_CLASS = getattr(import_module(base_path + "vector"), "t3dVector")
+        from tools.functions.time_space._3d.wrappers.vector import T3dVector
 
-        return V_CLASS(px, py, pz)
+        return T3dVector(px, py, pz)
 
     def convection_by(self, u):
         """We compute (u cdot nabla) of self.
