@@ -9,7 +9,7 @@ import numpy as np
 from types import FunctionType, MethodType
 
 
-class NumericalPartialDerivative_txy(ABC):
+class NumericalPartialDerivativeTxy(ABC):
     """
     Numerical partial derivative, we compute a function or method of 3 inputs:
     ``A=f(t,x,y)``. And we will evaluate dA/dt, dA/dx, dA/dy at `(t, x, y)`. Note that `(x,y)`
@@ -53,7 +53,7 @@ class NumericalPartialDerivative_txy(ABC):
     def ___PRIVATE_evaluate_func_for_y___(self, y):
         return self._func_(self._t_, self._x_, y,)
 
-    def scipy_partial(self, d_):
+    def partial(self, d_):
         """We compute the partial derivative, i.e. ``df/d_``, at points ``*txyz``."""
         if d_ == 't':
             # noinspection PyTypeChecker
@@ -77,16 +77,16 @@ class NumericalPartialDerivative_txy(ABC):
             raise Exception(" <PartialDerivative> : dt, dx or dy or dz? give me 't', 'x', or 'y'.")
 
     @property
-    def scipy_total(self):
+    def total_partial(self):
         """Use scipy to compute the total derivative."""
-        pt = self.scipy_partial('t')
-        px = self.scipy_partial('x')
-        py = self.scipy_partial('y')
+        pt = self.partial('t')
+        px = self.partial('x')
+        py = self.partial('y')
         return pt, px, py
 
     def check_partial_t(self, px_func, tolerance=1e-5):
         """give a analytical function `px_func`, we check if it is the partial-t derivative of the self.func"""
-        self_pt = self.scipy_partial('t')
+        self_pt = self.partial('t')
         func_pt = px_func(self._t_, self._x_, self._y_)
         absolute_error = np.max(np.abs(func_pt-self_pt))
         if absolute_error < tolerance:
@@ -99,7 +99,7 @@ class NumericalPartialDerivative_txy(ABC):
 
     def check_partial_x(self, px_func, tolerance=1e-5):
         """give a analytical function `px_func`, we check if it is the partial-x derivative of the self.func"""
-        self_px = self.scipy_partial('x')
+        self_px = self.partial('x')
         func_px = px_func(self._t_, self._x_, self._y_)
         absolute_error = np.max(np.abs(func_px-self_px))
         if absolute_error < tolerance:
@@ -112,7 +112,7 @@ class NumericalPartialDerivative_txy(ABC):
 
     def check_partial_y(self, py_func, tolerance=1e-5):
         """give a analytical function `px_func`, we check if it is the partial-y derivative of the self.func"""
-        self_py = self.scipy_partial('y')
+        self_py = self.partial('y')
         func_py = py_func(self._t_, self._x_, self._y_)
         absolute_error = np.max(np.abs(func_py-self_py))
         if absolute_error < tolerance:
@@ -143,6 +143,6 @@ if __name__ == '__main__':
     x = np.random.rand(11, 12)
     y = np.random.rand(11, 12)
 
-    NP = NumericalPartialDerivative_txy(func, t, x, y)
+    NP = NumericalPartialDerivativeTxy(func, t, x, y)
     #
     assert all(NP.check_total(Pt, Px, Py))

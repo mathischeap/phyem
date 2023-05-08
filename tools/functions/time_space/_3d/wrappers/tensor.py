@@ -12,7 +12,7 @@ from tools.frozen import Frozen
 from functools import partial
 
 from tools.numerical.time_space._3d.partial_derivative_as_functions import \
-    NumericalPartialDerivative_txyz_Functions
+    NumericalPartialDerivativeTxyzFunctions
 
 
 class T3dTensor(Frozen):
@@ -56,55 +56,55 @@ class T3dTensor(Frozen):
     @property
     def _NPD00_(self):
         if self.__NPD00__ is None:
-            self.__NPD00__ = NumericalPartialDerivative_txyz_Functions(self._t00_)
+            self.__NPD00__ = NumericalPartialDerivativeTxyzFunctions(self._t00_)
         return self.__NPD00__
 
     @property
     def _NPD01_(self):
         if self.__NPD01__ is None:
-            self.__NPD01__ = NumericalPartialDerivative_txyz_Functions(self._t01_)
+            self.__NPD01__ = NumericalPartialDerivativeTxyzFunctions(self._t01_)
         return self.__NPD01__
 
     @property
     def _NPD02_(self):
         if self.__NPD02__ is None:
-            self.__NPD02__ = NumericalPartialDerivative_txyz_Functions(self._t02_)
+            self.__NPD02__ = NumericalPartialDerivativeTxyzFunctions(self._t02_)
         return self.__NPD02__
 
     @property
     def _NPD10_(self):
         if self.__NPD10__ is None:
-            self.__NPD10__ = NumericalPartialDerivative_txyz_Functions(self._t10_)
+            self.__NPD10__ = NumericalPartialDerivativeTxyzFunctions(self._t10_)
         return self.__NPD10__
 
     @property
     def _NPD11_(self):
         if self.__NPD11__ is None:
-            self.__NPD11__ = NumericalPartialDerivative_txyz_Functions(self._t11_)
+            self.__NPD11__ = NumericalPartialDerivativeTxyzFunctions(self._t11_)
         return self.__NPD11__
 
     @property
     def _NPD12_(self):
         if self.__NPD12__ is None:
-            self.__NPD12__ = NumericalPartialDerivative_txyz_Functions(self._t12_)
+            self.__NPD12__ = NumericalPartialDerivativeTxyzFunctions(self._t12_)
         return self.__NPD12__
 
     @property
     def _NPD20_(self):
         if self.__NPD20__ is None:
-            self.__NPD20__ = NumericalPartialDerivative_txyz_Functions(self._t20_)
+            self.__NPD20__ = NumericalPartialDerivativeTxyzFunctions(self._t20_)
         return self.__NPD20__
 
     @property
     def _NPD21_(self):
         if self.__NPD21__ is None:
-            self.__NPD21__ = NumericalPartialDerivative_txyz_Functions(self._t21_)
+            self.__NPD21__ = NumericalPartialDerivativeTxyzFunctions(self._t21_)
         return self.__NPD21__
 
     @property
     def _NPD22_(self):
         if self.__NPD22__ is None:
-            self.__NPD22__ = NumericalPartialDerivative_txyz_Functions(self._t22_)
+            self.__NPD22__ = NumericalPartialDerivativeTxyzFunctions(self._t22_)
         return self.__NPD22__
 
     @property

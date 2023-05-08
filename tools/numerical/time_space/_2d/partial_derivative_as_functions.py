@@ -7,10 +7,10 @@ if './' not in sys.path:
 from types import FunctionType, MethodType
 from tools.frozen import Frozen
 
-from tools.numerical.time_space._2d.partial_derivative import NumericalPartialDerivative_txy
+from tools.numerical.time_space._2d.partial_derivative import NumericalPartialDerivativeTxy
 
 
-class NumericalPartialDerivative_txy_Functions(Frozen):
+class NumericalPartialDerivativeTxyFunctions(Frozen):
     """
     Like the NumericalPartialDerivative_txy class but this will produce (through __call__ method) callable
     functions (method).
@@ -48,22 +48,22 @@ class NumericalPartialDerivative_txy_Functions(Frozen):
         """pf/dt
         This partial derivative function will only accept input t is a number, i.e. int or float.
         """
-        NPD4 = NumericalPartialDerivative_txy(self._func_, t, x, y)
-        return NPD4.scipy_partial('t')
+        NPD4 = NumericalPartialDerivativeTxy(self._func_, t, x, y)
+        return NPD4.partial('t')
 
     def ___PRIVATE_partial_func___partial_x___(self, t, x, y):
         """pf/dx
         This partial derivative function will only accept input t is a number, i.e. int or float.
         """
-        NPD4 = NumericalPartialDerivative_txy(self._func_, t, x, y)
-        return NPD4.scipy_partial('x')
+        NPD4 = NumericalPartialDerivativeTxy(self._func_, t, x, y)
+        return NPD4.partial('x')
 
     def ___PRIVATE_partial_func___partial_y___(self, t, x, y):
         """pf/dy
         This partial derivative function will only accept input t is a number, i.e. int or float.
         """
-        NPD4 = NumericalPartialDerivative_txy(self._func_, t, x, y)
-        return NPD4.scipy_partial('y')
+        NPD4 = NumericalPartialDerivativeTxy(self._func_, t, x, y)
+        return NPD4.partial('y')
 
 
 if __name__ == '__main__':
@@ -80,11 +80,11 @@ if __name__ == '__main__':
     x = np.random.rand(11, 12)
     y = np.random.rand(11, 12)
 
-    NP = NumericalPartialDerivative_txy(func, t, x, y)
+    NP = NumericalPartialDerivativeTxy(func, t, x, y)
     #
     assert all(NP.check_total(Pt, Px, Py))
 
-    NPD4F = NumericalPartialDerivative_txy_Functions(func)
+    NPD4F = NumericalPartialDerivativeTxyFunctions(func)
 
     Npt = NPD4F('t')
     Npx = NPD4F('x')

@@ -7,10 +7,10 @@ if './' not in sys.path:
 from types import FunctionType, MethodType
 from tools.frozen import Frozen
 
-from tools.numerical.time_space._1d.partial_derivative import NumericalPartialDerivative_tx
+from tools.numerical.time_space._1d.partial_derivative import NumericalPartialDerivativeTx
 
 
-class NumericalPartialDerivative_tx_Functions(Frozen):
+class NumericalPartialDerivativeTxFunctions(Frozen):
     """
     Like the NumericalPartialDerivative_txy class but this will produce (through __call__ method) callable
     functions (method).
@@ -46,15 +46,15 @@ class NumericalPartialDerivative_tx_Functions(Frozen):
         """pf/dt
         This partial derivative function will only accept input t is a number, i.e. int or float.
         """
-        NPD4 = NumericalPartialDerivative_tx(self._func_, t, x)
-        return NPD4.scipy_partial('t')
+        NPD4 = NumericalPartialDerivativeTx(self._func_, t, x)
+        return NPD4.partial('t')
 
     def ___PRIVATE_partial_func___partial_x___(self, t, x):
         """pf/dx
         This partial derivative function will only accept input t is a number, i.e. int or float.
         """
-        NPD4 = NumericalPartialDerivative_tx(self._func_, t, x)
-        return NPD4.scipy_partial('x')
+        NPD4 = NumericalPartialDerivativeTx(self._func_, t, x)
+        return NPD4.partial('x')
 
 
 if __name__ == '__main__':
@@ -69,11 +69,11 @@ if __name__ == '__main__':
     t = 5
     x = np.random.rand(11, 12)
 
-    NP = NumericalPartialDerivative_tx(func, t, x)
+    NP = NumericalPartialDerivativeTx(func, t, x)
     #
     assert all(NP.check_total(Pt, Px))
 
-    NPD4F = NumericalPartialDerivative_tx_Functions(func)
+    NPD4F = NumericalPartialDerivativeTxFunctions(func)
 
     Npt = NPD4F('t')
     Npx = NPD4F('x')

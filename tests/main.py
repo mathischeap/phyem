@@ -10,7 +10,9 @@ By run this file, we
     - re-generate the web page if possible.
 
 $ python tests/main.py
+
 """
+
 import sys
 if './' not in sys.path:
     sys.path.append('./')

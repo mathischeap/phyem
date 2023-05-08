@@ -62,6 +62,7 @@ class MsePyRootFormCoboundaryTimeInstant(Frozen):
         ab_df = self._f.abstract.__class__(d_ab_space, sym_repr, lin_repr, True, update_cache=False)
         d_ab_space.finite.specify_form(ab_df, self._f.degree)
         df = self._f.__class__(ab_df)
+
         assert df.space is d_msepy_space, f"must be!"
         incidence_matrix = self._f.coboundary.incidence_matrix
         cochain_at_t = self._f.cochain[self._t].local
@@ -98,13 +99,17 @@ class MsePyRootFormCoboundaryTimeInstant(Frozen):
             elif m == n == 2 and k == 0:
                 if ori == 'inner':
                     return 'gradient'
-                else:
+                elif ori == 'outer':
                     return 'curl'
+                else:
+                    raise Exception()
             elif m == n == 2 and k == 1:
                 if ori == 'inner':
                     return 'rot'
-                else:
+                elif ori == 'outer':
                     return 'divergence'
+                else:
+                    raise Exception()
             elif m == n == 3:
                 if k == 0:
                     return 'gradient'

@@ -10,7 +10,7 @@ import numpy as np
 from types import FunctionType, MethodType
 
 
-class NumericalPartialDerivative_tx(ABC):
+class NumericalPartialDerivativeTx(ABC):
     """
     partial^n.
     """
@@ -48,7 +48,7 @@ class NumericalPartialDerivative_tx(ABC):
     def ___PRIVATE_evaluate_func_for_x___(self, x):
         return self._func_(self._t_, x)
 
-    def scipy_partial(self, d_):
+    def partial(self, d_):
         """We compute the partial derivative, i.e. ``df/d_``, at points ``*tx``."""
         if d_ == 't':
             # noinspection PyTypeChecker
@@ -66,15 +66,15 @@ class NumericalPartialDerivative_tx(ABC):
             raise Exception(" <PartialDerivative> : dt or dx? give me 't' or 'x'.")
 
     @property
-    def scipy_total(self):
+    def total_partial(self):
         """Use scipy to compute the total derivative."""
-        pt = self.scipy_partial('t')
-        px = self.scipy_partial('x')
+        pt = self.partial('t')
+        px = self.partial('x')
         return pt, px
 
     def check_partial_t(self, px_func, tolerance=1e-5):
         """give an analytical function `px_func`, we check if it is the partial-t derivative of the self.func"""
-        self_pt = self.scipy_partial('t')
+        self_pt = self.partial('t')
         func_pt = px_func(self._t_, self._x_)
         absolute_error = np.max(np.abs(func_pt-self_pt))
         if absolute_error < tolerance:
@@ -87,7 +87,7 @@ class NumericalPartialDerivative_tx(ABC):
 
     def check_partial_x(self, px_func, tolerance=1e-5):
         """give an analytical function `px_func`, we check if it is the partial-x derivative of the self.func"""
-        self_px = self.scipy_partial('x')
+        self_px = self.partial('x')
         func_px = px_func(self._t_, self._x_)
         absolute_error = np.max(np.abs(func_px-self_px))
         if absolute_error < tolerance:
@@ -114,7 +114,7 @@ if __name__ == '__main__':
     t = 5
     x = np.random.rand(11, 12)
 
-    NP = NumericalPartialDerivative_tx(func, t, x)
+    NP = NumericalPartialDerivativeTx(func, t, x)
 
     assert all(NP.check_total(Pt, Px))
     print(111)

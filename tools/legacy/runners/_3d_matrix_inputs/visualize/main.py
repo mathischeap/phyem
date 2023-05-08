@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 from tools.frozen import Frozen
-from tools.run.runners._3d_matrix_inputs.visualize.quick import ___SPM3IRV_quick___
+from tools.legacy.runners._3d_matrix_inputs.visualize.quick import ___SPM3IRV_quick___
 
 
 # noinspection PyUnusedLocal

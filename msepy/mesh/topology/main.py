@@ -129,7 +129,6 @@ class MsePyMeshTopology(Frozen):
                         pass
             self._corner_numbering = gathering.astype(int)
         elif n == 3:
-
             c_i2n = {0: 'NWB', 1: 'SWB', 2: 'NEB', 3: 'SEB', 4: 'NWF', 5: 'SWF', 6: "NEF", 7: 'SEF'}
             c_n2i = {'NWB': 0, 'SWB': 1, 'NEB': 2, 'SEB': 3, 'NWF': 4, 'SWF': 5, "NEF": 6, 'SEF': 7,
                      'NBW': 0, 'SBW': 1, 'NBE': 2, 'SBE': 3, 'NFW': 4, 'SFW': 5, "NFE": 6, 'SFE': 7,
@@ -148,12 +147,12 @@ class MsePyMeshTopology(Frozen):
                         corner_name = c_i2n[k]
 
                         _attachment_corners_1_ = \
-                            self.___find_the_elements_sharing_corner_edge___(i, corner_name[0:2])
+                            self._find_the_elements_sharing_corner_edge(i, corner_name[0:2])
                         _attachment_corners_2_ = \
-                            self.___find_the_elements_sharing_corner_edge___(i, corner_name[1:3])
+                            self._find_the_elements_sharing_corner_edge(i, corner_name[1:3])
                         _attachment_corners_3_ = \
-                            self.___find_the_elements_sharing_corner_edge___(i, corner_name[0:3:2])
-                        self._corner_attachment[current_num] = self.___group_edges_into_corners___(
+                            self._find_the_elements_sharing_corner_edge(i, corner_name[0:3:2])
+                        self._corner_attachment[current_num] = self._group_edges_into_corners(
                             i,
                             _attachment_corners_1_,
                             _attachment_corners_2_,
@@ -166,7 +165,7 @@ class MsePyMeshTopology(Frozen):
                                 gathering[int(element), c_n2i[cn]] = current_num
                             except ValueError:
                                 pass
-                        assert gathering[i, k] != -1, " <Geometry3D> "  # this edge has to be numberded now.
+                        assert gathering[i, k] != -1, " <Geometry3D> "  # this edge has to be numbered now.
                         current_num += 1
                     else:  # it is numbered, we skip it.
                         pass
@@ -226,7 +225,7 @@ class MsePyMeshTopology(Frozen):
         else:
             raise NotImplementedError()
 
-    def ___find_the_elements_sharing_corner_edge___(self, i, edge_name):
+    def _find_the_elements_sharing_corner_edge(self, i, edge_name):
         """
         Find all elements and domain boundaries that contain the edge named
         `edge_name` of ith element.
@@ -292,7 +291,7 @@ class MsePyMeshTopology(Frozen):
             output += (element + '-' + edge_name,)
         return output
 
-    def ___group_edges_into_corners___(self, i, *args):
+    def _group_edges_into_corners(self, i, *args):
         """
         As we use the method ___find_the_elements_sharing_corner_edge___ to find the
         nearby elements, the format in the attachment is as {'7-NE', '7-NF',
@@ -325,10 +324,10 @@ class MsePyMeshTopology(Frozen):
                     for I_ in _dict_:
                         if I_ != i:
                             if len(_dict_[I_]) == 3:
-                                ARGS.append(self.___find_the_elements_sharing_corner_edge___(I_, _dict_[I_][0:2]))
-                                ARGS.append(self.___find_the_elements_sharing_corner_edge___(I_, _dict_[I_][1:3]))
-                                ARGS.append(self.___find_the_elements_sharing_corner_edge___(I_, _dict_[I_][0:3:2]))
-                    return self.___group_edges_into_corners___(i, *args, *ARGS)
+                                ARGS.append(self._find_the_elements_sharing_corner_edge(I_, _dict_[I_][0:2]))
+                                ARGS.append(self._find_the_elements_sharing_corner_edge(I_, _dict_[I_][1:3]))
+                                ARGS.append(self._find_the_elements_sharing_corner_edge(I_, _dict_[I_][0:3:2]))
+                    return self._group_edges_into_corners(i, *args, *ARGS)
 
                 elif len(_dict_[key]) == 3:
                     pass
@@ -394,7 +393,7 @@ class MsePyMeshTopology(Frozen):
                         # Now we first find the elements sharing this edge
                         edge_name = e_i2n[k]
                         self._edge_attachment[correct_num] = \
-                            self.___find_the_elements_sharing_corner_edge___(i, edge_name)
+                            self._find_the_elements_sharing_corner_edge(i, edge_name)
                         for item in self._edge_attachment[correct_num]:
                             # now, we number this group edges
 

@@ -8,7 +8,7 @@ from tools.frozen import Frozen
 from functools import partial
 
 from tools.numerical.time_space._2d.partial_derivative_as_functions import \
-    NumericalPartialDerivative_txy_Functions
+    NumericalPartialDerivativeTxyFunctions
 
 
 class T2dTensor(Frozen):
@@ -52,25 +52,25 @@ class T2dTensor(Frozen):
     @property
     def _NPD00_(self):
         if self.__NPD00__ is None:
-            self.__NPD00__ = NumericalPartialDerivative_txy_Functions(self._t00_)
+            self.__NPD00__ = NumericalPartialDerivativeTxyFunctions(self._t00_)
         return self.__NPD00__
 
     @property
     def _NPD01_(self):
         if self.__NPD01__ is None:
-            self.__NPD01__ = NumericalPartialDerivative_txy_Functions(self._t01_)
+            self.__NPD01__ = NumericalPartialDerivativeTxyFunctions(self._t01_)
         return self.__NPD01__
 
     @property
     def _NPD10_(self):
         if self.__NPD10__ is None:
-            self.__NPD10__ = NumericalPartialDerivative_txy_Functions(self._t10_)
+            self.__NPD10__ = NumericalPartialDerivativeTxyFunctions(self._t10_)
         return self.__NPD10__
 
     @property
     def _NPD11_(self):
         if self.__NPD11__ is None:
-            self.__NPD11__ = NumericalPartialDerivative_txy_Functions(self._t11_)
+            self.__NPD11__ = NumericalPartialDerivativeTxyFunctions(self._t11_)
         return self.__NPD11__
 
     @property

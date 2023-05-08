@@ -14,7 +14,7 @@ from tools.functions.time_space._2d.wrappers.helpers.scalar_neg import t2d_Scala
 from tools.functions.time_space._2d.wrappers.helpers.scalar_mul import t2d_ScalarMultiply
 
 from tools.numerical.time_space._2d.partial_derivative_as_functions import \
-    NumericalPartialDerivative_txy_Functions
+    NumericalPartialDerivativeTxyFunctions
 
 
 class T2dVector(Frozen):
@@ -65,13 +65,13 @@ class T2dVector(Frozen):
     @property
     def _NPD0_(self):
         if self.__NPD0__ is None:
-            self.__NPD0__ = NumericalPartialDerivative_txy_Functions(self._v0_)
+            self.__NPD0__ = NumericalPartialDerivativeTxyFunctions(self._v0_)
         return self.__NPD0__
 
     @property
     def _NPD1_(self):
         if self.__NPD1__ is None:
-            self.__NPD1__ = NumericalPartialDerivative_txy_Functions(self._v1_)
+            self.__NPD1__ = NumericalPartialDerivativeTxyFunctions(self._v1_)
         return self.__NPD1__
 
     @property

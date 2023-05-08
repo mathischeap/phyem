@@ -8,7 +8,7 @@ if './' not in sys.path:
 from tools.frozen import Frozen
 from functools import partial
 from tools.numerical.time_space._1d.partial_derivative_as_functions import \
-    NumericalPartialDerivative_tx_Functions
+    NumericalPartialDerivativeTxFunctions
 
 
 class T1dScalar(Frozen):
@@ -31,7 +31,7 @@ class T1dScalar(Frozen):
     def _NPD_(self):
         """"""
         if self.__NPD__ is None:
-            self.__NPD__ = NumericalPartialDerivative_tx_Functions(self._s_)
+            self.__NPD__ = NumericalPartialDerivativeTxFunctions(self._s_)
         return self.__NPD__
 
     @property

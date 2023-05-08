@@ -4,23 +4,21 @@ if './' not in sys.path:
     sys.path.append('/')
 
 from abc import ABC
-import numdifftools as nd
 import numpy as np
 from types import FunctionType, MethodType
+from tools.numerical.derivative import derivative
 
 
-class NumericalPartialDerivative_txyz(ABC):
+class NumericalPartialDerivativeTxyz(ABC):
     """
     Numerical partial derivative, we call it '4' because we compute a function or method of 4 inputs like
     ``A=f(t,x,y,z)``. And we will evaluate dA/dt, dA/dx, dA/dy, dA/dz at `(t, x, y, z)`. Note that `(x,y,z)`
     must be of the same shape; no matter the dimensions (we do not do mesh grid to them). And t must be 1-d.
     """
-    def __init__(self, func, t, x, y, z, step=None, n=1, order=2):
+    def __init__(self, func, t, x, y, z, step=1e-6):
         self.___PRIVATE_check_func___(func)
         self.___PRIVATE_check_txyz___(t, x, y, z)
         self._step_ = step
-        self._n_ = n
-        self._order_ = order
 
     def ___PRIVATE_check_func___(self, func):
         assert callable(func), " <PartialDerivative> : func is not callable."
@@ -54,47 +52,33 @@ class NumericalPartialDerivative_txyz(ABC):
     def ___PRIVATE_evaluate_func_for_z___(self, z):
         return self._func_(self._t_, self._x_, self._y_, z)
 
-    def scipy_partial(self, d_):
+    def partial(self, d_):
         """We compute the partial derivative, i.e. ``df/d_``, at points ``*txyz``."""
         if d_ == 't':
-            # noinspection PyTypeChecker
-            return nd.Derivative(
-                self.___PRIVATE_evaluate_func_for_t___,
-                step=self._step_, n=self._n_, order=self._order_
-            )(self._t_)
+            data = derivative(self.___PRIVATE_evaluate_func_for_t___, self._t_, h=self._step_)
         elif d_ == 'x':
-            # noinspection PyTypeChecker
-            return nd.Derivative(
-                self.___PRIVATE_evaluate_func_for_x___,
-                step=self._step_, n=self._n_, order=self._order_
-            )(self._x_)
+            data = derivative(self.___PRIVATE_evaluate_func_for_x___, self._x_, h=self._step_)
         elif d_ == 'y':
-            # noinspection PyTypeChecker
-            return nd.Derivative(
-                self.___PRIVATE_evaluate_func_for_y___,
-                step=self._step_, n=self._n_, order=self._order_
-            )(self._y_)
+            data = derivative(self.___PRIVATE_evaluate_func_for_y___, self._y_, h=self._step_)
         elif d_ == 'z':
-            # noinspection PyTypeChecker
-            return nd.Derivative(
-                self.___PRIVATE_evaluate_func_for_z___,
-                step=self._step_, n=self._n_, order=self._order_
-            )(self._z_)
+            data = derivative(self.___PRIVATE_evaluate_func_for_z___, self._z_, h=self._step_)
         else:
             raise Exception(" <PartialDerivative> : dt, dx or dy or dz? give me 't', 'x', 'y' or 'z'.")
 
+        return data
+
     @property
-    def scipy_total(self):
+    def total_partial(self):
         """Use scipy to compute the total derivative."""
-        pt = self.scipy_partial('t')
-        px = self.scipy_partial('x')
-        py = self.scipy_partial('y')
-        pz = self.scipy_partial('z')
+        pt = self.partial('t')
+        px = self.partial('x')
+        py = self.partial('y')
+        pz = self.partial('z')
         return pt, px, py, pz
 
     def check_partial_t(self, px_func, tolerance=1e-5):
         """give a analytical function `px_func`, we check if it is the partial-t derivative of the self.func"""
-        self_pt = self.scipy_partial('t')
+        self_pt = self.partial('t')
         func_pt = px_func(self._t_, self._x_, self._y_, self._z_)
         absolute_error = np.max(np.abs(func_pt-self_pt))
         if absolute_error < tolerance:
@@ -107,7 +91,7 @@ class NumericalPartialDerivative_txyz(ABC):
 
     def check_partial_x(self, px_func, tolerance=1e-5):
         """give a analytical function `px_func`, we check if it is the partial-x derivative of the self.func"""
-        self_px = self.scipy_partial('x')
+        self_px = self.partial('x')
         func_px = px_func(self._t_, self._x_, self._y_, self._z_)
         absolute_error = np.max(np.abs(func_px-self_px))
         if absolute_error < tolerance:
@@ -120,7 +104,7 @@ class NumericalPartialDerivative_txyz(ABC):
 
     def check_partial_y(self, py_func, tolerance=1e-5):
         """give a analytical function `px_func`, we check if it is the partial-y derivative of the self.func"""
-        self_py = self.scipy_partial('y')
+        self_py = self.partial('y')
         func_py = py_func(self._t_, self._x_, self._y_, self._z_)
         absolute_error = np.max(np.abs(func_py-self_py))
         if absolute_error < tolerance:
@@ -133,7 +117,7 @@ class NumericalPartialDerivative_txyz(ABC):
 
     def check_partial_z(self, pz_func, tolerance=1e-5):
         """give a analytical function `px_func`, we check if it is the partial-z derivative of the self.func"""
-        self_pz = self.scipy_partial('z')
+        self_pz = self.partial('z')
         func_pz = pz_func(self._t_, self._x_, self._y_, self._z_)
         absolute_error = np.max(np.abs(func_pz-self_pz))
         if absolute_error < tolerance:
@@ -167,5 +151,5 @@ if __name__ == '__main__':
     y = np.random.rand(11, 12, 13)
     z = np.random.rand(11, 12, 13)
 
-    NP = NumericalPartialDerivative_txyz(func, t, x, y, z)
+    NP = NumericalPartialDerivativeTxyz(func, t, x, y, z)
     assert all(NP.check_total(Pt, Px, Py, Pz))

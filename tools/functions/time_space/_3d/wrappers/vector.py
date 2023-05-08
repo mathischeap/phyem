@@ -12,7 +12,7 @@ from tools.frozen import Frozen
 from functools import partial
 
 from tools.numerical.time_space._3d.partial_derivative_as_functions import \
-    NumericalPartialDerivative_txyz_Functions
+    NumericalPartialDerivativeTxyzFunctions
 
 from tools.functions.time_space._3d.wrappers.helpers._3scalars_add import t3d_3ScalarAdd
 from tools.functions.time_space._3d.wrappers.helpers.scalar_sub import t3d_ScalarSub
@@ -72,19 +72,19 @@ class T3dVector(Frozen):
     @property
     def _NPD0_(self):
         if self.__NPD0__ is None:
-            self.__NPD0__ = NumericalPartialDerivative_txyz_Functions(self._v0_)
+            self.__NPD0__ = NumericalPartialDerivativeTxyzFunctions(self._v0_)
         return self.__NPD0__
 
     @property
     def _NPD1_(self):
         if self.__NPD1__ is None:
-            self.__NPD1__ = NumericalPartialDerivative_txyz_Functions(self._v1_)
+            self.__NPD1__ = NumericalPartialDerivativeTxyzFunctions(self._v1_)
         return self.__NPD1__
 
     @property
     def _NPD2_(self):
         if self.__NPD2__ is None:
-            self.__NPD2__ = NumericalPartialDerivative_txyz_Functions(self._v2_)
+            self.__NPD2__ = NumericalPartialDerivativeTxyzFunctions(self._v2_)
         return self.__NPD2__
 
     @property

@@ -7,10 +7,10 @@ from types import FunctionType, MethodType
 import numpy as np
 from tools.frozen import Frozen
 
-from tools.numerical.time_space._3d.partial_derivative import NumericalPartialDerivative_txyz
+from tools.numerical.time_space._3d.partial_derivative import NumericalPartialDerivativeTxyz
 
 
-class NumericalPartialDerivative_txyz_Functions(Frozen):
+class NumericalPartialDerivativeTxyzFunctions(Frozen):
     """Like the NumericalPartialDerivative_txyz class but this will produce (through __call__ method) callable
     functions (method).
     """
@@ -47,29 +47,29 @@ class NumericalPartialDerivative_txyz_Functions(Frozen):
         """pf/dt
         This partial derivative function will only accept input t is a number, i.e. int or float.
         """
-        NPD4 = NumericalPartialDerivative_txyz(self._func_, t, x, y, z)
-        return NPD4.scipy_partial('t')
+        NPD4 = NumericalPartialDerivativeTxyz(self._func_, t, x, y, z)
+        return NPD4.partial('t')
 
     def ___PRIVATE_partial_func___partial_x___(self, t, x, y, z):
         """pf/dx
         This partial derivative function will only accept input t is a number, i.e. int or float.
         """
-        NPD4 = NumericalPartialDerivative_txyz(self._func_, t, x, y, z)
-        return NPD4.scipy_partial('x')
+        NPD4 = NumericalPartialDerivativeTxyz(self._func_, t, x, y, z)
+        return NPD4.partial('x')
 
     def ___PRIVATE_partial_func___partial_y___(self, t, x, y, z):
         """pf/dy
         This partial derivative function will only accept input t is a number, i.e. int or float.
         """
-        NPD4 = NumericalPartialDerivative_txyz(self._func_, t, x, y, z)
-        return NPD4.scipy_partial('y')
+        NPD4 = NumericalPartialDerivativeTxyz(self._func_, t, x, y, z)
+        return NPD4.partial('y')
 
     def ___PRIVATE_partial_func___partial_z___(self, t, x, y, z):
         """pf/dz
         This partial derivative function will only accept input t is a number, i.e. int or float.
         """
-        NPD4 = NumericalPartialDerivative_txyz(self._func_, t, x, y, z)
-        return NPD4.scipy_partial('z')
+        NPD4 = NumericalPartialDerivativeTxyz(self._func_, t, x, y, z)
+        return NPD4.partial('z')
 
 
 if __name__ == '__main__':
@@ -87,11 +87,11 @@ if __name__ == '__main__':
     y = np.random.rand(11, 12, 13)
     z = np.random.rand(11, 12, 13)
 
-    NP = NumericalPartialDerivative_txyz(func, t, x, y, z)
+    NP = NumericalPartialDerivativeTxyz(func, t, x, y, z)
 
     assert all(NP.check_total(Pt, Px, Py, Pz))
 
-    NPD4F = NumericalPartialDerivative_txyz_Functions(func)
+    NPD4F = NumericalPartialDerivativeTxyzFunctions(func)
 
     Npt = NPD4F('t')
     Npx = NPD4F('x')

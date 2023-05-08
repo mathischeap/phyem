@@ -12,7 +12,7 @@ if './' not in sys.path:
 from tools.frozen import Frozen
 
 from tools.numerical.time_space._2d.partial_derivative_as_functions import \
-    NumericalPartialDerivative_txy_Functions
+    NumericalPartialDerivativeTxyFunctions
 
 from tools.functions.time_space._2d.wrappers.helpers.scalar_add import t2d_ScalarAdd
 from tools.functions.time_space._2d.wrappers.helpers.scalar_sub import t2d_ScalarSub
@@ -61,7 +61,7 @@ class T2dScalar(Frozen):
     def _NPD_(self):
         """"""
         if self.__NPD__ is None:
-            self.__NPD__ = NumericalPartialDerivative_txy_Functions(self._s_)
+            self.__NPD__ = NumericalPartialDerivativeTxyFunctions(self._s_)
         return self.__NPD__
 
     @property
@@ -87,7 +87,7 @@ class T2dScalar(Frozen):
         px = self._NPD_('x')
         py = self._NPD_('y')
 
-        neg_px = - self.__class__(px)
+        neg_px = (- self.__class__(px))._s_
 
         from tools.functions.time_space._2d.wrappers.vector import T2dVector
 

@@ -9,6 +9,7 @@ if './' not in sys.path:
 from tools.frozen import Frozen
 from msepy.space.gathering_matrix.main import MsePyGatheringMatrix
 from msepy.space.incidence_matrix.main import MsePyIncidenceMatrix
+from msepy.space.mass_matrix.main import MsePyMassMatrix
 from msepy.space.local_numbering.main import MsePyLocalNumbering
 from msepy.space.num_local_dofs.main import MsePyNumLocalDofs
 from msepy.space.num_local_dof_components.main import MsePyNumLocalDofComponents
@@ -35,6 +36,7 @@ class MsePySpace(Frozen):
         self._local_numbering = None
         self._gathering_matrix = None
         self._incidence_matrix = None
+        self._mass_matrix = None
         self._basis_functions = None
         self._num_local_dofs = None
         self._num_local_dof_components = None
@@ -119,6 +121,13 @@ class MsePySpace(Frozen):
         if self._incidence_matrix is None:
             self._incidence_matrix = MsePyIncidenceMatrix(self)
         return self._incidence_matrix
+
+    @property
+    def mass_matrix(self):
+        """incidence_matrix"""
+        if self._mass_matrix is None:
+            self._mass_matrix = MsePyMassMatrix(self)
+        return self._mass_matrix
 
     @property
     def gathering_matrix(self):

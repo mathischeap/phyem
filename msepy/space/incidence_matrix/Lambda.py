@@ -19,7 +19,6 @@ class MsePyIncidenceMatrixLambda(Frozen):
         self._space = space
         self._k = space.abstract.k
         self._n = space.abstract.n  # manifold dimensions
-        assert self._k != self._n, f"top form space has no incidence matrix."
         self._orientation = space.abstract.orientation
         self._cache = dict()
         self._freeze()

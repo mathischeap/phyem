@@ -209,7 +209,8 @@ if __name__ == '__main__':
     # msepy.config(manifold)('crazy', c=0., periodic=False, bounds=[[0, 2] for _ in range(space_dim)])
     msepy.config(manifold)('crazy_multi', c=0., bounds=[[0, 2] for _ in range(space_dim)])
     # msepy.config(mnf)('backward_step')
-    msepy.config(mesh)(([3, 3, 3, 3, 3], [1, 1, 1, 1, 1], [2, 2, 3, 3]))
+    # msepy.config(mesh)(([3, 3, 3, 3, 3], [1, 1, 1, 1, 1], [2, 2, 3, 3]))
+    msepy.config(mesh)((10, 10, 10))
     # msepy.config(mesh)(([3, 3, 2], ))
     # mesh.visualize()
 
@@ -227,25 +228,28 @@ if __name__ == '__main__':
 
     scalar = ph.vc.scalar(fx)
     vector = ph.vc.vector(ux, uy, uz)
-    f0.cf = scalar
-    f0[2].reduce()
+
+    gm = f3.cochain.gathering_matrix
+
+    # f0.cf = scalar
+    # f0[2].reduce()
     # f0[2].visualize()
     # print(f0[2].error())
-    df0 = f0[2].coboundary()
-    print(df0[2].error())
+    # df0 = f0[2].coboundary()
+    # print(df0[2].error())
 
-    f1.cf = vector
-    f1[2].reduce()
+    # f1.cf = vector
+    # f1[2].reduce()
     # f1[2].visualize()
     # # print(f1[2].error())
     #
-    f2.cf = vector
-    f2[2].reduce()
-    f2[2].visualize()
+    # f2.cf = vector
+    # f2[2].reduce()
+    # f2[2].visualize()
     # # print(f2[2].error())
     #
-    f3.cf = scalar
-    f3[2].reduce()
+    # f3.cf = scalar
+    # f3[2].reduce()
     # f3[2].visualize()
     # # print(f3[2].error())
 

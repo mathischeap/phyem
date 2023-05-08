@@ -13,8 +13,11 @@ if './' not in sys.path:
     sys.path.append('./')
 
 import __init__ as ph
+assert ph.config.SIZE == 1, f"msepy does not work with multiple ranks."
 
-from tools.run.reader import ParallelMatrix3dInputRunner, RunnerDataReader
+from tools.runner import ParallelMatrix3dInputRunner, RunnerDataReader
+
+print(f"[MsePy] >>> <m1n1> ...")
 
 
 def fx(t, x):
@@ -89,7 +92,6 @@ def test_function(K, N, c):
 
 current_dir = os.path.dirname(__file__)
 
-
 Ns = [[1, 1, 1, 1],
       [3, 3, 3, 3]]
 Ks = [[2, 4, 6, 8],
@@ -133,6 +135,7 @@ assert abs(o1-2) < 0.1
 assert abs(o2-4) < 0.1
 assert abs(o3-2) < 0.1
 assert abs(o4-4) < 0.3
+
 orders = PR.visualize(
     'loglog', 'N', 'f1_error', prime='input2', hcp=1, usetex=True,
     labels=['$N=1,c=0$', '$N=3, c=0$',
@@ -154,6 +157,28 @@ assert abs(o1-1) < 0.1
 assert abs(o2-3) < 0.1
 assert abs(o3-1) < 0.5
 assert abs(o4-3) < 0.5
+
+orders = PR.visualize(
+    'loglog', 'N', 'df_error', prime='input2', hcp=1, usetex=True,
+    labels=['$N=1,c=0$', '$N=3, c=0$',
+            '$N=1,c=0.1$', '$N=3, c=0.1$'],
+    styles=["-s", "-v"],
+    colors=[(0, 0, 0, 1), (0.75, 0.75, 0.75, 1)],
+    title=False,
+    yticks=[1e1, 1e0,  1e-1, 1e-2, 1e-3],
+    xlabel=r'$1/K$',
+    ylabel=r"$\left\| \mathrm{d}f^0_h\right\|_{L^2-\mathrm{error}}$",
+    order_text_size=15,
+    plot_order_triangle={0: {'tp': (0.02, -0.5), 'order': 1},
+                         1: {'tp': (0.02, 0.2), 'order': 3}},
+    saveto=current_dir + '/images/df_error.png',
+    return_order=True,
+)
+o1, o2, o3, o4 = orders
+assert abs(o1-1) < 0.1
+assert abs(o2-3) < 0.1
+assert abs(o3-1) < 0.1
+assert abs(o4-3) < 0.2
 
 os.remove(current_dir + '/WTP.txt')
 

@@ -74,6 +74,64 @@ class MsePyRootFormErrorLambda(Frozen):
 
         return np.sum(integral) ** (1/d)
 
+    def _m2_n2_k2(self, *args, **kwargs):
+        """m2 n2 k2"""
+        return self._m2_n2_k0(*args, **kwargs)
+
+    def _m2_n2_k1(self, d, quad_degree):
+        """"""
+        quad_nodes, quad_weights = Quadrature(quad_degree).quad
+        xy, v = self._f[self._t].reconstruct(*quad_nodes)
+        quad_nodes = np.meshgrid(*quad_nodes, indexing='ij')
+        J = self._mesh.ct.Jacobian(*quad_nodes)
+        x, y = xy
+        u, v = v
+        cf = self._f.cf
+        integral = list()
+
+        for ri in cf.field:
+            vector = cf.field[ri][self._t]  # the vector evaluated at time `t`.
+            start, end = self._mesh.elements._elements_in_region(ri)
+            x_region = x[start:end, :]
+            y_region = y[start:end, :]
+            ext_u, ext_v = vector(x_region, y_region)
+            dis_u = u[start:end, :]
+            dis_v = v[start:end, :]
+            metric = J(range(start, end))
+            diff = (dis_u - ext_u) ** d + (dis_v - ext_v) ** d
+            integral.extend(
+                np.einsum('eij, eij, i, j -> i', diff, metric, *quad_weights, optimize='optimal')
+            )
+
+        return np.sum(integral) ** (1/d)
+
+    def _m2_n2_k0(self, d, quad_degree):
+        """"""
+        quad_nodes, quad_weights = Quadrature(quad_degree).quad
+        xyz, v = self._f[self._t].reconstruct(*quad_nodes)
+        quad_nodes = np.meshgrid(*quad_nodes, indexing='ij')
+        J = self._mesh.ct.Jacobian(*quad_nodes)
+        x, y = xyz
+        v = v[0]
+
+        cf = self._f.cf
+        integral = list()
+        for ri in cf.field:
+            scalar = cf.field[ri][self._t]  # the scalar evaluated at time `t`.
+            start, end = self._mesh.elements._elements_in_region(ri)
+            x_region = x[start:end, :]
+            y_region = y[start:end, :]
+            ext_v = scalar(x_region, y_region)[0]
+            dis_v = v[start:end, :]
+            metric = J(range(start, end))
+
+            diff = (dis_v - ext_v) ** d
+            integral.extend(
+                np.einsum('eij, eij, i, j -> i', diff, metric, *quad_weights, optimize='optimal')
+            )
+
+        return np.sum(integral) ** (1/d)
+
     def _m3_n3_k0(self, d, quad_degree):
         """"""
         quad_nodes, quad_weights = Quadrature(quad_degree).quad

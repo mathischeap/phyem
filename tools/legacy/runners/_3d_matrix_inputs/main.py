@@ -2,9 +2,9 @@
 from src.config import RANK, MASTER_RANK, SIZE, COMM
 import inspect
 import os
-from tools.run.runners.base import ParallelRunnerBase
+from tools.legacy.runners.base import ParallelRunnerBase
 from tools.legacy.serialRunners.INSTANCES.matrix3d_input_runner import Matrix3dInputRunner
-from tools.run.runners._3d_matrix_inputs.visualize.main import ___SlaveParallelMatrix3dInputRunnerVisualize___
+from tools.legacy.runners._3d_matrix_inputs.visualize.main import ___SlaveParallelMatrix3dInputRunnerVisualize___
 
 
 class ParallelMatrix3dInputRunner(ParallelRunnerBase):
