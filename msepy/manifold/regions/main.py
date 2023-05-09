@@ -36,6 +36,16 @@ class MseManifoldRegions(Frozen):
         """
         return self._map  # ***
 
+    def _is_periodic(self):
+        """If there is no None in `self.map`, then it represents a periodic manifold."""
+        is_periodic = True
+        for i in self.map:
+            mp = self.map[i]
+            if None in mp:
+                is_periodic = False
+                break
+        return is_periodic
+
     def _check_map(self, map_type):
         """check region map."""
         region_map = self.map

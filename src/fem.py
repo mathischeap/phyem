@@ -68,8 +68,8 @@ def _parse_obj(implementation, obj):
             pass  # for those spaces have no particular counterparts, we simply skip them.
     elif obj.__class__ is Form:
         if obj.is_root():
-            if obj._lin_repr in implementation.base['forms']:
-                return implementation.base['forms'][obj._lin_repr]
+            if obj._pure_lin_repr in implementation.base['forms']:
+                return implementation.base['forms'][obj._pure_lin_repr]
             else:
                 pass  # for those spaces have no particular counterparts, we simply skip them.
         else:
@@ -147,7 +147,7 @@ if __name__ == '__main__':
         wf = wf.derive.rearrange(
             {
                 0: '0, 3 = 2, 1',
-                1: '3, 0, 4 = 2, 1',
+                1: '3, 0 = 2, 1, 4',
             }
         )
 
@@ -158,7 +158,7 @@ if __name__ == '__main__':
         #     a3 @ td.time_sequence['k-1'],
         #     b2 @ td.time_sequence['k-1']]
         # )
-        # ls = mp.ls()
+        ls = mp.ls()
 
     else:
 
@@ -233,7 +233,7 @@ if __name__ == '__main__':
     # term = mp['0-0,0'][0][0]
     # term.pr()
 
-    # ls.pr()
+    ls.pr()
     # ls.A.pr()
     # mesh = oph.mesh
     # manifold = mesh.manifold

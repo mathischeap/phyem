@@ -17,6 +17,7 @@ from msepy.form.realtime import MsePyRootFormRealTimeCopy
 from msepy.form.visualize.main import MsePyRootFormVisualize
 from msepy.form.error.main import MsePyRootFormError
 from msepy.form.coboundary import MsePyRootFormCoboundary
+from msepy.form.matrix import MsePyRootFormMatrix
 
 
 class MsePyRootForm(Frozen):
@@ -45,6 +46,7 @@ class MsePyRootForm(Frozen):
         self._visualize = None
         self._error = None
         self._coboundary = None
+        self._matrix = None
         self._freeze()
 
     @property
@@ -167,6 +169,13 @@ class MsePyRootForm(Frozen):
             self._coboundary = MsePyRootFormCoboundary(self)
         return self._coboundary
 
+    @property
+    def matrix(self):
+        """visualize"""
+        if self._matrix is None:
+            self._matrix = MsePyRootFormMatrix(self)
+        return self._matrix
+
 
 if __name__ == '__main__':
     # python msepy/form/main.py
@@ -193,43 +202,51 @@ if __name__ == '__main__':
 
     df0 = ph.exterior_derivative(f0)
 
-    ph.space.finite([3, 4, 5])
+    ph.space.finite((3, 4, 5))
 
     msepy, obj = ph.fem.apply('msepy', locals())
 
     manifold = obj['manifold']
     mesh = obj['mesh']
-    f0 = obj['f0']
-    f1 = obj['f1']
-    # f1o = obj['f1o']
-    # f1i = obj['f1i']
-    f2 = obj['f2']
-    f3 = obj['f3']
+    print(obj)
 
-    # msepy.config(manifold)('crazy', c=0., periodic=False, bounds=[[0, 2] for _ in range(space_dim)])
-    msepy.config(manifold)('crazy_multi', c=0., bounds=[[0, 2] for _ in range(space_dim)])
-    # msepy.config(mnf)('backward_step')
+    # f0 = obj['f0']
+    # f1 = obj['f1']
+    #
+    # # f1o = obj['f1o']
+    # # f1i = obj['f1i']
+    # f2 = obj['f2']
+    # f3 = obj['f3']
+    #
+    # # msepy.config(manifold)('crazy', c=0., periodic=False, bounds=[[0, 2] for _ in range(space_dim)])
+    # msepy.config(manifold)('crazy_multi', c=0.0, bounds=[[0, 2] for _ in range(space_dim)])
+    # # msepy.config(mnf)('backward_step')
     # msepy.config(mesh)(([3, 3, 3, 3, 3], [1, 1, 1, 1, 1], [2, 2, 3, 3]))
-    msepy.config(mesh)((10, 10, 10))
-    # msepy.config(mesh)(([3, 3, 2], ))
-    # mesh.visualize()
+    # # msepy.config(mesh)(10)
+    # # msepy.config(mesh)(([3, 3, 2], ))
+    # # mesh.visualize()
+    #
+    # def fx(t, x, y, z):
+    #     return np.cos(2*np.pi*x) * np.cos(np.pi*y) * np.cos(np.pi*z) + t
+    #
+    # def ux(t, x, y, z):
+    #     return np.sin(np.pi*x) * np.cos(2*np.pi*y) * np.cos(2*np.pi*z) + t
+    #
+    # def uy(t, x, y, z):
+    #     return np.cos(2*np.pi*x) * np.sin(np.pi*y) * np.cos(2*np.pi*z) + t
+    #
+    # def uz(t, x, y, z):
+    #     return np.cos(2*np.pi*x) * np.cos(2*np.pi*y) * np.sin(np.pi*z) + t
+    #
+    # scalar = ph.vc.scalar(fx)
+    # vector = ph.vc.vector(ux, uy, uz)
+    #
+    # M0 = f0.matrix.mass
+    # M1 = f1.matrix.mass
+    # M2 = f2.matrix.mass
+    # M3 = f3.matrix.mass
 
-    def fx(t, x, y, z):
-        return np.cos(2*np.pi*x) * np.cos(np.pi*y) * np.cos(np.pi*z) + t
-
-    def ux(t, x, y, z):
-        return np.sin(np.pi*x) * np.cos(2*np.pi*y) * np.cos(2*np.pi*z) + t
-
-    def uy(t, x, y, z):
-        return np.cos(2*np.pi*x) * np.sin(np.pi*y) * np.cos(2*np.pi*z) + t
-
-    def uz(t, x, y, z):
-        return np.cos(2*np.pi*x) * np.cos(2*np.pi*y) * np.sin(np.pi*z) + t
-
-    scalar = ph.vc.scalar(fx)
-    vector = ph.vc.vector(ux, uy, uz)
-
-    gm = f3.cochain.gathering_matrix
+    # gm = f3.cochain.gathering_matrix
 
     # f0.cf = scalar
     # f0[2].reduce()
@@ -263,11 +280,11 @@ if __name__ == '__main__':
     # scalar = ph.vc.scalar(fx)
     # f0.cf = scalar
     # f0[2].reduce()
-    # f0[2].visualize()
+    # # f0[2].visualize()
     # f2.cf = scalar
     # f2[2].reduce()
-    # f2[2].visualize()
-
+    # # f2[2].visualize()
+    #
     # def ux(t, x, y):
     #     return np.sin(2*np.pi*x) * np.cos(2*np.pi*y) + t
     #
@@ -278,24 +295,26 @@ if __name__ == '__main__':
     #
     # f1o.cf = vector
     # f1o[2].reduce()
-    # f1o[2].visualize()
+    # # f1o[2].visualize()
     #
     # # mesh.visualize()
     # f1i.cf = vector
     # f1i[2].reduce()
-    # f1i[2].visualize()
+    # # f1i[2].visualize()
+    #
+    # M = f1o.matrix.mass
 
     # def fx(t, x):
     #     return np.sin(2*np.pi*x) + t
     # scalar = ph.vc.scalar(fx)
     #
-    # f1.cf = scalar
-    # f1[2].reduce()
-    # f1[2].visualize()
+    # # f1.cf = scalar
+    # # f1[2].reduce()
+    # # f1[2].visualize()
     #
     # f0.cf = scalar
     # f0[2].reduce()
-    # f0[2].visualize()
+    # # f0[2].visualize()
     # f_error = f0[2].error()  # by default, we will compute the L^2 error.
     # print(f_error)
     #
@@ -303,6 +322,6 @@ if __name__ == '__main__':
     # df_error = df0[2].error()
     # print(f_error, df_error)
     #
-    # df0[2].visualize()
+    # # df0[2].visualize()
     # # # df0 = f0[2].coboundary()
     # # # print(df0)

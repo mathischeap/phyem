@@ -19,6 +19,7 @@ from tools.frozen import Frozen
 from src.algebra.array import AbstractArray
 from src.wf.term.ap import TermLinearAlgebraicProxy
 from src.algebra.linear_system import BlockMatrix, BlockColVector, LinearSystem
+from src.wf.mp.linear_system import MatrixProxyLinearSystem
 
 
 class MatrixProxy(Frozen):
@@ -256,8 +257,8 @@ class MatrixProxy(Frozen):
 
         return symbolic
 
-    def pr(self, figsize=(12, 8)):
-        """pr"""
+    def _mp_seek_text(self):
+        """seek text"""
         seek_text = self._wf._mesh.manifold._manifold_text()
         seek_text += r'seek $\left('
         form_sr_list = list()
@@ -269,6 +270,11 @@ class MatrixProxy(Frozen):
         seek_text += r'\right) \in '
         seek_text += r'\times '.join(space_sr_list)
         seek_text += '$, such that\n'
+        return seek_text
+
+    def pr(self, figsize=(12, 8)):
+        """pr"""
+        seek_text = self._mp_seek_text()
         symbolic = r"$" + self._pr_text() + r"$"
         if self._bc is None or len(self._bc) == 0:
             bc_text = ''
@@ -316,7 +322,9 @@ class MatrixProxy(Frozen):
             for bj, sj in zip(bi, si):
                 b._add(i, bj, sj)
 
-        return LinearSystem(A, x, b)
+        ls = LinearSystem(A, x, b)
+
+        return MatrixProxyLinearSystem(self, ls, self.bc)
 
     @property
     def bc(self):

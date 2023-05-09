@@ -218,6 +218,44 @@ class _Derive(Frozen):
         else:
             raise Exception()
 
+    def switch_sign(self, rows):
+        """Switch the signs of all terms of equations #rows"""
+        if isinstance(rows, int):
+            rows = [rows, ]
+        else:
+            assert isinstance(rows, (list, tuple)), f"put rows in a list or tuple."
+            rows = [int(_) for _ in rows]
+
+        for row in rows:
+            assert 0 <= row < len(self._wf), rf"row={row} is wrong."
+
+        new_sign_dict = dict()
+
+        for i in self._wf._term_dict:
+            if i not in rows:
+                new_sign_dict[i] = self._wf._sign_dict[i]
+            else:
+                new_sign_dict[i] = ([], [])
+                old_signs = self._wf._sign_dict[i]
+                left_signs, right_signs = old_signs
+
+                for sign in left_signs:
+                    new_sign_dict[i][0].append(
+                        self._switch_sign(sign)
+                    )
+                for sign in right_signs:
+                    new_sign_dict[i][1].append(
+                        self._switch_sign(sign)
+                    )
+
+        new_wf = self._wf.__class__(
+            self._wf._test_forms,
+            term_sign_dict=[self._wf._term_dict, new_sign_dict]
+        )
+        new_wf.unknowns = self._wf.unknowns   # pass the unknowns
+        new_wf._bc = self._wf._bc   # pass the bc
+        return new_wf
+
     def integration_by_parts(self, index):
         """integration by parts."""
         term = self._wf[index][1]

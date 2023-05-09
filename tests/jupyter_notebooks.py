@@ -15,17 +15,20 @@ import sys
 
 if './' not in sys.path:
     sys.path.append('./')
+from src.config import RANK, MASTER_RANK
 
-jupyter_path = r"./web/source/jupyter"
+if RANK == MASTER_RANK:  # this is conducted only in one rank.
 
-jupyter_files = [
-    'test1', 'test2', 'test3',
-]
+    jupyter_path = r"./web/source/jupyter"
 
-for jf in jupyter_files:
-    stream = os.popen(rf'jupyter nbconvert --to notebook --inplace --execute {jupyter_path}/{jf}.ipynb')
-    output = stream.read()
-    print(jf, ' output: \n', output)
+    jupyter_files = [
+        'test1', 'test2', 'test3',
+    ]
+
+    for jf in jupyter_files:
+        stream = os.popen(rf'jupyter nbconvert --to notebook --inplace --execute {jupyter_path}/{jf}.ipynb')
+        output = stream.read()
+        print(jf, ' output: \n', output)
 
 
 if __name__ == '__main__':

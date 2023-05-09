@@ -27,7 +27,21 @@ class MsePyMeshElements(Frozen):
         self._index_mapping = None
         self._map = None
         self.___layout_cache_key___ = None
+        self.___is_linear___ = None
         self._freeze()
+
+    def _is_linear(self):
+        """Return True if all elements are linear elements."""
+        if self.___is_linear___ is None:
+            rmt = self._index_mapping._reference_mtype
+            if rmt is None:  # all elements are unique.
+                self.___is_linear___ = False
+            else:
+                checks = list()
+                for rm in rmt:
+                    checks.append(True if rm[:7] == "Linear:" else False)
+                self.___is_linear___ = all(checks)
+        return self.___is_linear___
 
     @property
     def map(self):
@@ -170,6 +184,7 @@ class MsePyMeshElements(Frozen):
                 region = regions[i]
                 ctm = region._ct.mtype
                 r_emd = ctm._distribute_to_element(layout_of_region, element_numbering_of_region)
+
                 for key in r_emd:
                     if key in element_mtype_dict:
                         element_mtype_dict[key].extend(r_emd[key])
@@ -365,15 +380,23 @@ class MsePyMeshElementsIndexMapping(Frozen):
             # in this case, ci_ei_map is the amount of elements.
             ci_ei_map = np.arange(ci_ei_map)[:, np.newaxis]
             ei_ci_map = ci_ei_map[:, 0]
+            reference_mtype = 'unique'   # all elements are unique.
 
         elif isinstance(ci_ei_map, dict):
-            ci_ei_map = tuple(ci_ei_map.values())
+            reference_mtype = tuple(ci_ei_map.keys())
+
+            _list = list()
+            for mtype in reference_mtype:
+                _list.append(ci_ei_map[mtype])
+            ci_ei_map = tuple(_list)
             ei_ci_map = np.zeros(total_num_elements, dtype=int)
             for i, indices in enumerate(ci_ei_map):
                 ei_ci_map[indices] = i
 
         else:
             raise NotImplementedError()
+
+        self._reference_mtype = reference_mtype
 
         self._c2e = ci_ei_map
         self._e2c = ei_ci_map
@@ -523,6 +546,16 @@ class _DataDictDistributor(Frozen):
         return self[
             self._mp._reference_elements[ci]
         ]
+
+    def get_mtype_of_reference_element(self, re):
+        """"""
+        mtype = self._mp._reference_mtype
+        if mtype == 'unique':
+            return mtype
+        else:
+            return mtype[
+                self._mp._e2c[re]
+            ]
 
     def __getitem__(self, re):
         """return the data for reference element #re."""

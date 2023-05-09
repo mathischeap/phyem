@@ -89,6 +89,25 @@ class Quadrature(object):
         return self._category_
 
     @property
+    def quad_nodes(self):
+        """"""
+        return self.quad[0]
+
+    @property
+    def quad_weights_ravel(self):
+        """"""
+        if self.ndim == 1:
+            return self.quad[1]
+        else:
+            temp_weights = self.quad[1][0]
+            for i in range(self.ndim):
+                if i == 0:
+                    pass
+                else:
+                    temp_weights = np.tensordot(temp_weights, self.quad[1][i], axes=0)
+            return temp_weights.ravel('F')
+
+    @property
     def quad(self):
         """(Tuple) ``quad[0]`` are the nodes, ``quad[1]`` are the weights."""
         if self._quad_ is None:

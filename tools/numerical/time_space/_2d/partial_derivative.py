@@ -4,9 +4,9 @@ if './' not in sys.path:
     sys.path.append('/')
 
 from abc import ABC
-import numdifftools as nd
 import numpy as np
 from types import FunctionType, MethodType
+from tools.numerical.derivative import derivative
 
 
 class NumericalPartialDerivativeTxy(ABC):
@@ -15,12 +15,10 @@ class NumericalPartialDerivativeTxy(ABC):
     ``A=f(t,x,y)``. And we will evaluate dA/dt, dA/dx, dA/dy at `(t, x, y)`. Note that `(x,y)`
     must be of the same shape; no matter the dimensions (we do not do mesh grid to them). And t must be 1-d.
     """
-    def __init__(self, func, t, x, y, step=None, n=1, order=2):
+    def __init__(self, func, t, x, y, step=1e-6):
         self.___PRIVATE_check_func___(func)
         self.___PRIVATE_check_txy___(t, x, y)
         self._step_ = step
-        self._n_ = n
-        self._order_ = order
 
     def ___PRIVATE_check_func___(self, func):
         assert callable(func), " <PartialDerivative> : func is not callable."
@@ -57,22 +55,11 @@ class NumericalPartialDerivativeTxy(ABC):
         """We compute the partial derivative, i.e. ``df/d_``, at points ``*txyz``."""
         if d_ == 't':
             # noinspection PyTypeChecker
-            return nd.Derivative(
-                self.___PRIVATE_evaluate_func_for_t___,
-                step=self._step_, n=self._n_, order=self._order_
-            )(self._t_)
+            return derivative(self.___PRIVATE_evaluate_func_for_t___, self._t_, h=self._step_)
         elif d_ == 'x':
-            # noinspection PyTypeChecker
-            return nd.Derivative(
-                self.___PRIVATE_evaluate_func_for_x___,
-                step=self._step_, n=self._n_, order=self._order_
-            )(self._x_)
+            return derivative(self.___PRIVATE_evaluate_func_for_x___, self._x_, h=self._step_)
         elif d_ == 'y':
-            # noinspection PyTypeChecker
-            return nd.Derivative(
-                self.___PRIVATE_evaluate_func_for_y___,
-                step=self._step_, n=self._n_, order=self._order_
-            )(self._y_)
+            return derivative(self.___PRIVATE_evaluate_func_for_y___, self._y_, h=self._step_)
         else:
             raise Exception(" <PartialDerivative> : dt, dx or dy or dz? give me 't', 'x', or 'y'.")
 

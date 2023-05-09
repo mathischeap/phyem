@@ -7,6 +7,8 @@
 
 __all__ = [
     'pde_canonical_pH',
+    'wf_Poisson',
 ]
 
 from tests.samples.canonical_pH_pde import pde_canonical_pH
+from tests.samples.Poisson_wf import wf_Poisson

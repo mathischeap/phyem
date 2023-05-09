@@ -2,7 +2,7 @@
 
 import sys
 if './' not in sys.path: 
-    sys.path.append('/')
+    sys.path.append('./')
 
 from types import FunctionType, MethodType
 from tools.frozen import Frozen

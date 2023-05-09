@@ -13,6 +13,7 @@ if './' not in sys.path:
 from tools.frozen import Frozen
 from random import random
 from time import time
+from msepy.tools.matrix.local import MsePyLocalMatrix
 
 
 class MsePyRootFormCoboundary(Frozen):
@@ -20,6 +21,7 @@ class MsePyRootFormCoboundary(Frozen):
 
     def __init__(self, rf):
         self._f = rf
+        self._E = None
         self._freeze()
 
     def __getitem__(self, t):
@@ -29,7 +31,13 @@ class MsePyRootFormCoboundary(Frozen):
     @property
     def incidence_matrix(self):
         """E."""
-        return self._f.space.incidence_matrix(self._f.degree)  # cached in space.
+        gm = self._f.cochain.gathering_matrix
+        E = MsePyLocalMatrix(  # every time we make new instance, do not cache it.
+            self._f.space.incidence_matrix(self._f.degree),  # constant sparse matrix
+            gm,
+            gm,
+        )
+        return E
 
 
 class MsePyRootFormCoboundaryTimeInstant(Frozen):
@@ -64,7 +72,7 @@ class MsePyRootFormCoboundaryTimeInstant(Frozen):
         df = self._f.__class__(ab_df)
 
         assert df.space is d_msepy_space, f"must be!"
-        incidence_matrix = self._f.coboundary.incidence_matrix
+        incidence_matrix = self._f.coboundary.incidence_matrix._data  # this is a constant sparse matrix.
         cochain_at_t = self._f.cochain[self._t].local
         d_cochain_at_t = np.einsum(
             'ij, kj -> ki',

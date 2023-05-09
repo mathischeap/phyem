@@ -45,7 +45,6 @@ def _clear_forms():
         del _global_root_forms_lin_dict[key]
 
 
-
 from src.form.ap import _parse_root_form_ap
 
 

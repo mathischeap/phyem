@@ -19,56 +19,54 @@ class MsePySpaceDegree(Frozen):
     def __init__(self, space, degree):
         """"""
         self._space = space
-        self._degree = degree
-        self._p = None
-        self._nodes = None
+        self._parse_degree(degree)
         self._edges = None
         self._bfs = None
         self._freeze()
 
+    def _parse_degree(self, degree):
+        """We get `p`, `nodes` and `ntype` (node types). """
+        self._degree = degree
+
+        if isinstance(degree, (int, float)):
+            # for example, degree = 3
+            assert degree % 1 == 0 and degree > 0, f"degree wrong."
+            p = tuple([degree for _ in range(self._space.n)])
+            nodes = tuple(
+                [Quadrature(degree, category='Lobatto').quad[0] for _ in range(self._space.n)]
+            )
+            ntype = ['Lobatto' for _ in p]
+
+        elif isinstance(degree, (list, tuple)) and all([isinstance(_, int) for _ in degree]):
+            # for example, degree = (3, 2, ...)
+            assert len(degree) == self._space.n, f"degree dimension wrong."
+            p = tuple(self._degree)
+            nodes = tuple(
+                [Quadrature(_, category='Lobatto').quad[0] for _ in p]
+            )
+            ntype = ['Lobatto' for _ in p]
+
+        else:
+            raise NotImplementedError(f"cannot parse degree={degree}.")
+
+        self._p = p
+        self._nodes = nodes
+        self._ntype = ntype
+
     @property
     def p(self):
         """(px, py, ...) of all elements."""
-        if self._p is None:
-            if isinstance(self._degree, (int, float)):
-                # degree = 3
-                assert self._degree % 1 == 0 and self._degree > 0, f"degree wrong."
-                p = tuple([self._degree for _ in range(self._space.n)])
-
-            elif isinstance(self._degree, (list, tuple)) and all([isinstance(_, int) for _ in self._degree]):
-                # degree = (3, 2, ...)
-                assert len(self._degree) == self._space.n, f"degree dimension wrong."
-                p = tuple(self._degree)
-
-            else:
-                raise NotImplementedError()
-
-            self._p = p
-
         return self._p
 
     @property
     def nodes(self):
         """nodes"""
-        if self._nodes is None:
-            if isinstance(self._degree, int):
-                # degree = 3
-                assert self._degree % 1 == 0 and self._degree > 0, f"degree wrong."
-                self._nodes = tuple(
-                    [Quadrature(self._degree, category='Lobatto').quad[0] for _ in range(self._space.n)]
-                )
-
-            elif isinstance(self._degree, (list, tuple)) and all([isinstance(_, int) for _ in self._degree]):
-                # degree = (3, 2, ...)
-                assert len(self._degree) == self._space.n, f"degree dimension wrong."
-                self._nodes = tuple(
-                    [Quadrature(_, category='Lobatto').quad[0] for _ in self.p]
-                )
-
-            else:
-                raise NotImplementedError()
-
         return self._nodes
+
+    @property
+    def ntype(self):
+        """node type."""
+        return self._ntype
 
     @property
     def edges(self):

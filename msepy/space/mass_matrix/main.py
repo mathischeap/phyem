@@ -19,11 +19,11 @@ class MsePyMassMatrix(Frozen):
         self._Lambda = None
         self._freeze()
 
-    def __call__(self, degree, quad_degree=None):
+    def __call__(self, degree, quad=None):
         """"""
         indicator = self._space.abstract.indicator
         if indicator == 'Lambda':
-            return self.Lambda(degree, quad_degree=quad_degree)
+            return self.Lambda(degree, quad=quad)
         else:
             raise NotImplementedError()
 

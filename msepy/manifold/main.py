@@ -86,6 +86,7 @@ class MsePyManifold(Frozen):
             self.regions._regions[i] = region
 
         self.regions._map = region_map  # ***
+        assert self.abstract._is_periodic is self.regions._is_periodic(), f"Periodicity does not match."
 
     def __repr__(self):
         super_repr = super().__repr__().split('object')[1]
