@@ -15,6 +15,7 @@ _config = {
 _mesh_set = dict()
 _space_set = dict()
 
+_sep = ' ->- '
 
 # whenever new space is implemented, add it below.
 _implemented_spaces = {
@@ -22,28 +23,33 @@ _implemented_spaces = {
     'Lambda':    ('src.spaces.continuous.Lambda', 'ScalarValuedFormSpace', 'scalar valued k-form space', ['k', ]),
 }
 
-_default_mass_matrix_reprs = {
-    'Lambda': (r"\mathsf{M}", "Mass:Mat:{space_pure_lin_repr}=d{(d0,d1)}"),
-}
+_default_mass_matrix_reprs = [
+    r"\mathsf{M}",
+    _sep.join(["Mass:Mat", "{space_pure_lin_repr}", "{d0}", "{d1}"]),
+]
 
-_default_d_matrix_reprs = {
-    'Lambda': (r"\mathsf{D}", "d:Mat:{space_pure_lin_repr}=d{d}"),
-}
+_default_d_matrix_reprs = [
+    r"\mathsf{D}",
+    _sep.join(["d:Mat", "{space_pure_lin_repr}", "{d}"]),
+]
 
-_default_d_matrix_transpose_reprs = {
-    'Lambda': (r"\mathsf{D}", "d:T:Mat:{space_pure_lin_repr}=d{d}"),
-}
+_default_d_matrix_transpose_reprs = [
+    r"\mathsf{D}",
+    _sep.join(["d:T:Mat", "{space_pure_lin_repr}", "{d}"]),
+]
 
-_default_wedge_vector_repr = {
-    # For Lambda, once we know f0, we can find the correct basis functions it wedged with
-    'Lambda': (r"\boldsymbol{b}", "Wedge:Vec:Lambda:traceHodge[{f0}]-wedge-d{d}"),
-}
+_default_wedge_vector_repr = [
+    # once we know f0, we can find the correct basis functions it wedged with
+    r"\boldsymbol{b}",
+    _sep.join(["Wedge:Vec", "Lambda:traceHodge[{f0}]-wedge", "d{d}"]),
+]
 
-_default_trace_matrix_repr = {
-    'Lambda': (r"\mathsf{N}", "Trace:Mat:{space_pure_lin_repr}=d{d}"),
-}
+_default_trace_matrix_repr = [
+    r"\mathsf{N}",
+    _sep.join(["Trace:Mat", "{space_pure_lin_repr}", "d{d}"]),
+]
 
-_default_space_degree_repr = ':d'
+_default_space_degree_repr = ':D-'
 
 
 def set_mesh(mesh):

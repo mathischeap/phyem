@@ -14,7 +14,6 @@ from src.config import _check_sym_repr
 from src.config import _global_operator_lin_repr_setting
 from src.config import _global_operator_sym_repr_setting
 
-
 _global_root_constant_scalars = dict()   # only cache root scalar parameters
 
 
@@ -182,6 +181,16 @@ class ConstantScalar0Form(Frozen):
 
         else:
             raise Exception()
+
+
+def _constant_scalar_parser(cs):
+    """"""
+    if cs == constant_scalar(1):
+        return 1
+    else:
+        raise NotImplementedError()
+
+
 
 
 if __name__ == '__main__':

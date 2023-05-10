@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 import sys
 if './' not in sys.path:
-    sys.path.append('/')
+    sys.path.append('./')
 
 from abc import ABC
 import numpy as np
@@ -15,10 +15,10 @@ class NumericalPartialDerivativeTxy(ABC):
     ``A=f(t,x,y)``. And we will evaluate dA/dt, dA/dx, dA/dy at `(t, x, y)`. Note that `(x,y)`
     must be of the same shape; no matter the dimensions (we do not do mesh grid to them). And t must be 1-d.
     """
-    def __init__(self, func, t, x, y, step=1e-6):
+    def __init__(self, func, t, x, y, h=1e-6):
         self.___PRIVATE_check_func___(func)
         self.___PRIVATE_check_txy___(t, x, y)
-        self._step_ = step
+        self._h = h
 
     def ___PRIVATE_check_func___(self, func):
         assert callable(func), " <PartialDerivative> : func is not callable."
@@ -55,11 +55,11 @@ class NumericalPartialDerivativeTxy(ABC):
         """We compute the partial derivative, i.e. ``df/d_``, at points ``*txyz``."""
         if d_ == 't':
             # noinspection PyTypeChecker
-            return derivative(self.___PRIVATE_evaluate_func_for_t___, self._t_, h=self._step_)
+            return derivative(self.___PRIVATE_evaluate_func_for_t___, self._t_, h=self._h)
         elif d_ == 'x':
-            return derivative(self.___PRIVATE_evaluate_func_for_x___, self._x_, h=self._step_)
+            return derivative(self.___PRIVATE_evaluate_func_for_x___, self._x_, h=self._h)
         elif d_ == 'y':
-            return derivative(self.___PRIVATE_evaluate_func_for_y___, self._y_, h=self._step_)
+            return derivative(self.___PRIVATE_evaluate_func_for_y___, self._y_, h=self._h)
         else:
             raise Exception(" <PartialDerivative> : dt, dx or dy or dz? give me 't', 'x', or 'y'.")
 
@@ -118,7 +118,7 @@ class NumericalPartialDerivativeTxy(ABC):
 
 
 if __name__ == '__main__':
-    # mpiexec -n 6 python components\numerical\time_plus_2d_space\partial_derivative.py
+    # mpiexec -n 6 python tools/numerical/time_space/_2d/partial_derivative.py
 
     def func(t, x, y): return np.sin(np.pi*x) * np.sin(np.pi*y) * t
 

@@ -6,6 +6,7 @@ Yi Zhang
 
 from tools.frozen import Frozen
 from msepy.form.cochain.time_instant import _CochainAtOneTime
+from msepy.form.cochain.vector.static import MsePyRootFormStaticCochainVector
 
 
 class MsePyLockCochainError(Exception):
@@ -31,7 +32,7 @@ class MsePyRootFormCochain(Frozen):
         return round(t, 8)  # to make it safer.
 
     def _set(self, t, cochain):
-        """add to time-cochain-dict."""
+        """add to cochain at `t` to be cochain."""
         if self._locker:
             raise MsePyLockCochainError(f"Cochain of {self._f} is locked!")
 
@@ -61,7 +62,11 @@ class MsePyRootFormCochain(Frozen):
     def __contains__(self, t):
         """if rf has cochain at time`t`?"""
         t = self._parse_t(t)
-        return t in self._tcd
+        rf = self._f
+        if rf._is_base():
+            return t in self._tcd
+        else:
+            return t in rf._base.cochain._tcd
 
     @property
     def gathering_matrix(self):
@@ -71,3 +76,11 @@ class MsePyRootFormCochain(Frozen):
     @property
     def local_numbering(self):
         return self._f.space.local_numbering(self._f.degree)
+
+    def static_vec(self, t):
+        """"""
+        if t in self:
+            return MsePyRootFormStaticCochainVector(self._f, t, self[t], self.gathering_matrix)
+        else:
+            # this one is usually used to receive a cochain.
+            return MsePyRootFormStaticCochainVector(self._f, t, None, self.gathering_matrix)

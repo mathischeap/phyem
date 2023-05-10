@@ -8,7 +8,7 @@ from tools.frozen import Frozen
 from msepy.mesh.elements import _DataDictDistributor
 
 
-class MsePyLocalMatrix(Frozen):
+class MsePyStaticLocalMatrix(Frozen):
     """"""
     def __init__(self, data, gm_row, gm_col):
         """"""
@@ -35,3 +35,8 @@ class MsePyLocalMatrix(Frozen):
             return self._data
         else:
             raise Exception()
+
+    @staticmethod
+    def is_static():
+        """static"""
+        return True

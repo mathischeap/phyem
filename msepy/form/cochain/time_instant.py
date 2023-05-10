@@ -6,8 +6,8 @@ created at: 3/16/2023 5:29 PM
 
 from tools.frozen import Frozen
 import numpy as np
-from msepy.tools.vector.local import MsePyLocalVector
-from msepy.tools.vector.assembled import MsePyAssembledVector
+from msepy.tools.vector.static.local import MsePyStaticLocalVector
+from msepy.tools.vector.static.assembled import MsePyStaticAssembledVector
 
 
 class _CochainAtOneTime(Frozen):
@@ -36,9 +36,9 @@ class _CochainAtOneTime(Frozen):
             assert np.shape(cochain) == gm.shape, f"local cochain shape = {np.shape(cochain)} wrong, " \
                                                   f"should be {gm.shape}."
             self._local_cochain = cochain
-        elif cochain.__class__ is MsePyLocalVector:
+        elif cochain.__class__ is MsePyStaticLocalVector:
             raise NotImplementedError()
-        elif cochain.__class__ is MsePyAssembledVector:
+        elif cochain.__class__ is MsePyStaticAssembledVector:
             raise NotImplementedError()
         else:
             raise Exception(f"Cannot receive cochain from {cochain.__class__}")

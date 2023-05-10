@@ -13,7 +13,8 @@ if './' not in sys.path:
 from tools.frozen import Frozen
 from msepy.form.cf import MsePyContinuousForm
 from msepy.form.cochain.main import MsePyRootFormCochain
-from msepy.form.realtime import MsePyRootFormRealTimeCopy
+from msepy.form.static import MsePyRootFormStaticCopy
+from msepy.form.dynamic import MsePyRootFormDynamicCopy
 from msepy.form.visualize.main import MsePyRootFormVisualize
 from msepy.form.error.main import MsePyRootFormError
 from msepy.form.coboundary import MsePyRootFormCoboundary
@@ -61,10 +62,16 @@ class MsePyRootForm(Frozen):
 
     def __getitem__(self, t):
         """return the realtime copy of `self` at time `t`."""
-        if self._is_base():
-            return MsePyRootFormRealTimeCopy(self, t)
+        if isinstance(t, (int, float)):
+            if self._is_base():
+                return MsePyRootFormStaticCopy(self, t)
+            else:
+                return MsePyRootFormStaticCopy(self._base, t)
         else:
-            return MsePyRootFormRealTimeCopy(self._base, t)
+            if self._is_base():
+                return MsePyRootFormDynamicCopy(self, t)
+            else:
+                return MsePyRootFormDynamicCopy(self._base, t)
 
     def _is_base(self):
         """Am I a base root-form (not abstracted at a time.)"""
@@ -226,17 +233,17 @@ if __name__ == '__main__':
     # # msepy.config(mesh)(([3, 3, 2], ))
     # # mesh.visualize()
     #
-    # def fx(t, x, y, z):
-    #     return np.cos(2*np.pi*x) * np.cos(np.pi*y) * np.cos(np.pi*z) + t
-    #
-    # def ux(t, x, y, z):
-    #     return np.sin(np.pi*x) * np.cos(2*np.pi*y) * np.cos(2*np.pi*z) + t
-    #
-    # def uy(t, x, y, z):
-    #     return np.cos(2*np.pi*x) * np.sin(np.pi*y) * np.cos(2*np.pi*z) + t
-    #
-    # def uz(t, x, y, z):
-    #     return np.cos(2*np.pi*x) * np.cos(2*np.pi*y) * np.sin(np.pi*z) + t
+    def fx(t, x, y, z):
+        return np.cos(2*np.pi*x) * np.cos(np.pi*y) * np.cos(np.pi*z) + t
+
+    def ux(t, x, y, z):
+        return np.sin(np.pi*x) * np.cos(2*np.pi*y) * np.cos(2*np.pi*z) + t
+
+    def uy(t, x, y, z):
+        return np.cos(2*np.pi*x) * np.sin(np.pi*y) * np.cos(2*np.pi*z) + t
+
+    def uz(t, x, y, z):
+        return np.cos(2*np.pi*x) * np.cos(2*np.pi*y) * np.sin(np.pi*z) + t
     #
     # scalar = ph.vc.scalar(fx)
     # vector = ph.vc.vector(ux, uy, uz)

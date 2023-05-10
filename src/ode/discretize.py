@@ -10,7 +10,7 @@ if './' not in sys.path:
 
 from tools.frozen import Frozen
 from src.config import _wf_term_default_simple_patterns as simple_patterns
-from src.form.tools import _find_form
+from src.form.others import _find_form
 from src.form.operators import time_derivative
 from src.pde import PartialDifferentialEquations
 

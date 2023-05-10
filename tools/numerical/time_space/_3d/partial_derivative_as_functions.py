@@ -73,7 +73,7 @@ class NumericalPartialDerivativeTxyzFunctions(Frozen):
 
 
 if __name__ == '__main__':
-    # mpiexec -n 6 python components\numerical\time_plus_3d_space\partial_derivative_as_functions.py
+    # mpiexec -n 6 python tools/numerical/time_space/_3d/partial_derivative_as_functions.py
 
     def func(t, x, y, z): return np.sin(np.pi*x) * np.sin(np.pi*y) * np.sin(np.pi*z) * t
 

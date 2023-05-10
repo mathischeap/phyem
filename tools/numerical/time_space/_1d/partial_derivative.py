@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 import sys
 if './' not in sys.path:
-    sys.path.append('/')
+    sys.path.append('。/')
 
 from abc import ABC
 import numdifftools as nd
@@ -105,7 +105,7 @@ class NumericalPartialDerivativeTx(ABC):
 
 
 if __name__ == '__main__':
-    # python .\tools\numerical\_1d\partial_derivative.py
+    # python tools/numerical/time_space/_1d/partial_derivative.py
     def func(t, x): return np.sin(np.pi*x) + t
 
     def Pt(t, x): return x * t * 0 + 1

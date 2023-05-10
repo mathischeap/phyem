@@ -9,10 +9,10 @@ import sys
 if './' not in sys.path:
     sys.path.append('./')
 from tools.frozen import Frozen
-from msepy.tools.vector.local import MsePyLocalVector
+from msepy.form.cochain.vector.static import MsePyRootFormStaticCochainVector
 
 
-class MsePyRootFormRealTimeCopy(Frozen):
+class MsePyRootFormStaticCopy(Frozen):
     """"""
 
     def __init__(self, rf, t):
@@ -38,9 +38,9 @@ class MsePyRootFormRealTimeCopy(Frozen):
         gm = self._f.cochain.gathering_matrix
         if self._t in self._f.cochain:
             local = self._f.cochain[self._t].local
-            return MsePyLocalVector(local, gm)  # it is a separate object
+            return MsePyRootFormStaticCochainVector(self._f, self._t, local, gm)  # it is a separate object
         else:
-            return MsePyLocalVector(None, gm)  # it is a separate object.
+            return MsePyRootFormStaticCochainVector(self._f, self._t, None, gm)  # it is a separate object
 
     def reduce(self, update_cochain=True, **kwargs):
         self._f.reduce(self._t, update_cochain=update_cochain, **kwargs)

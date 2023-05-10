@@ -10,7 +10,7 @@ import sys
 if './' not in sys.path:
     sys.path.append('./')
 from tools.frozen import Frozen
-from msepy.tools.matrix.local import MsePyLocalMatrix
+from msepy.tools.matrix.static.local import MsePyStaticLocalMatrix
 
 
 class MsePyRootFormMatrix(Frozen):
@@ -28,7 +28,7 @@ class MsePyRootFormMatrix(Frozen):
     @property
     def mass(self):
         gm = self._f.cochain.gathering_matrix
-        M = MsePyLocalMatrix(  # make a new copy every single time.
+        M = MsePyStaticLocalMatrix(  # make a new copy every single time.
             self._f.space.mass_matrix(self._f.degree),
             gm,
             gm,

@@ -23,53 +23,46 @@ def _parse_l2_inner_product_mass_matrix(s0, s1, d0, d1):
     """parse l2 inner product mass matrix."""
     assert s0 == s1, f"spaces do not match."
 
-    if s0.__class__.__name__ == 'ScalarValuedFormSpace':
-        sym, lin = _default_mass_matrix_reprs['Lambda']
-        assert d0 is not None and d1 is not None, f"space is not finite."
-        sym += rf"^{s0.k}"
+    sym, lin = _default_mass_matrix_reprs
+    assert d0 is not None and d1 is not None, f"space is not finite."
+    sym += rf"^{s0.k}"
 
-        lin = lin.replace('{space_pure_lin_repr}', str(s0._pure_lin_repr))
-        lin = lin.replace('{(d0,d1)}', str((d0, d1)))
+    lin = lin.replace('{space_pure_lin_repr}', str(s0._pure_lin_repr))
+    lin = lin.replace('{d0}', str(d0))
+    lin = lin.replace('{d1}', str(d1))
 
-        return _root_array(
-            sym, lin, (
-                s0._sym_repr + _default_space_degree_repr + str(d0),
-                s1._sym_repr + _default_space_degree_repr + str(d1)
-            ), symmetric=True,
-        )
-
-    else:
-        raise NotImplementedError()
+    return _root_array(
+        sym, lin, (
+            s0._sym_repr + _default_space_degree_repr + str(d0),
+            s1._sym_repr + _default_space_degree_repr + str(d1)
+        ), symmetric=True,
+    )
 
 
 def _parse_d_matrix(f, transpose=False):
     """"""
     s = f.space
     degree = f._degree
-    if s.__class__.__name__ == 'ScalarValuedFormSpace':
-        assert degree is not None, f"space is not finite."
+    assert degree is not None, f"space is not finite."
 
-        ds = d(s)
+    ds = d(s)
 
-        if transpose:
-            sym, lin = _default_d_matrix_transpose_reprs['Lambda']
-            lin = lin.replace('{space_pure_lin_repr}', str(s._pure_lin_repr))
-            lin = lin.replace('{d}', str(degree))
-            sym += r"^{" + str((s.k, s.k+1)) + r"}"
-            shape = (f._ap_shape(), ds._sym_repr + _default_space_degree_repr + str(degree))
-
-        else:
-            sym, lin = _default_d_matrix_reprs['Lambda']
-            lin = lin.replace('{space_pure_lin_repr}', str(s._pure_lin_repr))
-            lin = lin.replace('{d}', str(degree))
-            sym += r"^{" + str((s.k+1, s.k)) + r"}"
-            shape = (ds._sym_repr + _default_space_degree_repr + str(degree), f._ap_shape())
-        D = _root_array(sym, lin, shape)
-
-        return D
+    if transpose:
+        sym, lin = _default_d_matrix_transpose_reprs
+        lin = lin.replace('{space_pure_lin_repr}', str(s._pure_lin_repr))
+        lin = lin.replace('{d}', str(degree))
+        sym += r"^{" + str((s.k, s.k+1)) + r"}"
+        shape = (f._ap_shape(), ds._sym_repr + _default_space_degree_repr + str(degree))
 
     else:
-        raise NotImplementedError()
+        sym, lin = _default_d_matrix_reprs
+        lin = lin.replace('{space_pure_lin_repr}', str(s._pure_lin_repr))
+        lin = lin.replace('{d}', str(degree))
+        sym += r"^{" + str((s.k+1, s.k)) + r"}"
+        shape = (ds._sym_repr + _default_space_degree_repr + str(degree), f._ap_shape())
+    D = _root_array(sym, lin, shape)
+
+    return D
 
 
 def _parse_wedge_vector(rf0, s1, d1):
@@ -87,31 +80,23 @@ def _parse_wedge_vector(rf0, s1, d1):
 
     """
     s0 = rf0.space
-    if s0.__class__.__name__ == 'ScalarValuedFormSpace':
-        assert d1 is not None, f"space is not finite."
-        sym, lin = _default_wedge_vector_repr['Lambda']
-        lin = lin.replace('{f0}', rf0._pure_lin_repr)
-        lin = lin.replace('{d}', str(d1))
+    assert d1 is not None, f"space is not finite."
+    sym, lin = _default_wedge_vector_repr
+    lin = lin.replace('{f0}', rf0._pure_lin_repr)
+    lin = lin.replace('{d}', str(d1))
 
-        sym += rf"_{s0.k}"
+    sym += rf"_{s0.k}"
 
-        return _root_array(sym, lin, (s1._sym_repr + _default_space_degree_repr + str(d1), 1))
-
-    else:
-        raise NotImplementedError()
+    return _root_array(sym, lin, (s1._sym_repr + _default_space_degree_repr + str(d1), 1))
 
 
 def _parse_trace_matrix(f):
     """"""
     s = f.space
     degree = f._degree
-    if s.__class__.__name__ == 'ScalarValuedFormSpace':
-        sym, lin = _default_trace_matrix_repr['Lambda']
-        lin = lin.replace('{space_pure_lin_repr}', str(s._pure_lin_repr))
-        lin = lin.replace('{d}', str(degree))
-        sym += rf'_{s.k}'
-        trace_space = trace(s)
-        return _root_array(sym, lin, (trace_space._sym_repr + _default_space_degree_repr + str(degree), f._ap_shape()))
-
-    else:
-        raise NotImplementedError()
+    sym, lin = _default_trace_matrix_repr
+    lin = lin.replace('{space_pure_lin_repr}', str(s._pure_lin_repr))
+    lin = lin.replace('{d}', str(degree))
+    sym += rf'_{s.k}'
+    trace_space = trace(s)
+    return _root_array(sym, lin, (trace_space._sym_repr + _default_space_degree_repr + str(degree), f._ap_shape()))

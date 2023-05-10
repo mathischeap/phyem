@@ -53,6 +53,13 @@ class BlockMatrix(Frozen):
         self._entries[i][j].append(term)
         self._signs[i][j].append(sign)
 
+    def __iter__(self):
+        """go through all terms."""
+        rows, cols = self._shape
+        for i in range(rows):
+            for j in range(cols):
+                yield i, j
+
     def __call__(self, i, j):
         """"""
         return self._entries[i][j], self._signs[i][j]
@@ -110,6 +117,11 @@ class BlockColVector(Frozen):
     def __call__(self, i):  # work as getitem, use call to make it consistent with `BlockMatrix`.
         """"""
         return self._entries[i], self._signs[i]
+
+    def __iter__(self):
+        """"""
+        for i in range(self._shape):
+            yield i
 
     def _is_empty(self):
         empty = True

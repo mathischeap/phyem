@@ -67,7 +67,7 @@ class NumericalPartialDerivativeTxyFunctions(Frozen):
 
 
 if __name__ == '__main__':
-    # mpiexec -n 6 python components\numerical\time_plus_2d_space\partial_derivative_as_functions.py
+    # mpiexec -n 6 python tools/numerical/time_space/_2d/partial_derivative_as_functions.py
     import numpy as np
 
     def func(t, x, y): return np.sin(np.pi*x) * np.sin(np.pi*y) * t

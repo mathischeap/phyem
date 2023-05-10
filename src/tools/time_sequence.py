@@ -443,4 +443,4 @@ if __name__ == '__main__':
     ti = at.make_time_interval('k+0', 'k+0.5')
     at.specify('constant', [0, 100, 100], 2)
     # for k in range(1,10):
-    print(ti.start(k=1), ti(k=1), t1(k=50))
+    print(ti.start(k=1)(), ti(k=1)(), t1(k=50)())

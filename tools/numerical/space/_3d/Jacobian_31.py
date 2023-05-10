@@ -1,10 +1,10 @@
 # -*- coding: utf-8 -*-
 from abc import ABC
 import numpy as np
-from tools.numerical.space._1d.derivative import NumericalDerivative_fx
+from tools.numerical.derivative import derivative
 
 
-class NumericalJacobian_xyz_t_31(ABC):
+class NumericalJacobianXYZt31(ABC):
     """
     For a mapping: ``XY(t) = (x, y, z) = (X(t), Y(t), Z(t))``, we compute ``dx/dt``, ``dy/dt``, and ``dz/dt``.
 
@@ -22,13 +22,10 @@ class NumericalJacobian_xyz_t_31(ABC):
     def ___evaluate_func31_for_z_t___(self, t):
         return self._func31_(t)[2]
 
-    def scipy_derivative(self, t, dt=1e-6, n=1, order=3):
-        Xt = NumericalDerivative_fx(self.___evaluate_func31_for_x_t___, t,
-                                    dx=dt, n=n, order=order).scipy_derivative()
-        Yt = NumericalDerivative_fx(self.___evaluate_func31_for_y_t___, t,
-                                    dx=dt, n=n, order=order).scipy_derivative()
-        Zt = NumericalDerivative_fx(self.___evaluate_func31_for_z_t___, t,
-                                    dx=dt, n=n, order=order).scipy_derivative()
+    def scipy_derivative(self, t, h=1e-6):
+        Xt = derivative(self.___evaluate_func31_for_x_t___, t, h=h)
+        Yt = derivative(self.___evaluate_func31_for_y_t___, t, h=h)
+        Zt = derivative(self.___evaluate_func31_for_z_t___, t, h=h)
         return Xt, Yt, Zt
 
     def check_Jacobian(self, Jacobian, t, tolerance=1e-6):

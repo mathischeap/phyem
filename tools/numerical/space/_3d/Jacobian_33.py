@@ -1,10 +1,10 @@
 # -*- coding: utf-8 -*-
 """3D numerical."""
 from abc import ABC
-from tools.numerical.space._3d.partial_derivative import NumericalPartialDerivative_xyz
+from tools.numerical.space._3d.partial_derivative import NumericalPartialDerivativeXYZ
 
 
-class NumericalJacobian_xyz_33(ABC):
+class NumericalJacobianXYZrst33(ABC):
     """
     For a mapping: ``x = Phi_x(r, s, t), y = Phi_y(r, s, t), z = Phi_z(r, s, t),
     (``self._func_(r, s, t) = (Phi_x(r, s, t), Phi_y(r, s, t), Phi_z(r, s, t))``,
@@ -26,13 +26,13 @@ class NumericalJacobian_xyz_33(ABC):
     def ___evaluate_func33_for_z_rst___(self, r, s, t):
         return self._func33_(r, s, t)[2]
 
-    def scipy_derivative(self, r, s, t, drdsdt=1e-8, n=1, order=3):
-        xr, xs, xt = NumericalPartialDerivative_xyz(self.___evaluate_func33_for_x_rst___,
-                                                    r, s, t, dxdydz=drdsdt, n=n, order=order).scipy_total
-        yr, ys, yt = NumericalPartialDerivative_xyz(self.___evaluate_func33_for_y_rst___,
-                                                    r, s, t, dxdydz=drdsdt, n=n, order=order).scipy_total
-        zr, zs, zt = NumericalPartialDerivative_xyz(self.___evaluate_func33_for_z_rst___,
-                                                    r, s, t, dxdydz=drdsdt, n=n, order=order).scipy_total
+    def Jacobian_matrix(self, r, s, t, h=1e-6):
+        xr, xs, xt = NumericalPartialDerivativeXYZ(self.___evaluate_func33_for_x_rst___,
+                                                   r, s, t, h=h)
+        yr, ys, yt = NumericalPartialDerivativeXYZ(self.___evaluate_func33_for_y_rst___,
+                                                   r, s, t, h=h)
+        zr, zs, zt = NumericalPartialDerivativeXYZ(self.___evaluate_func33_for_z_rst___,
+                                                   r, s, t, h=h)
         return ((xr, xs, xt),
                 (yr, ys, yt),
                 (zr, zs, zt))

@@ -7,7 +7,7 @@ from src.form.operators import _parse_related_time_derivative
 from src.form.main import _global_root_forms_lin_dict
 from src.form.operators import time_derivative, d
 from src.config import _global_operator_lin_repr_setting
-from src.form.tools import _find_form
+from src.form.others import _find_form
 from src.config import _non_root_lin_sep
 from src.config import _wf_term_default_simple_patterns as _simple_patterns
 

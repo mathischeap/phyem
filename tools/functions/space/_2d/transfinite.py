@@ -22,12 +22,12 @@ TU Delft
 """
 import numpy as np
 from tools.frozen import Frozen
-from tools.numerical.space._2d.Jacobian_21 import NumericalJacobian_xy_t_21
+from tools.numerical.space._2d.Jacobian_21 import NumericalJacobianXYt21
 
 
 class TransfiniteMapping(Frozen):
     """"""
-    def __init__(self, gamma, dgamma=None):
+    def __init__(self, gamma, d_gamma):
         """
          y          - 2 +
          ^     _______________
@@ -48,21 +48,33 @@ class TransfiniteMapping(Frozen):
         ----------
         gamma : 
             A tuple of the four boundary functions
-        dgamma : optional
-            A tuple of first derivative of gamma.
+            gamma = (
+                L(r),
+                D(s),
+                R(r),
+                U(s),
+            )
+        d_gamma :
+            A tuple of first derivatives of gamma.
+            d_gamma = (
+                [dx/dr, dy/dr], # for L(r), one function return two outputs
+                [dx/ds, dy/ds], # for D(s), one function return two outputs
+                [dx/dr, dy/dr], # for R(r), one function return two outputs
+                [dx/ds, dy/ds], # for U(s), one function return two outputs
+            )
             
         """
         t = np.linspace(0, 1, 12)[1:-1]
         _dict_ = {0: 'L', 1: 'D', 2: 'R', 3: 'U'}
         for i in range(4):
             XY = gamma[i]
-            XtYt = dgamma[i]
-            NJ21 = NumericalJacobian_xy_t_21(XY)
+            XtYt = d_gamma[i]
+            NJ21 = NumericalJacobianXYt21(XY)
             assert all(NJ21.check_Jacobian(XtYt, t)), \
                 " <TransfiniteMapping> :  '{}' edge mapping or Jacobian wrong.".format(_dict_[i])
             
         self.gamma = gamma
-        self.dgamma = dgamma
+        self.d_gamma = d_gamma
         self.gamma1_x0, self.gamma1_y0 = self.gamma[0](0.0)
         self.gamma1_x1, self.gamma1_y1 = self.gamma[0](1.0)
         self.gamma3_x0, self.gamma3_y0 = self.gamma[2](0.0)
@@ -106,8 +118,8 @@ class TransfiniteMapping(Frozen):
         """ """
         gamma2_xt, gamma2_yt = self.gamma[1](s)
         gamma4_xt, gamma_4yt = self.gamma[3](s)
-        dgamma1_xds, dgamma1_yds = self.dgamma[0](r)
-        dgamma3_xds, dgamma3_yds = self.dgamma[2](r)
+        dgamma1_xds, dgamma1_yds = self.d_gamma[0](r)
+        dgamma3_xds, dgamma3_yds = self.d_gamma[2](r)
         dx_dxi_result = (
                 -gamma4_xt + gamma2_xt + (1-s)*dgamma1_xds + s*dgamma3_xds +
                 ((1-s)*self.gamma1_x0 + s*self.gamma3_x0) - ((1-s)*self.gamma1_x1 + s*self.gamma3_x1))
@@ -117,8 +129,8 @@ class TransfiniteMapping(Frozen):
         """ """
         gamma1_xs, gamma1_ys = self.gamma[0](r)
         gamma3_xs, gamma3_ys = self.gamma[2](r)
-        dgamma2_xdt, dgamma2_ydt = self.dgamma[1](s)
-        dgamma4_xdt, dgamma4_ydt = self.dgamma[3](s)
+        dgamma2_xdt, dgamma2_ydt = self.d_gamma[1](s)
+        dgamma4_xdt, dgamma4_ydt = self.d_gamma[3](s)
         dx_deta_result = (
                 (1-r)*dgamma4_xdt + r*dgamma2_xdt - gamma1_xs + gamma3_xs -
                 (1-r)*(-self.gamma1_x0 + self.gamma3_x0) - r*(-self.gamma1_x1 + self.gamma3_x1))
@@ -128,8 +140,8 @@ class TransfiniteMapping(Frozen):
         """ """
         gamma2_xt, gamma2_yt = self.gamma[1](s)
         gamma4_xt, gamma4_yt = self.gamma[3](s)
-        dgamma1_xds, dgamma1_yds = self.dgamma[0](r)
-        dgamma3_xds, dgamma3_yds = self.dgamma[2](r)
+        dgamma1_xds, dgamma1_yds = self.d_gamma[0](r)
+        dgamma3_xds, dgamma3_yds = self.d_gamma[2](r)
         dy_dxi_result = (
                 -gamma4_yt + gamma2_yt + (1-s)*dgamma1_yds + s*dgamma3_yds +
                 ((1-s)*self.gamma1_y0 + s*self.gamma3_y0) - ((1-s)*self.gamma1_y1 + s*self.gamma3_y1)) 
@@ -139,8 +151,8 @@ class TransfiniteMapping(Frozen):
         """ """
         gamma1_xs, gamma1_ys = self.gamma[0](r)
         gamma3_xs, gamma3_ys = self.gamma[2](r)
-        dgamma2_xdt, dgamma2_ydt = self.dgamma[1](s)
-        dgamma4_xdt, dgamma4_ydt = self.dgamma[3](s)
+        dgamma2_xdt, dgamma2_ydt = self.d_gamma[1](s)
+        dgamma4_xdt, dgamma4_ydt = self.d_gamma[3](s)
         dy_deta_result = (
                 (1-r)*dgamma4_ydt + r*dgamma2_ydt - gamma1_ys + gamma3_ys -
                 (1-r)*(-self.gamma1_y0 + self.gamma3_y0) - r*(-self.gamma1_y1 + self.gamma3_y1))

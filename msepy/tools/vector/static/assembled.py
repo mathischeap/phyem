@@ -6,7 +6,7 @@ pH-lib@RAM-EEMCS-UT
 from tools.frozen import Frozen
 
 
-class MsePyAssembledVector(Frozen):
+class MsePyStaticAssembledVector(Frozen):
     """"""
     def __init__(self, data, gathering_matrix):
         """"""
@@ -17,3 +17,8 @@ class MsePyAssembledVector(Frozen):
     def __getitem__(self, i):
         """When `self._data` is `None`, raise Error."""
         return self._data[i]
+
+    @staticmethod
+    def is_static():
+        """static"""
+        return True

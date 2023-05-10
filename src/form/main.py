@@ -3,11 +3,6 @@
 pH-lib@RAM-EEMCS-UT
 created at: 3/8/2023 12:05 PM
 """
-import sys
-
-if './' not in sys.path:
-    sys.path.append('./')
-
 from tools.frozen import Frozen
 from typing import Dict
 import matplotlib.pyplot as plt

@@ -58,7 +58,7 @@ class NumericalPartialDerivativeTxFunctions(Frozen):
 
 
 if __name__ == '__main__':
-    # python .\tools\numerical\_1d\partial_derivative_as_functions.py
+    # python tools/numerical/time_space/_1d/partial_derivative_as_functions.py
     import numpy as np
 
     def func(t, x): return np.sin(np.pi*x) * t
