@@ -489,6 +489,14 @@ class _DataDictDistributor(Frozen):
         self._dd = data_dict
         self._freeze()
 
+    def _cache_key_generator(self, i):
+        """cache_key for element i."""
+        return self.get_mtype_of_reference_element(
+            self._mp._reference_elements[
+                self._mp._e2c[i]
+            ]
+        )
+
     def split(self, ndarray, axis=0):
         """"""
         return self._mp.split(ndarray, axis=axis)
@@ -551,7 +559,7 @@ class _DataDictDistributor(Frozen):
         """"""
         mtype = self._mp._reference_mtype
         if mtype == 'unique':
-            return mtype
+            return 'unique'
         else:
             return mtype[
                 self._mp._e2c[re]

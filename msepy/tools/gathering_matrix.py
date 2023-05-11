@@ -19,9 +19,19 @@ class RegularGatheringMatrix(Frozen):
         """Return the global_numbering for dofs in element #i."""
         return self._gm[i]
 
+    def __len__(self):
+        """How many elements this gathering_matrix is representing?
+
+        Same to `num_elements`.
+        """
+        return self.num_elements
+
     @property
     def shape(self):
-        """the shape of the 2d array gm."""
+        """the shape of the 2d array gm.
+
+        Raise Error for irregular gathering matrices.
+        """
         return self._gm.shape
 
     @property
@@ -32,4 +42,8 @@ class RegularGatheringMatrix(Frozen):
 
     @property
     def num_elements(self):
+        """How many elements this gathering_matrix is representing?
+
+        Same to `len`.
+        """
         return self.shape[0]

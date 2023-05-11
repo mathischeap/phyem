@@ -96,7 +96,7 @@ class ConstantScalar0Form(Frozen):
             assert self._is_root, f"safety, almost trivial check."
         self._freeze()
 
-    def print_representations(self):
+    def pr(self):
         """print representations"""
         print(self._sym_repr, self._lin_repr)
 
@@ -133,6 +133,7 @@ class ConstantScalar0Form(Frozen):
                 sym_repr = self._sym_repr + '+' + str(other)   # no need to check is_root.
                 lin_repr = self._lin_repr + op_lin_repr + _parse_lin_repr('scalar_parameter', str(other))[0]
                 return ConstantScalar0Form(sym_repr, lin_repr, False, False)
+
         elif other.__class__.__name__ == self.__class__.__name__:
             if other.is_real():
                 number = float(other._sym_repr)
@@ -183,10 +184,26 @@ class ConstantScalar0Form(Frozen):
             raise Exception()
 
 
+class _CS1FactorCaller(Frozen):
+    """"""
+
+    def __init__(self):
+        self._freeze()
+
+    def __call__(self, *args, **kwargs):
+        """"""
+        return 1
+
+    @staticmethod
+    def _pr_text():
+        return ''
+
+_cs1_fc = _CS1FactorCaller()
+
 def _constant_scalar_parser(cs):
     """"""
     if cs == constant_scalar(1):
-        return 1
+        return _cs1_fc
     else:
         raise NotImplementedError()
 

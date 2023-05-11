@@ -10,7 +10,7 @@ from msepy.form.cochain.vector.static import MsePyRootFormStaticCochainVector
 
 
 class MsePyLockCochainError(Exception):
-    """Raise when we try to access standard property ``statistic`` but ``___statistic___`` is not defined."""
+    """"""
 
 
 class MsePyRootFormCochain(Frozen):
@@ -23,7 +23,7 @@ class MsePyRootFormCochain(Frozen):
             self._tcd = dict()  # time-cochain-dict
         else:
             pass
-        self._locker = False
+        self._locker = False  # if locker, cannot set new cochain.
         self._freeze()
 
     @staticmethod
@@ -33,7 +33,7 @@ class MsePyRootFormCochain(Frozen):
 
     def _set(self, t, cochain):
         """add to cochain at `t` to be cochain."""
-        if self._locker:
+        if self._locker:  # cochain locked, cannot set new cochain.
             raise MsePyLockCochainError(f"Cochain of {self._f} is locked!")
 
         rf = self._f

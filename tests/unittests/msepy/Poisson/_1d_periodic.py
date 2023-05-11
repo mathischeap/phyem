@@ -21,8 +21,15 @@ msepy, obj = ph.fem.apply('msepy', locals())
 manifold = msepy.base['manifolds'][r"\mathcal{M}"]
 mesh = msepy.base['meshes'][r'\mathfrak{M}']
 
+msepy.config(manifold)(
+    'crazy_multi', c=0, bounds=[[0, 2], ], periodic=True,
+)
+msepy.config(mesh)(3)
+
 phi = msepy.base['forms'][r'potential']
 u = msepy.base['forms'][r'velocity']
 f = msepy.base['forms'][r'source']
 
-ls = obj['ls']
+ls = obj['ls']()
+
+ls.pr()

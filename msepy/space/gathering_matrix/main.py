@@ -27,6 +27,14 @@ class MsePyGatheringMatrix(Frozen):
         else:
             raise NotImplementedError()
 
+    def _next(self, degree):
+        """The gathering matrix of d(space)."""
+        from msepy.main import new
+        ab_space = self._space.abstract
+        d_ab_space = ab_space.d()
+        d_msepy_space = new(d_ab_space)  # make msepy space, must using this function.
+        return d_msepy_space.gathering_matrix(degree)
+
     @property
     def Lambda(self):
         if self._Lambda is None:

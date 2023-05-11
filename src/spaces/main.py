@@ -41,15 +41,29 @@ _default_d_matrix_transpose_reprs = [
 _default_wedge_vector_repr = [
     # once we know f0, we can find the correct basis functions it wedged with
     r"\boldsymbol{b}",
-    _sep.join(["Wedge:Vec", "Lambda:traceHodge[{f0}]-wedge", "d{d}"]),
+    _sep.join(["Wedge:Vec", "Lambda:traceHodge[{f0}]-wedge", "{d}"]),
 ]
 
 _default_trace_matrix_repr = [
     r"\mathsf{N}",
-    _sep.join(["Trace:Mat", "{space_pure_lin_repr}", "d{d}"]),
+    _sep.join(["Trace:Mat", "{space_pure_lin_repr}", "{d}"]),
 ]
 
 _default_space_degree_repr = ':D-'
+
+_degree_cache = {}
+
+
+def _degree_str_maker(degree):
+    """"""
+    str_degree = degree.__class__.__name__ + str(degree)
+    _degree_cache[str_degree] = degree
+    return str_degree
+
+
+def _str_degree_parser(str_degree):
+    """"""
+    return _degree_cache[str_degree]
 
 
 def set_mesh(mesh):
