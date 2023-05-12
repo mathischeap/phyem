@@ -11,10 +11,11 @@ import sys
 
 if './' not in sys.path:
     sys.path.append('./')
-
+import numpy as np
 import __init__ as ph
 
 ls = ph.samples.wf_Poisson(n=1, degree=2, orientation='outer', periodic=True)
+ls.pr()
 
 msepy, obj = ph.fem.apply('msepy', locals())
 
@@ -30,6 +31,18 @@ phi = msepy.base['forms'][r'potential']
 u = msepy.base['forms'][r'velocity']
 f = msepy.base['forms'][r'source']
 
-ls = obj['ls']()
+ls = obj['ls'].apply()
 
 ls.pr()
+
+def f_func(t, x):
+    """"""
+    return np.sin(2* np.pi * x) + t
+
+scalar = ph.vc.scalar(f_func)
+
+f.cf = scalar
+
+f[0].reduce()
+
+ls0 = ls(0)

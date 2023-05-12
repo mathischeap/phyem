@@ -16,16 +16,25 @@ plt.rcParams.update({
     "text.latex.preamble": r"\usepackage{amsmath, amssymb}",
 })
 matplotlib.use('TkAgg')
+
 from tools.frozen import Frozen
 from msepy.tools.matrix.static.local import MsePyStaticLocalMatrix
-from msepy.tools.matrix.dynamic.local import MsePyDynamicLocalMatrix
+from msepy.tools.matrix.dynamic import MsePyDynamicLocalMatrixVector
+from msepy.tools.vector.dynamic import MsePyDynamicLocalVector
+from msepy.form.cochain.vector.dynamic import MsePyRootFormDynamicCochainVector
 from src.config import _abstract_array_factor_sep, _abstract_array_connector
 from src.form.parameters import constant_scalar, ConstantScalar0Form, _constant_scalar_parser
 from msepy.tools.linear_system.array_parser import msepy_root_array_parser
+
+from msepy.tools.linear_system.static.main import MsePyStaticLinearSystem
+
+from msepy.tools.vector.static.local import MsePyStaticLocalVector
+from msepy.form.cochain.vector.static import MsePyRootFormStaticCochainVector
+
 _cs1 = constant_scalar(1)
 
 
-class MsePyRawLinearSystem(Frozen):
+class MsePyDynamicLinearSystem(Frozen):
     """We study an abstract `mp_ls` and obtain a raw mse-ls which will future be classified into something else."""
 
     def __init__(self, mp_ls):
@@ -45,12 +54,55 @@ class MsePyRawLinearSystem(Frozen):
     def shape(self):
         return self._mp_ls._ls.A._shape
 
-    def __call__(self, *args, **kwargs):
+    def apply(self):
         """"""
         self._parse_matrix_block(self._mp_ls._ls.A)
-        # self._x = self._parse_vector_block(self._mp_ls._ls.x)
+        self._x = self._parse_vector_block(self._mp_ls._ls.x)
         self._b = self._parse_vector_block(self._mp_ls._ls.b)
         return self
+
+    def __call__(self, *args, **kwargs):
+        """"""
+        num_rows, num_cols = self.shape
+
+        static_A = [[None for _ in range(num_cols)] for _ in range(num_rows)]
+        for i in range(num_rows):
+            for j in range(num_cols):
+
+                Aij = self._A[i][j]
+
+                if Aij is None:
+                    pass
+                else:
+
+                    static_Aij = Aij(*args, **kwargs)
+
+                    static_A[i][j] = static_Aij
+
+        static_x = [None for _ in range(num_cols)]
+        for j in range(num_cols):
+
+            x_j = self._x[j]  # x_j cannot be None
+
+            static_x_j = x_j(*args, **kwargs)
+
+            assert static_x_j.__class__ is MsePyRootFormStaticCochainVector, \
+                f"entry #{j}  of x is not a MsePyRootFormStaticCochainVector!"
+            static_x[j] = static_x_j
+
+        static_b = [None for _ in range(num_rows)]
+        for i in range(num_rows):
+
+            b_i = self._b[i]
+
+            if b_i is None:
+                pass
+            else:
+                static_b_i = b_i(*args, **kwargs)
+
+                static_b[i] = static_b_i
+
+        return MsePyStaticLinearSystem(static_A, static_x, static_b)
 
     def _parse_matrix_block(self, A):
         """"""
@@ -74,11 +126,11 @@ class MsePyRawLinearSystem(Frozen):
                     components = components.split(_abstract_array_connector)
 
                     raw_terms_ij.append(
-                        RawTerm(sign, factor, components)
+                        DynamicTerm(sign, factor, components)
                     )
 
                 # noinspection PyTypeChecker
-                rA[i][j] = RawBlockEntry(raw_terms_ij)
+                rA[i][j] = DynamicBlockEntry(raw_terms_ij)
         self._A = rA
 
     @staticmethod
@@ -103,11 +155,11 @@ class MsePyRawLinearSystem(Frozen):
                     components = components.split(_abstract_array_connector)
 
                     raw_terms_i.append(
-                        RawTerm(sign, factor, components)
+                        DynamicTerm(sign, factor, components)
                     )
 
                 # noinspection PyTypeChecker
-                rb[i] = RawBlockEntry(raw_terms_i)
+                rb[i] = DynamicBlockEntry(raw_terms_i)
 
         return rb
 
@@ -119,7 +171,7 @@ class MsePyRawLinearSystem(Frozen):
             for j in range(J_):
                 Aij = self._A[i][j]
                 if Aij is None:
-                    pass
+                    A_text += '0'
                 else:
                     A_text += Aij._pr_text()
 
@@ -133,6 +185,28 @@ class MsePyRawLinearSystem(Frozen):
 
         return A_text
 
+    @staticmethod
+    def _bx_pr_text(b_or_x):
+        """"""
+        text = r""
+
+        I_ = len(b_or_x)
+
+        for i in range(I_):
+            bi = b_or_x[i]
+
+            if bi is None:
+                text += '0'
+            else:
+                text += bi._pr_text()
+
+            if i < I_ - 1:
+                text += r"\\"
+
+        text = r"\begin{bmatrix}" + text + r"\end{bmatrix}"
+
+        return text
+
     def pr(self, figsize=(10, 6)):
         """pr"""
         A_text = self._A_pr_text()
@@ -142,11 +216,15 @@ class MsePyRawLinearSystem(Frozen):
         else:
             bc_text = self._bc._bc_text()
 
-        A_text = r"$" + A_text + r"$"
+        x_text = self._bx_pr_text(self._x)
+        b_text = self._bx_pr_text(self._b)
+
+        text = A_text + x_text + '=' + b_text
+        text = r"$" + text + r"$"
         fig = plt.figure(figsize=figsize)
         plt.axis([0, 1, 0, 1])
         plt.axis('off')
-        plt.text(0.05, 0.5, A_text + bc_text, ha='left', va='center', size=15)
+        plt.text(0.05, 0.5, text + bc_text, ha='left', va='center', size=15)
         plt.tight_layout()
         from src.config import _matplot_setting
         plt.show(block=_matplot_setting['block'])
@@ -154,10 +232,12 @@ class MsePyRawLinearSystem(Frozen):
         return fig
 
 
-class RawBlockEntry(Frozen):
-    """A bunch of RawTerms"""
+class DynamicBlockEntry(Frozen):
+    """A bunch of dynamic terms."""
 
     def __init__(self, raw_terms):
+        for rt in raw_terms:
+            assert rt.__class__ is DynamicTerm
         self._raw_terms = raw_terms  # a list of RawTerm
         self._freeze()
 
@@ -183,8 +263,48 @@ class RawBlockEntry(Frozen):
                 pr_text += term_text
         return pr_text
 
+    def __call__(self, *args, **kwargs):
+        """"""
+        factor_terms = list()
+        for i in self:
+            dynamic_term = self[i]
+            sign, factor, term = dynamic_term.sign, dynamic_term.factor, dynamic_term.component
 
-class RawTerm(Frozen):
+            factor = factor(*args, **kwargs)
+            term = term(*args, **kwargs)
+
+            assert isinstance(factor, (int, float)), f"static factor={factor} is wrong, must be a real number."
+
+            if factor == 1:
+                if sign == '-':
+                    factor_term = - term
+                else:
+                    factor_term = term
+
+            else:
+
+                if sign == '-':
+                    factor_term = - factor * term
+                else:
+                    factor_term = factor * term
+
+            factor_terms.append(factor_term)
+
+        if len(factor_terms) == 1:
+            static = factor_terms[0]
+        else:
+            raise NotImplementedError()
+
+        assert static.__class__ in (
+            MsePyStaticLocalMatrix,
+            MsePyRootFormStaticCochainVector,
+            MsePyStaticLocalVector,
+        ), f"static={static} is wrong."
+
+        return static
+
+
+class DynamicTerm(Frozen):
     """"""
 
     def __init__(self, sign, factor, components):
@@ -207,11 +327,15 @@ class RawTerm(Frozen):
             Mat, sym_repr = msepy_root_array_parser(comp_lin_repr)
 
             if Mat.__class__ is MsePyStaticLocalMatrix:
-                Mat = MsePyDynamicLocalMatrix(Mat)
-            elif Mat.__class__ is MsePyDynamicLocalMatrix:
-                pass
+                Mat = MsePyDynamicLocalMatrixVector(Mat)
             else:
-                raise NotImplementedError()
+                pass
+
+            assert Mat.__class__ in (
+                MsePyDynamicLocalMatrixVector,
+                MsePyRootFormDynamicCochainVector,
+                MsePyDynamicLocalVector,
+            ), f"{Mat.__class__} cannot be used for RawTerm."
 
             _components.append(Mat)
 
@@ -219,13 +343,20 @@ class RawTerm(Frozen):
 
         # ---- @ all mat together -------------------
         if len(_components) == 1:
-            self._mat = _components
-        else:
-            self._mat = _components[0] @ _components[1]
-            for _c in _components[2:]:
-                self._mat = self._mat @ _c
+            self._comp = _components[0]
 
-        #
+        else:
+            self._comp = _components[0] @ _components[1]
+            for _c in _components[2:]:
+                self._comp = self._comp @ _c
+
+        assert self._comp.__class__ in (
+            MsePyDynamicLocalMatrixVector,
+            MsePyRootFormDynamicCochainVector,
+            MsePyDynamicLocalVector,
+        ), f"{self._comp.__class__} cannot be used for RawTerm."
+
+        assert self._comp is not None, f"safety check!"
         self._mat_sym_repr = _mat_sym_repr
 
         self._freeze()
@@ -246,11 +377,6 @@ class RawTerm(Frozen):
         return self._factor
 
     @property
-    def mat(self):
+    def component(self):
         """components"""
-        return self._mat
-
-
-if __name__ == '__main__':
-    # python 
-    pass
+        return self._comp

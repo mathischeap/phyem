@@ -7,6 +7,7 @@ Yi Zhang
 from tools.frozen import Frozen
 from msepy.form.cochain.time_instant import _CochainAtOneTime
 from msepy.form.cochain.vector.static import MsePyRootFormStaticCochainVector
+from msepy.form.cochain.vector.dynamic import MsePyRootFormDynamicCochainVector
 
 
 class MsePyLockCochainError(Exception):
@@ -79,8 +80,23 @@ class MsePyRootFormCochain(Frozen):
 
     def static_vec(self, t):
         """"""
+        assert isinstance(t, (int, float)), f"t={t} is wrong."
         if t in self:
-            return MsePyRootFormStaticCochainVector(self._f, t, self[t], self.gathering_matrix)
+            return MsePyRootFormStaticCochainVector(self._f, t, self[t].local, self.gathering_matrix)
         else:
             # this one is usually used to receive a cochain.
             return MsePyRootFormStaticCochainVector(self._f, t, None, self.gathering_matrix)
+
+    @property
+    def dynamic_vec(self):
+        """"""
+        return MsePyRootFormDynamicCochainVector(self._f, self._callable_cochain)
+
+    def _callable_cochain(self, *args, **kwargs):
+        """"""
+        if self._f._is_base():
+            arg = args[0]
+            assert isinstance(arg, (int, float)), f"for general root-form, I receive a real number!"
+            return self.static_vec(arg)
+        else:
+            raise NotImplementedError(kwargs)

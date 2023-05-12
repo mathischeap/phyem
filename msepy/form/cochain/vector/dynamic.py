@@ -3,21 +3,14 @@ r"""
 pH-lib@RAM-EEMCS-UT
 Yi Zhang
 """
-
-import sys
-
-if './' not in sys.path:
-    sys.path.append('./')
-from tools.frozen import Frozen
+from msepy.tools.vector.dynamic import MsePyDynamicLocalVector
 
 
-class ClassName(Frozen):
+class MsePyRootFormDynamicCochainVector(MsePyDynamicLocalVector):
     """"""
 
-    def __init__(self):
+    def __init__(self, rf, dynamic_cochain):
+        """"""
+        self._f = rf
+        super().__init__(dynamic_cochain)
         self._freeze()
-
-
-if __name__ == '__main__':
-    # python 
-    pass

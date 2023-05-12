@@ -13,6 +13,9 @@ from src.spaces.main import _default_d_matrix_transpose_reprs
 from src.spaces.main import _str_degree_parser
 
 from src.config import _form_evaluate_at_repr_setting
+
+_rf_evaluate_at_lin_repr = _form_evaluate_at_repr_setting['lin']
+
 from src.config import _root_form_ap_vec_setting
 
 _root_form_ap_lin_repr = _root_form_ap_vec_setting['lin']
@@ -36,8 +39,8 @@ def msepy_root_array_parser(array_lin_repr):
 
     if array_lin_repr[-_len_rf_ap_lin_repr:] == _root_form_ap_lin_repr:
         # we are parsing a vector representing a root form.
-
-        pass
+        root_form_vec_lin_repr = array_lin_repr[:-_len_rf_ap_lin_repr]
+        return _parse_root_form(root_form_vec_lin_repr)
 
     else:
         indicators = array_lin_repr.split(_sep)  # these section represents all info of this root-array.
@@ -51,11 +54,36 @@ def msepy_root_array_parser(array_lin_repr):
             E = _parse_E_matrix(*info_indicators)
             return E, r"\mathsf{E}"
         elif type_indicator == _default_d_matrix_transpose_reprs[1].split(_sep)[0]:
-            E = _parse_E_matrix(*info_indicators)
-            return E.T, r"\mathsf{E}^{\mathsf{T}}"
+            E = _parse_E_matrix(*info_indicators).T
+            return E, r"\mathsf{E}^{\mathsf{T}}"
 
         else:
             raise NotImplementedError(f"I cannot parse: {array_lin_repr}")
+
+
+def _parse_root_form(root_form_vec_lin_repr):
+    """"""
+    forms = base['forms']
+    rf = None
+    for rf_pure_lin_repr in forms:
+        if rf_pure_lin_repr == root_form_vec_lin_repr:
+            rf = forms[rf_pure_lin_repr]
+        else:
+            pass
+
+    assert rf is not None, f"DO NOT find a msepy root-form, something is wrong."
+
+    if _rf_evaluate_at_lin_repr in rf.abstract._pure_lin_repr:
+        assert rf._pAti_form['base_form'] is not None, f"must be a particular root-form!"
+        raise NotImplementedError()
+
+    else:  # it is a general (not for a specific time step for example) vector of the root-form.
+
+        assert rf._pAti_form['base_form'] is None, f"must be a general root-form!"
+
+        dynamic_cochain_vec = rf.cochain.dynamic_vec
+
+        return dynamic_cochain_vec, rf.abstract.ap()._sym_repr
 
 
 def _parse_M_matrix(space, degree0, degree1):
@@ -101,6 +129,7 @@ def _parse_E_matrix(space, degree):
 
     gm0 = the_msepy_space.gathering_matrix._next(degree)
     gm1 = the_msepy_space.gathering_matrix(degree)
+
     E = MsePyStaticLocalMatrix(  # make a new copy every single time.
         the_msepy_space.incidence_matrix(degree),
         gm0,

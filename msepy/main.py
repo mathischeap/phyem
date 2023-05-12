@@ -121,10 +121,10 @@ def _parse(obj):
     """The objects other than manifolds, meshes, spaces, root-forms that should be parsed for this
     particular fem setting.
     """
-    from msepy.tools.linear_system.raw import MsePyRawLinearSystem
+    from msepy.tools.linear_system.dynamic import MsePyDynamicLinearSystem
     if obj.__class__ is MatrixProxyLinearSystem:
-        raw = MsePyRawLinearSystem(obj)
-        return raw
+        dynamic = MsePyDynamicLinearSystem(obj)
+        return dynamic
 
 
 from msepy.manifold.main import config as _mf_config
