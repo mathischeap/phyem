@@ -9,7 +9,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
 
-    <title>Discretization &#8212; PHYEM</title>
+    <title>Discretization &#8212; A finite element library powering Lego like simulation for (multi-)physics.</title>
   
   
   
@@ -31,6 +31,7 @@
 
     <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
     <link rel="stylesheet" href="../_static/styles/sphinx-book-theme.css?digest=14f4ca6b54d191a8c7657f6c759bf11a5fb86285" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="../_static/copybutton.css" />
     <link rel="stylesheet" type="text/css" href="../_static/nbsphinx-code-cells.css" />
   
   <!-- Pre-loaded scripts that we'll load fully later -->
@@ -40,6 +41,8 @@
     <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
     <script src="../_static/doctools.js"></script>
     <script src="../_static/sphinx_highlight.js"></script>
+    <script src="../_static/clipboard.min.js"></script>
+    <script src="../_static/copybutton.js"></script>
     <script src="../_static/scripts/sphinx-book-theme.js?digest=5a5c038af52cf7bc1a1ec88eea08e6366ee68824"></script>
     <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
     <script>window.MathJax = {"tex": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true}, "options": {"ignoreHtmlClass": "tex2jax_ignore|mathjax_ignore|document", "processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
@@ -606,7 +609,7 @@ document.write(`
 </div>
 <div class="output_area docutils container">
 <div class="highlight"><pre>
-&lt;Figure size 1200x600 with 1 Axes&gt;
+&lt;Figure size 1200x800 with 1 Axes&gt;
 </pre></div></div>
 </div>
 <p>Note that, till this moment, everything is still abstract. To do the numerical simulation, we need to bring them to a particular implementation, for example, the <code class="docutils literal notranslate"><span class="pre">msepy</span></code>, standing for <em>mimetic spectral elements python</em>, by calling <code class="docutils literal notranslate"><span class="pre">ph.fem.apply</span></code> function,</p>
@@ -625,8 +628,8 @@ document.write(`
 </div>
 <div class="output_area docutils container">
 <div class="highlight"><pre>
-&lt;module &#39;msepy.main&#39; from &#39;C:\\Users\\zhangy6\\OneDrive\\Codes\\phyem\\web\\source\\jupyter\\../../../..\\phyem\\msepy\\main.py&#39;&gt;
-{&#39;a3&#39;: &lt;MsePy Form \widehat{\alpha}^3 at 0x0000022FBC31D590&gt;, &#39;b2&#39;: &lt;MsePy Form \widehat{\beta}^2 at 0x0000022FB2375910&gt;}
+&lt;module &#39;msepy.main&#39; from &#39;C:\\Users\\Yi Zhang\\OneDrive\\Codes\\phyem\\web\\source\\jupyter\\../../../..\\phyem\\msepy\\main.py&#39;&gt;
+{&#39;a3&#39;: &lt;MsePy Form \widehat{\alpha}^3 at 0x000001F0065F3690&gt;, &#39;b2&#39;: &lt;MsePy Form \widehat{\beta}^2 at 0x000001F07EC6C710&gt;, &#39;ls&#39;: &lt;msepy.tools.linear_system.dynamic.MsePyDynamicLinearSystem object at 0x000001F07EC8C090&gt;}
 </pre></div></div>
 </div>
 <p><code class="docutils literal notranslate"><span class="pre">ph.fem.apply</span></code> takes two arguments, this first one indicates which particular implementation we want to use (in this case, we use <code class="docutils literal notranslate"><span class="pre">msepy</span></code>, the pure python mimetic spectral element implementation) and the second argument says what we want to take to this implementation. We use <code class="docutils literal notranslate"><span class="pre">locals()</span></code> which says everything in the local environment. We can customize it of course to move ahead with only a ecific set local variables.</p>
@@ -712,7 +715,7 @@ By Andrea Brugnoli, Ramy Rashad, Stefano Stramigioli, Yi Zhang
   <div class="footer-item">
     
 <div class="extra_footer">
-  <div>Last updated on May 08, 2023, 18:29:21, W. Europe Daylight Time</div>
+  <div>Last updated on May 16, 2023, 15:59:36, W. Europe Daylight Time</div>
 </div>
   </div>
   

@@ -2,12 +2,15 @@
 """
 pH-lib@RAM-EEMCS-UT
 """
-from scipy.sparse import issparse
+import matplotlib.pyplot as plt
+from scipy.sparse import issparse, isspmatrix_csr, isspmatrix_csc
 from tools.frozen import Frozen
 from msepy.mesh.elements import _DataDictDistributor
 from msepy.tools.vector.static.local import MsePyStaticLocalVector
 from msepy.form.cochain.vector.static import MsePyRootFormStaticCochainVector
 import numpy as np
+
+from msepy.tools.matrix.static.assemble import MsePyStaticLocalMatrixAssemble
 
 
 class MsePyStaticLocalMatrix(Frozen):
@@ -16,9 +19,13 @@ class MsePyStaticLocalMatrix(Frozen):
         """"""
         if data.__class__ is _DataDictDistributor:
             self._dtype = 'ddd'
-            self._data = data  # csc or csr matrix.
+            self._data = data  # element-wise csc or csr matrix.
             self._cache_key = data._cache_key_generator
         elif issparse(data):
+            if not (isspmatrix_csc(data) or isspmatrix_csr(data)):
+                data = data.tocsr()
+            else:
+                pass
             self._dtype = 'constant'
             self._data = data
             shape0, shape1 = data.shape  # must be regular gathering matrix, so `.shape` does not raise Error.
@@ -36,8 +43,10 @@ class MsePyStaticLocalMatrix(Frozen):
         self._gm1_col = gm_col
         self._constant_cache = None
         self._cache = {}
+        self._irs = None
         self._customize = _MsePyStaticLocalMatrixCustomize(self)
         self._adjust = _MsePyStaticLocalMatrixAdjust(self)
+        self._assemble = MsePyStaticLocalMatrixAssemble(self)
         self._freeze()
 
     def _constant_cache_key(self, i):
@@ -90,21 +99,53 @@ class MsePyStaticLocalMatrix(Frozen):
         else:
             data = self._get_meta_data_from_cache(i)
 
-        assert issparse(data), f"data for element #i is not sparse."
+        assert isspmatrix_csc(data) or isspmatrix_csr(data), f"data for element #i is not sparse."
 
         return data
 
     def __getitem__(self, i):
         """Get the final (adjusted and customized) matrix for element #i.
         """
-        data = self._get_data_adjusted(i)
-
-        assert issparse(data), f"data for element #i is not sparse."
         if i in self.customize:
-            # get (__getitem__) the correct _ElementCustomization and let it take effect (__call__).
-            return self.customize[i](data)
+            data = self.customize[i]
         else:
-            return data
+            data = self._get_data_adjusted(i)
+
+        assert isspmatrix_csc(data) or isspmatrix_csr(data), f"data for element #i is not sparse."
+
+        return data
+
+    def __iter__(self):
+        """iteration over all elements."""
+        for i in range(self.num_elements):
+            yield i
+
+    def spy(self, i, markerfacecolor='k', markeredgecolor='g', markersize=6):
+        """spy the local A of element #i.
+
+        Parameters
+        ----------
+        i
+        markerfacecolor
+        markeredgecolor
+        markersize
+
+        Returns
+        -------
+
+        """
+        M = self[i]
+        fig = plt.figure()
+        plt.spy(
+            M,
+            markerfacecolor=markerfacecolor,
+            markeredgecolor=markeredgecolor,
+            markersize=markersize
+        )
+        plt.tick_params(axis='both', which='major', direction='out')
+        plt.tick_params(which='both', top=True, right=True, labelbottom=True, labelright=True)
+        plt.show()
+        return fig
 
     @property
     def customize(self):
@@ -117,6 +158,11 @@ class MsePyStaticLocalMatrix(Frozen):
         Modification will be applied to new copies of the meta-data.
         """
         return self._adjust
+
+    @property
+    def assemble(self):
+        """assemble self."""
+        return self._assemble
 
     def __contains__(self, i):
         """if element #i is valid."""
@@ -135,6 +181,11 @@ class MsePyStaticLocalMatrix(Frozen):
     def is_static():
         """static"""
         return True
+
+    def _is_regularly_square(self):
+        if self._irs is None:
+            self._irs = np.all(self._gm0_row._gm == self._gm1_col._gm)
+        return self._irs
 
     @property
     def T(self):
@@ -264,7 +315,7 @@ class _MatmulMatMat(Frozen):
 
 def _mat_mul_mat_vec(m, v):
     """"""
-    vec = v.data  # the 2D data is always ready for msepy static local vector
+    vec = v.data  # make sure the 2D data is ready.
 
     # if isinstance(v, MsePyRootFormStaticCochainVector):
     #     print(v._t)
@@ -274,73 +325,49 @@ def _mat_mul_mat_vec(m, v):
     else:
         pass
 
-    if m._dtype == 'constant':
+    if len(m.adjust) == 0:
 
-        mat = m._data.toarray()
+        if m._dtype == 'constant':
 
-        data = np.einsum('ij, ej -> ei', mat, vec, optimize='optimal')
+            mat = m._data.toarray()
 
-    elif m._dtype == 'ddd':
-        mat = m._data
+            data = np.einsum('ij, ej -> ei', mat, vec, optimize='optimal')
 
-        vec = mat.split(vec)
+        elif m._dtype == 'ddd':
+            mat = m._data
 
-        data = list()
-        for ci in mat.cache_indices:
+            vec = mat.split(vec)
 
-            mat_ci = mat.get_data_of_cache_index(ci)
+            data = list()
 
-            if issparse(mat_ci):
-                mat_ci = mat_ci.toarray()
-            elif isinstance(mat_ci, np.ndarray):
-                assert np.ndim(mat_ci) == 2, f"must be a 2d ndarray."
-            else:
-                raise NotImplementedError('data type not accepted!')
+            for ci in mat.cache_indices:
 
-            vec_ci = vec[ci]
+                mat_ci = mat.get_data_of_cache_index(ci)
 
-            data.append(
-                np.einsum('ij, ej -> ei', mat_ci, vec_ci, optimize='optimal')
-            )
+                if issparse(mat_ci):
+                    mat_ci = mat_ci.toarray()
 
-        data = mat.merge(data)
+                elif isinstance(mat_ci, np.ndarray):
+                    assert np.ndim(mat_ci) == 2, f"must be a 2d ndarray."
+
+                else:
+                    raise NotImplementedError('data type not accepted!')
+
+                vec_ci = vec[ci]
+
+                data.append(
+                    np.einsum('ij, ej -> ei', mat_ci, vec_ci, optimize='optimal')
+                )
+
+            data = mat.merge(data)
+
+        else:
+            raise NotImplementedError()
 
     else:
-        raise NotImplementedError()
+        raise NotImplementedError(f"take adjusted data.")
 
     return data
-
-
-class _MsePyStaticLocalMatrixCustomize(Frozen):
-    """"""
-
-    def __init__(self, M):
-        """"""
-        self._M = M
-        self._customization = {}
-        self._freeze()
-
-    def __contains__(self, i):
-        """Whether element #i is customized?"""
-        return i in self._customization
-
-    def __getitem__(self, i):
-        """Return the instance that contains all customization of data for element #i."""
-        return self._customization[i]
-
-
-class _ElementCustomization(Frozen):
-    """"""
-
-    def __init__(self, i):
-        """"""
-        self._i = i
-        self._freeze()
-
-    def __call__(self, data):
-        """Let the customization take effect."""
-        # todo
-        return data
 
 
 class _MsePyStaticLocalMatrixAdjust(Frozen):
@@ -349,13 +376,76 @@ class _MsePyStaticLocalMatrixAdjust(Frozen):
     def __init__(self, M):
         """"""
         self._M = M
-        self._adjustment = {}  # keys are elements, values are the data.
+        self._adjustments = {}  # keys are elements, values are the data.
         self._freeze()
+
+    def __len__(self):
+        return len(self._adjustments)
 
     def __contains__(self, i):
         """Whether element #i is adjusted?"""
-        return i in self._adjustment
+        return i in self._adjustments
 
     def __getitem__(self, i):
         """Return the instance that contains all adjustments of data for element #i."""
-        return self._adjustment[i]
+        return self._adjustments[i]
+
+
+class _MsePyStaticLocalMatrixCustomize(Frozen):
+    """"""
+
+    def __init__(self, M):
+        """"""
+        self._M = M
+        self._customizations = {}
+        self._freeze()
+
+    def __len__(self):
+        return len(self._customizations)
+
+    def __contains__(self, i):
+        """Whether element #i is customized?"""
+        return i in self._customizations
+
+    def __getitem__(self, i):
+        """Return the customized data for element #i."""
+        return self._customizations[i]
+
+    def clear(self, i=None):
+        """clear customizations for element #i.
+
+        When `i` is None, clear for all elements.
+        """
+        if i is None:
+            self._customizations = {}
+        else:
+            raise NotImplementedError()
+
+    def identify_row(self, i):
+        """M[i,:] = 0 and M[i, i] = 1
+
+        Parameters
+        ----------
+        i
+
+        Returns
+        -------
+
+        """
+        assert self._M._is_regularly_square(), f"need a regularly square matrix."
+        elements_local_rows = self._M._gm0_row._find_elements_and_local_indices_of_dofs(i)
+        dof = list(elements_local_rows.keys())[0]
+        elements, local_rows = elements_local_rows[dof]
+        assert len(elements) == len(local_rows), f"something is wrong!"
+        if len(elements) == 1:  # only found one place.
+            element, local_row = elements[0], local_rows[0]
+
+            data = self._M[element].copy().tolil()
+
+            data[local_row, :] = 0
+            data[local_row, local_row] = 1
+
+            self._customizations[element] = data.tocsr()
+
+        else:
+            raise NotImplementedError()

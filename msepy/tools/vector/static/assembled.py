@@ -8,15 +8,18 @@ from tools.frozen import Frozen
 
 class MsePyStaticAssembledVector(Frozen):
     """"""
-    def __init__(self, data, gathering_matrix):
+    def __init__(self, v, gathering_matrix):
         """"""
-        self._data = data  # 1d numpy array or csc-sparse-matrix (shape (x,1)) or None.
+        assert v.ndim == 1, f"must be a 1-d array."
+        self._v = v  # 1d numpy array.
         self._gm = gathering_matrix
+        assert v.shape == (gathering_matrix.num_dofs, )
         self._freeze()
 
-    def __getitem__(self, i):
-        """When `self._data` is `None`, raise Error."""
-        return self._data[i]
+    @property
+    def shape(self):
+        """"""
+        return self._v.shape
 
     @staticmethod
     def is_static():

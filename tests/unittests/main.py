@@ -14,9 +14,15 @@ __all__ = [
 
 from src.config import SIZE
 
+unittest_error_report = list()
+
 if SIZE == 1:
 
     import tests.unittests.msepy.main as msepy
+
+    unittest_error_report.extend(
+        msepy.msepy_error_report
+    )
 
 else:
 

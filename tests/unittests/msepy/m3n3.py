@@ -237,6 +237,8 @@ os.remove(current_dir + '/WTP3.txt')
 errors = test_function(([3, 3, 2, 3, 2], [2, 3, 3, 2], [1, 1, 1, 1, 1.5]), (4, 5, 4), c=0)
 assert sum(errors) < 0.03
 
+print("exit:0")
+
 
 if __name__ == '__main__':
     # python tests/unittests/msepy/m3n3.py

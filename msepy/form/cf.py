@@ -40,6 +40,24 @@ class MsePyContinuousForm(Frozen):
                 _fd[i] = _field
             self._field = _fd
 
+    @property
+    def _exterior_derivative_vc_operators(self):
+        """"""
+        space = self._f.space.abstract
+        space_indicator = space.indicator
+        m, n, k = space.m, space.n, space.k
+        ori = space.orientation
+        return _d_to_vc(space_indicator, m, n, k, ori)
+
+    @property
+    def _codifferential_vc_operators(self):
+        """"""
+        space = self._f.space.abstract
+        space_indicator = space.indicator
+        m, n, k = space.m, space.n, space.k
+        ori = space.orientation
+        return _d_ast_to_vc(space_indicator, m, n, k, ori)
+
 
 class MsePyContinuousFormPartialTime(Frozen):
     """"""
@@ -90,3 +108,74 @@ class MsePyContinuousFormPartialTime(Frozen):
             values[i] = np.concatenate(val, axis=axis)
 
         return values
+
+
+def _d_to_vc(space_indicator, *args):
+    """"""
+
+    if space_indicator == 'Lambda':  # scalar valued form spaces.
+        m, n, k, ori = args
+        if m == n == 1 and k == 0:  # 0-form on 1d manifold in 1d space.
+            return 'derivative'
+        elif m == n == 2 and k == 0:
+            if ori == 'inner':
+                return 'gradient'
+            elif ori == 'outer':
+                return 'curl'
+            else:
+                raise Exception()
+        elif m == n == 2 and k == 1:
+            if ori == 'inner':
+                return 'rot'
+            elif ori == 'outer':
+                return 'divergence'
+            else:
+                raise Exception()
+        elif m == n == 3:
+            if k == 0:
+                return 'gradient'
+            elif k == 1:
+                return 'curl'
+            elif k == 2:
+                return 'divergence'
+            else:
+                raise Exception()
+        else:
+            raise NotImplementedError()
+    else:
+        raise NotImplementedError()
+
+
+def _d_ast_to_vc(space_indicator, *args):
+    """"""
+    if space_indicator == 'Lambda':  # scalar valued form spaces.
+        m, n, k, ori = args
+        if m == n == 1 and k == 1:  # 0-form on 1d manifold in 1d space.
+            raise NotImplementedError()
+        elif m == n == 2 and k == 1:
+            if ori == 'inner':
+                raise NotImplementedError()
+            elif ori == 'outer':
+                raise NotImplementedError()
+            else:
+                raise Exception()
+        elif m == n == 2 and k == 2:
+            if ori == 'inner':
+                raise NotImplementedError()
+            elif ori == 'outer':
+                raise NotImplementedError()
+            else:
+                raise Exception()
+        elif m == n == 3:
+            if k == 1:
+                raise NotImplementedError()
+            elif k == 2:
+                raise NotImplementedError()
+            elif k == 3:
+                raise NotImplementedError()
+            else:
+                raise Exception()
+        else:
+            raise NotImplementedError()
+    else:
+        raise NotImplementedError()

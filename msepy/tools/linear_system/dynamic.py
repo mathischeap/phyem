@@ -40,7 +40,7 @@ class MsePyDynamicLinearSystem(Frozen):
     def __init__(self, mp_ls):
         """"""
         self._mp_ls = mp_ls
-        self._bc = mp_ls._bc
+        self.bc = mp_ls._bc
         self._A = None
         self._x = None
         self._b = None
@@ -49,6 +49,14 @@ class MsePyDynamicLinearSystem(Frozen):
     @property
     def bc(self):
         return self._bc
+
+    @bc.setter
+    def bc(self, bc):
+        if bc is None:
+            self._bc = None
+        else:
+            pass
+            # raise NotImplementedError(f"We will parse the bc to msepy bc.")
 
     @property
     def shape(self):
@@ -102,7 +110,8 @@ class MsePyDynamicLinearSystem(Frozen):
 
                 static_b[i] = static_b_i
 
-        return MsePyStaticLinearSystem(static_A, static_x, static_b)
+        # probably, we will need to first parse the bc here to make it static and then pass it to static ls.
+        return MsePyStaticLinearSystem(static_A, static_x, static_b, bc=self._bc)
 
     def _parse_matrix_block(self, A):
         """"""
@@ -167,6 +176,7 @@ class MsePyDynamicLinearSystem(Frozen):
         """_A_pr_text"""
         A_text = r""
         I_, J_ = self.shape
+
         for i in range(I_):
             for j in range(J_):
                 Aij = self._A[i][j]
@@ -181,6 +191,7 @@ class MsePyDynamicLinearSystem(Frozen):
                     pass
             if i < I_ - 1:
                 A_text += r"\\"
+
         A_text = r"\begin{bmatrix}" + A_text + r"\end{bmatrix}"
 
         return A_text

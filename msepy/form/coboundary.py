@@ -4,12 +4,8 @@ phyem@RAM-EEMCS-UT
 Yi Zhang
 """
 
-import sys
-
 import numpy as np
 
-if './' not in sys.path:
-    sys.path.append('./')
 from tools.frozen import Frozen
 from random import random
 from time import time
@@ -31,11 +27,12 @@ class MsePyRootFormCoboundary(Frozen):
     @property
     def incidence_matrix(self):
         """E."""
-        gm = self._f.cochain.gathering_matrix
+        gm0 = self._f.space.gathering_matrix._next(self._f.degree)
+        gm1 = self._f.cochain.gathering_matrix
         E = MsePyStaticLocalMatrix(  # every time we make new instance, do not cache it.
             self._f.space.incidence_matrix(self._f.degree),  # constant sparse matrix
-            gm,
-            gm,
+            gm0,
+            gm1,
         )
         return E
 
@@ -86,53 +83,10 @@ class MsePyRootFormCoboundaryTimeInstant(Frozen):
         if cf is None:
             pass
         else:
-            vc_operator = self._corresponding_vc_operators
+            vc_operator = self._f.cf._exterior_derivative_vc_operators
             new_cf = dict()
             for i in cf:
                 new_cf[i] = getattr(cf[i], vc_operator)
             df.cf = new_cf
 
         return df
-    
-    @property
-    def _corresponding_vc_operators(self):
-        """"""
-        space = self._f.space.abstract
-        space_indicator = space.indicator
-        if space_indicator == 'Lambda':  # scalar valued form spaces.
-            m, n, k = space.m, space.n, space.k
-            ori = space.orientation
-            if m == n == 1 and k == 0:  # 0-form on 1d manifold in 1d space.
-                return 'derivative'
-            elif m == n == 2 and k == 0:
-                if ori == 'inner':
-                    return 'gradient'
-                elif ori == 'outer':
-                    return 'curl'
-                else:
-                    raise Exception()
-            elif m == n == 2 and k == 1:
-                if ori == 'inner':
-                    return 'rot'
-                elif ori == 'outer':
-                    return 'divergence'
-                else:
-                    raise Exception()
-            elif m == n == 3:
-                if k == 0:
-                    return 'gradient'
-                elif k == 1:
-                    return 'curl'
-                elif k == 2:
-                    return 'divergence'
-                else:
-                    raise Exception()
-            else:
-                raise NotImplementedError()
-        else:
-            raise NotImplementedError()
-
-
-if __name__ == '__main__':
-    # python msepy/form/coboundary.py
-    pass
