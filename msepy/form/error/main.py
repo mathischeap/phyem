@@ -4,11 +4,6 @@ pH-lib@RAM-EEMCS-UT
 Yi Zhang
 Created at 4:13 PM on 5/1/2023
 """
-
-import sys
-
-if './' not in sys.path:
-    sys.path.append('./')
 from tools.frozen import Frozen
 from msepy.form.error.Lambda import MsePyRootFormErrorLambda
 
@@ -31,8 +26,3 @@ class MsePyRootFormError(Frozen):
             raise NotImplementedError(f"{indicator}.")
 
         return reconstruct
-
-
-if __name__ == '__main__':
-    # python 
-    pass

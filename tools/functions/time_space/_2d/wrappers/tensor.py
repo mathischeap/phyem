@@ -4,14 +4,14 @@
 @contact: zhangyi_aero@hotmail.com
 @time: 11/3/2022 6:33 PM
 """
-from tools.frozen import Frozen
+from tools.functions.time_space.base import TimeSpaceFunctionBase
 from functools import partial
 
 from tools.numerical.time_space._2d.partial_derivative_as_functions import \
     NumericalPartialDerivativeTxyFunctions
 
 
-class T2dTensor(Frozen):
+class T2dTensor(TimeSpaceFunctionBase):
     """ Wrap four functions into a tensor class.
     """
 

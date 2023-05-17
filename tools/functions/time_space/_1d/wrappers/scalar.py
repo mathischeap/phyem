@@ -4,14 +4,13 @@ import sys
 
 if './' not in sys.path:
     sys.path.append('/')
-
-from tools.frozen import Frozen
+from tools.functions.time_space.base import TimeSpaceFunctionBase
 from functools import partial
 from tools.numerical.time_space._1d.partial_derivative_as_functions import \
     NumericalPartialDerivativeTxFunctions
 
 
-class T1dScalar(Frozen):
+class T1dScalar(TimeSpaceFunctionBase):
     """"""
 
     def __init__(self, s):
@@ -21,7 +20,7 @@ class T1dScalar(Frozen):
         self._freeze()
 
     def __call__(self, t, x):
-        return [self._s_(t, x),]
+        return [self._s_(t, x), ]
 
     def __getitem__(self, t):
         """return functions evaluated at time `t`."""
@@ -46,6 +45,14 @@ class T1dScalar(Frozen):
         """"""
         ps_px = self._NPD_('x')
         return self.__class__(ps_px)
+
+    def __neg__(self):
+        """"""
+        return self.__class__(self._neg_helper)
+
+    def _neg_helper(self, t, x):
+        """"""
+        return - self(t, x)[0]
 
 
 if __name__ == '__main__':

@@ -4,10 +4,6 @@
 @contact: zhangyi_aero@hotmail.com
 @time: 11/26/2022 2:56 PM
 """
-import sys
-
-if './' not in sys.path:
-    sys.path.append('./')
 import matplotlib.pyplot as plt
 import matplotlib
 plt.rcParams.update({

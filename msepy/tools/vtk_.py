@@ -6,13 +6,13 @@ Yi Zhang
 import numpy as np
 from pyevtk.hl import unstructuredGridToVTK
 from tools.frozen import Frozen
-from msepy.tools.gathering_matrix import RegularGatheringMatrix
+# from scipy.sparse import csr_matrix
 
 
 class BuildVtkHexahedron(Frozen):    # using only No.12 VTK cells.
     """"""
 
-    def __init__(self, x, y, z, numbering, cell_layout):
+    def __init__(self, x, y, z, cell_layout):
         """
 
         Parameters
@@ -20,21 +20,25 @@ class BuildVtkHexahedron(Frozen):    # using only No.12 VTK cells.
         x
         y
         z
-        numbering
         cell_layout :
             In each element, we have *cell_layout along 3-axes.
         """
-        self._x = _flat_data_according_to_numbering(x, numbering)
-        self._y = _flat_data_according_to_numbering(y, numbering)
-        self._z = _flat_data_according_to_numbering(z, numbering)
+
+        numbering = _parse_numbering(x, y, z)
+        self._1d_numbering = numbering.ravel('C')
+        self._num_dofs = np.max(numbering) + 1
+        self._x = self._flat_data_according_to_numbering(x, numbering)
+        self._y = self._flat_data_according_to_numbering(y, numbering)
+        self._z = self._flat_data_according_to_numbering(z, numbering)
         self._numbering = numbering
         num_cell_each_element = np.prod(cell_layout)
-        num_cells = numbering.num_elements * num_cell_each_element
+        num_elements = len(numbering)
+        num_cells = num_elements * num_cell_each_element
         connectivity = np.zeros((num_cells, 8), dtype=int)
         II, JJ, KK = cell_layout
         points_shape = (II+1, JJ+1, KK+1)
-        for e in range(numbering.num_elements):    # this is not ideal (but fast enough), can be vectorized.
-            numbering_e = numbering._gm[e].reshape(points_shape, order='F')
+        for e in range(num_elements):    # this is not ideal (but fast enough), can be vectorized.
+            numbering_e = numbering[e].reshape(points_shape, order='F')
             for k in range(KK):                    # this is not ideal (but fast enough), can be vectorized.
                 for j in range(JJ):                # this is not ideal (but fast enough), can be vectorized.
                     for i in range(II):            # this is not ideal (but fast enough), can be vectorized.
@@ -61,11 +65,15 @@ class BuildVtkHexahedron(Frozen):    # using only No.12 VTK cells.
             for data_name in point_data:
                 data = point_data[data_name]
                 if isinstance(data, np.ndarray):  # scalar data
-                    point_data[data_name] = _flat_data_according_to_numbering(data, self._numbering)
+                    point_data[data_name] = self._flat_data_according_to_numbering(data, self._numbering)
                 elif len(data) == 3:  # vector data
                     vec_data = list()
                     for di in data:
-                        vec_data.append(_flat_data_according_to_numbering(di, self._numbering))
+                        vec_data.append(
+                            self._flat_data_according_to_numbering(
+                                di, self._numbering
+                            )
+                        )
                     point_data[data_name] = tuple(vec_data)  # use tuple only.
                 else:
                     raise NotImplementedError
@@ -85,11 +93,43 @@ class BuildVtkHexahedron(Frozen):    # using only No.12 VTK cells.
             pointData=point_data
         )
 
+    def _flat_data_according_to_numbering(self, data, numbering):
+        """transfer data into 1-d data according a numbering (msepy gathering matrix)"""
+        assert data.shape == numbering.shape, f"x.shape wrong."
+        d1 = np.zeros(self._num_dofs)  # 1d data
+        d1[self._1d_numbering] = data.ravel('C')
+        # indices = self._1d_numbering
+        # data = data.ravel('C')
+        # indptr = np.array([0, len(data)])
+        # spa_data = csr_matrix(  # this is nice, but this does not take average for shared values.
+        #     (data, indices, indptr),
+        #     shape=(1, self._num_dofs)
+        # )
+        return d1
 
-def _flat_data_according_to_numbering(data, numbering):
-    """transfer data into 1-d data according a numbering (msepy gathering matrix)"""
-    assert numbering.__class__ is RegularGatheringMatrix, f"I need a RegularGatheringMatrix of msepy implementation."
-    assert data.shape == numbering.shape, f"x.shape wrong."
-    d1 = np.zeros(numbering.num_dofs)  # 1d data
-    d1[numbering._gm.ravel('C')] = data.ravel('C')
-    return d1
+
+def _parse_numbering(x, y, z):
+    """"""
+    shape = x.shape
+    x = np.round(x, decimals=6).ravel('C')
+    y = np.round(y, decimals=6).ravel('C')
+    z = np.round(z, decimals=6).ravel('C')
+    numbering = - np.ones(len(x), dtype=int)
+    current_numbering = 0
+    for i in range(len(x)):
+        if numbering[i] != -1:
+            pass
+        else:
+            xi, yi, zi = x[i], y[i], z[i]
+            x_indices = np.where(
+                np.logical_and(
+                    np.logical_and(x == xi, y == yi),
+                    z == zi,
+                )
+            )[0]
+            numbering[x_indices] = current_numbering
+            current_numbering += 1
+
+    numbering = numbering.reshape(shape, order='C')
+
+    return numbering

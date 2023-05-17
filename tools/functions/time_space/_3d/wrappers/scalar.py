@@ -4,11 +4,7 @@
 @contact: zhangyi_aero@hotmail.com
 @time: 11/13/2022 2:54 PM
 """
-import sys
-
-if './' not in sys.path:
-    sys.path.append('/')
-from tools.frozen import Frozen
+from tools.functions.time_space.base import TimeSpaceFunctionBase
 
 from tools.numerical.time_space._3d.partial_derivative_as_functions import \
     NumericalPartialDerivativeTxyzFunctions
@@ -22,7 +18,7 @@ from tools.functions.time_space._3d.wrappers.helpers.scalar_sub import t3d_Scala
 from tools.functions.time_space._3d.wrappers.helpers.scalar_neg import t3d_ScalarNeg
 
 
-class T3dScalar(Frozen):
+class T3dScalar(TimeSpaceFunctionBase):
     """"""
 
     def __init__(self, s):

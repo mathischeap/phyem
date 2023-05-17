@@ -4,18 +4,14 @@
 @contact: zhangyi_aero@hotmail.com
 @time: 11/13/2022 2:58 PM
 """
-import sys
-
-if './' not in sys.path:
-    sys.path.append('/')
-from tools.frozen import Frozen
+from tools.functions.time_space.base import TimeSpaceFunctionBase
 from functools import partial
 
 from tools.numerical.time_space._3d.partial_derivative_as_functions import \
     NumericalPartialDerivativeTxyzFunctions
 
 
-class T3dTensor(Frozen):
+class T3dTensor(TimeSpaceFunctionBase):
     """"""
 
     def __init__(self, t00, t01, t02, t10, t11, t12, t20, t21, t22):

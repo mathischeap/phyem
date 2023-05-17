@@ -6,10 +6,6 @@ Created at 4:18 PM on 5/1/2023
 """
 
 import numpy as np
-import sys
-
-if './' not in sys.path:
-    sys.path.append('./')
 from tools.frozen import Frozen
 from tools.quadrature import Quadrature
 
@@ -195,8 +191,3 @@ class MsePyRootFormErrorLambda(Frozen):
     def _m3_n3_k3(self, d, quad_degree):
         """"""
         return self._m3_n3_k0(d, quad_degree)
-
-
-if __name__ == '__main__':
-    # python 
-    pass

@@ -182,8 +182,9 @@ class MsePyGatheringMatrixLambda(Frozen):
                                            current_number + p[0] * p[1] * (p[2]-1)).reshape(
                 (p[0], p[1], p[2]-1), order='F')
             current_number += p[0]*p[1]*(p[2]-1)
+
             # next, we look at front side__________________________________________
-            what_front = element_map[n][3]
+            what_front = element_map[n][5]
             if isinstance(what_front, str):
                 # the front side of nth element is on domain boundary. So we just number it.
                 gn2[n, :, :, -1] = np.arange(current_number,

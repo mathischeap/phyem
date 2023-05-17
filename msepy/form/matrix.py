@@ -4,11 +4,6 @@ pH-lib@RAM-EEMCS-UT
 Yi Zhang
 Created at 11:55 AM on 5/9/2023
 """
-
-import sys
-
-if './' not in sys.path:
-    sys.path.append('./')
 from tools.frozen import Frozen
 from msepy.tools.matrix.static.local import MsePyStaticLocalMatrix
 
@@ -34,8 +29,3 @@ class MsePyRootFormMatrix(Frozen):
             gm,
         )
         return M
-
-
-if __name__ == '__main__':
-    # python 
-    pass

@@ -31,7 +31,7 @@ class MsePyMeshElements(Frozen):
         self._freeze()
 
     def _is_linear(self):
-        """Return True if all elements are linear elements."""
+        """Return True if ALL elements are linear elements."""
         if self.___is_linear___ is None:
             rmt = self._index_mapping._reference_mtype
             if rmt is None:  # all elements are unique.

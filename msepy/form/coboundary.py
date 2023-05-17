@@ -3,9 +3,7 @@
 phyem@RAM-EEMCS-UT
 Yi Zhang
 """
-
 import numpy as np
-
 from tools.frozen import Frozen
 from random import random
 from time import time
@@ -83,10 +81,6 @@ class MsePyRootFormCoboundaryTimeInstant(Frozen):
         if cf is None:
             pass
         else:
-            vc_operator = self._f.cf._exterior_derivative_vc_operators
-            new_cf = dict()
-            for i in cf:
-                new_cf[i] = getattr(cf[i], vc_operator)
-            df.cf = new_cf
+            df.cf = self._f.cf.exterior_derivative()
 
         return df

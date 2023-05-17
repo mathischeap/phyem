@@ -5,7 +5,7 @@
 @time: 11/3/2022 6:32 PM
 """
 
-from tools.frozen import Frozen
+from tools.functions.time_space.base import TimeSpaceFunctionBase
 from functools import partial
 
 from tools.functions.time_space._2d.wrappers.helpers.scalar_add import t2d_ScalarAdd
@@ -17,7 +17,7 @@ from tools.numerical.time_space._2d.partial_derivative_as_functions import \
     NumericalPartialDerivativeTxyFunctions
 
 
-class T2dVector(Frozen):
+class T2dVector(TimeSpaceFunctionBase):
     """ Wrap two functions into a vector class.
     """
 

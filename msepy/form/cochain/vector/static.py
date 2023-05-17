@@ -3,11 +3,6 @@ r"""
 pH-lib@RAM-EEMCS-UT
 Yi Zhang
 """
-
-import sys
-
-if './' not in sys.path:
-    sys.path.append('./')
 from msepy.tools.vector.static.local import MsePyStaticLocalVector
 
 
@@ -24,8 +19,3 @@ class MsePyRootFormStaticCochainVector(MsePyStaticLocalVector):
         """override `self._data` to be the cochain of `self._f` at time `self._t`."""
         assert self.data is not None, f"I have no data."
         self._f[self._time].cochain = self.data
-
-
-if __name__ == '__main__':
-    # python 
-    pass

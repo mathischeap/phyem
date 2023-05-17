@@ -4,11 +4,6 @@
 @contact: zhangyi_aero@hotmail.com
 @time: 11/26/2022 2:56 PM
 """
-import sys
-
-if './' not in sys.path:
-    sys.path.append('./')
-
 from src.spaces.main import new
 
 _implemented_space_operators = (

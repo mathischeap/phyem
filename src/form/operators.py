@@ -3,10 +3,6 @@
 pH-lib@RAM-EEMCS-UT
 created at: 3/8/2023 11:57 AM
 """
-import sys
-
-if './' not in sys.path:
-    sys.path.append('./')
 
 from src.spaces.operators import wedge as space_wedge
 from src.spaces.operators import Hodge as space_Hodge

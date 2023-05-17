@@ -33,12 +33,60 @@ class MsePyContinuousForm(Frozen):
         """"""
         regions = self._f.mesh.regions
         if isinstance(_field, dict):
-            self._field = _field
+            pass
+        elif isinstance(_field, _FieldWrapper):
+            pass
         else:
             _fd = dict()
             for i in regions:
                 _fd[i] = _field
-            self._field = _fd
+            _field = _fd
+
+        self._field = _FieldWrapper(_field)
+
+    def coboundary(self):
+        """alias for exterior derivative"""
+        return self.exterior_derivative()
+
+    def exterior_derivative(self):
+        """exterior derivative."""
+
+        if self.field is None:
+            raise Exception('No cf, set it first!')
+        else:
+            new_d_cf = _FieldWrapper()
+            for i in self.field:
+                field_i = self.field[i]
+                if hasattr(field_i, "_is_time_space_func") and field_i._is_time_space_func():
+                    vc_operator = self._exterior_derivative_vc_operators
+                    new_d_cf[i] = getattr(field_i, vc_operator)
+                else:
+                    raise NotImplementedError(f"exterior_derivative")
+            return new_d_cf
+
+    def codifferential(self):
+        """"""
+
+        if self.field is None:
+            raise Exception('No cf, set it first!')
+        else:
+            new_cd_cf = _FieldWrapper()
+            for i in self.field:
+                field_i = self.field[i]
+                if hasattr(field_i, "_is_time_space_func") and field_i._is_time_space_func():
+                    sign, cd_operator = self._codifferential_vc_operators
+                    new_cf_i = getattr(field_i, cd_operator)
+                    if sign == '+':
+                        pass
+                    elif sign == '-':
+                        new_cf_i = - new_cf_i
+                    else:
+                        raise Exception()
+                    new_cd_cf[i] = new_cf_i
+                else:
+                    raise NotImplementedError(f"codifferential")
+
+            return new_cd_cf
 
     @property
     def _exterior_derivative_vc_operators(self):
@@ -57,6 +105,16 @@ class MsePyContinuousForm(Frozen):
         m, n, k = space.m, space.n, space.k
         ori = space.orientation
         return _d_ast_to_vc(space_indicator, m, n, k, ori)
+
+
+class _FieldWrapper(dict):
+    """"""
+
+    def __neg__(self):
+        new_neg_field = _FieldWrapper()
+        for i in self:
+            new_neg_field[i] = - self[i]
+        return new_neg_field
 
 
 class MsePyContinuousFormPartialTime(Frozen):
@@ -151,7 +209,7 @@ def _d_ast_to_vc(space_indicator, *args):
     if space_indicator == 'Lambda':  # scalar valued form spaces.
         m, n, k, ori = args
         if m == n == 1 and k == 1:  # 0-form on 1d manifold in 1d space.
-            raise NotImplementedError()
+            return '-', 'derivative'
         elif m == n == 2 and k == 1:
             if ori == 'inner':
                 raise NotImplementedError()
@@ -163,7 +221,7 @@ def _d_ast_to_vc(space_indicator, *args):
             if ori == 'inner':
                 raise NotImplementedError()
             elif ori == 'outer':
-                raise NotImplementedError()
+                return '-', 'gradient'
             else:
                 raise Exception()
         elif m == n == 3:
@@ -172,7 +230,7 @@ def _d_ast_to_vc(space_indicator, *args):
             elif k == 2:
                 raise NotImplementedError()
             elif k == 3:
-                raise NotImplementedError()
+                return '-', 'gradient'
             else:
                 raise Exception()
         else:

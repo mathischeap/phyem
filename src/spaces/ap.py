@@ -5,10 +5,6 @@ Algebraic Proxy.
 pH-lib@RAM-EEMCS-UT
 created at: 3/20/2023 5:17 PM
 """
-import sys
-
-if './' not in sys.path:
-    sys.path.append('./')
 
 from src.spaces.main import _default_mass_matrix_reprs
 from src.spaces.main import _default_d_matrix_reprs, _default_d_matrix_transpose_reprs

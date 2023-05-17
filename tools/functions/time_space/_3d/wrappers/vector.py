@@ -4,11 +4,8 @@
 @contact: zhangyi_aero@hotmail.com
 @time: 11/3/2022 6:29 PM
 """
-import sys
 
-if './' not in sys.path:
-    sys.path.append('/')
-from tools.frozen import Frozen
+from tools.functions.time_space.base import TimeSpaceFunctionBase
 from functools import partial
 
 from tools.numerical.time_space._3d.partial_derivative_as_functions import \
@@ -21,7 +18,7 @@ from tools.functions.time_space._3d.wrappers.helpers.scalar_add import t3d_Scala
 from tools.functions.time_space._3d.wrappers.helpers.scalar_neg import t3d_ScalarNeg
 
 
-class T3dVector(Frozen):
+class T3dVector(TimeSpaceFunctionBase):
     """ Wrap three functions into a vector class.
     """
 

@@ -5,9 +5,6 @@ Yi Zhang
 """
 
 import numpy as np
-import sys
-if './' not in sys.path:
-    sys.path.append('./')
 
 from tools.frozen import Frozen
 from tools.matplot.plot import plot

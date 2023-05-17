@@ -192,7 +192,7 @@ if __name__ == '__main__':
     space_dim = 3
     ph.config.set_embedding_space_dim(space_dim)
 
-    manifold = ph.manifold(space_dim)
+    manifold = ph.manifold(space_dim, is_periodic=True)
     mesh = ph.mesh(manifold)
     L0 = ph.space.new('Lambda', 0)
     f0 = L0.make_form('f^0', '0-f')
@@ -209,32 +209,36 @@ if __name__ == '__main__':
 
     df0 = ph.exterior_derivative(f0)
 
-    ph.space.finite((3, 4, 5))
+    ph.space.finite((3, 3, 3))
 
     msepy, obj = ph.fem.apply('msepy', locals())
 
     manifold = obj['manifold']
     mesh = obj['mesh']
-    print(obj)
+    # print(obj)
 
-    # f0 = obj['f0']
-    # f1 = obj['f1']
+    f0 = obj['f0']
+    f1 = obj['f1']
     #
     # # f1o = obj['f1o']
     # # f1i = obj['f1i']
-    # f2 = obj['f2']
-    # f3 = obj['f3']
+    f2 = obj['f2']
+    f3 = obj['f3']
     #
-    # # msepy.config(manifold)('crazy', c=0., periodic=False, bounds=[[0, 2] for _ in range(space_dim)])
-    # msepy.config(manifold)('crazy_multi', c=0.0, bounds=[[0, 2] for _ in range(space_dim)])
+    # msepy.config(manifold)('crazy', c=0., periodic=False, bounds=[[0, 2] for _ in range(space_dim)])
+    msepy.config(manifold)('crazy_multi', c=0.0, bounds=[[0, 2] for _ in range(space_dim)], periodic=True)
     # # msepy.config(mnf)('backward_step')
-    # msepy.config(mesh)(([3, 3, 3, 3, 3], [1, 1, 1, 1, 1], [2, 2, 3, 3]))
+    msepy.config(mesh)((2, 2, 2))
     # # msepy.config(mesh)(10)
     # # msepy.config(mesh)(([3, 3, 2], ))
     # # mesh.visualize()
-    #
-    def fx(t, x, y, z):
-        return np.cos(2*np.pi*x) * np.cos(np.pi*y) * np.cos(np.pi*z) + t
+
+    # def fx(t, x, y, z):
+    #     return np.cos(2*np.pi*x) * np.cos(np.pi*y) * np.cos(np.pi*z) + t
+
+    def phi_func(t, x, y, z):
+        """"""
+        return - np.sin(2 * np.pi * x) * np.sin(2 * np.pi * y) * np.sin(2 * np.pi * z) + t * 1
 
     def ux(t, x, y, z):
         return np.sin(np.pi*x) * np.cos(2*np.pi*y) * np.cos(2*np.pi*z) + t
@@ -244,8 +248,8 @@ if __name__ == '__main__':
 
     def uz(t, x, y, z):
         return np.cos(2*np.pi*x) * np.cos(2*np.pi*y) * np.sin(np.pi*z) + t
-    #
-    # scalar = ph.vc.scalar(fx)
+
+    scalar = ph.vc.scalar(phi_func)
     # vector = ph.vc.vector(ux, uy, uz)
     #
     # M0 = f0.matrix.mass
@@ -255,9 +259,9 @@ if __name__ == '__main__':
 
     # gm = f3.cochain.gathering_matrix
 
-    # f0.cf = scalar
-    # f0[2].reduce()
-    # f0[2].visualize()
+    f3.cf = scalar
+    f3[0].reduce()
+    f3[0].visualize()
     # print(f0[2].error())
     # df0 = f0[2].coboundary()
     # print(df0[2].error())

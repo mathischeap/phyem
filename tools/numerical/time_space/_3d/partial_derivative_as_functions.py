@@ -26,6 +26,8 @@ class NumericalPartialDerivativeTxyzFunctions(Frozen):
         elif isinstance(func, MethodType):
             # noinspection PyUnresolvedReferences
             assert func.__code__.co_argcount == 5, " <PartialDerivative> : need a method of 5 args (5 including self)."
+        elif callable(func):
+            pass
         else:
             raise NotImplementedError(func.__class__.__name__)
         self._func_ = func

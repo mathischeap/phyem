@@ -3,10 +3,6 @@
 pH-lib@RAM-EEMCS-UT
 created at: 3/30/2023 6:19 PM
 """
-import sys
-
-if './' not in sys.path:
-    sys.path.append('./')
 from tools.frozen import Frozen
 from msepy.manifold.main import MsePyManifold
 from msepy.mesh.main import MsePyMesh

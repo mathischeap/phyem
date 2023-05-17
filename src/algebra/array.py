@@ -3,11 +3,6 @@
 pH-lib@RAM-EEMCS-UT
 created at: 3/21/2023 2:35 PM
 """
-import sys
-
-if './' not in sys.path:
-    sys.path.append('./')
-
 import matplotlib.pyplot as plt
 import matplotlib
 plt.rcParams.update({

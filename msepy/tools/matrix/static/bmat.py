@@ -41,6 +41,7 @@ def bmat(A_2d_list):
     chain_row_gm = RegularGatheringMatrix(row_gms)
     chain_col_gm = RegularGatheringMatrix(col_gms)
 
+    # only adjustments take effect. Customization will be skipped.
     M = _MsePyStaticLocalMatrixBmat(A_2d_list, (row_shape, col_shape))
 
     return MsePyStaticLocalMatrix(M, chain_row_gm, chain_col_gm, M.cache_key)
@@ -71,7 +72,7 @@ class _MsePyStaticLocalMatrixBmat(Frozen):
         )
 
     def cache_key(self, i):
-        """"""
+        """Do this in real time."""
         row_shape, col_shape = self._shape
         keys = list()
         for r in range(row_shape):
@@ -89,5 +90,7 @@ class _MsePyStaticLocalMatrixBmat(Frozen):
                         )
         if all([_ == 'constant' for _ in keys]):
             return 'constant'
+        elif 'unique' in keys:
+            return 'unique'
         else:
             return ''.join(keys)

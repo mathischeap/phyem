@@ -31,7 +31,7 @@ class MsePyMassMatrixLambda(Frozen):
 
         if quad is None:
             is_linear = self._space.mesh.elements._is_linear()
-            if is_linear:  # all elements are linear.
+            if is_linear:  # ALL elements are linear.
                 quad_degree = [p for p in self._space[degree].p]
                 quad_type = self._space[degree].ntype
                 quad = (quad_degree, quad_type)
@@ -192,7 +192,7 @@ class MsePyMassMatrixLambda(Frozen):
                 'im, jm, m -> ij',
                 bf, bf, det_jm * quad_weights,
                 optimize='optimal',
-                        )
+            )
             M[re] = csr_matrix(M_re)
         return M
 

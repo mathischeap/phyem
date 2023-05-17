@@ -73,27 +73,21 @@ class MsePyRootFormVisualizeVTK(Frozen):
                 p[i] = 1
             else:
                 pass
+
         nodes = [np.linspace(-1, 1, p_i+1) for p_i in p]
         t = self._f.visualize._t
         xyz, v = self._f[t].reconstruct(*nodes, ravel=True)
         x, y, z = xyz
         v = v[0]
 
-        key = str(p)
-        if key in self._cache:
-            node_numbering = self._cache[key]
-        else:
-            node_numbering = self._f.space.gathering_matrix.Lambda._n3_k0(p)
-            self._cache[key] = node_numbering
-
         if data_only:
             if builder:
-                vtk_builder = BuildVtkHexahedron(x, y, z, node_numbering, cell_layout=p)
+                vtk_builder = BuildVtkHexahedron(x, y, z, cell_layout=p)
                 return vtk_builder, {self._f.name: v}
             else:
                 return {self._f.name: v}
         else:
-            vtk_builder = BuildVtkHexahedron(x, y, z, node_numbering, cell_layout=p)
+            vtk_builder = BuildVtkHexahedron(x, y, z, cell_layout=p)
             vtk_builder(file_path, point_data={self._f.name: v})
 
             return 0
@@ -115,21 +109,14 @@ class MsePyRootFormVisualizeVTK(Frozen):
         xyz, v = self._f[t].reconstruct(*nodes, ravel=True)
         x, y, z = xyz
 
-        key = str(p)
-        if key in self._cache:
-            node_numbering = self._cache[key]
-        else:
-            node_numbering = self._f.space.gathering_matrix.Lambda._n3_k0(p)
-            self._cache[key] = node_numbering
-
         if data_only:
             if builder:
-                vtk_builder = BuildVtkHexahedron(x, y, z, node_numbering, cell_layout=p)
+                vtk_builder = BuildVtkHexahedron(x, y, z, cell_layout=p)
                 return vtk_builder, {self._f.name: v}
             else:
                 return {self._f.name: v}
         else:
-            vtk_builder = BuildVtkHexahedron(x, y, z, node_numbering, cell_layout=p)
+            vtk_builder = BuildVtkHexahedron(x, y, z, cell_layout=p)
             vtk_builder(file_path, point_data={self._f.name: v})
 
             return 0

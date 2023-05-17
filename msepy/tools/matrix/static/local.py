@@ -78,11 +78,10 @@ class MsePyStaticLocalMatrix(Frozen):
                 pass
             return self._constant_cache
 
-        elif ck == 'unique':  # we do not cache at all. Use the meta-data.
+        elif 'unique' in ck:  # we do not cache at all. Use the meta-data.
             return self.___get_meta_data___(i)
 
         else:  # otherwise, we do dynamic caching.
-
             if ck in self._cache:
                 data = self._cache[ck]
             else:
@@ -325,7 +324,7 @@ def _mat_mul_mat_vec(m, v):
     else:
         pass
 
-    if len(m.adjust) == 0:
+    if len(m.adjust) == 0:  # we take 2d data (ready).
 
         if m._dtype == 'constant':
 

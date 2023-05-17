@@ -198,7 +198,9 @@ class _CS1FactorCaller(Frozen):
     def _pr_text():
         return ''
 
+
 _cs1_fc = _CS1FactorCaller()
+
 
 def _constant_scalar_parser(cs):
     """"""
@@ -206,8 +208,6 @@ def _constant_scalar_parser(cs):
         return _cs1_fc
     else:
         raise NotImplementedError()
-
-
 
 
 if __name__ == '__main__':

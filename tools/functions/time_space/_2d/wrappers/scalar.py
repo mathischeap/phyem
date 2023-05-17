@@ -9,7 +9,7 @@ import sys
 if './' not in sys.path:
     sys.path.append('/')
 
-from tools.frozen import Frozen
+from tools.functions.time_space.base import TimeSpaceFunctionBase
 
 from tools.numerical.time_space._2d.partial_derivative_as_functions import \
     NumericalPartialDerivativeTxyFunctions
@@ -22,7 +22,7 @@ from tools.functions.time_space._2d.wrappers.helpers.scalar_mul import t2d_Scala
 from functools import partial
 
 
-class T2dScalar(Frozen):
+class T2dScalar(TimeSpaceFunctionBase):
     """"""
 
     def __init__(self, s):

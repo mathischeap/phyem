@@ -3,11 +3,6 @@
 pH-lib@RAM-EEMCS-UT
 Yi Zhang
 """
-
-import sys
-
-if './' not in sys.path:
-    sys.path.append('./')
 from tools.frozen import Frozen
 from msepy.form.cochain.vector.static import MsePyRootFormStaticCochainVector
 
