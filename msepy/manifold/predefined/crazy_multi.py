@@ -5,12 +5,7 @@ Yi Zhang
 Created at 5:09 PM on 5/1/2023
 """
 
-import sys
-
 import numpy as np
-
-if './' not in sys.path:
-    sys.path.append('./')
 from tools.frozen import Frozen
 from msepy.manifold.predefined.crazy import _MesPyRegionCrazyMapping
 

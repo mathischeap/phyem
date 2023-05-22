@@ -14,7 +14,6 @@ from tools.frozen import Frozen
 from msepy.form.cf import MsePyContinuousForm
 from msepy.form.cochain.main import MsePyRootFormCochain
 from msepy.form.static import MsePyRootFormStaticCopy
-from msepy.form.dynamic import MsePyRootFormDynamicCopy
 from msepy.form.visualize.main import MsePyRootFormVisualize
 from msepy.form.error.main import MsePyRootFormError
 from msepy.form.coboundary import MsePyRootFormCoboundary
@@ -62,16 +61,14 @@ class MsePyRootForm(Frozen):
 
     def __getitem__(self, t):
         """return the realtime copy of `self` at time `t`."""
+        t = self.cochain._parse_t(t)  # round off the truncation error to make it clear.
         if isinstance(t, (int, float)):
             if self._is_base():
                 return MsePyRootFormStaticCopy(self, t)
             else:
                 return MsePyRootFormStaticCopy(self._base, t)
         else:
-            if self._is_base():
-                return MsePyRootFormDynamicCopy(self, t)
-            else:
-                return MsePyRootFormDynamicCopy(self._base, t)
+            raise Exception(f"cannot accept t={t}.")
 
     def _is_base(self):
         """Am I a base root-form (not abstracted at a time.)"""

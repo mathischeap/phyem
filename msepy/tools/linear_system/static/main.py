@@ -183,6 +183,7 @@ class _Xxx(Frozen):
     def __init__(self, ls, x):
         time_slots = list()
         for c in range(ls.shape[1]):
+            assert x[c].__class__ is MsePyRootFormStaticCochainVector, f"x[{c}] is not a static cochain vector."
             time_slots.append(
                 x[c]._time
             )
@@ -213,6 +214,7 @@ class _Xxx(Frozen):
         for i, x_i in enumerate(x_individuals):
             self._x[i].data = x_i
             self._x[i].override()
+
 
 class _Bbb(Frozen):
     """"""

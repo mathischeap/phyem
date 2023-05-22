@@ -24,6 +24,6 @@ class MsePyStaticLocalVectorAssemble(Frozen):
 
         for i in self._v:
             Vi = self._v[i]  # all adjustments and customizations take effect.
-            v[gm[i]] += Vi
+            v[gm[i]] += Vi  # must do this to be consistent with the matrix assembling.
 
         return MsePyStaticAssembledVector(v, gm)

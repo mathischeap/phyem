@@ -12,7 +12,7 @@ from msepy.tools.linear_system.static.assembled.solve import MsePyStaticLinearSy
 
 
 class MsePyStaticLinearSystemAssembled(Frozen):
-    """"""
+    """Assembled system."""
 
     def __init__(self, static, A, b):
         """"""
@@ -26,12 +26,15 @@ class MsePyStaticLinearSystemAssembled(Frozen):
 
     @property
     def A(self):
+        """A of Ax = b."""
         return self._A
 
     @property
     def b(self):
+        """b of Ax = b."""
         return self._b
 
     @property
     def solve(self):
+        """Solve the system."""
         return self._solve

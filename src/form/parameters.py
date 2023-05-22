@@ -94,6 +94,8 @@ class ConstantScalar0Form(Frozen):
         self._is_root = is_root
         if self._is_real:
             assert self._is_root, f"safety, almost trivial check."
+        else:
+            self._caller = None
         self._freeze()
 
     def pr(self):
@@ -113,6 +115,25 @@ class ConstantScalar0Form(Frozen):
     def is_root(self):
         """Return True if I am a root obj."""
         return self._is_root
+
+    def _pr_text(self):
+        """"""
+        if self.is_real():
+            f = float(self._pure_lin_repr)
+            if f == 1:
+                return ''
+            else:
+                return str(f)
+        else:
+            raise NotImplementedError()
+
+    def __call__(self, *args, **kwargs):
+        """"""
+        if self.is_real():
+            return float(self._pure_lin_repr)
+        else:
+            assert self._caller is not None, f"pls first set the caller for {self}"
+            return self._caller(*args, **kwargs)
 
     def __eq__(self, other):
         """self == other"""
@@ -184,30 +205,63 @@ class ConstantScalar0Form(Frozen):
             raise Exception()
 
 
-class _CS1FactorCaller(Frozen):
+def _find_scalar_parameter(lin_repr):
+    """"""
+    for sp_id in _global_root_constant_scalars:
+        sp = _global_root_constant_scalars[sp_id]
+        if sp._lin_repr == lin_repr:
+            return sp
+        else:
+            pass
+
+
+def _factor_parser(factor):
+    """"""
+    division = _global_operator_lin_repr_setting['division']
+    root_factor = _find_scalar_parameter(factor)
+    if root_factor is not None:
+        return root_factor
+
+    elif division in factor and factor.count(division) == 1:
+        factor0, factor1 = factor.split(division)
+        sp0 = _find_scalar_parameter(factor0)
+        sp1 = _find_scalar_parameter(factor1)
+        return _Division2(sp0, sp1)
+
+    else:
+        raise NotImplementedError(factor)
+
+
+class _Division2(Frozen):
     """"""
 
-    def __init__(self):
+    def __init__(self, f0, f1):
+        """"""
+        self._f0 = f0
+        self._f1 = f1
         self._freeze()
 
     def __call__(self, *args, **kwargs):
         """"""
-        return 1
+        f0 = self._f0(*args, **kwargs)
+        f1 = self._f1(*args, **kwargs)
+        if callable(f0):
+            f0 = f0()
+        else:
+            pass
 
-    @staticmethod
-    def _pr_text():
-        return ''
+        if callable(f1):
+            f1 = f1()
+        else:
+            pass
 
+        return f0 / f1
 
-_cs1_fc = _CS1FactorCaller()
-
-
-def _constant_scalar_parser(cs):
-    """"""
-    if cs == constant_scalar(1):
-        return _cs1_fc
-    else:
-        raise NotImplementedError()
+    def _pr_text(self):
+        """"""
+        sf0 = self._f0._sym_repr
+        sf1 = self._f1._sym_repr
+        return r"\dfrac{" + sf0 + r"}{" + sf1 + r"}"
 
 
 if __name__ == '__main__':

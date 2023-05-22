@@ -406,6 +406,7 @@ class AbstractTimeInterval(Frozen):
             ati_sr = self._sym_repr
             ati_lr = self._pure_lin_repr
             self._s = constant_scalar(ati_sr, ati_lr)
+            self._s._caller = self.__call__
         return self._s
 
     def __rtruediv__(self, other):

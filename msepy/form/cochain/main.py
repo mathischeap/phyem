@@ -21,6 +21,7 @@ class MsePyRootFormCochain(Frozen):
         """"""
         self._f = rf
         if rf._is_base():
+            self._newest_t = None
             self._tcd = dict()  # time-cochain-dict
         else:
             pass
@@ -47,8 +48,39 @@ class MsePyRootFormCochain(Frozen):
             _cochain_at_time._receive(cochain)
 
             self._tcd[t] = _cochain_at_time
+            self._newest_t = t
+
         else:
             rf._base.cochain._set(t, cochain)
+
+    @property
+    def newest(self):
+        """newest time instant added to the cochain."""
+        rf = self._f
+
+        if rf._is_base():
+            return self._newest_t
+        else:
+            return rf._base.cochain._newest_t
+
+    def clean(self, what=None):
+        """Clean instances for particular time instants in cochain."""
+        rf = self._f
+
+        if rf._is_base():
+            new_tcd = {}
+            if what is None:  # clear all t except the newest t
+                newest_t = self._newest_t
+                if new_tcd is None:
+                    pass
+                else:
+                    new_tcd[newest_t] = self._tcd[newest_t]
+            elif what == 'all':
+                pass
+            else:
+                raise NotImplementedError(f"cannot clean {what}!")
+        else:
+            rf._base.cochain.clean(what=what)
 
     def __getitem__(self, t):
         """Return the cochain at time `t`."""
@@ -95,8 +127,10 @@ class MsePyRootFormCochain(Frozen):
     def _callable_cochain(self, *args, **kwargs):
         """"""
         if self._f._is_base():
-            arg = args[0]
-            assert isinstance(arg, (int, float)), f"for general root-form, I receive a real number!"
-            return self.static_vec(arg)
+            t = args[0]
+            assert isinstance(t, (int, float)), f"for general root-form, I receive a real number!"
+            return self.static_vec(t)
         else:
-            raise NotImplementedError(kwargs)
+            ati = self._f._pAti_form['ati']
+            t = ati(**kwargs)()
+            return self.static_vec(t)

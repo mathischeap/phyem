@@ -333,6 +333,7 @@ def _mat_mul_mat_vec(m, v):
             data = np.einsum('ij, ej -> ei', mat, vec, optimize='optimal')
 
         elif m._dtype == 'ddd':
+
             mat = m._data
 
             vec = mat.split(vec)
@@ -360,8 +361,18 @@ def _mat_mul_mat_vec(m, v):
 
             data = mat.merge(data)
 
+        elif m._dtype == 'realtime':
+
+            data = list()
+            for e in m:
+                m_element_e = m[e]
+                data.append(
+                    m_element_e @ vec[e]
+                )
+            data = np.vstack(data)
+
         else:
-            raise NotImplementedError()
+            raise NotImplementedError(f"{m._dtype}")
 
     else:
         raise NotImplementedError(f"take adjusted data.")

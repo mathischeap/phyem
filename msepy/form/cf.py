@@ -88,6 +88,22 @@ class MsePyContinuousForm(Frozen):
 
             return new_cd_cf
 
+    def time_derivative(self):
+        """"""
+
+        if self.field is None:
+            raise Exception('No cf, set it first!')
+        else:
+            new_cd_cf = _FieldWrapper()
+            for i in self.field:
+                field_i = self.field[i]
+                if hasattr(field_i, "_is_time_space_func") and field_i._is_time_space_func():
+                    new_cd_cf[i] = field_i.time_derivative
+                else:
+                    raise NotImplementedError(f"codifferential")
+
+            return new_cd_cf
+
     @property
     def _exterior_derivative_vc_operators(self):
         """"""
@@ -212,23 +228,23 @@ def _d_ast_to_vc(space_indicator, *args):
             return '-', 'derivative'
         elif m == n == 2 and k == 1:
             if ori == 'inner':
-                raise NotImplementedError()
+                return '-', 'divergence'
             elif ori == 'outer':
-                raise NotImplementedError()
+                return '+', 'rot'
             else:
                 raise Exception()
         elif m == n == 2 and k == 2:
             if ori == 'inner':
-                raise NotImplementedError()
+                return '+', 'curl'
             elif ori == 'outer':
                 return '-', 'gradient'
             else:
                 raise Exception()
         elif m == n == 3:
             if k == 1:
-                raise NotImplementedError()
+                return '-', 'divergence'
             elif k == 2:
-                raise NotImplementedError()
+                return '+', 'curl'
             elif k == 3:
                 return '-', 'gradient'
             else:

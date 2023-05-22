@@ -138,6 +138,15 @@ class RegularGatheringMatrix(Frozen):
                 repr_list.append(gm.__repr__())
             return '-o-'.join(repr_list)
 
+    def __eq__(self, other):
+        """"""
+        if other.__class__ is not self.__class__:
+            return False
+        else:
+            sgm = self._gm
+            ogm = other._gm
+            return np.all(sgm == ogm)
+
     def _find_elements_and_local_indices_of_dofs(self, dofs):
         """"""
         if isinstance(dofs, int):

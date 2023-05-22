@@ -3,10 +3,6 @@
 pH-lib@RAM-EEMCS-UT
 created at: 3/31/2023 2:35 PM
 """
-import sys
-
-if './' not in sys.path:
-    sys.path.append('./')
 from tools.frozen import Frozen
 
 

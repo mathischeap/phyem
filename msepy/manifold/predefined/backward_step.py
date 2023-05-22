@@ -57,27 +57,27 @@ def backward_step(mf, x1=1, x2=1, y1=0.25, y2=0.25, z=None):
         raise NotImplementedError()
 
     if esd == 2:
-        rm0 = _LinearTransformation(x1, x1+x2, 0, y1)
+        rm0 = _LinearTransformation(x1, x1+x2, 0,  y1)
         rm1 = _LinearTransformation(x1, x1+x2, y1, y1+y2)
-        rm2 = _LinearTransformation(0, x1, y1, y1+y2)
+        rm2 = _LinearTransformation(0,  x1,    y1, y1+y2)
     elif esd == 3:
-        rm0 = _LinearTransformation(x1, x1+x2, 0, y1, 0, z)
+        rm0 = _LinearTransformation(x1, x1+x2, 0,  y1,    0, z)
         rm1 = _LinearTransformation(x1, x1+x2, y1, y1+y2, 0, z)
-        rm2 = _LinearTransformation(0, x1, y1, y1+y2, 0, z)
+        rm2 = _LinearTransformation(0,  x1,    y1, y1+y2, 0, z)
     else:
         raise Exception()
 
     if esd == 2:
         region_map = {
             0: [None, None, None, 1],
-            1: [2, None, 0, None],
-            2: [None, 1, None, None],
+            1: [2,    None, 0,    None],
+            2: [None, 1,    None, None],
         }
     elif esd == 3:
         region_map = {
-            0: [None, None, None, 1, None, None],
-            1: [2, None, 0, None, None, None],
-            2: [None, 1, None, None, None, None],
+            0: [None, None, None, 1,    None, None],
+            1: [2,    None, 0,    None, None, None],
+            2: [None, 1,    None, None, None, None],
         }
     else:
         raise Exception()
@@ -89,9 +89,9 @@ def backward_step(mf, x1=1, x2=1, y1=0.25, y2=0.25, z=None):
     }
 
     Jacobian_matrix_dict = {
-        0: rm0.Jacobian_matrix,
-        1: rm1.Jacobian_matrix,
-        2: rm2.Jacobian_matrix
+        0: rm0.Jacobian_matrix,  # region #1
+        1: rm1.Jacobian_matrix,  # region #2
+        2: rm2.Jacobian_matrix,  # region #3
     }
 
     if esd == 2:

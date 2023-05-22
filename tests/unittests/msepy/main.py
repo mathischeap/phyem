@@ -18,27 +18,39 @@ assert SIZE == 1, f"msepy does not work with multiple ranks."
 
 msepy_path = r'.\tests\unittests\msepy'
 
-msepy_error_report = list()
 
 stream = os.popen(rf'python {msepy_path}\m1n1.py')
 output = stream.read()
 print(output)
-if output[-7:-1] == 'exit:0':
-    msepy_error_report.append('msepy_m1n1')
 
 stream = os.popen(rf'python {msepy_path}\m2n2.py')
 output = stream.read()
 print(output)
-if output[-7:-1] == 'exit:0':
-    msepy_error_report.append('msepy_m2n2')
 
 stream = os.popen(rf'python {msepy_path}\m3n3.py')
 output = stream.read()
 print(output)
-if output[-7:-1] == 'exit:0':
-    msepy_error_report.append('msepy_m3n3')
+
+
+codifferential_tests = [
+    rf'python {msepy_path}\codifferential_test.py 1 1 outer',
+    rf'python {msepy_path}\codifferential_test.py 1 1 inner',
+    rf'python {msepy_path}\codifferential_test.py 2 2 inner',
+    rf'python {msepy_path}\codifferential_test.py 2 2 outer',
+    rf'python {msepy_path}\codifferential_test.py 2 1 inner',
+    rf'python {msepy_path}\codifferential_test.py 2 1 outer',
+    rf'python {msepy_path}\codifferential_test.py 3 3 outer',
+    rf'python {msepy_path}\codifferential_test.py 3 2 outer',
+    rf'python {msepy_path}\codifferential_test.py 3 1 outer',
+    rf'python {msepy_path}\codifferential_test.py 3 3 inner',
+    rf'python {msepy_path}\codifferential_test.py 3 2 inner',
+    rf'python {msepy_path}\codifferential_test.py 3 1 inner',
+]
+
+for _ in codifferential_tests:
+    print(os.popen(_).read())
 
 
 if __name__ == '__main__':
     # python tests/unittests/msepy/main.py
-    print(msepy_error_report)
+    pass

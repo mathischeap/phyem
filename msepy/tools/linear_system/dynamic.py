@@ -23,7 +23,8 @@ from msepy.tools.matrix.dynamic import MsePyDynamicLocalMatrixVector
 from msepy.tools.vector.dynamic import MsePyDynamicLocalVector
 from msepy.form.cochain.vector.dynamic import MsePyRootFormDynamicCochainVector
 from src.config import _abstract_array_factor_sep, _abstract_array_connector
-from src.form.parameters import constant_scalar, ConstantScalar0Form, _constant_scalar_parser
+from src.form.parameters import constant_scalar, ConstantScalar0Form
+from src.form.parameters import _factor_parser
 from msepy.tools.linear_system.array_parser import msepy_root_array_parser
 
 from msepy.tools.linear_system.static.main import MsePyStaticLinearSystem
@@ -111,6 +112,7 @@ class MsePyDynamicLinearSystem(Frozen):
                 static_b[i] = static_b_i
 
         # probably, we will need to first parse the bc here to make it static and then pass it to static ls.
+
         return MsePyStaticLinearSystem(static_A, static_x, static_b, bc=self._bc)
 
     def _parse_matrix_block(self, A):
@@ -140,6 +142,7 @@ class MsePyDynamicLinearSystem(Frozen):
 
                 # noinspection PyTypeChecker
                 rA[i][j] = DynamicBlockEntry(raw_terms_ij)
+
         self._A = rA
 
     @staticmethod
@@ -301,10 +304,12 @@ class DynamicBlockEntry(Frozen):
 
             factor_terms.append(factor_term)
 
+        static = factor_terms[0]
         if len(factor_terms) == 1:
-            static = factor_terms[0]
+            pass
         else:
-            raise NotImplementedError()
+            for ft in factor_terms[1:]:
+                static += ft
 
         assert static.__class__ in (
             MsePyStaticLocalMatrix,
@@ -324,10 +329,13 @@ class DynamicTerm(Frozen):
 
         # parse factor -----------
         if factor.__class__ is ConstantScalar0Form:
-            factor = _constant_scalar_parser(factor)
+            factor = factor
+        elif isinstance(factor, str):
+            factor = _factor_parser(factor)
         else:
-            raise NotImplementedError()
+            raise NotImplementedError(f"cannot parse factor {factor.__class__}: {factor}.")
 
+        assert callable(factor), f"factor must be callable!"
         self._factor = factor  # will be callable, be called to return a particular real number.
 
         # parse components -----------
@@ -375,6 +383,7 @@ class DynamicTerm(Frozen):
     def _pr_text(self):
         """_pr_text"""
         # put sign no matter it is + or -.
+        # noinspection PyUnresolvedReferences
         return self.sign + self._factor._pr_text() + self._mat_sym_repr
 
     @property

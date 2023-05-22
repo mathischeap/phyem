@@ -22,7 +22,7 @@ class NumericalJacobianXYZt31(ABC):
     def ___evaluate_func31_for_z_t___(self, t):
         return self._func31_(t)[2]
 
-    def scipy_derivative(self, t, h=1e-6):
+    def total_derivative(self, t, h=1e-6):
         Xt = derivative(self.___evaluate_func31_for_x_t___, t, h=h)
         Yt = derivative(self.___evaluate_func31_for_y_t___, t, h=h)
         Zt = derivative(self.___evaluate_func31_for_z_t___, t, h=h)
@@ -30,7 +30,7 @@ class NumericalJacobianXYZt31(ABC):
 
     def check_Jacobian(self, Jacobian, t, tolerance=1e-6):
         """Check if ``Jacobian(t) == self.scipy_derivative(t)`` at nodes ``t``."""
-        self_J = self.scipy_derivative(t)
+        self_J = self.total_derivative(t)
         give_J = Jacobian(t)
         result = [None, None, None]
         for i in range(3):

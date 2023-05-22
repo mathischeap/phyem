@@ -29,12 +29,6 @@ class MyTimer(ABC):
         return ct
 
     @classmethod
-    def simple_header(cls):
-        print("\n\t\t _____" + "___________________" + "_____")
-        print("\t\t |^_^ " + " <TUD>-<YZ>-<AERO> " + " ^_^|")
-        print("\t\t |>>> " + strftime("%Y-%m-%d %H:%M:%S", localtime()) + " <<<|\n")
-
-    @classmethod
     def seconds2hms(cls, seconds):
         """We convert float: seconds to str: '[hh:mm:ss]'."""
         minutes, seconds = divmod(seconds, 60)

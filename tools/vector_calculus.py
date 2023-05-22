@@ -71,8 +71,3 @@ def tensor(*funcs):
         return _3dt_tensor(*funcs)
     else:
         raise NotImplementedError()
-
-
-if __name__ == '__main__':
-    # python tools/vector_calculus.py
-    print(vector)

@@ -27,6 +27,7 @@ class _OneDimPolynomial(object):
 
     @property
     def isKronecker(self):
+        """"""
         return self._isKronecker_
 
     @property
@@ -36,6 +37,7 @@ class _OneDimPolynomial(object):
 
     @property
     def nodes(self):
+        """"""
         return self._nodes_
 
     @property

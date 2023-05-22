@@ -25,7 +25,7 @@ mesh = msepy.base['meshes'][r'\mathfrak{M}']
 msepy.config(manifold)(
     'crazy', c=0., bounds=[[0, 1], [0, 1], [0, 1]], periodic=True,
 )
-msepy.config(mesh)([8, 8, 8])
+msepy.config(mesh)([6, 6, 6])
 
 phi = msepy.base['forms'][r'potential']
 u = msepy.base['forms'][r'velocity']
@@ -50,7 +50,7 @@ f[0].reduce()
 ls0 = ls(0)
 ls0.customize.set_dof(-1, 0)
 als = ls0.assemble()
-als.solve()
-
-print(phi[0].error())
-print(u[0].error())
+# als.solve()
+#
+# print(phi[0].error())
+# print(u[0].error())

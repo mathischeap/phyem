@@ -17,12 +17,17 @@ class MsePyRootFormError(Frozen):
         self._freeze()
 
     def __getitem__(self, t):
-        """Reconstruct using cochain at time `t`."""
+        """find the error at time `t`."""
+        if t is None:
+            t = self._f.cochain.newest
+            assert t is not None, f"I have now newest cochain time!"
+        else:
+            pass
         space = self._f.space
         indicator = space.abstract.indicator
         if indicator == 'Lambda':
-            reconstruct = MsePyRootFormErrorLambda(self._f, t)
+            error = MsePyRootFormErrorLambda(self._f, t)
         else:
             raise NotImplementedError(f"{indicator}.")
 
-        return reconstruct
+        return error

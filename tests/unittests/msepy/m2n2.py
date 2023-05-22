@@ -305,8 +305,6 @@ os.remove(current_dir + '/WTP2.txt')
 errors = test_function((15, [3, 3, 3, 3, 2, 2, 2, 2, 2, 4, 4, 4, 4, 4, 4]), (4, 5), c=0)
 assert sum(errors) < 2e-4
 
-print("exit:0")
-
 
 if __name__ == '__main__':
     # python tests/unittests/msepy/m2n2.py

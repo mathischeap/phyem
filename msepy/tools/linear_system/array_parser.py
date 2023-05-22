@@ -75,7 +75,8 @@ def _parse_root_form(root_form_vec_lin_repr):
 
     if _rf_evaluate_at_lin_repr in rf.abstract._pure_lin_repr:
         assert rf._pAti_form['base_form'] is not None, f"must be a particular root-form!"
-        raise NotImplementedError()
+        dynamic_cochain_vec = rf.cochain.dynamic_vec
+        return dynamic_cochain_vec, rf.abstract.ap()._sym_repr
 
     else:  # it is a general (not for a specific time step for example) vector of the root-form.
 

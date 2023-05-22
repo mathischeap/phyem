@@ -14,7 +14,6 @@ class _LinearTransformation(Frozen):
     x0, x1, y0, y1 ... = * xb_yb_zb
 
     len(xb_yb_zb) = 2 * n
-
     """
 
     def __init__(self, *xb_yb_zb):
@@ -41,10 +40,11 @@ class _LinearTransformation(Frozen):
         return x
 
     def Jacobian_matrix(self, *rst):
-        I = len(self._low_bounds)
-        assert len(rst) == I, f"rst dimensions wrong."
-        J = [[0 for _ in range(I)] for _ in range(I)]
+        """"""
+        I_ = len(self._low_bounds)
+        assert len(rst) == I_, f"rst dimensions wrong."
+        J = [[0 for _ in range(I_)] for _ in range(I_)]
         r = rst[0]
-        for i in range(I):
-            J[i][i] = self._delta[i] * ones_like(r)   # important, must do ones_like.
+        for i in range(I_):
+            J[i][i] = self._delta[i] * ones_like(r)  # important, must do ones_like.
         return tuple(J)

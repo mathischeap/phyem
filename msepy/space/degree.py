@@ -5,9 +5,6 @@ How to parse a degree for Mse Py space.
 @author: Yi Zhang
 @contact: zhangyi_aero@hotmail.com
 """
-import sys
-if './' not in sys.path:
-    sys.path.append('./')
 from tools.frozen import Frozen
 from tools.quadrature import Quadrature
 from msepy.tools.polynomials import _OneDimPolynomial

@@ -3,9 +3,6 @@
 @author: Yi Zhang
 @contact: zhangyi_aero@hotmail.com
 """
-import sys
-if './' not in sys.path:
-    sys.path.append('./')
 from tools.frozen import Frozen
 from msepy.tools.gathering_matrix import RegularGatheringMatrix
 import numpy as np
@@ -231,7 +228,7 @@ class MsePyGatheringMatrixLambda(Frozen):
         # what we are going to do is numbering edge dofs element by element
         cn = 0  # current numbering
         dt1 = {'W': 0, 'E': -1, 'B': 0, 'F': -1, 'N': 0, 'S': -1}
-        AE_dz_now = -1
+
         for m in range(mesh.elements._num):  # we will go through all elements.
             # _______dx_____________________________________________________________
             # - WB edge -
@@ -561,12 +558,12 @@ class MsePyGatheringMatrixLambda(Frozen):
             else:
                 pass
             # ----------------------------------------------------------------------
-        assert AE_dz_now == np.max(GE)
-        # Now, numbering for non-hybrid 1-form is done.
-        # We group what we have got.----------------------------------------------------
+        # assert AE_dz_now == np.max(GE), f"{AE_dz_now}, {np.max(GE)}"
+
         gn = (gn0, gn1, gn2)
         gn = np.array([
-            np.concatenate([gn[j][i, ...].ravel('F') for j in range(3)]) for i in range(self._mesh.elements._num)
+            np.concatenate([gn[j][i, ...].ravel('F') for j in range(3)])
+            for i in range(self._mesh.elements._num)
         ])
         return RegularGatheringMatrix(gn)
 

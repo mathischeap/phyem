@@ -3,9 +3,6 @@
 @author: Yi Zhang
 @contact: zhangyi_aero@hotmail.com
 """
-import sys
-if './' not in sys.path:
-    sys.path.append('./')
 from tools.frozen import Frozen
 from msepy.space.gathering_matrix.main import MsePyGatheringMatrix
 from msepy.space.incidence_matrix.main import MsePyIncidenceMatrix

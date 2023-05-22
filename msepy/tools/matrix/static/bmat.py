@@ -88,6 +88,7 @@ class _MsePyStaticLocalMatrixBmat(Frozen):
                         keys.append(
                             Arc._cache_key(i)
                         )
+
         if all([_ == 'constant' for _ in keys]):
             return 'constant'
         elif 'unique' in keys:

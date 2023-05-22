@@ -50,6 +50,8 @@ def pde_canonical_pH(n=3, p=3, periodic=False):
     outer_pde._indi_dict = None  # clear this local expression
     outer_pde.unknowns = [ap, bpm1]
 
+    # outer_pde.pr()
+
     if periodic:
         pass
     else:

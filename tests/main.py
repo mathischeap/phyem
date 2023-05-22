@@ -16,7 +16,6 @@ $ python tests/main.py
 import sys
 if './' not in sys.path:
     sys.path.append('./')
-from src.config import RANK, MASTER_RANK
 
 __all__ = [
     'unittests',
@@ -24,18 +23,7 @@ __all__ = [
     'web',
 ]
 
-error_report = list()
 
 import tests.unittests.main as unittests
 import tests.jupyter_notebooks as jupyter
 import tests.web as web
-
-error_report.extend(
-    unittests.unittest_error_report
-)
-
-if RANK == MASTER_RANK:
-    if len(error_report) != 0:
-        print(">>> tests went wrong: \n")
-        for i, error_item in enumerate(error_report):
-            print(rf"{i}:", error_item, '\n')

@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 import sys
 if './' not in sys.path:
-    sys.path.append('。/')
+    sys.path.append('./')
 
 from abc import ABC
 import numdifftools as nd

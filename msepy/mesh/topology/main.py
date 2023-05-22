@@ -4,11 +4,6 @@ pH-lib@RAM-EEMCS-UT
 Yi Zhang
 Created at 1:46 PM on 5/2/2023
 """
-
-import sys
-
-if './' not in sys.path:
-    sys.path.append('./')
 from tools.frozen import Frozen
 import numpy as np
 
@@ -446,8 +441,3 @@ class MsePyMeshTopology(Frozen):
 
         else:
             raise Exception()
-
-
-if __name__ == '__main__':
-    # python 
-    pass

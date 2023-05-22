@@ -182,8 +182,6 @@ assert abs(o4-3) < 0.2
 
 os.remove(current_dir + '/WTP.txt')
 
-print("exit:0")
-
 
 if __name__ == '__main__':
     # python .\tests\unittests\msepy\m1n1.py

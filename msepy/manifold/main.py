@@ -3,10 +3,6 @@
 pH-lib@RAM-EEMCS-UT
 created at: 3/30/2023 7:02 PM
 """
-import sys
-
-if './' not in sys.path:
-    sys.path.append('./')
 from importlib import import_module
 from tools.frozen import Frozen
 from src.config import get_embedding_space_dim
@@ -131,8 +127,3 @@ class MsePyManifold(Frozen):
         if self._visualize is None:
             self._visualize = MsePyManifoldVisualize(self)
         return self._visualize
-
-
-if __name__ == '__main__':
-    # mpiexec -n 4 python
-    pass

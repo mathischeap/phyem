@@ -40,7 +40,8 @@ class MsePyStaticLocalVector(Frozen):
 
     @data.setter
     def data(self, data):
-        """Do this such that data can be renewed."""
+        """Do this such that data can be renewed.
+        """
         # _2d_data: 2d numpy array or None.
         if data is None:
             self._dtype = 'None'
@@ -153,11 +154,42 @@ class MsePyStaticLocalVector(Frozen):
 
     @property
     def customize(self):
+        """customize"""
         return self._customize
 
     @property
     def adjust(self):
+        """adjust"""
         return self._adjust
+
+    def __rmul__(self, other):
+        """rmul"""
+        if isinstance(other, (int, float)):
+            if self._dtype == 'None':
+                raise Exception(f"cannot do * for None type vector")
+            elif self._dtype in ("homogeneous", "2d"):
+                data = other * self.data
+                return self.__class__(data, self._gm)
+            elif self._dtype == 'callable':
+                raise NotImplementedError()
+        else:
+            raise NotImplementedError()
+
+    def __add__(self, other):
+        """"""
+        if other.__class__ is self.__class__:
+            assert other._gm == self._gm, f"gathering matrix does not match."
+
+            if self._dtype == 'None' or other._dtype == 'None':
+                raise Exception(f"cannot do + for None type vector")
+            elif self._dtype in ("homogeneous", "2d") and other._dtype in ("homogeneous", "2d"):
+                data = self.data + other.data
+                return self.__class__(data, self._gm)
+            elif self._dtype == 'callable' or other._dtype == 'callable':
+                raise NotImplementedError()
+
+        else:
+            raise NotImplementedError()
 
 
 class MsePyStaticLocalVectorAdjust(Frozen):

@@ -70,12 +70,13 @@ class _MatMulDynamicLocalVector(Frozen):
     """"""
 
     def __init__(self, dyMat, dyVec):
+        """"""
         self._mat = dyMat
         self._vec = dyVec
         self._freeze()
 
     def __call__(self, *args, **kwargs):
-
+        """"""
         static_mat = self._mat(*args, **kwargs)
         static_vec = self._vec(*args, **kwargs)
 

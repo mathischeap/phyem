@@ -18,7 +18,7 @@ class MsePyStaticAssembledVector(Frozen):
 
     @property
     def shape(self):
-        """"""
+        """Shape of the vector, (x,)."""
         return self._v.shape
 
     @staticmethod

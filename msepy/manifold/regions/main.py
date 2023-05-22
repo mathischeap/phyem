@@ -3,10 +3,6 @@
 pH-lib@RAM-EEMCS-UT
 created at: 3/31/2023 2:29 PM
 """
-import sys
-
-if './' not in sys.path:
-    sys.path.append('./')
 from tools.frozen import Frozen
 
 
@@ -115,9 +111,3 @@ class MseManifoldRegions(Frozen):
     def __contains__(self, i):
         """check if `i` is a valid region index."""
         return i in self._regions
-
-
-if __name__ == '__main__':
-    # mpiexec -n 4 python 
-
-    pass

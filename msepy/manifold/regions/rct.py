@@ -1,9 +1,5 @@
 # -*- coding: utf-8 -*-
 
-import sys
-
-if './' not in sys.path:
-    sys.path.append('./')
 from tools.frozen import Frozen
 import numpy as np
 
