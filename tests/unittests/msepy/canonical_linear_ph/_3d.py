@@ -123,19 +123,29 @@ b2.cf = b_vector
 b2[0].reduce()
 # b2[0].visualize()
 
-iterator = msepy.iterator(ls)
+
+def solver(k):
+    """
+    Parameters
+    ----------
+    k
+
+    Returns
+    -------
+    exit_code :
+    message :
+    t :
+    a3_L2_error :
+    b2_L2_error :
+    """
+    static_ls = ls(k=k)
+    als = static_ls.assemble()
+    als.solve()
+    a3_L2_error = a3.error[None]()
+    b2_L2_error = b2.error[None]()
+
+    return 0, als.solve.message, a3.cochain.newest, a3_L2_error, b2_L2_error
 
 
-
-# print(a3.error[None](), b2.error[None]())
-#
-# for k in range(1, 100):
-#     ls0 = ls(k=k)
-#     print(ls0.x._representing_time)
-#     als = ls0.assemble()
-#     als.solve()
-#     print(a3.cochain.newest, b2.cochain.newest)
-#
-#     # a3[0.01].visualize()
-#     # print(a3.cochain._newest_t)
-#     print(a3.error[None](), b2.error[None]())
+iterator = ph.iterator(solver, [0, a3.error[0](), a3.error[0]()])
+iterator.run(range(1, 100))

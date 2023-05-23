@@ -11,8 +11,6 @@ from msepy.form.main import MsePyRootForm
 from src.wf.mp.linear_system import MatrixProxyLinearSystem
 from src.config import SIZE   # MPI.SIZE
 
-from msepy.tools.iterator import Iterator as iterator
-
 
 __all__ = [
     '_parse_manifolds',
@@ -23,8 +21,6 @@ __all__ = [
 
     'config',
     "new",
-
-    "iterator",
 ]
 
 

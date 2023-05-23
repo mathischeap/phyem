@@ -35,6 +35,11 @@ class MsePyStaticLinearSystemAssembledSolve(Frozen):
             self._system_info + f"<direct solver costs: {t_cost}> "
         return x
 
+    @property
+    def message(self):
+        """return the _last_solver_message."""
+        return self._last_solver_message
+
     def _direct(self):
         x = spspalinalg.spsolve(self._A, self._b)
         return x

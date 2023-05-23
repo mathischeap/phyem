@@ -536,14 +536,14 @@ class _DataDictDistributor(Frozen):
         else:
             raise NotImplementedError()
 
-    def __call__(self, i):
-        """return the data for element #i."""
-        if isinstance(i, int):
-            return self.get_data_of_element(i)
-        elif i.__class__ is range:
-            return self.get_data_of_elements(i)
+    def __call__(self, i_or_range):
+        """return the data for element #i or elements in range."""
+        if isinstance(i_or_range, int):
+            return self.get_data_of_element(i_or_range)
+        elif i_or_range.__class__ is range:
+            return self.get_data_of_elements(i_or_range)
         else:
-            raise NotImplementedError(i.__class__)
+            raise NotImplementedError(i_or_range.__class__)
 
     @property
     def cache_indices(self):

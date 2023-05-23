@@ -16,6 +16,7 @@ from msepy.form.cochain.main import MsePyRootFormCochain
 from msepy.form.static import MsePyRootFormStaticCopy
 from msepy.form.visualize.main import MsePyRootFormVisualize
 from msepy.form.error.main import MsePyRootFormError
+from msepy.form.norm.main import MsePyRootFormNorm
 from msepy.form.coboundary import MsePyRootFormCoboundary
 from msepy.form.matrix import MsePyRootFormMatrix
 
@@ -45,6 +46,7 @@ class MsePyRootForm(Frozen):
         self._reconstruct = None
         self._visualize = None
         self._error = None
+        self._norm = None
         self._coboundary = None
         self._matrix = None
         self._freeze()
@@ -161,21 +163,28 @@ class MsePyRootForm(Frozen):
 
     @property
     def error(self):
-        """visualize"""
+        """error"""
         if self._error is None:
             self._error = MsePyRootFormError(self)
         return self._error
 
     @property
+    def norm(self):
+        """norm"""
+        if self._norm is None:
+            self._norm = MsePyRootFormNorm(self)
+        return self._norm
+
+    @property
     def coboundary(self):
-        """visualize"""
+        """coboundary"""
         if self._coboundary is None:
             self._coboundary = MsePyRootFormCoboundary(self)
         return self._coboundary
 
     @property
     def matrix(self):
-        """visualize"""
+        """matrix"""
         if self._matrix is None:
             self._matrix = MsePyRootFormMatrix(self)
         return self._matrix

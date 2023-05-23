@@ -36,6 +36,8 @@ __all__ = [
 
     'fem',
     'vc',
+
+    "iterator",
 ]
 
 import src.config as config
@@ -68,3 +70,5 @@ from src.form.parameters import constant_scalar
 import src.fem as fem
 
 import tools.vector_calculus as vc
+
+from tools.iterator.main import Iterator as iterator
