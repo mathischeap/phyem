@@ -56,7 +56,6 @@ def pde_canonical_pH(n=3, p=3, periodic=False):
         pass
     else:
         outer_pde.bc.partition(r"\Gamma_\alpha", r"\Gamma_\beta")
-        outer_pde.bc.partition(r"\Gamma_\alpha", r"\Gamma_\beta")
         alpha, beta = outer_pde.unknowns
         outer_pde.bc.define_bc(
             {

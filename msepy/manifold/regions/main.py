@@ -16,34 +16,48 @@ class MseManifoldRegions(Frozen):
         self._regions = dict()
         self._map = None  # normally, only regions of the highest dimensional manifold has a region map.
         self._is_structured_regions = None
+        self._base_regions = None
+        self._map_type = -1
         self._freeze()
 
     @property
     def map(self):
-        """{    #x-  #x+, #y-, ...
+        """
+        - It has no _base_regions, map_type=0
+        {    #x-  #x+, #y-, ...
             0: [int, int, None, ...],
             1: [int, None, int, ...],
             ...
-        }  # this type of region map means it has a structured distribution of regions
-        and int means this interface is in-between region, None means it is at manifold boundary.
-        {
-            0: ""
         }
+        this type of region map means it has a structured distribution of regions
+        and int means this interface is in-between region, None means it is at manifold boundary.
+
+        - It has no _base_regions: (map_type=1)
+        {
+            0: [0, 1, 0, ...],
+            1: [...],
+            ...,
+        }
+        This map indicate it covers these faces of the base regions.
         """
         return self._map  # ***
 
     def _is_periodic(self):
         """If there is no None in `self.map`, then it represents a periodic manifold."""
-        is_periodic = True
-        for i in self.map:
-            mp = self.map[i]
-            if None in mp:
-                is_periodic = False
-                break
-        return is_periodic
+        if self._map_type == 0:
+            is_periodic = True
+            for i in self.map:
+                mp = self.map[i]
+                if None in mp:
+                    is_periodic = False
+                    break
+            return is_periodic
+        else:
+            raise NotImplementedError(f"not implemented for map_type={self._map_type}.")
 
-    def _check_map(self, map_type):
+    def _check_map(self):
         """check region map."""
+        map_type = self._map_type
         region_map = self.map
         assert region_map is not None, f"I have no map."
         if map_type == 0:  # the first type; indicating the neighbours.
@@ -67,8 +81,10 @@ class MseManifoldRegions(Frozen):
                         assert map_neighbor[_j] == i, \
                             f"region maps illegal; map[{i}][{j}] refers to region #{mp}, " \
                             f"but map[{mp}][{_j}] does not refer to region #{i}."
+        elif map_type == 1:  # region boundary type regions
+            pass
         else:
-            raise NotImplementedError()
+            raise NotImplementedError(f"cannot check for map_type={self._map_type}.")
 
     def is_structured(self):
         """Return True if we have a structured region map; `map_type=0` in `_check_map`;
@@ -77,17 +93,10 @@ class MseManifoldRegions(Frozen):
         Else, return False.
         """
         if self._is_structured_regions is None:   # map_type = 0, see `_check_map`.
-            is_structured_regions = list()
-            for i in self:
-                Rmap = self.map[i]
-                is_structured_regions.append(
-                    isinstance(Rmap, list) and all(
-                        [
-                            not isinstance(_, str) and (_ is None or _ % 1 == 0) for _ in Rmap
-                        ]
-                    )
-                )
-            self._is_structured_regions = all(is_structured_regions)
+            if self._map_type == 0:
+                self._is_structured_regions = True
+            else:
+                self._is_structured_regions = False
         return self._is_structured_regions
 
     def __repr__(self):

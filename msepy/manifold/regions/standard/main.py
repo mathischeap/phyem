@@ -6,7 +6,7 @@ created at: 4/3/2023 5:46 PM
 from tools.frozen import Frozen
 
 
-class MsePyManifoldRegion(Frozen):
+class MsePyManifoldStandardRegion(Frozen):
     """"""
 
     def __init__(
@@ -26,8 +26,9 @@ class MsePyManifoldRegion(Frozen):
         self._regions = regions
         self._i = i
         self._ct = rct
+        self._freeze()
 
     def __repr__(self):
         """"""
         super_repr = super().__repr__().split('object')[1]
-        return f"<Region#{self._i} of " + super_repr
+        return f"<Region#{self._i} of {self._regions._mf}" + super_repr

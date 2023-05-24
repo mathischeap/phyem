@@ -41,8 +41,8 @@ class MsePyManifoldVisualizeMatplot(Frozen):
         manifold_data_lines = self._manifold.visualize._generate_manifold_grid_data(refining_factor=refining_factor)
         plt.rc('text', usetex=usetex)
 
-        ndim = self._manifold.ndim
-        esd = self._manifold.esd
+        ndim = self._manifold.ndim  # aka n also
+        esd = self._manifold.esd    # aka m also
 
         if esd in (1, 2):  # we use 2-d plot.
             fig, ax = plt.subplots(figsize=figsize)
@@ -59,13 +59,20 @@ class MsePyManifoldVisualizeMatplot(Frozen):
             if ylim is not None:
                 plt.ylim(ylim)
 
-            if ndim == esd == 1:
-                for i in manifold_data_lines:  # region # i
-                    lines = manifold_data_lines[i][0][0]
-                    plt.plot(lines, [0, 0], linewidth=linewidth, color=color)
-                    plt.scatter(lines, [0, 0], color='k')
+            if esd == 1:
+                if ndim == 1:
+                    for i in manifold_data_lines:  # region # i
+                        lines = manifold_data_lines[i][0][0]
+                        plt.plot(lines, [0, 0], linewidth=linewidth, color=color)
+                        plt.scatter(lines, [0, 0], color='k')
+                elif ndim == 0:
+                    for i in manifold_data_lines:  # region # i
+                        nodes = manifold_data_lines[i][0]
+                        plt.scatter(nodes, [0], color='k')
+                else:
+                    raise Exception(f"cannot be!")
 
-            elif ndim == esd == 2:
+            elif esd == 2:
                 for i in manifold_data_lines:  # region # i
                     lines = manifold_data_lines[i]
                     for j, line in enumerate(lines):

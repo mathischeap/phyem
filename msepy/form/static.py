@@ -41,20 +41,23 @@ class MsePyRootFormStaticCopy(Frozen):
         self._f.reduce(self._t, update_cochain=update_cochain, **kwargs)
 
     def reconstruct(self, *meshgrid, **kwargs):
-        """"""
+        """reconstruct"""
         return self._f.reconstruct(self._t, *meshgrid, **kwargs)
 
     @property
     def visualize(self):
-        """"""
+        """visualize"""
         return self._f.visualize[self._t]
 
-    @property
-    def error(self):
-        """"""
-        return self._f.error[self._t]
+    def error(self, **kwargs):
+        """error"""
+        return self._f.error(self._t, **kwargs)
+
+    def norm(self, **kwargs):
+        """norm"""
+        return self._f.norm(self._t, **kwargs)
 
     @property
     def coboundary(self):
-        """"""
+        """coboundary"""
         return self._f.coboundary[self._t]

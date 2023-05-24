@@ -15,8 +15,6 @@ from msepy.form.cf import MsePyContinuousForm
 from msepy.form.cochain.main import MsePyRootFormCochain
 from msepy.form.static import MsePyRootFormStaticCopy
 from msepy.form.visualize.main import MsePyRootFormVisualize
-from msepy.form.error.main import MsePyRootFormError
-from msepy.form.norm.main import MsePyRootFormNorm
 from msepy.form.coboundary import MsePyRootFormCoboundary
 from msepy.form.matrix import MsePyRootFormMatrix
 
@@ -41,12 +39,7 @@ class MsePyRootForm(Frozen):
             'ati': None
         }
         self._ats_particular_forms = dict()   # the abstract forms based on this form.
-        self._numbering = None
-        self._reduce = None
-        self._reconstruct = None
         self._visualize = None
-        self._error = None
-        self._norm = None
         self._coboundary = None
         self._matrix = None
         self._freeze()
@@ -111,7 +104,7 @@ class MsePyRootForm(Frozen):
 
     @property
     def cf(self):
-        """Continuous form (a shell, the real `cf` is in `cf.field`) of this root-form"""
+        """Continuous form (a shell, the real `cf` is in `cf.field`) of this root-form."""
         if self._cf is None:
             self._cf = MsePyContinuousForm(self)
         return self._cf
@@ -146,6 +139,10 @@ class MsePyRootForm(Frozen):
 
     def reconstruct(self, t, *meshgrid, **kwargs):
         """Reconstruct self at time `t`."""
+        if t is None:
+            t = self.cochain.newest
+        else:
+            assert isinstance(t, (int, float)), f"t={t} type wrong!"
         local_cochain = self.cochain[t].local
         degree = self.degree
         return self.space.reconstruct(local_cochain, degree, *meshgrid, **kwargs)
@@ -161,19 +158,25 @@ class MsePyRootForm(Frozen):
             self._visualize = MsePyRootFormVisualize(self)
         return self._visualize
 
-    @property
-    def error(self):
+    def error(self, t=None, quad_degree=None, **kwargs):
         """error"""
-        if self._error is None:
-            self._error = MsePyRootFormError(self)
-        return self._error
+        if t is None:
+            t = self.cochain.newest
+        else:
+            assert isinstance(t, (int, float)), f"t={t} type wrong!"
+        local_cochain = self.cochain[t].local
+        degree = self.degree
+        return self.space.error(self.cf, t, local_cochain, degree, quad_degree=quad_degree, **kwargs)
 
-    @property
-    def norm(self):
+    def norm(self, t=None, quad_degree=None, **kwargs):
         """norm"""
-        if self._norm is None:
-            self._norm = MsePyRootFormNorm(self)
-        return self._norm
+        if t is None:
+            t = self.cochain.newest
+        else:
+            assert isinstance(t, (int, float)), f"t={t} type wrong!"
+        local_cochain = self.cochain[t].local
+        degree = self.degree
+        return self.space.norm(local_cochain, degree, quad_degree=quad_degree, **kwargs)
 
     @property
     def coboundary(self):
@@ -195,27 +198,27 @@ if __name__ == '__main__':
     import numpy as np
     import __init__ as ph
 
-    space_dim = 3
+    space_dim = 2
     ph.config.set_embedding_space_dim(space_dim)
 
     manifold = ph.manifold(space_dim, is_periodic=True)
     mesh = ph.mesh(manifold)
-    L0 = ph.space.new('Lambda', 0)
-    f0 = L0.make_form('f^0', '0-f')
-    L1 = ph.space.new('Lambda', 1)
-    f1 = L1.make_form('f^1', '1-f')
-    # L1o = ph.space.new('Lambda', 1, orientation='outer')
-    # f1o = L1o.make_form('f^1', '1-f-o')
-    # L1i = ph.space.new('Lambda', 1, orientation='inner')
-    # f1i = L1i.make_form('h^1', '1-f-i')
-    L2 = ph.space.new('Lambda', 2)
-    f2 = L2.make_form('f^2', '2-f')
-    L3 = ph.space.new('Lambda', 3)
-    f3 = L3.make_form('f^3', '3-f')
+    # L0 = ph.space.new('Lambda', 0)
+    # f0 = L0.make_form('f^0', '0-f')
+    # L1 = ph.space.new('Lambda', 1)
+    # f1 = L1.make_form('f^1', '1-f')
+    L1o = ph.space.new('Lambda', 1, orientation='outer')
+    f1o = L1o.make_form('f^1', '1-f-o')
+    L1i = ph.space.new('Lambda', 1, orientation='inner')
+    f1i = L1i.make_form('h^1', '1-f-i')
+    # L2 = ph.space.new('Lambda', 2)
+    # f2 = L2.make_form('f^2', '2-f')
+    # L3 = ph.space.new('Lambda', 3)
+    # f3 = L3.make_form('f^3', '3-f')
 
-    df0 = ph.exterior_derivative(f0)
+    # df0 = ph.exterior_derivative(f0)
 
-    ph.space.finite((3, 3, 3))
+    ph.space.finite((3, 3))
 
     msepy, obj = ph.fem.apply('msepy', locals())
 
@@ -223,40 +226,40 @@ if __name__ == '__main__':
     mesh = obj['mesh']
     # print(obj)
 
-    f0 = obj['f0']
-    f1 = obj['f1']
+    # f0 = obj['f0']
+    # f1 = obj['f1']
     #
-    # # f1o = obj['f1o']
-    # # f1i = obj['f1i']
-    f2 = obj['f2']
-    f3 = obj['f3']
+    f1o = obj['f1o']
+    f1i = obj['f1i']
+    # f2 = obj['f2']
+    # f3 = obj['f3']
     #
     # msepy.config(manifold)('crazy', c=0., periodic=False, bounds=[[0, 2] for _ in range(space_dim)])
     msepy.config(manifold)('crazy_multi', c=0.0, bounds=[[0, 2] for _ in range(space_dim)], periodic=True)
     # # msepy.config(mnf)('backward_step')
-    msepy.config(mesh)((2, 2, 2))
-    # # msepy.config(mesh)(10)
+    # msepy.config(mesh)((2, 2, 2))
+    msepy.config(mesh)(5)
     # # msepy.config(mesh)(([3, 3, 2], ))
     # # mesh.visualize()
 
     # def fx(t, x, y, z):
     #     return np.cos(2*np.pi*x) * np.cos(np.pi*y) * np.cos(np.pi*z) + t
 
-    def phi_func(t, x, y, z):
-        """"""
-        return - np.sin(2 * np.pi * x) * np.sin(2 * np.pi * y) * np.sin(2 * np.pi * z) + t * 1
+    # def phi_func(t, x, y, z):
+    #     """"""
+    #     return - np.sin(2 * np.pi * x) * np.sin(2 * np.pi * y) * np.sin(2 * np.pi * z) + t * 1
 
-    def ux(t, x, y, z):
-        return np.sin(np.pi*x) * np.cos(2*np.pi*y) * np.cos(2*np.pi*z) + t
+    def ux(t, x, y):
+        return np.sin(np.pi*x) * np.cos(np.pi*y) + t*0
 
-    def uy(t, x, y, z):
-        return np.cos(2*np.pi*x) * np.sin(np.pi*y) * np.cos(2*np.pi*z) + t
+    def uy(t, x, y):
+        return np.cos(np.pi*x) * np.sin(np.pi*y) + t*0
 
-    def uz(t, x, y, z):
-        return np.cos(2*np.pi*x) * np.cos(2*np.pi*y) * np.sin(np.pi*z) + t
+    # def uz(t, x, y, z):
+    #     return np.cos(2*np.pi*x) * np.cos(2*np.pi*y) * np.sin(np.pi*z) + t
 
-    scalar = ph.vc.scalar(phi_func)
-    # vector = ph.vc.vector(ux, uy, uz)
+    # scalar = ph.vc.scalar(phi_func)
+    vector = ph.vc.vector(ux, uy)
     #
     # M0 = f0.matrix.mass
     # M1 = f1.matrix.mass
@@ -265,16 +268,20 @@ if __name__ == '__main__':
 
     # gm = f3.cochain.gathering_matrix
 
-    f3.cf = scalar
-    f3[0].reduce()
-    f3[0].visualize()
-    # print(f0[2].error())
+    # f3.cf = scalar
+    # f3[0].reduce()
+    # # f3[0].visualize()
+    # print(f3[0].error())
+    # print(f3[0].norm())
     # df0 = f0[2].coboundary()
     # print(df0[2].error())
 
-    # f1.cf = vector
-    # f1[2].reduce()
-    # f1[2].visualize()
+    f1o.cf = vector
+    f1i.cf = vector
+
+    f1o[2].reduce()
+    f1o[2].visualize(plot_type='quiver', sampling_factor=0.01)
+
     # # print(f1[2].error())
     #
     # f2.cf = vector

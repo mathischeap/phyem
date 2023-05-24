@@ -223,6 +223,7 @@ class MsePyDynamicLinearSystem(Frozen):
 
     def pr(self, figsize=(10, 6)):
         """pr"""
+        assert self._A is not None, f"dynamic linear system initialized but not applied, do `.apply()` firstly."
         A_text = self._A_pr_text()
 
         if self._bc is None or len(self._bc) == 0:

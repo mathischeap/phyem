@@ -486,6 +486,7 @@ class MsePySpaceReduceLambda(Frozen):
                 sigma = sbn2.repeat(p[0]*(p[1]+1))[np.newaxis, :].repeat(
                     quad_num_nodes[0], axis=0)
                 data = [xi, eta, sigma, edge_size_x, quad_weights]
+
             elif d_ == 'y':
                 edge_size_y = np.tile(np.repeat((sbn1[1:] - sbn1[:-1]),
                                                 p[0]+1), p[2]+1)
@@ -498,6 +499,7 @@ class MsePySpaceReduceLambda(Frozen):
                 sigma = sbn2.repeat(p[1]*(p[0]+1))[np.newaxis, :].repeat(
                     quad_num_nodes[1], axis=0)
                 data = [xi, eta, sigma, edge_size_y, quad_weights]
+
             elif d_ == 'z':
                 edge_size_z = np.repeat((sbn2[1:] - sbn2[:-1]),
                                         p[0]+1).repeat(p[1]+1)
@@ -510,6 +512,7 @@ class MsePySpaceReduceLambda(Frozen):
                 sigma2 = sbn2[:-1].repeat((p[0]+1)*(p[1]+1))
                 sigma = sigma1 + sigma2
                 data = [xi, eta, sigma, edge_size_z, quad_weights]
+
             else:
                 raise Exception()
 

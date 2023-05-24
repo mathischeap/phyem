@@ -4,7 +4,7 @@ from tools.frozen import Frozen
 import numpy as np
 
 
-class MsePyRegionCoordinateTransformation(Frozen):
+class MsePyStandardRegionCoordinateTransformation(Frozen):
     """"""
 
     def __init__(self, mapping, Jacobian_matrix, mtype):

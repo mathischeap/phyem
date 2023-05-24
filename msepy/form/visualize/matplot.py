@@ -3,12 +3,11 @@
 phyem@RAM-EEMCS-UT
 Yi Zhang
 """
-
 import numpy as np
-
 from tools.frozen import Frozen
 from tools.matplot.plot import plot
 from tools.matplot.contour import contour, contourf
+from tools.matplot.quiver import quiver
 
 
 class MsePyRootFormVisualizeMatplot(Frozen):
@@ -122,6 +121,8 @@ class MsePyRootFormVisualizeMatplot(Frozen):
             fig = [contourf(x, y, u, **kwargs), contourf(x, y, v, **kwargs)]
         elif plot_type == 'contour':
             fig = [contour(x, y, u, **kwargs), contour(x, y, v, **kwargs)]
+        elif plot_type == "quiver":
+            fig = self._quiver(x, y, u, v, **kwargs)
         else:
             raise Exception()
 
@@ -134,3 +135,24 @@ class MsePyRootFormVisualizeMatplot(Frozen):
     def _m2_n2_k2(self, **kwargs):
         """"""
         return self._m2_n2_k0(**kwargs)
+
+    @staticmethod
+    def _quiver(
+            x, y, u, v, **kwargs
+    ):
+        """"""
+        X = list()
+        Y = list()
+        U = list()
+        V = list()
+        for i in x:
+            X.append(x[i])
+            Y.append(y[i])
+            U.append(u[i])
+            V.append(v[i])
+
+        U = np.array(U).ravel()
+        V = np.array(V).ravel()
+        X = np.array(X).ravel()
+        Y = np.array(Y).ravel()
+        return quiver(X, Y, U, V, **kwargs)

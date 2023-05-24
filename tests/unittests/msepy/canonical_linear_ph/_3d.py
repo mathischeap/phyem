@@ -141,11 +141,11 @@ def solver(k):
     static_ls = ls(k=k)
     als = static_ls.assemble()
     als.solve()
-    a3_L2_error = a3.error[None]()
-    b2_L2_error = b2.error[None]()
+    a3_L2_error = a3.error(None)
+    b2_L2_error = b2.error(None)
 
     return 0, als.solve.message, a3.cochain.newest, a3_L2_error, b2_L2_error
 
 
-iterator = ph.iterator(solver, [0, a3.error[0](), a3.error[0]()])
+iterator = ph.iterator(solver, [0, a3.error(0), a3.error(0)])
 iterator.run(range(1, 100))

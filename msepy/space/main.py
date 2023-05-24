@@ -13,6 +13,8 @@ from msepy.space.num_local_dof_components.main import MsePyNumLocalDofComponents
 from msepy.space.basis_functions.main import MsePyBasisFunctions
 from msepy.space.reduce.main import MsePySpaceReduce
 from msepy.space.reconstruct.main import MsePySpaceReconstruct
+from msepy.space.error.main import MsePySpaceError
+from msepy.space.norm.main import MsePySpaceNorm
 from msepy.space.degree import MsePySpaceDegree
 from src.spaces.finite import SpaceFiniteSetting
 from msepy.mesh.main import MsePyMesh
@@ -39,6 +41,8 @@ class MsePySpace(Frozen):
         self._num_local_dof_components = None
         self._reduce = None
         self._reconstruct = None
+        self._error = None
+        self._norm = None
         self._degree_cache = {}
         self._freeze()
 
@@ -150,3 +154,17 @@ class MsePySpace(Frozen):
         if self._reconstruct is None:
             self._reconstruct = MsePySpaceReconstruct(self)
         return self._reconstruct
+
+    @property
+    def error(self):
+        """norm"""
+        if self._error is None:
+            self._error = MsePySpaceError(self)
+        return self._error
+
+    @property
+    def norm(self):
+        """norm"""
+        if self._norm is None:
+            self._norm = MsePySpaceNorm(self)
+        return self._norm
