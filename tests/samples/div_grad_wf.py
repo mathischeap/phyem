@@ -7,6 +7,7 @@ Created at 3:47 PM on 5/9/2023
 import __init__ as ph
 from src.form.operators import trace, Hodge
 
+
 def wf_div_grad(n=3, degree=2, orientation='outer', periodic=False):
     """Generate wf representations of the Poisson problem.
 

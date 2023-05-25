@@ -15,6 +15,7 @@ from msepy.mesh.elements import MsePyMeshElements
 from msepy.mesh.coordinate_transformation import MsePyMeshCoordinateTransformation
 from msepy.mesh.visualize.main import MsePyMeshVisualize
 from msepy.mesh.topology.main import MsePyMeshTopology
+from msepy.mesh.boundary_section.main import MsePyBoundarySectionMesh
 
 
 def config(mesh, manifold, element_layout):
@@ -27,7 +28,7 @@ def config(mesh, manifold, element_layout):
     mesh._manifold = manifold
     mesh._elements = MsePyMeshElements(mesh)  # initialize the mesh elements.
     mesh._parse_elements_from_element_layout(element_layout)
-    mesh._config_dependent_meshes()  # config all mesh on boundary or partition of the manifold.
+    mesh._config_dependent_boundary_section_meshes()  # config all mesh on boundary or partition of the manifold.
     assert mesh.elements._index_mapping is not None, \
         f"we should have set elements._index_mapping"
     assert mesh.elements._map is not None, \
@@ -169,10 +170,54 @@ class MsePyMesh(Frozen):
 
         self.elements._generate_elements_from_layout(layout)
 
-    def _config_dependent_meshes(self):
+    def _config_dependent_boundary_section_meshes(self):
         """"""
-        # Cannot repeat `_generate_elements_from_layout`, must code a method like
-        # `_generate_elements_from_region_map`.
+
+        from msepy.main import base
+
+        all_msepy_manifolds = base['manifolds']
+
+        for sym in all_msepy_manifolds:
+
+            msepy_manifold = all_msepy_manifolds[sym]
+
+            regions = msepy_manifold.regions
+
+            if regions._map_type == 1:   # boundary section manifold
+
+                if regions._base_regions is self.manifold.regions:
+
+                    # this msepy_manifold should be built boundary section mesh over
+
+                    abstract_manifold = msepy_manifold.abstract
+
+                    meshes = base['meshes']
+
+                    the_abstract_mesh = None
+                    for _sym in meshes:
+                        _mesh = meshes[_sym]
+                        if _mesh.abstract._manifold is abstract_manifold:
+                            the_abstract_mesh = _mesh.abstract
+
+                    assert the_abstract_mesh is not None, f"must find the msepy mesh."
+                    boundary_section_mesh = MsePyBoundarySectionMesh(
+                        self,
+                        msepy_manifold,
+                        the_abstract_mesh,
+                    )
+
+                    # now, we renew base['meshes']
+                    for _sym in meshes:
+                        _mesh = meshes[_sym]
+
+                        if _mesh.abstract._manifold is abstract_manifold:
+                            meshes[_sym] = boundary_section_mesh
+                            break
+
+                else:
+                    pass
+            else:
+                pass
 
     def __repr__(self):
         super_repr = super().__repr__().split('object')[1]

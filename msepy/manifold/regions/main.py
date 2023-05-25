@@ -120,3 +120,11 @@ class MseManifoldRegions(Frozen):
     def __contains__(self, i):
         """check if `i` is a valid region index."""
         return i in self._regions
+
+    @property
+    def m(self):
+        return self._mf.m
+
+    @property
+    def n(self):
+        return self._mf.n

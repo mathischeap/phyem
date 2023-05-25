@@ -11,7 +11,9 @@ import sys
 
 if './' not in sys.path:
     sys.path.append('./')
+
 import numpy as np
+
 import __init__ as ph
 n = 2
 ls = ph.samples.wf_div_grad(n=n, degree=8, orientation='outer', periodic=False)
@@ -19,18 +21,25 @@ ls = ph.samples.wf_div_grad(n=n, degree=8, orientation='outer', periodic=False)
 
 msepy, obj = ph.fem.apply('msepy', locals())
 
-# print(msepy.base['manifolds'])
 manifold = msepy.base['manifolds'][r"\mathcal{M}"]
+boundary_manifold = msepy.base['manifolds'][r"\partial\mathcal{M}"]
+Gamma_phi = msepy.base['manifolds'][r"\Gamma_\phi"]
+Gamma_u = msepy.base['manifolds'][r"\Gamma_u"]
+
 # msepy.config(manifold)(
 #     'crazy_multi', c=0.1, bounds=[[0, 1] for _ in range(n)], periodic=False,
 # )
 msepy.config(manifold)('backward_step')
-boundary_manifold = msepy.base['manifolds'][r"\partial\mathcal{M}"]
-manifold.visualize()
-boundary_manifold.visualize()
+msepy.config(Gamma_phi)(manifold, {0:[1, 0, 0, 0]})
 
-# mesh = msepy.base['meshes'][r'\mathfrak{M}']
-# msepy.config(mesh)([15, 15])
+# manifold.visualize()
+# boundary_manifold.visualize()
+# Gamma_phi.visualize()
+# Gamma_u.visualize()
+
+mesh = msepy.base['meshes'][r'\mathfrak{M}']
+msepy.config(mesh)([15, 15])
+print(msepy.base['meshes'])
 #
 # phi = msepy.base['forms'][r'potential']
 # u = msepy.base['forms'][r'velocity']

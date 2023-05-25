@@ -132,6 +132,27 @@ def config(obj):
     return _Config(obj)
 
 
+def find_mesh_of_manifold(msepy_or_abstract_manifold):
+    """Find the corresponding msepy mesh."""
+    from src.manifold import Manifold
+    the_mesh = None
+
+    if msepy_or_abstract_manifold.__class__ is Manifold:
+        raise NotImplementedError()
+
+    elif msepy_or_abstract_manifold.__class__ is MsePyManifold:
+        for mesh_sym_repr in base['meshes']:
+            mesh = base['meshes'][mesh_sym_repr]
+            if mesh.manifold is msepy_or_abstract_manifold:
+                the_mesh = mesh
+                break
+    else:
+        raise Exception(f"manifold: {msepy_or_abstract_manifold} is not valid")
+
+    assert the_mesh is not None, f"We must have found one!"
+    return the_mesh
+
+
 class _Config(Frozen):
     """"""
     def __init__(self, obj):
@@ -140,6 +161,7 @@ class _Config(Frozen):
     def __call__(self, *args, **kwargs):
         if self._obj.__class__ is MsePyManifold:
             return _mf_config(self._obj, *args, **kwargs)
+
         elif self._obj.__class__ is MsePyMesh:
             mesh = self._obj
             abstract_mesh = mesh.abstract
@@ -152,6 +174,7 @@ class _Config(Frozen):
             assert mnf is not None, f"cannot find a valid mse-py-manifold."
 
             return _mh_config(self._obj, mnf, *args, **kwargs)
+
         else:
             raise NotImplementedError()
 

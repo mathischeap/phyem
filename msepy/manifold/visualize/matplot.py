@@ -113,8 +113,23 @@ class MsePyManifoldVisualizeMatplot(Frozen):
                             axis0, axis1, axis2,
                             color=color, linewidth=linewidth
                         )
+
+            elif ndim == 2:  # plot 2d faces in a 3d space.
+                for i in manifold_data_lines:  # region # i
+                    face = manifold_data_lines[i]
+                    X, Y, Z = face
+                    ax.plot_surface(X, Y, Z, color='lightgray')
+
+                    if aspect == 'equal':
+                        x_lim.extend([np.min(X), np.max(X)])
+                        y_lim.extend([np.min(Y), np.max(Y)])
+                        z_lim.extend([np.min(Z), np.max(Z)])
+                    else:
+                        pass
+
             else:
-                raise NotImplementedError()
+                raise NotImplementedError(f"not implemented for {ndim}-d mesh in {esd}-d space.")
+
 
             if aspect == 'equal':
                 x_lim.sort()

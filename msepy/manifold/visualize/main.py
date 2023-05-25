@@ -121,8 +121,25 @@ class MsePyManifoldVisualize(Frozen):
 
                 for i in manifold.regions:  # region #i
                     ct = manifold.regions[i]._ct
-                    line = ct.mapping(linspace, linspace)
+                    line = ct.mapping(linspace)
                     Region_lines[i] = (line, )
+
+            else:
+                raise NotImplementedError(
+                    f"from m={m}, n={n}, cannot get lines for region map type = {region_map_type}"
+                )
+
+        elif m == 3 and n == 2:
+
+            region_map_type = manifold.regions._map_type
+
+            if region_map_type == 1:  # region-boundary-type regions.
+
+                for i in manifold.regions:  # region #i
+                    ct = manifold.regions[i]._ct
+                    _2d_line_space = np.meshgrid(linspace, linspace, indexing='ij')
+                    _2d_face_grid_data = ct.mapping(*_2d_line_space)
+                    Region_lines[i] = _2d_face_grid_data
 
             else:
                 raise NotImplementedError(

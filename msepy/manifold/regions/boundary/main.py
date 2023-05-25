@@ -34,3 +34,13 @@ class MsePyManifoldBoundaryRegion(Frozen):
         """"""
         super_repr = super().__repr__().split('object')[1]
         return f"<BoundaryRegion#{self._i} of {self._regions._mf}" + super_repr
+
+    @property
+    def m(self):
+        """esd"""
+        return self._regions.m
+
+    @property
+    def n(self):
+        """ndim"""
+        return self._regions.n
