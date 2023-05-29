@@ -55,7 +55,6 @@ coverage.xml
 .idea/
 .__pycache__/
 .ipynb_checkpoints/
-*.png
 _notes/
 conf.py
 
