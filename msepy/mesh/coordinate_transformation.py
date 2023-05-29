@@ -52,6 +52,7 @@ class MsePyMeshCoordinateTransformation(Frozen):
                     dx = di[0]
                     ori = [ox]
                     dta = [dx]
+
                 elif self._mesh.ndim == 2:   # 2-d mapping
                     ox = np.tile(oi[0], length[1])
                     dx = np.tile(di[0], length[1])
@@ -59,6 +60,7 @@ class MsePyMeshCoordinateTransformation(Frozen):
                     dy = np.repeat(di[1], length[0])
                     ori = [ox, oy]
                     dta = [dx, dy]
+
                 elif self._mesh.ndim == 3:    # 3-d mapping
                     ox = np.tile(np.tile(oi[0], length[1]), length[2])
                     dx = np.tile(np.tile(di[0], length[1]), length[2])
@@ -68,6 +70,7 @@ class MsePyMeshCoordinateTransformation(Frozen):
                     dz = np.repeat(np.repeat(di[2], length[1]), length[0])
                     ori = [ox, oy, oz]
                     dta = [dx, dy, dz]
+
                 else:
                     raise NotImplementedError()
 
@@ -188,7 +191,8 @@ class MsePyMeshCoordinateTransformation(Frozen):
                 Ji = jm[0][0]*jm[1][1] - jm[0][1]*jm[1][0]
 
             elif m == n == 3:
-                Ji = + jm[0][0]*jm[1][1]*jm[2][2] + jm[0][1]*jm[1][2]*jm[2][0] \
+                Ji = \
+                    + jm[0][0]*jm[1][1]*jm[2][2] + jm[0][1]*jm[1][2]*jm[2][0] \
                     + jm[0][2]*jm[1][0]*jm[2][1] - jm[0][0]*jm[1][2]*jm[2][1] \
                     - jm[0][1]*jm[1][0]*jm[2][2] - jm[0][2]*jm[1][1]*jm[2][0]
             else:
@@ -241,10 +245,12 @@ class MsePyMeshCoordinateTransformation(Frozen):
             jm = JM[re]
 
             if m == n == 1:
+
                 iJM00 = 1 / jm[0][0]
                 inverse_Jacobian_matrix_dict[re] = [[iJM00, ], ]
 
             elif m == n == 2:
+
                 reciprocalJacobian = 1 / (jm[0][0] * jm[1][1] - jm[0][1] * jm[1][0])
                 iJ00 = + reciprocalJacobian * jm[1][1]
                 iJ01 = - reciprocalJacobian * jm[0][1]
@@ -255,13 +261,16 @@ class MsePyMeshCoordinateTransformation(Frozen):
                         [iJ00, iJ01],
                         [iJ10, iJ11]
                     ]
+
             elif m == n == 3:
 
                 Jacobian = \
                     + jm[0][0] * jm[1][1] * jm[2][2] + jm[0][1] * jm[1][2] * jm[2][0] \
                     + jm[0][2] * jm[1][0] * jm[2][1] - jm[0][0] * jm[1][2] * jm[2][1] \
                     - jm[0][1] * jm[1][0] * jm[2][2] - jm[0][2] * jm[1][1] * jm[2][0]
+
                 reciprocalJacobian = 1 / Jacobian
+
                 iJ00 = reciprocalJacobian * (jm[1][1] * jm[2][2] - jm[1][2] * jm[2][1])
                 iJ01 = reciprocalJacobian * (jm[2][1] * jm[0][2] - jm[2][2] * jm[0][1])
                 iJ02 = reciprocalJacobian * (jm[0][1] * jm[1][2] - jm[0][2] * jm[1][1])
@@ -271,11 +280,13 @@ class MsePyMeshCoordinateTransformation(Frozen):
                 iJ20 = reciprocalJacobian * (jm[1][0] * jm[2][1] - jm[1][1] * jm[2][0])
                 iJ21 = reciprocalJacobian * (jm[2][0] * jm[0][1] - jm[2][1] * jm[0][0])
                 iJ22 = reciprocalJacobian * (jm[0][0] * jm[1][1] - jm[0][1] * jm[1][0])
+
                 inverse_Jacobian_matrix_dict[re] = [
                     [iJ00, iJ01, iJ02],
                     [iJ10, iJ11, iJ12],
                     [iJ20, iJ21, iJ22]
                 ]
+
             else:
                 raise NotImplementedError()
 
@@ -304,7 +315,8 @@ class MsePyMeshCoordinateTransformation(Frozen):
                 iJ = ijm[0][0]*ijm[1][1] - ijm[0][1]*ijm[1][0]
 
             elif m == n == 3:
-                iJ = + ijm[0][0]*ijm[1][1]*ijm[2][2] + ijm[0][1]*ijm[1][2]*ijm[2][0] \
+                iJ = \
+                    + ijm[0][0]*ijm[1][1]*ijm[2][2] + ijm[0][1]*ijm[1][2]*ijm[2][0] \
                     + ijm[0][2]*ijm[1][0]*ijm[2][1] - ijm[0][0]*ijm[1][2]*ijm[2][1] \
                     - ijm[0][1]*ijm[1][0]*ijm[2][2] - ijm[0][2]*ijm[1][1]*ijm[2][0]
             else:

@@ -19,14 +19,13 @@ from src.config import RANK, MASTER_RANK
 
 if RANK == MASTER_RANK:  # this is conducted only in one rank.
 
-    jupyter_path = r"./web/source/jupyter"
-
     jupyter_files = [
-        'test1', 'test2', 'test3',
+        r"./web/source/jupyter/general/first_equation",
+        r"./web/source/jupyter/general/discretize_linear_pH_system",
     ]
 
     for jf in jupyter_files:
-        stream = os.popen(rf'jupyter nbconvert --to notebook --inplace --execute {jupyter_path}/{jf}.ipynb')
+        stream = os.popen(rf'jupyter nbconvert --to notebook --inplace --execute {jf}.ipynb')
         output = stream.read()
         print(jf, ' output: \n', output)
 

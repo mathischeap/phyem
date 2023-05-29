@@ -139,7 +139,9 @@ def _outer_Poisson(n, degree):
         }
     )
     wf = wf.derive.switch_sign(1)
+    # wf.pr()
     ph.space.finite(degree)
     mp = wf.mp()
     ls = mp.ls()
+    # ls.pr()
     return ls

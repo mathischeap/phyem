@@ -33,16 +33,6 @@ def uy(t, x, y):
 
 
 space_dim = 2
-ph.config.set_embedding_space_dim(space_dim)
-
-manifold = ph.manifold(space_dim)
-mesh = ph.mesh(manifold)
-
-L0i = ph.space.new('Lambda', 0, orientation='inner')
-L0o = ph.space.new('Lambda', 0, orientation='outer')
-L1i = ph.space.new('Lambda', 1, orientation='inner')
-L1o = ph.space.new('Lambda', 1, orientation='outer')
-L2 = ph.space.new('Lambda', 2)
 
 
 def test_function(K, N, c):
@@ -79,7 +69,16 @@ def test_function(K, N, c):
     else:
         pass
 
-    ph.clear_forms()
+    ph.config.set_embedding_space_dim(space_dim)
+
+    manifold = ph.manifold(space_dim)
+    mesh = ph.mesh(manifold)
+
+    L0i = ph.space.new('Lambda', 0, orientation='inner')
+    L0o = ph.space.new('Lambda', 0, orientation='outer')
+    L1i = ph.space.new('Lambda', 1, orientation='inner')
+    L1o = ph.space.new('Lambda', 1, orientation='outer')
+    L2 = ph.space.new('Lambda', 2)
 
     f0i = L0i.make_form('f_i^0', '0-f-i')
     f0o = L0o.make_form('f_o^0', '0-f-o')

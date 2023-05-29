@@ -1,0 +1,568 @@
+
+
+<!DOCTYPE html>
+
+
+<html lang="en" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>tests.unittests.msepy.div_grad._2d_outer_periodic &#8212; A finite element library powering Lego like simulation for (multi-)physics.</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "light";
+  </script>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../../../../../_static/styles/theme.css?digest=e353d410970836974a52" rel="stylesheet" />
+<link href="../../../../../_static/styles/bootstrap.css?digest=e353d410970836974a52" rel="stylesheet" />
+<link href="../../../../../_static/styles/pydata-sphinx-theme.css?digest=e353d410970836974a52" rel="stylesheet" />
+
+  
+  <link href="../../../../../_static/vendor/fontawesome/6.1.2/css/all.min.css?digest=e353d410970836974a52" rel="stylesheet" />
+  <link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../../_static/vendor/fontawesome/6.1.2/webfonts/fa-solid-900.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../../_static/vendor/fontawesome/6.1.2/webfonts/fa-brands-400.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../../_static/vendor/fontawesome/6.1.2/webfonts/fa-regular-400.woff2" />
+
+    <link rel="stylesheet" type="text/css" href="../../../../../_static/pygments.css" />
+    <link rel="stylesheet" href="../../../../../_static/styles/sphinx-book-theme.css?digest=14f4ca6b54d191a8c7657f6c759bf11a5fb86285" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="../../../../../_static/copybutton.css" />
+  
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../../../../../_static/scripts/bootstrap.js?digest=e353d410970836974a52" />
+<link rel="preload" as="script" href="../../../../../_static/scripts/pydata-sphinx-theme.js?digest=e353d410970836974a52" />
+
+    <script data-url_root="../../../../../" id="documentation_options" src="../../../../../_static/documentation_options.js"></script>
+    <script src="../../../../../_static/doctools.js"></script>
+    <script src="../../../../../_static/sphinx_highlight.js"></script>
+    <script src="../../../../../_static/clipboard.min.js"></script>
+    <script src="../../../../../_static/copybutton.js"></script>
+    <script src="../../../../../_static/scripts/sphinx-book-theme.js?digest=5a5c038af52cf7bc1a1ec88eea08e6366ee68824"></script>
+    <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = '_modules/tests/unittests/msepy/div_grad/_2d_outer_periodic';</script>
+    <link rel="icon" href="../../../../../_static/favicon.png"/>
+    <link rel="index" title="Index" href="../../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../../search.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="">
+
+  
+  
+  <a class="skip-link" href="#main-content">Skip to main content</a>
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          name="__primary"
+          id="__primary"/>
+  <label class="overlay overlay-primary" for="__primary"></label>
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          name="__secondary"
+          id="__secondary"/>
+  <label class="overlay overlay-secondary" for="__secondary"></label>
+  
+  <div class="search-button__wrapper">
+    <div class="search-button__overlay"></div>
+    <div class="search-button__search-container">
+<form class="bd-search d-flex align-items-center"
+      action="../../../../../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         id="search-input"
+         placeholder="Search..."
+         aria-label="Search..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form></div>
+  </div>
+
+
+  <div class="bd-header-announcement container-fluid bd-header-announcement">
+    <div class="bd-header-announcement__content">
+        <p style='color:white;'> &#127867 PHYEM is coming</p>
+    </div>
+  </div>
+
+  
+    <nav class="bd-header navbar navbar-expand-lg bd-navbar">
+    </nav>
+  
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      <div class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+    
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item">
+  
+
+<a class="navbar-brand logo" href="../../../../../index.html">
+  
+  
+  
+  
+    
+    
+      
+    
+    
+    <img src="../../../../../_static/logo-light.png" class="logo__image only-light" alt="Logo image"/>
+    <script>document.write(`<img src="../../../../../_static/logo-dark.png" class="logo__image only-dark" alt="Logo image"/>`);</script>
+  
+  
+</a></div>
+        <div class="sidebar-primary-item"><ul class="navbar-icon-links navbar-nav"
+    aria-label="Quick Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://www.mathischeap.com/" title="mathischeap" class="nav-link" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><img src="../../../../../_static/favicon-mic.png" class="icon-link-image" alt="mathischeap"/></a>
+        </li>
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/mathischeap/phyem" title="GitHub" class="nav-link" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><span><i class="fa-brands fa-square-github"></i></span>
+            <label class="sr-only">GitHub</label></a>
+        </li>
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://app.netlify.com/sites/phyem/deploys" title="Netlify Status" class="nav-link" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><img src="https://api.netlify.com/api/v1/badges/6a559326-c54e-4a8f-a79a-a715648c73c2/deploy-status" class="icon-link-image" alt="Netlify Status"/></a>
+        </li>
+</ul></div>
+        <div class="sidebar-primary-item"><nav class="bd-links" id="bd-docs-nav" aria-label="Main">
+    <div class="bd-toc-item navbar-nav active">
+        
+        <ul class="nav bd-sidenav bd-sidenav__home-link">
+            <li class="toctree-l1">
+                <a class="reference internal" href="../../../../../index.html">
+                    PHYEM
+                </a>
+            </li>
+        </ul>
+        <ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../../../../../tutorial/index.html">Install</a></li>
+</ul>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../../../../jupyter/index.html">Jupyter notebooks</a><input class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-1"><i class="fa-solid fa-chevron-down"></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../../../jupyter/general/first_equation.html">Set up your first equation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../../jupyter/general/discretize_linear_pH_system.html">Discretization</a></li>
+</ul>
+</li>
+</ul>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../../../../gallery/index.html">Gallery</a><input class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-2"><i class="fa-solid fa-chevron-down"></i></label><ul>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../../../../../gallery/msepy_domains_and_meshes/index.html"><code class="docutils literal notranslate"><span class="pre">msepy</span></code> domains and meshes</a><input class="toctree-checkbox" id="toctree-checkbox-3" name="toctree-checkbox-3" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-3"><i class="fa-solid fa-chevron-down"></i></label><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../../../gallery/msepy_domains_and_meshes/msepy/crazy.html">Crazy domain and mesh</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../../gallery/msepy_domains_and_meshes/msepy/crazy_multi.html">Multi-crazy domain and mesh</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../../gallery/msepy_domains_and_meshes/msepy/backward_step.html">Backward step</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../../gallery/div_grad/index.html">div-grad</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../../gallery/canonical_linear_port_Hamiltonian/index.html">Canonical linear port Hamiltonian</a></li>
+</ul>
+</li>
+</ul>
+
+    </div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+  </div>
+  
+  <div id="rtd-footer-container"></div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main">
+        
+        
+
+<div class="sbt-scroll-pixel-helper"></div>
+
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item"><label class="sidebar-toggle primary-toggle btn btn-sm" for="__primary" title="Toggle primary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <span class="fa-solid fa-bars"></span>
+</label></div>
+      
+    </div>
+  
+  
+    <div class="header-article-items__end">
+      
+        <div class="header-article-item">
+
+<div class="article-header-buttons">
+
+
+
+
+
+<div class="dropdown dropdown-source-buttons">
+  <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Source repositories">
+    <i class="fab fa-github"></i>
+  </button>
+  <ul class="dropdown-menu">
+      
+      
+      
+      <li><a href="https://github.com/mathischeap/phyem" target="_blank"
+   class="btn btn-sm btn-source-repository-button dropdown-item"
+   title="Source repository"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fab fa-github"></i>
+  </span>
+<span class="btn__text-container">Repository</span>
+</a>
+</li>
+      
+      
+      
+      
+      <li><a href="https://github.com/mathischeap/phyem/issues/new?title=Issue%20on%20page%20%2F_modules/tests/unittests/msepy/div_grad/_2d_outer_periodic.html&body=Your%20issue%20content%20here." target="_blank"
+   class="btn btn-sm btn-source-issues-button dropdown-item"
+   title="Open an issue"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-lightbulb"></i>
+  </span>
+<span class="btn__text-container">Open issue</span>
+</a>
+</li>
+      
+  </ul>
+</div>
+
+
+
+
+<button onclick="toggleFullScreen()"
+  class="btn btn-sm btn-fullscreen-button"
+  title="Fullscreen mode"
+  data-bs-placement="bottom" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-expand"></i>
+  </span>
+
+</button>
+
+
+<script>
+document.write(`
+  <button class="theme-switch-button btn btn-sm btn-outline-primary navbar-btn rounded-circle" title="light/dark" aria-label="light/dark" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="theme-switch" data-mode="light"><i class="fa-solid fa-sun"></i></span>
+    <span class="theme-switch" data-mode="dark"><i class="fa-solid fa-moon"></i></span>
+    <span class="theme-switch" data-mode="auto"><i class="fa-solid fa-circle-half-stroke"></i></span>
+  </button>
+`);
+</script>
+
+<script>
+document.write(`
+  <button class="btn btn-sm navbar-btn search-button search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass"></i>
+  </button>
+`);
+</script>
+
+</div></div>
+      
+    </div>
+  
+</div>
+</div>
+              
+              
+
+<div id="jb-print-docs-body" class="onlyprint">
+    <h1></h1>
+    <!-- Table of contents -->
+    <div id="print-main-content">
+        <div id="jb-print-toc">
+            
+        </div>
+    </div>
+</div>
+
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article" role="main">
+                  
+  <h1>Source code for tests.unittests.msepy.div_grad._2d_outer_periodic</h1><div class="highlight"><pre>
+<span></span><span class="c1"># -*- coding: utf-8 -*-</span>
+<span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
+
+
+<span class="sd">Here we demonstrate how to use PHYEM, the ``msepy`` implementation, to solve the two-dimensional div-grad problem.</span>
+
+<span class="sd">In two-dimensions, the mixed formulation of the div-grad problem is</span>
+
+<span class="sd">.. math::</span>
+<span class="sd">    \begin{equation}\left\lbrace</span>
+<span class="sd">    \begin{aligned}</span>
+<span class="sd">        u ^1 &amp;= \mathrm{d}^{\ast}\varphi^2 ,\\</span>
+<span class="sd">        - \mathrm{d} u^1 &amp;= f^2.</span>
+<span class="sd">    \end{aligned}\right.</span>
+<span class="sd">    \end{equation}</span>
+
+<span class="sd">We use smooth manufactured solutions for this case. The exact solution for :math:`\varphi` is</span>
+
+<span class="sd">.. math::</span>
+<span class="sd">    \varphi = - \sin(2\pi x) \sin(2\pi y).</span>
+
+<span class="sd">Exact solutions of :math:`u^1` and :math:`f^2` then follow.</span>
+<span class="sd">We consider the domain to be :math:`\Omega = (x,y) \in [0,1]^2` and it is fully periodic.</span>
+<span class="sd">We use the :ref:`GALLERY-msepy-domains-and-meshes=multi-crazy` for this test. The solver is given below.</span>
+
+
+<span class="sd">.. autofunction:: tests.unittests.msepy.div_grad._2d_outer_periodic.div_grad_2d_periodic_manufactured_test</span>
+
+<span class="sd">========</span>
+<span class="sd">Examples</span>
+<span class="sd">========</span>
+
+<span class="sd">.. testsetup:: *</span>
+
+<span class="sd">    from _sdt import div_grad_2d_periodic_manufactured_test</span>
+
+<span class="sd">.. testcleanup::</span>
+
+<span class="sd">    pass</span>
+
+<span class="sd">Below, we use mimetic spectral elements of degree 2 on a uniform mesh of :math:`4 * 4 * 4` :math:`(K=4)` elements.</span>
+
+
+<span class="sd">&gt;&gt;&gt; errors4 = div_grad_2d_periodic_manufactured_test(2, 4)</span>
+<span class="sd">&gt;&gt;&gt; errors4[0]  # doctest: +ELLIPSIS</span>
+<span class="sd">0.01...</span>
+
+<span class="sd">We increase :math:`K` to :math:`K=8`, we do</span>
+
+<span class="sd">&gt;&gt;&gt; errors8 = div_grad_2d_periodic_manufactured_test(2, 8)</span>
+
+<span class="sd">We can compute the convergence rate of the :math:`L^2`-error of solution :math:`\varphi_h^2` by</span>
+
+<span class="sd">&gt;&gt;&gt; import numpy as np</span>
+<span class="sd">&gt;&gt;&gt; (np.log10(errors4[0]) - np.log10(errors8[0])) / (np.log10(1/4) - np.log10(1/8))  # doctest: +ELLIPSIS</span>
+<span class="sd">2.0...</span>
+
+<span class="sd">The optimal convergence rate is obtained.</span>
+
+<span class="sd">&quot;&quot;&quot;</span>
+
+
+<span class="k">def</span> <span class="nf">phi_func</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;&quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="mi">2</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span> <span class="o">*</span> <span class="n">x</span><span class="p">)</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="mi">2</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span> <span class="o">*</span> <span class="n">y</span><span class="p">)</span> <span class="o">+</span> <span class="n">t</span> <span class="o">*</span> <span class="mi">0</span>
+
+
+<span class="kn">import</span> <span class="nn">sys</span>
+
+<span class="k">if</span> <span class="s1">&#39;./&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">sys</span><span class="o">.</span><span class="n">path</span><span class="p">:</span>
+    <span class="n">sys</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">&#39;./&#39;</span><span class="p">)</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">__init__</span> <span class="k">as</span> <span class="nn">ph</span>
+
+
+<div class="viewcode-block" id="div_grad_2d_periodic_manufactured_test"><a class="viewcode-back" href="../../../../../gallery/div_grad/index.html#tests.unittests.msepy.div_grad._2d_outer_periodic.div_grad_2d_periodic_manufactured_test">[docs]</a><span class="k">def</span> <span class="nf">div_grad_2d_periodic_manufactured_test</span><span class="p">(</span><span class="n">degree</span><span class="p">,</span> <span class="n">K</span><span class="p">,</span> <span class="n">c</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
+    <span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    degree : int</span>
+<span class="sd">        The degree of the mimetic spectral elements.</span>
+<span class="sd">    K : int</span>
+<span class="sd">        In total we will use :math:`4 * K * K` elements.</span>
+<span class="sd">    c : float, default=0</span>
+<span class="sd">        The deformation factor of the :ref:`GALLERY-msepy-domains-and-meshes=multi-crazy`.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    phi_error: float</span>
+<span class="sd">        The :math:`L^2`-error of solution :math:`\varphi_h^2`.</span>
+<span class="sd">    u_error: float</span>
+<span class="sd">        The :math:`L^2`-error of solution :math:`u_h^1`.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">ls</span> <span class="o">=</span> <span class="n">ph</span><span class="o">.</span><span class="n">samples</span><span class="o">.</span><span class="n">wf_div_grad</span><span class="p">(</span><span class="n">n</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">degree</span><span class="o">=</span><span class="n">degree</span><span class="p">,</span> <span class="n">orientation</span><span class="o">=</span><span class="s1">&#39;outer&#39;</span><span class="p">,</span> <span class="n">periodic</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>  <span class="c1"># ls.pr()</span>
+    <span class="n">msepy</span><span class="p">,</span> <span class="n">obj</span> <span class="o">=</span> <span class="n">ph</span><span class="o">.</span><span class="n">fem</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="s1">&#39;msepy&#39;</span><span class="p">,</span> <span class="nb">locals</span><span class="p">())</span>
+    <span class="n">manifold</span> <span class="o">=</span> <span class="n">msepy</span><span class="o">.</span><span class="n">base</span><span class="p">[</span><span class="s1">&#39;manifolds&#39;</span><span class="p">][</span><span class="sa">r</span><span class="s2">&quot;\mathcal</span><span class="si">{M}</span><span class="s2">&quot;</span><span class="p">]</span>
+    <span class="n">mesh</span> <span class="o">=</span> <span class="n">msepy</span><span class="o">.</span><span class="n">base</span><span class="p">[</span><span class="s1">&#39;meshes&#39;</span><span class="p">][</span><span class="sa">r</span><span class="s1">&#39;\mathfrak</span><span class="si">{M}</span><span class="s1">&#39;</span><span class="p">]</span>
+
+    <span class="n">msepy</span><span class="o">.</span><span class="n">config</span><span class="p">(</span><span class="n">manifold</span><span class="p">)(</span>
+        <span class="s1">&#39;crazy_multi&#39;</span><span class="p">,</span>
+        <span class="n">c</span><span class="o">=</span><span class="n">c</span><span class="p">,</span>
+        <span class="n">bounds</span><span class="o">=</span><span class="p">[</span>
+            <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span>
+        <span class="p">],</span>
+        <span class="n">periodic</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+    <span class="p">)</span>
+
+    <span class="n">msepy</span><span class="o">.</span><span class="n">config</span><span class="p">(</span><span class="n">mesh</span><span class="p">)([</span><span class="n">K</span><span class="p">,</span> <span class="n">K</span><span class="p">])</span>
+
+    <span class="n">phi</span> <span class="o">=</span> <span class="n">msepy</span><span class="o">.</span><span class="n">base</span><span class="p">[</span><span class="s1">&#39;forms&#39;</span><span class="p">][</span><span class="sa">r</span><span class="s1">&#39;potential&#39;</span><span class="p">]</span>
+    <span class="n">u</span> <span class="o">=</span> <span class="n">msepy</span><span class="o">.</span><span class="n">base</span><span class="p">[</span><span class="s1">&#39;forms&#39;</span><span class="p">][</span><span class="sa">r</span><span class="s1">&#39;velocity&#39;</span><span class="p">]</span>
+    <span class="n">f</span> <span class="o">=</span> <span class="n">msepy</span><span class="o">.</span><span class="n">base</span><span class="p">[</span><span class="s1">&#39;forms&#39;</span><span class="p">][</span><span class="sa">r</span><span class="s1">&#39;source&#39;</span><span class="p">]</span>
+
+    <span class="n">ls</span> <span class="o">=</span> <span class="n">obj</span><span class="p">[</span><span class="s1">&#39;ls&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">apply</span><span class="p">()</span>
+
+    <span class="n">phi_scalar</span> <span class="o">=</span> <span class="n">ph</span><span class="o">.</span><span class="n">vc</span><span class="o">.</span><span class="n">scalar</span><span class="p">(</span><span class="n">phi_func</span><span class="p">)</span>
+    <span class="n">phi</span><span class="o">.</span><span class="n">cf</span> <span class="o">=</span> <span class="n">phi_scalar</span>
+    <span class="n">u</span><span class="o">.</span><span class="n">cf</span> <span class="o">=</span> <span class="n">phi</span><span class="o">.</span><span class="n">cf</span><span class="o">.</span><span class="n">codifferential</span><span class="p">()</span>
+    <span class="n">f</span><span class="o">.</span><span class="n">cf</span> <span class="o">=</span> <span class="o">-</span> <span class="n">u</span><span class="o">.</span><span class="n">cf</span><span class="o">.</span><span class="n">exterior_derivative</span><span class="p">()</span>
+    <span class="n">f</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">reduce</span><span class="p">()</span>
+    <span class="n">phi</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">reduce</span><span class="p">()</span>
+
+    <span class="n">ls0</span> <span class="o">=</span> <span class="n">ls</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+    <span class="n">ls0</span><span class="o">.</span><span class="n">customize</span><span class="o">.</span><span class="n">set_dof</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="n">phi</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">cochain</span><span class="o">.</span><span class="n">of_dof</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">))</span>
+    <span class="n">als</span> <span class="o">=</span> <span class="n">ls0</span><span class="o">.</span><span class="n">assemble</span><span class="p">()</span>
+    <span class="n">als</span><span class="o">.</span><span class="n">solve</span><span class="p">()</span>
+
+    <span class="n">phi_error</span> <span class="o">=</span> <span class="n">phi</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">error</span><span class="p">()</span>
+    <span class="n">u_error</span> <span class="o">=</span> <span class="n">u</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">error</span><span class="p">()</span>
+
+    <span class="k">return</span> <span class="n">phi_error</span><span class="p">,</span> <span class="n">u_error</span></div>
+
+
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s1">&#39;__main__&#39;</span><span class="p">:</span>
+    <span class="c1"># python tests/unittests/msepy/div_grad/_2d_outer_periodic.py</span>
+    <span class="n">errors</span> <span class="o">=</span> <span class="n">div_grad_2d_periodic_manufactured_test</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">errors</span><span class="p">)</span>
+</pre></div>
+
+                </article>
+              
+
+              
+              
+                <footer class="bd-footer-article">
+                  
+<div class="footer-article-items footer-article__inner">
+  
+    <div class="footer-article-item"><!-- Previous / next buttons -->
+<div class="prev-next-area">
+</div></div>
+  
+</div>
+
+                </footer>
+              
+            </div>
+            
+            
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+<div class="bd-footer-content__inner container">
+  
+  <div class="footer-item">
+    
+<p class="component-author">
+By Andrea Brugnoli, Ramy Rashad, Stefano Stramigioli, Yi Zhang
+</p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+  <p class="copyright">
+    
+      © Copyright 2023, RaM, EEMCS, University of Twente.
+      <br/>
+    
+  </p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+  <div class="footer-item">
+    
+<div class="extra_footer">
+  <div>Last updated on May 29, 2023, 00:38:12, W. Europe Daylight Time</div>
+</div>
+  </div>
+  
+</div>
+          </footer>
+        
+
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script src="../../../../../_static/scripts/bootstrap.js?digest=e353d410970836974a52"></script>
+<script src="../../../../../_static/scripts/pydata-sphinx-theme.js?digest=e353d410970836974a52"></script>
+
+  <footer class="bd-footer">
+  </footer>
+  </body>
+</html>

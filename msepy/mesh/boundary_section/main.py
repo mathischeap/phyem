@@ -11,6 +11,7 @@ if './' not in sys.path:
     sys.path.append('./')
 from tools.frozen import Frozen
 from msepy.mesh.boundary_section.elements import MsePyBoundarySectionElements
+from msepy.mesh.boundary_section.coordinate_transformation import MsePyBoundarySectionMeshCooTrans
 
 
 class MsePyBoundarySectionMesh(Frozen):
@@ -26,6 +27,7 @@ class MsePyBoundarySectionMesh(Frozen):
         assert self.manifold.regions._base_regions is self.base.manifold.regions, f"safety check!"
 
         self._elements = None
+        self._ct = MsePyBoundarySectionMeshCooTrans(self)
         self._freeze()
 
     @property
@@ -50,6 +52,16 @@ class MsePyBoundarySectionMesh(Frozen):
             self._elements = MsePyBoundarySectionElements(self)
         return self._elements
 
+    @property
+    def n(self):
+        """ndim"""
+        return self._base.n
+
+    @property
+    def m(self):
+        """esd"""
+        return self._base.m
+
 
 if __name__ == '__main__':
     # python msepy/mesh/boundary_section/main.py
@@ -66,7 +78,7 @@ if __name__ == '__main__':
     Gamma_u = msepy.base['manifolds'][r"\Gamma_u"]
 
     # msepy.config(manifold)(
-    #     'crazy_multi', c=0.1, bounds=[[0, 1] for _ in range(n)], periodic=False,
+    #     'crazy_multi.rst', c=0.1, bounds=[[0, 1] for _ in range(n)], periodic=False,
     # )
 
     msepy.config(manifold)('backward_step')
@@ -84,3 +96,5 @@ if __name__ == '__main__':
 
     mesh_phi = msepy.find_mesh_of_manifold(Gamma_phi)
     elements = mesh_phi.elements
+    print(elements._elements)
+    print(elements[0])

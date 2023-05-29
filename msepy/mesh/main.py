@@ -199,7 +199,7 @@ class MsePyMesh(Frozen):
                         if _mesh.abstract._manifold is abstract_manifold:
                             the_abstract_mesh = _mesh.abstract
 
-                    assert the_abstract_mesh is not None, f"must find the msepy mesh."
+                    assert the_abstract_mesh is not None, f"must find the abstract mesh."
                     boundary_section_mesh = MsePyBoundarySectionMesh(
                         self,
                         msepy_manifold,
@@ -247,12 +247,13 @@ class MsePyMesh(Frozen):
 
 
 if __name__ == '__main__':
-    # python msepy/mesh/matplot.py
+    # python msepy/mesh/main.py
     import __init__ as ph
-    space_dim = 3
+    space_dim = 1
     ph.config.set_embedding_space_dim(space_dim)
 
     manifold = ph.manifold(space_dim)
+    print(manifold._sym_repr)
     mesh = ph.mesh(manifold)
 
     msepy, obj = ph.fem.apply('msepy', locals())
@@ -260,11 +261,20 @@ if __name__ == '__main__':
     mnf = obj['manifold']
     msh = obj['mesh']
 
-    msepy.config(mnf)('crazy', c=0.3, periodic=False, bounds=[[0, 2] for _ in range(space_dim)])
-    # msepy.config(mnf)('backward_step')
+    msepy.config(mnf)('crazy_multi', c=0.3, periodic=False, bounds=[[0, 2] for _ in range(space_dim)])
     msepy.config(msh)([3 for _ in range(space_dim)])
 
-    msh.visualize()
-    mnf.visualize()
-    # print(msh.elements._layout_cache_key)
-    # msh.visualize()
+    # ph.config.set_embedding_space_dim(3)
+    # manifold = ph.manifold(3)
+    #
+    # print(manifold._sym_repr)
+
+    # mesh = ph.mesh(manifold)
+    #
+    # msepy, obj = ph.fem.apply('msepy', locals())
+    #
+    # mnf = obj['manifold']
+    # msh = obj['mesh']
+    #
+    # msepy.config(mnf)('crazy', c=0.3, periodic=False, bounds=[[0, 2] for _ in range(space_dim)])
+    # msepy.config(msh)([3 for _ in range(space_dim)])

@@ -48,7 +48,7 @@
     <link rel="icon" href="_static/favicon.png"/>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="Install" href="documentation/index.html" />
+    <link rel="next" title="Install" href="tutorial/index.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
   </head>
@@ -185,12 +185,27 @@
             </li>
         </ul>
         <ul class="nav bd-sidenav">
-<li class="toctree-l1"><a class="reference internal" href="documentation/index.html">Install</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tutorial/index.html">Install</a></li>
 </ul>
 <ul class="nav bd-sidenav">
-<li class="toctree-l1"><a class="reference internal" href="jupyter/test1.html">Quick-start: Set up your first equation</a></li>
-<li class="toctree-l1"><a class="reference internal" href="jupyter/test2.html">Discretization</a></li>
-<li class="toctree-l1"><a class="reference internal" href="jupyter/test3.html"><code class="docutils literal notranslate"><span class="pre">msepy</span></code> implementation</a></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="jupyter/index.html">Jupyter notebooks</a><input class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-1"><i class="fa-solid fa-chevron-down"></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="jupyter/general/first_equation.html">Set up your first equation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="jupyter/general/discretize_linear_pH_system.html">Discretization</a></li>
+</ul>
+</li>
+</ul>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1 has-children"><a class="reference internal" href="gallery/index.html">Gallery</a><input class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-2"><i class="fa-solid fa-chevron-down"></i></label><ul>
+<li class="toctree-l2 has-children"><a class="reference internal" href="gallery/msepy_domains_and_meshes/index.html"><code class="docutils literal notranslate"><span class="pre">msepy</span></code> domains and meshes</a><input class="toctree-checkbox" id="toctree-checkbox-3" name="toctree-checkbox-3" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-3"><i class="fa-solid fa-chevron-down"></i></label><ul>
+<li class="toctree-l3"><a class="reference internal" href="gallery/msepy_domains_and_meshes/msepy/crazy.html">Crazy domain and mesh</a></li>
+<li class="toctree-l3"><a class="reference internal" href="gallery/msepy_domains_and_meshes/msepy/crazy_multi.html">Multi-crazy domain and mesh</a></li>
+<li class="toctree-l3"><a class="reference internal" href="gallery/msepy_domains_and_meshes/msepy/backward_step.html">Backward step</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="gallery/div_grad/index.html">div-grad</a></li>
+<li class="toctree-l2"><a class="reference internal" href="gallery/canonical_linear_port_Hamiltonian/index.html">Canonical linear port Hamiltonian</a></li>
+</ul>
+</li>
 </ul>
 
     </div>
@@ -401,12 +416,9 @@ document.write(`
             </div>
             <nav aria-label="Page">
                 <ul class="visible nav section-nav flex-column">
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#documentation">Documentation</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#tutorial">Tutorial</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#jupyter-notebooks">Jupyter notebooks</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#gallery">Gallery</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#contributing-guide">Contributing guide</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#acknowledgement">Acknowledgement</a></li>
 </ul>
             </nav>
         </div>
@@ -419,41 +431,41 @@ document.write(`
                 <article class="bd-article" role="main">
                   
   <section id="phyem">
-<h1>PHYEM<a class="headerlink" href="#phyem" title="Permalink to this heading">#</a></h1>
-<section id="documentation">
-<h2>Documentation<a class="headerlink" href="#documentation" title="Permalink to this heading">#</a></h2>
+<span id="id1"></span><h1>PHYEM<a class="headerlink" href="#phyem" title="Permalink to this heading">#</a></h1>
+<section id="tutorial">
+<span id="id2"></span><h2>Tutorial<a class="headerlink" href="#tutorial" title="Permalink to this heading">#</a></h2>
 <div class="toctree-wrapper compound">
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="documentation/index.html">Install</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tutorial/index.html">Install</a></li>
 </ul>
 </div>
 </section>
-<section id="tutorial">
-<h2>Tutorial<a class="headerlink" href="#tutorial" title="Permalink to this heading">#</a></h2>
-</section>
 <section id="jupyter-notebooks">
-<h2>Jupyter notebooks<a class="headerlink" href="#jupyter-notebooks" title="Permalink to this heading">#</a></h2>
+<span id="jupyter"></span><h2>Jupyter notebooks<a class="headerlink" href="#jupyter-notebooks" title="Permalink to this heading">#</a></h2>
+<p>Below, we sort out jupyter notebooks that demonstrate the using of PHYEM.</p>
 <div class="toctree-wrapper compound">
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="jupyter/test1.html">Quick-start: Set up your first equation</a></li>
-<li class="toctree-l1"><a class="reference internal" href="jupyter/test2.html">Discretization</a></li>
-<li class="toctree-l1"><a class="reference internal" href="jupyter/test3.html"><code class="docutils literal notranslate"><span class="pre">msepy</span></code> implementation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="jupyter/index.html">Jupyter notebooks</a></li>
 </ul>
 </div>
 </section>
 <section id="gallery">
-<h2>Gallery<a class="headerlink" href="#gallery" title="Permalink to this heading">#</a></h2>
-</section>
-<section id="contributing-guide">
-<h2>Contributing guide<a class="headerlink" href="#contributing-guide" title="Permalink to this heading">#</a></h2>
-</section>
-<section id="acknowledgement">
-<h2>Acknowledgement<a class="headerlink" href="#acknowledgement" title="Permalink to this heading">#</a></h2>
+<span id="id3"></span><h2>Gallery<a class="headerlink" href="#gallery" title="Permalink to this heading">#</a></h2>
+<p>Here, we categorize <em>predefined objects</em> (for example, computational domains and meshes) and representative demos,
+examples and applications using PHYEM into showcases at</p>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="gallery/index.html">Gallery</a></li>
+</ul>
+</div>
+<div class="line-block">
+<div class="line"><br /></div>
+</div>
 <div class="admonition-privacy-statement admonition">
 <p class="admonition-title">Privacy statement</p>
 <p>Site traffic is measured only for statistic.
 Absolutely no data which may lead to minimal leak of your privacy is ever recorded.
-Thank you very much for visiting <em>PHYEM</em>.</p>
+Thank you very much for visiting PHYEM.</p>
 </div>
 </section>
 </section>
@@ -471,7 +483,7 @@ Thank you very much for visiting <em>PHYEM</em>.</p>
     <div class="footer-article-item"><!-- Previous / next buttons -->
 <div class="prev-next-area">
     <a class="right-next"
-       href="documentation/index.html"
+       href="tutorial/index.html"
        title="next page">
       <div class="prev-next-info">
         <p class="prev-next-subtitle">next</p>
@@ -497,12 +509,9 @@ Thank you very much for visiting <em>PHYEM</em>.</p>
   </div>
   <nav class="bd-toc-nav page-toc">
     <ul class="visible nav section-nav flex-column">
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#documentation">Documentation</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#tutorial">Tutorial</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#jupyter-notebooks">Jupyter notebooks</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#gallery">Gallery</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#contributing-guide">Contributing guide</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#acknowledgement">Acknowledgement</a></li>
 </ul>
   </nav></div>
 
@@ -540,7 +549,7 @@ By Andrea Brugnoli, Ramy Rashad, Stefano Stramigioli, Yi Zhang
   <div class="footer-item">
     
 <div class="extra_footer">
-  <div>Last updated on May 16, 2023, 15:59:36, W. Europe Daylight Time</div>
+  <div>Last updated on May 29, 2023, 01:12:16, W. Europe Daylight Time</div>
 </div>
   </div>
   

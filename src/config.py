@@ -39,6 +39,45 @@ def set_embedding_space_dim(ndim):
     """"""
     assert ndim % 1 == 0 and ndim > 0, f"ndim={ndim} is wrong, it must be a positive integer."
     _global_variables['embedding_space_dim'] = ndim
+    _clear_all()   # whenever we change the space dim, we clear all abstract objects.
+
+
+def _clear_all():
+    """clear all abstract objects."""
+    from src.algebra.array import _global_root_arrays
+    from src.form.main import _global_forms
+    from src.form.main import _global_root_forms_lin_dict
+    _clear_a_dict(_global_root_arrays)
+    _clear_a_dict(_global_forms)
+    _clear_a_dict(_global_root_forms_lin_dict)
+    from src.form.main import _global_form_variables
+    _global_form_variables['update_cache'] = True
+
+    from src.manifold import _global_manifolds
+    _clear_a_dict(_global_manifolds)
+    from src.mesh import _global_meshes
+    _clear_a_dict(_global_meshes)
+
+    from src.tools.time_sequence import _global_abstract_time_sequence
+    from src.tools.time_sequence import _global_abstract_time_interval
+    _clear_a_dict(_global_abstract_time_sequence)
+    _clear_a_dict(_global_abstract_time_interval)
+
+    from src.spaces.main import _config
+    _config['current_mesh'] = ''
+    from src.spaces.main import _degree_cache
+    from src.spaces.main import _space_set
+    from src.spaces.main import _mesh_set
+    _clear_a_dict(_degree_cache)
+    _clear_a_dict(_space_set)
+    _clear_a_dict(_mesh_set)
+
+
+def _clear_a_dict(the_dict):
+    """"""
+    keys = list(the_dict.keys())
+    for key in keys:
+        del the_dict[key]
 
 
 def get_embedding_space_dim():

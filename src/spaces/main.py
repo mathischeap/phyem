@@ -38,15 +38,11 @@ _default_d_matrix_transpose_reprs = [
     _sep.join(["d:T:Mat", "{space_pure_lin_repr}", "{d}"]),
 ]
 
-_default_wedge_vector_repr = [
+_default_boundary_dp_vector_repr = [
     # once we know f0, we can find the correct basis functions it wedged with
     r"\boldsymbol{b}",
-    _sep.join(["Wedge:Vec", "Lambda:traceHodge[{f0}]-wedge", "{d}"]),
-]
-
-_default_trace_matrix_repr = [
-    r"\mathsf{N}",
-    _sep.join(["Trace:Mat", "{space_pure_lin_repr}", "{d}"]),
+    _sep.join(["BoundaryDP:Vec", "trStar[{f0}]", "{s1}", "{d}"]),
+    #                            <tr star bf0 | tr v1>, v1 in s1 of degree {d}.
 ]
 
 _default_space_degree_repr = ':D-'
@@ -175,13 +171,18 @@ def new(abbrs, *args, mesh=None, **kwargs):
     current_spaces = _space_set[mesh_sr]
 
     spaces = tuple()
+
     for abbr in abbrs:
+
         assert abbr in _implemented_spaces, \
             f"space abbr.={abbr} not implemented. do `ph.space.list_()` to see all implemented spaces."
+
         space_class_path, space_class_name = _implemented_spaces[abbr][0:2]
+
         space_class = getattr(import_module(space_class_path), space_class_name)
 
         space = space_class(mesh, *args, **kwargs)
+
         srp = space._sym_repr  # do not use __repr__()
 
         if srp in current_spaces:
@@ -193,5 +194,6 @@ def new(abbrs, *args, mesh=None, **kwargs):
 
     if len(spaces) == 1:
         return spaces[0]
+
     else:
         return spaces

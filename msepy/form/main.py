@@ -235,7 +235,7 @@ if __name__ == '__main__':
     # f3 = obj['f3']
     #
     # msepy.config(manifold)('crazy', c=0., periodic=False, bounds=[[0, 2] for _ in range(space_dim)])
-    msepy.config(manifold)('crazy_multi', c=0.0, bounds=[[0, 2] for _ in range(space_dim)], periodic=True)
+    msepy.config(manifold)('crazy_multi.rst', c=0.0, bounds=[[0, 2] for _ in range(space_dim)], periodic=True)
     # # msepy.config(mnf)('backward_step')
     # msepy.config(mesh)((2, 2, 2))
     msepy.config(mesh)(5)

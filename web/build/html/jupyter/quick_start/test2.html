@@ -1,0 +1,718 @@
+
+
+<!DOCTYPE html>
+
+
+<html lang="en" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
+
+    <title>Discretization &#8212; A finite element library powering Lego like simulation for (multi-)physics.</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "light";
+  </script>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../../_static/styles/theme.css?digest=e353d410970836974a52" rel="stylesheet" />
+<link href="../../_static/styles/bootstrap.css?digest=e353d410970836974a52" rel="stylesheet" />
+<link href="../../_static/styles/pydata-sphinx-theme.css?digest=e353d410970836974a52" rel="stylesheet" />
+
+  
+  <link href="../../_static/vendor/fontawesome/6.1.2/css/all.min.css?digest=e353d410970836974a52" rel="stylesheet" />
+  <link rel="preload" as="font" type="font/woff2" crossorigin href="../../_static/vendor/fontawesome/6.1.2/webfonts/fa-solid-900.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../../_static/vendor/fontawesome/6.1.2/webfonts/fa-brands-400.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../../_static/vendor/fontawesome/6.1.2/webfonts/fa-regular-400.woff2" />
+
+    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css" />
+    <link rel="stylesheet" href="../../_static/styles/sphinx-book-theme.css?digest=14f4ca6b54d191a8c7657f6c759bf11a5fb86285" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/nbsphinx-code-cells.css" />
+  
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../../_static/scripts/bootstrap.js?digest=e353d410970836974a52" />
+<link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=e353d410970836974a52" />
+
+    <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
+    <script src="../../_static/doctools.js"></script>
+    <script src="../../_static/sphinx_highlight.js"></script>
+    <script src="../../_static/clipboard.min.js"></script>
+    <script src="../../_static/copybutton.js"></script>
+    <script src="../../_static/scripts/sphinx-book-theme.js?digest=5a5c038af52cf7bc1a1ec88eea08e6366ee68824"></script>
+    <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script>window.MathJax = {"tex": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true}, "options": {"ignoreHtmlClass": "tex2jax_ignore|mathjax_ignore|document", "processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+    <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'jupyter/quick_start/test2';</script>
+    <link rel="icon" href="../../_static/favicon.png"/>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="">
+
+  
+  
+  <a class="skip-link" href="#main-content">Skip to main content</a>
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          name="__primary"
+          id="__primary"/>
+  <label class="overlay overlay-primary" for="__primary"></label>
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          name="__secondary"
+          id="__secondary"/>
+  <label class="overlay overlay-secondary" for="__secondary"></label>
+  
+  <div class="search-button__wrapper">
+    <div class="search-button__overlay"></div>
+    <div class="search-button__search-container">
+<form class="bd-search d-flex align-items-center"
+      action="../../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         id="search-input"
+         placeholder="Search..."
+         aria-label="Search..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form></div>
+  </div>
+
+
+  <div class="bd-header-announcement container-fluid bd-header-announcement">
+    <div class="bd-header-announcement__content">
+        <p style='color:white;'> &#127867 PHYEM is coming</p>
+    </div>
+  </div>
+
+  
+    <nav class="bd-header navbar navbar-expand-lg bd-navbar">
+    </nav>
+  
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      <div class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+    
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item">
+  
+
+<a class="navbar-brand logo" href="../../index.html">
+  
+  
+  
+  
+    
+    
+      
+    
+    
+    <img src="../../_static/logo-light.png" class="logo__image only-light" alt="Logo image"/>
+    <script>document.write(`<img src="../../_static/logo-dark.png" class="logo__image only-dark" alt="Logo image"/>`);</script>
+  
+  
+</a></div>
+        <div class="sidebar-primary-item"><ul class="navbar-icon-links navbar-nav"
+    aria-label="Quick Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://www.mathischeap.com/" title="mathischeap" class="nav-link" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><img src="../../_static/favicon-mic.png" class="icon-link-image" alt="mathischeap"/></a>
+        </li>
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/mathischeap/phyem" title="GitHub" class="nav-link" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><span><i class="fa-brands fa-square-github"></i></span>
+            <label class="sr-only">GitHub</label></a>
+        </li>
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://app.netlify.com/sites/phyem/deploys" title="Netlify Status" class="nav-link" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><img src="https://api.netlify.com/api/v1/badges/6a559326-c54e-4a8f-a79a-a715648c73c2/deploy-status" class="icon-link-image" alt="Netlify Status"/></a>
+        </li>
+</ul></div>
+        <div class="sidebar-primary-item"><nav class="bd-links" id="bd-docs-nav" aria-label="Main">
+    <div class="bd-toc-item navbar-nav active">
+        
+        <ul class="nav bd-sidenav bd-sidenav__home-link">
+            <li class="toctree-l1">
+                <a class="reference internal" href="../../index.html">
+                    PHYEM
+                </a>
+            </li>
+        </ul>
+        <ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../../tutorial/index.html">Install</a></li>
+</ul>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../index.html">Jupyter notebooks</a></li>
+</ul>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../../gallery/index.html">Domains and meshes</a></li>
+</ul>
+
+    </div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+  </div>
+  
+  <div id="rtd-footer-container"></div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main">
+        
+        
+
+<div class="sbt-scroll-pixel-helper"></div>
+
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item"><label class="sidebar-toggle primary-toggle btn btn-sm" for="__primary" title="Toggle primary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <span class="fa-solid fa-bars"></span>
+</label></div>
+      
+    </div>
+  
+  
+    <div class="header-article-items__end">
+      
+        <div class="header-article-item">
+
+<div class="article-header-buttons">
+
+
+
+
+
+<div class="dropdown dropdown-source-buttons">
+  <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Source repositories">
+    <i class="fab fa-github"></i>
+  </button>
+  <ul class="dropdown-menu">
+      
+      
+      
+      <li><a href="https://github.com/mathischeap/phyem" target="_blank"
+   class="btn btn-sm btn-source-repository-button dropdown-item"
+   title="Source repository"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fab fa-github"></i>
+  </span>
+<span class="btn__text-container">Repository</span>
+</a>
+</li>
+      
+      
+      
+      
+      <li><a href="https://github.com/mathischeap/phyem/edit/main/web/source/jupyter/quick_start/test2.ipynb" target="_blank"
+   class="btn btn-sm btn-source-edit-button dropdown-item"
+   title="Suggest edit"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-pencil-alt"></i>
+  </span>
+<span class="btn__text-container">Suggest edit</span>
+</a>
+</li>
+      
+      
+      
+      
+      <li><a href="https://github.com/mathischeap/phyem/issues/new?title=Issue%20on%20page%20%2Fjupyter/quick_start/test2.html&body=Your%20issue%20content%20here." target="_blank"
+   class="btn btn-sm btn-source-issues-button dropdown-item"
+   title="Open an issue"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-lightbulb"></i>
+  </span>
+<span class="btn__text-container">Open issue</span>
+</a>
+</li>
+      
+  </ul>
+</div>
+
+
+
+
+
+
+<div class="dropdown dropdown-download-buttons">
+  <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Download this page">
+    <i class="fas fa-download"></i>
+  </button>
+  <ul class="dropdown-menu">
+      
+      
+      
+      <li><a href="../../_sources/jupyter/quick_start/test2.ipynb" target="_blank"
+   class="btn btn-sm btn-download-source-button dropdown-item"
+   title="Download source file"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file"></i>
+  </span>
+<span class="btn__text-container">.ipynb</span>
+</a>
+</li>
+      
+      
+      
+      
+      <li>
+<button onclick="window.print()"
+  class="btn btn-sm btn-download-pdf-button dropdown-item"
+  title="Print to PDF"
+  data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file-pdf"></i>
+  </span>
+<span class="btn__text-container">.pdf</span>
+</button>
+</li>
+      
+  </ul>
+</div>
+
+
+
+
+<button onclick="toggleFullScreen()"
+  class="btn btn-sm btn-fullscreen-button"
+  title="Fullscreen mode"
+  data-bs-placement="bottom" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-expand"></i>
+  </span>
+
+</button>
+
+
+<script>
+document.write(`
+  <button class="theme-switch-button btn btn-sm btn-outline-primary navbar-btn rounded-circle" title="light/dark" aria-label="light/dark" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="theme-switch" data-mode="light"><i class="fa-solid fa-sun"></i></span>
+    <span class="theme-switch" data-mode="dark"><i class="fa-solid fa-moon"></i></span>
+    <span class="theme-switch" data-mode="auto"><i class="fa-solid fa-circle-half-stroke"></i></span>
+  </button>
+`);
+</script>
+
+<script>
+document.write(`
+  <button class="btn btn-sm navbar-btn search-button search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass"></i>
+  </button>
+`);
+</script>
+
+</div></div>
+      
+    </div>
+  
+</div>
+</div>
+              
+              
+
+<div id="jb-print-docs-body" class="onlyprint">
+    <h1>Discretization</h1>
+    <!-- Table of contents -->
+    <div id="print-main-content">
+        <div id="jb-print-toc">
+            
+        </div>
+    </div>
+</div>
+
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article" role="main">
+                  
+  <section id="Discretization">
+<h1>Discretization<a class="headerlink" href="#Discretization" title="Permalink to this heading">#</a></h1>
+<p>Now we demonstrate how to discretize an equation object.</p>
+<p>Pre-coded sample objects are stored in <code class="docutils literal notranslate"><span class="pre">sample</span></code> attribute of <code class="docutils literal notranslate"><span class="pre">phyem</span></code> packages. Invoke these samples by</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[1]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">sys</span>
+<span class="n">path_to_phyem</span> <span class="o">=</span> <span class="s1">&#39;../../../../&#39;</span>   <span class="c1"># the path to dir that containing the phyem package.</span>
+<span class="n">sys</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">path_to_phyem</span><span class="p">)</span>
+<span class="kn">import</span> <span class="nn">phyem</span> <span class="k">as</span> <span class="nn">ph</span>  <span class="c1"># import the phyem package</span>
+<span class="n">ph</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">_set_matplot_block</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span>
+<span class="n">samples</span> <span class="o">=</span> <span class="n">ph</span><span class="o">.</span><span class="n">samples</span>
+</pre></div>
+</div>
+</div>
+<p>The partial differential equations of the canocical linear por-Hamiltonian are pre-coded. Call it through</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[2]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">oph</span> <span class="o">=</span> <span class="n">samples</span><span class="o">.</span><span class="n">pde_canonical_pH</span><span class="p">(</span><span class="n">n</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">p</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">periodic</span><span class="o">=</span><span class="kc">False</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>  <span class="c1"># where o on `oph` means outer</span>
+</pre></div>
+</div>
+</div>
+<p>Check <code class="docutils literal notranslate"><span class="pre">oph</span></code>, <em>outer oriented port-Hamiltonian</em>, with</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[3]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">oph</span><span class="o">.</span><span class="n">pr</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[3]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+&lt;Figure size 800x600 with 1 Axes&gt;
+</pre></div></div>
+</div>
+<p>We can take out the knowns and label them by</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[4]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">a3</span><span class="p">,</span> <span class="n">b2</span> <span class="o">=</span> <span class="n">oph</span><span class="o">.</span><span class="n">unknowns</span>
+</pre></div>
+</div>
+</div>
+<p>We now test <code class="docutils literal notranslate"><span class="pre">oph</span></code> with test functions from the spaces where <code class="docutils literal notranslate"><span class="pre">a3</span></code> and <code class="docutils literal notranslate"><span class="pre">b2</span></code> come from, and label the test functions by <span class="math notranslate nohighlight">\(v^3\)</span> and <span class="math notranslate nohighlight">\(u^2\)</span>,</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[5]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">wf</span> <span class="o">=</span> <span class="n">oph</span><span class="o">.</span><span class="n">test_with</span><span class="p">(</span><span class="n">oph</span><span class="o">.</span><span class="n">unknowns</span><span class="p">,</span> <span class="n">sym_repr</span><span class="o">=</span><span class="p">[</span><span class="sa">r</span><span class="s1">&#39;v^3&#39;</span><span class="p">,</span> <span class="sa">r</span><span class="s1">&#39;u^2&#39;</span><span class="p">])</span>
+<span class="n">wf</span><span class="o">.</span><span class="n">pr</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[5]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+&lt;Figure size 1200x600 with 1 Axes&gt;
+</pre></div></div>
+</div>
+<p>Now, we apply integration by parts to the term indexed by <code class="docutils literal notranslate"><span class="pre">'1-1'</span></code>.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[6]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">wf</span> <span class="o">=</span> <span class="n">wf</span><span class="o">.</span><span class="n">derive</span><span class="o">.</span><span class="n">integration_by_parts</span><span class="p">(</span><span class="s1">&#39;1-1&#39;</span><span class="p">)</span>
+<span class="n">wf</span><span class="o">.</span><span class="n">pr</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[6]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+&lt;Figure size 1200x600 with 1 Axes&gt;
+</pre></div></div>
+</div>
+<p>We now apply a particular discretization to this weak formulation,</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[7]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">td</span> <span class="o">=</span> <span class="n">wf</span><span class="o">.</span><span class="n">td</span>
+<span class="n">td</span><span class="o">.</span><span class="n">set_time_sequence</span><span class="p">()</span>  <span class="c1"># initialize a time sequence</span>
+<span class="n">td</span><span class="o">.</span><span class="n">define_abstract_time_instants</span><span class="p">(</span><span class="s1">&#39;k-1&#39;</span><span class="p">,</span> <span class="s1">&#39;k-1/2&#39;</span><span class="p">,</span> <span class="s1">&#39;k&#39;</span><span class="p">)</span>
+<span class="n">td</span><span class="o">.</span><span class="n">differentiate</span><span class="p">(</span><span class="s1">&#39;0-0&#39;</span><span class="p">,</span> <span class="s1">&#39;k-1&#39;</span><span class="p">,</span> <span class="s1">&#39;k&#39;</span><span class="p">)</span>
+<span class="n">td</span><span class="o">.</span><span class="n">average</span><span class="p">(</span><span class="s1">&#39;0-1&#39;</span><span class="p">,</span> <span class="n">b2</span><span class="p">,</span> <span class="p">[</span><span class="s1">&#39;k-1&#39;</span><span class="p">,</span> <span class="s1">&#39;k&#39;</span><span class="p">])</span>
+
+<span class="n">td</span><span class="o">.</span><span class="n">differentiate</span><span class="p">(</span><span class="s1">&#39;1-0&#39;</span><span class="p">,</span> <span class="s1">&#39;k-1&#39;</span><span class="p">,</span> <span class="s1">&#39;k&#39;</span><span class="p">)</span>
+<span class="n">td</span><span class="o">.</span><span class="n">average</span><span class="p">(</span><span class="s1">&#39;1-1&#39;</span><span class="p">,</span> <span class="n">a3</span><span class="p">,</span> <span class="p">[</span><span class="s1">&#39;k-1&#39;</span><span class="p">,</span> <span class="s1">&#39;k&#39;</span><span class="p">])</span>
+<span class="n">td</span><span class="o">.</span><span class="n">average</span><span class="p">(</span><span class="s1">&#39;1-2&#39;</span><span class="p">,</span> <span class="n">a3</span><span class="p">,</span> <span class="p">[</span><span class="s1">&#39;k-1/2&#39;</span><span class="p">])</span>
+<span class="n">dt</span> <span class="o">=</span> <span class="n">td</span><span class="o">.</span><span class="n">time_sequence</span><span class="o">.</span><span class="n">make_time_interval</span><span class="p">(</span><span class="s1">&#39;k-1&#39;</span><span class="p">,</span> <span class="s1">&#39;k&#39;</span><span class="p">)</span>
+
+<span class="n">wf</span> <span class="o">=</span> <span class="n">td</span><span class="p">()</span>
+<span class="n">wf</span><span class="o">.</span><span class="n">pr</span><span class="p">()</span>
+
+<span class="n">wf</span><span class="o">.</span><span class="n">unknowns</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="n">a3</span> <span class="o">@</span> <span class="n">td</span><span class="o">.</span><span class="n">time_sequence</span><span class="p">[</span><span class="s1">&#39;k&#39;</span><span class="p">],</span>
+    <span class="n">b2</span> <span class="o">@</span> <span class="n">td</span><span class="o">.</span><span class="n">time_sequence</span><span class="p">[</span><span class="s1">&#39;k&#39;</span><span class="p">],</span>
+<span class="p">]</span>
+
+<span class="n">wf</span> <span class="o">=</span> <span class="n">wf</span><span class="o">.</span><span class="n">derive</span><span class="o">.</span><span class="n">split</span><span class="p">(</span>
+    <span class="s1">&#39;0-0&#39;</span><span class="p">,</span> <span class="s1">&#39;f0&#39;</span><span class="p">,</span>
+    <span class="p">[</span><span class="n">a3</span> <span class="o">@</span> <span class="n">td</span><span class="o">.</span><span class="n">ts</span><span class="p">[</span><span class="s1">&#39;k&#39;</span><span class="p">],</span> <span class="n">a3</span> <span class="o">@</span> <span class="n">td</span><span class="o">.</span><span class="n">ts</span><span class="p">[</span><span class="s1">&#39;k-1&#39;</span><span class="p">]],</span>
+    <span class="p">[</span><span class="s1">&#39;+&#39;</span><span class="p">,</span> <span class="s1">&#39;-&#39;</span><span class="p">],</span>
+    <span class="n">factors</span><span class="o">=</span><span class="p">[</span><span class="mi">1</span><span class="o">/</span><span class="n">dt</span><span class="p">,</span> <span class="mi">1</span><span class="o">/</span><span class="n">dt</span><span class="p">],</span>
+<span class="p">)</span>
+<span class="n">wf</span><span class="o">.</span><span class="n">pr</span><span class="p">()</span>
+
+<span class="n">wf</span> <span class="o">=</span> <span class="n">wf</span><span class="o">.</span><span class="n">derive</span><span class="o">.</span><span class="n">split</span><span class="p">(</span>
+    <span class="s1">&#39;0-2&#39;</span><span class="p">,</span> <span class="s1">&#39;f0&#39;</span><span class="p">,</span>
+    <span class="p">[</span><span class="n">ph</span><span class="o">.</span><span class="n">d</span><span class="p">(</span><span class="n">b2</span> <span class="o">@</span> <span class="n">td</span><span class="o">.</span><span class="n">ts</span><span class="p">[</span><span class="s1">&#39;k-1&#39;</span><span class="p">]),</span> <span class="n">ph</span><span class="o">.</span><span class="n">d</span><span class="p">(</span><span class="n">b2</span> <span class="o">@</span> <span class="n">td</span><span class="o">.</span><span class="n">ts</span><span class="p">[</span><span class="s1">&#39;k&#39;</span><span class="p">])],</span>
+    <span class="p">[</span><span class="s1">&#39;+&#39;</span><span class="p">,</span> <span class="s1">&#39;+&#39;</span><span class="p">],</span>
+    <span class="n">factors</span><span class="o">=</span><span class="p">[</span><span class="mi">1</span><span class="o">/</span><span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="o">/</span><span class="mi">2</span><span class="p">],</span>
+<span class="p">)</span>
+<span class="n">wf</span><span class="o">.</span><span class="n">pr</span><span class="p">()</span>
+
+<span class="n">wf</span> <span class="o">=</span> <span class="n">wf</span><span class="o">.</span><span class="n">derive</span><span class="o">.</span><span class="n">split</span><span class="p">(</span>
+    <span class="s1">&#39;1-0&#39;</span><span class="p">,</span> <span class="s1">&#39;f0&#39;</span><span class="p">,</span>
+    <span class="p">[</span><span class="n">b2</span> <span class="o">@</span> <span class="n">td</span><span class="o">.</span><span class="n">ts</span><span class="p">[</span><span class="s1">&#39;k&#39;</span><span class="p">],</span> <span class="n">b2</span> <span class="o">@</span> <span class="n">td</span><span class="o">.</span><span class="n">ts</span><span class="p">[</span><span class="s1">&#39;k-1&#39;</span><span class="p">]],</span>
+    <span class="p">[</span><span class="s1">&#39;+&#39;</span><span class="p">,</span> <span class="s1">&#39;-&#39;</span><span class="p">],</span>
+    <span class="n">factors</span><span class="o">=</span><span class="p">[</span><span class="mi">1</span><span class="o">/</span><span class="n">dt</span><span class="p">,</span> <span class="mi">1</span><span class="o">/</span><span class="n">dt</span><span class="p">]</span>
+<span class="p">)</span>
+<span class="n">wf</span><span class="o">.</span><span class="n">pr</span><span class="p">()</span>
+
+<span class="n">wf</span> <span class="o">=</span> <span class="n">wf</span><span class="o">.</span><span class="n">derive</span><span class="o">.</span><span class="n">split</span><span class="p">(</span>
+    <span class="s1">&#39;1-2&#39;</span><span class="p">,</span> <span class="s1">&#39;f0&#39;</span><span class="p">,</span>
+    <span class="p">[</span><span class="n">a3</span> <span class="o">@</span> <span class="n">td</span><span class="o">.</span><span class="n">ts</span><span class="p">[</span><span class="s1">&#39;k-1&#39;</span><span class="p">],</span> <span class="n">a3</span> <span class="o">@</span> <span class="n">td</span><span class="o">.</span><span class="n">ts</span><span class="p">[</span><span class="s1">&#39;k&#39;</span><span class="p">]],</span>
+    <span class="p">[</span><span class="s1">&#39;+&#39;</span><span class="p">,</span> <span class="s1">&#39;+&#39;</span><span class="p">],</span>
+    <span class="n">factors</span><span class="o">=</span><span class="p">[</span><span class="mi">1</span><span class="o">/</span><span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="o">/</span><span class="mi">2</span><span class="p">],</span>
+<span class="p">)</span>
+<span class="n">wf</span><span class="o">.</span><span class="n">pr</span><span class="p">()</span>
+
+<span class="n">wf</span> <span class="o">=</span> <span class="n">wf</span><span class="o">.</span><span class="n">derive</span><span class="o">.</span><span class="n">rearrange</span><span class="p">(</span>
+    <span class="p">{</span>
+        <span class="mi">0</span><span class="p">:</span> <span class="s1">&#39;0, 3 = 2, 1&#39;</span><span class="p">,</span>
+        <span class="mi">1</span><span class="p">:</span> <span class="s1">&#39;3, 0 = 2, 1, 4&#39;</span><span class="p">,</span>
+    <span class="p">}</span>
+<span class="p">)</span>
+<span class="n">wf</span><span class="o">.</span><span class="n">pr</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[7]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+&lt;Figure size 1200x600 with 1 Axes&gt;
+</pre></div></div>
+</div>
+<p>We now can write the weak formulation with matrix proxies. Before doing that, we need to</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[8]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">ph</span><span class="o">.</span><span class="n">space</span><span class="o">.</span><span class="n">finite</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
+<span class="n">mp</span> <span class="o">=</span> <span class="n">wf</span><span class="o">.</span><span class="n">mp</span><span class="p">()</span>
+<span class="n">mp</span><span class="o">.</span><span class="n">pr</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[8]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+&lt;Figure size 1200x800 with 1 Axes&gt;
+</pre></div></div>
+</div>
+<p>The matrix format of the weak formulation lead to a linear system,</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[9]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">ls</span> <span class="o">=</span> <span class="n">mp</span><span class="o">.</span><span class="n">ls</span><span class="p">()</span>
+<span class="n">ls</span><span class="o">.</span><span class="n">pr</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[9]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+&lt;Figure size 1200x800 with 1 Axes&gt;
+</pre></div></div>
+</div>
+<p>Note that, till this moment, everything is still abstract. To do the numerical simulation, we need to bring them to a particular implementation, for example, the <code class="docutils literal notranslate"><span class="pre">msepy</span></code>, standing for <em>mimetic spectral elements python</em>, by calling <code class="docutils literal notranslate"><span class="pre">ph.fem.apply</span></code> function,</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[10]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">msepy</span><span class="p">,</span> <span class="n">obj</span> <span class="o">=</span> <span class="n">ph</span><span class="o">.</span><span class="n">fem</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="s1">&#39;msepy&#39;</span><span class="p">,</span> <span class="nb">locals</span><span class="p">())</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">msepy</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">obj</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+&lt;module &#39;msepy.main&#39; from &#39;C:\\Users\\Yi Zhang\\OneDrive\\Codes\\phyem\\web\\source\\jupyter\\../../../..\\phyem\\msepy\\main.py&#39;&gt;
+{&#39;a3&#39;: &lt;MsePy Form \widehat{\alpha}^3 at 0x000001F0065F3690&gt;, &#39;b2&#39;: &lt;MsePy Form \widehat{\beta}^2 at 0x000001F07EC6C710&gt;, &#39;ls&#39;: &lt;msepy.tools.linear_system.dynamic.MsePyDynamicLinearSystem object at 0x000001F07EC8C090&gt;}
+</pre></div></div>
+</div>
+<p><code class="docutils literal notranslate"><span class="pre">ph.fem.apply</span></code> takes two arguments, this first one indicates which particular implementation we want to use (in this case, we use <code class="docutils literal notranslate"><span class="pre">msepy</span></code>, the pure python mimetic spectral element implementation) and the second argument says what we want to take to this implementation. We use <code class="docutils literal notranslate"><span class="pre">locals()</span></code> which says everything in the local environment. We can customize it of course to move ahead with only a ecific set local variables.</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>
+</pre></div>
+</div>
+</div>
+</section>
+
+
+                </article>
+              
+
+              
+              
+                <footer class="bd-footer-article">
+                  
+<div class="footer-article-items footer-article__inner">
+  
+    <div class="footer-article-item"><!-- Previous / next buttons -->
+<div class="prev-next-area">
+</div></div>
+  
+</div>
+
+                </footer>
+              
+            </div>
+            
+            
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+<div class="bd-footer-content__inner container">
+  
+  <div class="footer-item">
+    
+<p class="component-author">
+By Andrea Brugnoli, Ramy Rashad, Stefano Stramigioli, Yi Zhang
+</p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+  <p class="copyright">
+    
+      © Copyright 2023, RaM, EEMCS, University of Twente.
+      <br/>
+    
+  </p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+  <div class="footer-item">
+    
+<div class="extra_footer">
+  <div>Last updated on May 26, 2023, 16:26:46, W. Europe Daylight Time</div>
+</div>
+  </div>
+  
+</div>
+          </footer>
+        
+
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script src="../../_static/scripts/bootstrap.js?digest=e353d410970836974a52"></script>
+<script src="../../_static/scripts/pydata-sphinx-theme.js?digest=e353d410970836974a52"></script>
+
+  <footer class="bd-footer">
+  </footer>
+  </body>
+</html>

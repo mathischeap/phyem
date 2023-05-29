@@ -14,6 +14,10 @@ import sys
 if './' not in sys.path:
     sys.path.append('./')
 
+if os.path.isfile(f"./web/source/conf.py"):
+    stream = os.popen(rf'.\web\make doctest')
+    output = stream.read()
+    print(output)
 
 if os.path.isfile(f"./web/source/conf.py"):
     stream = os.popen(rf'sphinx-build -b html web\source web\build\html')

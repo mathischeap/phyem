@@ -50,15 +50,15 @@ class MsePyMeshTopology(Frozen):
         -------
         self._attachment_edge_ : dict
             A dict whose keys are the numbering of element edges. For example:
-                {0: {'0-WB', '<Back>', '<West>'},
-                 1: {'0-EB', '2-WB', '<Back>'},
-                 2: {'0-WF', '4-BW', '<West>'},
-                 3: {'0-EF', '2-WF', '4-EB', '6-BW'},
-                 4: {'1-WB', '<Back>', '<West>'},
-                 ......}
-                means the edge numbered 0 is the West-Back edge of element 0,
-                and it is also on boundaries Back and West (the border between
-                boundaries Back and West.).
+                {
+                    0: {'0-WB', },
+                    1: {'0-EB', '2-WB', },
+                    2: {'0-WF', '4-BW', },
+                    3: {'0-EF', '2-WF', '4-EB', '6-BW'},
+                    4: {'1-WB', },
+                    ...
+                }
+            means the edge numbered 0 is the West-Back edge of element 0.
 
         """
         if self._edge_attachment is None:
@@ -125,12 +125,14 @@ class MsePyMeshTopology(Frozen):
             self._corner_numbering = gathering.astype(int)
         elif n == 3:
             c_i2n = {0: 'NWB', 1: 'SWB', 2: 'NEB', 3: 'SEB', 4: 'NWF', 5: 'SWF', 6: "NEF", 7: 'SEF'}
-            c_n2i = {'NWB': 0, 'SWB': 1, 'NEB': 2, 'SEB': 3, 'NWF': 4, 'SWF': 5, "NEF": 6, 'SEF': 7,
-                     'NBW': 0, 'SBW': 1, 'NBE': 2, 'SBE': 3, 'NFW': 4, 'SFW': 5, "NFE": 6, 'SFE': 7,
-                     'WNB': 0, 'WSB': 1, 'ENB': 2, 'ESB': 3, 'WNF': 4, 'WSF': 5, "ENF": 6, 'ESF': 7,
-                     'WBN': 0, 'WBS': 1, 'EBN': 2, 'EBS': 3, 'WFN': 4, 'WFS': 5, "EFN": 6, 'EFS': 7,
-                     'BNW': 0, 'BSW': 1, 'BNE': 2, 'BSE': 3, 'FNW': 4, 'FSW': 5, "FNE": 6, 'FSE': 7,
-                     'BWN': 0, 'BWS': 1, 'BEN': 2, 'BES': 3, 'FWN': 4, 'FWS': 5, "FEN": 6, 'FES': 7}
+            c_n2i = {
+                'NWB': 0, 'SWB': 1, 'NEB': 2, 'SEB': 3, 'NWF': 4, 'SWF': 5, "NEF": 6, 'SEF': 7,
+                'NBW': 0, 'SBW': 1, 'NBE': 2, 'SBE': 3, 'NFW': 4, 'SFW': 5, "NFE": 6, 'SFE': 7,
+                'WNB': 0, 'WSB': 1, 'ENB': 2, 'ESB': 3, 'WNF': 4, 'WSF': 5, "ENF": 6, 'ESF': 7,
+                'WBN': 0, 'WBS': 1, 'EBN': 2, 'EBS': 3, 'WFN': 4, 'WFS': 5, "EFN": 6, 'EFS': 7,
+                'BNW': 0, 'BSW': 1, 'BNE': 2, 'BSE': 3, 'FNW': 4, 'FSW': 5, "FNE": 6, 'FSE': 7,
+                'BWN': 0, 'BWS': 1, 'BEN': 2, 'BES': 3, 'FWN': 4, 'FWS': 5, "FEN": 6, 'FES': 7
+            }
 
             gathering = -np.ones((self._mesh.elements._num, 8))
             current_num = 0
@@ -190,15 +192,19 @@ class MsePyMeshTopology(Frozen):
 
         n = self._mesh.n
         if n == 2:
-            seek_sequence_1 = {'UL': '[L=UR]->[U=DR]->[R=DL]',
-                               'DL': '[L=DR]->[D=UR]->[R=UL]',
-                               'UR': '[U=DR]->[R=DL]->[D=UL]',
-                               'DR': '[R=DL]->[D=UL]->[L=UR]'}[corner_name]
+            seek_sequence_1 = {
+                'UL': '[L=UR]->[U=DR]->[R=DL]',
+                'DL': '[L=DR]->[D=UR]->[R=UL]',
+                'UR': '[U=DR]->[R=DL]->[D=UL]',
+                'DR': '[R=DL]->[D=UL]->[L=UR]',
+            }[corner_name]
 
-            seek_sequence_2 = {'UL': '[U=DL]->[L=DR]->[D=UR]',
-                               'DL': '[D=UL]->[L=UR]->[U=DR]',
-                               'UR': '[R=UL]->[U=DL]->[L=DR]',
-                               'DR': '[D=UR]->[R=UL]->[U=DL]'}[corner_name]
+            seek_sequence_2 = {
+                'UL': '[U=DL]->[L=DR]->[D=UR]',
+                'DL': '[D=UL]->[L=UR]->[U=DR]',
+                'UR': '[R=UL]->[U=DL]->[L=DR]',
+                'DR': '[D=UR]->[R=UL]->[U=DL]',
+            }[corner_name]
 
             e_n2i = {'U': 0, 'D': 1, 'L': 2, 'R': 3}
             em = self._mesh.elements.map
@@ -284,6 +290,7 @@ class MsePyMeshTopology(Frozen):
             element, edge_name = item.split('-')
             edge_name = _edge_index_to_name_[_edge_name_to_index_[edge_name]]
             output += (element + '-' + edge_name,)
+
         return output
 
     def _group_edges_into_corners(self, i, *args):

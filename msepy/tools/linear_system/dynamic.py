@@ -32,6 +32,8 @@ from msepy.tools.linear_system.static.main import MsePyStaticLinearSystem
 from msepy.tools.vector.static.local import MsePyStaticLocalVector
 from msepy.form.cochain.vector.static import MsePyRootFormStaticCochainVector
 
+from msepy.tools.linear_system.bc import MsePyDynamicLinearSystemBoundaryCondition
+
 _cs1 = constant_scalar(1)
 
 
@@ -41,7 +43,7 @@ class MsePyDynamicLinearSystem(Frozen):
     def __init__(self, mp_ls):
         """"""
         self._mp_ls = mp_ls
-        self.bc = mp_ls._bc
+        self._set_bc(mp_ls._bc)
         self._A = None
         self._x = None
         self._b = None
@@ -49,15 +51,15 @@ class MsePyDynamicLinearSystem(Frozen):
 
     @property
     def bc(self):
+        """Bc"""
         return self._bc
 
-    @bc.setter
-    def bc(self, bc):
+    def _set_bc(self, bc):
+        """set boundary condition."""
         if bc is None:
             self._bc = None
         else:
-            pass
-            # raise NotImplementedError(f"We will parse the bc to msepy bc.")
+            self._bc = MsePyDynamicLinearSystemBoundaryCondition(self, bc)
 
     @property
     def shape(self):

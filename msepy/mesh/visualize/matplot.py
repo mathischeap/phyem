@@ -58,6 +58,7 @@ class MsePyMeshVisualizeMatplot(Frozen):
             plt.xlabel(r"$x$", fontsize=labelsize)
             plt.ylabel(r"$y$", fontsize=labelsize)
             plt.tick_params(axis='both', which='both', labelsize=ticksize)
+
             if xlim is not None:
                 plt.xlim(xlim)
             if ylim is not None:

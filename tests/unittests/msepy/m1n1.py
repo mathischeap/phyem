@@ -26,13 +26,6 @@ def fx(t, x):
 
 
 space_dim = 1
-ph.config.set_embedding_space_dim(space_dim)
-
-manifold = ph.manifold(space_dim)
-mesh = ph.mesh(manifold)
-
-L0 = ph.space.new('Lambda', 0)
-L1 = ph.space.new('Lambda', 1)
 
 
 def test_function(K, N, c):
@@ -54,7 +47,13 @@ def test_function(K, N, c):
     df_error :
 
     """
-    ph.clear_forms()
+    ph.config.set_embedding_space_dim(space_dim)
+
+    manifold = ph.manifold(space_dim)
+    mesh = ph.mesh(manifold)
+
+    L0 = ph.space.new('Lambda', 0)
+    L1 = ph.space.new('Lambda', 1)
 
     f0 = L0.make_form('f^0', '0-f')
     f1 = L1.make_form('f^1', '1-f')

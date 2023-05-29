@@ -29,7 +29,9 @@ def config(mf, arg, *args, **kwargs):
         predefined_path = '.'.join(str(MsePyManifold).split(' ')[1][1:-2].split('.')[:-2]) + \
                           '.predefined.' + arg
         _module = import_module(predefined_path)
-        region_map, mapping_dict, Jacobian_matrix_dict, mtype_dict = getattr(_module, arg)(mf, **kwargs)
+        region_map, mapping_dict, Jacobian_matrix_dict, mtype_dict = getattr(
+            _module, '_'+arg
+        )(mf, **kwargs)
 
         mf._parse_regions_from_region_map(
             0,

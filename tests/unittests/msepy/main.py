@@ -16,22 +16,19 @@ from src.config import SIZE
 
 assert SIZE == 1, f"msepy does not work with multiple ranks."
 
+__all__ = [
+    "_1",
+    "_2",
+    "_3",
+]
+
+import tests.unittests.msepy.m1n1 as _1
+
+import tests.unittests.msepy.m2n2 as _2
+
+import tests.unittests.msepy.m3n3 as _3
+
 msepy_path = r'.\tests\unittests\msepy'
-
-
-stream = os.popen(rf'python {msepy_path}\m1n1.py')
-output = stream.read()
-print(output)
-
-stream = os.popen(rf'python {msepy_path}\m2n2.py')
-output = stream.read()
-print(output)
-
-stream = os.popen(rf'python {msepy_path}\m3n3.py')
-output = stream.read()
-print(output)
-
-
 codifferential_tests = [
     rf'python {msepy_path}\codifferential_test.py 1 1 outer',
     rf'python {msepy_path}\codifferential_test.py 1 1 inner',
@@ -49,6 +46,12 @@ codifferential_tests = [
 
 for _ in codifferential_tests:
     print(os.popen(_).read())
+
+
+from tests.unittests.msepy.div_grad._2d_outer_periodic import div_grad_2d_periodic_manufactured_test
+
+errors = div_grad_2d_periodic_manufactured_test(3, 4)
+assert all([_ < 0.01 for _ in errors]), f"div_grad_2d_periodic_manufactured_test!"
 
 
 if __name__ == '__main__':

@@ -20,7 +20,7 @@ from src.config import _check_sym_repr
 from src.form.parameters import constant_scalar
 
 _global_abstract_time_sequence = dict()
-_global_abstract_time_interval = list()
+_global_abstract_time_interval = dict()
 
 
 def abstract_time_sequence():
@@ -372,7 +372,7 @@ class AbstractTimeInterval(Frozen):
         else:
             sym_repr = base_sym_repr + r"_{" + str(num) + r"}"
         sym_repr = _check_sym_repr(sym_repr)
-        _global_abstract_time_interval.append(sym_repr)
+        _global_abstract_time_interval[num] = sym_repr
         self._sym_repr = sym_repr
         self._s = None
         self._freeze()

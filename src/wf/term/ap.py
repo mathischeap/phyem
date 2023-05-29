@@ -7,10 +7,7 @@
 from src.config import _wf_term_default_simple_patterns as _simple_patterns
 from src.spaces.ap import _parse_l2_inner_product_mass_matrix
 from src.spaces.ap import _parse_d_matrix
-from src.spaces.ap import _parse_wedge_vector
-from src.spaces.ap import _parse_trace_matrix
-
-
+from src.spaces.ap import _parse_boundary_dp_vector
 from tools.frozen import Frozen
 
 
@@ -164,20 +161,20 @@ class _SimplePatternAPParser(Frozen):
         return term, sign
 
     def _parse_reprs_tr_star_star(self, test_form=None):
-        """"""
-        s1 = self._wft._f1.space
+        """<tr star bf0, tr bf1>"""
         spk = self._wft.___simple_pattern_keys___
         bf0 = spk['rsf0']
         bf1 = spk['rsf1']
+
         d1 = bf1._degree
         v1 = bf1.ap()
-        boundary_wedge_vector = _parse_wedge_vector(bf0, s1, d1)
-        trace_matrix = _parse_trace_matrix(bf1)
+        s1 = bf1.space
+        boundary_wedge_vector = _parse_boundary_dp_vector(bf0, s1, d1)
 
-        if test_form == bf1:
-            term_ap = v1.T @ trace_matrix.T @ boundary_wedge_vector
+        if test_form == bf1:  # when bf1 is the testing form.
+            term_ap = v1.T @ boundary_wedge_vector
         else:
-            term_ap = boundary_wedge_vector.T @ trace_matrix @ v1
+            raise NotImplementedError()
 
         term = self._wft._factor * TermLinearAlgebraicProxy(term_ap)
         sign = '+'

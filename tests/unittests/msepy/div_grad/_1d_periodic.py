@@ -4,9 +4,9 @@ pH-lib@RAM-EEMCS-UT
 Yi Zhang
 Created at 3:58 PM on 5/9/2023
 
-$ python tests/unittests/msepy/div_grad/_1d_periodic.py
 """
 
+# python tests/unittests/msepy/div_grad/_1d_periodic.py
 import sys
 
 if './' not in sys.path:
@@ -55,7 +55,7 @@ ls0 = ls(0)
 ls0.customize.set_dof(-1, phi[0].cochain.of_dof(-1))
 als = ls0.assemble()
 als.solve()
-print(als.solve._last_solver_message)
+# print(als.solve._last_solver_message)
 
 # phi[0].visualize()
 # u[0].visualize()
