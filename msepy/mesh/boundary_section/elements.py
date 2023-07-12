@@ -78,7 +78,6 @@ class MsePyBoundarySectionElements(Frozen):
     def __contains__(self, item):
         """contains."""
         if isinstance(item, (int, float)) and (0 <= item < len(self)) and item % 1 == 0:
-
             return True
 
         else:

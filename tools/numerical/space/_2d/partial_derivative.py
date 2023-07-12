@@ -18,11 +18,11 @@ class NumericalPartialDerivativeXY(ABC):
         The interval. The smaller, the more accurate.
     """
     def __init__(self, func, x, y, h=1e-6):
-        self.___PRIVATE_check_func___(func)
-        self.___PRIVATE_check_xy___(x, y)
+        self._check_func(func)
+        self._check_xy(x, y)
         self._h = h
 
-    def ___PRIVATE_check_func___(self, func):
+    def _check_func(self, func):
         """ """
         assert callable(func), " <PartialDerivative> : func is not callable."
         if isinstance(func, FunctionType):
@@ -46,33 +46,24 @@ class NumericalPartialDerivativeXY(ABC):
             raise NotImplementedError(func.__class__.__name__)
         self._func_ = func
 
-    def ___PRIVATE_check_xy___(self, x, y):
+    def _check_xy(self, x, y):
         """ """
         self._x_, self._y_ = x, y
         assert np.shape(self._x_) == np.shape(self._y_), \
             " <PartialDerivative> : xy of different shapes."
 
-    def ___RPIVATE_check_dx_dy___(self, dx_dy):
-        """ """
-        if isinstance(dx_dy, (int, float)):
-            self._dx_ = self._dy_ = dx_dy
-        else:
-            assert np.shape(dx_dy) == (2,), " <PartialDerivative> : dx_dy shape wrong."
-            self._dx_, self._dy_ = dx_dy
-        assert all([isinstance(d, (int, float)) and d > 0 for d in (self._dx_, self._dy_)])
-
-    def ___PRIVATE_evaluate_func_for_x___(self, x):
+    def _evaluate_func_for_x(self, x):
         return self._func_(x, self._y_)
 
-    def ___PRIVATE_evaluate_func_for_y___(self, y):
+    def _evaluate_func_for_y(self, y):
         return self._func_(self._x_, y)
 
     def partial(self, d_):
         """ We compute ``df/d_`` at points ``*xyz.``"""
         if d_ == 'x':
-            return derivative(self.___PRIVATE_evaluate_func_for_x___, self._x_, h=self._h)
+            return derivative(self._evaluate_func_for_x, self._x_, h=self._h)
         elif d_ == 'y':
-            return derivative(self.___PRIVATE_evaluate_func_for_y___, self._y_, h=self._h)
+            return derivative(self._evaluate_func_for_y, self._y_, h=self._h)
         else:
             raise Exception(" <PartialDerivative> : dx or dy or dz? ")
 

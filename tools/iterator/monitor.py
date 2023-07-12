@@ -57,7 +57,8 @@ class IteratorMonitor(Frozen):
 
     def _parse_monitoring_factor(self, monitoring_factor):
         """"""
-        assert 0 <= monitoring_factor <= 1, f"monitoring_factor={monitoring_factor} is wrong, must be in [0,1]."
+        assert 0 <= monitoring_factor <= 1, \
+            f"monitoring_factor={monitoring_factor} is wrong, must be in [0,1]."
         self._ast = 360 * (1-monitoring_factor)  # auto_save_time
         self._rpt = 60 * (1-monitoring_factor)  # report time
 

@@ -14,18 +14,18 @@ class NumericalJacobianXYrs22(ABC):
         """ """
         self._func22_ = func22
 
-    def ___PRIVATE_evaluate_func22_for_x_rs___(self, r, s):
+    def _evaluate_func22_for_x_rs(self, r, s):
         return self._func22_(r, s)[0]
 
-    def ___PRIVATE_evaluate_func22_for_y_rs___(self, r, s):
+    def _evaluate_func22_for_y_rs(self, r, s):
         return self._func22_(r, s)[1]
 
     def Jacobian_matrix(self, r, s, h=1e-6):
         xr, xs = NumericalPartialDerivativeXY(
-            self.___PRIVATE_evaluate_func22_for_x_rs___, r, s, h=h
+            self._evaluate_func22_for_x_rs, r, s, h=h
         ).total_derivative
         yr, ys = NumericalPartialDerivativeXY(
-            self.___PRIVATE_evaluate_func22_for_y_rs___, r, s, h=h
+            self._evaluate_func22_for_y_rs, r, s, h=h
         ).total_derivative
 
         return ((xr, xs),

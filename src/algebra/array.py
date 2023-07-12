@@ -59,6 +59,7 @@ class AbstractArray(Frozen):
             self._transposes = (False, )
             assert isinstance(shape, tuple), f"pls put shape in a tuple."
             self.___shape___ = shape
+
         else:
             assert components is not None and transposes is not None, \
                 f"pls give components and transposes for non-root-array"
@@ -72,6 +73,7 @@ class AbstractArray(Frozen):
             factor = _cs1
         else:
             pass
+
         self._factor = factor
         self._is_root = is_root
         self._pure_lin_repr = None     # only root array has it.

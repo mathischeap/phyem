@@ -1,5 +1,8 @@
 # -*- coding: utf-8 -*-
 """
+These codes are copied from a legacy. They are not very efficient. Luckily, they most likely will be
+executed only once. Thus, we keep these codes.
+
 pH-lib@RAM-EEMCS-UT
 Yi Zhang
 Created at 1:46 PM on 5/2/2023
@@ -223,6 +226,7 @@ class MsePyMeshTopology(Frozen):
                         if str(i)+'-'+corner not in output:
                             output += (str(i)+'-'+corner,)
             return output
+
         else:
             raise NotImplementedError()
 

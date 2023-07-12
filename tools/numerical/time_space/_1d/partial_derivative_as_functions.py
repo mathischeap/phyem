@@ -16,10 +16,10 @@ class NumericalPartialDerivativeTxFunctions(Frozen):
     functions (method).
     """
     def __init__(self, func):
-        self.___PRIVATE_check_func___(func)
+        self._check_func(func)
         self._freeze()
 
-    def ___PRIVATE_check_func___(self, func):
+    def _check_func(self, func):
         assert callable(func), " <PartialDerivative> : func is not callable."
         if isinstance(func, FunctionType):
             # noinspection PyUnresolvedReferences
@@ -36,20 +36,20 @@ class NumericalPartialDerivativeTxFunctions(Frozen):
     def __call__(self, p_):
         """partial func / partial _? `P_` be 't' or 'x'."""
         if p_ == 't':
-            return self.___PRIVATE_partial_func___partial_t___
+            return self._partial_func___partial_t
         elif p_ == 'x':
-            return self.___PRIVATE_partial_func___partial_x___
+            return self._partial_func___partial_x
         else:
             raise Exception(f"partial_{p_} is wrong, should be t, or x.")
 
-    def ___PRIVATE_partial_func___partial_t___(self, t, x):
+    def _partial_func___partial_t(self, t, x):
         """pf/dt
         This partial derivative function will only accept input t is a number, i.e. int or float.
         """
         NPD4 = NumericalPartialDerivativeTx(self._func_, t, x)
         return NPD4.partial('t')
 
-    def ___PRIVATE_partial_func___partial_x___(self, t, x):
+    def _partial_func___partial_x(self, t, x):
         """pf/dx
         This partial derivative function will only accept input t is a number, i.e. int or float.
         """

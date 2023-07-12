@@ -16,11 +16,11 @@ class NumericalPartialDerivativeTxy(ABC):
     must be of the same shape; no matter the dimensions (we do not do mesh grid to them). And t must be 1-d.
     """
     def __init__(self, func, t, x, y, h=1e-6):
-        self.___PRIVATE_check_func___(func)
-        self.___PRIVATE_check_txy___(t, x, y)
+        self._check_func(func)
+        self._check_txy(t, x, y)
         self._h = h
 
-    def ___PRIVATE_check_func___(self, func):
+    def _check_func(self, func):
         assert callable(func), " <PartialDerivative> : func is not callable."
         if isinstance(func, FunctionType):
             # noinspection PyUnresolvedReferences
@@ -35,31 +35,31 @@ class NumericalPartialDerivativeTxy(ABC):
             raise NotImplementedError(func.__class__.__name__)
         self._func_ = func
 
-    def ___PRIVATE_check_txy___(self, t, x, y):
+    def _check_txy(self, t, x, y):
         """We ask x, y, z, must be of the same shape."""
         assert np.shape(x) == np.shape(y), " <PartialDerivative> : xy of different shapes."
         self._x_, self._y_ = x, y
         assert isinstance(t, (int, float)), f"t need to be a number, now t={t} is a {t.__class__}."
         self._t_ = t
 
-    def ___PRIVATE_evaluate_func_for_t___(self, t):
+    def _evaluate_func_for_t(self, t):
         return self._func_(t, self._x_, self._y_)
 
-    def ___PRIVATE_evaluate_func_for_x___(self, x):
+    def _evaluate_func_for_x(self, x):
         return self._func_(self._t_, x, self._y_)
 
-    def ___PRIVATE_evaluate_func_for_y___(self, y):
+    def _evaluate_func_for_y(self, y):
         return self._func_(self._t_, self._x_, y,)
 
     def partial(self, d_):
         """We compute the partial derivative, i.e. ``df/d_``, at points ``*txyz``."""
         if d_ == 't':
             # noinspection PyTypeChecker
-            return derivative(self.___PRIVATE_evaluate_func_for_t___, self._t_, h=self._h)
+            return derivative(self._evaluate_func_for_t, self._t_, h=self._h)
         elif d_ == 'x':
-            return derivative(self.___PRIVATE_evaluate_func_for_x___, self._x_, h=self._h)
+            return derivative(self._evaluate_func_for_x, self._x_, h=self._h)
         elif d_ == 'y':
-            return derivative(self.___PRIVATE_evaluate_func_for_y___, self._y_, h=self._h)
+            return derivative(self._evaluate_func_for_y, self._y_, h=self._h)
         else:
             raise Exception(" <PartialDerivative> : dt, dx or dy or dz? give me 't', 'x', or 'y'.")
 

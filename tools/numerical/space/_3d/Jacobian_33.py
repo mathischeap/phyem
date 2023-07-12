@@ -17,21 +17,21 @@ class NumericalJacobianXYZrst33(ABC):
         """ """
         self._func33_ = func33
 
-    def ___evaluate_func33_for_x_rst___(self, r, s, t):
+    def _evaluate_func33_for_x_rst(self, r, s, t):
         return self._func33_(r, s, t)[0]
 
-    def ___evaluate_func33_for_y_rst___(self, r, s, t):
+    def _evaluate_func33_for_y_rst(self, r, s, t):
         return self._func33_(r, s, t)[1]
 
-    def ___evaluate_func33_for_z_rst___(self, r, s, t):
+    def _evaluate_func33_for_z_rst(self, r, s, t):
         return self._func33_(r, s, t)[2]
 
     def Jacobian_matrix(self, r, s, t, h=1e-6):
-        xr, xs, xt = NumericalPartialDerivativeXYZ(self.___evaluate_func33_for_x_rst___,
+        xr, xs, xt = NumericalPartialDerivativeXYZ(self._evaluate_func33_for_x_rst,
                                                    r, s, t, h=h)
-        yr, ys, yt = NumericalPartialDerivativeXYZ(self.___evaluate_func33_for_y_rst___,
+        yr, ys, yt = NumericalPartialDerivativeXYZ(self._evaluate_func33_for_y_rst,
                                                    r, s, t, h=h)
-        zr, zs, zt = NumericalPartialDerivativeXYZ(self.___evaluate_func33_for_z_rst___,
+        zr, zs, zt = NumericalPartialDerivativeXYZ(self._evaluate_func33_for_z_rst,
                                                    r, s, t, h=h)
         return ((xr, xs, xt),
                 (yr, ys, yt),

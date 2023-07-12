@@ -34,8 +34,8 @@ class MatrixProxy(Frozen):
         self._test_vectors = ap.test_vectors
         self.___total_indexing_length___ = None
 
-        self._lbv = BlockColVector(self._num_equations)
-        self._rbv = BlockColVector(self._num_equations)
+        self._lbv = BlockColVector(self._num_equations)  # left block vector part
+        self._rbv = BlockColVector(self._num_equations)  # right block vector part
 
         for i in ap._term_dict:
             terms = ap._term_dict[i]
@@ -52,8 +52,8 @@ class MatrixProxy(Frozen):
 
         self._l_mvs = list()  # left matrix@vector sections
         self._r_mvs = list()  # right matrix@vector sections
-        self._bc = wf._bc
         self.parse(self._unknowns)
+        self._bc = wf._bc
         self._freeze()
 
     def _test_vector_remover(self, i, term):
@@ -170,7 +170,7 @@ class MatrixProxy(Frozen):
         `a` refer to the `ath` block.
         `b,c` refer to the `b,c`th entry of the BlockMatrix of the block.
 
-        So when `a`th block is a Matrix @ Vector, we can use either 'a-b' or 'a-b,c'.
+        So when `a`th block is a Matrix @ Vector, we can use either 'a-b' (vector block) or 'a-b,c' (matrix block).
 
         But when `a`th block is a ColVec, we can only use 'a-b'.
 

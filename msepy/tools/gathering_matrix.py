@@ -72,6 +72,7 @@ class RegularGatheringMatrix(Frozen):
                         local_dofs_j = gm.num_local_dofs
                         cgm[i][local_indices:local_indices+local_dofs_j] = renumbering
                         local_indices += local_dofs_j
+
                 _cgm_cache['signatures'] = signatures
                 _cgm_cache['cgm'] = cgm
 

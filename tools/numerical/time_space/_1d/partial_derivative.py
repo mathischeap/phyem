@@ -15,13 +15,13 @@ class NumericalPartialDerivativeTx(ABC):
     partial^n.
     """
     def __init__(self, func, t, x, step=None, n=1, order=2):
-        self.___PRIVATE_check_func___(func)
-        self.___PRIVATE_check_tx___(t, x)
+        self._check_func(func)
+        self._check_tx(t, x)
         self._step_ = step
         self._n_ = n
         self._order_ = order
 
-    def ___PRIVATE_check_func___(self, func):
+    def _check_func(self, func):
         assert callable(func), " <PartialDerivative> : func is not callable."
         if isinstance(func, FunctionType):
             # noinspection PyUnresolvedReferences
@@ -36,16 +36,16 @@ class NumericalPartialDerivativeTx(ABC):
             raise NotImplementedError(func.__class__.__name__)
         self._func_ = func
 
-    def ___PRIVATE_check_tx___(self, t, x):
+    def _check_tx(self, t, x):
         """We ask x, y, z, must be of the same shape."""
         self._x_ = x
         assert isinstance(t, (int, float)), f"t need to be a number, now t={t} is a {t.__class__}."
         self._t_ = t
 
-    def ___PRIVATE_evaluate_func_for_t___(self, t):
+    def _evaluate_func_for_t(self, t):
         return self._func_(t, self._x_)
 
-    def ___PRIVATE_evaluate_func_for_x___(self, x):
+    def _evaluate_func_for_x(self, x):
         return self._func_(self._t_, x)
 
     def partial(self, d_):
@@ -53,13 +53,13 @@ class NumericalPartialDerivativeTx(ABC):
         if d_ == 't':
             # noinspection PyTypeChecker
             return nd.Derivative(
-                self.___PRIVATE_evaluate_func_for_t___,
+                self._evaluate_func_for_t,
                 step=self._step_, n=self._n_, order=self._order_
             )(self._t_)
         elif d_ == 'x':
             # noinspection PyTypeChecker
             return nd.Derivative(
-                self.___PRIVATE_evaluate_func_for_x___,
+                self._evaluate_func_for_x,
                 step=self._step_, n=self._n_, order=self._order_
             )(self._x_)
         else:
@@ -112,6 +112,7 @@ if __name__ == '__main__':
     def Px(t, x): return np.pi*np.cos(np.pi*x) + 0 * t
 
     t = 5
+
     x = np.random.rand(11, 12)
 
     NP = NumericalPartialDerivativeTx(func, t, x)

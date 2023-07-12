@@ -142,6 +142,7 @@ def _outer_Poisson(n, degree):
     # wf.pr()
     ph.space.finite(degree)
     mp = wf.mp()
+    # mp.pr()
     ls = mp.ls()
     # ls.pr()
-    return ls
+    return ls, mp

@@ -54,6 +54,7 @@ class MsePyMeshVisualize(Frozen):
         linspace = np.linspace(0, 1, samples)
         Nodes = self._mesh.elements._nodes
         Lines = dict()
+
         for i in Nodes:  # region #i
             nodes = Nodes[i]
             assert ndim == len(nodes), f"trivial check."

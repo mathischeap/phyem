@@ -64,6 +64,7 @@ def _parse_d_matrix(f, transpose=False):
         lin = lin.replace('{d}', degree)
         sym += r"^{" + str((s.k+1, s.k)) + r"}"
         shape = (ds._sym_repr + _default_space_degree_repr + degree, f._ap_shape())
+
     D = _root_array(sym, lin, shape)
 
     return D
@@ -77,7 +78,7 @@ def _parse_boundary_dp_vector(rf0, s1, d1):
     Parameters
     ----------
     rf0 :
-        It is root f0 dependent. So do not use s0.
+        It is root-f0-dependent. So do not use s0.
     s1
     d1
 

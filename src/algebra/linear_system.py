@@ -89,6 +89,7 @@ class BlockMatrix(Frozen):
                 symbolic += r'\\'
 
         symbolic = r"\begin{bmatrix}" + symbolic + r"\end{bmatrix}"
+
         return symbolic
 
     def pr(self, figsize=(12, 6)):
@@ -246,13 +247,29 @@ class LinearSystem(Frozen):
 
     @property
     def b_shape(self):
-        """block shape of A."""
+        """block shape of A. For example, if the system is written as
+        | M   E  N|| x |    | a |
+        | C   D  0|| y | =  | b |
+        | F   0  0|| z |    | c |
+        Then b_shape is (3, 3).
+
+         """
         return self._b_shape
 
     def shapes(self, i, j=None):
         """How many rows the block matrices have?
-        if j == None, we return how many rows the entries of the ith block have.
+        if j == None, we return how many rows the entries of the ith row block have.
         if j is not None, we return the shape of the matrix A[i][j]
+
+        For example, for system,
+        | M   E  N|| x |    | a |
+        | C   D  0|| y | =  | b |
+        | F   0  0|| z |    | c |
+
+        shapes(0) gives the row shape of M, E and N.
+        shapes(1, 1) gives the shapes of matrix D.
+
+        Note that when we are looking at a None or 0 matrix, it also works.
         """
         if j is None:
             return self._shapes[i]

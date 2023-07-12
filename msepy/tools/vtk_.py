@@ -6,10 +6,9 @@ Yi Zhang
 import numpy as np
 from pyevtk.hl import unstructuredGridToVTK
 from tools.frozen import Frozen
-# from scipy.sparse import csr_matrix
 
 
-class BuildVtkHexahedron(Frozen):    # using only No.12 VTK cells.
+class BuildVtkHexahedron(Frozen):  # using only No.12 VTK cells.
     """"""
 
     def __init__(self, x, y, z, cell_layout):
@@ -111,9 +110,9 @@ class BuildVtkHexahedron(Frozen):    # using only No.12 VTK cells.
 def _parse_numbering(x, y, z):
     """"""
     shape = x.shape
-    x = np.round(x, decimals=6).ravel('C')
-    y = np.round(y, decimals=6).ravel('C')
-    z = np.round(z, decimals=6).ravel('C')
+    x = np.round(x, decimals=5).ravel('C')
+    y = np.round(y, decimals=5).ravel('C')
+    z = np.round(z, decimals=5).ravel('C')
     numbering = - np.ones(len(x), dtype=int)
     current_numbering = 0
     for i in range(len(x)):

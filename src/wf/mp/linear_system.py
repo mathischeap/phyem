@@ -19,26 +19,39 @@ plt.rcParams.update({
 })
 matplotlib.use('TkAgg')
 
+from src.wf.mp.linear_system_bc import MatrixProxyLinearSystemBoundaryConditions
+
 
 class MatrixProxyLinearSystem(Frozen):
     """"""
 
-    def __init__(self, mp, ls, bc):
+    def __init__(self, mp, ls, mp_bc):
         """"""
         self._mp = mp
         self._ls = ls
-        self._bc = bc
+        self._parse_bc(mp_bc)
         self._freeze()
+
+    def _parse_bc(self, mp_bc):
+        """"""
+        if mp_bc is None:
+            self._bc = None
+        else:
+            self._bc = MatrixProxyLinearSystemBoundaryConditions(self, mp_bc)
+
+    @property
+    def bc(self):
+        return self._bc
 
     def pr(self, figsize=(12, 8)):
         """"""
         seek_text = self._mp._mp_seek_text()
         linear_system_text = self._ls._pr_text()
         symbolic = r"$" + linear_system_text + r"$"
-        if self._bc is None or len(self._bc) == 0:
+        if self.bc is None or len(self.bc) == 0:
             bc_text = ''
         else:
-            bc_text = self._bc._bc_text()
+            bc_text = self.bc._bc_text()
         fig = plt.figure(figsize=figsize)
         plt.axis([0, 1, 0, 1])
         plt.axis('off')
@@ -47,8 +60,3 @@ class MatrixProxyLinearSystem(Frozen):
         from src.config import _matplot_setting
         plt.show(block=_matplot_setting['block'])
         return fig
-
-
-if __name__ == '__main__':
-    # python 
-    pass

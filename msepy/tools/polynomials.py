@@ -5,9 +5,10 @@ if './' not in sys.path:
 import matplotlib.pyplot as plt
 from tools.quadrature import Quadrature
 import numpy as np
+from tools.frozen import Frozen
 
 
-class _OneDimPolynomial(object):
+class _OneDimPolynomial(Frozen):
     """
     The 1d polynomial basis function space.
     """
@@ -24,6 +25,7 @@ class _OneDimPolynomial(object):
         self._isKronecker_ = True
         self._Lb_cache_ = {'x': -100, 'cache': np.array([])}
         self._eb_cache_ = {'x': -100, 'cache': np.array([])}
+        self._freeze()
 
     @property
     def isKronecker(self):

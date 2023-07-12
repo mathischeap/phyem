@@ -13,19 +13,19 @@ class NumericalJacobianXYZt31(ABC):
         """ """
         self._func31_ = func31
 
-    def ___evaluate_func31_for_x_t___(self, t):
+    def _evaluate_func31_for_x_t(self, t):
         return self._func31_(t)[0]
 
-    def ___evaluate_func31_for_y_t___(self, t):
+    def _evaluate_func31_for_y_t(self, t):
         return self._func31_(t)[1]
 
-    def ___evaluate_func31_for_z_t___(self, t):
+    def _evaluate_func31_for_z_t(self, t):
         return self._func31_(t)[2]
 
     def total_derivative(self, t, h=1e-6):
-        Xt = derivative(self.___evaluate_func31_for_x_t___, t, h=h)
-        Yt = derivative(self.___evaluate_func31_for_y_t___, t, h=h)
-        Zt = derivative(self.___evaluate_func31_for_z_t___, t, h=h)
+        Xt = derivative(self._evaluate_func31_for_x_t, t, h=h)
+        Yt = derivative(self._evaluate_func31_for_y_t, t, h=h)
+        Zt = derivative(self._evaluate_func31_for_z_t, t, h=h)
         return Xt, Yt, Zt
 
     def check_Jacobian(self, Jacobian, t, tolerance=1e-6):

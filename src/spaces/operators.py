@@ -30,6 +30,7 @@ def wedge(s1, s2):
 
         if o1 == o2:
             orientation = o1
+
         else:
             orientation = None
 

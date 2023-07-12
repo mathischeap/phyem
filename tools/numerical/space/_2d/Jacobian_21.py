@@ -12,15 +12,15 @@ class NumericalJacobianXYt21(ABC):
         """ """
         self._func21_ = func21
 
-    def ___PRIVATE_evaluate_func21_for_x_t___(self, t):
+    def _evaluate_func21_for_x_t(self, t):
         return self._func21_(t)[0]
 
-    def ___PRIVATE_evaluate_func21_for_y_t___(self, t):
+    def _evaluate_func21_for_y_t(self, t):
         return self._func21_(t)[1]
 
     def total_derivative(self, t, h=1e-6):
-        Xt = derivative(self.___PRIVATE_evaluate_func21_for_x_t___, t, h=h)
-        Yt = derivative(self.___PRIVATE_evaluate_func21_for_y_t___, t, h=h)
+        Xt = derivative(self._evaluate_func21_for_x_t, t, h=h)
+        Yt = derivative(self._evaluate_func21_for_y_t, t, h=h)
         return Xt, Yt
 
     def check_Jacobian(self, Jacobian, t, tolerance=1e-6):

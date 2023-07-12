@@ -17,13 +17,12 @@ try:
     COMM = MPI.COMM_WORLD
     RANK: int = COMM.Get_rank()
     SIZE: int = COMM.Get_size()
-    MASTER_RANK: int = 0  # you can, but you do not need to change this!
 except ModuleNotFoundError:  # no `mpi4py` installed.
     COMM = None
     RANK = 0
     SIZE: int = 1
-    MASTER_RANK = 0
 
+MASTER_RANK: int = 0  # you can, but you do not need to change this!
 
 _matplot_setting = {
     'block': True
@@ -153,10 +152,9 @@ _root_form_ap_vec_setting = {
 
 _transpose_text = '-transpose'
 
-_non_root_lin_sep = [r'\{', r'\}']
-
 _abstract_array_factor_sep = r'\{*\}'
 _abstract_array_connector = r'\{@\}'
+
 
 _global_operator_lin_repr_setting = {  # coded operators
     'plus': r" $+$ ",
@@ -174,6 +172,8 @@ _global_operator_lin_repr_setting = {  # coded operators
     'division': r' \emph{divided by} ',
     'multiply': r' \emph{multiply} '
 }
+
+_non_root_lin_sep = [r'\{', r'\}']
 
 
 _global_operator_sym_repr_setting = {  # coded operators
