@@ -19,7 +19,7 @@ from msepy.tools.vector.static.concatenate import concatenate
 class MsePyStaticLinearSystem(Frozen):
     """"""
 
-    def __init__(self, A, x, b, bc=None):
+    def __init__(self, A, x, b):
         row_shape = len(A)
         col_shape = len(A[0])
         assert len(x) == col_shape and len(b) == row_shape, "A, x, b shape dis-match."
@@ -28,14 +28,8 @@ class MsePyStaticLinearSystem(Frozen):
         self._A = _AAA(self, A)
         self._x = _Xxx(self, x)
         self._b = _Bbb(self, b)
-        self._bc = bc   # so bc is already in a static format when passing it to me.
         self._customize = None
         self._freeze()
-
-    @property
-    def bc(self):
-        """"""
-        return self._bc
 
     @property
     def shape(self):

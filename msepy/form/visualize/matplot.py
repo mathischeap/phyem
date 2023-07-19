@@ -118,9 +118,15 @@ class MsePyRootFormVisualizeMatplot(Frozen):
         x, y, u, v = self._mesh._regionwsie_stack(x, y, u, v)
 
         if plot_type == 'contourf':
-            fig = [contourf(x, y, u, **kwargs), contourf(x, y, v, **kwargs)]
+            fig = [
+                contourf(x, y, u, title='x-component', **kwargs),
+                contourf(x, y, v, title='y-component', **kwargs)
+            ]
         elif plot_type == 'contour':
-            fig = [contour(x, y, u, **kwargs), contour(x, y, v, **kwargs)]
+            fig = [
+                contour(x, y, u, title='x-component', **kwargs),
+                contour(x, y, v, title='y-component', **kwargs)
+            ]
         elif plot_type == "quiver":
             fig = self._quiver(x, y, u, v, **kwargs)
         else:

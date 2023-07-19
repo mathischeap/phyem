@@ -10,8 +10,9 @@ import sys
 if './' not in sys.path:
     sys.path.append('./')
 from tools.frozen import Frozen
-from msepy.mesh.boundary_section.elements import MsePyBoundarySectionElements
+from msepy.mesh.boundary_section.faces import MsePyBoundarySectionFaces
 from msepy.mesh.boundary_section.coordinate_transformation import MsePyBoundarySectionMeshCooTrans
+from msepy.mesh.boundary_section.visualize.main import MsePyBoundarySectionVisualize
 
 
 class MsePyBoundarySectionMesh(Frozen):
@@ -26,9 +27,16 @@ class MsePyBoundarySectionMesh(Frozen):
         assert self.abstract.manifold is self.manifold.abstract, f"safety check!"
         assert self.manifold.regions._base_regions is self.base.manifold.regions, f"safety check!"
 
-        self._elements = None
-        self._ct = MsePyBoundarySectionMeshCooTrans(self)
+        self._faces = None
+        self._ct = None
+        self._visualize = MsePyBoundarySectionVisualize(self)
         self._freeze()
+
+    def __repr__(self):
+        """"""
+        base_repr = self.base.__repr__()
+        self_repr = '<BoundarySection ' + self.abstract._sym_repr + ' of '
+        return self_repr + base_repr + '>'
 
     @property
     def base(self):
@@ -46,21 +54,32 @@ class MsePyBoundarySectionMesh(Frozen):
         return self._abstract
 
     @property
-    def elements(self):
+    def faces(self):
         """the elements of this boundary section."""
-        if self._elements is None:
-            self._elements = MsePyBoundarySectionElements(self)
-        return self._elements
+        if self._faces is None:
+            self._faces = MsePyBoundarySectionFaces(self)
+        return self._faces
 
     @property
     def n(self):
         """ndim"""
-        return self._base.n
+        return self._base.n - 1
 
     @property
     def m(self):
         """esd"""
         return self._base.m
+
+    @property
+    def visualize(self):
+        return self._visualize
+
+    @property
+    def ct(self):
+        """"""
+        if self._ct is None:
+            self._ct = MsePyBoundarySectionMeshCooTrans(self)
+        return self._ct
 
 
 if __name__ == '__main__':

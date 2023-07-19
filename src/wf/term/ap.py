@@ -62,7 +62,7 @@ class _SimplePatternAPParser(Frozen):
                 return self._parse_reprs_d_(test_form=test_form)
             elif sp == _simple_patterns['(,d)']:
                 return self._parse_reprs__d(test_form=test_form)
-            elif sp == _simple_patterns['<tr star, star>']:
+            elif sp == _simple_patterns['<tr star | tr >']:
                 return self._parse_reprs_tr_star_star(test_form=test_form)
             else:
                 raise NotImplementedError(f"not implemented for pattern = {sp}")
@@ -168,8 +168,8 @@ class _SimplePatternAPParser(Frozen):
 
         d1 = bf1._degree
         v1 = bf1.ap()
-        s1 = bf1.space
-        boundary_wedge_vector = _parse_boundary_dp_vector(bf0, s1, d1)
+        # s1 = bf1.space
+        boundary_wedge_vector = _parse_boundary_dp_vector(bf0, bf1)
 
         if test_form == bf1:  # when bf1 is the testing form.
             term_ap = v1.T @ boundary_wedge_vector

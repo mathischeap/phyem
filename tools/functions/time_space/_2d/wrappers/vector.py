@@ -63,6 +63,11 @@ class T2dVector(TimeSpaceFunctionBase):
         return 2
 
     @property
+    def shape(self):
+        """a vector"""
+        return (2, )
+
+    @property
     def _NPD0_(self):
         if self.__NPD0__ is None:
             self.__NPD0__ = NumericalPartialDerivativeTxyFunctions(self._v0_)

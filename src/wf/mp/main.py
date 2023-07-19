@@ -142,6 +142,7 @@ class MatrixProxy(Frozen):
                 else:
                     self._r_mvs.append((bm, bb))
                 self._rbv = remaining_bv
+
         self.___total_indexing_length___ = None
 
     def _total_indexing_length(self):
@@ -158,6 +159,7 @@ class MatrixProxy(Frozen):
             else:
                 d = 1
             self.___total_indexing_length___ = (a, b, c, d), a+b+c+d
+
         return self.___total_indexing_length___
 
     def __getitem__(self, index):

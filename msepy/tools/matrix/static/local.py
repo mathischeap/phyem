@@ -3,9 +3,9 @@
 pH-lib@RAM-EEMCS-UT
 """
 import matplotlib.pyplot as plt
-from scipy.sparse import issparse, isspmatrix_csr, isspmatrix_csc
+from scipy.sparse import issparse, isspmatrix_csr, isspmatrix_csc, csr_matrix
 from tools.frozen import Frozen
-from msepy.mesh.elements import _DataDictDistributor
+from msepy.mesh.elements.main import _DataDictDistributor
 from msepy.tools.vector.static.local import MsePyStaticLocalVector
 from msepy.form.cochain.vector.static import MsePyRootFormStaticCochainVector
 import numpy as np
@@ -21,16 +21,26 @@ class MsePyStaticLocalMatrix(Frozen):
             self._dtype = 'ddd'
             self._data = data  # element-wise csc or csr matrix.
             self._cache_key = data._cache_key_generator
-        elif issparse(data):
-            if not (isspmatrix_csc(data) or isspmatrix_csr(data)):
-                data = data.tocsr()
+        elif issparse(data) or data == 0:
+            if issparse(data):
+                if not (isspmatrix_csc(data) or isspmatrix_csr(data)):
+                    data = data.tocsr()
+                else:
+                    pass
+                shape0, shape1 = data.shape  # must be regular gathering matrix, so `.shape` does not raise Error.
+                assert shape0 == gm_row.shape[1], f"row shape wrong"
+                assert shape1 == gm_col.shape[1], f"col shape wrong"
+
+            elif data == 0:
+                shape0 = gm_row.shape[1]
+                shape1 = gm_col.shape[1]
+                data = csr_matrix((shape0, shape1))
+
             else:
-                pass
+                raise Exception()
+
             self._dtype = 'constant'
             self._data = data
-            shape0, shape1 = data.shape  # must be regular gathering matrix, so `.shape` does not raise Error.
-            assert shape0 == gm_row.shape[1], f"row shape wrong"
-            assert shape1 == gm_col.shape[1], f"col shape wrong"
             self._cache_key = self._constant_cache_key
         elif callable(data):
             self._dtype = 'realtime'
@@ -48,6 +58,14 @@ class MsePyStaticLocalMatrix(Frozen):
         self._adjust = _MsePyStaticLocalMatrixAdjust(self)
         self._assemble = MsePyStaticLocalMatrixAssemble(self)
         self._freeze()
+
+    def __repr__(self):
+        """repr"""
+        super_repr = super().__repr__().split('object')[1]
+        shape = self[0].shape
+        num_elements = self._gm0_row.num_elements
+        self_repr = 'MsePy Static Local Matrix: ' + self._dtype + f"={num_elements}+{shape}"
+        return r"<" + self_repr + super_repr
 
     def _constant_cache_key(self, i):
         """"""
@@ -148,13 +166,21 @@ class MsePyStaticLocalMatrix(Frozen):
 
     @property
     def customize(self):
-        """Will not touch the data. Modification will be applied addition to the data."""
+        """Will not touch the data. Modification will be applied addition to the data.
+
+        Will not touch the dependent matrices. See ``adjust``.
+        """
         return self._customize
 
     @property
     def adjust(self):
         """Will touch the data (not the meta-data).
         Modification will be applied to new copies of the meta-data.
+
+        Adjustment will change the matrices dependent on me. For example, B = A.T. If I adjust A late on,
+        B will also change.
+
+        While if we ``customize`` A, B will not be affected.
         """
         return self._adjust
 
@@ -407,7 +433,7 @@ class _MsePyStaticLocalMatrixCustomize(Frozen):
     def __init__(self, M):
         """"""
         self._M = M
-        self._customizations = {}
+        self._customizations = {}  # store the customized data for elements.
         self._freeze()
 
     def __len__(self):
@@ -459,3 +485,81 @@ class _MsePyStaticLocalMatrixCustomize(Frozen):
 
         else:
             raise NotImplementedError()
+
+    def identify_diagonal(self, global_dofs):
+        """Set the global rows of ``global_dofs`` to be all zero except the diagonal to be 1."""
+        assert self._M._is_regularly_square(), f"need a regularly square matrix."
+
+        elements_local_rows = self._M._gm0_row._find_elements_and_local_indices_of_dofs(global_dofs)
+
+        set_0_elements_rows = dict()
+        set_1_elements_rows = dict()
+
+        for global_dof in elements_local_rows:
+            elements, local_rows = elements_local_rows[global_dof]
+            representative_element, representative_row = elements[0], local_rows[0]
+
+            if representative_element in set_1_elements_rows:
+                pass
+            else:
+                set_1_elements_rows[representative_element] = list()
+            set_1_elements_rows[representative_element].append(representative_row)
+
+            other_elements, other_rows = elements[1:], local_rows[1:]
+            for k, oe in enumerate(other_elements):
+                if oe in set_0_elements_rows:
+                    pass
+                else:
+                    set_0_elements_rows[oe] = list()
+
+                set_0_elements_rows[oe].append(
+                    other_rows[k]
+                )
+
+        all_involved_elements = set(list(set_0_elements_rows.keys()) + list(set_1_elements_rows.keys()))
+        for element in all_involved_elements:
+            data = self._M[element].copy().tolil()
+
+            if element in set_0_elements_rows:
+                zero_rows = set_0_elements_rows[element]
+                data[zero_rows, :] = 0
+
+            else:
+                pass
+
+            if element in set_1_elements_rows:
+                one_rows = set_1_elements_rows[element]
+                data[one_rows, :] = 0
+                data[one_rows, one_rows] = 1
+
+            else:
+                pass
+
+            self._customizations[element] = data.tocsr()
+
+    def set_zero(self, global_dofs):
+        """Set the global rows of ``global_dofs`` to be all zero."""
+        elements_local_rows = self._M._gm0_row._find_elements_and_local_indices_of_dofs(global_dofs)
+        set_0_elements_rows = dict()
+
+        for global_dof in elements_local_rows:
+            elements, local_rows = elements_local_rows[global_dof]
+            for k, oe in enumerate(elements):
+                if oe in set_0_elements_rows:
+                    pass
+                else:
+                    set_0_elements_rows[oe] = list()
+
+                set_0_elements_rows[oe].append(
+                    local_rows[k]
+                )
+
+        for element in set_0_elements_rows:
+            data = self._M[element].copy().tolil()
+            if element in set_0_elements_rows:
+                zero_rows = set_0_elements_rows[element]
+                data[zero_rows, :] = 0
+
+            else:
+                pass
+            self._customizations[element] = data.tocsr()

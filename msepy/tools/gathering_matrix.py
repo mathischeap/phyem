@@ -149,7 +149,19 @@ class RegularGatheringMatrix(Frozen):
             return np.all(sgm == ogm)
 
     def _find_elements_and_local_indices_of_dofs(self, dofs):
-        """"""
+        """
+
+        Parameters
+        ----------
+        dofs
+
+        Returns
+        -------
+        A dict:
+            {
+                dof: [elements, rows],
+            }
+        """
         if isinstance(dofs, int):
             if dofs < 0:
                 dofs = self.num_dofs + dofs

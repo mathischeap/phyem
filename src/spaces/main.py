@@ -41,8 +41,8 @@ _default_d_matrix_transpose_reprs = [
 _default_boundary_dp_vector_repr = [
     # once we know f0, we can find the correct basis functions it wedged with
     r"\boldsymbol{b}",
-    _sep.join(["BoundaryDP:Vec", "trStar[{f0}]", "{s1}", "{d}"]),
-    #                            <tr star bf0 | tr v1>, v1 in s1 of degree {d}.
+    _sep.join(["BoundaryDP:Vec", "trStar[{f0}]", "tr[{f1}]"]),
+    #                            <tr star bf0 | tr f1>.
 ]
 
 _default_space_degree_repr = ':D-'

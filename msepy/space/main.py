@@ -18,6 +18,7 @@ from msepy.space.norm.main import MsePySpaceNorm
 from msepy.space.degree import MsePySpaceDegree
 from src.spaces.finite import SpaceFiniteSetting
 from msepy.mesh.main import MsePyMesh
+from msepy.space.find.main import MsePySpaceFind
 
 
 class MsePySpace(Frozen):
@@ -44,6 +45,7 @@ class MsePySpace(Frozen):
         self._error = None
         self._norm = None
         self._degree_cache = {}
+        self._find = None
         self._freeze()
 
     @property
@@ -168,3 +170,9 @@ class MsePySpace(Frozen):
         if self._norm is None:
             self._norm = MsePySpaceNorm(self)
         return self._norm
+
+    @property
+    def find(self):
+        if self._find is None:
+            self._find = MsePySpaceFind(self)
+        return self._find

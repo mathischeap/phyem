@@ -124,8 +124,8 @@ def _outer_Poisson(n, degree):
     pde.bc.partition(r"\Gamma_\phi", r"\Gamma_u")
     pde.bc.define_bc(
         {
-            r"\Gamma_\phi": trace(u),
-            r"\Gamma_u": trace(Hodge(phi)),
+            r"\Gamma_u": trace(u),
+            r"\Gamma_\phi": trace(Hodge(phi)),
         }
     )
 

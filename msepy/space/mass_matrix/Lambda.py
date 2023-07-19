@@ -67,10 +67,10 @@ class MsePyMassMatrixLambda(Frozen):
         bf = bf[0]
         M = dict()
         for re in detJM:  # go through all reference elements
-            det_jm = np.reciprocal(detJM[re])
+            _1_over_det_jm = np.reciprocal(detJM[re])
             M_re = np.einsum(
                 'im, jm, m -> ij',
-                bf, bf, det_jm * quad_weights,
+                bf, bf, _1_over_det_jm * quad_weights,
                 optimize='optimal',
                         )
             M[re] = csr_matrix(M_re)
@@ -338,10 +338,10 @@ class MsePyMassMatrixLambda(Frozen):
         bf = bf[0]
         M = dict()
         for re in detJM:  # go through all reference elements
-            det_jm = np.reciprocal(detJM[re])
+            reciprocal_det_jm = np.reciprocal(detJM[re])
             M_re = np.einsum(
                 'im, jm, m -> ij',
-                bf, bf, det_jm * quad_weights,
+                bf, bf, reciprocal_det_jm * quad_weights,
                 optimize='optimal',
                         )
             M[re] = csr_matrix(M_re)

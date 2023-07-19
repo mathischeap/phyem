@@ -91,12 +91,13 @@ def _dp_simpler_pattern_examiner_scalar_valued_forms(factor, f0, f1):
                 bf0 = _global_root_forms_lin_dict[bf0_lr]
                 bf1 = _global_root_forms_lin_dict[bf1_lr]
 
-                return _simple_patterns['<tr star, star>'], {
+                return _simple_patterns['<tr star | tr >'], {
                     'rsf0': bf0,   # root-scalar-form-0
                     'rsf1': bf1,   # root-scalar-form-1
                 }
             else:
                 pass
+
         else:
             pass
 

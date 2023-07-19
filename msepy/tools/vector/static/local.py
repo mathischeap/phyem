@@ -52,7 +52,7 @@ class MsePyStaticLocalVector(Frozen):
             self._data = 1. * data * np.ones(self._gm.shape)
 
         elif isinstance(data, np.ndarray):
-            self._dtype = "2d"
+            self._dtype = "2d"  # for example, 2d array: rows -> num of elements, cols -> local cochain
             assert data.shape == self._gm.shape
             self._data = data
 
@@ -62,7 +62,7 @@ class MsePyStaticLocalVector(Frozen):
             self._data = None
 
         else:
-            raise Exception(f"msepy static local vector only accept 2d array or None.")
+            raise Exception(f"msepy static local vector data type wrong.")
 
     def _get_meta_data(self, i):
         """"""
@@ -154,12 +154,20 @@ class MsePyStaticLocalVector(Frozen):
 
     @property
     def customize(self):
-        """customize"""
+        """customize
+
+        Will not affect dependent matrices. See ``adjust``.
+        """
         return self._customize
 
     @property
     def adjust(self):
-        """adjust"""
+        """
+        Adjustment will change matrices dependent on me. For example, B = A.T. If I adjust A late on,
+        B will also change.
+
+        While if we ``customize`` A, B will not be affected.
+        """
         return self._adjust
 
     def __rmul__(self, other):
@@ -187,6 +195,19 @@ class MsePyStaticLocalVector(Frozen):
                 return self.__class__(data, self._gm)
             elif self._dtype == 'callable' or other._dtype == 'callable':
                 raise NotImplementedError()
+
+        else:
+            raise NotImplementedError()
+
+    def __neg__(self):
+        """- self."""
+        if self._dtype == 'None':
+            raise Exception(f"cannot do * for None type vector")
+        elif self._dtype in ("homogeneous", "2d"):
+            data = - self.data
+            return self.__class__(data, self._gm)
+        elif self._dtype == 'callable':
+            raise NotImplementedError()
 
         else:
             raise NotImplementedError()
@@ -256,3 +277,44 @@ class MsePyStaticLocalVectorCustomize(Frozen):
 
         else:
             raise NotImplementedError()
+
+    def set_values(self, global_dofs, cochain):
+        """set `v[global_dofs]` to be `cochain`."""
+        # first we build up one-2-one relation between dofs and cochain
+        assert len(global_dofs) == len(cochain), f"len(dofs) != len(cochains)"
+        dof_cochain_dict = {}
+        for dof, cc in zip(global_dofs, cochain):
+            if dof in dof_cochain_dict:
+                pass
+            else:
+                dof_cochain_dict[dof] = cc
+
+        elements_local_rows = self._v._gm._find_elements_and_local_indices_of_dofs(list(dof_cochain_dict.keys()))
+
+        involved_elements = list()
+        for dof in elements_local_rows:
+            for element in elements_local_rows[dof][0]:
+                if element not in involved_elements:
+                    involved_elements.append(element)
+
+        involved_data = dict()
+        for element in involved_elements:
+            involved_data[element] = self._v[element]
+
+        for dof in dof_cochain_dict:
+            cochain = dof_cochain_dict[dof]
+            elements, rows = elements_local_rows[dof]
+
+            element, row = elements[0], rows[0]
+
+            involved_data[element][row] = cochain
+
+            if len(elements) == 1:  # this dof only appear in a single place.
+                pass
+            else:
+                elements, rows = elements[1:], rows[1:]
+                for element, row in zip(elements, rows):
+                    involved_data[element][row] = 0  # set other places to be 0.
+
+        for element in involved_data:  # update customization
+            self._customizations[element] = involved_data[element]

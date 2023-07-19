@@ -70,27 +70,29 @@ def _parse_d_matrix(f, transpose=False):
     return D
 
 
-def _parse_boundary_dp_vector(rf0, s1, d1):
+def _parse_boundary_dp_vector(rf0, f1):
     """
-    <tr star rf0, tr v1> where v1 in s1, and s1 is of degree d1
+    <tr star rf0, tr f1> where f1
 
 
     Parameters
     ----------
     rf0 :
         It is root-f0-dependent. So do not use s0.
-    s1
-    d1
+    f1
 
     Returns
     -------
 
     """
+    s1 = f1.space
+    d1 = f1._degree
     assert d1 is not None, f"space is not finite."
-    sym, lin = _default_boundary_dp_vector_repr
+    sym, lin = _default_boundary_dp_vector_repr[:2]
     lin = lin.replace('{f0}', rf0._pure_lin_repr)
-    lin = lin.replace('{s1}', s1._pure_lin_repr)
+    lin = lin.replace('{f1}', f1._pure_lin_repr)
     d1 = _degree_str_maker(d1)
     lin = lin.replace('{d}', d1)
     sym += rf"_{s1.k}"
-    return _root_array(sym, lin, (s1._sym_repr + _default_space_degree_repr + d1, 1))
+    ra = _root_array(sym, lin, (s1._sym_repr + _default_space_degree_repr + d1, 1))
+    return ra

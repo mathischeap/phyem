@@ -3,11 +3,6 @@ r"""
 pH-lib@RAM-EEMCS-UT
 Yi Zhang
 """
-
-import sys
-
-if './' not in sys.path:
-    sys.path.append('./')
 import matplotlib.pyplot as plt
 import matplotlib
 plt.rcParams.update({
@@ -25,14 +20,14 @@ from msepy.form.cochain.vector.dynamic import MsePyRootFormDynamicCochainVector
 from src.config import _abstract_array_factor_sep, _abstract_array_connector
 from src.form.parameters import constant_scalar, ConstantScalar0Form
 from src.form.parameters import _factor_parser
-from msepy.tools.linear_system.array_parser import msepy_root_array_parser
+from msepy.tools.linear_system.dynamic.array_parser import msepy_root_array_parser
 
 from msepy.tools.linear_system.static.main import MsePyStaticLinearSystem
 
 from msepy.tools.vector.static.local import MsePyStaticLocalVector
 from msepy.form.cochain.vector.static import MsePyRootFormStaticCochainVector
 
-from msepy.tools.linear_system.bc import MsePyDynamicLinearSystemBoundaryCondition
+from msepy.tools.linear_system.dynamic.bc import MsePyDynamicLinearSystemBoundaryCondition
 
 _cs1 = constant_scalar(1)
 
@@ -40,10 +35,10 @@ _cs1 = constant_scalar(1)
 class MsePyDynamicLinearSystem(Frozen):
     """We study an abstract `mp_ls` and obtain a raw mse-ls which will future be classified into something else."""
 
-    def __init__(self, mp_ls):
+    def __init__(self, mp_ls, msepy_base):
         """"""
         self._mp_ls = mp_ls
-        self._set_bc(mp_ls._bc)
+        self._set_bc(mp_ls._bc, msepy_base)
         self._A = None
         self._x = None
         self._b = None
@@ -54,12 +49,14 @@ class MsePyDynamicLinearSystem(Frozen):
         """Bc"""
         return self._bc
 
-    def _set_bc(self, bc):
+    def _set_bc(self, bc, msepy_base):
         """set boundary condition."""
         if bc is None:
             self._bc = None
         else:
-            self._bc = MsePyDynamicLinearSystemBoundaryCondition(self, bc)
+            self._bc = MsePyDynamicLinearSystemBoundaryCondition(
+                self, bc, msepy_base
+            )
 
     @property
     def shape(self):
@@ -84,6 +81,7 @@ class MsePyDynamicLinearSystem(Frozen):
 
                 if Aij is None:
                     pass
+
                 else:
 
                     static_Aij = Aij(*args, **kwargs)
@@ -113,9 +111,53 @@ class MsePyDynamicLinearSystem(Frozen):
 
                 static_b[i] = static_b_i
 
-        # probably, we will need to first parse the bc here to make it static and then pass it to static ls.
+        # ----- now we pre-define a static ls to check everything is ok and also to retrieve the gms.
+        predefined_sls = MsePyStaticLinearSystem(static_A, static_x, static_b)
+        row_gms = predefined_sls._row_gms
+        col_gms = predefined_sls._col_gms
 
-        return MsePyStaticLinearSystem(static_A, static_x, static_b, bc=self._bc)
+        # now we replace all None entries by empty sparse matrices/vectors.
+        for i in range(num_rows):
+            for j in range(num_cols):
+                Aij = static_A[i][j]
+                if Aij is None:
+                    # noinspection PyTypeChecker
+                    static_A[i][j] = MsePyStaticLocalMatrix(
+                        0, row_gms[i], col_gms[j]
+                    )
+                else:
+                    pass
+
+            if static_b[i] is None:
+                # noinspection PyTypeChecker
+                static_b[i] = MsePyStaticLocalVector(0, row_gms[i])
+            else:
+                pass
+
+        # Below, the boundary conditions that have not yet taken effect take effect.
+
+        if self._bc is None or len(self._bc) == 0:
+            pass
+        else:
+            # These remaining bc will change static_A, static_x or static_b.
+
+            for boundary_section in self._bc:
+                bcs = self._bc[boundary_section]
+                for j, bc in enumerate(bcs):
+                    number_application = bc._num_application
+                    if number_application == 0:  # this particular not take effect yet
+
+                        particular_bc = self._bc[boundary_section][j]
+
+                        particular_bc.apply(self, static_A, static_x, static_b)
+
+                        particular_bc._num_application += 1
+
+                    else:
+                        pass
+
+        # static_A, static_x and static_b are used to make a static linear system
+        return MsePyStaticLinearSystem(static_A, static_x, static_b)
 
     def _parse_matrix_block(self, A):
         """"""
@@ -139,7 +181,7 @@ class MsePyDynamicLinearSystem(Frozen):
                     components = components.split(_abstract_array_connector)
 
                     raw_terms_ij.append(
-                        DynamicTerm(sign, factor, components)
+                        DynamicTerm(self, sign, factor, components)
                     )
 
                 # noinspection PyTypeChecker
@@ -147,8 +189,7 @@ class MsePyDynamicLinearSystem(Frozen):
 
         self._A = rA
 
-    @staticmethod
-    def _parse_vector_block(b):
+    def _parse_vector_block(self, b):
         """"""
         s = b._shape
         rb = [None for _ in range(s)]  # raw b
@@ -169,7 +210,7 @@ class MsePyDynamicLinearSystem(Frozen):
                     components = components.split(_abstract_array_connector)
 
                     raw_terms_i.append(
-                        DynamicTerm(sign, factor, components)
+                        DynamicTerm(self, sign, factor, components)
                     )
 
                 # noinspection PyTypeChecker
@@ -226,6 +267,7 @@ class MsePyDynamicLinearSystem(Frozen):
     def pr(self, figsize=(10, 6)):
         """pr"""
         assert self._A is not None, f"dynamic linear system initialized but not applied, do `.apply()` firstly."
+
         A_text = self._A_pr_text()
 
         if self._bc is None or len(self._bc) == 0:
@@ -326,11 +368,11 @@ class DynamicBlockEntry(Frozen):
 class DynamicTerm(Frozen):
     """"""
 
-    def __init__(self, sign, factor, components):
+    def __init__(self, dls, sign, factor, components):
         assert sign in ('-', '+'), f"sign = {sign} is wrong."
         self._sign = sign
 
-        # parse factor -----------
+        # parse factor -------------------------------------------------------------------------
         if factor.__class__ is ConstantScalar0Form:
             factor = factor
         elif isinstance(factor, str):
@@ -341,12 +383,12 @@ class DynamicTerm(Frozen):
         assert callable(factor), f"factor must be callable!"
         self._factor = factor  # will be callable, be called to return a particular real number.
 
-        # parse components -----------
+        # parse components ---------------------------------------------------------------------
         _components = list()
         _mat_sym_repr = r""
         for comp_lin_repr in components:
 
-            Mat, sym_repr = msepy_root_array_parser(comp_lin_repr)
+            Mat, sym_repr = msepy_root_array_parser(dls, comp_lin_repr)
 
             if Mat.__class__ is MsePyStaticLocalMatrix:
                 Mat = MsePyDynamicLocalMatrixVector(Mat)
@@ -363,7 +405,7 @@ class DynamicTerm(Frozen):
 
             _mat_sym_repr += sym_repr
 
-        # ---- @ all mat together -------------------
+        # ---- @ all mat together --------------------------------------------------------------
         if len(_components) == 1:
             self._comp = _components[0]
 

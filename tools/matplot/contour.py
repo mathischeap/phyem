@@ -52,7 +52,7 @@ def contour(
         colorbar_labelsize=12.5, colorbar_extend='both',
         ticksize=12,
         labelsize=15,
-        title=True,
+        title=None,
         saveto=None,
         colorbar_only=False,
         pad_inches=0,

@@ -198,5 +198,5 @@ _wf_term_default_simple_patterns = {   # use only str to represent a simple patt
     '(rt,rt)': '(root-sf, root-sf)',
     '(d,)': '(d root-sf, root-sf)',
     '(,d)': '(root-sf, d root-sf)',
-    '<tr star, star>': '<tr star root-sf, star root-sf>'
+    '<tr star | tr >': '<tr star root-sf | trace root-sf>'
 }

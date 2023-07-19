@@ -65,7 +65,7 @@ class _MsePyStaticLocalMatrixBmat(Frozen):
                 if Arc is None:
                     pass
                 else:
-                    data[r][c] = Arc._get_data_adjusted(i)
+                    data[r][c] = Arc[i]  # ALL adjustments and customizations take effect!
 
         return sp_bmat(
             data, format='csr'
@@ -82,7 +82,7 @@ class _MsePyStaticLocalMatrixBmat(Frozen):
                 if Arc is None:
                     pass
                 else:
-                    if i in Arc.adjust:
+                    if i in Arc.customize:  # important! do not use adjust!
                         return 'unique'
                     else:
                         keys.append(

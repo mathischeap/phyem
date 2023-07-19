@@ -17,6 +17,8 @@ from msepy.form.static import MsePyRootFormStaticCopy
 from msepy.form.visualize.main import MsePyRootFormVisualize
 from msepy.form.coboundary import MsePyRootFormCoboundary
 from msepy.form.matrix import MsePyRootFormMatrix
+from msepy.form.boundary_integrate.main import MsePyRootFormBoundaryIntegrate
+from msepy.form.reconstruct_matrix.main import MsePyMeshElementReconstructMatrix
 
 
 class MsePyRootForm(Frozen):
@@ -42,6 +44,8 @@ class MsePyRootForm(Frozen):
         self._visualize = None
         self._coboundary = None
         self._matrix = None
+        self._boundary_integrate = MsePyRootFormBoundaryIntegrate(self)
+        self._reconstruct_matrix = None
         self._freeze()
 
     @property
@@ -128,13 +132,21 @@ class MsePyRootForm(Frozen):
             self._cochain = MsePyRootFormCochain(self)
         return self._cochain
 
-    def reduce(self, t, update_cochain=True, **kwargs):
-        """reduce `self.cf` at time `t` and decide whether update the cochain."""
-        cochain_local = self.space.reduce(self.cf, t, self.degree, **kwargs)
+    def reduce(self, t, update_cochain=True, target=None, **kwargs):
+        """reduce `self.cf` if ``targe`` is None else ``target``
+        at time `t` and decide whether update the cochain.
+        """
+        if target is None:
+            cochain_local = self.space.reduce(self.cf, t, self.degree, **kwargs)
+
+        else:
+            cochain_local = self.space.reduce(target, t, self.degree, **kwargs)
+
         if update_cochain:
             self[t].cochain = cochain_local
         else:
             pass
+
         return cochain_local
 
     def reconstruct(self, t, *meshgrid, **kwargs):
@@ -191,6 +203,21 @@ class MsePyRootForm(Frozen):
         if self._matrix is None:
             self._matrix = MsePyRootFormMatrix(self)
         return self._matrix
+
+    @property
+    def boundary_integrate(self):
+        return self._boundary_integrate
+
+    @property
+    def reconstruct_matrix(self):
+        """compute reconstruction matrices for particular elements."""
+        if self._reconstruct_matrix is None:
+            self._reconstruct_matrix = MsePyMeshElementReconstructMatrix(self)
+        return self._reconstruct_matrix
+
+    def _find_local_dofs_on(self, m, n):
+        """find the local dofs numbering on the `n`-face along `m`-direction of element #`element`."""
+        return self._space.find.local_dofs(m, n, self._degree)
 
 
 if __name__ == '__main__':

@@ -31,6 +31,11 @@ class MsePyContinuousForm(Frozen):
     @field.setter
     def field(self, _field):
         """"""
+        _field = self._proceed_field(_field)
+        self._field = _FieldWrapper(_field)
+
+    def _proceed_field(self, _field):
+        """"""
         regions = self._f.mesh.regions
         if isinstance(_field, dict):
             pass
@@ -41,8 +46,7 @@ class MsePyContinuousForm(Frozen):
             for i in regions:
                 _fd[i] = _field
             _field = _fd
-
-        self._field = _FieldWrapper(_field)
+        return _field
 
     def coboundary(self):
         """alias for exterior derivative"""
@@ -224,8 +228,9 @@ def _d_ast_to_vc(space_indicator, *args):
     """"""
     if space_indicator == 'Lambda':  # scalar valued form spaces.
         m, n, k, ori = args
-        if m == n == 1 and k == 1:  # 0-form on 1d manifold in 1d space.
+        if m == n == 1 and k == 1:  # 1-form on 1d manifold in 1d space.
             return '-', 'derivative'
+
         elif m == n == 2 and k == 1:
             if ori == 'inner':
                 return '-', 'divergence'
@@ -240,6 +245,7 @@ def _d_ast_to_vc(space_indicator, *args):
                 return '-', 'gradient'
             else:
                 raise Exception()
+
         elif m == n == 3:
             if k == 1:
                 return '-', 'divergence'

@@ -5,10 +5,12 @@
 """
 import sys
 if './' not in sys.path:
-    sys.path.append('./')
+    sys.path.append('../')
 
 import numpy as np
 from tools.frozen import Frozen
+from msepy.mesh.elements.element import MsePyElement
+from msepy.mesh.elements.coordinate_transformation import MsePyMeshElementsCooTrans
 
 
 class MsePyMeshElements(Frozen):
@@ -17,7 +19,7 @@ class MsePyMeshElements(Frozen):
     def __init__(self, mesh):
         """"""
         self._mesh = mesh
-        self._origin = None
+        self._origin = None  # dict, keys are region names, a value is of several tuples for all aces.
         self._nodes = None   # like _origin, but have 1 at the ends. So it means the distribution of grid lines.
         self._delta = None
         self._distribution = None   # how many elements along each axis in each region?
@@ -28,6 +30,9 @@ class MsePyMeshElements(Frozen):
         self._map = None
         self.___layout_cache_key___ = None
         self.___is_linear___ = None
+        self._elements = {}  # all individual elements.
+        self._ct = None
+        self._element_mtype_dict = None
         self._freeze()
 
     def _is_linear(self):
@@ -42,6 +47,13 @@ class MsePyMeshElements(Frozen):
                     checks.append(True if rm[:7] == "Linear:" else False)
                 self.___is_linear___ = all(checks)
         return self.___is_linear___
+
+    @property
+    def ct(self):
+        """compute ct for particular elements. Return dict whose keys are the elements."""
+        if self._ct is None:
+            self._ct = MsePyMeshElementsCooTrans(self)
+        return self._ct
 
     @property
     def map(self):
@@ -174,6 +186,8 @@ class MsePyMeshElements(Frozen):
 
         if existing_unique:
             mip = MsePyMeshElementsIndexMapping(self._num)
+
+            self._element_mtype_dict = None
         else:
 
             element_mtype_dict = dict()
@@ -193,6 +207,8 @@ class MsePyMeshElements(Frozen):
 
             for key in element_mtype_dict:
                 element_mtype_dict[key].sort()
+
+            self._element_mtype_dict = element_mtype_dict
 
             mip = MsePyMeshElementsIndexMapping(element_mtype_dict, self._num)
 
@@ -363,6 +379,27 @@ class MsePyMeshElements(Frozen):
         """
         return numbering.take(indices=layer, axis=axis)
 
+    def __getitem__(self, i):
+        """"""
+        if i not in self._elements:
+            self._elements[i] = MsePyElement(self, i)
+        return self._elements[i]
+
+    def __contains__(self, i):
+        """"""
+        if i.__class__.__name__ in ('int', 'float', 'int32', 'int64') and i % 1 == 0 and 0 <= i < self._num:
+            return True
+        else:
+            return False
+
+    def __iter__(self):
+        """"""
+        for i in range(self._num):
+            yield i
+
+    def __len__(self):
+        return self._num
+
 
 class MsePyMeshElementsIndexMapping(Frozen):
     """"""
@@ -383,6 +420,7 @@ class MsePyMeshElementsIndexMapping(Frozen):
             reference_mtype = 'unique'   # all elements are unique.
 
         elif isinstance(ci_ei_map, dict):
+
             reference_mtype = tuple(ci_ei_map.keys())
 
             _list = list()

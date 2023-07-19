@@ -50,6 +50,11 @@ class T2dTensor(TimeSpaceFunctionBase):
         return 2
 
     @property
+    def shape(self):
+        """a tensor"""
+        return (2, 2)
+
+    @property
     def _NPD00_(self):
         if self.__NPD00__ is None:
             self.__NPD00__ = NumericalPartialDerivativeTxyFunctions(self._t00_)
