@@ -31,6 +31,30 @@ class MsePyMeshElementsCooTrans(Frozen):
 
         return element_range
 
+    def mapping(self, *xi_et_sg, element_range=None):
+        """"""
+        element_range = self._check_element_range(element_range)
+        mp = dict()
+        for e in element_range:
+            mp[e] = self._elements[e].ct.mapping(*xi_et_sg)
+        return mp
+
+    def Jacobian_matrix(self, *xi_et_sg, element_range=None):
+        """"""
+        element_range = self._check_element_range(element_range)
+        JM_cache = dict()
+        JM = dict()
+        for e in element_range:
+            cache_index = self._e2c[e]
+            if cache_index in JM_cache:
+                pass
+            else:  # compute the data for elements of type: ``cache_index``.
+                JM_cache[cache_index] = self._elements[e].ct.Jacobian_matrix(*xi_et_sg)
+
+            JM_e = JM_cache[cache_index]
+            JM[e] = JM_e
+        return JM
+
     def inverse_Jacobian_matrix(self, *xi_et_sg, element_range=None):
         """"""
         element_range = self._check_element_range(element_range)

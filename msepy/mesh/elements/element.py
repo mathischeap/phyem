@@ -190,7 +190,27 @@ class _FaceCooTrans(Frozen):
         """"""
         m, n = self._m, self._n
         assert len(xi_et) == self._element_dimensions - 1, f"xi_et wrong!"
-        if self._element_dimensions == 2:
+
+        if self._element_dimensions == 1:
+            assert len(xi_et) == 1 and xi_et[0] in (-1, 1), \
+                rf"only need one parameter (-1 or 1) for element face mapping in 1d."
+            o = xi_et[0]
+
+            assert m == 0, f"in 1d, element face only appear in 1-direction, m must be 0!"
+
+            if o == -1:
+                mp = self._element.ct.mapping(np.array([-1, ]))[0]
+            elif o == 1:
+                mp = self._element.ct.mapping(np.array([1, ]))[0]
+            else:
+                raise Exception()
+
+            assert isinstance(mp, (int, float)), f"must be. Otherwise, check lines computing ``mp``."
+
+            return mp
+
+        elif self._element_dimensions == 2:
+            assert len(xi_et) == 1, rf"only need one parameter for element face mapping in 2d."
             t = xi_et[0]
             ones = np.ones(len(t))
             if m == 0:  # x-direction
@@ -210,8 +230,41 @@ class _FaceCooTrans(Frozen):
             else:
                 raise Exception()
 
+        elif self._element_dimensions == 3:
+            r, s = xi_et
+            assert np.shape(r) == np.shape(s), f"provided coordinates shape dis-match."
+            ones = np.ones_like(r)
+            if m == 0:        # x-direction
+                y, z = xi_et  # dy ^ dz face
+                if n == 0:    # - direction
+                    return self._element.ct.mapping(-ones, y, z)
+                elif n == 1:  # + direction
+                    return self._element.ct.mapping(ones, y, z)
+                else:
+                    raise Exception()
+
+            elif m == 1:      # y-direction
+                z, x = xi_et  # dz ^ dx face
+                if n == 0:    # - direction
+                    return self._element.ct.mapping(x, -ones, z)
+                elif n == 1:  # + direction
+                    return self._element.ct.mapping(x, ones, z)
+                else:
+                    raise Exception()
+
+            elif m == 2:      # z-direction
+                x, y = xi_et  # dx ^ dy face
+                if n == 0:    # - direction
+                    return self._element.ct.mapping(x, y, -ones)
+                elif n == 1:  # + direction
+                    return self._element.ct.mapping(x, y, ones)
+                else:
+                    raise Exception()
+            else:
+                raise Exception()
+
         else:
-            raise NotImplementedError()
+            raise Exception
 
     def Jacobian_matrix(self, *xi_et):
         """"""
@@ -244,7 +297,7 @@ class _FaceCooTrans(Frozen):
                 raise Exception()
 
         else:
-            raise NotImplementedError()
+            raise NotImplementedError(f"not implemented for {self._element_dimensions}-dimensional elements!")
 
     def outward_unit_normal_vector(self, *xi_et):
         """The outward unit norm vector."""
@@ -271,4 +324,4 @@ class _FaceCooTrans(Frozen):
             return vx / magnitude, vy / magnitude
 
         else:
-            raise NotImplementedError(f"not implemented!")
+            raise NotImplementedError(f"not implemented for {self._element_dimensions}-dimensional elements!")

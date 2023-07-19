@@ -171,4 +171,4 @@ class _MsePyBoundarySectionFace(Frozen):
                 raise NotImplementedError()
 
         else:
-            raise Exception(f"only 1d boundary section faca has a length!")
+            raise Exception(f"only 1d boundary section face has a length!")

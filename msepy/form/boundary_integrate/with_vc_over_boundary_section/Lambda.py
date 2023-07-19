@@ -103,15 +103,15 @@ class BoundaryIntegrateVCBSLambda(Frozen):
             vy = vy[local_dofs, :]
             nx, ny = onv
             trStar_vc = vc(t, *xy)[0]
-
+            trace_f = vx * nx + vy * ny
             if face.is_orthogonal():
                 length = face.length
                 Jacobian = length / 2
-                trace_f = vx * nx + vy * ny
-                boundary_integration = np.sum(trStar_vc * trace_f * weights * Jacobian, axis=1)
             else:
-                raise NotImplementedError()
+                JM = face.ct.Jacobian_matrix(nodes)
+                Jacobian = np.sqrt(JM[0]**2 + JM[1]**2)
 
+            boundary_integration = np.sum(trStar_vc * trace_f * weights * Jacobian, axis=1)
             bi_data[element, local_dofs] = boundary_integration
 
         return bi_data

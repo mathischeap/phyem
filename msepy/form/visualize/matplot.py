@@ -119,13 +119,13 @@ class MsePyRootFormVisualizeMatplot(Frozen):
 
         if plot_type == 'contourf':
             fig = [
-                contourf(x, y, u, title='x-component', **kwargs),
-                contourf(x, y, v, title='y-component', **kwargs)
+                contourf(x, y, u, title='$x$-component', **kwargs),
+                contourf(x, y, v, title='$y$-component', **kwargs)
             ]
         elif plot_type == 'contour':
             fig = [
-                contour(x, y, u, title='x-component', **kwargs),
-                contour(x, y, v, title='y-component', **kwargs)
+                contour(x, y, u, title='$x$-component', **kwargs),
+                contour(x, y, v, title='$y$-component', **kwargs)
             ]
         elif plot_type == "quiver":
             fig = self._quiver(x, y, u, v, **kwargs)

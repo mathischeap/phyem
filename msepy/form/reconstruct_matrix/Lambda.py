@@ -40,6 +40,15 @@ class MsePyMeshElementReconstructMatrixLambda(Frozen):
         else:
             return getattr(self, f'_m{m}_n{n}_k{k}')(*args, element_range=element_range)
 
+    def _m1_n1_k0(self, *meshgrid_xi, element_range=None):
+        """"""
+
+    def _m1_n1_k1(self, *meshgrid_xi, element_range=None):
+        """"""
+
+    def _m2_n2_k0(self, *meshgrid_xi_et, element_range=None):
+        """"""
+
     def _m2_n2_k1_outer(self, *meshgrid_xi_et, element_range=None):
         """"""
         xi, et = meshgrid_xi_et
@@ -77,3 +86,21 @@ class MsePyMeshElementReconstructMatrixLambda(Frozen):
             rm_dict[e] = rm_cache[cache_index]
 
         return rm_dict
+
+    def _m2_n2_k1_inner(self, *meshgrid_xi_et, element_range=None):
+        """"""
+
+    def _m2_n2_k2(self, *meshgrid_xi_et, element_range=None):
+        """"""
+
+    def _m3_n3_k0(self, *meshgrid_xi_et_sg, element_range=None):
+        """"""
+
+    def _m3_n3_k1(self, *meshgrid_xi_et_sg, element_range=None):
+        """"""
+
+    def _m3_n3_k2(self, *meshgrid_xi_et_sg, element_range=None):
+        """"""
+
+    def _m3_n3_k3(self, *meshgrid_xi_et_sg, element_range=None):
+        """"""

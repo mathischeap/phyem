@@ -27,7 +27,7 @@ Gamma_phi = msepy.base['manifolds'][r"\Gamma_\phi"]
 Gamma_u = msepy.base['manifolds'][r"\Gamma_u"]
 
 msepy.config(manifold)(
-    'crazy', c=0., bounds=[[0., 1.] for _ in range(n)], periodic=False,
+    'crazy', c=0.3, bounds=[[0., 1.] for _ in range(n)], periodic=False,
 )
 # msepy.config(manifold)('backward_step')
 msepy.config(Gamma_u)(manifold, {0: [0, 0, 1, 0]})
@@ -77,7 +77,7 @@ als = ls0.assemble()
 als.solve()
 
 # phi[0].visualize()
-# u[0].visualize()
+u[0].visualize()
 #
 print(phi[0].error())
 print(u[0].error())

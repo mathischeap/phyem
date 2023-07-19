@@ -38,6 +38,14 @@ class MsePyBoundarySectionMeshCooTrans(Frozen):
 
         self._freeze()
 
+    def mapping(self, *xi_et):
+        """"""
+        mapping_dict = dict()
+        for face_id in self._bs.faces:
+            face = self._bs.faces[face_id]
+            mapping_dict[face_id] = face.ct.mapping(*xi_et)  # have to compute all faces!
+        return mapping_dict
+
     def Jacobian_matrix(self, *xi_et):
         """"""
         JM_dict = {}
