@@ -22,7 +22,7 @@ from src.form.others import _find_form
 from src.form.operators import codifferential, d, trace, Hodge
 from src.config import _global_operator_lin_repr_setting
 from src.config import _wf_term_default_simple_patterns as _simple_patterns
-from src.form.parameters import constant_scalar
+from src.form.parameters import constant_scalar, ConstantScalar0Form
 from src.config import _global_operator_sym_repr_setting
 from src.config import _non_root_lin_sep
 from src.wf.term.ap import _SimplePatternAPParser
@@ -40,13 +40,12 @@ class _WeakFormulationTerm(Frozen):
         self._mesh = f0.mesh
         self._f0 = f0
         self._f1 = f1
-        self._factor = factor
 
         if factor is None:
             self._factor = _cs1
         elif isinstance(factor, (int, float)):
             self._factor = constant_scalar(factor)
-        elif factor.__class__.__name__ == "ConstantScalar0Form":
+        elif factor.__class__ is ConstantScalar0Form:
             self._factor = factor
         else:
             raise NotImplementedError(f'f{factor}')
@@ -58,6 +57,7 @@ class _WeakFormulationTerm(Frozen):
         self.___lin_repr___ = None
         self.___simple_pattern___ = None
         self.___simple_pattern_keys___ = None
+        self._extra_info = dict()
         self._freeze()
 
     @property
@@ -65,6 +65,7 @@ class _WeakFormulationTerm(Frozen):
         if self.___simple_pattern___ is None:
             self.___simple_pattern___, self.___simple_pattern_keys___ = \
                 self._simpler_pattern_examiner(self._factor, self._f0, self._f1)
+
             if self.___simple_pattern___ == '':  # find no simple pattern.
                 assert self.___simple_pattern_keys___ is None, "no simple pattern keys."
             else:
@@ -75,6 +76,15 @@ class _WeakFormulationTerm(Frozen):
     def _simpler_pattern_examiner(self, factor, f0, f1):
         """"""
         raise NotImplementedError()
+
+    @property
+    def extra_info(self):
+        """to store extra info for, for example, parse patterns."""
+        return self._extra_info
+
+    def add_extra_info(self, info_dict):
+        """"""
+        self._extra_info.update(info_dict)
 
     @property
     def _sym_repr(self):
@@ -225,11 +235,9 @@ class _WeakFormulationTerm(Frozen):
         """Return the algebraic proxy of this term."""
 
         if self._simple_pattern == '':
-
-            raise NotImplementedError(f"To be done.")
+            raise NotImplementedError(f"Find no simple pattern for term {self}.")
 
         else:
-
             ap, sign = _SimplePatternAPParser(self)(**kwargs)
 
         return ap, sign
@@ -398,7 +406,7 @@ class L2InnerProductTerm(_WeakFormulationTerm):
         s1 = f1.space
         if s0.__class__.__name__ == 'ScalarValuedFormSpace' and \
                 s1.__class__.__name__ == 'ScalarValuedFormSpace':
-            return _inner_simpler_pattern_examiner_scalar_valued_forms(factor, f0, f1)
+            return _inner_simpler_pattern_examiner_scalar_valued_forms(factor, f0, f1, self._extra_info)
         else:
             return tuple()
 
@@ -409,7 +417,9 @@ class L2InnerProductTerm(_WeakFormulationTerm):
             bf = _find_form(self._f0._lin_repr, upon=codifferential)
             assert bf is not None, f"something is wrong, we do not found the base form " \
                                    f"(codifferential of base form = f0)."
-            term_manifold = L2InnerProductTerm(bf, d(self._f1))
+
+            # self factor must be a constant parameter.
+            term_manifold = L2InnerProductTerm(bf, d(self._f1), factor=self._factor)
 
             if self.manifold.is_periodic():
                 return [term_manifold, ], ['+', ]
@@ -425,4 +435,5 @@ class L2InnerProductTerm(_WeakFormulationTerm):
                 return (term_manifold, term_boundary), ('+', '-')
 
         else:
-            raise Exception(f"Cannot apply integration by parts to this term.")
+            raise Exception(f"Cannot apply integration by parts to "
+                            f"this term of simple_pattern: {self._simple_pattern}")

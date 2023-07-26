@@ -12,7 +12,6 @@ if './' not in sys.path:
 
 from tools.frozen import Frozen
 from typing import Dict
-from src.config import _mesh_partition_sym_repr, _mesh_partition_lin_repr
 
 
 class BoundaryCondition(Frozen):
@@ -23,24 +22,18 @@ class BoundaryCondition(Frozen):
         self._boundary = manifold.boundary()
         self._manifold = manifold
         self._mesh = mesh
-        _ = mesh.boundary()  # make sure the boundary mesh is made at the background.
+        if mesh._boundary is None:
+            _ = mesh.boundary()  # make sure the boundary mesh is made at the background.
+        else:
+            pass
+
         # keys: boundary_section_sym_repr, values: the given form on this boundary section.
         self._valid_bcs: Dict[str] = dict()
         self._freeze()
 
     def partition(self, *sym_reprs, config_name=None):
         """Define boundary sections by partition the mesh boundary into sections defined by `*sym_reprs`."""
-        sub_manifolds = self._boundary.partition(*sym_reprs, config_name=config_name)
-        for sub_manifold in sub_manifolds:
-            sr0, sr1 = _mesh_partition_sym_repr
-            if sub_manifold._covered_by_mesh is None:
-                self._mesh.__class__(
-                    sub_manifold,
-                    sym_repr=sr0 + sub_manifold._sym_repr + sr1,
-                    lin_repr=_mesh_partition_lin_repr + sub_manifold._pure_lin_repr,
-                )  # it will be automatically saved to _global_meshes.
-            else:
-                pass
+        self._mesh.partition(*sym_reprs, config_name=config_name)
 
     def define_bc(self, bcs_dict):
         """"""

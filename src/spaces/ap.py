@@ -6,9 +6,9 @@ pH-lib@RAM-EEMCS-UT
 created at: 3/20/2023 5:17 PM
 """
 
-from src.spaces.main import _default_mass_matrix_reprs
+from src.spaces.main import _default_mass_matrix_reprs, _default_astA_x_B_ip_tC_reprs
 from src.spaces.main import _default_d_matrix_reprs, _default_d_matrix_transpose_reprs
-from src.spaces.main import _default_boundary_dp_vector_repr
+from src.spaces.main import _default_boundary_dp_vector_reprs
 
 from src.spaces.main import _default_space_degree_repr
 
@@ -88,11 +88,35 @@ def _parse_boundary_dp_vector(rf0, f1):
     s1 = f1.space
     d1 = f1._degree
     assert d1 is not None, f"space is not finite."
-    sym, lin = _default_boundary_dp_vector_repr[:2]
+    sym, lin = _default_boundary_dp_vector_reprs[:2]
     lin = lin.replace('{f0}', rf0._pure_lin_repr)
     lin = lin.replace('{f1}', f1._pure_lin_repr)
     d1 = _degree_str_maker(d1)
     lin = lin.replace('{d}', d1)
     sym += rf"_{s1.k}"
     ra = _root_array(sym, lin, (s1._sym_repr + _default_space_degree_repr + d1, 1))
+    return ra
+
+
+def _parse_astA_x_B_ip_tC(gA, B, tC):
+    """<A x B, C> where A is given (ast). and C is the test form."""
+    sym, lin = _default_astA_x_B_ip_tC_reprs[:2]
+
+    sym += r"_{" + gA._sym_repr + r"}"
+    lin = lin.replace('{A}', gA._pure_lin_repr)
+    lin = lin.replace('{B}', B._pure_lin_repr)
+    lin = lin.replace('{C}', tC._pure_lin_repr)
+
+    s0 = tC.space
+    s1 = B.space
+    d0 = tC._degree
+    d1 = B._degree
+    str_d0 = _degree_str_maker(d0)
+    str_d1 = _degree_str_maker(d1)
+
+    shape0 = s0._sym_repr + _default_space_degree_repr + str_d0
+    shape1 = s1._sym_repr + _default_space_degree_repr + str_d1
+
+    shape = (shape0, shape1)
+    ra = _root_array(sym, lin, shape)
     return ra

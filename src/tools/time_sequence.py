@@ -84,32 +84,37 @@ class AbstractTimeSequence(Frozen):
         """A private tag."""
         return True
 
-    def make_time_interval(self, ks, ke):
+    def make_time_interval(self, ks, ke, sym_repr=None):
         """
 
         Parameters
         ----------
         ks
         ke
+        sym_repr :
+            The symbolic representation of the abstract time interval.
 
         Returns
         -------
 
         """
-        if ks.__class__.__name__ == 'AbstractTimeInstant':
+        if ks.__class__ is AbstractTimeInstant:
             ts = ks
         else:
             ts = self[ks]
-        if ke.__class__.__name__ == 'AbstractTimeInstant':
+        if ke.__class__ is AbstractTimeInstant:
             te = ke
         else:
             te = self[ke]
+
         lin_repr = self._pure_lin_repr + r"[" + ts.k + "," + te.k + "]"
         lin_repr, pure_lin_repr = _parse_lin_repr('abstract_time_interval', lin_repr)
         if lin_repr in self._my_abstract_time_interval:
+            assert sym_repr is None, \
+                f"The abstract time interval from {ts} to {te} exists, pls do not provide sym_repr!"
             return self._my_abstract_time_interval[lin_repr]
         else:
-            ati = AbstractTimeInterval(ts, te, lin_repr, pure_lin_repr)
+            ati = AbstractTimeInterval(ts, te, lin_repr, pure_lin_repr, sym_repr=sym_repr)
             self._my_abstract_time_interval[lin_repr] = ati
             return ati
 
@@ -339,7 +344,7 @@ class TimeInterval(Frozen):
 class AbstractTimeInterval(Frozen):
     """"""
 
-    def __init__(self, t_start, t_end, lin_repr, pure_lin_repr):
+    def __init__(self, t_start, t_end, lin_repr, pure_lin_repr, sym_repr=None):
         """
 
         Parameters
@@ -352,6 +357,8 @@ class AbstractTimeInterval(Frozen):
         t_end :
             The end abstract time instant.
         lin_repr :
+        pure_lin_repr :
+        sym_repr :
 
         """
         assert t_start.__class__.__name__ == 'AbstractTimeInstant' and \
@@ -367,11 +374,17 @@ class AbstractTimeInterval(Frozen):
         self._pure_lin_repr = pure_lin_repr
         num = len(_global_abstract_time_interval)
         base_sym_repr = _abstract_time_interval_default_sym_repr
-        if num == 0:
-            sym_repr = base_sym_repr
+        if sym_repr is None:
+            if num == 0:
+                sym_repr = base_sym_repr
+            else:
+                sym_repr = base_sym_repr + r"_{" + str(num) + r"}"
         else:
-            sym_repr = base_sym_repr + r"_{" + str(num) + r"}"
+            pass
         sym_repr = _check_sym_repr(sym_repr)
+        for _ in _global_abstract_time_interval:
+            exist_sym_repr = _global_abstract_time_interval[_]
+            assert sym_repr != exist_sym_repr, f"sym_repr = {exist_sym_repr} exist, use a new one!"
         _global_abstract_time_interval[num] = sym_repr
         self._sym_repr = sym_repr
         self._s = None

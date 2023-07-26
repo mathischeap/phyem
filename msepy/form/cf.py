@@ -193,8 +193,10 @@ def _d_to_vc(space_indicator, *args):
 
     if space_indicator == 'Lambda':  # scalar valued form spaces.
         m, n, k, ori = args
+
         if m == n == 1 and k == 0:  # 0-form on 1d manifold in 1d space.
             return 'derivative'
+
         elif m == n == 2 and k == 0:
             if ori == 'inner':
                 return 'gradient'
@@ -202,6 +204,7 @@ def _d_to_vc(space_indicator, *args):
                 return 'curl'
             else:
                 raise Exception()
+
         elif m == n == 2 and k == 1:
             if ori == 'inner':
                 return 'rot'
@@ -209,6 +212,7 @@ def _d_to_vc(space_indicator, *args):
                 return 'divergence'
             else:
                 raise Exception()
+
         elif m == n == 3:
             if k == 0:
                 return 'gradient'
@@ -220,6 +224,7 @@ def _d_to_vc(space_indicator, *args):
                 raise Exception()
         else:
             raise NotImplementedError()
+
     else:
         raise NotImplementedError()
 

@@ -15,6 +15,7 @@ _implemented_space_operators = (
 )
 
 
+
 def wedge(s1, s2):
     """"""
     if s1.__class__.__name__ == 'ScalarValuedFormSpace' and s2.__class__.__name__ == 'ScalarValuedFormSpace':
@@ -38,6 +39,31 @@ def wedge(s1, s2):
 
     else:
         raise NotImplementedError()
+
+
+def cross_product(s1, s2):
+    """"""
+    from src.spaces.continuous.Lambda import ScalarValuedFormSpace
+
+    if s1.__class__ is ScalarValuedFormSpace and s2.__class__ is ScalarValuedFormSpace:
+
+        assert s1.mesh == s2.mesh, f"two entries have different meshes."
+
+        m, n = s1.mesh.m, s1.mesh.n
+        if m == n == 2:  # on 2d mesh in 2d space.
+            k1 = s1.k
+            k2 = s2.k
+
+            if k1 == 0 and k2 == 1 and s1.orientation=='outer' and s2.orientation=='inner':
+                return new('Lambda', 1, mesh=s1.mesh, orientation='inner')
+            elif k1 == 2 and k2 == 1 and s1.orientation=='inner' and s2.orientation=='outer':
+                return new('Lambda', 1, mesh=s1.mesh, orientation='outer')
+            else:
+                raise NotImplementedError(k1, k2, s1.orientation, s2.orientation)
+
+    else:
+        raise NotImplementedError()
+
 
 
 def Hodge(space):

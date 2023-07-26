@@ -58,8 +58,8 @@ class WeakFormulation(Frozen):
         self._consistence_checker()
         self._unknowns = None
         self._derive = None
-        self._td = None
         self._bc = None
+        self._terms = None
         self._freeze()
 
     def _parse_term_sign_dict(self, term_sign_dict, test_forms):
@@ -197,6 +197,13 @@ class WeakFormulation(Frozen):
             f"index: '{item}' is illegal, do `print_representations(indexing=True)` " \
             f"to check indices of all terms."
         return self._indexing[item]
+
+    @property
+    def terms(self):
+        """"""
+        if self._terms is None:
+            self._terms = _TermsOnly(self)
+        return self._terms
 
     def __iter__(self):
         """"""
@@ -376,9 +383,7 @@ class WeakFormulation(Frozen):
     @property
     def td(self):
         """temporal discretization."""
-        if self._td is None:
-            self._td = TemporalDiscretization(self)
-        return self._td
+        return TemporalDiscretization(self)
 
     def ap(self):
         """Do not cache it. Make it in real time"""
@@ -387,6 +392,17 @@ class WeakFormulation(Frozen):
     def mp(self):
         """Do not cache it. Make it in real time"""
         return MatrixProxy(self)
+
+
+class _TermsOnly(Frozen):
+    """The collection of wf terms only."""
+    def __init__(self, wf):
+        self._wf = wf
+        self._freeze()
+
+    def __getitem__(self, item):
+        sign, term = self._wf[item]
+        return term
 
 
 if __name__ == '__main__':

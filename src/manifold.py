@@ -102,9 +102,17 @@ class Manifold(Frozen):
         return get_embedding_space_dim()
 
     @property
+    def m(self):
+        return self.esd
+
+    @property
     def ndim(self):
         """The dimensions of this manifold."""
         return self._ndim
+
+    @property
+    def n(self):
+        return self.ndim
 
     @property
     def udg(self):

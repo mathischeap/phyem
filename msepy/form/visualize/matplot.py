@@ -103,6 +103,7 @@ class MsePyRootFormVisualizeMatplot(Frozen):
         """"""
         samples = 10000 * sampling_factor
         samples = int((np.ceil(samples / self._mesh.elements._num))**(1/self._mesh.m))
+
         if samples > 75:
             samples = 75
         elif samples < 5:

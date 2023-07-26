@@ -24,6 +24,7 @@ class AlgebraicProxy(Frozen):
     """"""
 
     def __init__(self, wf):
+        self._fully_resolved = True
         self._parse_terms(wf)
         self._parse_unknowns_test_vectors(wf)
         self._wf = wf
@@ -37,15 +38,14 @@ class AlgebraicProxy(Frozen):
         wf_sd = wf._sign_dict
         term_dict = dict()   # the terms for the AP equation
         sign_dict = dict()   # the signs for the AP equation
+        color_dict = dict()
         ind_dict = dict()
         indexing = dict()
-        linear_dict = dict()
-        self._is_linear = True
         for i in wf_td:
             term_dict[i] = ([], [])
             sign_dict[i] = ([], [])
+            color_dict[i] = ([], [])
             ind_dict[i] = ([], [])
-            linear_dict[i] = ([], [])
             k = 0
             for j, terms in enumerate(wf_td[i]):
                 for m, term in enumerate(terms):
@@ -53,19 +53,14 @@ class AlgebraicProxy(Frozen):
                     try:
                         ap, new_sign = term.ap(test_form=wf.test_forms[i])
                         new_sign = self._parse_sign(new_sign, old_sign)
-
-                        if ap._is_linear():
-                            linear = True
-                        else:
-                            linear = False
-                            self._is_linear = False
+                        color_dict[i][j].append('k')
 
                     except NotImplementedError:
 
                         ap = term
                         new_sign = old_sign
-                        linear = 'unknown'
-                        self._is_linear = False
+                        self._fully_resolved = False
+                        color_dict[i][j].append('r')
 
                     index = str(i) + '-' + str(k)
                     k += 1
@@ -73,17 +68,12 @@ class AlgebraicProxy(Frozen):
                     ind_dict[i][j].append(index)
                     term_dict[i][j].append(ap)
                     sign_dict[i][j].append(new_sign)
-                    linear_dict[i][j].append(linear)
 
         self._term_dict = term_dict
         self._sign_dict = sign_dict
+        self._color_dict = color_dict
         self._indexing = indexing
         self._ind_dict = ind_dict
-        self._linear_dict = linear_dict
-
-    def is_linear(self):
-        """If we have a linear system?"""
-        return self._is_linear
 
     @staticmethod
     def _parse_sign(s0, s1):
@@ -147,6 +137,7 @@ class AlgebraicProxy(Frozen):
                     for j, term in enumerate(terms):
                         sign = self._sign_dict[i][t][j]
                         term = self._term_dict[i][t][j]
+                        color = self._color_dict[i][t][j]
 
                         term_sym_repr = term._sym_repr
 
@@ -154,6 +145,11 @@ class AlgebraicProxy(Frozen):
                             index = self._ind_dict[i][t][j].replace('-', r'\text{-}')
                             term_sym_repr = r'\underbrace{' + term_sym_repr + r'}_{' + \
                                 rf"{index}" + '}'
+                        else:
+                            pass
+
+                        if color == 'r':  # this term is not converted into algebraic proxy yet!
+                            term_sym_repr = r"\left[" + term_sym_repr + r"\right]^{!}"
                         else:
                             pass
 

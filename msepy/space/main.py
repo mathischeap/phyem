@@ -16,9 +16,13 @@ from msepy.space.reconstruct.main import MsePySpaceReconstruct
 from msepy.space.error.main import MsePySpaceError
 from msepy.space.norm.main import MsePySpaceNorm
 from msepy.space.degree import MsePySpaceDegree
-from src.spaces.finite import SpaceFiniteSetting
+from msepy.space.reconstruction_matrix.main import MsePyReconstructMatrix
+
 from msepy.mesh.main import MsePyMesh
+
 from msepy.space.find.main import MsePySpaceFind
+
+from src.spaces.finite import SpaceFiniteSetting
 
 
 class MsePySpace(Frozen):
@@ -42,6 +46,7 @@ class MsePySpace(Frozen):
         self._num_local_dof_components = None
         self._reduce = None
         self._reconstruct = None
+        self._reconstruction_matrix = None
         self._error = None
         self._norm = None
         self._degree_cache = {}
@@ -156,6 +161,13 @@ class MsePySpace(Frozen):
         if self._reconstruct is None:
             self._reconstruct = MsePySpaceReconstruct(self)
         return self._reconstruct
+
+    @property
+    def reconstruction_matrix(self):
+        """"""
+        if self._reconstruction_matrix is None:
+            self._reconstruction_matrix = MsePyReconstructMatrix(self)
+        return self._reconstruction_matrix
 
     @property
     def error(self):

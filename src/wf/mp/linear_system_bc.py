@@ -9,7 +9,7 @@ from src.form.main import _global_root_forms_lin_dict
 from src.config import _global_operator_lin_repr_setting, _non_root_lin_sep
 from src.config import _global_lin_repr_setting, _root_form_ap_vec_setting
 from src.config import _form_evaluate_at_repr_setting
-from src.spaces.main import _default_boundary_dp_vector_repr, _sep
+from src.spaces.main import _default_boundary_dp_vector_reprs, _sep
 
 
 class _BoundaryCondition(Frozen):
@@ -104,7 +104,7 @@ class _NaturalBoundaryCondition(_BoundaryCondition):
 
                 b = ls._b
 
-                target_lin_repr = _default_boundary_dp_vector_repr[1]
+                target_lin_repr = _default_boundary_dp_vector_reprs[1]
                 target_lin_repr = target_lin_repr.replace('{f0}', root_form._pure_lin_repr)
                 target_header, target_lin_repr = target_lin_repr.split(_sep)[:2]
                 target = target_header + _sep + target_lin_repr
@@ -200,7 +200,8 @@ class _EssentialBoundaryCondition(_BoundaryCondition):
                     vec_lin_repr = _root_form_ap_vec_setting['lin']
                     evaluate_lin_repr = _form_evaluate_at_repr_setting['lin']
 
-                    looking_for = array_lin_repr_start + the_form._pure_lin_repr + vec_lin_repr + array_lin_repr_end
+                    looking_for = array_lin_repr_start + the_form._pure_lin_repr + \
+                        vec_lin_repr + array_lin_repr_end
 
                     for i, index in enumerate(x):
                         x_vec, x_sign = x(index)
@@ -304,7 +305,8 @@ class MatrixProxyLinearSystemBoundaryConditions(Frozen):
                 break  # once found it, we break, because the boundary pattern as exclusive.
 
         if found_pattern is None:
-            raise Exception(f'We can find a correct boundary condition pattern for raw bc form: {raw_bc_form}.')
+            raise Exception(f'We cannot find a correct boundary condition '
+                            f'pattern for raw bc form: {raw_bc_form}.')
         else:
             pass
 
@@ -317,7 +319,8 @@ class MatrixProxyLinearSystemBoundaryConditions(Frozen):
 
     def __getitem__(self, boundary_section_sym_repr):
         """Return the B.Cs on this boundary section."""
-        assert boundary_section_sym_repr in self, f"no valid BC is defined on {boundary_section_sym_repr}."
+        assert boundary_section_sym_repr in self, \
+            f"no valid BC is defined on {boundary_section_sym_repr}."
         return self._valid_bcs[boundary_section_sym_repr]
 
     def __len__(self):

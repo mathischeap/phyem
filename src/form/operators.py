@@ -8,6 +8,7 @@ from src.spaces.operators import wedge as space_wedge
 from src.spaces.operators import Hodge as space_Hodge
 from src.spaces.operators import d as space_d
 from src.spaces.operators import codifferential as space_codifferential
+from src.spaces.operators import cross_product as space_cross_product
 
 from src.config import _global_operator_lin_repr_setting
 from src.config import _global_operator_sym_repr_setting
@@ -222,6 +223,44 @@ def trace(f):
         sr,  # symbolic representation
         lr,
         False,
+    )
+
+    return f
+
+
+def cross_product(f1, f2):
+    """f1 x f2"""
+    s1 = f1.space
+    s2 = f2.space
+
+    cross_product_space = space_cross_product(s1, s2)
+
+    lr_term1 = f1._lin_repr
+    lr_term2 = f2._lin_repr
+    lr_operator = _global_operator_lin_repr_setting['cross_product']
+
+    sr_term1 = f1._sym_repr
+    sr_term2 = f2._sym_repr
+    sr_operator = _global_operator_sym_repr_setting['cross_product']
+
+    if f1.is_root():
+        pass
+    else:
+        lr_term1 = _non_root_lin_sep[0] + lr_term1 + _non_root_lin_sep[1]
+        sr_term1 = r'\left(' + sr_term1 + r'\right)'
+    if f2.is_root():
+        pass
+    else:
+        lr_term2 = _non_root_lin_sep[0] + lr_term2 + _non_root_lin_sep[1]
+        sr_term2 = r'\left(' + sr_term2 + r'\right)'
+    lin_repr = lr_term1 + lr_operator + lr_term2
+    sym_repr = sr_term1 + sr_operator + sr_term2
+
+    f = f1.__class__(
+        cross_product_space,  # space
+        sym_repr,  # symbolic representation
+        lin_repr,
+        False
     )
 
     return f

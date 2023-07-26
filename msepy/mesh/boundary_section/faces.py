@@ -6,6 +6,7 @@ Created at 5:23 PM on 5/25/2023
 """
 import numpy as np
 from tools.frozen import Frozen
+from tools.quadrature import Quadrature
 
 
 class MsePyBoundarySectionFaces(Frozen):
@@ -160,15 +161,18 @@ class _MsePyBoundarySectionFace(Frozen):
         if self._bs.n == 1:
 
             if self.is_orthogonal():
-
                 nodes = np.array([-1, 1])
                 x, y = self.ct.mapping(nodes)
                 x0, x1 = x
                 y0, y1 = y
-                return np.sqrt((x1 - x0)**2 + (y1 - y0)**2)
+                length = np.sqrt((x1 - x0)**2 + (y1 - y0)**2)
 
             else:
-                raise NotImplementedError()
+                nodes, weights = Quadrature(10).quad
+                Jx, Jy = self.ct.Jacobian_matrix(nodes)
+                length = np.sum(np.sqrt(Jx**2 + Jy**2) * weights)
+
+            return length
 
         else:
             raise Exception(f"only 1d boundary section face has a length!")

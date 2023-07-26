@@ -27,6 +27,13 @@ class MatrixProxy(Frozen):
 
     def __init__(self, wf):
         ap = wf.ap()  # make an algebraic proxy in real time.
+        if ap._fully_resolved:
+            pass
+        else:
+            raise Exception(
+                f"there is (are) term(s) in the wf which is not resolved as 'algebraic proxy', check ``ap`` of "
+                f"the wf to see which term is not working."
+            )
         self._wf = wf
         self._ap = ap
         self._num_equations = len(ap._term_dict)
@@ -78,7 +85,7 @@ class MatrixProxy(Frozen):
             return new_aa
 
         else:
-            raise NotImplementedError()
+            raise NotImplementedError(term.__class__)
 
     def parse(self, targets):
         """"""

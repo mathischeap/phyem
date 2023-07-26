@@ -14,10 +14,6 @@ from src.form.others import _find_form
 from src.form.operators import time_derivative
 from src.pde import PartialDifferentialEquations
 
-# import warnings
-# class ExistingAbstractTimeInstantWarning(UserWarning):
-#     pass
-
 
 class OrdinaryDifferentialEquationDiscretize(Frozen):
     """Ordinary Differential Equation Discretize"""
@@ -91,8 +87,6 @@ class OrdinaryDifferentialEquationDiscretize(Frozen):
     def average(self, index, f, time_instants):
         """Use average at time instants `time_instants` for form `f` in term indexed `index`.
         """
-        term = self._ode[index][1]
-
         f_ = list()
         assert isinstance(time_instants, (list, tuple)), f"pls put time_instants in a list or tuple."
         for ti in time_instants:
@@ -112,8 +106,27 @@ class OrdinaryDifferentialEquationDiscretize(Frozen):
                 pass
             f_ = sum_f / num
 
-        new_term, new_sign = term.replace(f, f_)
-        self._eq_terms[index] = [(new_term, new_sign), ]
+        if index not in self._eq_terms:
+            term = self._ode[index][1]
+            new_term, new_sign = term.replace(f, f_)
+            self._eq_terms[index] = [(new_term, new_sign), ]
+        else:
+            term_sign = self._eq_terms[index]
+            if len(term_sign) == 1:
+
+                term, old_sign = term_sign[0]
+
+                new_term, new_sign = term.replace(f, f_)
+
+                if old_sign == new_sign:
+                    sign = '+'
+                else:
+                    sign = '-'
+
+                self._eq_terms[index] = [(new_term, sign), ]
+
+            else:
+                raise NotImplementedError()
 
     def __call__(self):
         """return the resulting weak formulation (of one single equation of course.)."""

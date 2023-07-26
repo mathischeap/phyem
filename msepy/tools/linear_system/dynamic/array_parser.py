@@ -10,7 +10,9 @@ from src.config import _global_lin_repr_setting
 from src.spaces.main import _default_mass_matrix_reprs
 from src.spaces.main import _default_d_matrix_reprs
 from src.spaces.main import _default_d_matrix_transpose_reprs
-from src.spaces.main import _default_boundary_dp_vector_repr
+from src.spaces.main import _default_boundary_dp_vector_reprs
+from src.spaces.main import _default_astA_x_B_ip_tC_reprs
+
 from src.spaces.main import _str_degree_parser
 
 from src.form.main import _global_root_forms_lin_dict
@@ -73,9 +75,12 @@ def msepy_root_array_parser(dls, array_lin_repr):
         elif type_indicator == _default_d_matrix_transpose_reprs[1].split(_sep)[0]:
             A = _parse_E_matrix(*info_indicators).T
             text = r"\mathsf{E}^{\mathsf{T}}"
-        elif type_indicator == _default_boundary_dp_vector_repr[1].split(_sep)[0]:
+        elif type_indicator == _default_boundary_dp_vector_reprs[1].split(_sep)[0]:
             A = _parse_trStar_rf0_dp_tr_s1_vector(dls, *info_indicators)
             text = r"\boldsymbol{b}"
+        elif type_indicator == _default_astA_x_B_ip_tC_reprs[1].split(_sep)[0]:
+            A = _parse_astA_x_B_ip_tC(*info_indicators)
+            text = r"\mathsf{C}"
         else:
             raise NotImplementedError(f"I cannot parse: {array_lin_repr} of type {type_indicator}")
 
@@ -168,10 +173,49 @@ def _parse_E_matrix(space, degree):
     return E
 
 
+def _parse_astA_x_B_ip_tC(gA, B, tC):
+    """Remember, for this term, gA, b, tC must be root-forms."""
+    lin_reprs = _default_astA_x_B_ip_tC_reprs[1]
+    base_Ar, base_Br, base_Cr = lin_reprs.split(_sep)[1:]
+    replace_keys = (r"{A}", r"{B}", r"{C}")
+    # now we try to find the form gA, B and tC
+    ABC_forms = list()
+
+    msepy_forms = base['forms']
+
+    for format_form, base_rp, replace_key in zip((gA, B, tC), (base_Ar, base_Br, base_Cr), replace_keys):
+        found_root_form = None
+        for root_form_lin_repr in _global_root_forms_lin_dict:
+            check_form = _global_root_forms_lin_dict[root_form_lin_repr]
+            check_temp = base_rp.replace(replace_key, check_form._pure_lin_repr)
+            if check_temp == format_form:
+                found_root_form = check_form
+                break
+            else:
+                pass
+        assert found_root_form is not None, f"must have found root-for for {format_form}."
+
+        msepy_base_form = None
+        for _pure_lin_repr in msepy_forms:
+            if _pure_lin_repr == found_root_form._pure_lin_repr:
+                msepy_base_form = msepy_forms[_pure_lin_repr]
+                break
+            else:
+                pass
+        assert msepy_base_form is not None, f"we must have found a msepy copy of the root-form."
+        ABC_forms.append(msepy_base_form)
+
+    from msepy.form.tools.operations.nonlinear.AxB_ip_C import _AxBipC
+
+    nonlinear_operation = _AxBipC(*ABC_forms)
+
+    raise Exception()
+
+
 def _parse_trStar_rf0_dp_tr_s1_vector(dls, tr_star_rf0, tr_rf1):
     """"""
     found_root_form = None
-    temp = _default_boundary_dp_vector_repr[1].split(_sep)[2]
+    temp = _default_boundary_dp_vector_reprs[1].split(_sep)[2]
     for root_form_lin_repr in _global_root_forms_lin_dict:
         check_form = _global_root_forms_lin_dict[root_form_lin_repr]
         check_temp = temp.replace('{f1}', check_form._pure_lin_repr)
@@ -197,7 +241,7 @@ class _TrStarRf0DualPairingTrS1(Frozen):
         self._tr_star_rf0 = tr_star_rf0
         self._rf1 = rf1
         self._num_local_dofs = rf1.space.num_local_dofs(rf1._degree)
-        temp = _default_boundary_dp_vector_repr[1].split(_sep)[1]
+        temp = _default_boundary_dp_vector_reprs[1].split(_sep)[1]
 
         found_root_form = None
 

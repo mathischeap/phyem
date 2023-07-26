@@ -169,6 +169,101 @@ class MsePyElementCoordinateTransformation(Frozen):
 
         return ijm
 
+    def Jacobian(self, *xi_et_sg):
+        """the Determinant of the Jacobian matrix. When Jacobian matrix is square, Jacobian = sqrt(g)."""
+        jm = self.Jacobian_matrix(*xi_et_sg)
+        mesh = self._element._elements._mesh
+        m, n = mesh.m, mesh.n
+
+        if m == n == 1:
+
+            Jacobian = jm[0][0]
+
+        elif m == n == 2:
+
+            Jacobian = (jm[0][0] * jm[1][1] - jm[0][1] * jm[1][0])
+
+        elif m == n == 3:
+
+            Jacobian = \
+                + jm[0][0] * jm[1][1] * jm[2][2] + jm[0][1] * jm[1][2] * jm[2][0] \
+                + jm[0][2] * jm[1][0] * jm[2][1] - jm[0][0] * jm[1][2] * jm[2][1] \
+                - jm[0][1] * jm[1][0] * jm[2][2] - jm[0][2] * jm[1][1] * jm[2][0]
+
+        else:
+            raise NotImplementedError()
+
+        return Jacobian
+
+    def metric(self, *xi_et_sg):
+        """ For square Jacobian matrix,
+        the metric ``g:= det(G):=(det(J))**2``, where ``G`` is the metric matrix, or metric tensor.
+        """
+        mesh = self._element._elements._mesh
+        m, n = mesh.m, mesh.n
+        if m == n:
+            return self.Jacobian(*xi_et_sg) ** 2
+        else:
+            raise NotImplementedError()
+
+    def inverse_Jacobian(self, *xi_et_sg):
+        """the Determinant of the inverse Jacobian matrix."""
+        ijm = self.inverse_Jacobian_matrix(*xi_et_sg)
+        mesh = self._element._elements._mesh
+        m, n = mesh.m, mesh.n
+
+        if m == n == 1:
+
+            inverse_Jacobian = ijm[0][0]
+
+        elif m == n == 2:
+
+            inverse_Jacobian = (ijm[0][0] * ijm[1][1] - ijm[0][1] * ijm[1][0])
+
+        elif m == n == 3:
+
+            inverse_Jacobian = \
+                + ijm[0][0] * ijm[1][1] * ijm[2][2] + ijm[0][1] * ijm[1][2] * ijm[2][0] \
+                + ijm[0][2] * ijm[1][0] * ijm[2][1] - ijm[0][0] * ijm[1][2] * ijm[2][1] \
+                - ijm[0][1] * ijm[1][0] * ijm[2][2] - ijm[0][2] * ijm[1][1] * ijm[2][0]
+
+        else:
+            raise NotImplementedError()
+
+        return inverse_Jacobian
+
+    def metric_matrix(self, *xi_et_sg):
+        """"""
+        jm = self.Jacobian_matrix(*xi_et_sg)
+        mesh = self._element._elements._mesh
+        m, n = mesh.m, mesh.n
+        G = [[None for _ in range(n)] for __ in range(n)]
+        for i in range(n):
+            for j in range(i, n):
+                # noinspection PyTypeChecker
+                G[i][j] = jm[0][i] * jm[0][j]
+                for L in range(1, m):
+                    G[i][j] += jm[L][i] * jm[L][j]
+                if i != j:
+                    G[j][i] = G[i][j]
+        return G
+
+    def inverse_metric_matrix(self, *xi_et_sg):
+        """"""
+        ijm = self.inverse_Jacobian_matrix(*xi_et_sg)
+        mesh = self._element._elements._mesh
+        m, n = mesh.m, mesh.n
+        iG = [[None for _ in range(m)] for __ in range(m)]
+        for i in range(m):
+            for j in range(i, m):
+                # noinspection PyTypeChecker
+                iG[i][j] = ijm[i][0] * ijm[j][0]
+                for L in range(1, n):
+                    iG[i][j] += ijm[i][L] * ijm[j][L]
+                if i != j:
+                    iG[j][i] = iG[i][j]
+        return iG
+
 
 class _FaceCooTrans(Frozen):
     """"""

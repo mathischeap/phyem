@@ -18,7 +18,6 @@ from msepy.form.visualize.main import MsePyRootFormVisualize
 from msepy.form.coboundary import MsePyRootFormCoboundary
 from msepy.form.matrix import MsePyRootFormMatrix
 from msepy.form.boundary_integrate.main import MsePyRootFormBoundaryIntegrate
-from msepy.form.reconstruct_matrix.main import MsePyMeshElementReconstructMatrix
 
 
 class MsePyRootForm(Frozen):
@@ -31,7 +30,7 @@ class MsePyRootForm(Frozen):
         self._space = abstract_space._objective
         degree = self.abstract._degree
         assert degree is not None, f"{abstract_root_form} has no degree."
-        self._degree = None
+        self._degree = None  # it will be updated to degree below
         self.space.finite.specify_form(self, degree)  # will make new degree if this degree is not saved.
         self._cf = None
         self._cochain = None  # do not initialize cochain here!
@@ -114,12 +113,12 @@ class MsePyRootForm(Frozen):
         return self._cf
 
     @cf.setter
-    def cf(self, cf):
+    def cf(self, _cf):
         """Setter of `cf`.
 
         We actually set `cf.field`, use a shell `cf` to enabling extra checkers and so on.
         """
-        self.cf.field = cf
+        self.cf.field = _cf
 
     def set_cf(self, cf):
         """A more reasonable method name."""
@@ -208,12 +207,11 @@ class MsePyRootForm(Frozen):
     def boundary_integrate(self):
         return self._boundary_integrate
 
-    @property
-    def reconstruct_matrix(self):
+    def reconstruction_matrix(self, *meshgrid_xi_et_sg, element_range=None):
         """compute reconstruction matrices for particular elements."""
-        if self._reconstruct_matrix is None:
-            self._reconstruct_matrix = MsePyMeshElementReconstructMatrix(self)
-        return self._reconstruct_matrix
+        return self._space.reconstruction_matrix(
+            self._degree, *meshgrid_xi_et_sg, element_range=element_range
+        )
 
     def _find_local_dofs_on(self, m, n):
         """find the local dofs numbering on the `n`-face along `m`-direction of element #`element`."""
@@ -222,22 +220,22 @@ class MsePyRootForm(Frozen):
 
 if __name__ == '__main__':
     # python msepy/form/main.py
-    import numpy as np
+    # import numpy as np
     import __init__ as ph
 
     space_dim = 2
     ph.config.set_embedding_space_dim(space_dim)
 
-    manifold = ph.manifold(space_dim, is_periodic=True)
+    manifold = ph.manifold(space_dim, is_periodic=False)
     mesh = ph.mesh(manifold)
     # L0 = ph.space.new('Lambda', 0)
     # f0 = L0.make_form('f^0', '0-f')
     # L1 = ph.space.new('Lambda', 1)
     # f1 = L1.make_form('f^1', '1-f')
-    L1o = ph.space.new('Lambda', 1, orientation='outer')
-    f1o = L1o.make_form('f^1', '1-f-o')
-    L1i = ph.space.new('Lambda', 1, orientation='inner')
-    f1i = L1i.make_form('h^1', '1-f-i')
+    # L1o = ph.space.new('Lambda', 1, orientation='outer')
+    # f1o = L1o.make_form('f^1', '1-f-o')
+    # L1i = ph.space.new('Lambda', 1, orientation='inner')
+    # f1i = L1i.make_form('h^1', '1-f-i')
     # L2 = ph.space.new('Lambda', 2)
     # f2 = L2.make_form('f^2', '2-f')
     # L3 = ph.space.new('Lambda', 3)
@@ -245,29 +243,41 @@ if __name__ == '__main__':
 
     # df0 = ph.exterior_derivative(f0)
 
-    ph.space.finite((3, 3))
+    mesh.partition(r'\Gamma1', r'\Gamma2')
+    ph.space.finite((3, 3, 3))
 
     msepy, obj = ph.fem.apply('msepy', locals())
 
+    # print(msepy.base['meshes'])
+    # print()
+    # print(msepy.base['manifolds'])
+
     manifold = obj['manifold']
     mesh = obj['mesh']
+    Gamma1 = msepy.base['manifolds'][r"\Gamma1"]
+    Gamma2 = msepy.base['manifolds'][r"\Gamma2"]
     # print(obj)
 
     # f0 = obj['f0']
     # f1 = obj['f1']
     #
-    f1o = obj['f1o']
-    f1i = obj['f1i']
+    # f1o = obj['f1o']
+    # f1i = obj['f1i']
     # f2 = obj['f2']
     # f3 = obj['f3']
     #
     # msepy.config(manifold)('crazy', c=0., periodic=False, bounds=[[0, 2] for _ in range(space_dim)])
-    msepy.config(manifold)('crazy_multi.rst', c=0.0, bounds=[[0, 2] for _ in range(space_dim)], periodic=True)
+    msepy.config(manifold)('crazy', c=0.0, bounds=[[0, 2] for _ in range(space_dim)], periodic=False)
+    msepy.config(Gamma1)(manifold, {0: [0, 0, 1, 0]})
     # # msepy.config(mnf)('backward_step')
     # msepy.config(mesh)((2, 2, 2))
     msepy.config(mesh)(5)
     # # msepy.config(mesh)(([3, 3, 2], ))
     # # mesh.visualize()
+
+    # for mesh_repr in msepy.base['meshes']:
+    #     mesh = msepy.base['meshes'][mesh_repr]
+    #     print(mesh_repr)
 
     # def fx(t, x, y, z):
     #     return np.cos(2*np.pi*x) * np.cos(np.pi*y) * np.cos(np.pi*z) + t
@@ -276,17 +286,17 @@ if __name__ == '__main__':
     #     """"""
     #     return - np.sin(2 * np.pi * x) * np.sin(2 * np.pi * y) * np.sin(2 * np.pi * z) + t * 1
 
-    def ux(t, x, y):
-        return np.sin(np.pi*x) * np.cos(np.pi*y) + t*0
-
-    def uy(t, x, y):
-        return np.cos(np.pi*x) * np.sin(np.pi*y) + t*0
+    # def ux(t, x, y):
+    #     return np.sin(np.pi*x) * np.cos(np.pi*y) + t*0
+    #
+    # def uy(t, x, y):
+    #     return np.cos(np.pi*x) * np.sin(np.pi*y) + t*0
 
     # def uz(t, x, y, z):
     #     return np.cos(2*np.pi*x) * np.cos(2*np.pi*y) * np.sin(np.pi*z) + t
 
     # scalar = ph.vc.scalar(phi_func)
-    vector = ph.vc.vector(ux, uy)
+    # vector = ph.vc.vector(ux, uy)
     #
     # M0 = f0.matrix.mass
     # M1 = f1.matrix.mass
@@ -303,11 +313,11 @@ if __name__ == '__main__':
     # df0 = f0[2].coboundary()
     # print(df0[2].error())
 
-    f1o.cf = vector
-    f1i.cf = vector
-
-    f1o[2].reduce()
-    f1o[2].visualize(plot_type='quiver', sampling_factor=0.01)
+    # f1o.cf = vector
+    # f1i.cf = vector
+    #
+    # f1o[2].reduce()
+    # f1o[2].visualize(plot_type='quiver', sampling_factor=0.01)
 
     # # print(f1[2].error())
     #

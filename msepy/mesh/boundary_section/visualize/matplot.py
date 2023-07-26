@@ -1,4 +1,4 @@
-
+# -*- coding: utf-8 -*-
 
 from tools.frozen import Frozen
 
@@ -32,6 +32,7 @@ class Matplot(Frozen):
             saveto=None,
             linewidth=0.75,
             color='k',
+            title=True,  # True, False, None, or custom
 
     ):
         """"""
@@ -89,13 +90,22 @@ class Matplot(Frozen):
                 for i in bs_face_data:
                     # the #`i` face locally numbered in this boundary section.
                     data_i = bs_face_data[i]
-                    plt.plot(*data_i)
+                    plt.plot(*data_i, linewidth=1.25 * linewidth)
 
             else:
                 raise NotImplementedError(f"not implemented for {ndim}-d mesh in {esd}-d space.")
 
         else:  # 3d plot for 3d meshes  ----------------------------
             raise NotImplementedError()
+
+        # deal with title -----------------------------------------------
+        if title is True:  # use the default title
+            sym_repr = self._bs.abstract._sym_repr
+            plt.title(rf"${sym_repr}$")
+        elif title is None or title is False:
+            pass
+        else:
+            plt.title(title)
 
         # ------- config the output --------------------------------
         plt.tight_layout()

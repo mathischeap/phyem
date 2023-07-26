@@ -10,11 +10,13 @@ from src.config import _global_operator_lin_repr_setting
 from src.form.others import _find_form
 from src.config import _non_root_lin_sep
 from src.config import _wf_term_default_simple_patterns as _simple_patterns
+from src.form.parameters import ConstantScalar0Form
 
 
-def _inner_simpler_pattern_examiner_scalar_valued_forms(factor, f0, f1):
+def _inner_simpler_pattern_examiner_scalar_valued_forms(factor, f0, f1, extra_info):
     """ """
-    if factor.__class__.__name__ == 'ConstantScalar0Form':
+    if factor.__class__ is ConstantScalar0Form:
+
         # (codifferential sf, sf) -------------------------------------------
         lin_codifferential = _global_operator_lin_repr_setting['codifferential']
         if f0._lin_repr[:len(lin_codifferential)] == lin_codifferential:
@@ -64,6 +66,40 @@ def _inner_simpler_pattern_examiner_scalar_valued_forms(factor, f0, f1):
                     'rsf0': f0,     # root-scalar-form-0
                     'rsf1': bf1,    # root-scalar-form-1
                 }
+            else:
+                pass
+
+        # (a x b, c) types term, where x is cross product, and a, b, c are root-scalar-valued forms ----
+        cross_product_lin = _global_operator_lin_repr_setting['cross_product']
+
+        if cross_product_lin in f0._lin_repr and f0._lin_repr.count(cross_product_lin) == 1:
+            # it is like `a` x `b` for f0
+            a_lin, b_lin = f0._lin_repr.split(cross_product_lin)
+
+            f_a = _find_form(a_lin)
+            f_b = _find_form(b_lin)
+
+            if f_a.is_root() and f_b.is_root() and f1.is_root():
+                # a, b and c are all root-forms. This is good!
+
+                if 'known-cross-product-form' in extra_info:
+
+                    known_form = extra_info['known-cross-product-form']
+
+                    if known_form is f_a:
+
+                        return _simple_patterns['(*x,)'], {
+                            'a': f_a,
+                            'b': f_b,
+                            'c': f1
+                        }
+
+                    else:
+                        pass
+                else:
+                    # this term will be a nonlinear one! Take care it in the future!
+                    pass
+
             else:
                 pass
 

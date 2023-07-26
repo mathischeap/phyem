@@ -25,7 +25,7 @@ class TemporalDiscretization(Frozen):
 
     def _initialize_odes(self):
         """Initialize odes."""
-        from src.ode.main import ode, OrdinaryDifferentialEquationError
+        from src.ode.main import ode
         # must import locally here to avoid a circular import
 
         wf = self._wf
@@ -33,15 +33,8 @@ class TemporalDiscretization(Frozen):
         for i in wf._term_dict:
             terms = wf._term_dict[i]
             signs = wf._sign_dict[i]
-
-            try:
-                v_ode = ode(terms_and_signs=[terms, signs])
-
-            except OrdinaryDifferentialEquationError:
-                pass
-
-            else:
-                valid_ode[i] = v_ode
+            v_ode = ode(terms_and_signs=[terms, signs])
+            valid_ode[i] = v_ode
 
         self._valid_ode = valid_ode
 

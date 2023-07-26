@@ -49,16 +49,28 @@ class BoundaryIntegrateVCBSLambda(Frozen):
         vc_ndim = vc.ndim
         vc_shape = vc.shape
         assert vc_shape == (1, ) and vc_ndim == 2, f"Need a scalar in time + 2d-space."
-
         quad_degree = [_ + 1 for _ in self._f.space[self._f._degree].p]
-
         quad_degree = max(quad_degree)
-
         nodes, weights = Quadrature(quad_degree, category='Lobatto').quad  # must use Lobatto
-
         outward_unit_normal_vector = msepy_boundary_section.ct.outward_unit_normal_vector(nodes)
-
-        involved_mesh_elements = msepy_boundary_section.faces._elements_m_n[0, :]
+        N_elements, S_elements, W_elements, E_elements = list(), list(), list(), list()
+        for element, m, n in zip(*msepy_boundary_section.faces._elements_m_n):
+            if m == 0:
+                if n == 0:
+                    N_elements.append(element)
+                elif n == 1:
+                    S_elements.append(element)
+                else:
+                    raise Exception()
+            elif m == 1:
+                if n == 0:
+                    W_elements.append(element)
+                elif n == 1:
+                    E_elements.append(element)
+                else:
+                    raise Exception()
+            else:
+                raise Exception()
 
         ones = np.array([1])
         N_nodes = (-ones, nodes)   # x -
@@ -66,10 +78,10 @@ class BoundaryIntegrateVCBSLambda(Frozen):
         W_nodes = (nodes, -ones)   # y -
         E_nodes = (nodes, ones)    # y +
 
-        N_RM = self._f.reconstruct_matrix(*N_nodes, element_range=involved_mesh_elements)
-        S_RM = self._f.reconstruct_matrix(*S_nodes, element_range=involved_mesh_elements)
-        W_RM = self._f.reconstruct_matrix(*W_nodes, element_range=involved_mesh_elements)
-        E_RM = self._f.reconstruct_matrix(*E_nodes, element_range=involved_mesh_elements)
+        N_RM = self._f.reconstruction_matrix(*N_nodes, element_range=N_elements)
+        S_RM = self._f.reconstruction_matrix(*S_nodes, element_range=S_elements)
+        W_RM = self._f.reconstruction_matrix(*W_nodes, element_range=W_elements)
+        E_RM = self._f.reconstruction_matrix(*E_nodes, element_range=E_elements)
 
         bi_data = np.zeros(
             (
@@ -78,7 +90,8 @@ class BoundaryIntegrateVCBSLambda(Frozen):
             )
         )
 
-        for i in outward_unit_normal_vector:
+        for i in outward_unit_normal_vector:  # go through all local element faces in this boundary section.
+            # ``i`` is the local index, start from 0, end with num-1 while num is the amount of element faces.
             face = msepy_boundary_section.faces[i]
             local_dofs = face.find_corresponding_local_dofs_of(self._f)
             element, m, n = face._element, face._m, face._n
@@ -99,8 +112,8 @@ class BoundaryIntegrateVCBSLambda(Frozen):
             vx, vy = v
             vx = vx.T
             vy = vy.T
-            vx = vx[local_dofs, :]
-            vy = vy[local_dofs, :]
+            vx = vx[local_dofs]
+            vy = vy[local_dofs]
             nx, ny = onv
             trStar_vc = vc(t, *xy)[0]
             trace_f = vx * nx + vy * ny

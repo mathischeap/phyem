@@ -38,6 +38,7 @@ class MsePyMeshVisualizeMatplot(Frozen):
             saveto=None,
             linewidth=0.75,
             color='k',
+            title=True,  # True, False, None or custom
 
     ):
         """Default matplot method."""
@@ -157,6 +158,16 @@ class MsePyMeshVisualizeMatplot(Frozen):
             else:
                 pass
 
+        # deal with title -----------------------------------------------
+        if title is True:  # use the default title
+            sym_repr = self._mesh.abstract._sym_repr
+            plt.title(rf"${sym_repr}$")
+        elif title is None or title is False:
+            pass
+        else:
+            plt.title(title)
+
+        # ----- save -----------------------------------------------------
         plt.tight_layout()
         if saveto is not None and saveto != '':
             plt.savefig(saveto, bbox_inches='tight')

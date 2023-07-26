@@ -4,10 +4,6 @@
 @contact: zhangyi_aero@hotmail.com
 @time: 11/26/2022 2:56 PM
 """
-import sys
-
-if './' not in sys.path:
-    sys.path.append('./')
 
 from tools.frozen import Frozen
 from src.config import _mesh_default_sym_repr
@@ -15,6 +11,8 @@ from src.config import _check_sym_repr
 from src.config import _parse_lin_repr
 from src.config import _mesh_default_lin_repr
 from src.spaces.main import set_mesh
+
+from src.config import _mesh_partition_sym_repr, _mesh_partition_lin_repr
 
 _global_meshes = dict()    # all meshes are cached, and all sym_repr and lin_repr are different.
 
@@ -103,6 +101,15 @@ class Mesh(Frozen):   # Mesh -
         """"""
         return self._manifold.ndim
 
+    @property
+    def n(self):
+        return self.ndim
+
+    @property
+    def m(self):
+        """esd: embedded space dimensions."""
+        return self._manifold.m
+
     def __repr__(self):
         """"""
         super_repr = super().__repr__().split('object')[-1]
@@ -134,6 +141,26 @@ class Mesh(Frozen):   # Mesh -
     def inclusion(self):
         """Give the mesh of dimensions (n+1) on the inclusion manifold."""
         return self._inclusion
+
+    def partition(self, *sym_reprs, config_name=None):
+        """Define boundary sections by partition the mesh boundary into sections defined by `*sym_reprs`."""
+        if self._boundary is None:
+            _ = self.boundary()
+        else:
+            pass
+
+        _boundary = self.manifold.boundary()
+        sub_manifolds = _boundary.partition(*sym_reprs, config_name=config_name)
+        for sub_manifold in sub_manifolds:
+            sr0, sr1 = _mesh_partition_sym_repr
+            if sub_manifold._covered_by_mesh is None:
+                self.__class__(
+                    sub_manifold,
+                    sym_repr=sr0 + sub_manifold._sym_repr + sr1,
+                    lin_repr=_mesh_partition_lin_repr + sub_manifold._pure_lin_repr,
+                )  # it will be automatically saved to _global_meshes.
+            else:
+                pass
 
 
 class NullMesh(Frozen):

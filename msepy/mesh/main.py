@@ -199,7 +199,9 @@ class MsePyMesh(Frozen):
                         if _mesh.abstract._manifold is abstract_manifold:
                             the_abstract_mesh = _mesh.abstract
 
-                    assert the_abstract_mesh is not None, f"must find the abstract mesh."
+                    assert the_abstract_mesh is not None, \
+                        f"must find the abstract mesh for abstract manifold {sym}."
+
                     boundary_section_mesh = MsePyBoundarySectionMesh(
                         self,
                         msepy_manifold,

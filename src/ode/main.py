@@ -27,10 +27,6 @@ def ode(*args, **kwargs):
     return OrdinaryDifferentialEquation(*args, **kwargs)
 
 
-class OrdinaryDifferentialEquationError(Exception):
-    """Raise when we try to define new attribute for a frozen object."""
-
-
 class OrdinaryDifferentialEquation(Frozen):
     """ODE about t only. Only deal with real number valued terms."""
 
@@ -99,10 +95,7 @@ class OrdinaryDifferentialEquation(Frozen):
                     other_terms[i].append(None)
                     pattern[i].append(valid_pattern)
 
-        if number_valid_terms == 0:
-            raise OrdinaryDifferentialEquationError(f"It is not a valid ODE.")
-        else:
-            pass
+        self._num_pt_terms = number_valid_terms  # can be 0
         self._signs = signs
         self._order = partial_t_orders
         self._pterm = partial_t_terms
@@ -157,9 +150,13 @@ class OrdinaryDifferentialEquation(Frozen):
                 k += 1
 
         _about = list(set(_about))
-        assert len(_about) == 1, f"this ode should only about a single root-form."
-        self._about = _about[0]
-        self._overall_order = max(overall_order)
+        assert len(_about) <= 1, f"this ode should have no or only about a single root-form."
+        if len(_about) == 1:
+            self._about = _about[0]
+            self._overall_order = max(overall_order)
+        else:
+            self._about = None
+            self._overall_order = None
         self._ind = ind
         self._indexing = indexing
 
@@ -205,7 +202,7 @@ class OrdinaryDifferentialEquation(Frozen):
         """The elementary forms."""
         return self._efs
 
-    def print_representations(self, indexing=True, figsize=(12, 4)):
+    def pr(self, indexing=True, figsize=(12, 4)):
         """print representations"""
         sym = r'\noindent Time derivative of: '
         sym += rf'${self._about._sym_repr}$, '
@@ -254,10 +251,6 @@ class OrdinaryDifferentialEquation(Frozen):
         from src.config import _matplot_setting
         plt.show(block=_matplot_setting['block'])
         return fig
-
-    def pr(self, **kwargs):
-        """A wrapper of print_representations"""
-        return self.print_representations(**kwargs)
 
     @property
     def discretize(self):

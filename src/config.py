@@ -170,7 +170,9 @@ _global_operator_lin_repr_setting = {  # coded operators
     'duality-pairing': [r"$<$", r'\emph{,} ', r"$>$ \emph{over} "],
 
     'division': r' \emph{divided by} ',
-    'multiply': r' \emph{multiply} '
+    'multiply': r' \emph{multiply} ',
+
+    'cross_product': r"$\times$",
 }
 
 _non_root_lin_sep = [r'\{', r'\}']
@@ -185,7 +187,8 @@ _global_operator_sym_repr_setting = {  # coded operators
     'codifferential': r'\mathrm{d}^{\ast}',
     'time_derivative': r'\partial_{t}',
     'trace': r'\mathrm{tr}',
-    'division': [r'\dfrac{', r'}{', r"}"],
+    'division': [r'\frac{', r'}{', r"}"],
+    'cross_product': r"{\times}"
 }
 
 
@@ -198,5 +201,7 @@ _wf_term_default_simple_patterns = {   # use only str to represent a simple patt
     '(rt,rt)': '(root-sf, root-sf)',
     '(d,)': '(d root-sf, root-sf)',
     '(,d)': '(root-sf, d root-sf)',
-    '<tr star | tr >': '<tr star root-sf | trace root-sf>'
+    '<tr star | tr >': '<tr star root-sf | trace root-sf>',
+
+    '(*x,)': '(known-root-sf cross-product root-sf, root-sf)',
 }

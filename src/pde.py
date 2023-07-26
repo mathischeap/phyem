@@ -10,7 +10,10 @@ if './' not in sys.path:
     sys.path.append('./')
 
 from tools.frozen import Frozen
-from src.form.main import Form
+from src.config import _global_lin_repr_setting, _non_root_lin_sep
+from src.form.main import Form, _global_root_forms_lin_dict
+from src.config import _global_operator_lin_repr_setting
+
 
 import matplotlib.pyplot as plt
 import matplotlib
@@ -382,6 +385,7 @@ class PartialDifferentialEquations(Frozen):
 
         assert self.unknowns is not None, f"Set unknowns before testing the pde."
 
+        # -- below, we parse the test functions ----------------------------------------------
         test_spaces = _test_spaces
         tfs = list()
         for i, ts in enumerate(test_spaces):
@@ -408,17 +412,79 @@ class PartialDifferentialEquations(Frozen):
 
                 sr = sym_repr[i]
 
-            tf = ts.make_form(sr, f'{i}th-test-form')
+            j = i
+            form_lin_setting = _global_lin_repr_setting['form']
+            _test_lin_repr = form_lin_setting[0] + f'{j}th-test-form' + form_lin_setting[1]
+            while _test_lin_repr in _global_root_forms_lin_dict:
+                j += 1
+                _test_lin_repr = form_lin_setting[0] + f'{j}th-test-form' + form_lin_setting[1]
+
+            tf = ts.make_form(sr, f'{j}th-test-form')
             tfs.append(tf)
 
+        # -------- make weak form terms ---------------------------------------------------------
         term_dict = dict()
         for i in self._term_dict:   # ith equation
             term_dict[i] = ([], [])
             for j, terms in enumerate(self._term_dict[i]):
                 for k, term in enumerate(terms):
-                    raw_weak_term = inner(term, tfs[i], method=test_method)
+
+                    if term.is_root():  # we test a root-form with the test-form!
+
+                        raw_weak_term = inner(term, tfs[i], method=test_method)
+
+                    else:
+
+                        multiply_lin = _global_operator_lin_repr_setting['multiply']
+
+                        # check if we have multiplication in this pde term.
+                        if multiply_lin in term._lin_repr:
+
+                            if term._lin_repr.count(multiply_lin) == 1:
+
+                                front_form_lin_repr, the_end_form = term._lin_repr.split(multiply_lin)
+
+                                # below we check if we have: a scalar_parameter multiply a form
+                                scalar_parameter_lin = _global_lin_repr_setting['scalar_parameter']
+                                scalar_parameter_front, scalar_parameter_end = scalar_parameter_lin
+                                len_scalar_parameter_front = len(scalar_parameter_front)
+
+                                if front_form_lin_repr[:len_scalar_parameter_front] == scalar_parameter_front:
+
+                                    sep0, sep1 = _non_root_lin_sep
+
+                                    if the_end_form[:len(sep0)] == sep0 and the_end_form[-len(sep1):] == sep1:
+                                        # - the form is not a root form
+                                        root_form_lin_repr = the_end_form[len(sep0):-len(sep1)]
+                                    else:
+                                        root_form_lin_repr = the_end_form
+
+                                    from src.form.others import _find_form
+                                    the_form = _find_form(root_form_lin_repr)
+
+                                    sp_lin_repr = front_form_lin_repr
+                                    from src.form.parameters import _find_root_scalar_parameter
+
+                                    root_factor = _find_root_scalar_parameter(sp_lin_repr)
+
+                                    if root_factor is None:  # do not find a root factor.
+                                        raise NotImplementedError()
+                                    else:
+                                        raw_weak_term = inner(the_form, tfs[i], factor=root_factor, method=test_method)
+
+                                else:
+                                    raise NotImplementedError()
+
+                            else:
+                                raise NotImplementedError()
+                        else:
+
+                            raw_weak_term = inner(term, tfs[i], method=test_method)
+
+
                     term_dict[i][j].append(raw_weak_term)
 
+        # ------ make the weak formulation ----------------------------------------------------
         wf = WeakFormulation(tfs, term_sign_dict=(term_dict, self._sign_dict))
         wf.unknowns = self.unknowns
         wf._bc = self._bc   # send the BC to the weak formulation.

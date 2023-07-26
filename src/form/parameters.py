@@ -29,7 +29,9 @@ def constant_scalar(*args):
             else:
                 pass
             if arg == 0.5:
-                sym_repr, lin_repr = r"\dfrac{1}{2}", str(arg)
+                sym_repr, lin_repr = r"\frac{1}{2}", str(arg)
+            elif arg == 0.25:
+                sym_repr, lin_repr = r"\frac{1}{4}", str(arg)
             else:
                 sym_repr, lin_repr = str(arg), str(arg)
             is_real = True
@@ -205,7 +207,7 @@ class ConstantScalar0Form(Frozen):
             raise Exception()
 
 
-def _find_scalar_parameter(lin_repr):
+def _find_root_scalar_parameter(lin_repr):
     """"""
     for sp_id in _global_root_constant_scalars:
         sp = _global_root_constant_scalars[sp_id]
@@ -218,14 +220,14 @@ def _find_scalar_parameter(lin_repr):
 def _factor_parser(factor):
     """"""
     division = _global_operator_lin_repr_setting['division']
-    root_factor = _find_scalar_parameter(factor)
+    root_factor = _find_root_scalar_parameter(factor)
     if root_factor is not None:
         return root_factor
 
     elif division in factor and factor.count(division) == 1:
         factor0, factor1 = factor.split(division)
-        sp0 = _find_scalar_parameter(factor0)
-        sp1 = _find_scalar_parameter(factor1)
+        sp0 = _find_root_scalar_parameter(factor0)
+        sp1 = _find_root_scalar_parameter(factor1)
         return _Division2(sp0, sp1)
 
     else:

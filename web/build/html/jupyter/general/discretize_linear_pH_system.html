@@ -427,7 +427,7 @@ document.write(`
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[2]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">oph</span> <span class="o">=</span> <span class="n">samples</span><span class="o">.</span><span class="n">pde_canonical_pH</span><span class="p">(</span><span class="n">n</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">p</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">periodic</span><span class="o">=</span><span class="kc">False</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>  <span class="c1"># where o on `oph` means outer</span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">oph</span> <span class="o">=</span> <span class="n">samples</span><span class="o">.</span><span class="n">pde_canonical_pH</span><span class="p">(</span><span class="n">n</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">p</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">periodic</span><span class="o">=</span><span class="kc">True</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>  <span class="c1"># where o on `oph` means outer</span>
 </pre></div>
 </div>
 </div>
@@ -489,7 +489,6 @@ document.write(`
 
 <span class="n">td</span><span class="o">.</span><span class="n">differentiate</span><span class="p">(</span><span class="s1">&#39;1-0&#39;</span><span class="p">,</span> <span class="s1">&#39;k-1&#39;</span><span class="p">,</span> <span class="s1">&#39;k&#39;</span><span class="p">)</span>
 <span class="n">td</span><span class="o">.</span><span class="n">average</span><span class="p">(</span><span class="s1">&#39;1-1&#39;</span><span class="p">,</span> <span class="n">a3</span><span class="p">,</span> <span class="p">[</span><span class="s1">&#39;k-1&#39;</span><span class="p">,</span> <span class="s1">&#39;k&#39;</span><span class="p">])</span>
-<span class="n">td</span><span class="o">.</span><span class="n">average</span><span class="p">(</span><span class="s1">&#39;1-2&#39;</span><span class="p">,</span> <span class="n">a3</span><span class="p">,</span> <span class="p">[</span><span class="s1">&#39;k-1/2&#39;</span><span class="p">])</span>
 <span class="n">dt</span> <span class="o">=</span> <span class="n">td</span><span class="o">.</span><span class="n">time_sequence</span><span class="o">.</span><span class="n">make_time_interval</span><span class="p">(</span><span class="s1">&#39;k-1&#39;</span><span class="p">,</span> <span class="s1">&#39;k&#39;</span><span class="p">)</span>
 
 <span class="n">wf</span> <span class="o">=</span> <span class="n">td</span><span class="p">()</span>
@@ -530,7 +529,7 @@ document.write(`
 <span class="n">wf</span> <span class="o">=</span> <span class="n">wf</span><span class="o">.</span><span class="n">derive</span><span class="o">.</span><span class="n">rearrange</span><span class="p">(</span>
     <span class="p">{</span>
         <span class="mi">0</span><span class="p">:</span> <span class="s1">&#39;0, 3 = 2, 1&#39;</span><span class="p">,</span>
-        <span class="mi">1</span><span class="p">:</span> <span class="s1">&#39;3, 0 = 2, 1, 4&#39;</span><span class="p">,</span>
+        <span class="mi">1</span><span class="p">:</span> <span class="s1">&#39;3, 0 = 2, 1&#39;</span><span class="p">,</span>
     <span class="p">}</span>
 <span class="p">)</span>
 </pre></div>
@@ -640,7 +639,7 @@ By Andrea Brugnoli, Ramy Rashad, Stefano Stramigioli, Yi Zhang
   <div class="footer-item">
     
 <div class="extra_footer">
-  <div>Last updated on July 05, 2023, 15:31:34, W. Europe Daylight Time</div>
+  <div>Last updated on July 20, 2023, 19:19:32, W. Europe Daylight Time</div>
 </div>
   </div>
   

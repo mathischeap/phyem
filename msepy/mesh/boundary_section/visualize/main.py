@@ -1,4 +1,4 @@
-
+# -*- coding: utf-8 -*-
 import numpy as np
 from tools.frozen import Frozen
 from msepy.mesh.boundary_section.visualize.matplot import Matplot

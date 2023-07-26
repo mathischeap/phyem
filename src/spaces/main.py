@@ -38,11 +38,16 @@ _default_d_matrix_transpose_reprs = [
     _sep.join(["d:T:Mat", "{space_pure_lin_repr}", "{d}"]),
 ]
 
-_default_boundary_dp_vector_repr = [
+_default_boundary_dp_vector_reprs = [
     # once we know f0, we can find the correct basis functions it wedged with
     r"\boldsymbol{b}",
     _sep.join(["BoundaryDP:Vec", "trStar[{f0}]", "tr[{f1}]"]),
     #                            <tr star bf0 | tr f1>.
+]
+
+_default_astA_x_B_ip_tC_reprs = [
+    r"\mathsf{C}",
+    _sep.join(["X_ip:Mat", "[{A}]", "[{B}]", "[{C}]"]),
 ]
 
 _default_space_degree_repr = ':D-'

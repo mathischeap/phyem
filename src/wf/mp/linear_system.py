@@ -4,11 +4,6 @@ pH-lib@RAM-EEMCS-UT
 Yi Zhang
 Created at 3:32 PM on 5/9/2023
 """
-
-import sys
-
-if './' not in sys.path:
-    sys.path.append('./')
 from tools.frozen import Frozen
 import matplotlib.pyplot as plt
 import matplotlib
@@ -34,13 +29,14 @@ class MatrixProxyLinearSystem(Frozen):
 
     def _parse_bc(self, mp_bc):
         """"""
-        if mp_bc is None:
+        if mp_bc is None or len(mp_bc) == 0:
             self._bc = None
         else:
             self._bc = MatrixProxyLinearSystemBoundaryConditions(self, mp_bc)
 
     @property
     def bc(self):
+        """boundary condition."""
         return self._bc
 
     def pr(self, figsize=(12, 8)):

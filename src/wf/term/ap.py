@@ -8,6 +8,8 @@ from src.config import _wf_term_default_simple_patterns as _simple_patterns
 from src.spaces.ap import _parse_l2_inner_product_mass_matrix
 from src.spaces.ap import _parse_d_matrix
 from src.spaces.ap import _parse_boundary_dp_vector
+from src.spaces.ap import _parse_astA_x_B_ip_tC
+from src.form.parameters import ConstantScalar0Form
 from tools.frozen import Frozen
 
 
@@ -29,7 +31,7 @@ class TermLinearAlgebraicProxy(Frozen):
 
     def __rmul__(self, other):
         """other * self"""
-        if isinstance(other, (int, float)) or other.__class__.__name__ == 'ConstantScalar0Form':
+        if isinstance(other, (int, float)) or other.__class__ is ConstantScalar0Form:
             return self.__class__(other * self._abstract_array)
         else:
             raise NotImplementedError()
@@ -64,6 +66,8 @@ class _SimplePatternAPParser(Frozen):
                 return self._parse_reprs__d(test_form=test_form)
             elif sp == _simple_patterns['<tr star | tr >']:
                 return self._parse_reprs_tr_star_star(test_form=test_form)
+            elif sp == _simple_patterns['(*x,)']:
+                return self._parse_reprs_astA_x_B_ip_C(test_form=test_form)
             else:
                 raise NotImplementedError(f"not implemented for pattern = {sp}")
 
@@ -166,7 +170,6 @@ class _SimplePatternAPParser(Frozen):
         bf0 = spk['rsf0']
         bf1 = spk['rsf1']
 
-        d1 = bf1._degree
         v1 = bf1.ap()
         # s1 = bf1.space
         boundary_wedge_vector = _parse_boundary_dp_vector(bf0, bf1)
@@ -178,4 +181,25 @@ class _SimplePatternAPParser(Frozen):
 
         term = self._wft._factor * TermLinearAlgebraicProxy(term_ap)
         sign = '+'
+        return term, sign
+
+    def _parse_reprs_astA_x_B_ip_C(self, test_form=None):
+        """(A x B, C) where A is known! So this term is linear."""
+        spk = self._wft.___simple_pattern_keys___
+        A, B, C = spk['a'], spk['b'], spk['c']
+
+        if test_form == C:
+
+            cpm = _parse_astA_x_B_ip_tC(A, B, C)  # a root-array matrix
+
+            v0 = C.ap().T
+            v1 = B.ap()
+            term_ap = v0 @ cpm @ v1
+
+        else:
+            raise Exception('TO BE IMPLEMENTED!')  # better not to use NotImplementedError
+
+        term = self._wft._factor * TermLinearAlgebraicProxy(term_ap)
+        sign = '+'
+
         return term, sign

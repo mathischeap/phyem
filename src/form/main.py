@@ -16,7 +16,7 @@ matplotlib.use('TkAgg')
 
 from src.config import _global_lin_repr_setting
 from src.config import _parse_lin_repr
-from src.form.operators import wedge, time_derivative, d, codifferential
+from src.form.operators import wedge, time_derivative, d, codifferential, cross_product
 from src.config import _check_sym_repr
 from src.form.parameters import constant_scalar
 from src.config import _global_operator_lin_repr_setting
@@ -234,6 +234,10 @@ class Form(Frozen):
         """codifferential"""
         return codifferential(self)
 
+    def cross_product(self, other):
+        """"""
+        return cross_product(self, other)
+
     def __neg__(self):
         """- self"""
         raise NotImplementedError()
@@ -312,8 +316,12 @@ class Form(Frozen):
                 lr = lr + operator_lin + cs._lin_repr
                 sr = cs._sym_repr + sr
             else:
-                lr = r'\{' + lr + r'\}' + operator_lin + cs._lin_repr
-                sr = cs._sym_repr + r'\left(' + sr + r'\right)'
+                lr = cs._lin_repr + operator_lin + r'\{' + lr + r'\}'
+                if cs.is_root():
+                    sr = cs._sym_repr + sr
+                else:
+                    sr = cs._sym_repr + r'\left(' + sr + r'\right)'
+
             f = Form(
                 self.space,  # space
                 sr,          # symbolic representation
