@@ -47,7 +47,7 @@ class MsePySpaceErrorLambda(Frozen):
         quad_nodes, quad_weights = Quadrature(quad_degree).quad
         x, v = self._space.reconstruct(local_cochain, degree, quad_nodes)
         J = self._mesh.ct.Jacobian(quad_nodes)
-        x = x[0].T
+        x = x[0]
         v = v[0]
 
         integral = list()

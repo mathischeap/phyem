@@ -7,7 +7,7 @@ Created at 3:28 PM on 7/21/2023
 
 python tests/unittests/msepy/dualNS2/p1.py
 """
-
+from numpy import pi
 import sys
 
 if './' not in sys.path:
@@ -94,12 +94,12 @@ hdt = ts.make_time_interval('0', '1/2', sym_repr=r'\Delta t_{0}')
 
 itd0 = inner_wf.td
 itd0.set_time_sequence(ts)
-itd0.define_abstract_time_instants('0', '1/2', '1/4')
+itd0.define_abstract_time_instants('0', '1/2')
 itd0.differentiate('0-0', '0', '1/2')
 itd0.average('0-1', wo, ['0', ])
 itd0.average('0-1', ui, ['0', '1/2'])
 itd0.average('0-2', wi, ['0', '1/2'])
-itd0.average('0-3', Pi, ['1/4', ])
+itd0.average('0-3', Pi, ['0', ])
 itd0.average('1-0', wi, ['1/2', ])
 itd0.average('1-1', ui, ['1/2', ])
 itd0.average('2-0', ui, ['1/2', ])
@@ -108,7 +108,7 @@ iwf0 = itd0()
 iwf0.unknowns = [
     ui @ ts['1/2'],
     wi @ ts['1/2'],
-    Pi @ ts['1/4'],
+    Pi @ ts['0'],
     ]
 
 iwf0 = iwf0.derive.split(
@@ -156,16 +156,35 @@ mp0 = iwf0.mp()
 # mp0.pr()
 
 ls0 = mp0.ls()
-# ls0.pr()
+ls0.pr()
 
-# ---- msepy implementation
+# ---- msepy implementation --------------------------------------------
 msepy, obj = ph.fem.apply('msepy', locals())
 manifold = obj['manifold']
 msepy.config(manifold)(
-    'crazy', c=0., bounds=[[0., 1.], [0, 1]], periodic=True,
+    'crazy', c=0., bounds=[[0., 2*pi], [0, 2*pi]], periodic=True,
 )
 mesh = obj['mesh']
 msepy.config(mesh)([15, 15])
 # mesh.visualize()
 
+ts.specify('constant', [0, 1, 100], 2)
+from tests.samples.initial_condition_shear_layer_rollup import InitialConditionShearLayerRollUp
+initial_condition = InitialConditionShearLayerRollUp()
+Rn2.value = 1/100
+
+wo = obj['wo']
+ui = obj['ui']
+wi = obj['wi']
+wo.cf = initial_condition.vorticity
+wi.cf = initial_condition.vorticity
+ui.cf = initial_condition.velocity
+wo[0].reduce()
+wi[0].reduce()
+ui[0].reduce()
+
 ls0 = obj['ls0'].apply()
+ls0.pr()
+
+sls0 = ls0()
+sls0.pr()

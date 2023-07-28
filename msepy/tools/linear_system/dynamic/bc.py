@@ -255,7 +255,7 @@ class MsePyDLSEssentialBoundaryCondition(MsePyDLSBoundaryCondition):
         """
         assert dls.shape[0] == len(A) == len(x) == len(b), f"check!"
 
-        # below, we try to find the msepy mesh boundary section where the essential bc will apply.
+        # below, we try to find the msepy mesh boundary section where the essential bc will apply.------
         from msepy.main import base
         meshes = base['meshes']  # find mesh here! because only when we call it, the meshes are config-ed.
         found_msepy_boundary_section_mesh = None
@@ -284,7 +284,7 @@ class MsePyDLSEssentialBoundaryCondition(MsePyDLSBoundaryCondition):
                 pass
         assert found_msepy_bf0 is not None, f"we must have found a msepy form."
 
-        # -- now, we  try to find the mesh-elements, local-dofs to be used.
+        # -- now, we  try to find the mesh-elements, local-dofs to be used.--------------------
 
         faces = found_msepy_boundary_section_mesh.faces
         if len(faces) == 0:  # this bc is valid on no faces. Just skip.
@@ -303,7 +303,7 @@ class MsePyDLSEssentialBoundaryCondition(MsePyDLSBoundaryCondition):
                 face.find_corresponding_local_dofs_of(found_msepy_bf0)
             )
 
-        # --- below, we try to find the coefficients to be used. This is the most important part.
+        # --- below, we try to find the coefficients to be used. This is the most important part.----
 
         i = self._raw_ls_bc._i
         time = x[i]._time
@@ -333,7 +333,7 @@ class MsePyDLSEssentialBoundaryCondition(MsePyDLSBoundaryCondition):
             global_dofs.extend(gm[e][_1_local_dofs[i]])
             global_cochain.extend(_2_cochain[i])
 
-        # -- customize the system ----------
+        # -- customize the system -----------------------------------------------------------
         if len(global_dofs) > 0:
             i = self._raw_ls_bc._i
             Ai = A[i]

@@ -46,7 +46,10 @@ class MsePyStaticLocalMatrix(Frozen):
             self._dtype = 'realtime'
             self._data = data
             assert cache_key is not None, f"when provided callable data, must provide cache_key."
-            self._cache_key = cache_key
+            if cache_key == 'unique':
+                self._cache_key = self._unique_cache_key
+            else:
+                self._cache_key = cache_key
         else:
             raise NotImplementedError(f"MsePyLocalMatrix cannot take data of type {data.__class__}.")
         self._gm0_row = gm_row
@@ -71,6 +74,11 @@ class MsePyStaticLocalMatrix(Frozen):
         """"""
         assert i in self, f"i={i} is out of range."
         return 'constant'
+
+    def _unique_cache_key(self, i):
+        """"""
+        assert i in self, f"i={i} is out of range."
+        return 'unique'
 
     def ___get_meta_data___(self, i):
         """"""
@@ -278,8 +286,64 @@ class MsePyStaticLocalMatrix(Frozen):
             cache_key=self._cache_key_T,
         )
 
+    def __add__(self, other):
+        """self + other"""
+        if other.__class__ is self.__class__:
+            # self + another one of the same class
+            add_sub_helper = _AddSubHelper(self, other, '+')
+            return self.__class__(
+                add_sub_helper, self._gm0_row, self._gm1_col, cache_key=add_sub_helper._cache_key
+            )
+        else:
+            raise NotImplementedError(f"cannot + {other}")
+
+    def __sub__(self, other):
+        """self - other"""
+        if other.__class__ is self.__class__:
+            # self + another one of the same class
+            add_sub_helper = _AddSubHelper(self, other, '-')
+            return self.__class__(
+                add_sub_helper, self._gm0_row, self._gm1_col, cache_key=add_sub_helper._cache_key
+            )
+        else:
+            raise NotImplementedError(f"cannot + {other}")
+
     def _neg_T(self, i):
         return - self._get_data_adjusted(i)
+
+
+class _AddSubHelper(Frozen):
+    """"""
+    def __init__(self, m0, m1, plus_or_minus):
+        """"""
+        self._m0 = m0
+        self._m1 = m1
+        assert plus_or_minus in ('+', '-')
+        self._plus_or_minus = plus_or_minus
+        self._freeze()
+
+    def __call__(self, i):
+        """data for element #i"""
+        d0 = self._m0._get_data_adjusted(i)
+        d1 = self._m1._get_data_adjusted(i)
+        if self._plus_or_minus == '+':
+            return d0 + d1
+        elif self._plus_or_minus == '-':
+            return d0 - d1
+        else:
+            raise Exception()
+
+    def _cache_key(self, i):
+        """"""
+        if i in self._m0.adjust or i in self._m1.adjust:
+            return 'unique'
+        else:
+            ck0 = self._m0._cache_key(i)
+            ck1 = self._m1._cache_key(i)
+            if ck0 == 'constant' and ck1 == 'constant':
+                return 'constant'
+            else:
+                return ck0+'@'+ck1
 
 
 class _FactorRmul(Frozen):

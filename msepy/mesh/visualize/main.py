@@ -11,6 +11,7 @@ if './' not in sys.path:
 from tools.frozen import Frozen
 from msepy.mesh.visualize.matplot import MsePyMeshVisualizeMatplot
 from msepy.mesh.visualize.vtk_ import MsePyMeshVisualizeVTK
+from msepy.mesh.visualize.target import MsePyMeshVisualizeTarget
 
 
 class MsePyMeshVisualize(Frozen):
@@ -25,6 +26,24 @@ class MsePyMeshVisualize(Frozen):
     def __call__(self, *args, **kwargs):
         """"""
         return self.matplot(*args, **kwargs)
+
+    def _target(self, function, sampling_factor=1, **kwargs):
+        """We plot the function on this mesh
+
+        Parameters
+        ----------
+        function
+            Can be called like ``function(*coo)`` and return a list of components. If it returns a scalar, then
+            it should be like `[s, ]`.
+
+            ``coo`` are the coordinates in each mesh element.
+        kwargs
+
+        Returns
+        -------
+
+        """
+        return MsePyMeshVisualizeTarget(self._mesh)(function, sampling_factor=sampling_factor, **kwargs)
 
     @property
     def matplot(self):

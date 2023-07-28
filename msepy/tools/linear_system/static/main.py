@@ -3,6 +3,14 @@ r"""
 pH-lib@RAM-EEMCS-UT
 Yi Zhang
 """
+import matplotlib.pyplot as plt
+import matplotlib
+plt.rcParams.update({
+    "text.usetex": True,
+    "font.family": "DejaVu Sans",
+    "text.latex.preamble": r"\usepackage{amsmath, amssymb}",
+})
+matplotlib.use('TkAgg')
 import numpy as np
 
 from tools.frozen import Frozen
@@ -19,7 +27,7 @@ from msepy.tools.vector.static.concatenate import concatenate
 class MsePyStaticLinearSystem(Frozen):
     """"""
 
-    def __init__(self, A, x, b):
+    def __init__(self, A, x, b, _pr_texts=None):
         row_shape = len(A)
         col_shape = len(A[0])
         assert len(x) == col_shape and len(b) == row_shape, "A, x, b shape dis-match."
@@ -29,6 +37,7 @@ class MsePyStaticLinearSystem(Frozen):
         self._x = _Xxx(self, x)
         self._b = _Bbb(self, b)
         self._customize = None
+        self._pr_texts = _pr_texts
         self._freeze()
 
     @property
@@ -147,6 +156,59 @@ class MsePyStaticLinearSystem(Frozen):
         if self._customize is None:
             self._customize = MsePyStaticLinearSystemCustomize(self)
         return self._customize
+
+    def pr(self, figsize=(10, 4)):
+        """"""
+        if self._pr_texts is None:
+            print('No texts to print.')
+            return
+        texts = self._pr_texts
+        A_text, x_text, b_text = texts
+        I_ = len(A_text)
+        _J = len(A_text[0])
+        tA = ''
+        tx = ''
+        tb = ''
+        for i in range(I_):
+            for j in range(_J):
+                tA_ij = A_text[i][j]
+                if tA_ij == '':
+                    tA_ij = '0'
+                else:
+                    pass
+                tA += tA_ij
+                if j < _J - 1:
+                    tA += '&'
+            if i < I_ - 1:
+                tA += r'\\'
+        tA = r"\begin{bmatrix}" + tA + r"\end{bmatrix}"
+        for j in range(_J):
+            tx_j = x_text[j]
+            assert tx_j != '', f"unknown must be something!"
+            tx += tx_j
+            if j < _J - 1:
+                tx += r'\\'
+        tx = r"\begin{bmatrix}" + tx + r"\end{bmatrix}"
+        for i in range(I_):
+            tb_i = b_text[i]
+            if tb_i == '':
+                tb_i = '0'
+            tb += tb_i
+            if i < I_ - 1:
+                tb += r'\\'
+        tb = r"\begin{bmatrix}" + tb + r"\end{bmatrix}"
+
+        text = tA + tx + '=' + tb
+        text = r"$" + text + r"$"
+        fig = plt.figure(figsize=figsize)
+        plt.axis([0, 1, 0, 1])
+        plt.axis('off')
+        plt.text(0.05, 0.5, text, ha='left', va='center', size=15)
+        plt.tight_layout()
+        from src.config import _matplot_setting
+        plt.show(block=_matplot_setting['block'])
+
+        return fig
 
 
 class _AAA(Frozen):

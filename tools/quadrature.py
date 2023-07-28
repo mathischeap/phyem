@@ -38,6 +38,11 @@ class Quadrature(object):
         self.___PRIVATE_check_p___()
         self._quad_ = None
 
+    def __repr__(self):
+        """repr"""
+        super_repr = super().__repr__().split('object')[1]
+        return f"Quadrature p={self._p_} of type {self._category_}" + super_repr
+
     @classmethod
     def ___PRIVATE_coded_quadrature___(cls):
         """ 

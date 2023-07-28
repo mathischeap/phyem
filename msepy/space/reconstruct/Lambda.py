@@ -34,7 +34,7 @@ class MsePySpaceReconstructLambda(Frozen):
         xi = xi[0]
         x = self._mesh.ct.mapping(xi)
         v = np.einsum('ij, ei -> ej', bf, local_cochain, optimize='optimal')
-        return x, (v, )  # here x is already in a tuple, like (x-coo, )
+        return (x[0].T, ), (v, )  # here x is already in a tuple, like (x-coo, )
 
     def _m1_n1_k1(self, local_cochain, degree, *meshgrid_xi):
         """"""
@@ -50,7 +50,7 @@ class MsePySpaceReconstructLambda(Frozen):
             v = np.einsum('ij, ei -> ej', bf * iJ_ci, cochain_batch, optimize='optimal')
             value_batches.append(v)
         v = iJ.merge(value_batches, axis=0)
-        return x, (v, )  # here x is already in a tuple, like (x-coo, )
+        return (x[0].T, ), (v, )  # here x is already in a tuple, like (x-coo, )
 
     def _m2_n2_k0(self, local_cochain, degree, *meshgrid_xi_et, ravel=False):
         """"""

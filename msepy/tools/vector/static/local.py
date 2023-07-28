@@ -34,7 +34,7 @@ class MsePyStaticLocalVector(Frozen):
                 raise Exception(f"None type vector has no data, set it first!")
 
             else:
-                return self._data  # will raise Error when data is callable (generated in realtime.)
+                return self._data  # will raise Error when data is callable (generated in realtime) or None.
         else:
             raise NotImplementedError()
 

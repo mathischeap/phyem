@@ -35,9 +35,9 @@ class MsePyRootForm(Frozen):
         self._cf = None
         self._cochain = None  # do not initialize cochain here!
         self._pAti_form: Dict = {
-            'base_form': None,
-            'ats': None,
-            'ati': None
+            'base_form': None,   # the base form
+            'ats': None,   # abstract time sequence
+            'ati': None,   # abstract time instant
         }
         self._ats_particular_forms = dict()   # the abstract forms based on this form.
         self._visualize = None

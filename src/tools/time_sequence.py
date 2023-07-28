@@ -419,7 +419,7 @@ class AbstractTimeInterval(Frozen):
             ati_sr = self._sym_repr
             ati_lr = self._pure_lin_repr
             self._s = constant_scalar(ati_sr, ati_lr)
-            self._s._caller = self.__call__
+            self._s._value = self.__call__
         return self._s
 
     def __rtruediv__(self, other):
@@ -447,14 +447,17 @@ if __name__ == '__main__':
     # print(ti.start, ti.end, ti)
 
     at = AbstractTimeSequence()
-    t0 = at['k-1']
+    t0 = at['2']
     t1 = at['k']
     # ti = AbstractTimeInterval(t0, t1)
     # at.specify('constant', [0, 100, 100], 2)
     # # for k in range(1,10):
     # print(ti.start(k=1), ti.end(k=1), ti(k=1))
 
-    ti = at.make_time_interval('k+0', 'k+0.5')
+    # ti = at.make_time_interval('k+0', 'k+0.5')
     at.specify('constant', [0, 100, 100], 2)
     # for k in range(1,10):
-    print(ti.start(k=1)(), ti(k=1)(), t1(k=50)())
+
+    print(t0(k=100)())
+
+    # print(ti.start(k=1)(), ti(k=1)(), t1(k=50)())

@@ -74,7 +74,6 @@ def test_function(K, N, c):
     msepy.config(mesh)(K)
 
     scalar = ph.vc.scalar(fx)
-
     f1.cf = scalar
     f1[2].reduce()
     f0.cf = scalar

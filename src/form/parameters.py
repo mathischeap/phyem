@@ -92,12 +92,13 @@ class ConstantScalar0Form(Frozen):
             pure_lin_repr = None
         self._lin_repr = lin_repr
         self._pure_lin_repr = pure_lin_repr
-        self._is_real = is_real
+        self._is_real = is_real  # the pure lin repr is a numeric string.
         self._is_root = is_root
         if self._is_real:
             assert self._is_root, f"safety, almost trivial check."
+            self._value = float(self._pure_lin_repr)
         else:
-            self._caller = None
+            self._value = None
         self._freeze()
 
     def pr(self):
@@ -124,18 +125,37 @@ class ConstantScalar0Form(Frozen):
             f = float(self._pure_lin_repr)
             if f == 1:
                 return ''
+            elif f == 0.5:
+                return r'\frac{1}{2}'
             else:
                 return str(f)
         else:
-            raise NotImplementedError()
+            return self._sym_repr
+
+    @property
+    def value(self):
+        return self._value
+
+    @value.setter
+    def value(self, val):
+        """"""
+        if isinstance(val, (int, float)):
+            self._value = val
+        else:
+            assert callable(val), f"the value of a scalar parameter must be a number of a callable object."
+            self._value = val
 
     def __call__(self, *args, **kwargs):
         """"""
         if self.is_real():
-            return float(self._pure_lin_repr)
+            assert isinstance(self._value, float), f'must be'
+            return self.value
+        elif isinstance(self.value, (int, float)):
+            return self.value
         else:
-            assert self._caller is not None, f"pls first set the caller for {self}"
-            return self._caller(*args, **kwargs)
+            assert self.value is not None, f"pls first set a value for {self}"
+            assert callable(self.value), f"if value is not a number, it must be callable."
+            return self.value(*args, **kwargs)
 
     def __eq__(self, other):
         """self == other"""
@@ -263,7 +283,7 @@ class _Division2(Frozen):
         """"""
         sf0 = self._f0._sym_repr
         sf1 = self._f1._sym_repr
-        return r"\dfrac{" + sf0 + r"}{" + sf1 + r"}"
+        return r"\frac{" + sf0 + r"}{" + sf1 + r"}"
 
 
 if __name__ == '__main__':

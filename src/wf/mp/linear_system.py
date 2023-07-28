@@ -39,7 +39,7 @@ class MatrixProxyLinearSystem(Frozen):
         """boundary condition."""
         return self._bc
 
-    def pr(self, figsize=(12, 8)):
+    def pr(self, figsize=(12, 6)):
         """"""
         seek_text = self._mp._mp_seek_text()
         linear_system_text = self._ls._pr_text()

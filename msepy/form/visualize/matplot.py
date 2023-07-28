@@ -51,7 +51,7 @@ class MsePyRootFormVisualizeMatplot(Frozen):
         t = self._f.visualize._t
         x, v = self._f[t].reconstruct(linspace)
 
-        x = x[0].T
+        x = x[0]
         v = v[0]
         num_lines = len(x)  # also num elements
         fig = plot(

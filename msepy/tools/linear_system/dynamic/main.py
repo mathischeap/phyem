@@ -14,7 +14,7 @@ matplotlib.use('TkAgg')
 
 from tools.frozen import Frozen
 from msepy.tools.matrix.static.local import MsePyStaticLocalMatrix
-from msepy.tools.matrix.dynamic import MsePyDynamicLocalMatrixVector
+from msepy.tools.matrix.dynamic import MsePyDynamicLocalMatrix
 from msepy.tools.vector.dynamic import MsePyDynamicLocalVector
 from msepy.form.cochain.vector.dynamic import MsePyRootFormDynamicCochainVector
 from src.config import _abstract_array_factor_sep, _abstract_array_connector
@@ -74,6 +74,7 @@ class MsePyDynamicLinearSystem(Frozen):
         num_rows, num_cols = self.shape
 
         static_A = [[None for _ in range(num_cols)] for _ in range(num_rows)]
+        A_texts = [['' for _ in range(num_cols)] for _ in range(num_rows)]  # do not change '' into something else
         for i in range(num_rows):
             for j in range(num_cols):
 
@@ -84,22 +85,29 @@ class MsePyDynamicLinearSystem(Frozen):
 
                 else:
 
-                    static_Aij = Aij(*args, **kwargs)
+                    static_Aij, text = Aij(*args, **kwargs)
 
                     static_A[i][j] = static_Aij
 
+                    A_texts[i][j] = text
+
         static_x = [None for _ in range(num_cols)]
+        x_texts = ['' for _ in range(num_cols)]  # do not change '' into something else
         for j in range(num_cols):
 
             x_j = self._x[j]  # x_j cannot be None
 
-            static_x_j = x_j(*args, **kwargs)
+            static_x_j, text = x_j(*args, **kwargs)
 
             assert static_x_j.__class__ is MsePyRootFormStaticCochainVector, \
                 f"entry #{j}  of x is not a MsePyRootFormStaticCochainVector!"
+
             static_x[j] = static_x_j
 
+            x_texts[j] = text
+
         static_b = [None for _ in range(num_rows)]
+        b_texts = ['' for _ in range(num_rows)]  # do not change '' into something else
         for i in range(num_rows):
 
             b_i = self._b[i]
@@ -107,9 +115,11 @@ class MsePyDynamicLinearSystem(Frozen):
             if b_i is None:
                 pass
             else:
-                static_b_i = b_i(*args, **kwargs)
+                static_b_i, text = b_i(*args, **kwargs)
 
                 static_b[i] = static_b_i
+
+                b_texts[i] = text
 
         # ----- now we pre-define a static ls to check everything is ok and also to retrieve the gms.
         predefined_sls = MsePyStaticLinearSystem(static_A, static_x, static_b)
@@ -157,7 +167,10 @@ class MsePyDynamicLinearSystem(Frozen):
                         pass
 
         # static_A, static_x and static_b are used to make a static linear system
-        return MsePyStaticLinearSystem(static_A, static_x, static_b)
+        return MsePyStaticLinearSystem(
+            static_A, static_x, static_b,
+            _pr_texts=[A_texts, x_texts, b_texts],
+        )
 
     def _parse_matrix_block(self, A):
         """"""
@@ -264,7 +277,7 @@ class MsePyDynamicLinearSystem(Frozen):
 
         return text
 
-    def pr(self, figsize=(10, 6)):
+    def pr(self, figsize=(10, 4)):
         """pr"""
         assert self._A is not None, f"dynamic linear system initialized but not applied, do `.apply()` firstly."
 
@@ -325,6 +338,7 @@ class DynamicBlockEntry(Frozen):
     def __call__(self, *args, **kwargs):
         """"""
         factor_terms = list()
+        texts_list = list()
         for i in self:
             dynamic_term = self[i]
             sign, factor, term = dynamic_term.sign, dynamic_term.factor, dynamic_term.component
@@ -334,6 +348,34 @@ class DynamicBlockEntry(Frozen):
 
             assert isinstance(factor, (int, float)), f"static factor={factor} is wrong, must be a real number."
 
+            # below, we parse the factor into str for printing purpose ------------------------
+            if factor % 1 == 0:
+                factor = int(factor)
+
+            if factor == 1:
+                factor_str = ''
+            else:
+                if (1 / factor) % 1 == 0:
+                    _str_fac = r'\frac{1}{' + str(int(1/factor)) + '}'
+                else:
+                    _str_fac = str(factor)
+
+                factor_str = _str_fac + '*'
+
+            if hasattr(term, '_gm0_row'):  # must be a MsePy Local matrix
+                local_shape = (term._gm0_row.shape[1], term._gm1_col.shape[1])
+                texts_list.append(
+                    factor_str + str(local_shape)
+                )
+            elif hasattr(term, '_gm'):
+                local_shape = term._gm.shape[1]
+                texts_list.append(
+                    factor_str + r'\left[' + str(local_shape) + r'\right]'
+                )
+            else:
+                raise Exception()
+            # ===============================================================================
+
             if factor == 1:
                 if sign == '-':
                     factor_term = - term
@@ -341,7 +383,6 @@ class DynamicBlockEntry(Frozen):
                     factor_term = term
 
             else:
-
                 if sign == '-':
                     factor_term = - factor * term
                 else:
@@ -362,7 +403,7 @@ class DynamicBlockEntry(Frozen):
             MsePyStaticLocalVector,
         ), f"static={static} is wrong."
 
-        return static
+        return static, '+'.join(texts_list)
 
 
 class DynamicTerm(Frozen):
@@ -391,12 +432,12 @@ class DynamicTerm(Frozen):
             Mat, sym_repr = msepy_root_array_parser(dls, comp_lin_repr)
 
             if Mat.__class__ is MsePyStaticLocalMatrix:
-                Mat = MsePyDynamicLocalMatrixVector(Mat)
+                Mat = MsePyDynamicLocalMatrix(Mat)
             else:
                 pass
 
             assert Mat.__class__ in (
-                MsePyDynamicLocalMatrixVector,
+                MsePyDynamicLocalMatrix,
                 MsePyRootFormDynamicCochainVector,
                 MsePyDynamicLocalVector,
             ), f"{Mat.__class__} cannot be used for RawTerm."
@@ -415,7 +456,7 @@ class DynamicTerm(Frozen):
                 self._comp = self._comp @ _c
 
         assert self._comp.__class__ in (
-            MsePyDynamicLocalMatrixVector,
+            MsePyDynamicLocalMatrix,
             MsePyRootFormDynamicCochainVector,
             MsePyDynamicLocalVector,
         ), f"{self._comp.__class__} cannot be used for RawTerm."

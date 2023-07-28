@@ -10,7 +10,7 @@ from msepy.form.cochain.vector.dynamic import MsePyRootFormDynamicCochainVector
 from msepy.tools.vector.dynamic import MsePyDynamicLocalVector
 
 
-class MsePyDynamicLocalMatrixVector(Frozen):
+class MsePyDynamicLocalMatrix(Frozen):
     """"""
 
     def __init__(self, data):
@@ -50,11 +50,11 @@ class MsePyDynamicLocalMatrixVector(Frozen):
 
     def __matmul__(self, other):
         """self @ other"""
-        if other.__class__ is MsePyDynamicLocalMatrixVector:
+        if other.__class__ is MsePyDynamicLocalMatrix:
 
             mat_list = [self, other]
 
-            return MsePyDynamicLocalMatrixVector(mat_list)
+            return MsePyDynamicLocalMatrix(mat_list)
 
         elif other.__class__ in (MsePyDynamicLocalVector, MsePyRootFormDynamicCochainVector):
 

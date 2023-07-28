@@ -62,7 +62,7 @@ class MsePyMesh(Frozen):
         """regions"""
         return self.manifold.regions
 
-    def _regionwsie_stack(self, *ndas):
+    def _regionwsie_stack(self, *ndas, axis=0):
         """We use this method to stack a ndarray regions-wise. This function is very useful
         in plotting reconstruction data. Since in a region, the date are structured mesh element wise,
         so we can only plot element by element. But if we group data from elements of the same
@@ -85,22 +85,43 @@ class MsePyMesh(Frozen):
                 else:
                     raise NotImplementedError(nda.__class__)
 
-                assert len(nda) == self._elements._num
+                if isinstance(nda, dict):
+                    assert len(nda) == self._elements._num
+                else:
+                    assert nda.shape[axis] == self._elements._num, \
+                        f"along {axis}-axis, it must have same layer as num elements"
+
                 _sd = {}
                 if isinstance(nda, dict):
                     ij = np.shape(nda[0])
                 else:
-                    ij = np.shape(nda)[1:]
+                    sp = np.shape(nda)
+                    if axis == 0:
+                        ij = sp[1:]
+                    elif axis == -1:
+                        ij = sp[:-1]
+                    else:
+                        raise NotImplementedError('axis must be 0 or -1!')
+
                 I, J = ij
                 EGN = self.elements._numbering
                 for Rn in EGN:
                     layout = self.elements._distribution[Rn]
                     region_data_shape = [ij[i] * layout[i] for i in range(2)]
                     _sd[Rn] = np.zeros(region_data_shape)
-                    for j in range(layout[1]):
-                        for i in range(layout[0]):
-                            _sd[Rn][i * I:(i + 1) * I, j * J:(j + 1) * J] = \
-                                nda[EGN[Rn][i, j]]
+                    if axis == 0:
+                        for j in range(layout[1]):
+                            for i in range(layout[0]):
+                                _sd[Rn][i * I:(i + 1) * I, j * J:(j + 1) * J] = \
+                                    nda[EGN[Rn][i, j]]
+                    elif axis == -1:
+                        for j in range(layout[1]):
+                            for i in range(layout[0]):
+                                _sd[Rn][i * I:(i + 1) * I, j * J:(j + 1) * J] = \
+                                    nda[:, :, EGN[Rn][i, j]]
+                    else:
+                        raise Exception()
+
                 _SD += (_sd,)
 
             _SD = _SD[0] if len(ndas) == 1 else _SD

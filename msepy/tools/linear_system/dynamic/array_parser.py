@@ -206,10 +206,12 @@ def _parse_astA_x_B_ip_tC(gA, B, tC):
         ABC_forms.append(msepy_base_form)
 
     from msepy.form.tools.operations.nonlinear.AxB_ip_C import _AxBipC
-
+    msepy_A, msepy_B, msepy_C = ABC_forms
     nonlinear_operation = _AxBipC(*ABC_forms)
 
-    raise Exception()
+    C = nonlinear_operation(2, msepy_C, msepy_B)
+
+    return C
 
 
 def _parse_trStar_rf0_dp_tr_s1_vector(dls, tr_star_rf0, tr_rf1):
