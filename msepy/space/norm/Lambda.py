@@ -32,17 +32,17 @@ class MsePySpaceNormLambda(Frozen):
         assert isinstance(d, int) and d > 0, f"d={d} is wrong."
 
         if quad_degree is None:
-            quad_degree = [i + 3 for i in self._space[degree].p]  # + 3 for higher accuracy.
+            quad_degree = [i + 1 for i in self._space[degree].p]  # + 1
         else:
             pass
 
-        return getattr(self, f'_m{m}_n{n}_k{k}')(d, quad_degree, local_cochain, degree)
+        return getattr(self, f'_L_norm_m{m}_n{n}_k{k}')(d, quad_degree, local_cochain, degree)
 
-    def _m1_n1_k0(self, d, quad_degree, local_cochain, degree):
+    def _L_norm_m1_n1_k0(self, d, quad_degree, local_cochain, degree):
         """"""
-        return self._m1_n1_k1(d, quad_degree, local_cochain, degree)
+        return self._L_norm_m1_n1_k1(d, quad_degree, local_cochain, degree)
 
-    def _m1_n1_k1(self, d, quad_degree, local_cochain, degree):
+    def _L_norm_m1_n1_k1(self, d, quad_degree, local_cochain, degree):
         """"""
         quad_nodes, quad_weights = Quadrature(quad_degree).quad
         _, v = self._space.reconstruct(local_cochain, degree, quad_nodes)
@@ -60,11 +60,11 @@ class MsePySpaceNormLambda(Frozen):
 
         return np.sum(integral) ** (1/d)
 
-    def _m2_n2_k2(self, d, quad_degree, local_cochain, degree):
+    def _L_norm_m2_n2_k2(self, d, quad_degree, local_cochain, degree):
         """m2 n2 k2"""
-        return self._m2_n2_k0(d, quad_degree, local_cochain, degree)
+        return self._L_norm_m2_n2_k0(d, quad_degree, local_cochain, degree)
 
-    def _m2_n2_k1(self, d, quad_degree, local_cochain, degree):
+    def _L_norm_m2_n2_k1(self, d, quad_degree, local_cochain, degree):
         """"""
         quad_nodes, quad_weights = Quadrature(quad_degree).quad
         _, v = self._space.reconstruct(local_cochain, degree, *quad_nodes, ravel=False)
@@ -85,7 +85,7 @@ class MsePySpaceNormLambda(Frozen):
 
         return np.sum(integral) ** (1/d)
 
-    def _m2_n2_k0(self, d, quad_degree, local_cochain, degree):
+    def _L_norm_m2_n2_k0(self, d, quad_degree, local_cochain, degree):
         """"""
         quad_nodes, quad_weights = Quadrature(quad_degree).quad
         _, v = self._space.reconstruct(local_cochain, degree, *quad_nodes, ravel=False)
@@ -106,7 +106,7 @@ class MsePySpaceNormLambda(Frozen):
 
         return np.sum(integral) ** (1/d)
 
-    def _m3_n3_k0(self, d, quad_degree, local_cochain, degree):
+    def _L_norm_m3_n3_k0(self, d, quad_degree, local_cochain, degree):
         """"""
         quad_nodes, quad_weights = Quadrature(quad_degree).quad
         _, v = self._space.reconstruct(local_cochain, degree, *quad_nodes, ravel=False)
@@ -127,11 +127,11 @@ class MsePySpaceNormLambda(Frozen):
 
         return np.sum(integral) ** (1/d)
 
-    def _m3_n3_k1(self, d, quad_degree, local_cochain, degree):
+    def _L_norm_m3_n3_k1(self, d, quad_degree, local_cochain, degree):
         """"""
-        return self._m3_n3_k2(d, quad_degree, local_cochain, degree)
+        return self._L_norm_m3_n3_k2(d, quad_degree, local_cochain, degree)
 
-    def _m3_n3_k2(self, d, quad_degree, local_cochain, degree):
+    def _L_norm_m3_n3_k2(self, d, quad_degree, local_cochain, degree):
         """"""
         quad_nodes, quad_weights = Quadrature(quad_degree).quad
         _, v = self._space.reconstruct(local_cochain, degree, *quad_nodes, ravel=False)
@@ -153,6 +153,6 @@ class MsePySpaceNormLambda(Frozen):
 
         return np.sum(integral) ** (1/d)
 
-    def _m3_n3_k3(self, d, quad_degree, local_cochain, degree):
+    def _L_norm_m3_n3_k3(self, d, quad_degree, local_cochain, degree):
         """"""
-        return self._m3_n3_k0(d, quad_degree, local_cochain, degree)
+        return self._L_norm_m3_n3_k0(d, quad_degree, local_cochain, degree)

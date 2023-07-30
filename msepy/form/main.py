@@ -4,7 +4,6 @@ pH-lib@RAM-EEMCS-UT
 Yi Zhang
 Created at 1:22 PM on 4/17/2023
 """
-
 import sys
 from typing import Dict
 
@@ -47,6 +46,12 @@ class MsePyRootForm(Frozen):
         self._reconstruct_matrix = None
         self._freeze()
 
+    def _saving_check(self):
+        """If you want to use `ph.save` to save instances of this class, it must have this method."""
+        saving_key = self.abstract._pure_lin_repr  # the key used to represent self in the dict to be saved.
+        saving_obj = self  # self only presents in one thread, so just save it.
+        return saving_key, saving_obj
+
     @property
     def abstract(self):
         """the abstract object this root-form is for."""
@@ -57,8 +62,12 @@ class MsePyRootForm(Frozen):
         ab_rf_repr = self._abstract.__repr__().split(' at ')[0][1:]
         return "<MsePy " + ab_rf_repr + super().__repr__().split(" object")[1]
 
-    def __getitem__(self, t):
+    def __getitem__(self, t=None):
         """return the realtime copy of `self` at time `t`."""
+        if t is None:
+            t = self.cochain.newest  # newest time
+        else:
+            pass
         t = self.cochain._parse_t(t)  # round off the truncation error to make it clear.
         if isinstance(t, (int, float)):
             if self._is_base():

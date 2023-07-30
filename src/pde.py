@@ -186,8 +186,13 @@ class PartialDifferentialEquations(Frozen):
                         efs.extend(term.elementary_forms)
         self._efs = set(efs)
 
-    def print_representations(self, indexing=True, figsize=(8, 6)):
+    def pr(self, indexing=True, figsize=(8, 6)):
         """Print representations"""
+        from src.config import RANK, MASTER_RANK
+        if RANK != MASTER_RANK:
+            return
+        else:
+            pass
         number_equations = len(self._term_dict)
         indicator = ''
         if self._indi_dict is None:
@@ -312,10 +317,6 @@ class PartialDifferentialEquations(Frozen):
         from src.config import _matplot_setting
         plt.show(block=_matplot_setting['block'])
         return fig
-
-    def pr(self, **kwargs):
-        """A wrapper of print_representations"""
-        return self.print_representations(**kwargs)
 
     def __len__(self):
         """How many equations we have?"""

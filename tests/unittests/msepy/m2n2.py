@@ -15,8 +15,6 @@ if './' not in sys.path:
 import __init__ as ph
 assert ph.config.SIZE == 1, f"msepy does not work with multiple ranks."
 
-from tools.runner import ParallelMatrix3dInputRunner, RunnerDataReader
-
 print(f"[MsePy] >>> <m2n2> ...")
 
 
@@ -150,7 +148,7 @@ Ks = [[2, 4, 6, 8],
       [2, 4, 6, 8]]
 cs = [0, 0.1]
 
-pr = ParallelMatrix3dInputRunner(test_function)
+pr = ph.run(test_function)
 
 
 if os.path.isfile(current_dir + '/WTP2.txt'):
@@ -162,7 +160,7 @@ pr.iterate(
     show_progress=False,  # turn off iterator progress.
 )
 
-PR = RunnerDataReader(current_dir + '/WTP2.txt')
+PR = ph.rdr(current_dir + '/WTP2.txt')
 PR.visualize.quick('K', y='f2_error', saveto=current_dir + '/images/f2_error_quick.png')
 
 orders = PR.visualize(

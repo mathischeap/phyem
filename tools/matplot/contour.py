@@ -182,6 +182,7 @@ def contour(
         plt.show(block=_matplot_setting['block'])
     else:
         plt.savefig(saveto, bbox_inches='tight', pad_inches=pad_inches, dpi=dpi)
+        plt.close()
 
     # --------------------------------------------------------------------------
     return fig

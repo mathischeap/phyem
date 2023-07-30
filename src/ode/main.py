@@ -204,6 +204,12 @@ class OrdinaryDifferentialEquation(Frozen):
 
     def pr(self, indexing=True, figsize=(12, 4)):
         """print representations"""
+        from src.config import RANK, MASTER_RANK
+        if RANK != MASTER_RANK:
+            return
+        else:
+            pass
+
         sym = r'\noindent Time derivative of: '
         sym += rf'${self._about._sym_repr}$, '
         if len(self.elementary_forms) > 1:  # as it must contain the `about` form.

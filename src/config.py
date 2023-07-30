@@ -22,7 +22,7 @@ except ModuleNotFoundError:  # no `mpi4py` installed.
     RANK = 0
     SIZE: int = 1
 
-MASTER_RANK: int = 0  # you can, but you do not need to change this!
+MASTER_RANK: int = 0  # DO NOT change this
 
 _matplot_setting = {
     'block': True
@@ -57,8 +57,8 @@ def _clear_all():
     from src.mesh import _global_meshes
     _clear_a_dict(_global_meshes)
 
-    from src.tools.time_sequence import _global_abstract_time_sequence
-    from src.tools.time_sequence import _global_abstract_time_interval
+    from src.time_sequence import _global_abstract_time_sequence
+    from src.time_sequence import _global_abstract_time_interval
     _clear_a_dict(_global_abstract_time_sequence)
     _clear_a_dict(_global_abstract_time_interval)
 

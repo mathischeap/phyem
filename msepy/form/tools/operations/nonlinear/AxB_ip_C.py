@@ -53,7 +53,8 @@ class _AxBipC(Frozen):
                     form.space[form._degree].p
                 )
             degrees = np.array(degrees)
-            degrees = np.max(degrees, axis=0) + 1
+            degrees = np.max(degrees, axis=0)
+            degrees = [int(_ * 1.5) + 1 for _ in degrees]
             types = 'Gauss'
         elif isinstance(self._quad, int):
             degrees = [self._quad for _ in range(self._mesh_dimensions)]

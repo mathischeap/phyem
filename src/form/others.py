@@ -74,6 +74,12 @@ def _find_form(lin_repr, upon=None):
 
 def _list_forms(variable_range=None):
     """"""
+    from src.config import RANK, MASTER_RANK
+    if RANK != MASTER_RANK:
+        return
+    else:
+        pass
+
     if variable_range is None:
         col_name_0 = 'form id'
     else:

@@ -270,6 +270,11 @@ class WeakFormulation(Frozen):
 
     def pr(self, indexing=True):
         """Print the representations"""
+        from src.config import RANK, MASTER_RANK
+        if RANK != MASTER_RANK:
+            return
+        else:
+            pass
         seek_text = self._mesh.manifold._manifold_text()
         if self.unknowns is None:
             seek_text += r'for $\left('
@@ -382,7 +387,10 @@ class WeakFormulation(Frozen):
 
     @property
     def td(self):
-        """temporal discretization."""
+        """temporal discretization.
+
+        It returns a new temporal discretization instance.
+        """
         return TemporalDiscretization(self)
 
     def ap(self):

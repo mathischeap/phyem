@@ -8,7 +8,7 @@
 import sys
 
 if './' not in sys.path:
-    sys.path.append('./')
+    sys.path.append('tools/')
 
 from tools.frozen import Frozen
 import traceback

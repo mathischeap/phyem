@@ -179,5 +179,6 @@ def quiver(
             plt.savefig(saveto, bbox_inches='tight')
         else:
             plt.savefig(saveto, dpi=dpi, bbox_inches='tight')
+        plt.close()
 
     return fig

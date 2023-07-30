@@ -40,7 +40,6 @@ def codifferential_test(n, k, orientation):
     ph.space.finite(3)
     mp = wf.mp()
     ls = mp.ls()
-    # ls.pr()
 
     msepy, obj = ph.fem.apply('msepy', locals())
 
@@ -129,6 +128,7 @@ def codifferential_test(n, k, orientation):
 
     ls0 = ls(0)
     als = ls0.assemble()
+    als.solve.scheme = 'gmres'
     als.solve()
 
     return u[0].error()

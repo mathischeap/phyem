@@ -224,4 +224,7 @@ def canonical_linear_pH_3d_periodic_manufactured_test(degree, K, num_steps):
 
 if __name__ == '__main__':
     # python tests/unittests/msepy/canonical_linear_pH/_3d.py
+    import doctest
+    doctest.testmod()
+
     canonical_linear_pH_3d_periodic_manufactured_test(1, 3, 1)

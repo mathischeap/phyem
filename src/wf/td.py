@@ -9,7 +9,7 @@ import sys
 if './' not in sys.path:
     sys.path.append('./')
 from tools.frozen import Frozen
-from src.tools.time_sequence import AbstractTimeSequence
+from src.time_sequence import AbstractTimeSequence
 from typing import Dict
 
 

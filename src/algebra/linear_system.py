@@ -94,6 +94,12 @@ class BlockMatrix(Frozen):
 
     def pr(self, figsize=(12, 6)):
         """"""
+        from src.config import RANK, MASTER_RANK
+        if RANK != MASTER_RANK:
+            return
+        else:
+            pass
+
         symbolic = r"$" + self._pr_text() + r"$"
         fig = plt.figure(figsize=figsize)
         plt.axis([0, 1, 0, 1])

@@ -41,6 +41,11 @@ class MatrixProxyLinearSystem(Frozen):
 
     def pr(self, figsize=(12, 6)):
         """"""
+        from src.config import RANK, MASTER_RANK
+        if RANK != MASTER_RANK:
+            return
+        else:
+            pass
         seek_text = self._mp._mp_seek_text()
         linear_system_text = self._ls._pr_text()
         symbolic = r"$" + linear_system_text + r"$"

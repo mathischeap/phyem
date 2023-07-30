@@ -283,6 +283,11 @@ class MatrixProxy(Frozen):
 
     def pr(self, figsize=(12, 8)):
         """pr"""
+        from src.config import RANK, MASTER_RANK
+        if RANK != MASTER_RANK:
+            return
+        else:
+            pass
         seek_text = self._mp_seek_text()
         symbolic = r"$" + self._pr_text() + r"$"
         if self._bc is None or len(self._bc) == 0:

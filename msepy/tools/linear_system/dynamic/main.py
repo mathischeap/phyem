@@ -355,22 +355,29 @@ class DynamicBlockEntry(Frozen):
             if factor == 1:
                 factor_str = ''
             else:
-                if (1 / factor) % 1 == 0:
+                if factor == 0:
+                    _str_fac = str(0)
+                elif (1 / factor) % 1 == 0:
                     _str_fac = r'\frac{1}{' + str(int(1/factor)) + '}'
                 else:
                     _str_fac = str(factor)
 
                 factor_str = _str_fac + '*'
 
+            if i == 0 and sign == '+':
+                str_sign = ''
+            else:
+                str_sign = sign
+
             if hasattr(term, '_gm0_row'):  # must be a MsePy Local matrix
                 local_shape = (term._gm0_row.shape[1], term._gm1_col.shape[1])
                 texts_list.append(
-                    factor_str + str(local_shape)
+                    str_sign + factor_str + str(local_shape)
                 )
             elif hasattr(term, '_gm'):
                 local_shape = term._gm.shape[1]
                 texts_list.append(
-                    factor_str + r'\left[' + str(local_shape) + r'\right]'
+                    str_sign + factor_str + r'\left[' + str(local_shape) + r'\right]'
                 )
             else:
                 raise Exception()
@@ -403,7 +410,7 @@ class DynamicBlockEntry(Frozen):
             MsePyStaticLocalVector,
         ), f"static={static} is wrong."
 
-        return static, '+'.join(texts_list)
+        return static, ''.join(texts_list)
 
 
 class DynamicTerm(Frozen):

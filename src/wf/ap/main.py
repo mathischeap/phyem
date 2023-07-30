@@ -115,6 +115,11 @@ class AlgebraicProxy(Frozen):
 
     def pr(self, indexing=True):
         """Print the representations"""
+        from src.config import RANK, MASTER_RANK
+        if RANK != MASTER_RANK:
+            return
+        else:
+            pass
         seek_text = self._wf._mesh.manifold._manifold_text()
         seek_text += r'seek $\left('
         form_sr_list = list()

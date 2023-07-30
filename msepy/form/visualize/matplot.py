@@ -18,7 +18,7 @@ class MsePyRootFormVisualizeMatplot(Frozen):
         self._mesh = rf.mesh
         self._freeze()
 
-    def __call__(self, *args, **kwargs):
+    def __call__(self, *args, title=None, **kwargs):
         """Call the default plotter coded in this module as well."""
         abs_sp = self._f.space.abstract
         m = abs_sp.m
@@ -26,10 +26,15 @@ class MsePyRootFormVisualizeMatplot(Frozen):
         k = abs_sp.k
         orientation = abs_sp.orientation
 
-        if m == n == 2 and k == 1:
-            return getattr(self, f'_m{m}_n{n}_k{k}_{orientation}')(*args, **kwargs)
+        if title is None:
+            title = r'$t=%.3f$' % self._f.visualize._t  # this visualize is for cochain @ t
         else:
-            return getattr(self, f'_m{m}_n{n}_k{k}')(*args, **kwargs)
+            pass
+
+        if m == n == 2 and k == 1:
+            return getattr(self, f'_m{m}_n{n}_k{k}_{orientation}')(*args, title=title, **kwargs)
+        else:
+            return getattr(self, f'_m{m}_n{n}_k{k}')(*args, title=title, **kwargs)
 
     def _m1_n1_k0(
             self, sampling_factor=1,

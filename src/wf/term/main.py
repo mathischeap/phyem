@@ -377,7 +377,7 @@ class L2InnerProductTerm(_WeakFormulationTerm):
         s2 = f1.space
         super().__init__(f0, f1, factor=factor)
         if s1.__class__.__name__ == 'ScalarValuedFormSpace' and s2.__class__.__name__ == 'ScalarValuedFormSpace':
-            assert s1 == s2, f"spaces dis-match."   # mesh consistence checked here.
+            assert s1 == s2, f"spaces dis-match. {s1} and {s2}"   # mesh consistence checked here.
             over_ = self._mesh.manifold._sym_repr
         else:
             raise NotImplementedError()

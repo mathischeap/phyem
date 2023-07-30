@@ -135,6 +135,21 @@ def config(obj):
     return _Config(obj)
 
 
+def info():
+    """"""
+    forms = base['forms']
+    # -- first we print the newest time of the cochain (if there is) of each form.
+    print(f">>> 1) Form with cochain @ --------- ")
+    for form_sym in forms:
+        form = forms[form_sym]
+        if form._is_base():
+            newest_time = form.cochain.newest
+            if newest_time is not None:
+                print(form.abstract._pure_lin_repr, '@', newest_time)
+    print()
+    return
+
+
 def find_mesh_of_manifold(msepy_or_abstract_manifold):
     """Find the corresponding msepy mesh."""
     from src.manifold import Manifold
