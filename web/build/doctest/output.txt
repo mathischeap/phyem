@@ -1,12 +1,12 @@
-Results of doctest builder run on 2023-07-20 19:19:26
+Results of doctest builder run on 2023-07-31 14:54:18
 =====================================================
 
-Document: gallery/msepy_domains_and_meshes/msepy/backward_step
---------------------------------------------------------------
+Document: gallery/div_grad/index
+--------------------------------
 1 items passed all tests:
-  18 tests in default
-18 tests in 1 items.
-18 passed and 0 failed.
+   6 tests in default
+6 tests in 1 items.
+6 passed and 0 failed.
 Test passed.
 1 items passed all tests:
    1 tests in default (cleanup code)
@@ -27,12 +27,12 @@ Test passed.
 1 passed and 0 failed.
 Test passed.
 
-Document: gallery/div_grad/index
---------------------------------
+Document: gallery/msepy_domains_and_meshes/msepy/crazy_multi
+------------------------------------------------------------
 1 items passed all tests:
-   5 tests in default
-5 tests in 1 items.
-5 passed and 0 failed.
+   9 tests in default
+9 tests in 1 items.
+9 passed and 0 failed.
 Test passed.
 1 items passed all tests:
    1 tests in default (cleanup code)
@@ -40,12 +40,12 @@ Test passed.
 1 passed and 0 failed.
 Test passed.
 
-Document: gallery/msepy_domains_and_meshes/msepy/crazy_multi
-------------------------------------------------------------
+Document: gallery/msepy_domains_and_meshes/msepy/backward_step
+--------------------------------------------------------------
 1 items passed all tests:
-   9 tests in default
-9 tests in 1 items.
-9 passed and 0 failed.
+  18 tests in default
+18 tests in 1 items.
+18 passed and 0 failed.
 Test passed.
 1 items passed all tests:
    1 tests in default (cleanup code)
@@ -68,7 +68,7 @@ Test passed.
 
 Doctest summary
 ===============
-   52 tests
+   53 tests
     0 failures in tests
     0 failures in setup code
     0 failures in cleanup code

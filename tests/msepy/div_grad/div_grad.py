@@ -17,7 +17,7 @@ where :math:`\varphi^n` and :math:`f^n` are top forms.
 ===============================
 
 
-.. automodule:: tests.unittests.msepy.div_grad._2d_outer_periodic
+.. automodule:: tests.msepy.div_grad._2d_outer_periodic
     :undoc-members:
 
 

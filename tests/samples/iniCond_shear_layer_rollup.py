@@ -22,7 +22,6 @@ class InitialConditionShearLayerRollUp(Frozen):
         self._vorticity = self.velocity.rot
         self._freeze()
 
-
     @property
     def epsilon(self):
         return self._epsilon_

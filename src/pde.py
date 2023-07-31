@@ -482,7 +482,6 @@ class PartialDifferentialEquations(Frozen):
 
                             raw_weak_term = inner(term, tfs[i], method=test_method)
 
-
                     term_dict[i][j].append(raw_weak_term)
 
         # ------ make the weak formulation ----------------------------------------------------

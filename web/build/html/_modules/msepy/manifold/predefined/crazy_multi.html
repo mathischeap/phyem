@@ -200,6 +200,8 @@
 <li class="toctree-l3"><a class="reference internal" href="../../../../gallery/msepy_domains_and_meshes/msepy/backward_step.html">Backward step</a></li>
 </ul>
 </li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../gallery/div_grad/index.html">div-grad</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../gallery/canonical_linear_port_Hamiltonian/index.html">Canonical linear port Hamiltonian</a></li>
 </ul>
 </li>
 </ul>
@@ -363,7 +365,7 @@ document.write(`
 <span class="sd">.. note::</span>
 
 <span class="sd">    Multi-crazy domains and meshes, like the crazy ones, are also mainly used for testing purposes. As each block will</span>
-<span class="sd">    be treated as a region, with them we can test our codes with meshes of multiple (orthogonal or curvilinear) regions.</span>
+<span class="sd">    be treated as a region, with them, we can test our codes with meshes of multiple (orthogonal or curvilinear) regions.</span>
 
 
 <span class="sd">Examples</span>
@@ -414,7 +416,7 @@ document.write(`
 
 
 <div class="viewcode-block" id="crazy_multi"><a class="viewcode-back" href="../../../../gallery/msepy_domains_and_meshes/msepy/crazy_multi.html#msepy.manifold.predefined.crazy_multi.crazy_multi">[docs]</a><span class="k">def</span> <span class="nf">crazy_multi</span><span class="p">(</span><span class="n">bounds</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">c</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">Ns</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">periodic</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
-    <span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
@@ -445,7 +447,7 @@ document.write(`
 
 
 <span class="k">def</span> <span class="nf">_crazy_multi</span><span class="p">(</span><span class="n">mf</span><span class="p">,</span> <span class="n">bounds</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">c</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">Ns</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">periodic</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;&quot;&quot;&quot;</span>
     <span class="k">assert</span> <span class="n">mf</span><span class="o">.</span><span class="n">m</span> <span class="o">==</span> <span class="n">mf</span><span class="o">.</span><span class="n">ndim</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;crazy mesh only works for manifold.ndim == embedding space dimensions.&quot;</span>
     <span class="n">m</span> <span class="o">=</span> <span class="n">mf</span><span class="o">.</span><span class="n">m</span>
     <span class="k">if</span> <span class="n">bounds</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
@@ -663,10 +665,10 @@ document.write(`
 
 
 <span class="k">class</span> <span class="nc">_MesPyRegionCrazyMultiMapping</span><span class="p">(</span><span class="n">Frozen</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;&quot;&quot;&quot;</span>
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">bounds</span><span class="p">,</span> <span class="n">c</span><span class="p">,</span> <span class="n">m</span><span class="p">,</span> <span class="n">Ns</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
@@ -771,7 +773,7 @@ By Andrea Brugnoli, Ramy Rashad, Stefano Stramigioli, Yi Zhang
   <div class="footer-item">
     
 <div class="extra_footer">
-  <div>Last updated on May 28, 2023, 17:21:48, W. Europe Daylight Time</div>
+  <div>Last updated on July 31, 2023, 14:50:16, W. Europe Daylight Time</div>
 </div>
   </div>
   

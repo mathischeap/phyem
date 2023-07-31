@@ -4,7 +4,7 @@ pH-lib@RAM-EEMCS-UT
 Yi Zhang
 Created at 12:52 PM on 5/24/2023
 
-$ python tests/unittests/msepy/div_grad/_2d_outer.py
+$ python tests/msepy/div_grad/_2d_outer.py
 """
 
 import sys

@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 """
 Taken from:
-http://numpy-discussion.10968.n7.nabble.com/Any-interest-in-a-generalized-piecewise-function-td38808.html
+https://numpy-discussion.10968.n7.nabble.com/Any-interest-in-a-generalized-piecewise-function-td38808.html
 
 By Per.Brodtkorb
 Published on Oct 10, 2014; 11:33am

@@ -24,7 +24,7 @@ We consider the domain to be :math:`\Omega = (x,y) \in [0,1]^2` and it is fully 
 We use the :ref:`GALLERY-msepy-domains-and-meshes=multi-crazy` for this test. The solver is given below.
 
 
-.. autofunction:: tests.unittests.msepy.div_grad._2d_outer_periodic.div_grad_2d_periodic_manufactured_test
+.. autofunction:: tests.msepy.div_grad._2d_outer_periodic.div_grad_2d_periodic_manufactured_test
 
 ========
 Examples
@@ -52,8 +52,9 @@ We increase :math:`K` to :math:`K=8`, we do
 We can compute the convergence rate of the :math:`L^2`-error of solution :math:`\varphi_h^2` by
 
 >>> import numpy as np
->>> (np.log10(errors4[0]) - np.log10(errors8[0])) / (np.log10(1/4) - np.log10(1/8))  # doctest: +ELLIPSIS
-2.0...
+>>> rate = (np.log10(errors4[0]) - np.log10(errors8[0])) / (np.log10(1/4) - np.log10(1/8))
+>>> round(rate, 1)
+2.0
 
 The optimal convergence rate is obtained.
 
@@ -134,6 +135,8 @@ def div_grad_2d_periodic_manufactured_test(degree, K, c=0):
 
 
 if __name__ == '__main__':
-    # python tests/unittests/msepy/div_grad/_2d_outer_periodic.py
+    # python tests/msepy/div_grad/_2d_outer_periodic.py
+    import doctest
+    doctest.testmod()
     errors = div_grad_2d_periodic_manufactured_test(3, 4)
     print(errors)

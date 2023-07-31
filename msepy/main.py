@@ -136,7 +136,7 @@ def config(obj):
 
 
 def info():
-    """"""
+    """We print the info, as much as possible, of the current msepy implementation."""
     forms = base['forms']
     # -- first we print the newest time of the cochain (if there is) of each form.
     print(f">>> 1) Form with cochain @ --------- ")

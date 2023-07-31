@@ -5,7 +5,7 @@ Canonical linear port Hamiltonian
 =================================
 
 
-.. automodule:: tests.unittests.msepy.canonical_linear_pH._3d
+.. automodule:: tests.msepy.canonical_linear_pH._3d
     :undoc-members:
 
 

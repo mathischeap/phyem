@@ -22,13 +22,13 @@ __all__ = [
     "_3",
 ]
 
-import tests.unittests.msepy.m1n1 as _1
+import tests.msepy.m1n1 as _1
 
-import tests.unittests.msepy.m2n2 as _2
+import tests.msepy.m2n2 as _2
 
-import tests.unittests.msepy.m3n3 as _3
+import tests.msepy.m3n3 as _3
 
-msepy_path = r'.\tests\unittests\msepy'
+msepy_path = r'.\tests\msepy'
 codifferential_tests = [
     rf'python {msepy_path}\codifferential_test.py 1 1 outer',
     rf'python {msepy_path}\codifferential_test.py 1 1 inner',
@@ -48,12 +48,12 @@ for _ in codifferential_tests:
     print(os.popen(_).read())
 
 
-from tests.unittests.msepy.div_grad._2d_outer_periodic import div_grad_2d_periodic_manufactured_test
+from tests.msepy.div_grad._2d_outer_periodic import div_grad_2d_periodic_manufactured_test
 
 errors = div_grad_2d_periodic_manufactured_test(3, 4)
 assert all([_ < 0.01 for _ in errors]), f"div_grad_2d_periodic_manufactured_test!"
 
 
 if __name__ == '__main__':
-    # python tests/unittests/msepy/main.py
+    # python tests/msepy/main.py
     pass

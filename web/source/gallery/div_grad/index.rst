@@ -6,5 +6,5 @@ div-grad
 ========
 
 
-.. automodule:: tests.unittests.msepy.div_grad.div_grad
+.. automodule:: tests.msepy.div_grad.div_grad
     :undoc-members:

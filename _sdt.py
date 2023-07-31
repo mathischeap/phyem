@@ -8,8 +8,8 @@ __all__ = [
     "canonical_linear_pH_3d_periodic_manufactured_test",
 ]
 
-from tests.unittests.msepy.div_grad._2d_outer_periodic import div_grad_2d_periodic_manufactured_test
-from tests.unittests.msepy.canonical_linear_pH._3d import canonical_linear_pH_3d_periodic_manufactured_test
+from tests.msepy.div_grad._2d_outer_periodic import div_grad_2d_periodic_manufactured_test
+from tests.msepy.canonical_linear_pH._3d import canonical_linear_pH_3d_periodic_manufactured_test
 
 
 if __name__ == '__main__':

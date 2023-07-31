@@ -3,6 +3,8 @@ r"""
 pH-lib@RAM-EEMCS-UT
 Yi Zhang
 
+To build the web, do
+
 $ sphinx-build -b html web\source web\build\html
 
 Regenerate the web page.

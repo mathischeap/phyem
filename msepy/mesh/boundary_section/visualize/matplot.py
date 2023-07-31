@@ -5,7 +5,6 @@ from tools.frozen import Frozen
 import matplotlib.pyplot as plt
 import matplotlib
 plt.rcParams.update({
-    "text.usetex": True,
     "font.family": "DejaVu Sans",
     "text.latex.preamble": r"\usepackage{amsmath, amssymb}",
 })

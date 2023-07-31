@@ -4,6 +4,8 @@ pH-lib@RAM-EEMCS-UT
 Yi Zhang
 Created at 7:36 PM on 5/2/2023
 
+To run a particular jupyter notebook, do:
+
 $ jupyter nbconvert --to notebook --inplace --execute  ./web/source/jupyter/test1.ipynb
 
 Here we run all jupyter notebooks.
@@ -29,6 +31,8 @@ if RANK == MASTER_RANK:  # this is conducted only in one rank.
         output = stream.read()
         print(jf, ' output: \n', output)
 
+else:
+    pass
 
 if __name__ == '__main__':
     # python tests/jupyter_notebooks.py

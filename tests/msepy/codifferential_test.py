@@ -3,7 +3,7 @@ r"""
 pH-lib@RAM-EEMCS-UT
 Yi Zhang
 
-# python tests/unittests/msepy/codifferential_test.py
+# python tests/msepy/codifferential_test.py
 """
 import sys
 import numpy as np
@@ -135,7 +135,7 @@ def codifferential_test(n, k, orientation):
 
 
 if __name__ == '__main__':
-    # python tests/unittests/msepy/codifferential_test.py 1 1 outer
+    # python tests/msepy/codifferential_test.py 1 1 outer
     n = int(sys.argv[1])
     k = int(sys.argv[2])
     orientation = sys.argv[3]

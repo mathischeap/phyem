@@ -5,7 +5,7 @@ pH-lib@RAM-EEMCS-UT
 Yi Zhang
 Created at 3:28 PM on 7/21/2023
 
-python tests/unittests/msepy/dualNS2/shear_layer_rollup.py
+python tests/msepy/dualNS2/shear_layer_rollup.py
 """
 from numpy import pi
 import sys
@@ -287,8 +287,7 @@ mesh = obj['mesh']
 msepy.config(mesh)([15, 15])
 ts.specify('constant', [0, 8, 1600], 2)
 
-from tests.samples.initial_condition_shear_layer_rollup import InitialConditionShearLayerRollUp
-initial_condition = InitialConditionShearLayerRollUp()
+initial_condition = ph.samples.InitialConditionShearLayerRollUp()
 Rn2.value = 0
 
 wo = obj['wo']
@@ -320,7 +319,7 @@ s_ls0.customize.set_dof(-1, 0)
 As_ls0 = s_ls0.assemble()
 As_ls0.solve()
 
-for k in range(1, 801):
+for k in range(1, 3):
 
     s_lso = lso(k=k)
     s_lso.customize.set_dof(-1, 0)

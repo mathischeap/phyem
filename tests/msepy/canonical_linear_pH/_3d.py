@@ -14,7 +14,7 @@ In :math:`\mathbb{R}^3`, a canonical form the linear port-Hamiltonian is written
 
 It is solved with manufactured solutions. The program is
 
-.. autofunction:: tests.unittests.msepy.canonical_linear_pH._3d.canonical_linear_pH_3d_periodic_manufactured_test
+.. autofunction:: tests.msepy.canonical_linear_pH._3d.canonical_linear_pH_3d_periodic_manufactured_test
 
 It solves the canonical linear port Hamiltonian problem in a periodic unit cube, :math:`\Omega:=[0,1]^3`. The time
 step is :math:`\Delta t = 0.01`.
@@ -54,7 +54,7 @@ if './' not in sys.path:
     sys.path.append('./')
 
 import __init__ as ph
-from tests.unittests.msepy.canonical_linear_pH._3d_eigen_solution import Eigen1
+from tests.msepy.canonical_linear_pH._3d_eigen_solution import Eigen1
 
 
 def canonical_linear_pH_3d_periodic_manufactured_test(degree, K, num_steps):
@@ -223,7 +223,7 @@ def canonical_linear_pH_3d_periodic_manufactured_test(degree, K, num_steps):
 
 
 if __name__ == '__main__':
-    # python tests/unittests/msepy/canonical_linear_pH/_3d.py
+    # python tests/msepy/canonical_linear_pH/_3d.py
     import doctest
     doctest.testmod()
 
