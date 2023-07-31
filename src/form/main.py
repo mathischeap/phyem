@@ -128,7 +128,7 @@ class Form(Frozen):
         else:
             return False, lin_repr
 
-    def print_representations(self, figsize=(12, 6)):
+    def pr(self, figsize=(12, 6)):
         """Print this form with matplotlib and latex."""
         my_id = r'\texttt{' + str(id(self)) + '}'
         if self._pAti_form['base_form'] is None:
@@ -150,10 +150,6 @@ class Form(Frozen):
         from src.config import _matplot_setting
         plt.show(block=_matplot_setting['block'])
         return fig
-
-    def pr(self):
-        """A wrapper of print_representations"""
-        return self.print_representations()
 
     def __repr__(self):
         """"""

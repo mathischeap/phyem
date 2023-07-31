@@ -8,7 +8,9 @@ To run a particular jupyter notebook, do:
 
 $ jupyter nbconvert --to notebook --inplace --execute  ./web/source/jupyter/test1.ipynb
 
-Here we run all jupyter notebooks.
+Here we run all jupyter notebooks. Just do
+
+# python tests/jupyter_notebooks.py
 
 """
 
@@ -17,6 +19,7 @@ import sys
 
 if './' not in sys.path:
     sys.path.append('./')
+
 from src.config import RANK, MASTER_RANK
 
 if RANK == MASTER_RANK:  # this is conducted only in one rank.
@@ -32,8 +35,4 @@ if RANK == MASTER_RANK:  # this is conducted only in one rank.
         print(jf, ' output: \n', output)
 
 else:
-    pass
-
-if __name__ == '__main__':
-    # python tests/jupyter_notebooks.py
     pass

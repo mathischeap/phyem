@@ -5,6 +5,7 @@ Yi Zhang
 """
 import numpy as np
 from tools.frozen import Frozen
+from src.spaces.operators import _d_to_vc, _d_ast_to_vc
 
 
 class MsePyContinuousForm(Frozen):
@@ -186,81 +187,3 @@ class MsePyContinuousFormPartialTime(Frozen):
             values[i] = np.concatenate(val, axis=axis)
 
         return values
-
-
-def _d_to_vc(space_indicator, *args):
-    """"""
-
-    if space_indicator == 'Lambda':  # scalar valued form spaces.
-        m, n, k, ori = args
-
-        if m == n == 1 and k == 0:  # 0-form on 1d manifold in 1d space.
-            return 'derivative'
-
-        elif m == n == 2 and k == 0:
-            if ori == 'inner':
-                return 'gradient'
-            elif ori == 'outer':
-                return 'curl'
-            else:
-                raise Exception()
-
-        elif m == n == 2 and k == 1:
-            if ori == 'inner':
-                return 'rot'
-            elif ori == 'outer':
-                return 'divergence'
-            else:
-                raise Exception()
-
-        elif m == n == 3:
-            if k == 0:
-                return 'gradient'
-            elif k == 1:
-                return 'curl'
-            elif k == 2:
-                return 'divergence'
-            else:
-                raise Exception()
-        else:
-            raise NotImplementedError()
-
-    else:
-        raise NotImplementedError()
-
-
-def _d_ast_to_vc(space_indicator, *args):
-    """"""
-    if space_indicator == 'Lambda':  # scalar valued form spaces.
-        m, n, k, ori = args
-        if m == n == 1 and k == 1:  # 1-form on 1d manifold in 1d space.
-            return '-', 'derivative'
-
-        elif m == n == 2 and k == 1:
-            if ori == 'inner':
-                return '-', 'divergence'
-            elif ori == 'outer':
-                return '+', 'rot'
-            else:
-                raise Exception()
-        elif m == n == 2 and k == 2:
-            if ori == 'inner':
-                return '+', 'curl'
-            elif ori == 'outer':
-                return '-', 'gradient'
-            else:
-                raise Exception()
-
-        elif m == n == 3:
-            if k == 1:
-                return '-', 'divergence'
-            elif k == 2:
-                return '+', 'curl'
-            elif k == 3:
-                return '-', 'gradient'
-            else:
-                raise Exception()
-        else:
-            raise NotImplementedError()
-    else:
-        raise NotImplementedError()

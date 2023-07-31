@@ -4,7 +4,7 @@ pH-lib@RAM-EEMCS-UT
 Yi Zhang
 Created at 3:22 PM on 5/8/2023
 
-$ python tests/unittests/msepy/m2n2.py
+$ python tests/msepy/m2n2.py
 """
 import numpy as np
 import sys
@@ -304,5 +304,5 @@ assert sum(errors) < 2e-4
 
 
 if __name__ == '__main__':
-    # python tests/unittests/msepy/m2n2.py
+    # python tests/msepy/m2n2.py
     pass

@@ -38,6 +38,18 @@ Below, different kinds of problems are solved as demonstrations.
    canonical_linear_port_Hamiltonian/index
 
 
+.. toctree::
+   :maxdepth: 1
+
+   Navier_Stokes/index
+
+
+.. toctree::
+   :maxdepth: 1
+
+   MHD/index
+
+
 |
 
 ↩️  Back to :ref:`PHYEM`.

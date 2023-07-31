@@ -211,6 +211,7 @@ def canonical_linear_pH_3d_periodic_manufactured_test(degree, K, num_steps):
         return 0, als.solve.message, a3.cochain.newest, a3_L2_error, b2_L2_error
 
     iterator = ph.iterator(solver, [0, a3.error(0), a3.error(0)], name='gallery_pH_test')
+
     iterator.run(range(1, num_steps+1))
 
     last_results = iterator.RDF.to_numpy()[-1, :]

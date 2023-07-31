@@ -51,6 +51,7 @@ class T2dVector(TimeSpaceFunctionBase):
         ----------
         mesh
         t
+        sampling_factor
 
         Returns
         -------

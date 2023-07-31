@@ -111,7 +111,30 @@ class _AxBipC(Frozen):
                     )
                 # make the data --------------- for 3d meshes -----------------------------------
                 elif self._mesh.n == 3:
-                    raise NotImplementedError()
+                    wx, wy, wz = rmA[e][0]
+                    u, v, w = rmB[e]
+                    a, b, c = rmC[e]
+                    dJi = detJ[e]
+                    # A = [wx wy, wz]^T    B = [u v w]^T   C= [a b c]^T
+                    # A x B = [wy*w - wz*v,   wz*u - wx*w,   wx*v - wy*u]^T = [A0 B0 C0]^T
+                    # (A x B) dot C = A0*a + B0*b + C0*c
+                    A0a = np.einsum(
+                        'li, lj, lk, l -> ijk', wy, w, a, quad_weights * dJi, optimize='optimal'
+                    ) - np.einsum(
+                        'li, lj, lk, l -> ijk', wz, v, a, quad_weights * dJi, optimize='optimal'
+                    )
+                    B0b = np.einsum(
+                        'li, lj, lk, l -> ijk', wz, u, b, quad_weights * dJi, optimize='optimal'
+                    ) - np.einsum(
+                        'li, lj, lk, l -> ijk', wx, w, b, quad_weights * dJi, optimize='optimal'
+                    )
+                    C0c = np.einsum(
+                        'li, lj, lk, l -> ijk', wx, v, c, quad_weights * dJi, optimize='optimal'
+                    ) - np.einsum(
+                        'li, lj, lk, l -> ijk', wy, u, c, quad_weights * dJi, optimize='optimal'
+                    )
+
+                    data = A0a + B0b + C0c
 
                 # else: must be wrong, we do not do this in 1d ----------------------------------
                 else:
@@ -193,7 +216,9 @@ class _AxBipC(Frozen):
         given_form_cochain = given_form.cochain._callable_cochain(*args, **kwargs)
         array_cochain = given_form_cochain.data
         _3d_data = self._3d_data
-        _2d_matrix_caller = _MatrixCaller(0, array_cochain, _3d_data, given_form.mesh, 2, 1)
+        _2d_matrix_caller = _MatrixCaller(
+            0, array_cochain, _3d_data, given_form.mesh, 2, 1
+        )
         return MsePyStaticLocalMatrix(_2d_matrix_caller, gm_row, gm_col, cache_key='unique')
 
 
@@ -212,13 +237,10 @@ class _MatrixCaller(Frozen):
 
     def __call__(self, e):
         """return the static 2d matrix for element #e in real time."""
-
-        _3d_data_of_element = self._3d_data[e]
-        cochain_of_element = self._cochain[e]
         M = np.einsum(
             f'ijk, {self._given_key} -> {self._row_key}{self._col_key}',
-            _3d_data_of_element,
-            cochain_of_element,
+            self._3d_data[e],
+            self._cochain[e],
             optimize='optimal'
         )
         M = csr_array(M)

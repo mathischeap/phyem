@@ -4,7 +4,7 @@ pH-lib@RAM-EEMCS-UT
 Yi Zhang
 Created at 4:27 PM on 5/8/2023
 
-$ python tests/unittests/msepy/m3n3.py
+$ python tests/msepy/m3n3.py
 """
 import numpy as np
 import sys
@@ -236,5 +236,5 @@ assert sum(errors) < 0.03
 
 
 if __name__ == '__main__':
-    # python tests/unittests/msepy/m3n3.py
+    # python tests/msepy/m3n3.py
     pass

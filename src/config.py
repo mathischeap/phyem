@@ -1,9 +1,7 @@
 # -*- coding: utf-8 -*-
-r"""Global configuring variables and methods.
+r"""The configuration file.
 
-@author: Yi Zhang
-@contact: zhangyi_aero@hotmail.com
-@time: 11/26/2022 2:56 PM
+A very important file. Do not change it easily.
 """
 
 _global_variables = {
@@ -38,17 +36,22 @@ def set_embedding_space_dim(ndim):
     """"""
     assert ndim % 1 == 0 and ndim > 0, f"ndim={ndim} is wrong, it must be a positive integer."
     _global_variables['embedding_space_dim'] = ndim
-    _clear_all()   # whenever we change the space dim, we clear all abstract objects.
+    _clear_all()   # whenever we change or reset the space dim, we clear all abstract objects.
 
 
 def _clear_all():
-    """clear all abstract objects."""
+    """clear all abstract objects.
+
+    Make sure that, when we add new global cache, put it here.
+    """
     from src.algebra.array import _global_root_arrays
     from src.form.main import _global_forms
     from src.form.main import _global_root_forms_lin_dict
     _clear_a_dict(_global_root_arrays)
     _clear_a_dict(_global_forms)
     _clear_a_dict(_global_root_forms_lin_dict)
+    from src.form.parameters import _global_root_constant_scalars
+    _clear_a_dict(_global_root_constant_scalars)
     from src.form.main import _global_form_variables
     _global_form_variables['update_cache'] = True
 

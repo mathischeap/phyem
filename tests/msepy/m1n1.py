@@ -4,7 +4,7 @@ pH-lib@RAM-EEMCS-UT
 Yi Zhang
 Created at 6:59 PM on 5/2/2023
 
-$ python .\tests\unittests\msepy\m1n1.py
+$ python .\tests\msepy\m1n1.py
 """
 import numpy as np
 import sys
@@ -180,5 +180,5 @@ os.remove(current_dir + '/WTP.txt')
 
 
 if __name__ == '__main__':
-    # python .\tests\unittests\msepy\m1n1.py
+    # python .\tests\msepy\m1n1.py
     test_function(3, 2, 0)

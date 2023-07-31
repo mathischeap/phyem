@@ -11,7 +11,8 @@ mesh except there is one additional, ``Ns``, see:
 .. note::
 
     Multi-crazy domains and meshes, like the crazy ones, are also mainly used for testing purposes. As each block will
-    be treated as a region, with them, we can test our codes with meshes of multiple (orthogonal or curvilinear) regions.
+    be treated as a region, with them, we can test our codes with meshes of multiple (orthogonal or curvilinear)
+    regions.
 
 
 Examples
