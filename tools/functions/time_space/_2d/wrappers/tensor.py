@@ -52,7 +52,7 @@ class T2dTensor(TimeSpaceFunctionBase):
     @property
     def shape(self):
         """a tensor"""
-        return (2, 2)
+        return 2, 2
 
     @property
     def _NPD00_(self):

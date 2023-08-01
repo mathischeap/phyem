@@ -1,7 +1,5 @@
 # -*- coding: utf-8 -*-
 """
-pH-lib@RAM-EEMCS-UT
-created at: 2/20/2023 4:36 PM
 """
 __all__ = [
     'wedge',

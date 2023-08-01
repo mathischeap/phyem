@@ -1,7 +1,5 @@
 # -*- coding: utf-8 -*-
 """
-pH-lib@RAM-EEMCS-UT
-created at: 3/2/2023 3:06 PM
 """
 import sys
 

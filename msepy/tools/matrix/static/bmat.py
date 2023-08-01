@@ -1,4 +1,6 @@
-""""""
+# -*- coding: utf-8 -*-
+r"""
+"""
 from msepy.tools.matrix.static.local import MsePyStaticLocalMatrix
 from msepy.tools.gathering_matrix import RegularGatheringMatrix
 from tools.frozen import Frozen
@@ -85,13 +87,15 @@ class _MsePyStaticLocalMatrixBmat(Frozen):
                     if i in Arc.customize:  # important! do not use adjust!
                         return 'unique'
                     else:
-                        keys.append(
-                            Arc._cache_key(i)
-                        )
+                        key = Arc._cache_key(i)
+                        if key == 'unique':
+                            return 'unique'
+                        else:
+                            keys.append(
+                                key
+                            )
 
         if all([_ == 'constant' for _ in keys]):
             return 'constant'
-        elif 'unique' in keys:
-            return 'unique'
         else:
             return ''.join(keys)

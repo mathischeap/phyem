@@ -11,6 +11,7 @@ from src.spaces.main import _degree_str_maker
 from tools.quadrature import Quadrature
 from msepy.tools.matrix.dynamic import MsePyDynamicLocalMatrix
 from msepy.tools.matrix.static.local import MsePyStaticLocalMatrix
+from src.spaces.continuous.Lambda import ScalarValuedFormSpace
 from scipy.sparse import csr_array
 
 
@@ -28,10 +29,16 @@ class _AxBipC(Frozen):
             )
         cache_key = ' <=> '.join(cache_key)
         self._cache_key = cache_key
+
         self._A = A
         self._B = B
         self._C = C
         self._ABC = (A, B, C)
+        if all([_.space.abstract.__class__ is ScalarValuedFormSpace for _ in self._ABC]):
+            self._type = 'scalar'
+        else:
+            raise NotImplementedError()
+
         self._quad = quad
         self._3d_data = None
         self._mesh_dimensions = A.mesh.n
@@ -96,49 +103,58 @@ class _AxBipC(Frozen):
                 pass
 
             else:
-                # make the data --------------- for 2d meshes -----------------------------------
-                if self._mesh.n == 2:
-                    # so, A = [0 0 w]^T, B = [u, v, 0]^T, C = [a b 0]^T,
-                    # cp_term = A X B = [-wv wu 0]^T, (cp_term, C) = -wva + wub
-                    w = rmA[e][0]
-                    u, v = rmB[e]
-                    a, b = rmC[e]
-                    dJi = detJ[e]
-                    data = - np.einsum(
-                        'li, lj, lk, l -> ijk', w, v, a, quad_weights * dJi, optimize='optimal'
-                    ) + np.einsum(
-                        'li, lj, lk, l -> ijk', w, u, b, quad_weights * dJi, optimize='optimal'
-                    )
-                # make the data --------------- for 3d meshes -----------------------------------
-                elif self._mesh.n == 3:
-                    wx, wy, wz = rmA[e][0]
-                    u, v, w = rmB[e]
-                    a, b, c = rmC[e]
-                    dJi = detJ[e]
-                    # A = [wx wy, wz]^T    B = [u v w]^T   C= [a b c]^T
-                    # A x B = [wy*w - wz*v,   wz*u - wx*w,   wx*v - wy*u]^T = [A0 B0 C0]^T
-                    # (A x B) dot C = A0*a + B0*b + C0*c
-                    A0a = np.einsum(
-                        'li, lj, lk, l -> ijk', wy, w, a, quad_weights * dJi, optimize='optimal'
-                    ) - np.einsum(
-                        'li, lj, lk, l -> ijk', wz, v, a, quad_weights * dJi, optimize='optimal'
-                    )
-                    B0b = np.einsum(
-                        'li, lj, lk, l -> ijk', wz, u, b, quad_weights * dJi, optimize='optimal'
-                    ) - np.einsum(
-                        'li, lj, lk, l -> ijk', wx, w, b, quad_weights * dJi, optimize='optimal'
-                    )
-                    C0c = np.einsum(
-                        'li, lj, lk, l -> ijk', wx, v, c, quad_weights * dJi, optimize='optimal'
-                    ) - np.einsum(
-                        'li, lj, lk, l -> ijk', wy, u, c, quad_weights * dJi, optimize='optimal'
-                    )
+                if self._type == 'scalar':
+                    # make the data --------------- for 2d meshes -----------------------------------
+                    if self._mesh.n == 2:
+                        if len(rmA[e]) == 1 and len(rmB[e]) == len(rmC[e]) == 2:
+                            # A is a 0-form, B, C are 1-forms!
+                            # so, A = [0 0 w]^T, B = [u, v, 0]^T, C = [a b 0]^T,
+                            # cp_term = A X B = [-wv wu 0]^T, (cp_term, C) = -wva + wub
+                            w = rmA[e][0]
+                            u, v = rmB[e]
+                            a, b = rmC[e]
+                            dJi = detJ[e]
+                            data = - np.einsum(
+                                'li, lj, lk, l -> ijk', w, v, a, quad_weights * dJi, optimize='optimal'
+                            ) + np.einsum(
+                                'li, lj, lk, l -> ijk', w, u, b, quad_weights * dJi, optimize='optimal'
+                            )
+                        else:
+                            raise NotImplementedError()
 
-                    data = A0a + B0b + C0c
+                    # make the data --------------- for 3d meshes -----------------------------------
+                    elif self._mesh.n == 3:
+                        wx, wy, wz = rmA[e][0]
+                        u, v, w = rmB[e]
+                        a, b, c = rmC[e]
+                        dJi = detJ[e]
+                        # A = [wx wy, wz]^T    B = [u v w]^T   C= [a b c]^T
+                        # A x B = [wy*w - wz*v,   wz*u - wx*w,   wx*v - wy*u]^T = [A0 B0 C0]^T
+                        # (A x B) dot C = A0*a + B0*b + C0*c
+                        A0a = np.einsum(
+                            'li, lj, lk, l -> ijk', wy, w, a, quad_weights * dJi, optimize='optimal'
+                        ) - np.einsum(
+                            'li, lj, lk, l -> ijk', wz, v, a, quad_weights * dJi, optimize='optimal'
+                        )
+                        B0b = np.einsum(
+                            'li, lj, lk, l -> ijk', wz, u, b, quad_weights * dJi, optimize='optimal'
+                        ) - np.einsum(
+                            'li, lj, lk, l -> ijk', wx, w, b, quad_weights * dJi, optimize='optimal'
+                        )
+                        C0c = np.einsum(
+                            'li, lj, lk, l -> ijk', wx, v, c, quad_weights * dJi, optimize='optimal'
+                        ) - np.einsum(
+                            'li, lj, lk, l -> ijk', wy, u, c, quad_weights * dJi, optimize='optimal'
+                        )
 
-                # else: must be wrong, we do not do this in 1d ----------------------------------
+                        data = A0a + B0b + C0c
+
+                    # else: must be wrong, we do not do this in 1d ----------------------------------
+                    else:
+                        raise Exception()
+
                 else:
-                    raise Exception()
+                    raise NotImplementedError()
 
                 _data_cache[cache_index] = data
 

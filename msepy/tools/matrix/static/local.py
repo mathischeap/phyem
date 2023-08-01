@@ -21,6 +21,7 @@ class MsePyStaticLocalMatrix(Frozen):
             self._dtype = 'ddd'
             self._data = data  # element-wise csc or csr matrix.
             self._cache_key = data._cache_key_generator
+
         elif issparse(data) or data == 0:
             if issparse(data):
                 if not (isspmatrix_csc(data) or isspmatrix_csr(data)):
@@ -30,18 +31,16 @@ class MsePyStaticLocalMatrix(Frozen):
                 shape0, shape1 = data.shape  # must be regular gathering matrix, so `.shape` does not raise Error.
                 assert shape0 == gm_row.shape[1], f"row shape wrong"
                 assert shape1 == gm_col.shape[1], f"col shape wrong"
-
             elif data == 0:
                 shape0 = gm_row.shape[1]
                 shape1 = gm_col.shape[1]
                 data = csr_matrix((shape0, shape1))
-
             else:
                 raise Exception()
-
             self._dtype = 'constant'
             self._data = data
             self._cache_key = self._constant_cache_key
+
         elif callable(data):
             self._dtype = 'realtime'
             self._data = data
@@ -50,8 +49,10 @@ class MsePyStaticLocalMatrix(Frozen):
                 self._cache_key = self._unique_cache_key
             else:
                 self._cache_key = cache_key
+
         else:
             raise NotImplementedError(f"MsePyLocalMatrix cannot take data of type {data.__class__}.")
+
         self._gm0_row = gm_row
         self._gm1_col = gm_col
         self._constant_cache = None
@@ -385,12 +386,12 @@ class _MatmulMatMat(Frozen):
     def cache_key(self, i):
         """"""
         if i in self._m0.adjust:
-            ck0 = 'unique'
+            return 'unique'
         else:
             ck0 = self._m0._cache_key(i)
 
         if i in self._m1.adjust:
-            ck1 = 'unique'
+            return 'unique'
         else:
             ck1 = self._m1._cache_key(i)
 

@@ -1,8 +1,5 @@
 # -*- coding: utf-8 -*-
 """
-pH-lib@RAM-EEMCS-UT
-Yi Zhang
-Created at 2:00 PM on 7/5/2023
 """
 from tools.frozen import Frozen
 from src.form.main import _global_root_forms_lin_dict

@@ -1,7 +1,5 @@
 # -*- coding: utf-8 -*-
 r"""
-pH-lib@RAM-EEMCS-UT
-Yi Zhang
 """
 import matplotlib.pyplot as plt
 import matplotlib
@@ -81,6 +79,7 @@ class MsePyStaticLinearSystem(Frozen):
         for cgm in col_gms:
             # noinspection PyUnresolvedReferences
             num_elements.append(cgm.num_elements)
+        # noinspection PyTypeChecker
         assert all(np.array(num_elements) == num_elements[0]), f"total element number dis-match"
         self._total_elements = num_elements[0]
         self._row_gms = row_gms
@@ -121,7 +120,7 @@ class MsePyStaticLinearSystem(Frozen):
 
     @property
     def A(self):
-        """Ax = b
+        """``Ax = b``
 
         A is a 2-d list of None or msepy static local matrices.
         """
@@ -129,7 +128,7 @@ class MsePyStaticLinearSystem(Frozen):
 
     @property
     def x(self):
-        """Ax = b
+        """``Ax = b``
 
         x is a 1d list of msepy static root-form cochain vector.
         """
@@ -137,7 +136,7 @@ class MsePyStaticLinearSystem(Frozen):
 
     @property
     def b(self):
-        """Ax = b
+        """``Ax = b``
 
         b is a 1d list of msepy static local vectors.
         """

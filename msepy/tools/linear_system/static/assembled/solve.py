@@ -1,8 +1,5 @@
 # -*- coding: utf-8 -*-
 """
-pH-lib@RAM-EEMCS-UT
-Yi Zhang
-Created at 5:41 PM on 5/17/2023
 """
 from scipy.sparse import linalg as spspalinalg
 from tools.frozen import Frozen

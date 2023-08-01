@@ -224,6 +224,26 @@ class T3dVector(TimeSpaceFunctionBase):
 
         return self.__class__(neg_v0, neg_v1, neg_v2)
 
+    def __mul__(self, other):
+        """self * other"""
+        if isinstance(other, (int, float)):
+
+            v0_mul_number = t3d_ScalarMultiply(self._v0_, other)
+            v1_mul_number = t3d_ScalarMultiply(self._v1_, other)
+            v2_mul_number = t3d_ScalarMultiply(self._v2_, other)
+
+            return self.__class__(v0_mul_number, v1_mul_number, v2_mul_number)
+
+        else:
+            raise NotImplementedError()
+
+    def __rmul__(self, other):
+        """other * self"""
+        if isinstance(other, (int, float)):
+            return self * other
+        else:
+            raise NotImplementedError()
+
     def dot(self, other):
         """`self` dot product with `other`. So lets say self = (a, b), other = (u, v),
         self.dot(other) gives a scalar, au + bv.

@@ -1,8 +1,5 @@
 # -*- coding: utf-8 -*-
 """
-@author: Yi Zhang
-@contact: zhangyi_aero@hotmail.com
-@time: 11/26/2022 2:56 PM
 """
 from src.config import _wf_term_default_simple_patterns as _simple_patterns
 from src.spaces.ap import _parse_l2_inner_product_mass_matrix

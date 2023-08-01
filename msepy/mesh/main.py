@@ -9,6 +9,7 @@ import numpy as np
 
 if './' not in sys.path:
     sys.path.append('./')
+
 from tools.frozen import Frozen
 from msepy.manifold.main import MsePyManifold
 from msepy.mesh.elements.main import MsePyMeshElements

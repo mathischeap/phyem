@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
 """
-pH-lib@RAM-EEMCS-UT
 """
 import matplotlib.pyplot as plt
 from tools.frozen import Frozen

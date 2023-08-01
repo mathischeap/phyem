@@ -1,8 +1,5 @@
 # -*- coding: utf-8 -*-
 """
-pH-lib@RAM-EEMCS-UT
-Yi Zhang
-Created at 1:58 PM on 5/15/2023
 """
 from tools.frozen import Frozen
 from scipy.sparse import csr_matrix, csc_matrix

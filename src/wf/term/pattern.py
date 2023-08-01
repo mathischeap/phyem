@@ -1,7 +1,5 @@
 # -*- coding: utf-8 -*-
 """
-pH-lib@RAM-EEMCS-UT
-created at: 3/29/2023 11:33 AM
 """
 from src.form.operators import _parse_related_time_derivative
 from src.form.main import _global_root_forms_lin_dict

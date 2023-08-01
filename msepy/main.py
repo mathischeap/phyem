@@ -1,7 +1,5 @@
 # -*- coding: utf-8 -*-
 """
-pH-lib@RAM-EEMCS-UT
-created at: 3/30/2023 6:19 PM
 """
 from tools.frozen import Frozen
 from msepy.manifold.main import MsePyManifold
@@ -148,6 +146,45 @@ def info():
                 print(form.abstract._pure_lin_repr, '@', newest_time)
     print()
     return
+
+
+def _quick_mesh(*bounds, element_layout=None):
+    r"""Make a quick msepy mesh over manifold \Omega = [*bounds].
+
+    This is mainly for test purpose. Thus we do not need to define abstract objs first.
+
+    Parameters
+    ----------
+    bounds
+    element_layout
+
+    Returns
+    -------
+
+    """
+    ndim = len(bounds)
+    assert 1 <= ndim <= 3, f"bounds must reflect a 1-, 2- or 3-d mesh."
+    if element_layout is None:
+        if ndim <= 2:
+            element_layout = [6 for _ in range(ndim)]
+        else:
+            element_layout = [3 for _ in range(ndim)]
+    else:
+        pass
+    for i, bound in enumerate(bounds):
+        lower, upper = bound
+        assert upper > lower, f"bounds[{i}] = {bound} is wrong."
+    from src.config import set_embedding_space_dim
+    set_embedding_space_dim(ndim)
+    from src.manifold import manifold
+    manifold = manifold(ndim)
+    from src.mesh import mesh
+    mesh = mesh(manifold)
+    manifold = MsePyManifold(manifold)
+    mesh = MsePyMesh(mesh)
+    _mf_config(manifold, 'crazy', bounds=bounds)
+    _mh_config(mesh, manifold, element_layout)
+    return mesh
 
 
 def find_mesh_of_manifold(msepy_or_abstract_manifold):

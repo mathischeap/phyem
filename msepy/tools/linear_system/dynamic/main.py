@@ -1,7 +1,5 @@
 # -*- coding: utf-8 -*-
 r"""
-pH-lib@RAM-EEMCS-UT
-Yi Zhang
 """
 import matplotlib.pyplot as plt
 import matplotlib
@@ -60,6 +58,7 @@ class MsePyDynamicLinearSystem(Frozen):
 
     @property
     def shape(self):
+        """"""
         return self._mp_ls._ls.A._shape
 
     def apply(self):

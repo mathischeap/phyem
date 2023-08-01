@@ -1,8 +1,5 @@
 # -*- coding: utf-8 -*-
 """
-@author: Yi Zhang
-@contact: zhangyi_aero@hotmail.com
-@time: 11/26/2022 2:56 PM
 """
 from src.spaces.main import new
 
@@ -92,8 +89,8 @@ def codifferential(space):
 
 
 def _d_to_vc(space_indicator, *args):
-    """"""
-
+    """The correspondence between exterior derivative and vector calculus operators.
+    """
     if space_indicator == 'Lambda':  # scalar valued form spaces.
         m, n, k, ori = args
 
@@ -133,7 +130,8 @@ def _d_to_vc(space_indicator, *args):
 
 
 def _d_ast_to_vc(space_indicator, *args):
-    """"""
+    """The correspondence between codifferential and vector calculus operators.
+    """
     if space_indicator == 'Lambda':  # scalar valued form spaces.
         m, n, k, ori = args
         if m == n == 1 and k == 1:  # 1-form on 1d manifold in 1d space.

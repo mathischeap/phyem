@@ -15,7 +15,11 @@ class _MsePySpaceFindLocalDofs(Frozen):
         self._freeze()
 
     def __call__(self, m, n, degree):
-        """"""
+        """Find the local dofs on `m`-axis, `n`-side of the space of degree `degree`.
+
+        So m = {0, 1, 2, ...}, n = {0, 1}.
+
+        """
         key = (m, n, degree)
 
         if key in self._cache:

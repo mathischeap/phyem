@@ -24,25 +24,22 @@ The predefined domains and meshes includes below categories.
 Problem solving
 ---------------
 
-Below, different kinds of problems are solved as demonstrations.
+Below, different kinds of problems are solved as demonstrations. They are, from *simple* to *complicated* ones,
 
 .. toctree::
    :maxdepth: 1
 
    div_grad/index
 
-
 .. toctree::
    :maxdepth: 1
 
    canonical_linear_port_Hamiltonian/index
 
-
 .. toctree::
    :maxdepth: 1
 
    Navier_Stokes/index
-
 
 .. toctree::
    :maxdepth: 1

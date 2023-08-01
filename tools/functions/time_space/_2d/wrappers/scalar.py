@@ -38,18 +38,30 @@ class T2dScalar(TimeSpaceFunctionBase):
         """return functions evaluated at time `t`."""
         return partial(self, t)
 
-    def visualize(self, mesh, t, sampling_factor=1):
+    def visualize(self, mesh_or_bounds, t, sampling_factor=1):
         """Return a visualize class for a mesh at t=`t`.
 
         Parameters
         ----------
-        mesh
+        mesh_or_bounds
         t
+        sampling_factor
 
         Returns
         -------
 
         """
+        if isinstance(mesh_or_bounds, (list, tuple)):  # provide a domain
+            if all(isinstance(_, (int, float)) for _ in mesh_or_bounds):
+                bounds = [mesh_or_bounds for _ in range(self.ndim)]
+            else:
+                bounds = mesh_or_bounds
+
+            from msepy.main import _quick_mesh
+            mesh = _quick_mesh(*bounds)
+        else:
+            mesh = mesh_or_bounds
+
         v = self[t]
         mesh.visualize._target(v, sampling_factor=sampling_factor)
 
@@ -152,11 +164,39 @@ class T2dScalar(TimeSpaceFunctionBase):
         return self.__class__(neg)
 
     def __mul__(self, other):
-        """"""
+        """self * other"""
         if other.__class__ is self.__class__:
             s0_mul_s1 = t2d_ScalarMultiply(self._s_, other._s_)
             return self.__class__(s0_mul_s1)
 
+        elif isinstance(other, (int, float)):
+            s0_mul_s1 = t2d_ScalarMultiply(self._s_, other)
+            return self.__class__(s0_mul_s1)
+
+        else:
+            raise NotImplementedError()
+
+    def __rmul__(self, other):
+        """other * self"""
+        if isinstance(other, (int, float)):
+            return self * other
+        else:
+            raise NotImplementedError()
+
+    def cross_product(self, other):
+        """self x other"""
+        from tools.functions.time_space._2d.wrappers.vector import T2dVector
+        if other.__class__ is T2dVector:
+            # scalar x vector
+            # A is self (scalar), B is vector (other)
+            # so, A = [0 0 w]^T, B = [u, v, 0]^T
+            # cp_term = A X B = [-wv wu 0]^T
+            w = self._s_
+            u, v = other._v0_, other._v1_
+            V0 = t2d_ScalarMultiply(w, v)
+            V1 = t2d_ScalarMultiply(w, u)
+            V0 = t2d_ScalarNeg(V0)
+            return T2dVector(V0, V1)
         else:
             raise NotImplementedError()
 

@@ -108,11 +108,8 @@ def _parse_root_form(root_form_vec_lin_repr):
         return dynamic_cochain_vec, rf.abstract.ap()._sym_repr
 
     else:  # it is a general (not for a specific time step for example) vector of the root-form.
-
         assert rf._pAti_form['base_form'] is None, f"must be a general root-form!"
-
         dynamic_cochain_vec = rf.cochain.dynamic_vec
-
         return dynamic_cochain_vec, rf.abstract.ap()._sym_repr
 
 
@@ -132,7 +129,6 @@ def _parse_M_matrix(space, degree0, degree1):
             pass
 
     if degree0 == degree1:
-
         degree = degree0
 
         gm = the_msepy_space.gathering_matrix(degree)
@@ -144,6 +140,7 @@ def _parse_M_matrix(space, degree0, degree1):
         )
 
         return M
+
     else:
         raise NotImplementedError()
 

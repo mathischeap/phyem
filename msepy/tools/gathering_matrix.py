@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
 """
-pH-lib@RAM-EEMCS-UT
 """
 import numpy as np
 from tools.frozen import Frozen

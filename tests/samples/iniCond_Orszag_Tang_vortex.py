@@ -8,7 +8,7 @@ are
 .. math::
     \boldsymbol{u} = \nabla\times \varphi \quad \text{and} \quad \boldsymbol{B} = \nabla\times A,
 
-where :math:`\varphi = 2\sin(y) - 2\cos(x)` and :math:`A=\cos(2y)  - 2 \cos(x)`.
+where :math:`\varphi = 2\sin(y) - 2\cos(x)` and :math:`A=\cos(2y) - 2 \cos(x)`.
 See Section 5.3 of
 `[Michael Kraus and Omar Maj, Variational Integrators for Ideal Magnetohydrodynamics, 2021, arXiv]
 <https://arxiv.org/abs/1707.03227>`_
@@ -23,13 +23,16 @@ See Section 5.3 of
 
 These initial conditions are implemented. To initialize an ideal Orszag-Tang Vortex, for example,  do
 
->>> ph.samples.InitialConditionOrszagTangVortex(Rf=0, Rm=0, Al=1)  # doctest: +ELLIPSIS
+>>> from math import inf
+>>> ph.samples.InitialConditionOrszagTangVortex()  # doctest: +ELLIPSIS
 <tests.samples.iniCond_Orszag_Tang_vortex.InitialConditionOrszagTangVortex object at ...
 
-
 """
+import sys
+if './' not in sys.path:
+    sys.path.append('./')
 
-from numpy import sin, cos
+from numpy import sin, cos, pi
 
 from tools.frozen import Frozen
 from tools.functions.time_space._2d.wrappers.scalar import T2dScalar
@@ -46,39 +49,11 @@ def _A(t, x, y):
 
 
 class InitialConditionOrszagTangVortex(Frozen):
-    """
-
-    Parameters
-    ----------
-    Rf :
-        fluid Reynolds number
-    Rm :
-        magnetic Reynolds number
-    Al :
-        Alfvén number
-    """
-    def __init__(self, Rf, Rm, Al):
-        self._Rf = Rf
-        self._Rm = Rm
-        self._Al = Al
+    """"""
+    def __init__(self):
         self._streaming = T2dScalar(_phi)
         self._potential = T2dScalar(_A)
         self._freeze()
-
-    @property
-    def Rf(self):
-        """fluid Reynolds number"""
-        return self._Rf
-
-    @property
-    def Rm(self):
-        """magnetic Reynolds number"""
-        return self._Rm
-
-    @property
-    def Al(self):
-        """Alfvén number"""
-        return self._Al
 
     @property
     def u(self):
@@ -92,10 +67,26 @@ class InitialConditionOrszagTangVortex(Frozen):
 
     @property
     def H(self):
-        """magnetic field strength, H = B under nondimensionalization."""
+        """magnetic field strength, H = B under non-dimensionalization."""
         return self.B
 
     @property
     def j(self):
-        # TODO: to be continued.
-        return
+        """electric current density"""
+        return self.B.rot
+
+    @property
+    def E(self):
+        """electric field strength"""
+        return - self.u.cross_product(self.B)
+
+    @property
+    def omega(self):
+        """vorticity"""
+        return self.u.rot
+
+
+if __name__ == '__main__':
+    # python tests/samples/iniCond_Orszag_Tang_vortex.py
+    ic = InitialConditionOrszagTangVortex()
+    ic.j.visualize([0, 2*pi], 0)

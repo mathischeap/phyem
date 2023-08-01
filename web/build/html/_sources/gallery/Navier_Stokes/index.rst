@@ -13,7 +13,6 @@ Navier-Stokes equations
     -- wikipedia
 
 
-
 Incompressibility
 =================
 
@@ -32,10 +31,21 @@ Navier-Stokes equations are of the generic dimensionless form,
     \end{aligned}
     \end{equation}
 
-where :math:`\boldsymbol{u}` is velocity, :math:`p` is pressure, :math:`\boldsymbol{f}` is the body force, and
+where :math:`\boldsymbol{u}` is velocity, :math:`p` is pressure, :math:`\boldsymbol{f}` is the body force,
 :math:`\mathrm{Re}` is the Reynolds number, :math:`\mathcal{C}(\boldsymbol{u})` and
 :math:`\mathcal{D}(\boldsymbol{u})` represent the nonlinear convective term and the linear dissipative term,
 respectively.
+
+
+Numerical Examples
+==================
+For numerical examples of Navier-Stokes flows, see
+
+.. toctree::
+   :maxdepth: 1
+
+   shear_layer_rollup/index
+
 
 |
 

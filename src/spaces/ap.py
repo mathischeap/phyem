@@ -1,9 +1,6 @@
 # -*- coding: utf-8 -*-
 """
 Algebraic Proxy.
-
-pH-lib@RAM-EEMCS-UT
-created at: 3/20/2023 5:17 PM
 """
 
 from src.spaces.main import _default_mass_matrix_reprs, _default_astA_x_B_ip_tC_reprs

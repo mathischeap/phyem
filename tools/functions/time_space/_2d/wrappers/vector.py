@@ -44,12 +44,12 @@ class T2dVector(TimeSpaceFunctionBase):
         """return functions evaluated at time `t`."""
         return partial(self, t)
 
-    def visualize(self, mesh, t, sampling_factor=1):
+    def visualize(self, mesh_or_bounds, t, sampling_factor=1):
         """Return a visualize class for a mesh at t=`t`.
 
         Parameters
         ----------
-        mesh
+        mesh_or_bounds
         t
         sampling_factor
 
@@ -57,6 +57,16 @@ class T2dVector(TimeSpaceFunctionBase):
         -------
 
         """
+        if isinstance(mesh_or_bounds, (list, tuple)):  # provide a domain
+            if all(isinstance(_, (int, float)) for _ in mesh_or_bounds):
+                bounds = [mesh_or_bounds for _ in range(self.ndim)]
+            else:
+                bounds = mesh_or_bounds
+
+            from msepy.main import _quick_mesh
+            mesh = _quick_mesh(*bounds)
+        else:
+            mesh = mesh_or_bounds
         v = self[t]
         mesh.visualize._target(v, sampling_factor=sampling_factor)
 
@@ -194,6 +204,25 @@ class T2dVector(TimeSpaceFunctionBase):
 
         return self.__class__(neg_v0, neg_v1)
 
+    def __mul__(self, other):
+        """self * other"""
+        if isinstance(other, (int, float)):
+
+            v0_mul_number = t2d_ScalarMultiply(self._v0_, other)
+            v1_mul_number = t2d_ScalarMultiply(self._v1_, other)
+
+            return self.__class__(v0_mul_number, v1_mul_number)
+
+        else:
+            raise NotImplementedError()
+
+    def __rmul__(self, other):
+        """other * self"""
+        if isinstance(other, (int, float)):
+            return self * other
+        else:
+            raise NotImplementedError()
+
     def dot(self, other):
         """ self dot product with other。 So lets say self = (a, b), other = (u, v),
         self.dot(other) gives a scalar, au + bv.
@@ -217,6 +246,33 @@ class T2dVector(TimeSpaceFunctionBase):
             V0V1 = t2d_ScalarAdd(V0, V1)
             from tools.functions.time_space._2d.wrappers.scalar import T2dScalar
             return T2dScalar(V0V1)
+
+        else:
+            raise NotImplementedError()
+
+    def cross_product(self, other):
+        """self x other."""
+        from tools.functions.time_space._2d.wrappers.scalar import T2dScalar
+
+        if other.__class__ is self.__class__:
+            # 2-d vector x 2-d vector
+            # A = [wx wy, 0]^T    B = [u v 0]^T
+            # A x B = [wy*0 - 0*v,   0*u - wx*0,   wx*v - wy*u]^T = [0 0 wx*v - wy*u]^T
+            wx, wy = self._v0_, self._v1_
+            u, v = other._v0_, other._v1_
+
+            V0 = t2d_ScalarMultiply(wx, v)
+            V1 = t2d_ScalarMultiply(wy, u)
+
+            V0V1 = t2d_ScalarSub(V0, V1)
+            return T2dScalar(V0V1)
+
+        elif other.__class__ is T2dScalar:
+            V = other.cross_product(self)
+            v0, v1 = V._v0_, V._v1_
+            v0 = t2d_ScalarNeg(v0)
+            v1 = t2d_ScalarNeg(v1)
+            return self.__class__(v0, v1)
 
         else:
             raise NotImplementedError()

@@ -1,11 +1,12 @@
 # -*- coding: utf-8 -*-
+r"""
+The shear layer rollup is a 2d non-dimensional ideal incompressible NS flow (Euler flow).
 """
-pH-lib@RAM-EEMCS-UT
-Yi Zhang
-Created at 4:57 PM on 7/26/2023
-"""
+import sys
+if './' not in sys.path:
+    sys.path.append('./')
 
-from numpy import tanh, sin, pi  # , cosh
+from numpy import tanh, sin, pi  # cosh
 from tools.gen_piece_wise import genpiecewise
 from tools.functions.time_space._2d.wrappers.vector import T2dVector
 from tools.frozen import Frozen
@@ -54,3 +55,10 @@ class InitialConditionShearLayerRollUp(Frozen):
     @property
     def vorticity(self):
         return self._vorticity
+
+
+if __name__ == '__main__':
+    # python tests/samples/iniCond_shear_layer_rollup.py
+    ic = InitialConditionShearLayerRollUp()
+    ic.vorticity.visualize([0, 2*pi], 0)
+    ic.velocity.visualize([0, 2*pi], 0)

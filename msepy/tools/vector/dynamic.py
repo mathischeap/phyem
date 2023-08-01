@@ -1,8 +1,5 @@
 # -*- coding: utf-8 -*-
 """
-pH-lib@RAM-EEMCS-UT
-Yi Zhang
-Created at 1:51 PM on 5/12/2023
 """
 from tools.frozen import Frozen
 

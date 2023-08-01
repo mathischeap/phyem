@@ -1,8 +1,5 @@
 # -*- coding: utf-8 -*-
 """
-pH-lib@RAM-EEMCS-UT
-Yi Zhang
-Created at 2:13 PM on 5/12/2023
 """
 
 from tools.frozen import Frozen
@@ -26,12 +23,12 @@ class MsePyStaticLinearSystemAssembled(Frozen):
 
     @property
     def A(self):
-        """A of Ax = b."""
+        """``A`` of ``Ax = b``."""
         return self._A
 
     @property
     def b(self):
-        """b of Ax = b."""
+        """``b`` of ``Ax = b``."""
         return self._b
 
     @property

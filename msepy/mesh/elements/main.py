@@ -5,7 +5,7 @@
 """
 import sys
 if './' not in sys.path:
-    sys.path.append('../')
+    sys.path.append('./')
 
 import numpy as np
 from tools.frozen import Frozen

@@ -1,8 +1,5 @@
 # -*- coding: utf-8 -*-
 """
-pH-lib@RAM-EEMCS-UT
-Yi Zhang
-Created at 3:32 PM on 5/9/2023
 """
 from tools.frozen import Frozen
 import matplotlib.pyplot as plt

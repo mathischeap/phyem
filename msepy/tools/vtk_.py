@@ -1,7 +1,5 @@
 # -*- coding: utf-8 -*-
 r"""
-pH-lib@RAM-EEMCS-UT
-Yi Zhang
 """
 import numpy as np
 from pyevtk.hl import unstructuredGridToVTK
@@ -16,9 +14,12 @@ class BuildVtkHexahedron(Frozen):  # using only No.12 VTK cells.
 
         Parameters
         ----------
-        x
-        y
-        z
+        x :
+            2d array, 0-axis: elements, 1-axis: flat coordinates
+        y :
+            2d array, 0-axis: elements, 1-axis: flat coordinates
+        z :
+            2d array, 0-axis: elements, 1-axis: flat coordinates
         cell_layout :
             In each element, we have *cell_layout along 3-axes.
         """
