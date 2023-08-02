@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
 """
-
 """
 
 # python tests/msepy/div_grad/_1d_periodic.py

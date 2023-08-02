@@ -54,9 +54,9 @@ coverage.xml
 .pytest_cache/
 .idea/
 .__pycache__/
-._app/
 .ipynb_checkpoints/
 _notes/
+_app/
 conf.py
 
 # Translations
