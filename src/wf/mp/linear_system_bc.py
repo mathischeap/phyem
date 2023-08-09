@@ -225,8 +225,9 @@ class _EssentialBoundaryCondition(_BoundaryCondition):
 
     def _pr_text(self):
         """"""
-        text = (r"$\mathrm{tr}\ " + rf"{self._provided_root_form._sym_repr}$ in " +
-                r"$\vec{x}$" + f"[{self.i}] ")
+        unknown_vec_sym_repr = self._ls._x(self.i)[0][0]._sym_repr
+        text = (r"$\mathrm{tr}\ " + rf"{self._provided_root_form._sym_repr}$ for " +
+                r"$\vec{x}$" + f"[{self.i}] = ${unknown_vec_sym_repr}$ ")
         text += (r"provided as an \textbf{essential} boundary condition; $" +
                  self._raw_bc_form._sym_repr + '$')
         return text

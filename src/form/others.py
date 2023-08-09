@@ -132,7 +132,7 @@ def _list_forms(variable_range=None):
         fig.tight_layout()
         from src.config import _setting, _pr_cache
         if _setting['pr_cache']:
-            _pr_cache(fig)
+            _pr_cache(fig, filename='formList')
         else:
             plt.show(block=_setting['block'])
         return fig

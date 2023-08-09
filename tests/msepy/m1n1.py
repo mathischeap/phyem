@@ -1,10 +1,6 @@
 # -*- coding: utf-8 -*-
 r"""
-pH-lib@RAM-EEMCS-UT
-Yi Zhang
-Created at 6:59 PM on 5/2/2023
-
-$ python .\tests\msepy\m1n1.py
+python .\tests\msepy\m1n1.py
 """
 import numpy as np
 import sys

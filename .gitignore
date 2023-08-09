@@ -58,6 +58,7 @@ coverage.xml
 _notes/
 _app/
 _images/
+__phcache__/
 conf.py
 
 # Translations

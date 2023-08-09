@@ -23,6 +23,22 @@ def isfile(filename):
         return COMM.bcast(ToF, root=MASTER_RANK)
 
 
+def isdir(filename):
+    """"""
+    if SIZE == 1:
+
+        return os.path.isdir(filename)
+
+    else:
+        if RANK == MASTER_RANK:
+            ToF = os.path.isdir(filename)
+        else:
+            ToF = None
+
+        return COMM.bcast(ToF, root=MASTER_RANK)
+
+
+
 def mkdir(folder_name):
     """"""
     if RANK == MASTER_RANK:
@@ -43,9 +59,17 @@ def remove(*file_names):
         pass
 
 
-def rmdir(folder_name):
+def rmdir(*folder_names):
     if RANK == MASTER_RANK:
-        os.rmdir(folder_name)
+        for folder_name in folder_names:
+            os.rmdir(folder_name)
+    else:
+        pass
+
+
+def rename(old, new):
+    if RANK == MASTER_RANK:
+        os.rename(old, new)
     else:
         pass
 

@@ -129,7 +129,6 @@ def codifferential_test(n, k, orientation):
 
     ls0 = ls(0)
     als = ls0.assemble()
-    als.solve.scheme = 'gmres'
     als.solve()
 
     ph.config.set_high_accuracy(True)

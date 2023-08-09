@@ -25,10 +25,13 @@ MASTER_RANK: int = 0  # DO NOT change this
 
 _setting = {
     "block": True,   # matplot block
+    "cache_folder": '__phcache__',  # the default cache folder name
     "pr_cache": False,   # if this is True, all pr will save to the cache folder and will not show()
-    "pr_cache_folder": '__phcache__',  # the default cache folder name
+    "pr_cache_maximum": 3,  # We clean toward this number when it is more than twice
     "pr_cache_counter": 0,  # we have cache how many times?
     "pr_cache_subfolder": '',  # we cache where in particular?
+    "pr_cache_folder_prefix": 'Pr_',  # we cache where in particular?
+    "pr_cache_current_folder": 'current',  # we cache where in particular?
     "high_accuracy": True,  # influence sparsity of some matrices.
 }
 
@@ -38,7 +41,7 @@ def set_embedding_space_dim(ndim):
     assert ndim % 1 == 0 and ndim > 0, f"ndim={ndim} is wrong, it must be a positive integer."
     _global_variables['embedding_space_dim'] = ndim
     _clear_all()   # whenever we change or reset the space dim, we clear all abstract objects.
-    _clear_pr_cache_setting()
+    _clear_pr_cache()
 
 
 def set_high_accuracy(_bool):
@@ -53,24 +56,60 @@ def set_pr_cache(_bool):
     _setting['pr_cache'] = _bool
 
 
-def _pr_cache(fig):
-    """"""
+def _pr_cache(fig, filename=None):
+    """
+
+    Parameters
+    ----------
+    fig
+    filename :
+        The filename received from particular pr method. It will be put into the final filename.
+
+    Returns
+    -------
+
+    """
     from time import time
-    from tools.os_ import mkdir
+    from tools.os_ import mkdir, empty_dir, isdir
     from tools.miscellaneous.random_ import string_digits
-    folder = _setting[r'pr_cache_folder']
-    mkdir(folder)
     import matplotlib.pyplot as plt
+
+    phcache_folder = _setting[r'cache_folder']
+    if isdir(phcache_folder):
+        pass
+    else:
+        mkdir(phcache_folder)
+
+    if filename is None:
+        filename_personal = rf'/{_setting["pr_cache_counter"]}.png'
+    else:
+        filename_personal = rf'/{_setting["pr_cache_counter"]}_{filename}.png'
 
     if _setting["pr_cache_counter"] == 0:
         str_time = str(time()).split('.')[0]
-        subfolder_name = folder + r"/Pr_" + str_time + '_' + string_digits(8)
+        subfolder_name = (
+            phcache_folder + r"/" + _setting["pr_cache_folder_prefix"] +
+            str_time + '_' + string_digits(12)  # how we name the random folder
+        )
         _setting["pr_cache_subfolder"] = subfolder_name
+        mkdir(subfolder_name)
     else:
         subfolder_name = _setting["pr_cache_subfolder"]
         assert subfolder_name != '', f"something is wrong!"
-    mkdir(subfolder_name)
-    plt.savefig(subfolder_name + rf'/{_setting["pr_cache_counter"]}.png', dpi=200)
+    plt.savefig(subfolder_name + filename_personal, dpi=200)
+
+    folder_current = (
+        phcache_folder + '/' + _setting["pr_cache_folder_prefix"] + _setting["pr_cache_current_folder"]
+    )
+
+    if _setting["pr_cache_counter"] == 0:
+        mkdir(folder_current)   # do nothing if the folder exists
+        empty_dir(folder_current)  # remove old files if there is any.
+    else:
+        pass
+
+    plt.savefig(folder_current + filename_personal, dpi=200)
+
     _setting["pr_cache_counter"] += 1
     plt.close(fig)
 
@@ -80,10 +119,38 @@ def _set_matplot_block(block):
     _setting['block'] = block
 
 
-def _clear_pr_cache_setting():
+def _clear_pr_cache():
     """"""
+    from tools.os_ import listdir, isdir, mkdir, rmdir, empty_dir
     _setting["pr_cache_counter"] = 0  # reset cache counting
     _setting["pr_cache_subfolder"] = ''  # clean cache_subfolder
+    phcache_folder = _setting[r'cache_folder']
+    if isdir(phcache_folder):
+        pass
+    else:
+        mkdir(phcache_folder)
+    all_ph_cache_files = listdir(phcache_folder)  # including folder names.
+    pr_prefix = _setting['pr_cache_folder_prefix']
+    current_file = _setting["pr_cache_folder_prefix"] + _setting["pr_cache_current_folder"]
+    len_prefix = len(pr_prefix)
+    number_pr_files = 0  # excluding the current file
+    pr_files = list()  # excluding the current file
+    for cache_file in all_ph_cache_files:
+        if cache_file[:len_prefix] == pr_prefix and cache_file != current_file:
+            number_pr_files += 1
+            pr_files.append(cache_file)
+        else:
+            pass
+    pr_cache_maximum = _setting["pr_cache_maximum"]
+    assert pr_cache_maximum > 1 and pr_cache_maximum % 1 == 0, \
+        f"_setting['pr_cache_maximum'] = {pr_cache_maximum} is illegal, give me a positive integer (>1)."
+    if number_pr_files >= 2 * pr_cache_maximum:
+        files_2b_clean = pr_files[:pr_cache_maximum + 1]
+        for file in files_2b_clean:
+            empty_dir(phcache_folder + r"/" + file)
+            rmdir(phcache_folder + r"/" + file)
+    else:
+        pass
 
 
 def _clear_all():

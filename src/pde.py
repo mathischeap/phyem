@@ -366,7 +366,7 @@ class PartialDifferentialEquations(Frozen):
 
         from src.config import _setting, _pr_cache
         if _setting['pr_cache']:
-            _pr_cache(fig)
+            _pr_cache(fig, filename='pde_vc')
         else:
             plt.show(block=_setting['block'])
         return fig
@@ -523,7 +523,7 @@ class PartialDifferentialEquations(Frozen):
         plt.tight_layout()
         from src.config import _setting, _pr_cache
         if _setting['pr_cache']:
-            _pr_cache(fig)
+            _pr_cache(fig, filename='pde')
         else:
             plt.show(block=_setting['block'])
         return fig

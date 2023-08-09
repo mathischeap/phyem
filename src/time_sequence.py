@@ -286,8 +286,8 @@ class ConstantTimeSequence(TimeSequence):
 
         if len(major_nodes) > 6:
             print('Constant time sequence plot warning: too many time instants to be plotted, '
-                  'the figure will be messy, plotting cancelled. Reduce time steps (<=5) to enable '
-                  'the plotting.')
+                  f'the figure will be messy, plotting cancelled. Reduce time steps {len(major_nodes)-1} '
+                  f'to <=5.')
             return
         else:
             pass
@@ -366,7 +366,7 @@ class ConstantTimeSequence(TimeSequence):
             plt.tight_layout()
             from src.config import _setting, _pr_cache
             if _setting['pr_cache']:
-                _pr_cache(fig)
+                _pr_cache(fig, filename='constantTimeSequence')
             else:
                 plt.show(block=_setting['block'])
             return fig

@@ -299,7 +299,7 @@ class MatrixProxy(Frozen):
         plt.tight_layout()
         from src.config import _setting, _pr_cache
         if _setting['pr_cache']:
-            _pr_cache(fig)
+            _pr_cache(fig, filename='matrixProxy')
         else:
             plt.show(block=_setting['block'])
         return fig
