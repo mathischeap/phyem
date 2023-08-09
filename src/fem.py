@@ -34,7 +34,8 @@ def apply(fe_name, obj_dict):
         f"finite element name={fe_name} is wrong, should be one of {_implemented_finite_elements.keys()}"
 
     implementation = _implemented_finite_elements[fe_name]
-    implementation._check_config()
+    implementation._check_config()                      # check the configuration.
+    implementation._clear_self()                        # make sure we clear everything from previous implementation
     implementation._parse_manifolds(_global_manifolds)  # important, for all manifolds
     implementation._parse_meshes(_global_meshes)        # important, for all meshes
     implementation._parse_spaces(_space_set)            # important, for all spaces

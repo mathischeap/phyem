@@ -44,7 +44,7 @@ class TemporalDiscretization(Frozen):
         for valid_ode_number in self._valid_ode:
             yield valid_ode_number
 
-    def __call__(self, *args, **kwargs):
+    def __call__(self, *args, clean=True, **kwargs):
         """Return a new weak formulation by combining all equations."""
         wfs: Dict = dict()
         for i in self:
@@ -60,6 +60,11 @@ class TemporalDiscretization(Frozen):
         wf = self._wf.__class__(self._wf._test_forms, merge=wfs)
         wf._bc = self._wf._bc
         # we get the new weak formulation by combining each pde.
+        if clean:  # make sure this temporal discretization is used only once.
+            self._wf = None
+            self._valid_ode = None
+        else:
+            pass
         return wf
 
     @property
@@ -118,7 +123,7 @@ class TemporalDiscretization(Frozen):
         ----------
         index :
             The index of the weak formulation. So we parse it to locate the ode and the local index.
-        args
+        args :
 
         Returns
         -------

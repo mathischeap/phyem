@@ -3,9 +3,12 @@
 Algebraic Proxy.
 """
 
-from src.spaces.main import _default_mass_matrix_reprs, _default_astA_x_B_ip_tC_reprs
+from src.spaces.main import _default_mass_matrix_reprs
+from src.spaces.main import _default_astA_x_B_ip_tC_reprs
+from src.spaces.main import _default_A_x_astB_ip_tC_reprs
 from src.spaces.main import _default_d_matrix_reprs, _default_d_matrix_transpose_reprs
 from src.spaces.main import _default_boundary_dp_vector_reprs
+from src.config import _form_evaluate_at_repr_setting
 
 from src.spaces.main import _default_space_degree_repr
 
@@ -91,6 +94,14 @@ def _parse_boundary_dp_vector(rf0, f1):
     d1 = _degree_str_maker(d1)
     lin = lin.replace('{d}', d1)
     sym += rf"_{s1.k}"
+    if _form_evaluate_at_repr_setting['lin'] in rf0._pure_lin_repr:
+        evaluation_sym = _form_evaluate_at_repr_setting['sym']
+        rf0_sym_repr = rf0._sym_repr
+        rf0_superscript = rf0_sym_repr.split(evaluation_sym[1])[1]
+        rf0_superscript = rf0_superscript[:-len(evaluation_sym[2])]
+        sym = sym + r"^{(" + rf0_superscript + r")}"
+    else:
+        pass
     ra = _root_array(sym, lin, (s1._sym_repr + _default_space_degree_repr + d1, 1))
     return ra
 
@@ -108,6 +119,30 @@ def _parse_astA_x_B_ip_tC(gA, B, tC):
     s1 = B.space
     d0 = tC._degree
     d1 = B._degree
+    str_d0 = _degree_str_maker(d0)
+    str_d1 = _degree_str_maker(d1)
+
+    shape0 = s0._sym_repr + _default_space_degree_repr + str_d0
+    shape1 = s1._sym_repr + _default_space_degree_repr + str_d1
+
+    shape = (shape0, shape1)
+    ra = _root_array(sym, lin, shape)
+    return ra
+
+
+def _parse_A_x_astB_ip_tC(A, gB, tC):
+    """"""
+    sym, lin = _default_A_x_astB_ip_tC_reprs[:2]
+
+    sym += r"_{" + gB._sym_repr + r"}"
+    lin = lin.replace('{A}', A._pure_lin_repr)
+    lin = lin.replace('{B}', gB._pure_lin_repr)
+    lin = lin.replace('{C}', tC._pure_lin_repr)
+
+    s0 = tC.space
+    s1 = A.space
+    d0 = tC._degree
+    d1 = A._degree
     str_d0 = _degree_str_maker(d0)
     str_d1 = _degree_str_maker(d1)
 

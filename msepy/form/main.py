@@ -62,7 +62,7 @@ class MsePyRootForm(Frozen):
         ab_rf_repr = self._abstract.__repr__().split(' at ')[0][1:]
         return "<MsePy " + ab_rf_repr + super().__repr__().split(" object")[1]
 
-    def __getitem__(self, t=None):
+    def __getitem__(self, t):
         """return the realtime copy of `self` at time `t`."""
         if t is None:
             t = self.cochain.newest  # newest time
@@ -76,6 +76,30 @@ class MsePyRootForm(Frozen):
                 return MsePyRootFormStaticCopy(self._base, t)
         else:
             raise Exception(f"cannot accept t={t}.")
+
+    def __call__(self, ati=None, **kwargs):
+        """We first get a ``time`` from ati(*args, **kwargs), then return a static copy of self at ``time``.
+
+        Parameters
+        ----------
+        ati
+        kwargs
+
+        Returns
+        -------
+
+        """
+        if self._is_base():
+            assert ati is not None, \
+                f'For base root form,  provide the abstract time instant, i.e. kwarg: `ati`.'
+
+        else:
+            if ati is None:
+                ati = self._pAti_form['ati']
+            else:
+                pass
+        t = ati(**kwargs)()
+        return self[t]
 
     def _is_base(self):
         """Am I a base root-form (not abstracted at a time.)"""

@@ -52,7 +52,7 @@ class MsePyStaticLocalVector(Frozen):
 
         elif isinstance(data, np.ndarray):
             self._dtype = "2d"  # for example, 2d array: rows -> num of elements, cols -> local cochain
-            assert data.shape == self._gm.shape
+            assert data.shape == self._gm.shape, f"{data.shape} != {self._gm.shape}"
             self._data = data
 
         elif callable(data):
@@ -130,18 +130,24 @@ class MsePyStaticLocalVector(Frozen):
             x_individuals = list()
             for sgm in sub_gms:
                 num_local_dofs.append(
-                    sum(num_local_dofs) + sgm.num_local_dofs
+                    num_local_dofs[-1] + sgm.num_local_dofs
                 )
 
                 x_individuals.append(
                     np.zeros(sgm.shape)
                 )
 
+            assert data.shape[1] == num_local_dofs[-1], f"num_local_dofs is built wrongly!"
+
+            end = None
             for i, x_i in enumerate(x_individuals):
                 start = num_local_dofs[i]
                 end = num_local_dofs[i+1]
 
                 x_individuals[i] = data[:, start:end]
+
+            if end is not None:
+                assert end == num_local_dofs[-1], f"make sure all data are used."
 
             return x_individuals
     
@@ -268,14 +274,14 @@ class MsePyStaticLocalVectorCustomize(Frozen):
         elements_local_rows = self._v._gm._find_elements_and_local_indices_of_dofs(i)
         dof = list(elements_local_rows.keys())[0]
         elements, local_rows = elements_local_rows[dof]
-        if len(elements) == 1:  # only found one place.
-            element, local_row = elements[0], local_rows[0]
+        element, local_row = elements[0], local_rows[0]
+        data = self._v[element]
+        data[local_row] = value
+        self._customizations[element] = data
+        for element, local_row in zip(elements[1:], local_rows[1:]):
             data = self._v[element]
-            data[local_row] = value
+            data[local_row] = 0
             self._customizations[element] = data
-
-        else:
-            raise NotImplementedError()
 
     def set_values(self, global_dofs, cochain):
         """set `v[global_dofs]` to be `cochain`."""

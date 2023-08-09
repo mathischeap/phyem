@@ -13,7 +13,7 @@ import numpy as np
 
 import __init__ as ph
 n = 2
-ls, mp = ph.samples.wf_div_grad(n=n, degree=5, orientation='outer', periodic=False)
+ls, mp = ph.samples.wf_div_grad(n=n, degree=3, orientation='outer', periodic=False)
 # ls.pr()
 
 msepy, obj = ph.fem.apply('msepy', locals())
@@ -28,7 +28,7 @@ msepy.config(manifold)(
 )
 # msepy.config(manifold)('backward_step')
 msepy.config(Gamma_u)(
-    manifold, {0: [1, 1, 1, 0]}
+    manifold, {0: [1, 1, 0, 0]}
 )
 
 # manifold.visualize()
@@ -37,11 +37,11 @@ msepy.config(Gamma_u)(
 # Gamma_u.visualize()
 
 mesh = msepy.base['meshes'][r'\mathfrak{M}']
-msepy.config(mesh)([15, 15])
+msepy.config(mesh)([8, 8])
 
-for mesh_repr in msepy.base['meshes']:
-    mesh = msepy.base['meshes'][mesh_repr]
-    mesh.visualize()
+# for mesh_repr in msepy.base['meshes']:
+#     mesh = msepy.base['meshes'][mesh_repr]
+#     mesh.visualize()
 
 phi = msepy.base['forms']['potential']
 u = msepy.base['forms']['velocity']
@@ -58,8 +58,10 @@ def phi_func(t, x, y):
 phi_scalar = ph.vc.scalar(phi_func)
 
 phi.cf = phi_scalar
-u.cf = phi.cf.codifferential()
-f.cf = - u.cf.exterior_derivative()
+# u.cf = - phi.cf.codifferential()
+# f.cf = - u.cf.exterior_derivative()
+u.cf = phi_scalar.gradient
+f.cf = - phi_scalar.gradient.divergence
 
 ls.bc.config(Gamma_phi)(phi_scalar)
 ls.bc.config(Gamma_u)(u.cf)

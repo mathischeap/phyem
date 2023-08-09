@@ -10,7 +10,7 @@ from tools.frozen import Frozen
 from src.config import _global_lin_repr_setting, _non_root_lin_sep
 from src.form.main import Form, _global_root_forms_lin_dict
 from src.config import _global_operator_lin_repr_setting
-
+from src.config import _pde_test_form_lin_repr
 
 import matplotlib.pyplot as plt
 import matplotlib
@@ -42,6 +42,7 @@ class PartialDifferentialEquations(Frozen):
         else:
             assert expression is None and interpreter is None
             self._parse_terms_and_signs(terms_and_signs_dict)
+        self._check_equations()
         self._unknowns = None
         self._meshes, self._mesh = WeakFormulation._parse_meshes(self._term_dict)
         self._bc = None
@@ -183,13 +184,206 @@ class PartialDifferentialEquations(Frozen):
                         efs.extend(term.elementary_forms)
         self._efs = set(efs)
 
-    def pr(self, indexing=True, figsize=(8, 6)):
+    def _check_equations(self):
+        """Do a self-check after parsing terms."""
+        for i in self._term_dict:
+            left_terms, right_terms = self._term_dict[i]
+            all_terms_of_equation_i = []
+            all_terms_of_equation_i.extend(left_terms)
+            all_terms_of_equation_i.extend(right_terms)
+
+            if all([_.__class__ is Form for _ in all_terms_of_equation_i]):
+
+                term_i0 = all_terms_of_equation_i[0]
+                for term_ij in all_terms_of_equation_i[1:]:
+                    assert term_i0.space == term_ij.space, \
+                        f"spaces in equation #{i} do not match each other."
+
+            elif all([
+                hasattr(_, '_is_able_to_be_a_weak_term') for _ in all_terms_of_equation_i
+                # has it, it must return True
+            ]):
+                pass
+            else:
+                raise Exception()
+
+    def _pr_vc(self, figsize=(8, 6), title=None):
+        """We print the pde but change all exterior derivatives to corresponding vector calculus operators."""
+        from src.spaces.operators import _d_to_vc, _d_ast_to_vc
+        from src.config import _global_operator_sym_repr_setting
+        from src.config import _global_operator_lin_repr_setting
+        from src.config import _non_root_lin_sep
+        start, end = _non_root_lin_sep
+
+        d_sym_repr = _global_operator_sym_repr_setting['d']
+        cd_sym_repr = _global_operator_sym_repr_setting['codifferential']
+
+        d_lin_repr = _global_operator_lin_repr_setting['d']
+        cd_lin_repr = _global_operator_lin_repr_setting['codifferential']
+
+        from src.form.others import _find_form
+
+        number_equations = len(self._term_dict)
+        symbolic = ''
+        for i in self._term_dict:
+            for t, forms in enumerate(self._term_dict[i]):
+                if len(forms) == 0:
+                    symbolic += '0'
+                else:
+                    for j, form in enumerate(forms):
+                        sign = self._sign_dict[i][t][j]
+                        form_sym_repr = form._sym_repr
+                        form_lin_repr = form._lin_repr
+
+                        if form_lin_repr.count(d_lin_repr) + form_lin_repr.count(cd_lin_repr) == 1:
+                            # we only deal with the case that only one d or cd presents.
+                            if d_lin_repr in form_lin_repr:
+                                _ec_operator_type = 'd'
+                                form_lin_repr = form_lin_repr.split(d_lin_repr)[1]
+                            elif cd_lin_repr in form_lin_repr:
+                                _ec_operator_type = 'cd'
+                                form_lin_repr = form_lin_repr.split(cd_lin_repr)[1]
+                            else:
+                                raise Exception
+
+                            if form_lin_repr[-len(end):] == end:
+                                form_lin_repr = form_lin_repr[:-len(end)]
+                            else:
+                                pass
+
+                            form = _find_form(form_lin_repr)
+                            space = form.space
+                            space_indicator = space.indicator
+                            m, n, k = space.m, space.n, space.k
+                            ori = space.orientation
+
+                            vc_operator_sym_dict = {
+                                'derivative': r"\mathrm{d}",
+                                'gradient': r"\nabla",
+                                'curl': r"\nabla\times",
+                                'rot': r"\nabla\times",
+                                'divergence': r"\nabla\cdot",
+                            }
+
+                            if _ec_operator_type == 'd':
+                                vc_operator = _d_to_vc(space_indicator, m, n, k, ori)
+                                vc_sign = '+'
+                                vc_operator = vc_operator_sym_dict[vc_operator]
+                                form_sym_repr = form_sym_repr.replace(d_sym_repr, vc_operator + ' ')
+                            elif _ec_operator_type == 'cd':
+                                vc_sign, vc_operator = _d_ast_to_vc(space_indicator, m, n, k, ori)
+                                vc_operator = vc_operator_sym_dict[vc_operator]
+                                vc_operator = r"\widetilde{" + vc_operator + r"}"
+                                form_sym_repr = form_sym_repr.replace(cd_sym_repr, vc_operator)
+                            else:
+                                raise Exception
+
+                            if vc_sign == '+':
+                                pass
+                            elif vc_sign == '-':
+                                if sign == '+':
+                                    sign = '-'
+                                else:
+                                    sign = '+'
+                            else:
+                                raise Exception()
+
+                        if j == 0:
+                            if sign == '+':
+                                symbolic += form_sym_repr
+                            elif sign == '-':
+                                symbolic += '-' + form_sym_repr
+                            else:
+                                raise Exception()
+                        else:
+                            symbolic += ' ' + sign + ' ' + form_sym_repr
+
+                if t == 0:
+                    symbolic += ' &= '
+
+            if i < number_equations - 1:
+                symbolic += r' \\ '
+            else:
+                pass
+
+        if len(self) > 1:
+            symbolic = r"$\left\lbrace\begin{aligned}" + symbolic + r"\end{aligned}\right.$"
+        else:
+            symbolic = r"$\begin{aligned}" + symbolic + r"\end{aligned}$"
+
+        if self._unknowns is None:
+            ef_text = list()
+            ef_text_space = list()
+            for ef in self._efs:
+                ef_text.append(ef._sym_repr)
+                ef_text_space.append(ef.space._sym_repr)
+            ef_text_space = r"$\in\left(" + r'\times '.join(ef_text_space) + r"\right)$"
+            ef_text = r'for $' + r', '.join(ef_text) + r'$' + ef_text_space + ','
+        else:
+            ef_text_unknowns = list()
+            ef_text_unknown_spaces = list()
+            ef_text_others = list()
+            ef_text_others_spaces = list()
+            for ef in self._unknowns:
+                ef_text_unknowns.append(ef._sym_repr)
+                ef_text_unknown_spaces.append(ef.space._sym_repr)
+            for ef in self._efs:
+                if ef in self._unknowns:
+                    pass
+                else:
+                    ef_text_others.append(ef._sym_repr)
+                    ef_text_others_spaces.append(ef.space._sym_repr)
+            ef_text_unknown_spaces = r"$\in\left(" + r'\times '.join(ef_text_unknown_spaces) + r"\right)$"
+            ef_text_others_spaces = r"$\in\left(" + r'\times '.join(ef_text_others_spaces) + r"\right)$"
+            if len(ef_text_others) == 0:
+
+                ef_text = (r'seek unknowns: $' + r', '.join(ef_text_unknowns) +
+                           r'$' + ef_text_unknown_spaces + ', such that')
+
+            else:
+                ef_text_others = r'for $' + r', '.join(ef_text_others) + r'$' + ef_text_others_spaces + ', '
+                ef_text_unknowns = (r'seek $' + r', '.join(ef_text_unknowns) + r'$' +
+                                    ef_text_unknown_spaces + ', such that')
+                ef_text = ef_text_others + "\n" + ef_text_unknowns
+
+        ef_text = self._mesh.manifold._manifold_text() + ef_text
+
+        if self._bc is None or len(self._bc._valid_bcs) == 0:
+            bc_text = ''
+        else:
+            bc_text = self.bc._bc_text()
+
+        fig = plt.figure(figsize=figsize)
+        plt.axis([0, 1, 0, 1])
+        plt.axis('off')
+        text = ef_text + '\n' + symbolic + bc_text
+        plt.text(0.05, 0.5, text, ha='left', va='center', size=15)
+        if title is None:
+            pass
+        else:
+            plt.title(title)
+        plt.tight_layout()
+
+        from src.config import _setting, _pr_cache
+        if _setting['pr_cache']:
+            _pr_cache(fig)
+        else:
+            plt.show(block=_setting['block'])
+        return fig
+
+    def pr(self, indexing=True, figsize=(8, 6), vc=False, title=None):
         """Print representations"""
         from src.config import RANK, MASTER_RANK
         if RANK != MASTER_RANK:
             return
         else:
             pass
+
+        if vc is True:
+            return self._pr_vc(figsize=figsize, title=title)
+        else:
+            pass
+
         number_equations = len(self._term_dict)
         indicator = ''
         if self._indi_dict is None:
@@ -273,26 +467,38 @@ class PartialDifferentialEquations(Frozen):
 
         if self._unknowns is None:
             ef_text = list()
+            ef_text_space = list()
             for ef in self._efs:
                 ef_text.append(ef._sym_repr)
-            ef_text = r'for $' + r', '.join(ef_text) + r'$,'
+                ef_text_space.append(ef.space._sym_repr)
+            ef_text_space = r"$\in\left(" + r'\times '.join(ef_text_space) + r"\right)$"
+            ef_text = r'for $' + r', '.join(ef_text) + r'$' + ef_text_space + ','
         else:
             ef_text_unknowns = list()
+            ef_text_unknown_spaces = list()
             ef_text_others = list()
+            ef_text_others_spaces = list()
             for ef in self._unknowns:
                 ef_text_unknowns.append(ef._sym_repr)
+                ef_text_unknown_spaces.append(ef.space._sym_repr)
             for ef in self._efs:
                 if ef in self._unknowns:
                     pass
                 else:
                     ef_text_others.append(ef._sym_repr)
-
+                    ef_text_others_spaces.append(ef.space._sym_repr)
+            ef_text_unknown_spaces = r"$\in\left(" + r'\times '.join(ef_text_unknown_spaces) + r"\right)$"
+            ef_text_others_spaces = r"$\in\left(" + r'\times '.join(ef_text_others_spaces) + r"\right)$"
             if len(ef_text_others) == 0:
-                ef_text = r'seek unknowns: $' + r', '.join(ef_text_unknowns) + r'$, such that'
+
+                ef_text = (r'seek unknowns: $' + r', '.join(ef_text_unknowns) +
+                           r'$' + ef_text_unknown_spaces + ', such that')
+
             else:
-                ef_text_others = r'for $' + r', '.join(ef_text_others) + r'$, '
-                ef_text_unknowns = r'seek $' + r', '.join(ef_text_unknowns) + r'$, such that'
-                ef_text = ef_text_others + ef_text_unknowns
+                ef_text_others = r'for $' + r', '.join(ef_text_others) + r'$' + ef_text_others_spaces + ', '
+                ef_text_unknowns = (r'seek $' + r', '.join(ef_text_unknowns) + r'$' +
+                                    ef_text_unknown_spaces + ', such that')
+                ef_text = ef_text_others + '\n' + ef_text_unknowns
 
         ef_text = self._mesh.manifold._manifold_text() + ef_text
 
@@ -310,9 +516,16 @@ class PartialDifferentialEquations(Frozen):
             text = indicator + '\n\n' + ef_text + '\n' + symbolic + bc_text
 
         plt.text(0.05, 0.5, text, ha='left', va='center', size=15)
+        if title is None:
+            pass
+        else:
+            plt.title(title)
         plt.tight_layout()
-        from src.config import _matplot_setting
-        plt.show(block=_matplot_setting['block'])
+        from src.config import _setting, _pr_cache
+        if _setting['pr_cache']:
+            _pr_cache(fig)
+        else:
+            plt.show(block=_setting['block'])
         return fig
 
     def __len__(self):
@@ -412,12 +625,12 @@ class PartialDifferentialEquations(Frozen):
 
             j = i
             form_lin_setting = _global_lin_repr_setting['form']
-            _test_lin_repr = form_lin_setting[0] + f'{j}th-test-form' + form_lin_setting[1]
+            _test_lin_repr = form_lin_setting[0] + f'{j}' + _pde_test_form_lin_repr + form_lin_setting[1]
             while _test_lin_repr in _global_root_forms_lin_dict:
                 j += 1
-                _test_lin_repr = form_lin_setting[0] + f'{j}th-test-form' + form_lin_setting[1]
+                _test_lin_repr = form_lin_setting[0] + f'{j}' + _pde_test_form_lin_repr + form_lin_setting[1]
 
-            tf = ts.make_form(sr, f'{j}th-test-form')
+            tf = ts.make_form(sr, f'{j}' + _pde_test_form_lin_repr)
             tfs.append(tf)
 
         # -------- make weak form terms ---------------------------------------------------------

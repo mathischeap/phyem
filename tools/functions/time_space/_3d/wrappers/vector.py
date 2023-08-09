@@ -67,6 +67,10 @@ class T3dVector(TimeSpaceFunctionBase):
         return 3
 
     @property
+    def shape(self):
+        return (3, )
+
+    @property
     def _NPD0_(self):
         if self.__NPD0__ is None:
             self.__NPD0__ = NumericalPartialDerivativeTxyzFunctions(self._v0_)
@@ -245,8 +249,8 @@ class T3dVector(TimeSpaceFunctionBase):
             raise NotImplementedError()
 
     def dot(self, other):
-        """`self` dot product with `other`. So lets say self = (a, b), other = (u, v),
-        self.dot(other) gives a scalar, au + bv.
+        """`self` dot product with `other`. So lets say self = (a, b, c), other = (u, v, w),
+        self.dot(other) gives a scalar, a*u + b*v + c*w.
 
         Parameters
         ----------

@@ -1,10 +1,5 @@
 # -*- coding: utf-8 -*-
 r"""
-program # 1 of the dual NS scheme in 2D
-pH-lib@RAM-EEMCS-UT
-Yi Zhang
-Created at 3:28 PM on 7/21/2023
-
 python tests/msepy/dualNS2/shear_layer_rollup.py
 """
 from numpy import pi
@@ -15,9 +10,10 @@ if './' not in sys.path:
 
 import __init__ as ph
 ph.config.set_embedding_space_dim(2)
+ph.config.set_high_accuracy(True)
 
 N = 3
-K = 8
+K = 5
 
 manifold = ph.manifold(2, is_periodic=True)
 mesh = ph.mesh(manifold)
@@ -67,7 +63,7 @@ expression_inner = [
 
 inner_pde = ph.pde(expression_inner, locals())
 inner_pde.unknowns = [ui, wi, Pi]
-# inner_pde.pr()
+# inner_pde.pr(vc=True)
 
 expression_outer = [
     'duo_dt + wi_x_uo + d_wo - cd_Po = 0',
@@ -77,7 +73,7 @@ expression_outer = [
 
 outer_pde = ph.pde(expression_outer, locals())
 outer_pde.unknowns = [uo, wo, Po]
-# outer_pde.pr()
+# outer_pde.pr(vc=True)
 
 inner_wf = inner_pde.test_with([Inn1, Inn2, Inn0], sym_repr=['v', 'w', 'q'])
 inner_wf = inner_wf.derive.integration_by_parts('0-2')
@@ -284,8 +280,8 @@ msepy.config(manifold)(
     'crazy', c=0., bounds=[[0., 2*pi], [0, 2*pi]], periodic=True,
 )
 mesh = obj['mesh']
-msepy.config(mesh)([15, 15])
-ts.specify('constant', [0, 8, 1600], 2)
+msepy.config(mesh)([K, K])
+ts.specify('constant', [0, 1, 200], 2)
 
 initial_condition = ph.samples.InitialConditionShearLayerRollUp()
 Rn2.value = 0
@@ -319,7 +315,7 @@ s_ls0.customize.set_dof(-1, 0)
 As_ls0 = s_ls0.assemble()
 As_ls0.solve()
 
-for k in range(1, 3):
+for k in range(1, 100):
 
     s_lso = lso(k=k)
     s_lso.customize.set_dof(-1, 0)

@@ -53,6 +53,10 @@ class T3dScalar(TimeSpaceFunctionBase):
         return 3
 
     @property
+    def shape(self):
+        return (1, )
+
+    @property
     def _NPD_(self):
         if self.__NPD__ is None:
             self.__NPD__ = NumericalPartialDerivativeTxyzFunctions(self._s_)

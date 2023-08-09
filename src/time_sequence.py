@@ -5,7 +5,7 @@
 import sys
 
 if './' not in sys.path:
-    sys.path.append('tools/')
+    sys.path.append('./')
 
 from tools.frozen import Frozen
 import traceback
@@ -76,6 +76,13 @@ class AbstractTimeSequence(Frozen):
         """=="""
         return self is other
 
+    def info(self):
+        """Info myself in the console."""
+        if self._object is None:
+            print('abstract' + self._lin_repr)
+        else:
+            self._object.info()
+
     @staticmethod
     def _is_abstract_time_sequence():
         """A private tag."""
@@ -114,6 +121,11 @@ class AbstractTimeSequence(Frozen):
             ati = AbstractTimeInterval(ts, te, lin_repr, pure_lin_repr, sym_repr=sym_repr)
             self._my_abstract_time_interval[lin_repr] = ati
             return ati
+
+    def pr(self, *args, **kwargs):
+        """We print this time sequence."""
+        assert self._object is not None, f"to print a time sequence, first specify it to a particular one."
+        return self._object.pr(*args, **kwargs)
 
 
 class TimeSequence(Frozen):
@@ -173,6 +185,10 @@ class ConstantTimeSequence(TimeSequence):
         self._factor = factor  # in each step, we have factor - 1 intermediate time instances.
         self._dt = (t_max - t0) * factor / n
         self._k_max = n / factor
+        assert self._k_max % 1 == 0 and self._k_max > 0, \
+            (f"max time step must be positive integer. now it is {self._k_max}, "
+             f"pls check inputs for constant time sequence.")
+        self._k_max = int(self._k_max)
         self._n = n
         self._allowed_reminder = [round(1*i/factor, 8) for i in range(factor)]
         self._freeze()
@@ -193,21 +209,21 @@ class ConstantTimeSequence(TimeSequence):
         examples
         --------
 
-            >>> t = ConstantTimeSequence([0, 5, 5], 3)
+            >>> t = ConstantTimeSequence([0, 5, 15], 3)
             >>> t = t[1+1/3]
             >>> print(t)  # doctest: +ELLIPSIS
-            <TimeInstant t=4.0 at ...
+            <TimeInstant t=1.3333...
 
         """
         assert isinstance(k, (int, float)), f"specific time sequence can not use number for time instant."
         time = self.t_0 + k * self._dt
         remainder = round(k % 1, 8)
-        if time < self.t_0:
+        if time < self.t_0 - self._dt:  # leave a dt as lower margin
             raise TimeInstantError(
-                f"t[{k}] = {time} is lower than t0={self.t_0}.")
-        elif time > self.t_max:
+                f"t[{k}] = {time} is lower than t0:{self.t_0} - dt:{self._dt}.")
+        elif time > self.t_max + self._dt:  # leave a dt as upper margin
             raise TimeInstantError(
-                f"t[{k}] = {time} is higher than t_max={self.t_max}.")
+                f"t[{k}] = {time} is higher than t_max: {self.t_max} + dt:{self._dt}.")
         elif remainder not in self._allowed_reminder:
             raise TimeInstantError(
                 f"t[{k}] = {time} is not a valid time instance of the sequence.")
@@ -219,6 +235,149 @@ class ConstantTimeSequence(TimeSequence):
         return f"<ConstantTimeSequence ({self.t_0}, {self.t_max}, {self._n}) " \
                f"@ k_max={self._k_max}, dt={self._dt}, factor={self._factor}" + \
             super_repr
+
+    def info(self):
+        """info myself in the console."""
+        print(f" =constant= {self._t_0} -> ... -> {self._k_max} * " +
+              f"%.5f -> ... -> {self.t_max}." % self._dt)
+
+    def pr(self, obj=None):
+        """print this constant interval time sequence together with an object."""
+        import numpy as np
+        import matplotlib.pyplot as plt
+        import matplotlib
+        plt.rcParams.update({
+            "text.usetex": True,
+            "font.family": "DejaVu Sans",
+            "text.latex.preamble": r"\usepackage{amsmath, amssymb}",
+        })
+        matplotlib.use('TkAgg')
+
+        # ----------- we make data of the time sequence ----------
+        time_instant_hierarchy = {}
+        k_sequence = range(1, self._k_max+1)  # this is important, not range(0, k_max).
+        time_instant_hierarchy[0] = np.array(
+            range(0, self._k_max+1)
+        ) * self._dt
+        if self._factor == 1:
+            pass
+        else:
+            array = np.array(
+                [k_sequence]
+            ).T - 1
+            array = array * self._dt
+
+            dt = self._dt / self._factor
+            intermediate_time_instants = list()
+            for i in range(1, self._factor):
+                new_col = array + dt * i
+                intermediate_time_instants.append(
+                    new_col
+                )
+            intermediate_time_instants = np.hstack(intermediate_time_instants)
+            intermediate_time_instants = np.vstack([
+                intermediate_time_instants[0] - self._dt,  # thw lower margin
+                intermediate_time_instants,
+                intermediate_time_instants[-1] + self._dt,  # the upper margin
+            ])
+            time_instant_hierarchy[1] = intermediate_time_instants.ravel('C')
+
+        major_nodes = time_instant_hierarchy[0]
+
+        if len(major_nodes) > 6:
+            print('Constant time sequence plot warning: too many time instants to be plotted, '
+                  'the figure will be messy, plotting cancelled. Reduce time steps (<=5) to enable '
+                  'the plotting.')
+            return
+        else:
+            pass
+
+        if obj is None:
+            # we just plot the time_instant_hierarchy.
+            fig, ax = plt.subplots(figsize=(10, 4))
+            ax.set_aspect('equal')
+            ax.spines['top'].set_visible(False)
+            ax.spines['right'].set_visible(False)
+            ax.spines['left'].set_visible(False)
+            ax.spines['bottom'].set_visible(False)
+            plt.tick_params(left=False,
+                            right=False,
+                            labelleft=False,
+                            labelbottom=False,
+                            bottom=False)
+            vertical_length = (self._t_max - self._t_0) * 0.02
+            plt.plot(
+                major_nodes[1:], 0*major_nodes[1:],
+                '-s',
+                color='k',
+                linewidth=1.2,
+            )
+            plt.plot(
+                [self._t_0-self._dt, self._t_max+self._dt], [0, 0],
+                '-',
+                color='k',
+                linewidth=1.2,
+            )
+            right_end = self._t_max+self._dt
+            plt.plot(   # start point
+                [self._t_0, self._t_0], [-vertical_length, vertical_length],
+                color='darkgreen',
+                linewidth=1.8,
+            )
+            plt.plot(  # ending triangle
+                [right_end-vertical_length, right_end, right_end-vertical_length],
+                [vertical_length, 0, -vertical_length],
+                color='k',
+                linewidth=1,
+            )
+            for _k_, major_node in enumerate(major_nodes):
+                if _k_ == 0:
+                    plt.text(
+                        major_node,
+                        -3*vertical_length,
+                        f'$t_{_k_}=%.1f$' % self._t_0,
+                        c='darkgreen',
+                        ha='center', va='center',
+                        fontsize=15
+                    )
+                elif _k_ == len(major_nodes) - 1:
+                    plt.text(
+                        major_node,
+                        -3*vertical_length,
+                        f'$t_{_k_}=%.1f$' % self._t_max,
+                        c='blue',
+                        ha='center', va='center',
+                        fontsize=15
+                    )
+                else:
+                    plt.text(
+                        major_node,
+                        -3*vertical_length,
+                        f'$t_{_k_}$',
+                        ha='center', va='center',
+                        fontsize=15
+                    )
+            if 1 in time_instant_hierarchy:
+                minor_nodes = time_instant_hierarchy[1]
+                plt.scatter(
+                    minor_nodes, 0*minor_nodes, marker='x', color='red'
+                )
+            # ----- save -----------------------------------------------------
+            plt.tight_layout()
+            from src.config import _setting, _pr_cache
+            if _setting['pr_cache']:
+                _pr_cache(fig)
+            else:
+                plt.show(block=_setting['block'])
+            return fig
+
+        else:
+            assert hasattr(obj, "_pr_temporal_advancing"), \
+                f"{obj} has no method `_pr_temporal_advancing`, implement it first!"
+            obj._pr_temporal_advancing(
+                self,
+                time_instant_hierarchy
+            )
 
 
 class TimeInstantError(Exception):
@@ -253,6 +412,7 @@ class AbstractTimeInstant(Frozen):
 
     def __init__(self, ts, k, lin_repr, pure_lin_repr):
         self._ts = ts
+        k = self._parse_k(k)
         self._k = k
         sym_repr = ts._sym_repr + f'[{k}]'
         sym_repr = _check_sym_repr(sym_repr)
@@ -260,6 +420,21 @@ class AbstractTimeInstant(Frozen):
         self._lin_repr = lin_repr
         self._pure_lin_repr = pure_lin_repr
         self._freeze()
+
+    def _parse_k(self, k):
+        """"""
+        k = k.replace(' ', '')  # delete all space
+        length = len(k)
+        self._kwarg_keys = list()
+        assert isinstance(k, str), f"abstract kwarg must be a str."
+        for i, _ in enumerate(k):
+            if _.isalpha():
+                if i > 0:
+                    assert not k[i-1].isalpha(), f"abstract time {k} illegal. A variable must contain one alpha-beta."
+                if i < length - 1:
+                    assert not k[i+1].isalpha(), f"abstract time {k} illegal. A variable must contain one alpha-beta."
+                self._kwarg_keys.append(_)
+        return k
 
     @property
     def time_sequence(self):
@@ -279,6 +454,7 @@ class AbstractTimeInstant(Frozen):
         """call, return a TimeInstant object."""
         time_instance_str = self._k
         for key in kwargs:
+            assert key in self._kwarg_keys, f"key={key} is not found for ati:{self}."
             time_instance_str = time_instance_str.replace(key, str(kwargs[key]))
         time = eval(time_instance_str)
         assert isinstance(time, (int, float)), f"format wrong, `eval` does not return a number."
@@ -433,7 +609,7 @@ _implemented_specific_time_sequences = {
 
 
 if __name__ == '__main__':
-    # python src/tools/time_sequence.py
+    # python src/time_sequence.py
     from doctest import testmod
     testmod()
 
@@ -455,6 +631,6 @@ if __name__ == '__main__':
     at.specify('constant', [0, 100, 100], 2)
     # for k in range(1,10):
 
-    print(t0(k=100)())
+    print(t0, t0._kwarg_keys, t0()())
 
     # print(ti.start(k=1)(), ti(k=1)(), t1(k=50)())

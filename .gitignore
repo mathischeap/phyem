@@ -57,6 +57,7 @@ coverage.xml
 .ipynb_checkpoints/
 _notes/
 _app/
+_images/
 conf.py
 
 # Translations

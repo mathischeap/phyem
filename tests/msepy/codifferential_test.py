@@ -17,6 +17,7 @@ import __init__ as ph
 def codifferential_test(n, k, orientation):
     """"""
     ph.config.set_embedding_space_dim(n)
+    ph.config.set_high_accuracy(False)
     manifold = ph.manifold(n, is_periodic=True)
     mesh = ph.mesh(manifold)
 
@@ -131,6 +132,7 @@ def codifferential_test(n, k, orientation):
     als.solve.scheme = 'gmres'
     als.solve()
 
+    ph.config.set_high_accuracy(True)
     return u[0].error()
 
 

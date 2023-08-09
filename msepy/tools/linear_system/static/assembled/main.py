@@ -35,3 +35,22 @@ class MsePyStaticLinearSystemAssembled(Frozen):
     def solve(self):
         """Solve the system."""
         return self._solve
+
+    @property
+    def condition_number(self):
+        """The condition number of A"""
+        return self._A.condition_number
+
+    @property
+    def rank(self):
+        """The rank of A"""
+        return self._A.rank
+
+    @property
+    def num_singularities(self):
+        """Number of singularities in A"""
+        return self._A.num_singularities
+
+    def spy(self, *args, **kwargs):
+        """spy plot of A"""
+        self._A.spy(*args, **kwargs)

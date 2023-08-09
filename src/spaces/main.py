@@ -48,6 +48,12 @@ _default_astA_x_B_ip_tC_reprs = [
     _sep.join(["X_ip:Mat", "[{A}]", "[{B}]", "[{C}]"]),
 ]
 
+_default_A_x_astB_ip_tC_reprs = [
+    r"\boldsymbol{C}",
+    _sep.join(["C_ip:Mat", "[{A}]", "[{B}]", "[{C}]"]),
+]
+
+
 _default_space_degree_repr = ':D-'
 
 _degree_cache = {}

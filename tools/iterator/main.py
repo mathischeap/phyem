@@ -142,9 +142,14 @@ class Iterator(Frozen):
         if RANK == MASTER_RANK:
             self.monitor._num_iterations = num_iterations  # update num_iterations for the monitor.
             self.monitor._start_time = time()
+            desc = self.monitor.name
+            if len(desc) > 25:
+                desc = '...' + desc[-22:]
+            else:
+                pass
             pbar = tqdm(
                 total=num_iterations,
-                desc='<' + self.monitor.name + '>',
+                desc='<' + desc + '>',
             )
 
         for inputs in zip(*ranges):

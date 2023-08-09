@@ -418,11 +418,12 @@ document.write(`
 are</p>
 <div class="math notranslate nohighlight">
 \[\boldsymbol{u} = \nabla\times \varphi \quad \text{and} \quad \boldsymbol{B} = \nabla\times A,\]</div>
-<p>where <span class="math notranslate nohighlight">\(\varphi = 2\sin(y) - 2\cos(x)\)</span> and <span class="math notranslate nohighlight">\(A=\cos(2y)  - 2 \cos(x)\)</span>.
+<p>where <span class="math notranslate nohighlight">\(\varphi = 2\sin(y) - 2\cos(x)\)</span> and <span class="math notranslate nohighlight">\(A=\cos(2y) - 2 \cos(x)\)</span>.
 See Section 5.3 of
 <a class="reference external" href="https://arxiv.org/abs/1707.03227">[Michael Kraus and Omar Maj, Variational Integrators for Ideal Magnetohydrodynamics, 2021, arXiv]</a></p>
 <p>These initial conditions are implemented. To initialize an ideal Orszag-Tang Vortex, for example,  do</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">ph</span><span class="o">.</span><span class="n">samples</span><span class="o">.</span><span class="n">InitialConditionOrszagTangVortex</span><span class="p">(</span><span class="n">Rf</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">Rm</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">Al</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>  
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">math</span> <span class="kn">import</span> <span class="n">inf</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">ph</span><span class="o">.</span><span class="n">samples</span><span class="o">.</span><span class="n">InitialConditionOrszagTangVortex</span><span class="p">()</span>  
 <span class="go">&lt;tests.samples.iniCond_Orszag_Tang_vortex.InitialConditionOrszagTangVortex object at ...</span>
 </pre></div>
 </div>
@@ -495,7 +496,7 @@ By Andrea Brugnoli, Ramy Rashad, Stefano Stramigioli, Yi Zhang
   <div class="footer-item">
     
 <div class="extra_footer">
-  <div>Last updated on July 31, 2023, 18:54:54, W. Europe Daylight Time</div>
+  <div>Last updated on August 03, 2023, 01:18:43, W. Europe Daylight Time</div>
 </div>
   </div>
   

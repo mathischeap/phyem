@@ -17,6 +17,12 @@ class MsePyRootFormStaticCopy(Frozen):
         self._t = t
         self._freeze()
 
+    def __repr__(self):
+        """repr"""
+        super_repr = super().__repr__().split('object')[1]
+        f_repr = self._f.__repr__()
+        return rf"<StaticCopy @{self._t} of " + f_repr + super_repr
+
     @property
     def cochain(self):
         """"""

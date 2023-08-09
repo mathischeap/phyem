@@ -146,8 +146,8 @@ class MsePyManifoldVisualizeMatplot(Frozen):
         if saveto is not None and saveto != '':
             plt.savefig(saveto, bbox_inches='tight')
         else:
-            from src.config import _matplot_setting
-            plt.show(block=_matplot_setting['block'])
+            from src.config import _setting
+            plt.show(block=_setting['block'])
 
         return fig
 

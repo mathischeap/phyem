@@ -228,8 +228,8 @@ class _OneDimPolynomial(Frozen):
             plt.ylabel(r"$l^{i}(\xi)$", fontsize=label_size)
         if saveto is not None:
             plt.savefig(saveto, bbox_inches='tight')
-        from src.config import _matplot_setting
-        plt.show(block=_matplot_setting['block'])
+        from src.config import _setting
+        plt.show(block=_setting['block'])
 
     def plot_edge_basis(
             self, dual=False, plot_density=300, ylim_ratio=0.1,
@@ -349,8 +349,8 @@ class _OneDimPolynomial(Frozen):
         # ------------------------------------------------------------------------------
         if saveto is not None:
             plt.savefig(saveto, bbox_inches='tight')
-        from src.config import _matplot_setting
-        plt.show(block=_matplot_setting['block'])
+        from src.config import _setting
+        plt.show(block=_setting['block'])
 
 
 if __name__ == "__main__":

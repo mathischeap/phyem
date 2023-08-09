@@ -240,7 +240,9 @@ def _find_root_scalar_parameter(lin_repr):
 def _factor_parser(factor):
     """"""
     division = _global_operator_lin_repr_setting['division']
+
     root_factor = _find_root_scalar_parameter(factor)
+
     if root_factor is not None:
         return root_factor
 

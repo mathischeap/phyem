@@ -171,8 +171,8 @@ def quiver(
 
     # ---------------------- save to --------------------------------------------------------
     if saveto is None or saveto is False:
-        from src.config import _matplot_setting
-        plt.show(block=_matplot_setting['block'])
+        from src.config import _setting
+        plt.show(block=_setting['block'])
 
     else:
         if saveto[-4:] == '.pdf':

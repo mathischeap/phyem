@@ -51,10 +51,12 @@ class SpaceBase(Frozen):
 
     @property
     def n(self):
+        """the dimensions this manifold (or mesh) this space is on."""
         return self.mesh.ndim
 
     @property
     def m(self):
+        """the dimensions of the embedding space."""
         return get_embedding_space_dim()
 
     def make_form(self, sym_repr, lin_repr):

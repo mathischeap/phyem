@@ -92,6 +92,14 @@ def _inner_simpler_pattern_examiner_scalar_valued_forms(factor, f0, f1, extra_in
                             'c': f1
                         }
 
+                    elif known_form is f_b:
+
+                        return _simple_patterns['(x*,)'], {
+                            'a': f_a,
+                            'b': f_b,
+                            'c': f1
+                        }
+
                     else:
                         pass
                 else:

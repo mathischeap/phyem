@@ -254,8 +254,8 @@ class OrdinaryDifferentialEquation(Frozen):
         plt.axis('off')
         plt.text(0.05, 0.5, sym, ha='left', va='center', size=15)
         plt.tight_layout()
-        from src.config import _matplot_setting
-        plt.show(block=_matplot_setting['block'])
+        from src.config import _setting
+        plt.show(block=_setting['block'])
         return fig
 
     @property

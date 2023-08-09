@@ -37,9 +37,9 @@ class T3dTensor(TimeSpaceFunctionBase):
         self._freeze()
 
     def __call__(self, t, x, y, z):
-        return self._t00_(t, x, y, z), self._t01_(t, x, y, z), self._t02_(t, x, y, z), \
-               self._t10_(t, x, y, z), self._t11_(t, x, y, z), self._t12_(t, x, y, z), \
-               self._t20_(t, x, y, z), self._t21_(t, x, y, z), self._t22_(t, x, y, z)
+        return ([self._t00_(t, x, y, z), self._t01_(t, x, y, z), self._t02_(t, x, y, z)],
+                [self._t10_(t, x, y, z), self._t11_(t, x, y, z), self._t12_(t, x, y, z)],
+                [self._t20_(t, x, y, z), self._t21_(t, x, y, z), self._t22_(t, x, y, z)])
 
     def __getitem__(self, t):
         """return functions evaluated at time `t`."""
@@ -48,6 +48,11 @@ class T3dTensor(TimeSpaceFunctionBase):
     @property
     def ndim(self):
         return 3
+
+    @property
+    def shape(self):
+        """a tensor"""
+        return 3, 3
 
     @property
     def _NPD00_(self):

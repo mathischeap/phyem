@@ -3,6 +3,7 @@
 phyem@RAM-EEMCS-UT
 Yi Zhang
 """
+import matplotlib.pyplot as plt
 import numpy as np
 from tools.frozen import Frozen
 from tools.matplot.plot import plot
@@ -103,6 +104,9 @@ class MsePyRootFormVisualizeMatplot(Frozen):
     def _m2_n2_k1_inner(
             self, sampling_factor=1,
             plot_type='contourf',
+            saveto=None,
+            title=None,
+            title_components=None,
             **kwargs
     ):
         """"""
@@ -122,21 +126,43 @@ class MsePyRootFormVisualizeMatplot(Frozen):
         x, y = xy
         u, v = uv
         x, y, u, v = self._mesh._regionwsie_stack(x, y, u, v)
+        if plot_type in ('contourf', 'contour'):
+            if saveto is None:
+                saveto_x = None
+                saveto_y = None
+            else:
+                saveto0, saveto1 = saveto.split('.')
+                saveto_x = saveto0 + '_x' + '.' + saveto1
+                saveto_y = saveto0 + '_y' + '.' + saveto1
 
-        if plot_type == 'contourf':
-            fig = [
-                contourf(x, y, u, title='$x$-component', **kwargs),
-                contourf(x, y, v, title='$y$-component', **kwargs)
-            ]
-        elif plot_type == 'contour':
-            fig = [
-                contour(x, y, u, title='$x$-component', **kwargs),
-                contour(x, y, v, title='$y$-component', **kwargs)
-            ]
+            if title_components is None:
+                title_x = '$x$-component'
+                title_y = '$y$-component'
+            else:
+                title_x, title_y = title_components
+
+            if plot_type == 'contourf':
+                fig = [
+                    contourf(x, y, u, title=title_x, saveto=saveto_x, **kwargs),
+                    contourf(x, y, v, title=title_y, saveto=saveto_y, **kwargs)
+                ]
+            elif plot_type == 'contour':
+                fig = [
+                    contour(x, y, u, title=title_x, saveto=saveto_x, **kwargs),
+                    contour(x, y, v, title=title_y, saveto=saveto_y, **kwargs)
+                ]
+            else:
+                raise Exception()
+
         elif plot_type == "quiver":
-            fig = self._quiver(x, y, u, v, **kwargs)
+            fig = self._quiver(x, y, u, v, saveto=saveto, **kwargs)
         else:
             raise Exception()
+
+        if title is None:
+            pass
+        else:
+            plt.suptitle(title)
 
         return fig
 

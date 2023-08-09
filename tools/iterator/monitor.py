@@ -372,10 +372,15 @@ class IteratorMonitor(Frozen):
                                  va='top', wrap=True)
 
             else:
-                plt.plot(RDF['t'], RDF[di], color=colors(i-6), linewidth=1.5)
-                a, b = min(RDF['t']), max(RDF['t'])
-                if isinstance(a, (int, float)) and isinstance(b, (int, float)) and a < b:
-                    plt.xlim([a, b])
+                if 't' in RDF:
+                    plt.plot(RDF['t'], RDF[di], color=colors(i-6), linewidth=1.5)
+                    a, b = min(RDF['t']), max(RDF['t'])
+                    if isinstance(a, (int, float)) and isinstance(b, (int, float)) and a < b:
+                        plt.xlim([a, b])
+                else:
+                    plt.plot(range(len(RDF[di])), RDF[di], color=colors(i-6), linewidth=1.5)
+                    plt.xlim([0, len(RDF[di])-1])
+                    plt.xlabel('steps')
 
             ax.tick_params(axis="x", direction='in', length=8, labelsize=15)
             ax.tick_params(axis="y", direction='in', length=8, labelsize=15)
@@ -440,6 +445,7 @@ class IteratorMonitor(Frozen):
             pass
 
         plt.close(fig)
+        matplotlib.use('TkAgg')  # make sure we use the right backend.
 
     def _select_reasonable_amount_of_data(self, max_num, last_num=1):
         """To report RDF, we do not report all, we make a selection.

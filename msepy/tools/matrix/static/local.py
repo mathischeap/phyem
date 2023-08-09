@@ -538,18 +538,18 @@ class _MsePyStaticLocalMatrixCustomize(Frozen):
         dof = list(elements_local_rows.keys())[0]
         elements, local_rows = elements_local_rows[dof]
         assert len(elements) == len(local_rows), f"something is wrong!"
-        if len(elements) == 1:  # only found one place.
-            element, local_row = elements[0], local_rows[0]
 
+        element, local_row = elements[0], local_rows[0]  # indentify in the first place
+
+        data = self._M[element].copy().tolil()
+        data[local_row, :] = 0
+        data[local_row, local_row] = 1
+        self._customizations[element] = data.tocsr()
+
+        for element, local_row in zip(elements[1:], local_rows[1:]):  # zero rows in other places.
             data = self._M[element].copy().tolil()
-
             data[local_row, :] = 0
-            data[local_row, local_row] = 1
-
             self._customizations[element] = data.tocsr()
-
-        else:
-            raise NotImplementedError()
 
     def identify_diagonal(self, global_dofs):
         """Set the global rows of ``global_dofs`` to be all zero except the diagonal to be 1."""

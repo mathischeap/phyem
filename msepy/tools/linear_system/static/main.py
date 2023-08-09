@@ -3,12 +3,6 @@ r"""
 """
 import matplotlib.pyplot as plt
 import matplotlib
-plt.rcParams.update({
-    "text.usetex": True,
-    "font.family": "DejaVu Sans",
-    "text.latex.preamble": r"\usepackage{amsmath, amssymb}",
-})
-matplotlib.use('TkAgg')
 import numpy as np
 
 from tools.frozen import Frozen
@@ -25,7 +19,7 @@ from msepy.tools.vector.static.concatenate import concatenate
 class MsePyStaticLinearSystem(Frozen):
     """"""
 
-    def __init__(self, A, x, b, _pr_texts=None):
+    def __init__(self, A, x, b, _pr_texts=None, _time_indicating_text=None, _str_args=''):
         row_shape = len(A)
         col_shape = len(A[0])
         assert len(x) == col_shape and len(b) == row_shape, "A, x, b shape dis-match."
@@ -36,6 +30,8 @@ class MsePyStaticLinearSystem(Frozen):
         self._b = _Bbb(self, b)
         self._customize = None
         self._pr_texts = _pr_texts
+        self._time_indicating_text = _time_indicating_text
+        self._str_args = _str_args
         self._freeze()
 
     @property
@@ -109,9 +105,14 @@ class MsePyStaticLinearSystem(Frozen):
     def gathering_matrices(self):
         """return all gathering matrices; both row and col.
 
-        Note the differences to the `gm0_row` and `gm1_col` of `self.A._A`.
+        Note the differences to the `gm0_row` and `gm1_col` of `self.A._mA`.
         """
         return self._row_gms, self._col_gms
+
+    @property
+    def global_gathering_matrices(self):
+        """Notice the difference from ``self.gathering_matrices``."""
+        return self.A._mA._gm0_row, self.A._mA._gm1_col
 
     @property
     def num_elements(self):
@@ -156,11 +157,19 @@ class MsePyStaticLinearSystem(Frozen):
             self._customize = MsePyStaticLinearSystemCustomize(self)
         return self._customize
 
-    def pr(self, figsize=(10, 4)):
+    def pr(self):
         """"""
         if self._pr_texts is None:
             print('No texts to print.')
             return
+
+        plt.rcParams.update({
+            "text.usetex": True,
+            "font.family": "DejaVu Sans",
+            "text.latex.preamble": r"\usepackage{amsmath, amssymb}",
+        })
+        matplotlib.use('TkAgg')
+
         texts = self._pr_texts
         A_text, x_text, b_text = texts
         I_ = len(A_text)
@@ -199,13 +208,59 @@ class MsePyStaticLinearSystem(Frozen):
 
         text = tA + tx + '=' + tb
         text = r"$" + text + r"$"
-        fig = plt.figure(figsize=figsize)
+        fig = plt.figure(figsize=(10, 4))
         plt.axis([0, 1, 0, 1])
         plt.axis('off')
-        plt.text(0.05, 0.5, text, ha='left', va='center', size=15)
+        if self._time_indicating_text is None:
+            plt.text(0.05, 0.5, text, ha='left', va='center', size=15)
+        else:
+            plt.text(0.05, 0.525, text, ha='left', va='bottom', size=15)
+            plt.plot(
+                [0, 1], [0.5, 0.5], '--', color='gray', linewidth=0.5,
+            )
+            A_text, x_text, b_text = self._time_indicating_text
+            tA = ''
+            tx = ''
+            tb = ''
+            for i in range(I_):
+                for j in range(_J):
+                    tA_ij = A_text[i][j]
+                    if tA_ij == '':
+                        tA_ij = r'\divideontimes'
+                    else:
+                        pass
+                    tA += tA_ij
+                    if j < _J - 1:
+                        tA += '&'
+                if i < I_ - 1:
+                    tA += r'\\'
+            tA = r"\begin{bmatrix}" + tA + r"\end{bmatrix}"
+            for j in range(_J):
+                tx_j = x_text[j]
+                if tx_j == '':
+                    tx_j = r'\divideontimes'
+                tx += tx_j
+                if j < _J - 1:
+                    tx += r'\\'
+            tx = r"\begin{bmatrix}" + tx + r"\end{bmatrix}"
+            for i in range(I_):
+                tb_i = b_text[i]
+                if tb_i == '':
+                    tb_i = r'\divideontimes'
+                tb += tb_i
+                if i < I_ - 1:
+                    tb += r'\\'
+            tb = r"\begin{bmatrix}" + tb + r"\end{bmatrix}"
+            text = tA + tx + '=' + tb
+            text = r"$" + text + r"$"
+            plt.text(0.05, 0.47, text, ha='left', va='top', size=15)
+        plt.title(f'Local-Linear-System evaluated @ [{self._str_args}]')
         plt.tight_layout()
-        from src.config import _matplot_setting
-        plt.show(block=_matplot_setting['block'])
+        from src.config import _setting, _pr_cache
+        if _setting['pr_cache']:
+            _pr_cache(fig)
+        else:
+            plt.show(block=_setting['block'])
 
         return fig
 

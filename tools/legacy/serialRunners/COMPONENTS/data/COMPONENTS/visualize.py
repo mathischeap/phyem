@@ -11,7 +11,8 @@ TU Delft
 import matplotlib.pyplot as plt
 from tools.miscellaneous.timer import MyTimer
 from tools.frozen import Frozen
-from tools.legacy.serialRunners.COMPONENTS.data.COMPONENTS.MODULES.m_tir_visualize import M_TIR_Visualize
+from tools.legacy.serialRunners.COMPONENTS.data.COMPONENTS.MODULES.m_tir_visualize import MITRVisualize
+
 
 class DFWVisualize(Frozen):
     """
@@ -66,8 +67,6 @@ class DFWVisualize(Frozen):
         """ """
         # noinspection PyUnresolvedReferences
         return self.___plot___('loglog', *args, **kwargs)
-
-
 
 
 class DFWQuickVisualization(Frozen):
@@ -143,10 +142,7 @@ class DFWQuickVisualization(Frozen):
         plt.close()
 
 
-
-
-
-class RunnerDataVisualize(DFWVisualize, M_TIR_Visualize):
+class RunnerDataVisualize(DFWVisualize, MITRVisualize):
     """ """
     def __init__(self, rd):
         """ 

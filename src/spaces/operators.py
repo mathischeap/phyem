@@ -54,6 +54,10 @@ def cross_product(s1, s2):
                 return new('Lambda', 1, mesh=s1.mesh, orientation='inner')
             elif k1 == 2 and k2 == 1 and s1.orientation == 'inner' and s2.orientation == 'outer':
                 return new('Lambda', 1, mesh=s1.mesh, orientation='outer')
+            elif k1 == 1 and k2 == 1 and s1.orientation == 'inner' and s2.orientation == 'inner':
+                return new('Lambda', 0, mesh=s1.mesh, orientation='outer')
+            elif k1 == 1 and k2 == 1 and s1.orientation == 'outer' and s2.orientation == 'outer':
+                return new('Lambda', 2, mesh=s1.mesh, orientation='inner')
             else:
                 raise NotImplementedError(k1, k2, s1.orientation, s2.orientation)
 
@@ -90,6 +94,13 @@ def codifferential(space):
 
 def _d_to_vc(space_indicator, *args):
     """The correspondence between exterior derivative and vector calculus operators.
+
+    in 2d, for inner forms, de Rham complex is :
+        grad -> rot
+
+    for outer:
+        curl -> div
+
     """
     if space_indicator == 'Lambda':  # scalar valued form spaces.
         m, n, k, ori = args

@@ -119,35 +119,54 @@ class _AxBipC(Frozen):
                             ) + np.einsum(
                                 'li, lj, lk, l -> ijk', w, u, b, quad_weights * dJi, optimize='optimal'
                             )
+                        elif len(rmA[e]) == len(rmB[e]) == 2 and len(rmC[e]) == 1:
+                            # A, B are 1-forms, C is a 0-form!
+                            # so, A = [wx wy, 0]^T    B = [u v 0]^T   C= [0 0 c]^T
+                            # A x B = [wy*0 - 0*v,   0*u - wx*0,   wx*v - wy*u]^T = [0 0 C0]^T
+                            # (A x B) dot C = 0*0 + 0*0 + C0*c = wx*v*c - wy*u*c
+                            wx, wy = rmA[e]
+                            u, v = rmB[e]
+                            c = rmC[e][0]
+                            dJi = detJ[e]
+                            data = - np.einsum(
+                                'li, lj, lk, l -> ijk', wx, v, c, quad_weights * dJi, optimize='optimal'
+                            ) + np.einsum(
+                                'li, lj, lk, l -> ijk', wy, u, c, quad_weights * dJi, optimize='optimal'
+                            )
+
                         else:
                             raise NotImplementedError()
 
                     # make the data --------------- for 3d meshes -----------------------------------
                     elif self._mesh.n == 3:
-                        wx, wy, wz = rmA[e][0]
-                        u, v, w = rmB[e]
-                        a, b, c = rmC[e]
-                        dJi = detJ[e]
-                        # A = [wx wy, wz]^T    B = [u v w]^T   C= [a b c]^T
-                        # A x B = [wy*w - wz*v,   wz*u - wx*w,   wx*v - wy*u]^T = [A0 B0 C0]^T
-                        # (A x B) dot C = A0*a + B0*b + C0*c
-                        A0a = np.einsum(
-                            'li, lj, lk, l -> ijk', wy, w, a, quad_weights * dJi, optimize='optimal'
-                        ) - np.einsum(
-                            'li, lj, lk, l -> ijk', wz, v, a, quad_weights * dJi, optimize='optimal'
-                        )
-                        B0b = np.einsum(
-                            'li, lj, lk, l -> ijk', wz, u, b, quad_weights * dJi, optimize='optimal'
-                        ) - np.einsum(
-                            'li, lj, lk, l -> ijk', wx, w, b, quad_weights * dJi, optimize='optimal'
-                        )
-                        C0c = np.einsum(
-                            'li, lj, lk, l -> ijk', wx, v, c, quad_weights * dJi, optimize='optimal'
-                        ) - np.einsum(
-                            'li, lj, lk, l -> ijk', wy, u, c, quad_weights * dJi, optimize='optimal'
-                        )
+                        if len(rmA[e]) == len(rmB[e]) == len(rmC[e]) == 3:
+                            # A, B, C are all vectors.
+                            # A = [wx wy, wz]^T    B = [u v w]^T   C= [a b c]^T
+                            # A x B = [wy*w - wz*v,   wz*u - wx*w,   wx*v - wy*u]^T = [A0 B0 C0]^T
+                            # (A x B) dot C = A0*a + B0*b + C0*c
+                            wx, wy, wz = rmA[e]
+                            u, v, w = rmB[e]
+                            a, b, c = rmC[e]
+                            dJi = detJ[e]
+                            A0a = np.einsum(
+                                'li, lj, lk, l -> ijk', wy, w, a, quad_weights * dJi, optimize='optimal'
+                            ) - np.einsum(
+                                'li, lj, lk, l -> ijk', wz, v, a, quad_weights * dJi, optimize='optimal'
+                            )
+                            B0b = np.einsum(
+                                'li, lj, lk, l -> ijk', wz, u, b, quad_weights * dJi, optimize='optimal'
+                            ) - np.einsum(
+                                'li, lj, lk, l -> ijk', wx, w, b, quad_weights * dJi, optimize='optimal'
+                            )
+                            C0c = np.einsum(
+                                'li, lj, lk, l -> ijk', wx, v, c, quad_weights * dJi, optimize='optimal'
+                            ) - np.einsum(
+                                'li, lj, lk, l -> ijk', wy, u, c, quad_weights * dJi, optimize='optimal'
+                            )
 
-                        data = A0a + B0b + C0c
+                            data = A0a + B0b + C0c
+                        else:
+                            raise NotImplementedError()
 
                     # else: must be wrong, we do not do this in 1d ----------------------------------
                     else:
@@ -205,6 +224,10 @@ class _AxBipC(Frozen):
 
         if row_index == 2 and col_index == 1:
             caller = self._2d_matrix_caller_r2_c1
+
+        elif row_index == 2 and col_index == 0:
+            caller = self._2d_matrix_caller_r2_c0
+
         else:
             raise NotImplementedError()
 
@@ -234,6 +257,33 @@ class _AxBipC(Frozen):
         _3d_data = self._3d_data
         _2d_matrix_caller = _MatrixCaller(
             0, array_cochain, _3d_data, given_form.mesh, 2, 1
+        )
+        return MsePyStaticLocalMatrix(_2d_matrix_caller, gm_row, gm_col, cache_key='unique')
+
+    def _2d_matrix_caller_r2_c0(self, *args, **kwargs):
+        """This must return a `MsePyStaticLocalMatrix` object.
+
+        As _3d_data does not change, ``*args, **kwargs`` will be used to determine the abstract time
+        instant for the cochain of the given form. Then this cochain is used to make 2d data which are
+        stored in a `MsePyStaticLocalMatrix`.
+
+        Parameters
+        ----------
+        args
+        kwargs
+
+        Returns
+        -------
+
+        """
+        gm_row = self._ABC[2].cochain.gathering_matrix
+        gm_col = self._ABC[0].cochain.gathering_matrix
+        given_form = self._ABC[1]
+        given_form_cochain = given_form.cochain._callable_cochain(*args, **kwargs)
+        array_cochain = given_form_cochain.data
+        _3d_data = self._3d_data
+        _2d_matrix_caller = _MatrixCaller(
+            1, array_cochain, _3d_data, given_form.mesh, 2, 0
         )
         return MsePyStaticLocalMatrix(_2d_matrix_caller, gm_row, gm_col, cache_key='unique')
 

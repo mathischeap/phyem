@@ -147,8 +147,8 @@ class Form(Frozen):
         root_text = rf'is_root: {self.is_root()}'
         plt.text(0, 0.5, root_text, ha='left', va='center', size=15)
         plt.axis('off')
-        from src.config import _matplot_setting
-        plt.show(block=_matplot_setting['block'])
+        from src.config import _setting
+        plt.show(block=_setting['block'])
         return fig
 
     def __repr__(self):

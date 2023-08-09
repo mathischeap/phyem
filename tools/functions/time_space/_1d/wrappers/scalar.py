@@ -27,6 +27,14 @@ class T1dScalar(TimeSpaceFunctionBase):
         return partial(self, t)
 
     @property
+    def ndim(self):
+        return 1
+
+    @property
+    def shape(self):
+        return (1, )
+
+    @property
     def _NPD_(self):
         """"""
         if self.__NPD__ is None:

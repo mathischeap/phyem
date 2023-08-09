@@ -1,21 +1,8 @@
-Results of doctest builder run on 2023-07-31 18:15:33
+Results of doctest builder run on 2023-08-03 01:18:30
 =====================================================
 
-Document: gallery/msepy_domains_and_meshes/msepy/crazy_multi
-------------------------------------------------------------
-1 items passed all tests:
-   9 tests in default
-9 tests in 1 items.
-9 passed and 0 failed.
-Test passed.
-1 items passed all tests:
-   1 tests in default (cleanup code)
-1 tests in 1 items.
-1 passed and 0 failed.
-Test passed.
-
-Document: gallery/msepy_domains_and_meshes/msepy/backward_step
---------------------------------------------------------------
+Document: gallery/msepy_domains_and_meshes/msepy/crazy
+------------------------------------------------------
 1 items passed all tests:
   18 tests in default
 18 tests in 1 items.
@@ -27,34 +14,8 @@ Test passed.
 1 passed and 0 failed.
 Test passed.
 
-Document: gallery/MHD/Orszag_Tang_vortex/index
-----------------------------------------------
-1 items passed all tests:
-   1 tests in default
-1 tests in 1 items.
-1 passed and 0 failed.
-Test passed.
-1 items passed all tests:
-   1 tests in default (cleanup code)
-1 tests in 1 items.
-1 passed and 0 failed.
-Test passed.
-
-Document: gallery/canonical_linear_port_Hamiltonian/index
----------------------------------------------------------
-1 items passed all tests:
-   2 tests in default
-2 tests in 1 items.
-2 passed and 0 failed.
-Test passed.
-1 items passed all tests:
-   1 tests in default (cleanup code)
-1 tests in 1 items.
-1 passed and 0 failed.
-Test passed.
-
-Document: gallery/msepy_domains_and_meshes/msepy/crazy
-------------------------------------------------------
+Document: gallery/msepy_domains_and_meshes/msepy/backward_step
+--------------------------------------------------------------
 1 items passed all tests:
   18 tests in default
 18 tests in 1 items.
@@ -79,9 +40,48 @@ Test passed.
 1 passed and 0 failed.
 Test passed.
 
+Document: gallery/msepy_domains_and_meshes/msepy/crazy_multi
+------------------------------------------------------------
+1 items passed all tests:
+   9 tests in default
+9 tests in 1 items.
+9 passed and 0 failed.
+Test passed.
+1 items passed all tests:
+   1 tests in default (cleanup code)
+1 tests in 1 items.
+1 passed and 0 failed.
+Test passed.
+
+Document: gallery/canonical_linear_port_Hamiltonian/index
+---------------------------------------------------------
+1 items passed all tests:
+   2 tests in default
+2 tests in 1 items.
+2 passed and 0 failed.
+Test passed.
+1 items passed all tests:
+   1 tests in default (cleanup code)
+1 tests in 1 items.
+1 passed and 0 failed.
+Test passed.
+
+Document: gallery/MHD/Orszag_Tang_vortex/index
+----------------------------------------------
+1 items passed all tests:
+   2 tests in default
+2 tests in 1 items.
+2 passed and 0 failed.
+Test passed.
+1 items passed all tests:
+   1 tests in default (cleanup code)
+1 tests in 1 items.
+1 passed and 0 failed.
+Test passed.
+
 Doctest summary
 ===============
-   54 tests
+   55 tests
     0 failures in tests
     0 failures in setup code
     0 failures in cleanup code

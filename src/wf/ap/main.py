@@ -194,8 +194,11 @@ class AlgebraicProxy(Frozen):
         plt.axis('off')
         plt.text(0.05, 0.5, seek_text + '\n' + symbolic + bc_text, ha='left', va='center', size=15)
         plt.tight_layout()
-        from src.config import _matplot_setting
-        plt.show(block=_matplot_setting['block'])
+        from src.config import _setting, _pr_cache
+        if _setting['pr_cache']:
+            _pr_cache(fig)
+        else:
+            plt.show(block=_setting['block'])
         return fig
 
 

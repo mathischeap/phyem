@@ -4,6 +4,7 @@
 @contact: zhangyi_aero@hotmail.com
 @time: 11/3/2022 6:32 PM
 """
+from tools.frozen import Frozen
 
 from tools.functions.time_space.base import TimeSpaceFunctionBase
 from functools import partial
@@ -34,6 +35,9 @@ class T2dVector(TimeSpaceFunctionBase):
         self._vs_ = [v0, v1]
         self.__NPD0__ = None
         self.__NPD1__ = None
+        self._time_derivative = None
+        self._rot = None
+        self._divergence = None
         self._freeze()
 
     def __call__(self, t, x, y):
@@ -93,18 +97,24 @@ class T2dVector(TimeSpaceFunctionBase):
 
     @property
     def time_derivative(self):
-        pv0_pt = self._NPD0_('t')
-        pv1_pt = self._NPD1_('t')
-        return self.__class__(pv0_pt, pv1_pt)
+        """partial self / partial t."""
+        if self._time_derivative is None:
+            pv0_pt = self._NPD0_('t')
+            pv1_pt = self._NPD1_('t')
+            self._time_derivative = self.__class__(pv0_pt, pv1_pt)
+        return self._time_derivative
 
     @property
     def divergence(self):
-        pv0_px = self._NPD0_('x')
-        pv1_py = self._NPD1_('y')
-        from tools.functions.time_space._2d.wrappers.scalar import T2dScalar
-        dv0 = T2dScalar(pv0_px)
-        dv1 = T2dScalar(pv1_py)
-        return dv0 + dv1
+        """div(self)"""
+        if self._divergence is None:
+            pv0_px = self._NPD0_('x')
+            pv1_py = self._NPD1_('y')
+            from tools.functions.time_space._2d.wrappers.scalar import T2dScalar
+            dv0 = T2dScalar(pv0_px)
+            dv1 = T2dScalar(pv1_py)
+            self._divergence = dv0 + dv1
+        return self._divergence
 
     @property
     def rot(self):
@@ -114,12 +124,14 @@ class T2dVector(TimeSpaceFunctionBase):
         -------
 
         """
-        pv1_px = self._NPD1_('x')
-        pv0_py = self._NPD0_('y')
-        from tools.functions.time_space._2d.wrappers.scalar import T2dScalar
-        dv0 = T2dScalar(pv1_px)
-        dv1 = T2dScalar(pv0_py)
-        return dv0 - dv1
+        if self._rot is None:
+            pv1_px = self._NPD1_('x')
+            pv0_py = self._NPD0_('y')
+            from tools.functions.time_space._2d.wrappers.scalar import T2dScalar
+            dv0 = T2dScalar(pv1_px)
+            dv1 = T2dScalar(pv0_py)
+            self._rot = dv0 - dv1
+        return self._rot
 
     def convection_by(self, u):
         """We compute (u cdot nabla) of self.
@@ -225,7 +237,7 @@ class T2dVector(TimeSpaceFunctionBase):
 
     def dot(self, other):
         """ self dot product with other。 So lets say self = (a, b), other = (u, v),
-        self.dot(other) gives a scalar, au + bv.
+        self.dot(other) gives a scalar, a*u + b*v.
 
         Parameters
         ----------
@@ -268,11 +280,54 @@ class T2dVector(TimeSpaceFunctionBase):
             return T2dScalar(V0V1)
 
         elif other.__class__ is T2dScalar:
-            V = other.cross_product(self)
-            v0, v1 = V._v0_, V._v1_
-            v0 = t2d_ScalarNeg(v0)
-            v1 = t2d_ScalarNeg(v1)
-            return self.__class__(v0, v1)
+            return - other.cross_product(self)
 
         else:
             raise NotImplementedError()
+
+    def outward_flux_over(self, boundary_section):
+        """"""
+        from msepy.mesh.boundary_section.main import MsePyBoundarySectionMesh
+        if boundary_section.__class__ is MsePyBoundarySectionMesh:
+
+            return _T2VectorFluxOverMsePyBoundarySection(self, boundary_section)
+
+        else:
+            raise NotImplementedError()
+
+
+class _T2VectorFluxOverMsePyBoundarySection(Frozen):
+    """It represents a scalar in 2d time-space."""
+
+    def __init__(self, v, bs):
+        """"""
+        self._v = v
+        self._bs = bs
+        self._freeze()
+
+    @property
+    def shape(self):
+        """It represents a scalar in 2d time-space."""
+        return (1, )
+
+    @property
+    def ndim(self):
+        """It represents a scalar in 2d time-space."""
+        return 2
+
+    def __call__(self, t, xi):
+        """So we will compute the mapping of each element faces in this boundary section. This
+        gives coordinates (x, y). And then we use (t, x, y) and apply it to the original
+        vector, which leads to vector value (vx, vy), then the flux is  vx*nx + vy*ny
+        where (nx, ny) is the outward unit norm vector of the element face.
+
+        Parameters
+        ----------
+        t
+        xi
+
+        Returns
+        -------
+
+        """
+        raise NotImplementedError()

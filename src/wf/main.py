@@ -19,6 +19,8 @@ from src.bc import BoundaryCondition
 from src.wf.derive import _Derive
 from src.wf.ap.main import AlgebraicProxy
 from src.wf.mp.main import MatrixProxy
+from src.config import _pde_test_form_lin_repr
+from src.config import _form_evaluate_at_repr_setting
 
 
 class WeakFormulation(Frozen):
@@ -148,7 +150,7 @@ class WeakFormulation(Frozen):
                 mesh_dim_dict[ndim].append(m)
 
             # below we analyze more than one mesh ---------------
-            if len(mesh_dim_dict) == 2:
+            if len(mesh_dim_dict) == 2:   # meshes are of two dimensions.
                 larger_ndim = max(mesh_dim_dict.keys())
                 lower_ndim = min(mesh_dim_dict.keys())
                 if lower_ndim == larger_ndim - 1 and \
@@ -177,7 +179,48 @@ class WeakFormulation(Frozen):
                 for term in terms:
                     efs.update(term.elementary_forms)
 
-        self._efs = efs
+        # below, lets sort the set according to the pure_lin_repr of the elementary forms and put it into a tuple.
+        efs_dict = dict()
+        efs_plr_list = list()
+        for ef in efs:
+            pure_lin_repr = ef._pure_lin_repr
+            efs_dict[pure_lin_repr] = ef
+            efs_plr_list.append(pure_lin_repr)
+        efs_plr_list.sort()
+        efs = [efs_dict[_] for _ in efs_plr_list]
+        self._efs = tuple(efs)
+
+    def _find_elementary_bc_forms(self):
+        """find all elementary forms in bc terms; these forms will not be given as themselves."""
+        e_bc_fs = set()
+        e_bc_fs.update(
+            self._find_elementary_forms_for_natural_bc()[0]
+        )
+        return e_bc_fs
+
+    def _find_elementary_forms_for_natural_bc(self):
+        """Even when bc is not defined. We can check it from the simple pattern of terms."""
+        nbc_efs = set()
+        other_efs = set()
+        from src.config import _wf_term_default_simple_patterns as _simple_patterns
+        for i in self._term_dict:   # ith equation
+            for terms in self._term_dict[i]:
+                for term in terms:
+                    if term._simple_pattern == _simple_patterns['<tr star | tr >']:
+                        two_element_forms = term.elementary_forms
+                        assert len(two_element_forms) == 2, \
+                            (f"term of pattern={_simple_patterns['<tr star | tr >']} "
+                             f"must only have two elementary forms.")
+                        for ef in two_element_forms:
+                            if ef in self.test_forms:
+                                pass
+                            else:
+                                nbc_efs.add(ef)
+
+                    else:
+                        other_efs.update(term.elementary_forms)
+
+        return nbc_efs, other_efs
 
     def __repr__(self):
         """Customize the __repr__."""
@@ -355,17 +398,23 @@ class WeakFormulation(Frozen):
             bc_text = self.bc._bc_text()
 
         if indexing:
-            figsize = (12, 3 * len(self._term_dict))
+            height = 2 * len(self._term_dict)
         else:
-            figsize = (12, 3 * len(self._term_dict))
+            height = 1.5 * len(self._term_dict)
+        if height > 6:
+            height = 6
+        figsize = (10, height)
 
         fig = plt.figure(figsize=figsize)
         plt.axis([0, 1, 0, 1])
         plt.axis('off')
         plt.text(0.05, 0.5, seek_text + symbolic + bc_text, ha='left', va='center', size=15)
         plt.tight_layout()
-        from src.config import _matplot_setting
-        plt.show(block=_matplot_setting['block'])
+        from src.config import _setting, _pr_cache
+        if _setting['pr_cache']:
+            _pr_cache(fig)
+        else:
+            plt.show(block=_setting['block'])
         return fig
 
     @property
@@ -397,6 +446,257 @@ class WeakFormulation(Frozen):
     def mp(self):
         """Do not cache it. Make it in real time"""
         return MatrixProxy(self)
+
+    def _pr_temporal_advancing(self, ts, time_instant_hierarchy):
+        """This method should be called from somewhere else."""
+        elementary_forms = self.elementary_forms
+        assert self.unknowns is not None, f"set unknowns before plotting temporal advancing."
+        known_forms = list()
+        ati_collection = list()
+        ati_keys = list()
+        non_test_forms = list()
+
+        for ef in elementary_forms:
+            if ef._pAti_form['base_form'] is None:
+                assert ef._pure_lin_repr[-len(_pde_test_form_lin_repr):] == _pde_test_form_lin_repr, \
+                    f"form {ef} is not specified at an (abstract) time instant"
+            else:
+                # first we classify them into known and unknowns.
+                if ef in self.unknowns:
+                    pass
+                else:
+                    known_forms.append(ef)
+                non_test_forms.append(ef)
+                # check ts
+                ats = ef._pAti_form['ats']
+                assert ats._object is not None, f"elementary form {ef} only has an abstract time sequence."
+                assert ats._object is ts, f"time sequence of elementary form {ef} does not match the input ts."
+                # then lets collect all abstract time instants.
+                ati = ef._pAti_form['ati']
+                ati_collection.append(ati)
+                ati_keys.extend(ati._kwarg_keys)
+
+        ati_keys = list(set(ati_keys))  # remove repeated akt keys
+        ati_keys.sort()
+
+        # ---- found special elementary forms ------------------
+        nbc_efs, nbc_other_efs = self._find_elementary_forms_for_natural_bc()  # 1
+
+        # group forms according to their base form ------------
+        ntf_group = dict()
+        for ntf in non_test_forms:
+            bf = ntf._pAti_form['base_form']
+            bf_plr = bf._pure_lin_repr
+            if bf_plr in ntf_group:
+                pass
+            else:
+                ntf_group[bf_plr] = list()
+            ntf_group[bf_plr].append(ntf)
+
+        from src.time_sequence import ConstantTimeSequence
+        evaluate_sym = _form_evaluate_at_repr_setting['sym']
+        if ts.__class__ is ConstantTimeSequence:
+            vertical_length = (ts._t_max - ts._t_0) * 0.02
+            if len(ati_keys) == 1:
+                key = ati_keys[0]
+                major_nodes = time_instant_hierarchy[0]
+                num_plots = len(major_nodes[1:])
+                for k in range(1, num_plots+1):
+                    fig, ax = plt.subplots(figsize=(12, 6))
+                    i = 3
+                    j = - 5.5
+                    for bf_plr in ntf_group:
+                        tfs = ntf_group[bf_plr]
+                        bf = tfs[0]._pAti_form['base_form']
+
+                        abstract_forms = list()
+                        else_forms = list()
+                        for tf in tfs:
+                            ati = tf._pAti_form['ati']
+                            if key in ati._kwarg_keys:
+                                abstract_forms.append(tf)
+                            else:
+                                assert ati.ati._kwarg_keys == [], f"must be since len(ati_keys) == 1"
+                                else_forms.append(tf)
+
+                        bf_sym_repr = bf._sym_repr
+                        if len(abstract_forms) > 0:
+                            y_location = i * vertical_length
+                            i += 2.75
+                            plt.text(  # plot its base form at the most left place
+                                -ts._dt, y_location,
+                                f'${bf_sym_repr}$',
+                                va='center', ha='right', fontsize=15)
+
+                            for af in abstract_forms:
+                                ati = af._pAti_form['ati']
+                                time = ati(**{f'{key}': k})()
+                                time_instance_str = ati._k.replace(key, str(k))
+                                time_instance = str(eval(time_instance_str))
+                                sym_repr = (
+                                        evaluate_sym[0] +
+                                        bf_sym_repr +
+                                        evaluate_sym[1] +
+                                        time_instance +
+                                        evaluate_sym[2]
+                                )
+                                if af in self.unknowns:
+                                    color = 'red'
+                                    text = f"${sym_repr}$"
+                                else:
+                                    assert af in known_forms, f'A safety check, must be!'
+                                    if af in nbc_other_efs:
+                                        text = f"${sym_repr}$"
+                                        color = 'blue'
+                                    else:
+                                        color = None
+                                        text = None
+
+                                if color is None:
+                                    pass
+                                else:
+                                    plt.text(
+                                        time, y_location, text,
+                                        c=color,
+                                        va='center', ha='center', fontsize=15,
+                                    )
+
+                                if af in nbc_efs:  # if we found a natural bc, we plot it additionally.
+                                    plt.text(
+                                        time, y_location,
+                                        r"$\underbrace{\mathrm{tr}\star " + f"{sym_repr}" + r"}_{\partial}$",
+                                        c='gray',
+                                        va='center', ha='center', fontsize=15,
+                                    )
+                                else:
+                                    pass
+
+                        else:
+                            pass
+
+                        if len(else_forms) > 0:
+                            # these forms will be plotted at the lower part.
+                            ng_y_location = j * vertical_length
+                            j -= 2.5
+                            for pf in else_forms:  # pf stands for particular form whose time is not abstract.
+                                ati = pf._pAti_form['ati']
+                                time = ati()()
+                                color = 'k'
+                                plt.text(
+                                    time, ng_y_location, f"${pf._sym_repr}$",
+                                    c=color,
+                                    va='center', ha='center', fontsize=15,
+                                )
+                        else:
+                            pass
+
+                    i += 2.75
+                    y_location = i * vertical_length
+                    plt.text(
+                        ts._dt * k, y_location,
+                        f'${key}={k}$',
+                        c='k',
+                        va='center', ha='center', fontsize=15,
+                    )
+                    plt.plot(   # ending vertical line
+                        [ts._dt * k, ts._dt * k], [j * vertical_length, y_location],
+                        '--',
+                        color='pink',
+                        linewidth=0.8,
+                    )
+
+                    ax.set_aspect('equal')
+                    ax.spines['top'].set_visible(False)
+                    ax.spines['right'].set_visible(False)
+                    ax.spines['left'].set_visible(False)
+                    ax.spines['bottom'].set_visible(False)
+                    plt.tick_params(left=False,
+                                    right=False,
+                                    labelleft=False,
+                                    labelbottom=False,
+                                    bottom=False)
+                    plt.plot(  # intermediate major time instants
+                        major_nodes[1:], 0*major_nodes[1:],
+                        '-s',
+                        color='k',
+                        linewidth=1.2,
+                                         )
+                    plt.plot(
+                        [ts._t_0-ts._dt, ts._t_max+ts._dt], [0, 0],
+                        '-',
+                        color='k',
+                        linewidth=1.2,
+                    )
+                    right_end = ts._t_max+ts._dt
+                    plt.plot(   # start vertical line
+                        [ts._t_0, ts._t_0], [j * vertical_length, y_location],
+                        '--',
+                        color='lightgreen',
+                        linewidth=0.8,
+                    )
+                    plt.plot(   # start point
+                        [ts._t_0, ts._t_0], [-vertical_length, vertical_length],
+                        color='darkgreen',
+                        linewidth=1.8,
+                    )
+                    plt.plot(   # ending vertical line
+                        [ts._t_max, ts._t_max], [j * vertical_length, y_location],
+                        '--',
+                        color='peru',
+                        linewidth=0.8,
+                    )
+                    plt.plot(  # ending triangle
+                        [right_end-vertical_length, right_end, right_end-vertical_length],
+                        [vertical_length, 0, -vertical_length],
+                        color='k',
+                        linewidth=1,
+                    )
+                    for _k_, major_node in enumerate(major_nodes):
+                        if _k_ == 0:
+                            plt.text(
+                                major_node,
+                                -3*vertical_length,
+                                f'$t_{_k_}=%.1f$' % ts._t_0,
+                                c='darkgreen',
+                                ha='center', va='center',
+                                fontsize=15
+                            )
+                        elif _k_ == len(major_nodes) - 1:
+                            plt.text(
+                                major_node,
+                                -3*vertical_length,
+                                f'$t_{_k_}=%.1f$' % ts._t_max,
+                                c='brown',
+                                ha='center', va='center',
+                                fontsize=15
+                            )
+                        else:
+                            plt.text(
+                                major_node,
+                                -3*vertical_length,
+                                f'$t_{_k_}$',
+                                ha='center', va='center',
+                                fontsize=15
+                            )
+                    if 1 in time_instant_hierarchy:
+                        minor_nodes = time_instant_hierarchy[1]
+                        plt.scatter(
+                            minor_nodes, 0*minor_nodes, marker='x', color='gray'
+                        )
+
+                    # ----- save -----------------------------------------------------
+                    plt.tight_layout()
+                    from src.config import _setting, _pr_cache
+                    if _setting['pr_cache']:
+                        _pr_cache(fig)
+                    else:
+                        plt.show(block=_setting['block'])
+            else:
+                raise NotImplementedError(
+                    f"`_pr_temporal_advancing` not implemented for multiple ati keys: {ati_keys}"
+                )
+        else:
+            raise NotImplementedError(f"cannot plot temporal advancing for wf of time sequence {ts.__class__}")
 
 
 class _TermsOnly(Frozen):

@@ -130,6 +130,9 @@ def _list_forms(variable_range=None):
         table.scale(1, 8)
         table.set_fontsize(50)
         fig.tight_layout()
-        from src.config import _matplot_setting
-        plt.show(block=_matplot_setting['block'])
+        from src.config import _setting, _pr_cache
+        if _setting['pr_cache']:
+            _pr_cache(fig)
+        else:
+            plt.show(block=_setting['block'])
         return fig

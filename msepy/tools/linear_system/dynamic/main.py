@@ -3,6 +3,7 @@ r"""
 """
 import matplotlib.pyplot as plt
 import matplotlib
+
 plt.rcParams.update({
     "text.usetex": True,
     "font.family": "DejaVu Sans",
@@ -70,10 +71,23 @@ class MsePyDynamicLinearSystem(Frozen):
 
     def __call__(self, *args, **kwargs):
         """"""
+        _str_args = ''
+        if len(args) == 0 and len(kwargs) == 0:
+            pass
+        elif len(args) == 0:
+            _str_args = str(kwargs)
+        elif len(kwargs) == 0:
+            _str_args = str(args)
+        else:
+            _str_args = str(args) + ', ' + str(kwargs)
+
         num_rows, num_cols = self.shape
 
         static_A = [[None for _ in range(num_cols)] for _ in range(num_rows)]
-        A_texts = [['' for _ in range(num_cols)] for _ in range(num_rows)]  # do not change '' into something else
+        A_texts = [['' for _ in range(num_cols)] for _ in range(num_rows)]
+        # do not change '' into something else
+        A_time_indicating = [['' for _ in range(num_cols)] for _ in range(num_rows)]
+        # do not change '' into something else
         for i in range(num_rows):
             for j in range(num_cols):
 
@@ -84,19 +98,22 @@ class MsePyDynamicLinearSystem(Frozen):
 
                 else:
 
-                    static_Aij, text = Aij(*args, **kwargs)
+                    static_Aij, text, time_indicating = Aij(*args, **kwargs)
 
                     static_A[i][j] = static_Aij
 
                     A_texts[i][j] = text
 
+                    A_time_indicating[i][j] = time_indicating
+
         static_x = [None for _ in range(num_cols)]
         x_texts = ['' for _ in range(num_cols)]  # do not change '' into something else
+        x_time_indicating = ['' for _ in range(num_cols)]  # do not change '' into something else
         for j in range(num_cols):
 
             x_j = self._x[j]  # x_j cannot be None
 
-            static_x_j, text = x_j(*args, **kwargs)
+            static_x_j, text, time_indicating = x_j(*args, **kwargs)
 
             assert static_x_j.__class__ is MsePyRootFormStaticCochainVector, \
                 f"entry #{j}  of x is not a MsePyRootFormStaticCochainVector!"
@@ -105,8 +122,11 @@ class MsePyDynamicLinearSystem(Frozen):
 
             x_texts[j] = text
 
+            x_time_indicating[j] = time_indicating
+
         static_b = [None for _ in range(num_rows)]
         b_texts = ['' for _ in range(num_rows)]  # do not change '' into something else
+        b_time_indicating = ['' for _ in range(num_rows)]  # do not change '' into something else
         for i in range(num_rows):
 
             b_i = self._b[i]
@@ -114,11 +134,13 @@ class MsePyDynamicLinearSystem(Frozen):
             if b_i is None:
                 pass
             else:
-                static_b_i, text = b_i(*args, **kwargs)
+                static_b_i, text, time_indicating = b_i(*args, **kwargs)
 
                 static_b[i] = static_b_i
 
                 b_texts[i] = text
+
+                b_time_indicating[i] = time_indicating
 
         # ----- now we pre-define a static ls to check everything is ok and also to retrieve the gms.
         predefined_sls = MsePyStaticLinearSystem(static_A, static_x, static_b)
@@ -169,6 +191,8 @@ class MsePyDynamicLinearSystem(Frozen):
         return MsePyStaticLinearSystem(
             static_A, static_x, static_b,
             _pr_texts=[A_texts, x_texts, b_texts],
+            _time_indicating_text=[A_time_indicating, x_time_indicating, b_time_indicating],
+            _str_args=_str_args,
         )
 
     def _parse_matrix_block(self, A):
@@ -297,10 +321,14 @@ class MsePyDynamicLinearSystem(Frozen):
         plt.axis('off')
         plt.text(0.05, 0.5, text + bc_text, ha='left', va='center', size=15)
         plt.tight_layout()
-        from src.config import _matplot_setting
-        plt.show(block=_matplot_setting['block'])
+        from src.config import _setting
+        plt.show(block=_setting['block'])
 
         return fig
+
+    def _pr_temporal_advancing(self, *args, **kwargs):
+        """"""
+        self._mp_ls._pr_temporal_advancing(*args, **kwargs)
 
 
 class DynamicBlockEntry(Frozen):
@@ -338,28 +366,49 @@ class DynamicBlockEntry(Frozen):
         """"""
         factor_terms = list()
         texts_list = list()
+        time_indicating = list()
         for i in self:
             dynamic_term = self[i]
+            # below: the three important properties of a dynamic term
             sign, factor, term = dynamic_term.sign, dynamic_term.factor, dynamic_term.component
-
             factor = factor(*args, **kwargs)
             term = term(*args, **kwargs)
+
+            time_indicating_i = list()
+            indicators = dynamic_term.time_indicators
+            for indicator in indicators:
+                if indicator is None:  # constant term
+                    pass
+                else:  # indicator must be callable
+                    _time = indicator(*args, **kwargs)
+                    str_time = round(_time, 12)
+                    if str_time % 1 == 0:
+                        _str = str(int(str_time))
+                    else:
+                        str_time = round(str_time, 6)
+                        _str = str(str_time)
+                    time_indicating_i.append(
+                        _str
+                    )
 
             assert isinstance(factor, (int, float)), f"static factor={factor} is wrong, must be a real number."
 
             # below, we parse the factor into str for printing purpose ------------------------
-            if factor % 1 == 0:
-                factor = int(factor)
+            _text_factor = round(factor, 12)
+            if _text_factor % 1 == 0:
+                _text_factor = int(_text_factor)
+            else:
+                pass
 
-            if factor == 1:
+            if _text_factor == 1:
                 factor_str = ''
             else:
-                if factor == 0:
+                if _text_factor == 0:
                     _str_fac = str(0)
-                elif (1 / factor) % 1 == 0:
-                    _str_fac = r'\frac{1}{' + str(int(1/factor)) + '}'
+                elif (1 / _text_factor) % 1 == 0:
+                    _str_fac = r'\frac{1}{' + str(int(1/_text_factor)) + '}'
                 else:
-                    _str_fac = str(factor)
+                    _str_fac = str(_text_factor)
 
                 factor_str = _str_fac + '*'
 
@@ -395,6 +444,7 @@ class DynamicBlockEntry(Frozen):
                     factor_term = factor * term
 
             factor_terms.append(factor_term)
+            time_indicating.extend(time_indicating_i)
 
         static = factor_terms[0]
         if len(factor_terms) == 1:
@@ -408,12 +458,15 @@ class DynamicBlockEntry(Frozen):
             MsePyRootFormStaticCochainVector,
             MsePyStaticLocalVector,
         ), f"static={static} is wrong."
-
-        return static, ''.join(texts_list)
+        time_indicating = r'+'.join(time_indicating)
+        return static, ''.join(texts_list), time_indicating
 
 
 class DynamicTerm(Frozen):
-    """"""
+    """A DynamicTerm is like a term: `- 100 * M @ E`, where sign is `-`, factor is `100`,
+    components are `M` and `E`.
+
+    """
 
     def __init__(self, dls, sign, factor, components):
         assert sign in ('-', '+'), f"sign = {sign} is wrong."
@@ -433,9 +486,10 @@ class DynamicTerm(Frozen):
         # parse components ---------------------------------------------------------------------
         _components = list()
         _mat_sym_repr = r""
+        time_indicators = list()
         for comp_lin_repr in components:
 
-            Mat, sym_repr = msepy_root_array_parser(dls, comp_lin_repr)
+            Mat, sym_repr, time_indicator = msepy_root_array_parser(dls, comp_lin_repr)
 
             if Mat.__class__ is MsePyStaticLocalMatrix:
                 Mat = MsePyDynamicLocalMatrix(Mat)
@@ -451,6 +505,12 @@ class DynamicTerm(Frozen):
             _components.append(Mat)
 
             _mat_sym_repr += sym_repr
+
+            assert callable(time_indicator) or time_indicator is None, \
+                f"time_indicator {time_indicator} must be callable or None (means the term does not change over time.)"
+            time_indicators.append(time_indicator)  # It does not cover time indicator of factor!
+
+        self._time_indicators = time_indicators  # It does not cover time indicator of factor!
 
         # ---- @ all mat together --------------------------------------------------------------
         if len(_components) == 1:
@@ -492,3 +552,8 @@ class DynamicTerm(Frozen):
     def component(self):
         """components"""
         return self._comp
+
+    @property
+    def time_indicators(self):
+        """Does not cover time indicator of factor!"""
+        return self._time_indicators

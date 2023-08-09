@@ -7,6 +7,7 @@ from tools.frozen import Frozen
 from tools.quadrature import Quadrature
 import numpy as np
 from scipy.sparse import csr_matrix, bmat
+from src.config import _setting
 
 
 class MsePyMassMatrixLambda(Frozen):
@@ -29,8 +30,13 @@ class MsePyMassMatrixLambda(Frozen):
         if quad is None:
             is_linear = self._space.mesh.elements._is_linear()
             if is_linear:  # ALL elements are linear.
-                quad_degree = [p + 1 for p in self._space[degree].p]
-                # +1 for conservation, + 0 for much sparser matrices.
+                high_accuracy = _setting['high_accuracy']
+                if high_accuracy:
+                    quad_degree = [p + 1 for p in self._space[degree].p]
+                    # +1 for conservation
+                else:
+                    quad_degree = [p for p in self._space[degree].p]
+                    # + 0 for much sparser matrices.
                 quad_type = self._space[degree].ntype
                 quad = (quad_degree, quad_type)
             else:

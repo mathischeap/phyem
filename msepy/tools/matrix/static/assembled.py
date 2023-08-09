@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 """
 """
+from numpy import linalg as np_linalg
 import matplotlib.pyplot as plt
 from tools.frozen import Frozen
 from scipy.sparse import isspmatrix_csc, isspmatrix_csr
@@ -54,3 +55,22 @@ class MsePyStaticAssembledMatrix(Frozen):
         plt.tick_params(which='both', top=True, right=True, labelbottom=True, labelright=True)
         plt.show()
         return fig
+
+    @property
+    def condition_number(self):
+        """The condition number of this static assembled matrix."""
+        M = self._M.toarray()
+        cn = np_linalg.cond(M)
+        return cn
+
+    @property
+    def rank(self):
+        """compute the rank of this static assembled matrix"""
+        M = self._M.toarray()
+        rank = np_linalg.matrix_rank(M)
+        return rank
+
+    @property
+    def num_singularities(self):
+        """The amount of singular modes in this static assembled matrix."""
+        return self.shape[0] - self.rank

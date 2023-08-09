@@ -8,6 +8,7 @@ from msepy.space.main import MsePySpace
 from msepy.form.main import MsePyRootForm
 from src.wf.mp.linear_system import MatrixProxyLinearSystem
 from src.config import SIZE   # MPI.SIZE
+from time import time
 
 
 __all__ = [
@@ -31,9 +32,23 @@ base = {
 }
 
 
+_info_cache = {
+    'info_count': 0,
+    'info_time': -1.,
+}
+
+
 def _check_config():
-    """"""
+    """Check the configuration is compatible or not."""
     assert SIZE == 1, f"msepy only works for single thread call (MPI.SIZE=1), now MPI.size = {SIZE}"
+
+
+def _clear_self():
+    """Clear self to make sure the previous implementation does not mess things up!"""
+    base['manifolds'] = dict()
+    base['meshes'] = dict()
+    base['spaces'] = dict()
+    base['forms'] = dict()
 
 
 def _parse_manifolds(abstract_manifolds):
@@ -137,21 +152,38 @@ def info():
     """We print the info, as much as possible, of the current msepy implementation."""
     forms = base['forms']
     # -- first we print the newest time of the cochain (if there is) of each form.
-    print(f">>> 1) Form with cochain @ --------- ")
+    count = _info_cache['info_count']
+    old_time = _info_cache['info_time']
+    if old_time == -1:
+        old_time = time()
+    else:
+        pass
+    new_time = time()
+    print(f'=== [{count}] -after- %.2f(s) <----' % (new_time - old_time))
+    print(f"~) Form with newest cochain @ --------- ")
     for form_sym in forms:
         form = forms[form_sym]
         if form._is_base():
             newest_time = form.cochain.newest
             if newest_time is not None:
-                print(form.abstract._pure_lin_repr, '@', newest_time)
+                print('{:>20} @ {:<30}'.format(form.abstract._pure_lin_repr, newest_time))
+        else:
+            pass
+    print(f"\n~) Existing time sequences --------- ")
+    from src.time_sequence import _global_abstract_time_sequence
+    for ats_lin in _global_abstract_time_sequence:
+        ats = _global_abstract_time_sequence[ats_lin]
+        ats.info()
     print()
+    _info_cache['info_count'] = count + 1
+    _info_cache['info_time'] = new_time
     return
 
 
 def _quick_mesh(*bounds, element_layout=None):
     r"""Make a quick msepy mesh over manifold \Omega = [*bounds].
 
-    This is mainly for test purpose. Thus we do not need to define abstract objs first.
+    This is mainly for test purpose. Thus, we do not need to define abstract objs first.
 
     Parameters
     ----------

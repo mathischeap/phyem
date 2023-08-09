@@ -37,9 +37,10 @@ class T2dTensor(TimeSpaceFunctionBase):
 
     def __call__(self, t, x, y):
         """Evaluate the tensor at (t, x, y)"""
-        return \
-            self._t00_(t, x, y), self._t01_(t, x, y), \
-            self._t10_(t, x, y), self._t11_(t, x, y)
+        return (
+            [self._t00_(t, x, y), self._t01_(t, x, y)],
+            [self._t10_(t, x, y), self._t11_(t, x, y)]
+        )
 
     def __getitem__(self, t):
         """return functions evaluated at time `t`."""

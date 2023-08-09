@@ -6,6 +6,7 @@ Yi Zhang
 import numpy as np
 from tools.frozen import Frozen
 from src.spaces.operators import _d_to_vc, _d_ast_to_vc
+from src.spaces.continuous.Lambda import ScalarValuedFormSpace
 
 
 class MsePyContinuousForm(Frozen):
@@ -15,6 +16,7 @@ class MsePyContinuousForm(Frozen):
         """"""
         self._f = rf
         self._field = None
+        self._shape = None
         self._freeze()
 
     def __getitem__(self, t):
@@ -33,7 +35,44 @@ class MsePyContinuousForm(Frozen):
     def field(self, _field):
         """"""
         _field = self._proceed_field(_field)
-        self._field = _FieldWrapper(_field)
+        if _field.__class__ is _FieldWrapper:
+            self._field = _field
+        else:
+            self._field = _FieldWrapper(_field)  # initialization: dict({...})
+        self._check_field()
+
+    @property
+    def shape(self):
+        """The shape of this cf should be. """
+        if self._shape is None:
+            abstract = self._f.abstract
+            space = abstract.space
+            if space.__class__ is ScalarValuedFormSpace:
+                n, k = space.n, space.k
+
+                if k == 0 or k == n:
+                    self._shape = (1, )
+                else:
+                    self._shape = (n, )
+
+            else:
+                raise Exception()
+
+        return self._shape
+
+    def _check_field(self):
+        """"""
+        assert (len(self._field) == len(self._f.mesh.regions) and
+                all([region in self._field for region in self._f.mesh.regions])), \
+            f"cf does not cover all regions."
+
+        abstract = self._f.abstract
+        space = abstract.space
+        for region in self._field:
+            region_cf = self._field[region]
+            assert region_cf.ndim == space.mesh.m, f"cf dimension must be equal to embedding space dimension."
+            assert region_cf.shape == self.shape, \
+                f"cf shape does not match! For example, set a 0-form or top-form a vector, or k-form a scalar."
 
     def _proceed_field(self, _field):
         """"""
@@ -129,7 +168,7 @@ class MsePyContinuousForm(Frozen):
 
 
 class _FieldWrapper(dict):
-    """"""
+    """Use this wrapper to enable -cf."""
 
     def __neg__(self):
         new_neg_field = _FieldWrapper()
@@ -173,17 +212,26 @@ class MsePyContinuousFormPartialTime(Frozen):
             func = self._field[ri]
 
             value_region = func(*xyz_region_wise)
-            num_components = len(value_region)
 
-            if values is None:
-                values = [[] for _ in range(num_components)]
+            if len(self._f.cf.shape) == 1:  # scalar or vector form
+
+                num_components = len(value_region)
+
+                if values is None:
+                    values = [[] for _ in range(num_components)]
+                else:
+                    pass
+
+                for c in range(num_components):
+                    values[c].append(value_region[c])
+
             else:
-                pass
+                raise NotImplementedError('not implemented for tensor form.')
 
-            for c in range(num_components):
-                values[c].append(value_region[c])
-
-        for i, val in enumerate(values):
-            values[i] = np.concatenate(val, axis=axis)
+        if len(self._f.cf.shape) == 1:  # scalar or vector form
+            for i, val in enumerate(values):
+                values[i] = np.concatenate(val, axis=axis)
+        else:
+            raise NotImplementedError('not implemented for tensor form.')
 
         return values

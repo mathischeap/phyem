@@ -126,11 +126,15 @@ class MsePyRootFormCochain(Frozen):
 
     def _callable_cochain(self, *args, **kwargs):
         """"""
+        t = self._ati_time_caller(*args, **kwargs)
+        return self.static_vec(t)
+
+    def _ati_time_caller(self, *args, **kwargs):
+        """"""
         if self._f._is_base():
             t = args[0]
             assert isinstance(t, (int, float)), f"for general root-form, I receive a real number!"
-            return self.static_vec(t)
         else:
             ati = self._f._pAti_form['ati']
             t = ati(**kwargs)()
-            return self.static_vec(t)
+        return t

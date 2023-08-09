@@ -137,8 +137,8 @@ class _WeakFormulationTerm(Frozen):
         plt.text(0, 0.75, 'linguistic : ' + f"{self._lin_repr}", ha='left', va='center', size=15)
         plt.text(0, 0.25, 'symbolic : ' + f"${self._sym_repr}$", ha='left', va='center', size=15)
         plt.axis('off')
-        from src.config import _matplot_setting
-        plt.show(block=_matplot_setting['block'])
+        from src.config import _setting
+        plt.show(block=_setting['block'])
         return fig
 
     def replace(self, f, by, which='all', change_sign=False):

@@ -6,6 +6,7 @@ from src.spaces.ap import _parse_l2_inner_product_mass_matrix
 from src.spaces.ap import _parse_d_matrix
 from src.spaces.ap import _parse_boundary_dp_vector
 from src.spaces.ap import _parse_astA_x_B_ip_tC
+from src.spaces.ap import _parse_A_x_astB_ip_tC
 from src.form.parameters import ConstantScalar0Form
 from tools.frozen import Frozen
 
@@ -65,6 +66,8 @@ class _SimplePatternAPParser(Frozen):
                 return self._parse_reprs_tr_star_star(test_form=test_form)
             elif sp == _simple_patterns['(*x,)']:
                 return self._parse_reprs_astA_x_B_ip_C(test_form=test_form)
+            elif sp == _simple_patterns['(x*,)']:
+                return self._parse_reprs_A_x_astB_ip_C(test_form=test_form)
             else:
                 raise NotImplementedError(f"not implemented for pattern = {sp}")
 
@@ -191,6 +194,27 @@ class _SimplePatternAPParser(Frozen):
 
             v0 = C.ap().T
             v1 = B.ap()
+            term_ap = v0 @ cpm @ v1
+
+        else:
+            raise Exception('TO BE IMPLEMENTED!')  # better not to use NotImplementedError
+
+        term = self._wft._factor * TermLinearAlgebraicProxy(term_ap)
+        sign = '+'
+
+        return term, sign
+
+    def _parse_reprs_A_x_astB_ip_C(self, test_form=None):
+        """(A x B, C) where B is known! So this term is linear."""
+        spk = self._wft.___simple_pattern_keys___
+        A, B, C = spk['a'], spk['b'], spk['c']
+
+        if test_form == C:
+
+            cpm = _parse_A_x_astB_ip_tC(A, B, C)  # a root-array matrix
+
+            v0 = C.ap().T
+            v1 = A.ap()
             term_ap = v0 @ cpm @ v1
 
         else:

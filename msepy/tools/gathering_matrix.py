@@ -109,14 +109,14 @@ class RegularGatheringMatrix(Frozen):
 
     @property
     def num_dofs(self):
-        """"""
+        """How many dofs in total this gathering matrix represents."""
         if self._num_dofs is None:
             self._num_dofs = int(np.max(self._gm) + 1)
         return self._num_dofs
 
     @property
     def num_local_dofs(self):
-        """"""
+        """How many dofs in each row (each element) of this gathering matrix."""
         return self.shape[1]
 
     @property
@@ -131,12 +131,12 @@ class RegularGatheringMatrix(Frozen):
         """repr"""
         if self._composite == 1:
             super_repr = super().__repr__().split(' object ')[1]
-            return rf"<base msepy gathering matrix " + super_repr
+            return rf"<Msepy Gathering Matrix {self.shape} " + super_repr
         else:
             repr_list = list()
             for gm in self._gms:
                 repr_list.append(gm.__repr__())
-            return '-o-'.join(repr_list)
+            return 'CHAIN-GM: ' + '-o-'.join(repr_list)
 
     def __eq__(self, other):
         """"""
@@ -166,16 +166,29 @@ class RegularGatheringMatrix(Frozen):
                 dofs = self.num_dofs + dofs
             else:
                 pass
-
             dofs = [dofs, ]
+
         else:
             pass
 
         elements_local_indices = dict()
-
         for i in dofs:
             assert (0 <= i < self.num_dofs) and (i % 1 == 0), f"dof = {i} is not in range."
-
             elements_local_indices[i] = np.where(self._gm == i)
 
         return elements_local_indices
+
+    def assemble(self, _2d_array, mode='replace'):
+        """Assemble a 2d-array into a 1d array using self._gm."""
+        assert _2d_array.shape == self.shape
+        _1d_array = np.zeros(self.num_dofs)
+
+        if mode == 'replace':
+            for e in range(len(self)):
+                element_e_numbering = self._gm[e]
+                _1d_array[element_e_numbering] = _2d_array[e]
+
+        else:
+            raise NotImplementedError()
+
+        return _1d_array

@@ -183,7 +183,8 @@ class MsePyDLSNaturalBoundaryCondition(MsePyDLSBoundaryCondition):
         assert self._category is None, f"bc config-ed, change the configuration is dangerous!"
 
         # --------------------- 0: general vc -----------------------------------------------------
-        if category in (0, 'general_vc'):  # we provide ONE general vc object for ``tr star bf0`` everywhere.
+        if category in (0, 'general_vc'):
+            # we provide ONE general vc object as ``tr star bf0`` (NOT bf0) everywhere.
 
             assert len(args) == 1, f"for ``general_vc`` type configuration, only provide a vc object."
 
@@ -219,7 +220,8 @@ class MsePyDLSEssentialBoundaryCondition(MsePyDLSBoundaryCondition):
         assert self._category is None, f"bc config-ed, change the configuration is dangerous!"
 
         # --------------------- 0: general vc ------------------------------------------------------
-        if category in (0, 'cf'):  # we provide ONE general vc object for ``tr star bf0`` everywhere.
+        if category in (0, 'cf'):
+            # we provide ONE general cf as the bc. Reducing this cf to boundary dofs leads to given boundary dofs.
 
             assert len(args) == 1, f"for ``general_vc`` type configuration, only provide a vc object."
 

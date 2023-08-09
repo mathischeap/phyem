@@ -18,11 +18,16 @@ plt.rcParams.update({
     "text.latex.preamble": r"\usepackage{amsmath, amssymb}",
 })
 
-class M_TIR_Visualize:
+
+class MITRVisualize:
     def ___plot_MTIR___(
-            self, plot_type, line_var, res2plot,
-            prime='input2',
-            hcp=None, show_order=False, order_text_size=18, plot_order_triangle=None,  # h-convergence plot related
+            self,
+            plot_type,
+            line_var,       
+            res2plot,
+            prime='input2',   # sequence of lines
+            hcp=None,   # h-convergence parameter
+            show_order=False, order_text_size=18, plot_order_triangle=None,  # h-convergence plot related
             title=None, left=0.15, bottom=0.15,
             ylabel=None, yticks=None,
             xlabel=None, xticks=None,
@@ -308,7 +313,7 @@ class M_TIR_Visualize:
         potn : dict or True
             The information that is going to use for the triangle.
             
-            It should have following keys (optional):
+            It should have keys (optional):
                 "p" : a tuple of shape (2,), like (a, b) and 0 <= a, b <= 1. (a, b) 
                     represents the pointing corner of the triangle. And (a, b) is the 
                     distance from the last value point.

@@ -22,21 +22,68 @@ except ModuleNotFoundError:  # no `mpi4py` installed.
 
 MASTER_RANK: int = 0  # DO NOT change this
 
-_matplot_setting = {
-    'block': True
+
+_setting = {
+    "block": True,   # matplot block
+    "pr_cache": False,   # if this is True, all pr will save to the cache folder and will not show()
+    "pr_cache_folder": '__phcache__',  # the default cache folder name
+    "pr_cache_counter": 0,  # we have cache how many times?
+    "pr_cache_subfolder": '',  # we cache where in particular?
+    "high_accuracy": True,  # influence sparsity of some matrices.
 }
 
 
-def _set_matplot_block(block):
-    _matplot_setting['block'] = block
-
-
-# space config
 def set_embedding_space_dim(ndim):
     """"""
     assert ndim % 1 == 0 and ndim > 0, f"ndim={ndim} is wrong, it must be a positive integer."
     _global_variables['embedding_space_dim'] = ndim
     _clear_all()   # whenever we change or reset the space dim, we clear all abstract objects.
+    _clear_pr_cache_setting()
+
+
+def set_high_accuracy(_bool):
+    """"""
+    assert isinstance(_bool, bool), f"give me True or False"
+    _setting['high_accuracy'] = _bool
+
+
+def set_pr_cache(_bool):
+    """"""
+    assert isinstance(_bool, bool), f"give me True or False"
+    _setting['pr_cache'] = _bool
+
+
+def _pr_cache(fig):
+    """"""
+    from time import time
+    from tools.os_ import mkdir
+    from tools.miscellaneous.random_ import string_digits
+    folder = _setting[r'pr_cache_folder']
+    mkdir(folder)
+    import matplotlib.pyplot as plt
+
+    if _setting["pr_cache_counter"] == 0:
+        str_time = str(time()).split('.')[0]
+        subfolder_name = folder + r"/Pr_" + str_time + '_' + string_digits(8)
+        _setting["pr_cache_subfolder"] = subfolder_name
+    else:
+        subfolder_name = _setting["pr_cache_subfolder"]
+        assert subfolder_name != '', f"something is wrong!"
+    mkdir(subfolder_name)
+    plt.savefig(subfolder_name + rf'/{_setting["pr_cache_counter"]}.png', dpi=200)
+    _setting["pr_cache_counter"] += 1
+    plt.close(fig)
+
+
+def _set_matplot_block(block):
+    """"""
+    _setting['block'] = block
+
+
+def _clear_pr_cache_setting():
+    """"""
+    _setting["pr_cache_counter"] = 0  # reset cache counting
+    _setting["pr_cache_subfolder"] = ''  # clean cache_subfolder
 
 
 def _clear_all():
@@ -178,6 +225,7 @@ _global_operator_lin_repr_setting = {  # coded operators
     'cross_product': r"$\times$",
 }
 
+
 _non_root_lin_sep = [r'\{', r'\}']
 
 
@@ -207,4 +255,7 @@ _wf_term_default_simple_patterns = {   # use only str to represent a simple patt
     '<tr star | tr >': '<tr star root-sf | trace root-sf>',
 
     '(*x,)': '(known-root-sf cross-product root-sf, root-sf)',
+    '(x*,)': '(root-sf cross-product known-root-sf, root-sf)',
 }
+
+_pde_test_form_lin_repr = 'th-test-form'

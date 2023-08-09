@@ -36,6 +36,7 @@ class BoundaryCondition(Frozen):
         """"""
         assert isinstance(bcs_dict, dict), f"pls put boundary conditions in a dict whose keys are the boundary " \
                                            f"sections, and values are the B.C.s on the corresponding sections."
+        from src.form.main import Form
         for key in bcs_dict:
             assert key in self._boundary._sub_manifolds, f"boundary section: {key} is not defined yet."
 
@@ -46,7 +47,7 @@ class BoundaryCondition(Frozen):
             else:
                 pass
             for i, bc in enumerate(bcs):
-                assert bc.__class__.__name__ == 'Form', f"{i}th BC: {bc} on Boundary Section {key} is not valid."
+                assert bc.__class__ is Form, f"{i}th BC: {bc} on Boundary Section {key} is not valid."
                 if key not in self._valid_bcs:
                     self._valid_bcs[key] = list()
                 else:
