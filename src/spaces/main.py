@@ -43,6 +43,11 @@ _default_boundary_dp_vector_reprs = [
     #                            <tr star bf0 | tr f1>.
 ]
 
+_default_astA_x_astB_ip_tC_reprs = [
+    r"\mathsf{c}",
+    _sep.join(["c_ip:Mat", "[{A}]", "[{B}]", "[{C}]"]),
+]
+
 _default_astA_x_B_ip_tC_reprs = [
     r"\mathsf{C}",
     _sep.join(["X_ip:Mat", "[{A}]", "[{B}]", "[{C}]"]),
@@ -53,6 +58,10 @@ _default_A_x_astB_ip_tC_reprs = [
     _sep.join(["C_ip:Mat", "[{A}]", "[{B}]", "[{C}]"]),
 ]
 
+_default_A_x_B_ip_C_reprs = [
+    r"\mathsf{X}",
+    _sep.join(["X:Mat", "[{A}]", "[{B}]", "[{C}]"]),
+]
 
 _default_space_degree_repr = ':D-'
 

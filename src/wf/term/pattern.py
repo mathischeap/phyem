@@ -81,18 +81,15 @@ def _inner_simpler_pattern_examiner_scalar_valued_forms(factor, f0, f1, extra_in
                 # a, b and c are all root-forms. This is good!
 
                 if 'known-cross-product-form' in extra_info:
-
-                    known_form = extra_info['known-cross-product-form']
-
-                    if known_form is f_a:
-
+                    known_forms = extra_info['known-cross-product-form']
+                    if known_forms is f_a:
                         return _simple_patterns['(*x,)'], {
                             'a': f_a,
                             'b': f_b,
                             'c': f1
                         }
 
-                    elif known_form is f_b:
+                    elif known_forms is f_b:
 
                         return _simple_patterns['(x*,)'], {
                             'a': f_a,
@@ -100,11 +97,29 @@ def _inner_simpler_pattern_examiner_scalar_valued_forms(factor, f0, f1, extra_in
                             'c': f1
                         }
 
+                    elif isinstance(known_forms, (list, tuple)) and len(known_forms) == 2:
+
+                        kf0, kf1 = known_forms
+
+                        if kf0 is f_a and kf1 is f_b:
+
+                            return _simple_patterns['(*x*,)'], {
+                                'a': f_a,
+                                'b': f_b,
+                                'c': f1
+                            }
+
                     else:
                         pass
+
                 else:
                     # this term will be a nonlinear one! Take care it in the future!
-                    pass
+
+                    return _simple_patterns['(x,)'], {
+                        'a': f_a,
+                        'b': f_b,
+                        'c': f1
+                    }
 
             else:
                 pass

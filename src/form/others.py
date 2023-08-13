@@ -19,7 +19,7 @@ from src.form.main import _global_forms, _global_form_variables
 
 
 def _find_form(lin_repr, upon=None):
-    """Find a form according to linguistic_representation.
+    """Find a form according to (pure) linguistic_representation.
 
     If we do not find such a form, we return None. Otherwise, we return the first found one.
 
@@ -37,7 +37,7 @@ def _find_form(lin_repr, upon=None):
         the_one = None
         for form_id in _global_forms:
             form = _global_forms[form_id]
-            if form._lin_repr == lin_repr:
+            if form._lin_repr == lin_repr or form._pure_lin_repr == lin_repr:
                 the_one = form
                 break
             else:
@@ -61,7 +61,7 @@ def _find_form(lin_repr, upon=None):
                     continue
 
                 else:
-                    if operator_of_f._lin_repr == lin_repr:
+                    if operator_of_f._lin_repr == lin_repr or operator_of_f._pure_lin_repr == lin_repr:
                         the_one = form
                         break
                     else:

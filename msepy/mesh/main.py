@@ -46,6 +46,7 @@ class MsePyMesh(Frozen):
         self._ct = MsePyMeshCoordinateTransformation(self)
         self._visualize = None
         self._topology = None
+        self._face_dict = dict()
         self._freeze()
 
     @property

@@ -11,6 +11,7 @@ from src.spaces.main import _default_mass_matrix_reprs
 from src.spaces.main import _default_d_matrix_reprs
 from src.spaces.main import _default_d_matrix_transpose_reprs
 from src.spaces.main import _default_boundary_dp_vector_reprs
+from src.spaces.main import _default_astA_x_astB_ip_tC_reprs
 from src.spaces.main import _default_astA_x_B_ip_tC_reprs
 from src.spaces.main import _default_A_x_astB_ip_tC_reprs
 
@@ -64,6 +65,7 @@ def msepy_root_array_parser(dls, array_lin_repr):
         return x, text, time_indicator
 
     else:
+
         indicators = array_lin_repr.split(_sep)  # these section represents all info of this root-array.
         type_indicator = indicators[0]   # this first one indicates the type
         info_indicators = indicators[1:]  # the others indicate the details.
@@ -81,6 +83,10 @@ def msepy_root_array_parser(dls, array_lin_repr):
         elif type_indicator == _default_boundary_dp_vector_reprs[1].split(_sep)[0]:
             A, time_indicator = _parse_trStar_rf0_dp_tr_s1_vector(dls, *info_indicators)
             text = r"\boldsymbol{b}"
+        elif type_indicator == _default_astA_x_astB_ip_tC_reprs[1].split(_sep)[0]:
+            A, time_indicator = _parse_astA_x_astB_ip_tC(*info_indicators)
+            text = r"\mathsf{c}"
+
         elif type_indicator == _default_astA_x_B_ip_tC_reprs[1].split(_sep)[0]:
             A, time_indicator = _parse_astA_x_B_ip_tC(*info_indicators)
             text = r"\mathsf{C}"
@@ -174,6 +180,47 @@ def _parse_E_matrix(space, degree):
     )
 
     return E, None  # time_indicator is None, mean E is same at all time.
+
+
+def _parse_astA_x_astB_ip_tC(gA, gB, tC):
+    """(A X B, C), A and B are given, C is the test form, so it gives a dynamic vector."""
+    lin_reprs = _default_astA_x_astB_ip_tC_reprs[1]
+    base_Ar, base_Br, base_Cr = lin_reprs.split(_sep)[1:]
+    replace_keys = (r"{A}", r"{B}", r"{C}")
+    # now we try to find the form gA, B and tC
+    ABC_forms = list()
+
+    msepy_forms = base['forms']
+
+    for format_form, base_rp, replace_key in zip((gA, gB, tC), (base_Ar, base_Br, base_Cr), replace_keys):
+        found_root_form = None
+        for root_form_lin_repr in _global_root_forms_lin_dict:
+            check_form = _global_root_forms_lin_dict[root_form_lin_repr]
+            check_temp = base_rp.replace(replace_key, check_form._pure_lin_repr)
+            if check_temp == format_form:
+                found_root_form = check_form
+                break
+            else:
+                pass
+        assert found_root_form is not None, f"must have found root-for for {format_form}."
+
+        msepy_base_form = None
+        for _pure_lin_repr in msepy_forms:
+            if _pure_lin_repr == found_root_form._pure_lin_repr:
+                msepy_base_form = msepy_forms[_pure_lin_repr]
+                break
+            else:
+                pass
+        assert msepy_base_form is not None, f"we must have found a msepy copy of the root-form."
+        ABC_forms.append(msepy_base_form)
+
+    _, _, msepy_C = ABC_forms  # A is given
+
+    nonlinear_operation = _AxBipC(*ABC_forms)
+
+    c, time_caller = nonlinear_operation(1, msepy_C)
+
+    return c, time_caller  # since A is given, its ati determine the time of C.
 
 
 def _parse_astA_x_B_ip_tC(gA, B, tC):

@@ -22,6 +22,7 @@ class AlgebraicProxy(Frozen):
 
     def __init__(self, wf):
         self._fully_resolved = True
+        self.___all_linear___ = True
         self._parse_terms(wf)
         self._parse_unknowns_test_vectors(wf)
         self._wf = wf
@@ -38,39 +39,63 @@ class AlgebraicProxy(Frozen):
         color_dict = dict()
         ind_dict = dict()
         indexing = dict()
+        linearity_dict = dict()
         for i in wf_td:
             term_dict[i] = ([], [])
             sign_dict[i] = ([], [])
             color_dict[i] = ([], [])
             ind_dict[i] = ([], [])
+            linearity_dict[i] = ([], [])
             k = 0
             for j, terms in enumerate(wf_td[i]):
                 for m, term in enumerate(terms):
                     old_sign = wf_sd[i][j][m]
                     try:
-                        ap, new_sign = term.ap(test_form=wf.test_forms[i])
+                        ap, new_sign, linearity = term.ap(test_form=wf.test_forms[i])
                         new_sign = self._parse_sign(new_sign, old_sign)
-                        color_dict[i][j].append('k')
+                        color = 'k'
+                        assert linearity in ('linear', 'nonlinear'), \
+                            f"`linearity` must be among ('linear', 'nonlinear'), now it is {linearity}."
+                        if self.___all_linear___ and linearity == 'nonlinear':
+                            self.___all_linear___ = False
+                        else:
+                            pass
 
                     except NotImplementedError:
 
                         ap = term
                         new_sign = old_sign
                         self._fully_resolved = False
-                        color_dict[i][j].append('r')
+                        color = 'r'
+                        linearity = 'unknown'
+                        self.___all_linear___ = False
 
                     index = str(i) + '-' + str(k)
                     k += 1
                     indexing[index] = (new_sign, ap)
                     ind_dict[i][j].append(index)
                     term_dict[i][j].append(ap)
+                    color_dict[i][j].append(color)
                     sign_dict[i][j].append(new_sign)
+                    linearity_dict[i][j].append(linearity)
 
         self._term_dict = term_dict
         self._sign_dict = sign_dict
         self._color_dict = color_dict
         self._indexing = indexing
         self._ind_dict = ind_dict
+        self._linearity_dict = linearity_dict
+
+    @property
+    def linearity(self):
+        """The system is linear, nonlinear or unknown?"""
+        if self._fully_resolved:
+            if self.___all_linear___:
+                return 'linear'
+            else:
+                return 'nonlinear'
+        else:
+            return 'unknown'
 
     @staticmethod
     def _parse_sign(s0, s1):

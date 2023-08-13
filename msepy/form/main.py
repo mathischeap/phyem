@@ -1,8 +1,5 @@
 # -*- coding: utf-8 -*-
-"""
-pH-lib@RAM-EEMCS-UT
-Yi Zhang
-Created at 1:22 PM on 4/17/2023
+r"""
 """
 import sys
 from typing import Dict

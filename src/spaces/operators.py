@@ -52,6 +52,8 @@ def cross_product(s1, s2):
 
             if k1 == 0 and k2 == 1 and s1.orientation == 'outer' and s2.orientation == 'inner':
                 return new('Lambda', 1, mesh=s1.mesh, orientation='inner')
+            elif k1 == 0 and k2 == 1 and s1.orientation == 'outer' and s2.orientation == 'outer':
+                return new('Lambda', 1, mesh=s1.mesh, orientation='outer')
             elif k1 == 2 and k2 == 1 and s1.orientation == 'inner' and s2.orientation == 'outer':
                 return new('Lambda', 1, mesh=s1.mesh, orientation='outer')
             elif k1 == 1 and k2 == 1 and s1.orientation == 'inner' and s2.orientation == 'inner':

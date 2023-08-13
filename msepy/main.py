@@ -7,6 +7,7 @@ from msepy.mesh.main import MsePyMesh
 from msepy.space.main import MsePySpace
 from msepy.form.main import MsePyRootForm
 from src.wf.mp.linear_system import MatrixProxyLinearSystem
+from src.wf.mp.nonlinear_system import MatrixProxyNoneLinearSystem
 from src.config import SIZE   # MPI.SIZE
 from time import time
 
@@ -130,10 +131,15 @@ def _parse(obj):
     """The objects other than manifolds, meshes, spaces, root-forms that should be parsed for this
     particular fem setting.
     """
-    from msepy.tools.linear_system.dynamic.main import MsePyDynamicLinearSystem
     if obj.__class__ is MatrixProxyLinearSystem:
+        from msepy.tools.linear_system.dynamic.main import MsePyDynamicLinearSystem
         dynamic = MsePyDynamicLinearSystem(obj, base)
         return dynamic
+    elif obj.__class__ is MatrixProxyNoneLinearSystem:
+        from msepy.tools.nonlinear_system.dynamic.main import MsePyDynamicNonLinearSystem
+        dynamic = MsePyDynamicNonLinearSystem(obj, base)
+        return dynamic
+
     else:
         return None  # do not raise Error (like below)!
         # raise NotImplementedError(f"cannot parse msepy implementation for {obj}.")

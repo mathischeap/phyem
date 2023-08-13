@@ -10,7 +10,10 @@ from msepy.form.main import MsePyRootForm
 from src.spaces.main import _degree_str_maker
 from tools.quadrature import Quadrature
 from msepy.tools.matrix.dynamic import MsePyDynamicLocalMatrix
+from msepy.tools.vector.dynamic import MsePyDynamicLocalVector
 from msepy.tools.matrix.static.local import MsePyStaticLocalMatrix
+from msepy.tools.vector.static.local import MsePyStaticLocalVector
+from msepy.tools.multidimensional_array.dynamic import MsePyDynamicLocalMDA
 from src.spaces.continuous.Lambda import ScalarValuedFormSpace
 from scipy.sparse import csr_array
 
@@ -188,11 +191,24 @@ class _AxBipC(Frozen):
         else:
             pass
 
-        if dimensions == 2:
+        if dimensions == 1:
+            vector_form = args[0]
+            # we reduce the 3d data into 1d according to vector-form's basis functions.
+            _vector_data_caller = _OneDimVector(self, vector_form)
+            return MsePyDynamicLocalVector(_vector_data_caller), _vector_data_caller._time_caller
+
+        elif dimensions == 2:
 
             row_form, col_form = args
 
             return self._2d_matrix_representation(row_form, col_form)
+
+        elif dimensions == 3:
+
+            return MsePyDynamicLocalMDA(
+                self._3d_data,
+                self._A, self._B, self._C
+            )
 
         else:
             raise NotImplementedError()
@@ -286,6 +302,65 @@ class _AxBipC(Frozen):
             1, array_cochain, _3d_data, given_form.mesh, 2, 0
         )
         return MsePyStaticLocalMatrix(_2d_matrix_caller, gm_row, gm_col, cache_key='unique')
+
+
+class _OneDimVector(Frozen):
+    def __init__(self, ABC, vector_form):
+        """"""
+        assert vector_form in ABC._ABC, f"vector_form must one of the ABC forms."
+        given_forms = list()
+        given_indices = list()
+        test_index = None
+        for index, form in zip('ijk', ABC._ABC):
+            if form is not vector_form:
+                given_forms.append(form)
+                given_indices.append(index)
+            else:
+                assert test_index is None, f"there is only one test form."
+                test_index = index
+        self._gfs = given_forms
+        self._gis = given_indices
+        self._tf = vector_form
+        self._ti = test_index
+        self._3d_data = ABC._3d_data
+        self._freeze()
+
+    def __call__(self, *args, **kwargs):
+        """Must return a mspy static local vector"""
+        cochains = dict()
+        times = self._time_caller(*args, **kwargs)
+        for f, i, time in zip(self._gfs, self._gis, times):
+            cochains[i] = f[time].cochain.local
+
+        _3d_data = self._3d_data
+        operands = f'ijk, {self._gis[0]}, {self._gis[1]} -> {self._ti}'
+        c0 = cochains[self._gis[0]]
+        c1 = cochains[self._gis[1]]
+
+        local_vectors = list()
+        for e in range(len(_3d_data)):  # all local elements
+            data = _3d_data[e]
+
+            local_vectors.append(
+                np.einsum(
+                    operands,
+                    data, c0[e], c1[e],
+                    optimize='optimal',
+                )
+            )
+
+        local_vectors = np.vstack(local_vectors)
+
+        return MsePyStaticLocalVector(local_vectors, self._tf.cochain.gathering_matrix)
+
+    def _time_caller(self, *args, **kwargs):
+        """"""
+        times = list()
+        for f in self._gfs:
+            times.append(
+                f.cochain._ati_time_caller(*args, **kwargs)
+            )
+        return times
 
 
 class _MatrixCaller(Frozen):

@@ -4,8 +4,10 @@ Algebraic Proxy.
 """
 
 from src.spaces.main import _default_mass_matrix_reprs
+from src.spaces.main import _default_astA_x_astB_ip_tC_reprs
 from src.spaces.main import _default_astA_x_B_ip_tC_reprs
 from src.spaces.main import _default_A_x_astB_ip_tC_reprs
+from src.spaces.main import _default_A_x_B_ip_C_reprs
 from src.spaces.main import _default_d_matrix_reprs, _default_d_matrix_transpose_reprs
 from src.spaces.main import _default_boundary_dp_vector_reprs
 from src.config import _form_evaluate_at_repr_setting
@@ -15,6 +17,7 @@ from src.spaces.main import _default_space_degree_repr
 from src.spaces.main import _degree_str_maker
 
 from src.algebra.array import _root_array
+from src.algebra.multidimensional_array import AbstractMultiDimensionalArray
 from src.spaces.operators import d
 
 
@@ -106,6 +109,26 @@ def _parse_boundary_dp_vector(rf0, f1):
     return ra
 
 
+def _parse_astA_x_astB_ip_tC(gA, gB, tC):
+    """"""
+    sym, lin = _default_astA_x_astB_ip_tC_reprs[:2]
+
+    sym += r"_{(" + gA._sym_repr + ',' + gB._sym_repr + r")}"
+    lin = lin.replace('{A}', gA._pure_lin_repr)
+    lin = lin.replace('{B}', gB._pure_lin_repr)
+    lin = lin.replace('{C}', tC._pure_lin_repr)
+
+    s0 = tC.space
+    d0 = tC._degree
+    str_d0 = _degree_str_maker(d0)
+
+    shape0 = s0._sym_repr + _default_space_degree_repr + str_d0
+
+    shape = (shape0, 1)
+    ra = _root_array(sym, lin, shape)
+    return ra
+
+
 def _parse_astA_x_B_ip_tC(gA, B, tC):
     """<A x B, C> where A is given (ast). and C is the test form."""
     sym, lin = _default_astA_x_B_ip_tC_reprs[:2]
@@ -152,3 +175,31 @@ def _parse_A_x_astB_ip_tC(A, gB, tC):
     shape = (shape0, shape1)
     ra = _root_array(sym, lin, shape)
     return ra
+
+
+def _parse_A_x_B_ip_C(A, B, C):
+    """"""
+    sym, lin = _default_A_x_B_ip_C_reprs[:2]
+
+    sym += rf"\left({A._sym_repr}, {B._sym_repr}, {C._sym_repr}\right)"
+    lin = lin.replace('{A}', A._pure_lin_repr)
+    lin = lin.replace('{B}', B._pure_lin_repr)
+    lin = lin.replace('{C}', C._pure_lin_repr)
+
+    s0 = A.space
+    s1 = B.space
+    s2 = C.space
+    d0 = A._degree
+    d1 = B._degree
+    d2 = C._degree
+    str_d0 = _degree_str_maker(d0)
+    str_d1 = _degree_str_maker(d1)
+    str_d2 = _degree_str_maker(d2)
+
+    shape0 = s0._sym_repr + _default_space_degree_repr + str_d0
+    shape1 = s1._sym_repr + _default_space_degree_repr + str_d1
+    shape2 = s2._sym_repr + _default_space_degree_repr + str_d2
+
+    shape = (shape0, shape1, shape2)
+    mda = AbstractMultiDimensionalArray(sym, lin, shape)
+    return mda

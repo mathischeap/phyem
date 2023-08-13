@@ -1,8 +1,5 @@
 # -*- coding: utf-8 -*-
 """
-pH-lib@RAM-EEMCS-UT
-Yi Zhang
-Created at 11:55 AM on 5/9/2023
 """
 from tools.frozen import Frozen
 from msepy.tools.matrix.static.local import MsePyStaticLocalMatrix

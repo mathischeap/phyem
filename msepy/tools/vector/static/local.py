@@ -38,26 +38,26 @@ class MsePyStaticLocalVector(Frozen):
             raise NotImplementedError()
 
     @data.setter
-    def data(self, data):
+    def data(self, _data):
         """Do this such that data can be renewed.
         """
         # _2d_data: 2d numpy array or None.
-        if data is None:
+        if _data is None:
             self._dtype = 'None'
-            self._data = data
+            self._data = _data
 
-        elif isinstance(data, (int, float)):
+        elif isinstance(_data, (int, float)):
             self._dtype = "homogeneous"
-            self._data = 1. * data * np.ones(self._gm.shape)
+            self._data = 1. * _data * np.ones(self._gm.shape)
 
-        elif isinstance(data, np.ndarray):
+        elif isinstance(_data, np.ndarray):
             self._dtype = "2d"  # for example, 2d array: rows -> num of elements, cols -> local cochain
-            assert data.shape == self._gm.shape, f"{data.shape} != {self._gm.shape}"
-            self._data = data
+            assert _data.shape == self._gm.shape, f"{_data.shape} != {self._gm.shape}"
+            self._data = _data
 
-        elif callable(data):
+        elif callable(_data):
             self._dtype = "callable"
-            self._data_caller = data
+            self._data_caller = _data
             self._data = None
 
         else:
@@ -202,7 +202,7 @@ class MsePyStaticLocalVector(Frozen):
                 raise NotImplementedError()
 
         else:
-            raise NotImplementedError()
+            raise NotImplementedError(f"{other}")
 
     def __neg__(self):
         """- self."""

@@ -54,7 +54,7 @@ class BoundaryIntegrateVCBSLambda(Frozen):
         # <tr star 1-f | tr 0form>, self._f is the 0form (inner), and the vc is representing the 'tr star 1-f', a scalar
 
         if vc.shape == (2, ) and vc.ndim == 2:  # we received a vector.
-            # this means we do not pre-compute the flux of the vector (which then is a scalar)
+            # this means we do not pre-compute the flux of the vector (which then becomes a scalar)
             # over the boundary section
 
             quad_degree = [_ + 1 for _ in self._f.space[self._f._degree].p]
@@ -120,10 +120,9 @@ class BoundaryIntegrateVCBSLambda(Frozen):
 
                 v = v[0].T
                 tr_0f = v[local_dofs]   # <~ | tr 0-f>
-
                 nx, ny = onv
+                # below, we evaluate vc on the boundary
                 vx, vy = vc(t, *xy)   # this vector calculus object is for all regions.
-
                 trStar_1f = vx * nx + vy * ny   # <trStar 1-f | ~>
 
                 # print(trStar_1f.shape, tr_0f.shape)
@@ -212,8 +211,9 @@ class BoundaryIntegrateVCBSLambda(Frozen):
             vx = vx[local_dofs]
             vy = vy[local_dofs]
             nx, ny = onv
-            trStar_vc = vc(t, *xy)[0]   # this vector calculus object is for all regions; # <trStar_vc | ~>
-            trace_f = vx * nx + vy * ny  # <~ | trace-f>
+            # below, we evaluate vc on the boundary
+            trStar_vc = vc(t, *xy)[0]   # this vector calculus object (a scalar) is for all regions; # <trStar_vc | ~>
+            trace_1f = vx * nx + vy * ny  # <~ | trace-f>
             if face.is_orthogonal():
                 length = face.length
                 Jacobian = length / 2
@@ -221,7 +221,7 @@ class BoundaryIntegrateVCBSLambda(Frozen):
                 JM = face.ct.Jacobian_matrix(nodes)
                 Jacobian = np.sqrt(JM[0]**2 + JM[1]**2)
 
-            boundary_integration = np.sum(trStar_vc * trace_f * weights * Jacobian, axis=1)
+            boundary_integration = np.sum(trStar_vc * trace_1f * weights * Jacobian, axis=1)
             bi_data[element, local_dofs] = boundary_integration
 
         return bi_data

@@ -1,10 +1,6 @@
 # -*- coding: utf-8 -*-
+r"""
 """
-"""
-import sys
-
-if './' not in sys.path:
-    sys.path.append('./')
 import matplotlib.pyplot as plt
 import matplotlib
 plt.rcParams.update({
@@ -13,11 +9,17 @@ plt.rcParams.update({
     "text.latex.preamble": r"\usepackage{amsmath, amssymb}",
 })
 matplotlib.use('TkAgg')
+
+from src.form.others import _find_form
+from src.config import _root_form_ap_vec_setting
 from tools.frozen import Frozen
 from src.algebra.array import AbstractArray
 from src.wf.term.ap import TermLinearAlgebraicProxy
+from src.wf.term.ap import TermNonLinearMDAAlgebraicProxy
 from src.algebra.linear_system import BlockMatrix, BlockColVector, LinearSystem
+from src.algebra.nonlinear_system import NonLinearSystem
 from src.wf.mp.linear_system import MatrixProxyLinearSystem
+from src.wf.mp.nonlinear_system import MatrixProxyNoneLinearSystem
 
 
 class MatrixProxy(Frozen):
@@ -26,11 +28,12 @@ class MatrixProxy(Frozen):
     def __init__(self, wf):
         ap = wf.ap()  # make an algebraic proxy in real time.
         if ap._fully_resolved:
-            pass
+            assert ap.linearity in ('linear', 'nonlinear'), \
+                f"ap linearity must be linear or nonlinear when it is fully resolved."
         else:
             raise Exception(
-                f"there is (are) term(s) in the wf which is not resolved as 'algebraic proxy', check ``ap`` of "
-                f"the wf to see which term is not working."
+                f"there is(are) term(s) in the wf not-resolved as 'algebraic proxy', check ``ap`` of "
+                f"the ``wf`` to see which term(s) is(are) not resolved!."
             )
         self._wf = wf
         self._ap = ap
@@ -42,18 +45,52 @@ class MatrixProxy(Frozen):
         self._lbv = BlockColVector(self._num_equations)  # left block vector part
         self._rbv = BlockColVector(self._num_equations)  # right block vector part
 
+        self._left_nonlinear_terms = [[] for _ in range(self._num_equations)]
+        self._left_nonlinear_signs = [[] for _ in range(self._num_equations)]
+
+        self._right_nonlinear_terms = [[] for _ in range(self._num_equations)]
+        self._right_nonlinear_signs = [[] for _ in range(self._num_equations)]
+
+        self._linearity = 'linear'
         for i in ap._term_dict:
             terms = ap._term_dict[i]
             signs = ap._sign_dict[i]
             for j in range(2):
                 lr_terms = terms[j]
                 lr_signs = signs[j]
+                k = 0
+
                 for term, sign in zip(lr_terms, lr_signs):
-                    term = self._test_vector_remover(i, term)
-                    if j == 0:
-                        self._lbv._add(i, term, sign)
+
+                    linearity, term = self._test_vector_remover(i, term)
+
+                    if linearity == 'linear':
+                        assert self._ap._linearity_dict[i][j][k] == 'linear', f'Must be this case.'
+                        if j == 0:
+                            self._lbv._add(i, term, sign)
+                        else:
+                            self._rbv._add(i, term, sign)
+
+                    elif linearity == 'nonlinear':
+                        assert self._ap._linearity_dict[i][j][k] == 'nonlinear', f'Must be this case.'
+                        if self._linearity == 'linear':
+                            self._linearity = 'nonlinear'
+                        else:
+                            pass
+
+                        if j == 0:
+                            # noinspection PyTypeChecker
+                            self._left_nonlinear_terms[i].append(term)
+                            self._left_nonlinear_signs[i].append(sign)
+                        else:
+                            # noinspection PyTypeChecker
+                            self._right_nonlinear_terms[i].append(term)
+                            self._right_nonlinear_signs[i].append(sign)
+
                     else:
-                        self._rbv._add(i, term, sign)
+                        raise NotImplementedError()
+
+                    k += 1
 
         self._l_mvs = list()  # left matrix@vector sections
         self._r_mvs = list()  # right matrix@vector sections
@@ -61,11 +98,18 @@ class MatrixProxy(Frozen):
         self._bc = wf._bc
         self._freeze()
 
+    @property
+    def linearity(self):
+        """"""
+        assert self._linearity in ('linear', 'nonlinear'), f"Linearity must be among ('linear', 'nonlinear')."
+        return self._linearity
+
     def _test_vector_remover(self, i, term):
         """"""
         test_vector = self._test_vectors[i]
 
         if term.__class__ is TermLinearAlgebraicProxy:
+
             aa = term._abstract_array
             factor = aa._factor
             components = aa._components
@@ -77,10 +121,20 @@ class MatrixProxy(Frozen):
             new_aa = AbstractArray(
                 factor=factor,
                 components=components[1:],
-                transposes=transposes[1:]
+                transposes=transposes[1:],
             )
 
-            return new_aa
+            return 'linear', new_aa
+
+        elif term.__class__ is TermNonLinearMDAAlgebraicProxy:
+
+            tf_pure_lin_repr = test_vector._pure_lin_repr[:-len(_root_form_ap_vec_setting['lin'])]
+            tf = _find_form(tf_pure_lin_repr)
+            if term._tf is None:
+                term.set_test_form(tf)
+            else:
+                assert term._tf is tf, f"double check the test form."
+            return 'nonlinear', term
 
         else:
             raise NotImplementedError(term.__class__)
@@ -163,12 +217,14 @@ class MatrixProxy(Frozen):
                 d = 0
             else:
                 d = 1
-            self.___total_indexing_length___ = (a, b, c, d), a+b+c+d
+            self.___total_indexing_length___ = (a, b, c, d), a + b + c + d
 
         return self.___total_indexing_length___
 
     def __getitem__(self, index):
         """
+        To retrieve a linear term: do 'a-b' or 'a-b,c', where a, b, c are str(integer)-s.
+
         when index = 'a-b'
         `a` refer to the `ath` block.
         `b` refer to the `b`th entry of the ColVec of the block.
@@ -181,16 +237,17 @@ class MatrixProxy(Frozen):
 
         But when `a`th block is a ColVec, we can only use 'a-b'.
 
-        Indexing to every term.
+        To retrieve a nonlinear term, to be continued.
+
         """
         assert isinstance(index, str), f"pls put index in string."
-        assert index.count('-') == 1, f"index={index} is illegal."
+        assert index.count('-') == 1, f"linear term index={index} is illegal."
         block_num, local_index = index.split('-')
-        assert block_num.isnumeric(), f"index={index} is illegal."
+        assert block_num.isnumeric(), f"linear term index={index} is illegal."
         block_num = int(block_num)
         abcd, total_length = self._total_indexing_length()
         a, b, c, d = abcd
-        assert 0 <= block_num < total_length, f"index={index} is illegal; it beyonds the length."
+        assert 0 <= block_num < total_length, f"linear term index={index} is illegal; it beyonds the length."
         if block_num < a:  # retrieving a term in left l_mvs
             block = self._l_mvs[block_num]
         elif block_num < a+b:  # retrieving a term in left remaining vector
@@ -208,14 +265,14 @@ class MatrixProxy(Frozen):
             elif len(indices) == 1:
                 block = block[1]
             else:
-                raise Exception(f"index={index} is illegal.")
+                raise Exception(f"linear term index={index} is illegal.")
         else:
             pass
 
         try:
             return block(*indices)
         except (IndexError, TypeError):
-            raise Exception(f"index={index} is illegal.")
+            raise Exception(f"linear term index={index} is illegal.")
 
     def _pr_text(self):
         symbolic = ''
@@ -240,7 +297,44 @@ class MatrixProxy(Frozen):
         else:
             symbolic += plus + self._lbv._pr_text()
 
-        symbolic += '='
+        nonlinear_text = ''
+        if self.linearity == 'nonlinear':
+            nonlinear_terms = self._left_nonlinear_terms
+            nonlinear_signs = self._left_nonlinear_signs
+            num_terms = 0
+            for terms in nonlinear_terms:
+                num_terms += len(terms)
+
+            if num_terms == 0:
+                pass
+            else:  # there are nonlinear terms on the left hand side
+
+                for terms, signs in zip(nonlinear_terms, nonlinear_signs):
+
+                    if len(terms) == 0:
+                        nonlinear_text += r'\boldsymbol{0}'
+                    else:
+
+                        for i, term in enumerate(terms):
+                            sign = signs[i]
+
+                            if i == 0:
+                                if sign == '-':
+                                    pass
+                                else:
+                                    sign = ''
+                            else:
+                                pass
+
+                            nonlinear_text += sign + term._sym_repr
+
+                    nonlinear_text += r'\\'
+
+                nonlinear_text = nonlinear_text[:-len(r'\\')]
+
+                nonlinear_text = r" + \begin{bmatrix}" + nonlinear_text + r"\end{bmatrix}"
+
+        symbolic += nonlinear_text + '='
 
         plus = ''
         variant = 0
@@ -261,6 +355,45 @@ class MatrixProxy(Frozen):
             pass
         else:
             symbolic += plus + self._rbv._pr_text()
+
+        nonlinear_text = ''
+        if self.linearity == 'nonlinear':
+            nonlinear_terms = self._right_nonlinear_terms
+            nonlinear_signs = self._right_nonlinear_signs
+            num_terms = 0
+            for terms in nonlinear_terms:
+                num_terms += len(terms)
+
+            if num_terms == 0:
+                pass
+            else:  # there are nonlinear terms on the left hand side
+
+                for terms, signs in zip(nonlinear_terms, nonlinear_signs):
+
+                    if len(terms) == 0:
+                        nonlinear_text += r'\boldsymbol{0}'
+                    else:
+
+                        for i, term in enumerate(terms):
+                            sign = signs[i]
+
+                            if i == 0:
+                                if sign == '-':
+                                    pass
+                                else:
+                                    sign = ''
+                            else:
+                                pass
+
+                            nonlinear_text += sign + term._sym_repr
+
+                    nonlinear_text += r'\\'
+
+                nonlinear_text = nonlinear_text[:-len(r'\\')]
+
+                nonlinear_text = r" + \begin{bmatrix}" + nonlinear_text + r"\end{bmatrix}"
+
+        symbolic += nonlinear_text
 
         return symbolic
 
@@ -304,10 +437,10 @@ class MatrixProxy(Frozen):
             plt.show(block=_setting['block'])
         return fig
 
-    def ls(self):
-        """convert self to an abstract linear system."""
-        assert self._lbv._is_empty(), f"Format is illegal, must be like Ax=b, do pr() to check!"
-        assert len(self._l_mvs) == 1, f"Format is illegal, must be like Ax=b, do pr() to check!"
+    def _parse_ls(self):
+        """"""
+        assert self._lbv._is_empty(), f"Format is illegal, must be like Ax=b, do `.pr()` to check!"
+        assert len(self._l_mvs) == 1, f"Format is illegal, must be like Ax=b, do `.pr()` to check!"
         A, x = self._l_mvs[0]
         b = BlockColVector(self._rbv._shape)
         for Mv in self._r_mvs:
@@ -339,7 +472,29 @@ class MatrixProxy(Frozen):
 
         ls = LinearSystem(A, x, b)
 
+        return ls
+
+    def ls(self):
+        """convert self to an abstract linear system."""
+        assert self.linearity == 'linear', f"``mp`` is not linear, try to use ``.nls``."
+        ls = self._parse_ls()
         return MatrixProxyLinearSystem(self, ls, self.bc)
+
+    def nls(self):
+        """convert self to an abstract nonlinear system."""
+        assert self.linearity == 'nonlinear', f"``mp`` is linear, just use ``.ls``."
+        ls = self._parse_ls()
+        mp_ls = MatrixProxyLinearSystem(self, ls, self.bc)
+        len_right_nonlinear_terms = 0
+        for terms in self._right_nonlinear_terms:
+            len_right_nonlinear_terms += len(terms)
+        assert len_right_nonlinear_terms == 0, \
+            f"To initialize a nonlinear system, move all nonlinear terms to the left hand side first."
+        nls = NonLinearSystem(
+            ls,
+            (self._left_nonlinear_terms, self._left_nonlinear_signs),
+        )
+        return MatrixProxyNoneLinearSystem(self, mp_ls, nls)
 
     @property
     def bc(self):
@@ -348,84 +503,3 @@ class MatrixProxy(Frozen):
     def _pr_temporal_advancing(self, *args, **kwargs):
         """"""
         return self._wf._pr_temporal_advancing(*args, **kwargs)
-
-
-if __name__ == '__main__':
-    # python src/wf/mp/rct.py
-    import __init__ as ph
-
-    samples = ph.samples
-
-    oph = samples.pde_canonical_pH(n=3, p=3)[0]
-    a3, b2 = oph.unknowns
-    # oph.pr()
-
-    wf = oph.test_with(oph.unknowns, sym_repr=[r'v^3', r'u^2'])
-    wf = wf.derive.integration_by_parts('1-1')
-    # wf.pr(indexing=True)
-
-    td = wf.td
-    td.set_time_sequence()  # initialize a time sequence
-
-    td.define_abstract_time_instants('k-1', 'k-1/2', 'k')
-    td.differentiate('0-0', 'k-1', 'k')
-    td.average('0-1', b2, ['k-1', 'k'])
-
-    td.differentiate('1-0', 'k-1', 'k')
-    td.average('1-1', a3, ['k-1', 'k'])
-    td.average('1-2', a3, ['k-1/2'])
-    dt = td.time_sequence.make_time_interval('k-1', 'k')
-
-    wf = td()
-
-    # wf.pr()
-
-    wf.unknowns = [
-        a3 @ td.time_sequence['k'],
-        b2 @ td.time_sequence['k'],
-    ]
-
-    wf = wf.derive.split(
-        '0-0', 'f0',
-        [a3 @ td.ts['k'], a3 @ td.ts['k-1']],
-        ['+', '-'],
-        factors=[1/dt, 1/dt],
-    )
-
-    wf = wf.derive.split(
-        '0-2', 'f0',
-        [ph.d(b2 @ td.ts['k-1']), ph.d(b2 @ td.ts['k'])],
-        ['+', '+'],
-        factors=[1/2, 1/2],
-    )
-
-    wf = wf.derive.split(
-        '1-0', 'f0',
-        [b2 @ td.ts['k'], b2 @ td.ts['k-1']],
-        ['+', '-'],
-        factors=[1/dt, 1/dt]
-    )
-
-    wf = wf.derive.split(
-        '1-2', 'f0',
-        [a3 @ td.ts['k-1'], a3 @ td.ts['k']],
-        ['+', '+'],
-        factors=[1/2, 1/2],
-    )
-
-    wf = wf.derive.rearrange(
-        {
-            0: '0, 3 = 2, 1',
-            1: '3, 0 = 2, 1, 4',
-        }
-    )
-
-    ph.space.finite(3)
-
-    mp = wf.mp()
-    mp.parse([
-        a3 @ td.time_sequence['k-1'],
-        b2 @ td.time_sequence['k-1']]
-    )
-    mp.pr()
-    ls = mp.ls()

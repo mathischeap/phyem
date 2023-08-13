@@ -1,18 +1,96 @@
 # -*- coding: utf-8 -*-
-"""
+r"""
 """
 from src.config import _wf_term_default_simple_patterns as _simple_patterns
 from src.spaces.ap import _parse_l2_inner_product_mass_matrix
 from src.spaces.ap import _parse_d_matrix
 from src.spaces.ap import _parse_boundary_dp_vector
+from src.spaces.ap import _parse_astA_x_astB_ip_tC
 from src.spaces.ap import _parse_astA_x_B_ip_tC
 from src.spaces.ap import _parse_A_x_astB_ip_tC
+from src.spaces.ap import _parse_A_x_B_ip_C
 from src.form.parameters import ConstantScalar0Form
+from src.config import _parse_lin_repr  # _parse_lin_repr('TermNonLinearAlgebraicProxy', lin_repr)
+from src.config import _nonlinear_ap_test_form_repr
+from src.algebra.multidimensional_array import AbstractMultiDimensionalArray
+
 from tools.frozen import Frozen
 
 
+class TermNonLinearMDAAlgebraicProxy(Frozen):
+    """It is basically a wrapper of an abstract multidimensional array paired with abstract forms
+    for each dimension.
+    """
+    def __init__(self, abstract_multidimensional_array, *correspondence):
+        """
+
+        Parameters
+        ----------
+        abstract_multidimensional_array
+        correspondence
+        """
+        assert abstract_multidimensional_array.__class__ is AbstractMultiDimensionalArray, \
+            f"I need a {AbstractMultiDimensionalArray}."
+        self._ama = abstract_multidimensional_array
+        self._correspondence = correspondence
+        self._tf = None
+        self._freeze()
+
+    def __repr__(self):
+        """repr"""
+        super_repr = super().__repr__().split('object')[1]
+        return rf"<nonlinear term ap {self._sym_repr}" + super_repr
+
+    @property
+    def _sym_repr(self):
+        if self._tf is None:
+            return self.factor._sym_repr + self._ama._sym_repr
+        else:
+            return (self.factor._sym_repr + self._ama._sym_repr +
+                    _nonlinear_ap_test_form_repr['sym'] + self._tf._sym_repr)
+
+    @property
+    def factor(self):
+        return self._ama._factor
+
+    @property
+    def _lin_repr(self):
+        if self._tf is None:
+            pure_lin_repr = self._ama._pure_lin_repr
+        else:
+            pure_lin_repr = self._ama._pure_lin_repr + _nonlinear_ap_test_form_repr['lin'] + self._tf._pure_lin_repr
+        return _parse_lin_repr('TermNonLinearAlgebraicProxy', pure_lin_repr)[0]
+
+    @property
+    def _pure_lin_repr(self):
+        if self._tf is None:
+            pure_lin_repr = self._ama._pure_lin_repr
+        else:
+            pure_lin_repr = self._ama._pure_lin_repr + _nonlinear_ap_test_form_repr['lin'] + self._tf._pure_lin_repr
+        return _parse_lin_repr('TermNonLinearAlgebraicProxy', pure_lin_repr)[1]
+
+    def set_test_form(self, tf):
+        """"""
+        assert self._tf is None, f"change test form of nonlinear term is dangerous."
+        assert tf in self._correspondence, \
+            f"tf is not in the corresponding axis forms of the abstract_multidimensional_array"
+        self._tf = tf
+
+    def __rmul__(self, other):
+        """"""
+        self._ama = other * self._ama
+        return self
+
+    @property
+    def correspondence(self):
+        """"""
+        return self._correspondence
+
+
 class TermLinearAlgebraicProxy(Frozen):
-    """It is basically a wrapper of a (1, 1) abstract array."""
+    """It is basically a wrapper of an abstract array of shape (1, 1). Since it is for
+    a weak-formulation term, so its shape must be (1,1)
+    ."""
 
     def __init__(self, abstract_array):
         """"""
@@ -64,10 +142,15 @@ class _SimplePatternAPParser(Frozen):
                 return self._parse_reprs__d(test_form=test_form)
             elif sp == _simple_patterns['<tr star | tr >']:
                 return self._parse_reprs_tr_star_star(test_form=test_form)
+            elif sp == _simple_patterns['(*x*,)']:
+                return self._parse_reprs_astA_x_astB_ip_C(test_form=test_form)
             elif sp == _simple_patterns['(*x,)']:
                 return self._parse_reprs_astA_x_B_ip_C(test_form=test_form)
             elif sp == _simple_patterns['(x*,)']:
                 return self._parse_reprs_A_x_astB_ip_C(test_form=test_form)
+            elif sp == _simple_patterns['(x,)']:  # nonlinear term A, B, C all are unknown
+                return self._parse_reprs_A_x_B_ip_C(test_form)
+
             else:
                 raise NotImplementedError(f"not implemented for pattern = {sp}")
 
@@ -93,7 +176,7 @@ class _SimplePatternAPParser(Frozen):
         term = self._wft._factor * TermLinearAlgebraicProxy(term_ap)
 
         sign = '+'
-        return term, sign
+        return term, sign, 'linear'
 
     def _parse_reprs_rt_rt(self, test_form=None):
         """"""
@@ -113,7 +196,7 @@ class _SimplePatternAPParser(Frozen):
             term_ap = v0 @ mass_matrix @ v1
         term = self._wft._factor * TermLinearAlgebraicProxy(term_ap)
         sign = '+'
-        return term, sign
+        return term, sign, 'linear'
 
     def _parse_reprs_d_(self, test_form=None):
         """"""
@@ -137,7 +220,7 @@ class _SimplePatternAPParser(Frozen):
             term_ap = v0 @ dT_matrix @ mass_matrix @ v1
         term = self._wft._factor * TermLinearAlgebraicProxy(term_ap)
         sign = '+'
-        return term, sign
+        return term, sign, 'linear'
 
     def _parse_reprs__d(self, test_form=None):
         """"""
@@ -162,7 +245,7 @@ class _SimplePatternAPParser(Frozen):
             term_ap = v0 @ mass_matrix @ d_matrix @ v1
         term = self._wft._factor * TermLinearAlgebraicProxy(term_ap)
         sign = '+'
-        return term, sign
+        return term, sign, 'linear'
 
     def _parse_reprs_tr_star_star(self, test_form=None):
         """<tr star bf0, tr bf1>"""
@@ -181,7 +264,27 @@ class _SimplePatternAPParser(Frozen):
 
         term = self._wft._factor * TermLinearAlgebraicProxy(term_ap)
         sign = '+'
-        return term, sign
+        return term, sign, 'linear'
+
+    def _parse_reprs_astA_x_astB_ip_C(self, test_form=None):
+        """"""
+        spk = self._wft.___simple_pattern_keys___
+        A, B, C = spk['a'], spk['b'], spk['c']
+
+        if test_form == C:
+
+            cpm = _parse_astA_x_astB_ip_tC(A, B, C)  # a root-array matrix
+
+            v0 = C.ap().T
+            term_ap = v0 @ cpm
+
+        else:
+            raise Exception('TO BE IMPLEMENTED!')  # better not to use NotImplementedError
+
+        term = self._wft._factor * TermLinearAlgebraicProxy(term_ap)
+        sign = '+'
+
+        return term, sign, 'linear'
 
     def _parse_reprs_astA_x_B_ip_C(self, test_form=None):
         """(A x B, C) where A is known! So this term is linear."""
@@ -202,7 +305,7 @@ class _SimplePatternAPParser(Frozen):
         term = self._wft._factor * TermLinearAlgebraicProxy(term_ap)
         sign = '+'
 
-        return term, sign
+        return term, sign, 'linear'
 
     def _parse_reprs_A_x_astB_ip_C(self, test_form=None):
         """(A x B, C) where B is known! So this term is linear."""
@@ -223,4 +326,23 @@ class _SimplePatternAPParser(Frozen):
         term = self._wft._factor * TermLinearAlgebraicProxy(term_ap)
         sign = '+'
 
-        return term, sign
+        return term, sign, 'linear'
+
+    def _parse_reprs_A_x_B_ip_C(self, test_form):
+        """(A x B, C),  this term is nonlinear."""
+        spk = self._wft.___simple_pattern_keys___
+        A, B, C = spk['a'], spk['b'], spk['c']
+
+        assert test_form in (A, B, C)
+
+        multi_dimensional_array = _parse_A_x_B_ip_C(A, B, C)
+
+        term = self._wft._factor * TermNonLinearMDAAlgebraicProxy(
+            multi_dimensional_array,
+            A, B, C
+        )
+        sign = '+'
+
+        term.set_test_form(C)
+
+        return term, sign, 'nonlinear'

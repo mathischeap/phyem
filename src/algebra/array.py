@@ -40,7 +40,7 @@ def _root_array(sym_repr, pure_lin_repr, shape, symmetric=None, transposed=None)
 
 
 class AbstractArray(Frozen):
-    """"""
+    """2D array."""
 
     def __init__(
             self,
@@ -261,11 +261,16 @@ class AbstractArray(Frozen):
 
         if other.__class__.__name__ == "ConstantScalar0Form":
 
-            return AbstractArray(
-                factor=other,   # _cs1
-                components=self._components,
-                transposes=self._transposes,
-            )
+            if self._factor == _cs1:
+
+                return AbstractArray(
+                    factor=other,   # replace the _cs1
+                    components=self._components,
+                    transposes=self._transposes,
+                )
+
+            else:
+                raise NotImplementedError()
 
         else:
             raise NotImplementedError()

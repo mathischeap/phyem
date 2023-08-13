@@ -236,9 +236,8 @@ class _WeakFormulationTerm(Frozen):
             raise NotImplementedError(f"Find no simple pattern for term {self}.")
 
         else:
-            ap, sign = _SimplePatternAPParser(self)(**kwargs)
-
-        return ap, sign
+            ap, sign, linearity = _SimplePatternAPParser(self)(**kwargs)
+            return ap, sign, linearity
 
 
 def duality_pairing(f0, f1, factor=None):

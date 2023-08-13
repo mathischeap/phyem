@@ -4,6 +4,7 @@
 @contact: zhangyi_aero@hotmail.com
 @time: 11/3/2022 6:32 PM
 """
+import numpy as np
 from tools.frozen import Frozen
 
 from tools.functions.time_space.base import TimeSpaceFunctionBase
@@ -16,6 +17,9 @@ from tools.functions.time_space._2d.wrappers.helpers.scalar_mul import t2d_Scala
 
 from tools.numerical.time_space._2d.partial_derivative_as_functions import \
     NumericalPartialDerivativeTxyFunctions
+
+
+from scipy.interpolate import LinearNDInterpolator
 
 
 class T2dVector(TimeSpaceFunctionBase):
@@ -285,49 +289,194 @@ class T2dVector(TimeSpaceFunctionBase):
         else:
             raise NotImplementedError()
 
-    def outward_flux_over(self, boundary_section):
-        """"""
-        from msepy.mesh.boundary_section.main import MsePyBoundarySectionMesh
-        if boundary_section.__class__ is MsePyBoundarySectionMesh:
-
-            return _T2VectorFluxOverMsePyBoundarySection(self, boundary_section)
-
-        else:
-            raise NotImplementedError()
-
-
-class _T2VectorFluxOverMsePyBoundarySection(Frozen):
-    """It represents a scalar in 2d time-space."""
-
-    def __init__(self, v, bs):
-        """"""
-        self._v = v
-        self._bs = bs
-        self._freeze()
-
-    @property
-    def shape(self):
-        """It represents a scalar in 2d time-space."""
-        return (1, )
-
-    @property
-    def ndim(self):
-        """It represents a scalar in 2d time-space."""
-        return 2
-
-    def __call__(self, t, xi):
-        """So we will compute the mapping of each element faces in this boundary section. This
-        gives coordinates (x, y). And then we use (t, x, y) and apply it to the original
-        vector, which leads to vector value (vx, vy), then the flux is  vx*nx + vy*ny
-        where (nx, ny) is the outward unit norm vector of the element face.
+    def _merge_msepy_form_over_boundary(self, msepy_form, boundary_msepy_manifold, sampling_factor=1):
+        """For the boundary of `msepy_form.mesh`, on the `boundary_msepy_manifold` part, we return
+        the reconstruction of `msepy_form`, on else part, we return the evaluation of self!
 
         Parameters
         ----------
-        t
-        xi
+        msepy_form
+        boundary_msepy_manifold
 
         Returns
         -------
 
         """
-        raise NotImplementedError()
+        from msepy.main import base
+        from msepy.manifold.main import MsePyManifold
+        from msepy.mesh.main import MsePyMesh
+        mesh = msepy_form.mesh
+        assert mesh.__class__ is MsePyMesh, f"mesh must be a MsePyMesh!"
+        assert boundary_msepy_manifold.__class__ is MsePyManifold, f"boundary_msepy_manifold must be a msepy manifold!"
+        assert mesh.n == boundary_msepy_manifold.n + 1 == 2, f"boundary_msepy_manifold must be of dimension n-1=1."
+        meshes = base['meshes']
+        boundary_manifold = mesh.abstract.manifold.boundary()
+        form_boundary_mesh = None
+        total_boundary_mesh = None
+        for sym_repr in meshes:
+            msepy_mesh = meshes[sym_repr]
+            if msepy_mesh.manifold is boundary_msepy_manifold:
+                form_boundary_mesh = msepy_mesh
+            else:
+                pass
+            if msepy_mesh.manifold.abstract is boundary_manifold:
+                total_boundary_mesh = msepy_mesh
+            else:
+                pass
+
+        assert form_boundary_mesh is not None, f"we must have found a msepy boundary mesh!"
+        assert form_boundary_mesh.base is mesh, f"boundary_msepy_manifold is not a boundary of the mesh."
+        assert total_boundary_mesh is not None, f"We must have found the total boundary mesh."
+
+        tfs = total_boundary_mesh.faces
+        ffs = form_boundary_mesh.faces
+
+        samples = 350 * sampling_factor
+        num_total_faces = len(tfs)
+        num_nodes = int(samples / num_total_faces)
+        if num_nodes < 5:
+            num_nodes = 5
+        else:
+            pass
+
+        reconstruction_nodes = np.linspace(-1, 1, num_nodes)
+        ones = np.array([1])
+
+        N_nodes = [-ones, reconstruction_nodes]
+        S_nodes = [ones, reconstruction_nodes]
+        W_nodes = [reconstruction_nodes, -ones]
+        E_nodes = [reconstruction_nodes, ones]
+
+        N_elements, S_elements, W_elements, E_elements = list(), list(), list(), list()
+
+        for element, m, n in zip(*ffs._elements_m_n):
+            if m == 0:
+                if n == 0:
+                    N_elements.append(element)
+                elif n == 1:
+                    S_elements.append(element)
+                else:
+                    raise Exception()
+            elif m == 1:
+                if n == 0:
+                    W_elements.append(element)
+                elif n == 1:
+                    E_elements.append(element)
+                else:
+                    raise Exception()
+            else:
+                raise Exception()
+
+        N_RM = msepy_form.reconstruction_matrix(*N_nodes, element_range=N_elements)
+        S_RM = msepy_form.reconstruction_matrix(*S_nodes, element_range=S_elements)
+        W_RM = msepy_form.reconstruction_matrix(*W_nodes, element_range=W_elements)
+        E_RM = msepy_form.reconstruction_matrix(*E_nodes, element_range=E_elements)
+
+        caller = _MergeCaller2dVector(
+            self, msepy_form,
+            [N_RM, S_RM, W_RM, E_RM],
+            ffs, tfs,
+            reconstruction_nodes
+        )
+
+        return self.__class__(caller._vx, caller._vy)
+
+
+class _MergeCaller2dVector(Frozen):
+    """"""
+    def __init__(self, vector, form, rms, form_faces, total_faces, nodes):
+        """"""
+        self._vector = vector
+        self._form = form
+        self._rms = rms
+        self._ffs = form_faces
+        self._tfs = total_faces
+        self._nodes = nodes
+        x_list = list()
+        y_list = list()
+        for i in self._tfs:
+            face = self._tfs[i]
+            x, y = face.ct.mapping(self._nodes)
+            x_list.append(x)
+            y_list.append(y)
+        self._x_list = x_list
+        self._y_list = y_list
+
+        x_interpolate = np.concatenate(self._x_list)
+        y_interpolate = np.concatenate(self._y_list)
+        points = np.array([x_interpolate, y_interpolate]).T
+        self._points = points
+        self._freeze()
+
+    def _vx(self, t, x, y):
+        """"""
+        form_cochain = self._form.cochain[t]
+
+        v = list()
+        for i in self._tfs:
+            face = self._tfs[i]
+            if face in self._ffs:
+                element = face._element
+                m, n = face._m, face._n
+                if m == 0:
+                    if n == 0:
+                        rm = self._rms[0][element]   # N
+                    elif n == 1:
+                        rm = self._rms[1][element]   # S
+                    else:
+                        raise Exception()
+                elif m == 1:
+                    if n == 0:
+                        rm = self._rms[2][element]   # W
+                    elif n == 1:
+                        rm = self._rms[3][element]   # E
+                    else:
+                        raise Exception()
+                else:
+                    raise Exception()
+                value = rm[0] @ form_cochain.local[element]
+            else:
+                value = self._vector._v0_(t, self._x_list[i], self._y_list[i])
+
+            v.append(value)
+
+        v = np.concatenate(v)
+        interpolate = LinearNDInterpolator(self._points, v)
+        vx = interpolate(x, y)
+        return vx
+
+    def _vy(self, t, x, y):
+        """"""
+        form_cochain = self._form.cochain[t]
+
+        v = list()
+        for i in self._tfs:
+            face = self._tfs[i]
+            if face in self._ffs:
+                element = face._element
+                m, n = face._m, face._n
+                if m == 0:
+                    if n == 0:
+                        rm = self._rms[0][element]   # N
+                    elif n == 1:
+                        rm = self._rms[1][element]   # S
+                    else:
+                        raise Exception()
+                elif m == 1:
+                    if n == 0:
+                        rm = self._rms[2][element]   # W
+                    elif n == 1:
+                        rm = self._rms[3][element]   # E
+                    else:
+                        raise Exception()
+                else:
+                    raise Exception()
+                value = rm[1] @ form_cochain.local[element]
+            else:
+                value = self._vector._v1_(t, self._x_list[i], self._y_list[i])
+
+            v.append(value)
+
+        v = np.concatenate(v)
+        interpolate = LinearNDInterpolator(self._points, v)
+        return interpolate(x, y)

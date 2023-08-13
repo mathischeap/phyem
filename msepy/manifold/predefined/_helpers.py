@@ -1,7 +1,5 @@
 # -*- coding: utf-8 -*-
 """
-@author: Yi Zhang
-@contact: zhangyi_aero@hotmail.com
 """
 from tools.frozen import Frozen
 from numpy import ones_like

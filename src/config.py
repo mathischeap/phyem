@@ -159,9 +159,11 @@ def _clear_all():
     Make sure that, when we add new global cache, put it here.
     """
     from src.algebra.array import _global_root_arrays
+    from src.algebra.multidimensional_array import _global_md_arrays
     from src.form.main import _global_forms
     from src.form.main import _global_root_forms_lin_dict
     _clear_a_dict(_global_root_arrays)
+    _clear_a_dict(_global_md_arrays)
     _clear_a_dict(_global_forms)
     _clear_a_dict(_global_root_forms_lin_dict)
     from src.form.parameters import _global_root_constant_scalars
@@ -201,7 +203,7 @@ def get_embedding_space_dim():
     return _global_variables['embedding_space_dim']
 
 
-# lib setting config
+# lib setting config ...............
 _abstract_time_sequence_default_lin_repr = 'Ts'
 _manifold_default_lin_repr = 'Manifold'
 _mesh_default_lin_repr = 'Mesh'
@@ -217,15 +219,19 @@ _global_lin_repr_setting = {
     'abstract_time_interval': [r'\texttt{', r'}'],   # do not use `textsc`.
     'abstract_time_instant': [r'\textsl{', r'}'],
     'array': [r'\textbf{', r'}'],
+    'multidimensional_array': [r'\textlf{', r'}'],
+    'TermNonLinearAlgebraicProxy': [r'\textmd{', r'}'],
 }
 
 
-def _parse_lin_repr(obj, lin_repr):
+def _parse_lin_repr(obj, pure_lin_repr):
     """"""
-    assert isinstance(lin_repr, str) and len(lin_repr) > 0, f"linguistic_representation must be str of length > 0."
-    assert all([_ not in r"{$\}" for _ in lin_repr]), f"lin_repr={lin_repr} illegal, cannot contain" + r"'{\}'."
+    assert isinstance(pure_lin_repr, str) and len(pure_lin_repr) > 0, \
+        f"linguistic_representation must be str of length > 0."
+    assert all([_ not in r"{$\}" for _ in pure_lin_repr]), (
+            f"pure_lin_repr={pure_lin_repr} illegal, cannot contain" + r"'{\}'.")
     start, end = _global_lin_repr_setting[obj]
-    return start + lin_repr + end, lin_repr
+    return start + pure_lin_repr + end, pure_lin_repr
 
 
 def _parse_type_and_pure_lin_repr(lin_repr):
@@ -321,8 +327,16 @@ _wf_term_default_simple_patterns = {   # use only str to represent a simple patt
     '(,d)': '(root-sf, d root-sf)',
     '<tr star | tr >': '<tr star root-sf | trace root-sf>',
 
+    '(*x*,)': '(known-root-sf cross-product known-root-sf, root-sf)',   # vector
     '(*x,)': '(known-root-sf cross-product root-sf, root-sf)',
     '(x*,)': '(root-sf cross-product known-root-sf, root-sf)',
+
+    '(x,)': '(root-sf cross-product root-sf, root-sf)',   # nonlinear term.
 }
 
 _pde_test_form_lin_repr = 'th-test-form'
+
+_nonlinear_ap_test_form_repr = {
+    'sym': r'\wr',
+    'lin': ' >=~=< ',
+}

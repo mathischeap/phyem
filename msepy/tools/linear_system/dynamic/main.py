@@ -21,12 +21,13 @@ from src.form.parameters import constant_scalar, ConstantScalar0Form
 from src.form.parameters import _factor_parser
 from msepy.tools.linear_system.dynamic.array_parser import msepy_root_array_parser
 
-from msepy.tools.linear_system.static.main import MsePyStaticLinearSystem
+from msepy.tools.linear_system.static.local import MsePyStaticLocalLinearSystem
 
 from msepy.tools.vector.static.local import MsePyStaticLocalVector
 from msepy.form.cochain.vector.static import MsePyRootFormStaticCochainVector
 
 from msepy.tools.linear_system.dynamic.bc import MsePyDynamicLinearSystemBoundaryCondition
+from src.wf.mp.linear_system import MatrixProxyLinearSystem
 
 _cs1 = constant_scalar(1)
 
@@ -36,6 +37,7 @@ class MsePyDynamicLinearSystem(Frozen):
 
     def __init__(self, mp_ls, msepy_base):
         """"""
+        assert mp_ls.__class__ is MatrixProxyLinearSystem, f"I need a {MatrixProxyLinearSystem}."
         self._mp_ls = mp_ls
         self._set_bc(mp_ls._bc, msepy_base)
         self._A = None
@@ -71,6 +73,41 @@ class MsePyDynamicLinearSystem(Frozen):
 
     def __call__(self, *args, **kwargs):
         """"""
+        (
+            static_A, static_x, static_b,
+            A_texts, x_texts, b_texts,
+            A_time_indicating, x_time_indicating, b_time_indicating,
+            _str_args,
+         ) = self._get_raw_Axb(*args, **kwargs)
+        # Below, the boundary conditions that have not yet taken effect take effect.
+        static_A, static_x, static_b = self._incorporate_essential_bc_etc(
+            static_A, static_x, static_b
+        )
+
+        # note that, we must handle all bc before sending A, x, b to local static linear system; check this below.
+        if self._bc is None or len(self._bc) == 0:
+            pass
+        else:
+            # These remaining bc will change static_A, static_x or static_b.
+
+            for boundary_section in self._bc:
+                bcs = self._bc[boundary_section]
+                for j, bc in enumerate(bcs):
+                    number_application = bc._num_application
+
+                    assert number_application == 1, f"#{j}th bc={bc} is not handled yet"
+                    # this particular does not take effect yet
+
+        # static_A, static_x and static_b are used to make a static linear system
+        return MsePyStaticLocalLinearSystem(
+            static_A, static_x, static_b,
+            _pr_texts=[A_texts, x_texts, b_texts],
+            _time_indicating_text=[A_time_indicating, x_time_indicating, b_time_indicating],
+            _str_args=_str_args,
+        )
+
+    def _get_raw_Axb(self, *args, **kwargs):
+        """Get raw Ax=b including natural bc etc."""
         _str_args = ''
         if len(args) == 0 and len(kwargs) == 0:
             pass
@@ -125,7 +162,7 @@ class MsePyDynamicLinearSystem(Frozen):
             x_time_indicating[j] = time_indicating
 
         static_b = [None for _ in range(num_rows)]
-        b_texts = ['' for _ in range(num_rows)]  # do not change '' into something else
+        b_texts = ['' for _ in range(num_rows)]            # do not change '' into something else
         b_time_indicating = ['' for _ in range(num_rows)]  # do not change '' into something else
         for i in range(num_rows):
 
@@ -133,6 +170,7 @@ class MsePyDynamicLinearSystem(Frozen):
 
             if b_i is None:
                 pass
+
             else:
                 static_b_i, text, time_indicating = b_i(*args, **kwargs)
 
@@ -143,7 +181,7 @@ class MsePyDynamicLinearSystem(Frozen):
                 b_time_indicating[i] = time_indicating
 
         # ----- now we pre-define a static ls to check everything is ok and also to retrieve the gms.
-        predefined_sls = MsePyStaticLinearSystem(static_A, static_x, static_b)
+        predefined_sls = MsePyStaticLocalLinearSystem(static_A, static_x, static_b)
         row_gms = predefined_sls._row_gms
         col_gms = predefined_sls._col_gms
 
@@ -165,8 +203,15 @@ class MsePyDynamicLinearSystem(Frozen):
             else:
                 pass
 
-        # Below, the boundary conditions that have not yet taken effect take effect.
+        return (static_A, static_x, static_b,
+                A_texts, x_texts, b_texts,
+                A_time_indicating, x_time_indicating, b_time_indicating,
+                _str_args)
 
+    def _incorporate_essential_bc_etc(
+            self, static_A, static_x, static_b
+    ):
+        """"""
         if self._bc is None or len(self._bc) == 0:
             pass
         else:
@@ -176,6 +221,7 @@ class MsePyDynamicLinearSystem(Frozen):
                 bcs = self._bc[boundary_section]
                 for j, bc in enumerate(bcs):
                     number_application = bc._num_application
+
                     if number_application == 0:  # this particular not take effect yet
 
                         particular_bc = self._bc[boundary_section][j]
@@ -187,13 +233,7 @@ class MsePyDynamicLinearSystem(Frozen):
                     else:
                         pass
 
-        # static_A, static_x and static_b are used to make a static linear system
-        return MsePyStaticLinearSystem(
-            static_A, static_x, static_b,
-            _pr_texts=[A_texts, x_texts, b_texts],
-            _time_indicating_text=[A_time_indicating, x_time_indicating, b_time_indicating],
-            _str_args=_str_args,
-        )
+        return static_A, static_x, static_b
 
     def _parse_matrix_block(self, A):
         """"""
@@ -381,15 +421,32 @@ class DynamicBlockEntry(Frozen):
                     pass
                 else:  # indicator must be callable
                     _time = indicator(*args, **kwargs)
-                    str_time = round(_time, 12)
-                    if str_time % 1 == 0:
-                        _str = str(int(str_time))
+
+                    if isinstance(_time, (int, float)):
+                        # this term is determined upon a single time instant.
+                        str_time = round(_time, 12)
+                        if str_time % 1 == 0:
+                            _str = str(int(str_time))
+                        else:
+                            str_time = round(str_time, 6)
+                            _str = str(str_time)
+                    elif isinstance(_time, (list, tuple)):
+                        _str = list()
+                        for _t_ in _time:
+                            if _t_ is None:
+                                _str.append('None')
+                            else:
+                                str_time = round(_t_, 12)
+                                if str_time % 1 == 0:
+                                    _str.append(str(int(str_time)))
+                                else:
+                                    str_time = round(str_time, 6)
+                                    _str.append(str(str_time))
+                        _str = r'\left<' + ','.join(_str) + r'\right>'
                     else:
-                        str_time = round(str_time, 6)
-                        _str = str(str_time)
-                    time_indicating_i.append(
-                        _str
-                    )
+                        raise NotImplementedError()
+
+                    time_indicating_i.append(_str)
 
             assert isinstance(factor, (int, float)), f"static factor={factor} is wrong, must be a real number."
 

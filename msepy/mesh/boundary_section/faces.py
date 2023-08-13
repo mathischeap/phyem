@@ -15,8 +15,9 @@ class MsePyBoundarySectionFaces(Frozen):
     def __init__(self, bs):
         """"""
         self._bs = bs
+        self._bm = bs.base  # base mesh
         self._initialize_elements()
-        self._faces = dict()
+        self._local_faces = None
         self._freeze()
 
     def _initialize_elements(self):
@@ -75,13 +76,35 @@ class MsePyBoundarySectionFaces(Frozen):
         """len."""
         return self._shape
 
-    def __contains__(self, item):
-        """contains. The local elements are indexed 0, 1, 2, 3, 4, ..."""
-        if isinstance(item, (int, float)) and (0 <= item < len(self)) and item % 1 == 0:
-            return True
+    def __contains__(self, i_or_face):
+        """If local face indexed `i` is contained? The local faces are indexed 0, 1, 2, 3, 4, ..."""
+        if isinstance(i_or_face, (int, float)):
+            i = i_or_face
+            if (0 <= i < len(self)) and i % 1 == 0:
+                return True
+            else:
+                return False
+
+        elif i_or_face.__class__ is _MsePyBoundarySectionFace:
+            face = i_or_face
+            return face in self._collect_local_faces()
 
         else:
             return False
+
+    def _collect_local_faces(self):
+        """Collect all local faces into a list. Faces are sorted according to their local
+        indices (0, 1, 2, ...).
+        """
+        if self._local_faces is None:
+            self._local_faces = list()
+            for i in self:
+                self._local_faces.append(
+                    self[i]
+                )
+        else:
+            pass
+        return self._local_faces
 
     def __iter__(self):
         """"""
@@ -90,16 +113,18 @@ class MsePyBoundarySectionFaces(Frozen):
 
     def __getitem__(self, i):
         """`i`th local element (element face of the base mesh)."""
-        if i in self._faces:
-            face = self._faces[i]
+        element, m, n = self._elements_m_n[:, i]
+        key = (element, m, n)
+        if key in self._bm._face_dict:
+            face = self._bm._face_dict[key]
 
         else:
             assert i in self, f"i={i} is not a valid face number, must be in range(0, {len(self)})."
             element, m, n = self._elements_m_n[:, i]
             face = _MsePyBoundarySectionFace(
-                i, self._bs, element, m, n
+                self._bm, element, m, n
             )
-            self._faces[i] = face
+            self._bm._face_dict[key] = face
 
         return face
 
@@ -107,10 +132,9 @@ class MsePyBoundarySectionFaces(Frozen):
 class _MsePyBoundarySectionFace(Frozen):
     """MsePyBoundarySectionFace"""
 
-    def __init__(self, i, bs, element, m, n):
+    def __init__(self, bm, element, m, n):
         """on the `n`(0, 1) side along `m` (0, 1, ...) axis of the element `#element`."""
-        self._i = i
-        self._bs = bs
+        self._bm = bm   # base mesh
         self._element = element
         self._m = m
         self._n = n
@@ -121,14 +145,14 @@ class _MsePyBoundarySectionFace(Frozen):
     def ct(self):
         """"""
         if self._ct is None:
-            self._ct = self._bs.base.elements[self._element].ct.face(self._m, self._n)
+            self._ct = self._bm.elements[self._element].ct.face(self._m, self._n)
         return self._ct
 
     def __repr__(self):
         """"""
         side = '+' if self._n == 1 else '-'
-        self_repr = rf"<Face #{self._i} @ {side}side of {self._m}-axis of mesh element {self._element} on "
-        bs_repr = self._bs.__repr__()
+        self_repr = rf"<Face @ {side}side of {self._m}-axis of mesh element {self._element} of "
+        bs_repr = self._bm.__repr__()
         return self_repr + bs_repr + '>'
 
     def find_corresponding_local_dofs_of(self, rf):
@@ -140,7 +164,7 @@ class _MsePyBoundarySectionFace(Frozen):
         """A signature indicating the metric of the face. If it is None, then it is a unique face.
         Otherwise, all faces with the same signatures are of the same metric.
         """
-        element_metric_signature = self._bs.base.elements[self._element].metric_signature
+        element_metric_signature = self._bm.elements[self._element].metric_signature
         if element_metric_signature is None:
             return None  # the element is unique, thus this face is unique as well.
         else:
@@ -149,7 +173,7 @@ class _MsePyBoundarySectionFace(Frozen):
 
     def is_orthogonal(self):
         """Whether this face is perpendicular to coo axis."""
-        element_metric_signature = self._bs.base.elements[self._element].metric_signature
+        element_metric_signature = self._bm.elements[self._element].metric_signature
         if element_metric_signature is None:  # when this face is unique, it is not orthogonal of course.
             return False
         else:
@@ -158,7 +182,7 @@ class _MsePyBoundarySectionFace(Frozen):
     @property
     def length(self):
         """"""
-        if self._bs.n == 1:
+        if self._bm.n == 2:
 
             if self.is_orthogonal():
                 nodes = np.array([-1, 1])

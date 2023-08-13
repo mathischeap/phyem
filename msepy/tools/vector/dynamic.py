@@ -2,6 +2,7 @@
 """
 """
 from tools.frozen import Frozen
+from msepy.tools.vector.static.local import MsePyStaticLocalVector
 
 
 class MsePyDynamicLocalVector(Frozen):
@@ -17,4 +18,7 @@ class MsePyDynamicLocalVector(Frozen):
         self._freeze()
 
     def __call__(self, *args, **kwargs):
-        return self._vec_caller(*args, **kwargs)
+        static = self._vec_caller(*args, **kwargs)
+        # it should be a static local vector or its subclass
+        assert isinstance(static, MsePyStaticLocalVector) or issubclass(static, MsePyStaticLocalVector)
+        return static

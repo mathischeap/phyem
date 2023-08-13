@@ -1,7 +1,5 @@
 # -*- coding: utf-8 -*-
-"""
-phyem@RAM-EEMCS-UT
-Yi Zhang
+r"""
 """
 
 from tools.frozen import Frozen

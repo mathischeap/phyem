@@ -16,18 +16,19 @@ from msepy.tools.matrix.static.bmat import bmat
 from msepy.tools.vector.static.concatenate import concatenate
 
 
-class MsePyStaticLinearSystem(Frozen):
+class MsePyStaticLocalLinearSystem(Frozen):
     """"""
 
     def __init__(self, A, x, b, _pr_texts=None, _time_indicating_text=None, _str_args=''):
+        """Note that I am not receiving any BC. all BC must already be included in A, x, b."""
         row_shape = len(A)
         col_shape = len(A[0])
         assert len(x) == col_shape and len(b) == row_shape, "A, x, b shape dis-match."
         self._shape = (row_shape, col_shape)
         self._parse_gathering_matrices(A, x, b)
-        self._A = _AAA(self, A)
-        self._x = _Xxx(self, x)
-        self._b = _Bbb(self, b)
+        self._A = _AAA(self, A)   # A is a 2d list of MsePyStaticLocalMatrix
+        self._x = _Xxx(self, x)   # x ia a list of MsePyStaticLocalVector (or subclass)
+        self._b = _Bbb(self, b)   # b ia a list of MsePyStaticLocalVector (or subclass)
         self._customize = None
         self._pr_texts = _pr_texts
         self._time_indicating_text = _time_indicating_text

@@ -1,8 +1,5 @@
 # -*- coding: utf-8 -*-
-"""
-phyem@RAM-EEMCS-UT
-Yi Zhang
-
+r"""
 Export to corresponding vtk files.
 """
 import numpy as np
