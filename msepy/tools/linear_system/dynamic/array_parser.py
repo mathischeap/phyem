@@ -1,8 +1,5 @@
 # -*- coding: utf-8 -*-
 """
-pH-lib@RAM-EEMCS-UT
-Yi Zhang
-Created at 5:21 PM on 5/10/2023
 """
 from tools.frozen import Frozen
 from src.spaces.main import _sep

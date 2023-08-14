@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-"""
+r"""
 """
 from tools.frozen import Frozen
 from msepy.tools.matrix.static.local import MsePyStaticLocalMatrix

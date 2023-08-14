@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-"""
+r"""
 """
 from tools.frozen import Frozen
 from scipy.sparse import csr_matrix, csc_matrix
@@ -66,7 +66,7 @@ class MsePyStaticLocalMatrixAssemble(Frozen):
             COL.extend(col)
             DAT.extend(data)
 
-            # if len(DAT) > 1e7:  # every 10 million data, we make it into sparse matrix.
+            # if len(DAT) > 1e7:  # every 10 million data, we make it into a sparse matrix.
             #     _ = SPA_MATRIX((DAT, (ROW, COL)), shape=(dep, wid))  # we make it into sparse
             #
             #     del ROW, COL, DAT

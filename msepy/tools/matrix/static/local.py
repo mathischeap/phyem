@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
-"""
-pH-lib@RAM-EEMCS-UT
+r"""
 """
 import matplotlib.pyplot as plt
 from scipy.sparse import issparse, isspmatrix_csr, isspmatrix_csc, csr_matrix

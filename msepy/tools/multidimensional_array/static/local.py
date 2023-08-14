@@ -1,7 +1,5 @@
 # -*- coding: utf-8 -*-
 r"""
-pH-lib@RAM-EEMCS-UT
-Yi Zhang
 """
 import numpy as np
 
@@ -11,7 +9,7 @@ from tools.frozen import Frozen
 class MsePyStaticLocalMDA(Frozen):
     """"""
 
-    def __init__(self, local_static_MDA, particular_correspondence):
+    def __init__(self, local_static_MDA, particular_correspondence, modes=None):
         """
 
         Parameters
@@ -32,6 +30,13 @@ class MsePyStaticLocalMDA(Frozen):
             raise NotImplementedError()
         self._correspondence = particular_correspondence
 
+        # modes will affect the way of computing derivatives.
+        assert modes in (
+            'homogeneous',  # different axes represent different variables, and connected by only multiplication.
+                            # for example, a * b * c.
+        ), f"modes = {modes} wrong, must be among {('homogeneous', )}."
+        self._modes = modes
+
         self._freeze()
 
     def __getitem__(self, e):
@@ -48,10 +53,9 @@ class MsePyStaticLocalMDA(Frozen):
         """other * self"""
         if isinstance(other, (int, float)):
             # c * self; c is a number
-
             helper = _RmulFactorHelper(self._data, other)
             # noinspection PyTypeChecker
-            return self.__class__(helper, self._correspondence)
+            return MsePyStaticLocalMDA(helper, self._correspondence, modes=self._modes)
 
         else:
             raise Exception()

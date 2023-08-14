@@ -1,7 +1,5 @@
 # -*- coding: utf-8 -*-
 r"""
-pH-lib@RAM-EEMCS-UT
-Yi Zhang
 """
 import numpy as np
 from tools.frozen import Frozen
@@ -12,7 +10,7 @@ from msepy.form.main import MsePyRootForm
 class MsePyDynamicLocalMDA(Frozen):
     """"""
 
-    def __init__(self, data, *correspondence):
+    def __init__(self, data, *correspondence, modes=None):
         """"""
         if data.__class__ is dict:
             for i in data:
@@ -26,6 +24,18 @@ class MsePyDynamicLocalMDA(Frozen):
         for form in correspondence:
             assert form.__class__ is MsePyRootForm, f"corresponding forms must be {MsePyRootForm}."
 
+        if modes is None:
+            modes = 'homogeneous'
+        else:
+            pass
+
+        # modes will affect the way of computing derivatives.
+        assert modes in (
+            'homogeneous',  # different axes represent different variables, and connected by only multiplication.
+            # for example, a * b * c.
+        )
+
+        self._modes = modes
         self._correspondence = correspondence
         self._ndim = len(correspondence)
         self._tf = None
@@ -45,7 +55,7 @@ class MsePyDynamicLocalMDA(Frozen):
                     particular_forms.append(
                         generic_form[times[i]]  # a form copy at a particular time instant.
                     )
-            static = MsePyStaticLocalMDA(self._data, particular_forms)
+            static = MsePyStaticLocalMDA(self._data, particular_forms, modes=self._modes)
         else:
             raise NotImplementedError(f"data type = {self._dtype} is wrong!")
 
