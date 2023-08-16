@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 """
 """
-
 from tools.frozen import Frozen
 from src.config import _mesh_default_sym_repr
 from src.config import _check_sym_repr

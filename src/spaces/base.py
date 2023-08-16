@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 """
 """
-
 from tools.frozen import Frozen
 from src.config import get_embedding_space_dim
 from src.form.main import Form
@@ -24,7 +23,7 @@ class SpaceBase(Frozen):
             orientation = 'inner'
         elif orientation == 'o':
             orientation = 'outer'
-        elif orientation in (None, 'unknown'):
+        elif orientation in (None, 'unknown', 'None'):
             orientation = 'unknown'
         else:
             pass
@@ -48,6 +47,15 @@ class SpaceBase(Frozen):
     @property
     def orientation(self):
         return self._orientation
+
+    @property
+    def opposite_orientation(self):
+        if self.orientation == 'inner':
+            return 'outer'
+        elif self.orientation == 'outer':
+            return 'inner'
+        elif self.orientation == 'unknown':
+            return 'unknown'
 
     @property
     def n(self):

@@ -17,8 +17,6 @@ from src.config import _parse_lin_repr, _abstract_array_factor_sep, _abstract_ar
 from src.config import _transpose_text
 from src.form.parameters import constant_scalar
 _cs1 = constant_scalar(1)
-
-
 _global_root_arrays = dict()  # using pure_lin_repr as cache keys
 
 

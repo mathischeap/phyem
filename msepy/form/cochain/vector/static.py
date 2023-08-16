@@ -1,10 +1,7 @@
 # -*- coding: utf-8 -*-
 r"""
-pH-lib@RAM-EEMCS-UT
-Yi Zhang
 """
 import numpy as np
-
 from msepy.tools.vector.static.local import MsePyStaticLocalVector
 
 

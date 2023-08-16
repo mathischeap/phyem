@@ -1,9 +1,6 @@
 # -*- coding: utf-8 -*-
+r"""
 """
-pH-lib@RAM-EEMCS-UT
-created at: 3/16/2023 5:29 PM
-"""
-
 from tools.frozen import Frozen
 import numpy as np
 from msepy.tools.vector.static.local import MsePyStaticLocalVector

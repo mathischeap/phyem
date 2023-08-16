@@ -1,9 +1,6 @@
 # -*- coding: utf-8 -*-
+r"""
 """
-pH-lib@RAM-EEMCS-UT
-Yi Zhang
-"""
-
 from tools.frozen import Frozen
 from msepy.form.cochain.time_instant import _CochainAtOneTime
 from msepy.form.cochain.vector.static import MsePyRootFormStaticCochainVector

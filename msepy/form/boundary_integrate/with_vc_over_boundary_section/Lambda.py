@@ -1,8 +1,5 @@
 # -*- coding: utf-8 -*-
-"""
-pH-lib@RAM-EEMCS-UT
-Yi Zhang
-Created at 5:28 PM on 7/14/2023
+r"""
 """
 import numpy as np
 from tools.frozen import Frozen
@@ -56,7 +53,6 @@ class BoundaryIntegrateVCBSLambda(Frozen):
         if vc.shape == (2, ) and vc.ndim == 2:  # we received a vector.
             # this means we do not pre-compute the flux of the vector (which then becomes a scalar)
             # over the boundary section
-
             quad_degree = [_ + 1 for _ in self._f.space[self._f._degree].p]
             quad_degree = max(quad_degree)
             nodes, weights = Quadrature(quad_degree, category='Lobatto').quad  # must use Lobatto
@@ -149,6 +145,7 @@ class BoundaryIntegrateVCBSLambda(Frozen):
         quad_degree = max(quad_degree)
         nodes, weights = Quadrature(quad_degree, category='Lobatto').quad  # must use Lobatto
         outward_unit_normal_vector = msepy_boundary_section.ct.outward_unit_normal_vector(nodes)
+
         N_elements, S_elements, W_elements, E_elements = list(), list(), list(), list()
         for element, m, n in zip(*msepy_boundary_section.faces._elements_m_n):
             if m == 0:

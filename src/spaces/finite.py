@@ -43,7 +43,7 @@ class SpaceFiniteSetting(Frozen):
     #     """return the forms in the particular finite dimensional space of this a certain degree"""
     #     assert degree in self._degrees_form_dict, f"I have no finite dimensional space of degree {degree}."
     #     return self._degrees_form_dict[degree]
-
+    #
     # def new(self, degree):
     #     """define a new finite dimensional space of `degree`.
     #

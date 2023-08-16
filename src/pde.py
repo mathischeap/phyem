@@ -1,11 +1,6 @@
 # -*- coding: utf-8 -*-
+r"""
 """
-"""
-import sys
-
-if './' not in sys.path:
-    sys.path.append('./')
-
 from tools.frozen import Frozen
 from src.config import _global_lin_repr_setting, _non_root_lin_sep
 from src.form.main import Form, _global_root_forms_lin_dict
@@ -706,47 +701,3 @@ class PartialDifferentialEquations(Frozen):
         if self._bc is None:
             self._bc = BoundaryCondition(self._mesh)
         return self._bc
-
-
-if __name__ == '__main__':
-    # python src/pde.py
-    import __init__ as ph
-    # import phlib as ph
-    ph.config.set_embedding_space_dim(3)
-    manifold = ph.manifold(3)
-    mesh = ph.mesh(manifold)
-
-    ph.space.set_mesh(mesh)
-    O0 = ph.space.new('Lambda', 0)
-    O1 = ph.space.new('Lambda', 1)
-    O2 = ph.space.new('Lambda', 2)
-    O3 = ph.space.new('Lambda', 3)
-
-    w = O1.make_form(r'\omega^1', "vorticity1")
-    u = O2.make_form(r'u^2', r"velocity2")
-    f = O2.make_form(r'f^2', r"body-force")
-    P = O3.make_form(r'P^3', r"total-pressure3")
-
-    # ph.list_spaces()
-    # ph.list_forms(globals())
-
-    wXu = w.wedge(ph.Hodge(u))
-
-    dsP = ph.codifferential(P)
-    dsu = ph.codifferential(u)
-    du = ph.d(u)
-
-    du_dt = ph.time_derivative(u)
-
-    ph.list_forms(globals())
-    # du_dt.print_representations()
-
-    exp = [
-        'du_dt + wXu - dsP = f',
-        'w = dsu',
-        'du = 0',
-    ]
-
-    pde = ph.pde(exp, locals())
-    pde.unknowns = [u, w, P]
-    pde.pr()

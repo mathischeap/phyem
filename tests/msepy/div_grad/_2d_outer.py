@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 """
- python tests/msepy/div_grad/_2d_outer.py
+python tests/msepy/div_grad/_2d_outer.py
 """
 
 import sys

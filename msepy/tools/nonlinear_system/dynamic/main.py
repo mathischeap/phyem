@@ -55,7 +55,7 @@ class MsePyDynamicNonLinearSystem(Frozen):
         parsed_signs = dict()
         time_indicators = dict()
         texts = dict()
-        all_terms, all_signs = self._nls._n_terms, self._nls._n_signs
+        all_terms, all_signs = self._nls._n_terms, self._nls._n_signs  # they are list of list, not dict!
         for i, terms in enumerate(all_terms):
             if len(terms) > 0:
                 nonlinear_factor[i] = list()

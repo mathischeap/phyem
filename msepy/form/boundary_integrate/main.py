@@ -1,8 +1,5 @@
 # -*- coding: utf-8 -*-
-"""
-pH-lib@RAM-EEMCS-UT
-Yi Zhang
-Created at 5:04 PM on 7/14/2023
+r"""
 """
 from tools.frozen import Frozen
 from msepy.mesh.boundary_section.main import MsePyBoundarySectionMesh
