@@ -124,7 +124,7 @@ class MsePyStaticLocalMatrix(Frozen):
         else:
             data = self._get_meta_data_from_cache(i)
 
-        assert isspmatrix_csc(data) or isspmatrix_csr(data), f"data for element #i is not sparse."
+        assert isspmatrix_csc(data) or isspmatrix_csr(data), f"data={data.__class__} for element #{i} is not sparse."
 
         return data
 
@@ -264,8 +264,18 @@ class MsePyStaticLocalMatrix(Frozen):
 
             return MsePyStaticLocalVector(_matmul, self._gm0_row)
 
+        elif other.__class__ is np.ndarray and other.ndim == 2:
+            # this 2d array saves as a local cochain.
+            assert self.num_elements == other.shape[0], f"2d array axis[0] length must be equal to element amount."
+            assert self._gm1_col.num_local_dofs == other.shape[1], \
+                f"2d array axis[1] length must be equal to col local dofs."
+
+            vec = MsePyStaticLocalVector(other, self._gm1_col)
+            # noinspection PyTypeChecker
+            return self @ vec
+
         else:
-            raise NotImplementedError(other)
+            raise NotImplementedError(f"{other.__class__}.")
 
     def __rmul__(self, other):
         """other * self"""
@@ -522,7 +532,7 @@ class _MsePyStaticLocalMatrixCustomize(Frozen):
             raise NotImplementedError()
 
     def identify_row(self, i):
-        """M[i,:] = 0 and M[i, i] = 1
+        """identify global row #i: M[i,:] = 0 and M[i, i] = 1, where M means the assembled matrix.
 
         Parameters
         ----------

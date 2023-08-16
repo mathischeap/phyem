@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-"""
+r"""
 """
 from tools.frozen import Frozen
 from msepy.form.cochain.vector.static import MsePyRootFormStaticCochainVector
@@ -14,6 +14,10 @@ class MsePyRootFormStaticCopy(Frozen):
         self._f = rf
         self._t = t
         self._freeze()
+
+    @property
+    def mesh(self):
+        return self._f.mesh
 
     def __repr__(self):
         """repr"""
@@ -65,3 +69,12 @@ class MsePyRootFormStaticCopy(Frozen):
     def coboundary(self):
         """coboundary"""
         return self._f.coboundary[self._t]
+
+    def __eq__(self, other):
+        """"""
+        if other.__class__ is self.__class__:
+
+            return self._t == other._t and self._f == other._f
+
+        else:
+            return False

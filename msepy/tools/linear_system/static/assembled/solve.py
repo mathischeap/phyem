@@ -57,7 +57,11 @@ class MsePyStaticLinearSystemAssembledSolve(Frozen):
     @x0.setter
     def x0(self, _x0):
         """"""
-        if all([_.__class__ is MsePyRootForm for _ in _x0]):   # providing all MsePyRootForm
+        if _x0 == 0:
+
+            self._x0 = np.zeros(self._als.b._gm.num_dofs)
+
+        elif all([_.__class__ is MsePyRootForm for _ in _x0]):   # providing all MsePyRootForm
             # use the newest cochains.
             cochain = list()
 
@@ -82,6 +86,7 @@ class MsePyStaticLinearSystemAssembledSolve(Frozen):
             raise NotImplementedError()
 
         assert self._x0.shape == (self._als.b._gm.num_dofs, ), f"x0 shape wrong!"
+        assert self._x0.shape == (self._A.shape[1], ), f"x0 shape wrong!"
 
     @property
     def message(self):

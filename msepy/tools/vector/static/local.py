@@ -17,6 +17,11 @@ class MsePyStaticLocalVector(Frozen):
         self._assemble = None
         self._freeze()
 
+    def __repr__(self):
+        """"""
+        super_repr = super().__repr__().split('object')[1]
+        return rf"MsePy Static Local Vector: {self._dtype}" + super_repr
+
     @property
     def data(self):
         """Let the data ready as a 2-d array.
@@ -27,6 +32,7 @@ class MsePyStaticLocalVector(Frozen):
         """
         if len(self._adjust) == len(self._customize) == 0:
             if self._dtype == 'callable':
+                # collect all callable data here
                 raise NotImplementedError(f"callable data is not ready")
 
             elif self._dtype == 'None':
@@ -44,7 +50,7 @@ class MsePyStaticLocalVector(Frozen):
         # _2d_data: 2d numpy array or None.
         if _data is None:
             self._dtype = 'None'
-            self._data = _data
+            self._data = None
 
         elif isinstance(_data, (int, float)):
             self._dtype = "homogeneous"
@@ -260,7 +266,7 @@ class MsePyStaticLocalVectorCustomize(Frozen):
         return self._customizations[i]
 
     def set_value(self, i, value):
-        """Set v[i] to be `value`.
+        """Set global value v[i] to be `value`.
 
         Parameters
         ----------

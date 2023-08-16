@@ -10,9 +10,9 @@ from msepy.tools.matrix.dynamic import MsePyDynamicLocalMatrix
 from msepy.tools.vector.dynamic import MsePyDynamicLocalVector
 from msepy.tools.matrix.static.local import MsePyStaticLocalMatrix
 from msepy.tools.vector.static.local import MsePyStaticLocalVector
-from msepy.tools.multidimensional_array.dynamic import MsePyDynamicLocalMDA
+from msepy.tools.nonlinear_operator.dynamic import MsePyDynamicLocalNonlinearOperator
 from src.spaces.continuous.Lambda import ScalarValuedFormSpace
-from scipy.sparse import csr_array
+from scipy.sparse import csr_matrix
 
 
 class _AxBipC(Frozen):
@@ -202,9 +202,10 @@ class _AxBipC(Frozen):
 
         elif dimensions == 3:
 
-            return MsePyDynamicLocalMDA(
+            return MsePyDynamicLocalNonlinearOperator(
                 self._3d_data,
-                self._A, self._B, self._C
+                self._A, self._B, self._C,
+                direct_derivative_contribution=True,
             )
 
         else:
@@ -381,5 +382,5 @@ class _MatrixCaller(Frozen):
             self._cochain[e],
             optimize='optimal'
         )
-        M = csr_array(M)
+        M = csr_matrix(M)
         return M

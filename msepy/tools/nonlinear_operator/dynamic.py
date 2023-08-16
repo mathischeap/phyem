@@ -3,14 +3,14 @@ r"""
 """
 import numpy as np
 from tools.frozen import Frozen
-from msepy.tools.multidimensional_array.static.local import MsePyStaticLocalMDA
+from msepy.tools.nonlinear_operator.static.local import MsePyStaticLocalNonlinearOperator
 from msepy.form.main import MsePyRootForm
 
 
-class MsePyDynamicLocalMDA(Frozen):
+class MsePyDynamicLocalNonlinearOperator(Frozen):
     """"""
 
-    def __init__(self, data, *correspondence, modes=None):
+    def __init__(self, data, *correspondence, direct_derivative_contribution=False):
         """"""
         if data.__class__ is dict:
             for i in data:
@@ -24,43 +24,38 @@ class MsePyDynamicLocalMDA(Frozen):
         for form in correspondence:
             assert form.__class__ is MsePyRootForm, f"corresponding forms must be {MsePyRootForm}."
 
-        if modes is None:
-            modes = 'homogeneous'
-        else:
-            pass
-
-        # modes will affect the way of computing derivatives.
-        assert modes in (
-            'homogeneous',  # different axes represent different variables, and connected by only multiplication.
-            # for example, a * b * c.
-        )
-
-        self._modes = modes
         self._correspondence = correspondence
+        assert isinstance(direct_derivative_contribution, bool), f"direct_derivative_contribution must be bool."
+        self._direct_derivative_contribution = direct_derivative_contribution
         self._ndim = len(correspondence)
         self._tf = None
         self._freeze()
 
     def __call__(self, *args, **kwargs):
         """Gives a static local matrix by evaluating the dynamic local matrix with `*args, **kwargs`."""
+        # first we find the particular forms for the static object
+        particular_forms = list()
+        times = self._time_caller(*args, **kwargs)
+        for i, generic_form in enumerate(self._correspondence):
+            if generic_form is self.test_form:
+                particular_forms.append(
+                    generic_form   # the test-form, it is not at any time instant
+                )
+            else:
+                particular_forms.append(
+                    generic_form[times[i]]  # a form copy at a particular time instant.
+                )
+
+        # make the static msepy mda.
         if self._dtype == 'static':
-            particular_forms = list()
-            times = self._time_caller(*args, **kwargs)
-            for i, generic_form in enumerate(self._correspondence):
-                if generic_form is self.test_form:
-                    particular_forms.append(
-                        generic_form   # the test-form, it is not at any time instant
-                    )
-                else:
-                    particular_forms.append(
-                        generic_form[times[i]]  # a form copy at a particular time instant.
-                    )
-            static = MsePyStaticLocalMDA(self._data, particular_forms, modes=self._modes)
+            static = MsePyStaticLocalNonlinearOperator(
+                self._data, particular_forms, direct_derivative_contribution=self._direct_derivative_contribution
+            )
         else:
             raise NotImplementedError(f"data type = {self._dtype} is wrong!")
 
-        assert isinstance(static, MsePyStaticLocalMDA), f"must return a static one!"
-
+        # check and return
+        assert isinstance(static, MsePyStaticLocalNonlinearOperator), f"must return a static one!"
         return static
 
     def _time_caller(self, *args, **kwargs):

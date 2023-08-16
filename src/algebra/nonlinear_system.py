@@ -4,7 +4,7 @@ r"""
 
 from tools.frozen import Frozen
 from src.algebra.linear_system import LinearSystem
-from src.wf.term.ap import TermNonLinearMDAAlgebraicProxy
+from src.wf.term.ap import TermNonLinearOperatorAlgebraicProxy
 
 
 class NonLinearSystem(Frozen):
@@ -52,7 +52,7 @@ class NonLinearSystem(Frozen):
         for i, terms in enumerate(all_terms):
             for j, term in enumerate(terms):
                 num_nonlinear_terms += 1
-                if term.__class__ is TermNonLinearMDAAlgebraicProxy:
+                if term.__class__ is TermNonLinearOperatorAlgebraicProxy:
                     pass
                 else:
                     raise NotImplementedError()

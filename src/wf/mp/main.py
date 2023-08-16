@@ -15,7 +15,7 @@ from src.config import _root_form_ap_vec_setting
 from tools.frozen import Frozen
 from src.algebra.array import AbstractArray
 from src.wf.term.ap import TermLinearAlgebraicProxy
-from src.wf.term.ap import TermNonLinearMDAAlgebraicProxy
+from src.wf.term.ap import TermNonLinearOperatorAlgebraicProxy
 from src.algebra.linear_system import BlockMatrix, BlockColVector, LinearSystem
 from src.algebra.nonlinear_system import NonLinearSystem
 from src.wf.mp.linear_system import MatrixProxyLinearSystem
@@ -126,7 +126,7 @@ class MatrixProxy(Frozen):
 
             return 'linear', new_aa
 
-        elif term.__class__ is TermNonLinearMDAAlgebraicProxy:
+        elif term.__class__ is TermNonLinearOperatorAlgebraicProxy:
 
             tf_pure_lin_repr = test_vector._pure_lin_repr[:-len(_root_form_ap_vec_setting['lin'])]
             tf = _find_form(tf_pure_lin_repr)

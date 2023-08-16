@@ -12,16 +12,16 @@ from src.spaces.ap import _parse_A_x_B_ip_C
 from src.form.parameters import ConstantScalar0Form
 from src.config import _parse_lin_repr  # _parse_lin_repr('TermNonLinearAlgebraicProxy', lin_repr)
 from src.config import _nonlinear_ap_test_form_repr
-from src.algebra.multidimensional_array import AbstractMultiDimensionalArray
+from src.algebra.nonlinear_operator import AbstractNonlinearOperator
 
 from tools.frozen import Frozen
 
 
-class TermNonLinearMDAAlgebraicProxy(Frozen):
+class TermNonLinearOperatorAlgebraicProxy(Frozen):
     """It is basically a wrapper of an abstract multidimensional array paired with abstract forms
     for each dimension.
     """
-    def __init__(self, abstract_multidimensional_array, *correspondence):
+    def __init__(self, abstract_multidimensional_array, correspondence):
         """
 
         Parameters
@@ -29,8 +29,8 @@ class TermNonLinearMDAAlgebraicProxy(Frozen):
         abstract_multidimensional_array
         correspondence
         """
-        assert abstract_multidimensional_array.__class__ is AbstractMultiDimensionalArray, \
-            f"I need a {AbstractMultiDimensionalArray}."
+        assert abstract_multidimensional_array.__class__ is AbstractNonlinearOperator, \
+            f"I need a {AbstractNonlinearOperator}."
         self._ama = abstract_multidimensional_array
         self._correspondence = correspondence
         self._tf = None
@@ -337,9 +337,9 @@ class _SimplePatternAPParser(Frozen):
 
         multi_dimensional_array = _parse_A_x_B_ip_C(A, B, C)
 
-        term = self._wft._factor * TermNonLinearMDAAlgebraicProxy(
+        term = self._wft._factor * TermNonLinearOperatorAlgebraicProxy(
             multi_dimensional_array,
-            A, B, C
+            [A, B, C]
         )
         sign = '+'
 

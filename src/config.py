@@ -159,7 +159,7 @@ def _clear_all():
     Make sure that, when we add new global cache, put it here.
     """
     from src.algebra.array import _global_root_arrays
-    from src.algebra.multidimensional_array import _global_md_arrays
+    from src.algebra.nonlinear_operator import _global_md_arrays
     from src.form.main import _global_forms
     from src.form.main import _global_root_forms_lin_dict
     _clear_a_dict(_global_root_arrays)

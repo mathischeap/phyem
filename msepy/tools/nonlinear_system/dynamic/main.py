@@ -8,7 +8,7 @@ from msepy.tools.linear_system.dynamic.main import MsePyDynamicLinearSystem
 from src.wf.mp.nonlinear_system import MatrixProxyNoneLinearSystem
 from msepy.tools.nonlinear_system.dynamic.mda_parser import msepy_mda_parser
 from msepy.tools.nonlinear_system.static.local import MsePyStaticLocalNonLinearSystem
-from msepy.tools.multidimensional_array.dynamic import MsePyDynamicLocalMDA
+from msepy.tools.nonlinear_operator.dynamic import MsePyDynamicLocalNonlinearOperator
 
 
 class MsePyDynamicNonLinearSystem(Frozen):
@@ -69,8 +69,8 @@ class MsePyDynamicNonLinearSystem(Frozen):
             for sign, term in zip(signs, terms):
                 nonlinear_factor[i].append(term.factor)
                 parsed_term, text, time_indicator = msepy_mda_parser(term)
-                assert parsed_term.__class__ in (MsePyDynamicLocalMDA, ), \
-                    f"msepy nonlinear term must be represented by one of ({MsePyDynamicLocalMDA, })"
+                assert parsed_term.__class__ in (MsePyDynamicLocalNonlinearOperator,), \
+                    f"msepy nonlinear term must be represented by one of ({MsePyDynamicLocalNonlinearOperator, })"
                 parsed_terms[i].append(parsed_term)
                 parsed_signs[i].append(sign)
                 texts[i].append(text)
@@ -84,6 +84,7 @@ class MsePyDynamicNonLinearSystem(Frozen):
 
     def __call__(self, *args, **kwargs):
         """"""
+        # we first get the variables for the base linear system.
         (
             static_A, static_x, static_b,
             A_texts, x_texts, b_texts,
@@ -94,21 +95,28 @@ class MsePyDynamicNonLinearSystem(Frozen):
         # we pick up the BC, because of nls, for example, the essential bc will take effect later.
         bc = self._dls._bc  # We have to send it to the static local nonlinear system
 
+        # below, we parse the nonlinear terms
         parsed_linear_terms = dict()
         parsed_times = dict()
+        parsed_texts = dict()
 
         for i in self._nonlinear_terms:
             parsed_linear_terms[i] = list()
             parsed_times[i] = list()
+            parsed_texts[i] = list()
             for j in range(len(self._nonlinear_terms[i])):
-                the_nonlinear_time, times = self._nonlinear_term_call(i, j, *args, **kwargs)
+                the_nonlinear_term, times, text = self._nonlinear_term_call(i, j, *args, **kwargs)
                 parsed_linear_terms[i].append(
-                    the_nonlinear_time
+                    the_nonlinear_term  # the factor has been included into this term.
                 )
                 parsed_times[i].append(
                     times
                 )
+                parsed_texts[i].append(
+                    text
+                )
 
+        # --- make static copies of the unknowns ---------
         unknowns = list()
         for uk in self.unknowns:
             ati_time = uk.cochain._ati_time_caller(*args, **kwargs)
@@ -116,17 +124,18 @@ class MsePyDynamicNonLinearSystem(Frozen):
                 uk[ati_time]
             )
 
+        # make the static nonlinear system ...
         static_nls = MsePyStaticLocalNonLinearSystem(
             # the linear part:
             static_A, static_x, static_b,
             _pr_texts=[A_texts, x_texts, b_texts],
             _time_indicating_text=[A_time_indicating, x_time_indicating, b_time_indicating],
             _str_args=_str_args,
-            # the nonlinear part
+            # the nonlinear part:
             bc=bc,
             nonlinear_terms=parsed_linear_terms,
             nonlinear_signs=self._nonlinear_signs,
-            nonlinear_texts=self._nonlinear_texts,
+            nonlinear_texts=parsed_texts,
             nonlinear_time_indicators=parsed_times,
             test_forms=self.test_forms,
             unknowns=unknowns,
@@ -178,4 +187,5 @@ class MsePyDynamicNonLinearSystem(Frozen):
         real_factor = factor(*args, **kwargs)
         final_term = real_factor * static_local_nonlinear_term
         times = self._nonlinear_time_indicators[i][j](*args, **kwargs)
-        return final_term, times
+        text = factor._sym_repr + self._nonlinear_texts[i][j]  # add factor sym to the term text.
+        return final_term, times, text

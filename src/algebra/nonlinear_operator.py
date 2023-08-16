@@ -11,10 +11,10 @@ _cs1 = constant_scalar(1)
 _global_md_arrays = dict()  # using pure_lin_repr as cache keys
 
 
-class AbstractMultiDimensionalArray(Frozen):
+class AbstractNonlinearOperator(Frozen):
     """"""
 
-    def __init__(self, sym_repr, pure_lin_repr, shape):
+    def __init__(self, sym_repr, pure_lin_repr):
         """"""
         assert isinstance(sym_repr, str) and isinstance(pure_lin_repr, str), f"use string sym and lin repr."
         assert pure_lin_repr not in _global_md_arrays, f"pure_lin_repr = {pure_lin_repr} for md array is taken."
@@ -27,14 +27,8 @@ class AbstractMultiDimensionalArray(Frozen):
         self._sym_repr = sym_repr
         self._lin_repr = lin_repr
         self._pure_lin_repr = pure_lin_repr
-        self._shape = shape
         self._factor = _cs1
         self._freeze()
-
-    @property
-    def shape(self):
-        """"""
-        return self._shape
 
     def __rmul__(self, other):
         """"""

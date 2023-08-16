@@ -3,7 +3,7 @@ r"""
 """
 from src.config import _nonlinear_ap_test_form_repr
 
-from src.wf.term.ap import TermNonLinearMDAAlgebraicProxy
+from src.wf.term.ap import TermNonLinearOperatorAlgebraicProxy
 from src.form.main import _global_root_forms_lin_dict
 
 from msepy.main import base
@@ -15,7 +15,7 @@ from src.spaces.main import _default_A_x_B_ip_C_reprs
 
 def msepy_mda_parser(mda):
     """"""
-    if mda.__class__ is TermNonLinearMDAAlgebraicProxy:
+    if mda.__class__ is TermNonLinearOperatorAlgebraicProxy:
         pure_lin_repr = mda._pure_lin_repr
         assert _nonlinear_ap_test_form_repr['lin'] in pure_lin_repr, f"The nonlinear term must be tested with tf."
 

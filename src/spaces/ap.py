@@ -17,7 +17,7 @@ from src.spaces.main import _default_space_degree_repr
 from src.spaces.main import _degree_str_maker
 
 from src.algebra.array import _root_array
-from src.algebra.multidimensional_array import AbstractMultiDimensionalArray
+from src.algebra.nonlinear_operator import AbstractNonlinearOperator
 from src.spaces.operators import d
 
 
@@ -186,20 +186,5 @@ def _parse_A_x_B_ip_C(A, B, C):
     lin = lin.replace('{B}', B._pure_lin_repr)
     lin = lin.replace('{C}', C._pure_lin_repr)
 
-    s0 = A.space
-    s1 = B.space
-    s2 = C.space
-    d0 = A._degree
-    d1 = B._degree
-    d2 = C._degree
-    str_d0 = _degree_str_maker(d0)
-    str_d1 = _degree_str_maker(d1)
-    str_d2 = _degree_str_maker(d2)
-
-    shape0 = s0._sym_repr + _default_space_degree_repr + str_d0
-    shape1 = s1._sym_repr + _default_space_degree_repr + str_d1
-    shape2 = s2._sym_repr + _default_space_degree_repr + str_d2
-
-    shape = (shape0, shape1, shape2)
-    mda = AbstractMultiDimensionalArray(sym, lin, shape)
+    mda = AbstractNonlinearOperator(sym, lin)
     return mda

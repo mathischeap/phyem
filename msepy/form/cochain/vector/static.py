@@ -3,6 +3,8 @@ r"""
 pH-lib@RAM-EEMCS-UT
 Yi Zhang
 """
+import numpy as np
+
 from msepy.tools.vector.static.local import MsePyStaticLocalVector
 
 
@@ -10,6 +12,12 @@ class MsePyRootFormStaticCochainVector(MsePyStaticLocalVector):
     """"""
 
     def __init__(self, rf, t, _2d_data, gathering_matrix):
+        """"""
+        if _2d_data is None:
+            pass
+        else:
+            assert isinstance(_2d_data, np.ndarray) and _2d_data.ndim == 2, \
+                f"{MsePyRootFormStaticCochainVector} only accepts 2d array"
         self._f = rf
         self._time = t
         super().__init__(_2d_data, gathering_matrix)

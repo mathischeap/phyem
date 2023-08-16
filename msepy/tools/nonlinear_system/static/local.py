@@ -8,6 +8,10 @@ from tools.frozen import Frozen
 from msepy.tools.matrix.static.local import MsePyStaticLocalMatrix
 from msepy.tools.vector.static.local import MsePyStaticLocalVector
 from msepy.form.cochain.vector.static import MsePyRootFormStaticCochainVector
+from msepy.form.static import MsePyRootFormStaticCopy
+from msepy.form.main import MsePyRootForm
+from msepy.tools.nonlinear_system.static.customize import MsePyNonlinearSystemCustomize
+from msepy.tools.nonlinear_system.static.solve.main import MsePyNonlinearSystemSolve
 
 
 class MsePyStaticLocalNonLinearSystem(Frozen):
@@ -16,7 +20,9 @@ class MsePyStaticLocalNonLinearSystem(Frozen):
     def __init__(
             self,
             # the linear part
-            A, x, b, _pr_texts=None, _time_indicating_text=None, _str_args='',
+            A, x, b,  # None blocks of ``A``, ``b`` have been replaced by zero matrix.
+                      # ``x`` is a list of MsePyRootFormStaticCochainVector objects.
+            _pr_texts=None, _time_indicating_text=None, _str_args='',
             # the nonlinear part
             bc=None,  # since for nonlinear system, not all bcs have taken their effect.
             nonlinear_terms=None,
@@ -31,11 +37,10 @@ class MsePyStaticLocalNonLinearSystem(Frozen):
         col_shape = len(A[0])
         assert len(x) == col_shape and len(b) == row_shape, "A, x, b shape dis-match."
         self._shape = (row_shape, col_shape)
-        self._parse_gathering_matrices(A, x, b)
+        self._parse_gathering_matrices(A, x, b, nonlinear_terms)
         self._A = A   # A is a 2d list of MsePyStaticLocalMatrix
         self._x = x   # x ia a list of MsePyStaticLocalVector (or subclass)
         self._b = b   # b ia a list of MsePyStaticLocalVector (or subclass)
-        self._customize = None
         self._pr_texts = _pr_texts
         self._time_indicating_text = _time_indicating_text
         self._str_args = _str_args
@@ -54,6 +59,8 @@ class MsePyStaticLocalNonLinearSystem(Frozen):
             assert tf._is_base(), f"test forms must be generic or base forms."
         self._tfs = test_forms
         self._uks = unknowns
+        self._solve = MsePyNonlinearSystemSolve(self)
+        self._customize = MsePyNonlinearSystemCustomize(self)
         self._freeze()
 
     @property
@@ -71,7 +78,16 @@ class MsePyStaticLocalNonLinearSystem(Frozen):
         """The unknowns; msepy form copies at particular time instances; not forms."""
         return self._uks
 
-    def _parse_gathering_matrices(self, A, x, b):
+    @property
+    def customize(self):
+        """"""
+        return self._customize
+
+    @property
+    def solve(self):
+        return self._solve
+
+    def _parse_gathering_matrices(self, A, x, b, nonlinear_terms):
         """"""
         row_shape, col_shape = self.shape
         row_gms = []
@@ -113,7 +129,29 @@ class MsePyStaticLocalNonLinearSystem(Frozen):
                     else:
                         assert row_gms[i] is row_gm_i
 
-        assert None not in row_gms, f"miss some gathering matrices in row gms."
+        for i in nonlinear_terms:
+            terms = nonlinear_terms[i]
+            row_gm_i = row_gms[i]
+            for j in range(len(terms)):
+                term_ij = terms[j]
+                generic_form = None
+                for form in term_ij.correspondence:
+                    if form.__class__ is MsePyRootFormStaticCopy:
+                        pass
+                    elif form.__class__ is MsePyRootForm:
+                        if generic_form is None:
+                            generic_form = form
+                        else:
+                            raise Exception(f"found more than one generic form in the correspondence.")
+
+                if row_gm_i is None:
+                    row_gms[i] = generic_form.cochain.gathering_matrix
+                else:
+                    assert row_gms[i] == generic_form.cochain.gathering_matrix, \
+                        f"the rol-gm must match the gm of the test form in a nonlinear term."
+
+        assert None not in row_gms, f"we miss some gm in row-gms."
+
         self._row_gms = row_gms
         self._col_gms = col_gms
 
@@ -189,9 +227,8 @@ class MsePyStaticLocalNonLinearSystem(Frozen):
             plt.text(0.05, 0.5, text, ha='left', va='center', size=15)
         else:
             plt.text(0.05, 0.525, text, ha='left', va='bottom', size=15)
-            plt.plot(
-                [0, 1], [0.5, 0.5], '--', color='gray', linewidth=0.5,
-            )
+            plt.plot([0, 1], [0.5, 0.5], '--', color='gray', linewidth=0.5)
+
             A_text, x_text, b_text = self._time_indicating_text
             tA = ''
             tx = ''
@@ -247,6 +284,7 @@ class MsePyStaticLocalNonLinearSystem(Frozen):
         nonlinear_texts = self._nonlinear_texts
         nonlinear_signs = self._nonlinear_signs
         nonlinear_times = self._nonlinear_time_indicators
+
         for i in range(self.shape[0]):
             if i in nonlinear_texts:
                 texts = nonlinear_texts[i]
@@ -268,6 +306,7 @@ class MsePyStaticLocalNonLinearSystem(Frozen):
                         time = [time, ]
                     else:
                         pass
+
                     str_time = list()
                     for t in time:
                         if t is None:
@@ -279,23 +318,126 @@ class MsePyStaticLocalNonLinearSystem(Frozen):
                             else:
                                 t = round(t, 2)
                                 str_time.append(str(t))
+
                     str_time = r'\left<' + ','.join(str_time) + r'\right>'
                     nonlinear_time_text += str_time
 
                     if j < len_terms - 1:
                         nonlinear_shape_text += r'&'
                         nonlinear_time_text += r'&'
+                    else:
+                        pass
             else:
                 nonlinear_shape_text += '0'
                 nonlinear_time_text += '0'
 
             if i < self.shape[0] - 1:
-
                 nonlinear_shape_text += r'\\'
                 nonlinear_time_text += r'\\'
+            else:
+                pass
 
         nonlinear_shape_text = r" + \begin{bmatrix}" + nonlinear_shape_text + r"\end{bmatrix}"
-
         nonlinear_time_text = r" + \begin{bmatrix}" + nonlinear_time_text + r"\end{bmatrix}"
 
         return nonlinear_shape_text, nonlinear_time_text
+
+    def _evaluate_nonlinear_terms(self, provided_cochains):
+        """"""
+        pairs = list()
+
+        for k, uk in enumerate(self.unknowns):
+            pairs.append(
+                [uk, provided_cochains[k]]
+            )
+
+        nonlinear_f = list()
+        for i in range(self.shape[0]):
+            nfi = None
+            if i in self._nonlinear_terms:
+                NTs = self._nonlinear_terms[i]
+                NSs = self._nonlinear_signs[i]
+                for term, sign in zip(NTs, NSs):
+
+                    static_vector = term._evaluate(pairs)
+
+                    if sign == '+':
+                        pass
+                    else:
+                        static_vector = - static_vector
+
+                    if nfi is None:
+                        nfi = static_vector
+                    else:
+                        nfi += static_vector
+            else:
+                pass
+
+            nonlinear_f.append(nfi)
+
+        return nonlinear_f
+
+    def evaluate_f(self, provided_cochains, neg=False):
+        """
+
+        Parameters
+        ----------
+        provided_cochains :
+            must be arranged according to unknowns
+        neg
+
+        Returns
+        -------
+
+        """
+        S0, S1 = self.shape
+        f = list()
+
+        # ------ linear terms contribution ---------------------------------------------
+        for i in range(S0):
+            fi = None
+            for j in range(S1):
+                Aij = self._A[i][j]
+                if Aij is None:
+                    pass
+                else:
+                    fij = Aij @ provided_cochains[j]
+
+                    if fi is None:
+                        fi = fij
+                    else:
+                        fi += fij
+
+            f.append(fi)
+
+        # -------- nonlinear terms contribution --------------------------------------------
+        f_nt = self._evaluate_nonlinear_terms(provided_cochains)
+        for i, fi in enumerate(f_nt):
+            if fi is None:
+                pass
+            else:
+                fi_2b_added = MsePyStaticLocalVector(
+                    fi,
+                    self._row_gms[i]
+                )
+                if f[i] is None:
+                    f[i] = fi_2b_added
+                else:
+                    f[i] += fi_2b_added
+
+        # -- add the original b to f --------------------------------
+        for i in range(S0):
+            if f[i] is None:
+                f[i] = - self._b[i]   # b[i] cannot be None
+            else:
+                f[i] += - self._b[i]
+
+        # ------ return f
+        if neg:
+            for i in range(S0):
+                # noinspection PyUnresolvedReferences
+                f[i] = - f[i]
+        else:
+            pass
+
+        return f
