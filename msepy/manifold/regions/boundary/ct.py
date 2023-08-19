@@ -1,8 +1,5 @@
 # -*- coding: utf-8 -*-
-"""
-pH-lib@RAM-EEMCS-UT
-Yi Zhang
-Created at 4:29 PM on 5/24/2023
+r"""
 """
 from numpy import zeros_like, ones_like
 from tools.frozen import Frozen

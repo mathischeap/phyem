@@ -1,8 +1,5 @@
 # -*- coding: utf-8 -*-
-"""
-pH-lib@RAM-EEMCS-UT
-Yi Zhang
-Created at 4:13 PM on 5/1/2023
+r"""
 """
 from tools.frozen import Frozen
 from msepy.space.error.Lambda import MsePySpaceErrorLambda

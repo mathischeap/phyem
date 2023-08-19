@@ -95,6 +95,9 @@ class BoundaryCondition(Frozen):
                     pass
             if involved and partition_key != '0':
                 involved_partitions.append(partition_key)
+            else:
+                pass
+
         if len(involved_partitions) > 0:
             bc_text += '\nwhere'
             for i, ipk in enumerate(involved_partitions):

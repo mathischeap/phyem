@@ -1,14 +1,7 @@
 # -*- coding: utf-8 -*-
-"""
-pH-lib@RAM-EEMCS-UT
-Yi Zhang
-Created at 1:55 PM on 4/17/2023
+r"""
 """
 import numpy as np
-import sys
-
-if './' not in sys.path:
-    sys.path.append('./')
 from tools.frozen import Frozen
 import matplotlib.pyplot as plt
 import matplotlib
@@ -129,7 +122,6 @@ class MsePyManifoldVisualizeMatplot(Frozen):
 
             else:
                 raise NotImplementedError(f"not implemented for {ndim}-d mesh in {esd}-d space.")
-
 
             if aspect == 'equal':
                 x_lim.sort()

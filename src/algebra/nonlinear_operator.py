@@ -1,14 +1,12 @@
 # -*- coding: utf-8 -*-
-"""
-By Yi Zhang
-Created at 12:52 PM on 8/11/2023
+r"""
 """
 from tools.frozen import Frozen
 from src.config import _parse_lin_repr
 from src.form.parameters import constant_scalar
 _cs1 = constant_scalar(1)
 
-_global_md_arrays = dict()  # using pure_lin_repr as cache keys
+_global_nop_arrays = dict()  # using pure_lin_repr as cache keys
 
 
 class AbstractNonlinearOperator(Frozen):
@@ -17,11 +15,11 @@ class AbstractNonlinearOperator(Frozen):
     def __init__(self, sym_repr, pure_lin_repr):
         """"""
         assert isinstance(sym_repr, str) and isinstance(pure_lin_repr, str), f"use string sym and lin repr."
-        assert pure_lin_repr not in _global_md_arrays, f"pure_lin_repr = {pure_lin_repr} for md array is taken."
+        assert pure_lin_repr not in _global_nop_arrays, f"pure_lin_repr = {pure_lin_repr} for md array is taken."
         lin_repr, pure_lin_repr = _parse_lin_repr('multidimensional_array', pure_lin_repr)
 
-        for _existing_mda_plr in _global_md_arrays:
-            existing_mda = _global_md_arrays[_existing_mda_plr]
+        for _existing_mda_plr in _global_nop_arrays:
+            existing_mda = _global_nop_arrays[_existing_mda_plr]
             assert existing_mda._sym_repr != sym_repr, \
                 f"sym_repr={sym_repr} for md array is taken."
         self._sym_repr = sym_repr

@@ -1,13 +1,6 @@
 # -*- coding: utf-8 -*-
+r"""
 """
-pH-lib@RAM-EEMCS-UT
-created at: 3/10/2023 3:11 PM
-"""
-import sys
-
-if './' not in sys.path:
-    sys.path.append('./')
-
 from tools.frozen import Frozen
 from src.config import _wf_term_default_simple_patterns as simple_patterns
 from src.form.others import _find_form
@@ -155,63 +148,3 @@ class OrdinaryDifferentialEquationDiscretize(Frozen):
     def _parse_sign(sign1, sign2):
         """-- = +, ++ = +, +- = -, -+ = - sign."""
         return '+' if sign1 == sign2 else '-'
-
-
-if __name__ == '__main__':
-    # python src/ode/discretize.py
-
-    import __init__ as ph  # import phlib as ph
-
-    manifold = ph.manifold(3)
-    mesh = ph.mesh(manifold)
-    ph.space.set_mesh(mesh)
-    O1 = ph.space.new('Omega', 1)
-    O2 = ph.space.new('Omega', 2)
-    O3 = ph.space.new('Omega', 3)
-    # ph.list_meshes()
-
-    w = O1.make_form(r'\omega^1', "vorticity1")
-    u = O2.make_form(r'u^2', "velocity2")
-    f = O2.make_form(r'f^2', "body-force")
-    P = O3.make_form(r'P^3', "total-pressure3")
-
-    dsP = ph.codifferential(P)
-
-    du = ph.d(u)
-    du_dt = ph.time_derivative(u)
-    exp = [
-        'du_dt - dsP = f',
-        'du = 0',
-    ]
-
-    pde = ph.pde(exp, globals())
-    pde.unknowns = [u, P]
-
-    # pde.print_representations()
-
-    wf = pde.test_with([O2, O3], sym_repr=[r'v^2', r'q^3'])
-    wf = wf.derive.integration_by_parts('0-1')
-    wf = wf.derive.rearrange(
-        {
-            0: '0, 1 = 3, 2',
-        }
-    )
-    # wf.print_representations()
-
-    terms = wf._term_dict[0]
-    signs = wf._sign_dict[0]
-    ode = ph.ode(terms_and_signs=[terms, signs])
-
-    ode.pr()
-
-    ts1 = ph.time_sequence()
-    td = ode.discretize
-    td.set_time_sequence(ts1)
-    td.define_abstract_time_instants('k-1', 'k-1/2', 'k')
-    td.differentiate('0', 'k-1', 'k')
-    td.average('2', f, ['k-1', 'k-1/2', 'k'])
-    td.average('1', P, ['k-1/2'])
-    td.average('3', P, ['k-1/2'])
-
-    eq = ode.discretize()
-    eq.pr()

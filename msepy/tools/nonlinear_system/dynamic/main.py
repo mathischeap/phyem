@@ -6,7 +6,7 @@ Created at 5:29 PM on 8/11/2023
 from tools.frozen import Frozen
 from msepy.tools.linear_system.dynamic.main import MsePyDynamicLinearSystem
 from src.wf.mp.nonlinear_system import MatrixProxyNoneLinearSystem
-from msepy.tools.nonlinear_system.dynamic.mda_parser import msepy_mda_parser
+from msepy.tools.nonlinear_system.dynamic.nonlinear_operator_parser import msepy_nonlinear_operator_parser
 from msepy.tools.nonlinear_system.static.local import MsePyStaticLocalNonLinearSystem
 from msepy.tools.nonlinear_operator.dynamic import MsePyDynamicLocalNonlinearOperator
 
@@ -68,7 +68,7 @@ class MsePyDynamicNonLinearSystem(Frozen):
             signs = all_signs[i]   # terms, signs of equation #i
             for sign, term in zip(signs, terms):
                 nonlinear_factor[i].append(term.factor)
-                parsed_term, text, time_indicator = msepy_mda_parser(term)
+                parsed_term, text, time_indicator = msepy_nonlinear_operator_parser(term)
                 assert parsed_term.__class__ in (MsePyDynamicLocalNonlinearOperator,), \
                     f"msepy nonlinear term must be represented by one of ({MsePyDynamicLocalNonlinearOperator, })"
                 parsed_terms[i].append(parsed_term)
@@ -184,8 +184,77 @@ class MsePyDynamicNonLinearSystem(Frozen):
         term.test_form = self.test_forms[i]
         static_local_nonlinear_term = term(*args, **kwargs)
         factor = self._nonlinear_factors[i][j]
-        real_factor = factor(*args, **kwargs)
-        final_term = real_factor * static_local_nonlinear_term
+        real_number_factor = factor(*args, **kwargs)
+        assert isinstance(real_number_factor, (int, float)), f"factor must be parsed as a number now!"
+        final_term = real_number_factor * static_local_nonlinear_term
         times = self._nonlinear_time_indicators[i][j](*args, **kwargs)
         text = factor._sym_repr + self._nonlinear_texts[i][j]  # add factor sym to the term text.
         return final_term, times, text
+
+    def _pr_nonlinear_text(self):
+        """"""
+        nonlinear_text = ''
+        for i in range(self.shape[0]):
+            if i in self._nonlinear_texts:
+                texts = self._nonlinear_texts[i]
+                factors = self._nonlinear_factors[i]
+                for j, factor in enumerate(factors):
+                    text = texts[i]
+                    nonlinear_text += factor._sym_repr + text
+
+                    if j < len(factors) - 1:
+                        nonlinear_text += r'&'
+                    else:
+                        pass
+
+            else:
+
+                nonlinear_text += r'0'
+
+            if i < self.shape[0] - 1:
+                nonlinear_text += r"\\"
+            else:
+                pass
+
+        nonlinear_text = r"+ \begin{bmatrix}" + nonlinear_text + r"\end{bmatrix}"
+        return nonlinear_text
+
+    def pr(self, figsize=(10, 4)):
+        """"""
+
+        import matplotlib.pyplot as plt
+        import matplotlib
+        plt.rcParams.update({
+            "text.usetex": True,
+            "font.family": "DejaVu Sans",
+            "text.latex.preamble": r"\usepackage{amsmath, amssymb}",
+        })
+        matplotlib.use('TkAgg')
+
+        A_text = self._dls._A_pr_text()
+
+        if self._dls._bc is None or len(self._dls._bc) == 0:
+            bc_text = ''
+        else:
+            bc_text = self._dls._bc._bc_text()
+
+        x_text = self._dls._bx_pr_text(self._dls._x)
+        b_text = self._dls._bx_pr_text(self._dls._b)
+
+        nonlinear_text = self._pr_nonlinear_text()
+
+        text = A_text + x_text + nonlinear_text + '=' + b_text
+
+        text = r"$" + text + r"$"
+        fig = plt.figure(figsize=figsize)
+        plt.axis([0, 1, 0, 1])
+        plt.axis('off')
+        plt.text(0.05, 0.5, text + bc_text, ha='left', va='center', size=15)
+        from src.config import _setting, _pr_cache
+        if _setting['pr_cache']:
+            _pr_cache(fig, filename='msepy_DynamicNoneLinearSystem')
+        else:
+            plt.tight_layout()
+            plt.show(block=_setting['block'])
+
+        return fig

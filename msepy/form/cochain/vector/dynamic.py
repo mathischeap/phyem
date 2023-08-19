@@ -1,7 +1,5 @@
 # -*- coding: utf-8 -*-
 r"""
-pH-lib@RAM-EEMCS-UT
-Yi Zhang
 """
 from msepy.tools.vector.dynamic import MsePyDynamicLocalVector
 

@@ -1,12 +1,6 @@
 # -*- coding: utf-8 -*-
+r"""
 """
-pH-lib@RAM-EEMCS-UT
-created at: 3/8/2023 3:37 PM
-"""
-import sys
-
-if './' not in sys.path:
-    sys.path.append('./')
 
 from tools.frozen import Frozen
 from src.config import _parse_lin_repr
@@ -286,13 +280,3 @@ class _Division2(Frozen):
         sf0 = self._f0._sym_repr
         sf1 = self._f1._sym_repr
         return r"\frac{" + sf0 + r"}{" + sf1 + r"}"
-
-
-if __name__ == '__main__':
-    # python src/form/parameters.py
-    import __init__ as ph
-
-    Rn = ph.constant_scalar('R', "Rn")
-    Rs = ph.constant_scalar(2)
-    R5 = ph.constant_scalar(5)
-    print(Rs + Rn + 5)

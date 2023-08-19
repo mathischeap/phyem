@@ -1,7 +1,5 @@
 # -*- coding: utf-8 -*-
-"""
-pH-lib@RAM-EEMCS-UT
-created at: 3/8/2023 11:57 AM
+r"""
 """
 
 from src.spaces.operators import wedge as space_wedge

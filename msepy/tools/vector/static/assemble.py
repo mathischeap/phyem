@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-"""
+r"""
 """
 from tools.frozen import Frozen
 from msepy.tools.vector.static.assembled import MsePyStaticAssembledVector

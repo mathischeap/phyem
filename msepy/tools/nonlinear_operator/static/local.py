@@ -74,7 +74,7 @@ class MsePyStaticLocalNonlinearOperator(Frozen):
     def __call__(self, e, cochain_providers=None):
         """provide another layer such that in the future we can implement something new.
 
-        Note that we DO NOT adjust of customize a nonlinear local data!
+        Note that we DO NOT adjust or customize a nonlinear local data!
         """
         return self._get_raw_data(e, cochain_providers=cochain_providers)
 
@@ -269,7 +269,6 @@ class MsePyStaticLocalNonlinearOperator(Frozen):
 
     def matrix(self, transpose=False):
         """if self(e) gives only 2-d ndarray, we can express this mda as a 2d local matrix."""
-        M = _Matrix(self, transpose)
         assert len(self.correspondence) == 2, \
             f"I can only have two corresponding forms, now I have {len(self.correspondence)}"
         gms = list()
@@ -281,6 +280,7 @@ class MsePyStaticLocalNonlinearOperator(Frozen):
             else:
                 raise Exception()
             gms.append(gm)
+        M = _Matrix(self, transpose)
         return MsePyStaticLocalMatrix(M, *gms, cache_key='unique')  # 2d csr_matrix is made in realtime
 
     def derivative(self, i, e):
@@ -314,6 +314,8 @@ class MsePyStaticLocalNonlinearOperator(Frozen):
             # --if the unknown variable is not in the correspondence, return None --
             if unknown not in self.correspondence:
                 return None
+            else:
+                pass
 
             # ------ we clear not relative pairs -----------------------------------------
             provided = list()
@@ -327,6 +329,8 @@ class MsePyStaticLocalNonlinearOperator(Frozen):
                         pass
                 if the_cochain_form is None:
                     amount_None += 1
+                else:
+                    pass
                 provided.append(the_cochain_form)
 
             assert amount_None == len(self.correspondence) - len(known_pairs)
@@ -350,6 +354,8 @@ class MsePyStaticLocalNonlinearOperator(Frozen):
             f, cochain = f_cochain
             if f in self.correspondence:
                 provided_cochains[self.correspondence.index(f)] = cochain
+            else:
+                pass
 
         _evaluate = self.eliminate(provided_cochains)  # whose data must be dict
         data = _evaluate._data

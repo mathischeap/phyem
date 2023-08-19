@@ -1,14 +1,6 @@
 # -*- coding: utf-8 -*-
+r"""
 """
-pH-lib@RAM-EEMCS-UT
-Yi Zhang
-Created at 1:53 PM on 4/17/2023
-"""
-
-import sys
-
-if './' not in sys.path:
-    sys.path.append('./')
 from tools.frozen import Frozen
 from msepy.manifold.visualize.matplot import MsePyManifoldVisualizeMatplot
 import numpy as np
@@ -150,24 +142,3 @@ class MsePyManifoldVisualize(Frozen):
             raise NotImplementedError()
 
         return Region_lines
-
-
-if __name__ == '__main__':
-    # python msepy/manifold/visualize/matplot.py
-    import __init__ as ph
-    space_dim = 3
-    ph.config.set_embedding_space_dim(space_dim)
-
-    manifold = ph.manifold(space_dim)
-    mesh = ph.mesh(manifold)
-
-    msepy, obj = ph.fem.apply('msepy', locals())
-
-    mnf = obj['manifold']
-    msh = obj['mesh']
-
-    # msepy.config(mnf)('crazy', c=0., periodic=True, bounds=[[0, 2] for _ in range(space_dim)])
-    msepy.config(mnf)('backward_step')
-    msepy.config(msh)([3 for _ in range(space_dim)])
-
-    mnf.visualize()

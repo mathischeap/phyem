@@ -1,7 +1,5 @@
 # -*- coding: utf-8 -*-
-"""
-pH-lib@RAM-EEMCS-UT
-Yi Zhang
+r"""
 """
 from tools.frozen import Frozen
 from msepy.space.reduce.Lambda import MsePySpaceReduceLambda

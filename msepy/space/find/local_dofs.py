@@ -1,7 +1,5 @@
 # -*- coding: utf-8 -*-
 r"""
-pH-lib@RAM-EEMCS-UT
-Yi Zhang
 """
 from tools.frozen import Frozen
 
@@ -60,7 +58,7 @@ class _MsePySpaceFindLocalDofs(Frozen):
                     raise Exception(f"top-form has no dofs on element face!")
 
                 else:
-                    raise NotImplementedError
+                    raise NotImplementedError()
 
             else:
                 raise NotImplementedError()
@@ -80,10 +78,10 @@ class _MsePySpaceFindLocalDofs(Frozen):
             elif n == 1:
                 face_local_numbering = [local_numbering[-1], ]  # local_numbering[-1] is an int, so we put it in a list
             else:
-                raise Exception
+                raise Exception()
 
         else:
-            raise Exception
+            raise Exception()
 
         return face_local_numbering
 
@@ -99,7 +97,7 @@ class _MsePySpaceFindLocalDofs(Frozen):
             elif n == 1:
                 face_local_numbering = local_numbering[-1, :]
             else:
-                raise Exception
+                raise Exception()
 
         elif m == 1:
             local_numbering = local_numbering_dx
@@ -109,9 +107,9 @@ class _MsePySpaceFindLocalDofs(Frozen):
             elif n == 1:
                 face_local_numbering = local_numbering[:, -1]
             else:
-                raise Exception
+                raise Exception()
         else:
-            raise Exception
+            raise Exception()
 
         return face_local_numbering
 
@@ -127,7 +125,7 @@ class _MsePySpaceFindLocalDofs(Frozen):
             elif n == 1:
                 face_local_numbering = local_numbering[-1, :]
             else:
-                raise Exception
+                raise Exception()
 
         elif m == 1:
             local_numbering = local_numbering_dx
@@ -137,9 +135,10 @@ class _MsePySpaceFindLocalDofs(Frozen):
             elif n == 1:
                 face_local_numbering = local_numbering[:, -1]
             else:
-                raise Exception
+                raise Exception()
+
         else:
-            raise Exception
+            raise Exception()
 
         return face_local_numbering
 
@@ -154,7 +153,7 @@ class _MsePySpaceFindLocalDofs(Frozen):
             elif n == 1:
                 face_local_numbering = local_numbering[-1, :]
             else:
-                raise Exception
+                raise Exception()
 
         elif m == 1:
 
@@ -163,9 +162,10 @@ class _MsePySpaceFindLocalDofs(Frozen):
             elif n == 1:
                 face_local_numbering = local_numbering[:, -1]
             else:
-                raise Exception
+                raise Exception()
+
         else:
-            raise Exception
+            raise Exception()
 
         return face_local_numbering
 
@@ -180,7 +180,7 @@ class _MsePySpaceFindLocalDofs(Frozen):
             elif n == 1:
                 face_local_numbering = local_numbering[-1, :, :]
             else:
-                raise Exception
+                raise Exception()
 
         elif m == 1:
 
@@ -189,7 +189,7 @@ class _MsePySpaceFindLocalDofs(Frozen):
             elif n == 1:
                 face_local_numbering = local_numbering[:, -1, :]
             else:
-                raise Exception
+                raise Exception()
 
         elif m == 2:
 
@@ -198,9 +198,10 @@ class _MsePySpaceFindLocalDofs(Frozen):
             elif n == 1:
                 face_local_numbering = local_numbering[:, :, -1]
             else:
-                raise Exception
+                raise Exception()
+
         else:
-            raise Exception
+            raise Exception()
 
         return face_local_numbering
 
@@ -215,7 +216,7 @@ class _MsePySpaceFindLocalDofs(Frozen):
             elif n == 1:
                 face_local_numbering = local_numbering[-1, :, :]
             else:
-                raise Exception
+                raise Exception()
 
         elif m == 1:
             local_numbering = local_numbering_dy
@@ -224,7 +225,7 @@ class _MsePySpaceFindLocalDofs(Frozen):
             elif n == 1:
                 face_local_numbering = local_numbering[:, -1, :]
             else:
-                raise Exception
+                raise Exception()
 
         elif m == 2:
             local_numbering = local_numbering_dz
@@ -233,9 +234,10 @@ class _MsePySpaceFindLocalDofs(Frozen):
             elif n == 1:
                 face_local_numbering = local_numbering[:, :, -1]
             else:
-                raise Exception
+                raise Exception()
+
         else:
-            raise Exception
+            raise Exception()
 
         return face_local_numbering
 
@@ -250,7 +252,7 @@ class _MsePySpaceFindLocalDofs(Frozen):
             elif n == 1:
                 face_local_numbering = local_numbering[-1, :, :]
             else:
-                raise Exception
+                raise Exception()
 
         elif m == 1:
             local_numbering = local_numbering_dzdx
@@ -259,7 +261,7 @@ class _MsePySpaceFindLocalDofs(Frozen):
             elif n == 1:
                 face_local_numbering = local_numbering[:, -1, :]
             else:
-                raise Exception
+                raise Exception()
 
         elif m == 2:
             local_numbering = local_numbering_dxdy
@@ -268,8 +270,9 @@ class _MsePySpaceFindLocalDofs(Frozen):
             elif n == 1:
                 face_local_numbering = local_numbering[:, :, -1]
             else:
-                raise Exception
+                raise Exception()
+
         else:
-            raise Exception
+            raise Exception()
 
         return face_local_numbering

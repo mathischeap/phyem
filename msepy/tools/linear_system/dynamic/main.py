@@ -360,9 +360,12 @@ class MsePyDynamicLinearSystem(Frozen):
         plt.axis([0, 1, 0, 1])
         plt.axis('off')
         plt.text(0.05, 0.5, text + bc_text, ha='left', va='center', size=15)
-        plt.tight_layout()
-        from src.config import _setting
-        plt.show(block=_setting['block'])
+        from src.config import _setting, _pr_cache
+        if _setting['pr_cache']:
+            _pr_cache(fig, filename='msepy_DynamicLinearSystem')
+        else:
+            plt.tight_layout()
+            plt.show(block=_setting['block'])
 
         return fig
 

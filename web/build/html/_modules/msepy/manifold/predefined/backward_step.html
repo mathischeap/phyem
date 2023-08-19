@@ -198,13 +198,19 @@
 <li class="toctree-l3"><a class="reference internal" href="../../../../gallery/msepy_domains_and_meshes/msepy/crazy.html">Crazy domain and mesh</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../../gallery/msepy_domains_and_meshes/msepy/crazy_multi.html">Multi-crazy domain and mesh</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../../gallery/msepy_domains_and_meshes/msepy/backward_step.html">Backward step</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../gallery/msepy_domains_and_meshes/msepy/cylinder_channel.html">Cylinder channel</a></li>
 </ul>
 </li>
-<li class="toctree-l2 has-children"><a class="reference internal" href="../../../../gallery/Laplacian/index.html">Laplacian</a><input class="toctree-checkbox" id="toctree-checkbox-4" name="toctree-checkbox-4" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-4"><i class="fa-solid fa-chevron-down"></i></label><ul>
-<li class="toctree-l3"><a class="reference internal" href="../../../../gallery/Laplacian/div_grad/index.html">div-grad</a></li>
-</ul>
-</li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../gallery/div_grad/index.html">div-grad</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../gallery/canonical_linear_port_Hamiltonian/index.html">Canonical linear port Hamiltonian</a></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../../../../gallery/Navier_Stokes/index.html">Navier-Stokes equations</a><input class="toctree-checkbox" id="toctree-checkbox-4" name="toctree-checkbox-4" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-4"><i class="fa-solid fa-chevron-down"></i></label><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../../gallery/Navier_Stokes/shear_layer_rollup/index.html">Shear layer rollup</a></li>
+</ul>
+</li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../../../../gallery/MHD/index.html">MHD (magnetohydrodynamics)</a><input class="toctree-checkbox" id="toctree-checkbox-5" name="toctree-checkbox-5" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-5"><i class="fa-solid fa-chevron-down"></i></label><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../../gallery/MHD/Orszag_Tang_vortex/index.html">Orszag-Tang Vortex</a></li>
+</ul>
+</li>
 </ul>
 </li>
 </ul>
@@ -467,14 +473,15 @@ document.write(`
     <span class="n">plt</span><span class="o">.</span><span class="n">text</span><span class="p">(</span><span class="n">x1</span><span class="o">/</span><span class="mi">2</span><span class="p">,</span> <span class="n">y1</span> <span class="o">+</span> <span class="mf">0.03</span><span class="p">,</span> <span class="sa">r</span><span class="s1">&#39;$x1$&#39;</span><span class="p">,</span> <span class="n">ha</span><span class="o">=</span><span class="s1">&#39;center&#39;</span><span class="p">)</span>
     <span class="n">plt</span><span class="o">.</span><span class="n">text</span><span class="p">(</span><span class="o">-</span> <span class="mf">0.07</span><span class="p">,</span> <span class="n">y1</span> <span class="o">+</span> <span class="n">y2</span><span class="o">/</span><span class="mi">2</span><span class="p">,</span> <span class="sa">r</span><span class="s1">&#39;$y2$&#39;</span><span class="p">,</span> <span class="n">va</span><span class="o">=</span><span class="s1">&#39;center&#39;</span><span class="p">)</span>
     <span class="n">plt</span><span class="o">.</span><span class="n">text</span><span class="p">(</span><span class="n">x1</span> <span class="o">-</span> <span class="mf">0.07</span><span class="p">,</span> <span class="n">y1</span><span class="o">/</span><span class="mi">2</span><span class="p">,</span> <span class="sa">r</span><span class="s1">&#39;$y1$&#39;</span><span class="p">,</span> <span class="n">va</span><span class="o">=</span><span class="s1">&#39;center&#39;</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">text</span><span class="p">(</span><span class="n">x1</span><span class="p">,</span> <span class="n">y1</span><span class="p">,</span> <span class="sa">r</span><span class="s1">&#39;$(x1, y1)$&#39;</span><span class="p">,</span> <span class="n">va</span><span class="o">=</span><span class="s1">&#39;bottom&#39;</span><span class="p">,</span> <span class="n">ha</span><span class="o">=</span><span class="s1">&#39;left&#39;</span><span class="p">)</span>
 
     <span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;$x$&quot;</span><span class="p">)</span>
     <span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;$y$&quot;</span><span class="p">)</span>
-    <span class="n">plt</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span><span class="n">saveto</span><span class="p">,</span> <span class="n">bbox_inches</span><span class="o">=</span><span class="s1">&#39;tight&#39;</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span><span class="n">saveto</span><span class="p">,</span> <span class="n">bbox_inches</span><span class="o">=</span><span class="s1">&#39;tight&#39;</span><span class="p">,</span> <span class="n">dpi</span><span class="o">=</span><span class="mi">200</span><span class="p">)</span>
     <span class="n">plt</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
 
 
-<div class="viewcode-block" id="backward_step"><a class="viewcode-back" href="../../../../gallery/msepy_domains_and_meshes/msepy/backward_step.html#msepy.manifold.predefined.backward_step.backward_step">[docs]</a><span class="k">def</span> <span class="nf">backward_step</span><span class="p">(</span><span class="n">x1</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">x2</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">y1</span><span class="o">=</span><span class="mf">0.25</span><span class="p">,</span> <span class="n">y2</span><span class="o">=</span><span class="mf">0.25</span><span class="p">,</span> <span class="n">z</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<div class="viewcode-block" id="backward_step"><a class="viewcode-back" href="../../../../gallery/msepy_domains_and_meshes/msepy/backward_step.html#msepy.manifold.predefined.backward_step.backward_step">[docs]</a><span class="k">def</span> <span class="nf">backward_step</span><span class="p">(</span><span class="n">x1</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">x2</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">y1</span><span class="o">=</span><span class="mf">0.25</span><span class="p">,</span> <span class="n">y2</span><span class="o">=</span><span class="mf">0.25</span><span class="p">,</span> <span class="n">z</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">periodic</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 
 <span class="sd">    Parameters</span>
@@ -490,28 +497,29 @@ document.write(`
 <span class="sd">    z : float, None, default=None</span>
 <span class="sd">        When it is ``None``, it gives a two-dimensional domain. Otherwise, :math:`(z&gt;0)`, it gives a three-dimensional</span>
 <span class="sd">        one.</span>
+<span class="sd">    periodic : bool, default=False</span>
+<span class="sd">        When the domain is 3d, whether it is periodic along the ``z``-axis?</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="n">x1</span><span class="p">,</span> <span class="n">x2</span><span class="p">,</span> <span class="n">y1</span><span class="p">,</span> <span class="n">y2</span><span class="p">,</span> <span class="n">z</span><span class="p">)</span></div>
+    <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="n">x1</span><span class="p">,</span> <span class="n">x2</span><span class="p">,</span> <span class="n">y1</span><span class="p">,</span> <span class="n">y2</span><span class="p">,</span> <span class="n">z</span><span class="p">,</span> <span class="n">periodic</span><span class="p">)</span></div>
 
 
-<span class="k">def</span> <span class="nf">_backward_step</span><span class="p">(</span><span class="n">mf</span><span class="p">,</span> <span class="n">x1</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">x2</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">y1</span><span class="o">=</span><span class="mf">0.25</span><span class="p">,</span> <span class="n">y2</span><span class="o">=</span><span class="mf">0.25</span><span class="p">,</span> <span class="n">z</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="k">def</span> <span class="nf">_backward_step</span><span class="p">(</span><span class="n">mf</span><span class="p">,</span> <span class="n">x1</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">x2</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">y1</span><span class="o">=</span><span class="mf">0.25</span><span class="p">,</span> <span class="n">y2</span><span class="o">=</span><span class="mf">0.25</span><span class="p">,</span> <span class="n">z</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">periodic</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    ^ y</span>
 <span class="sd">    |</span>
 <span class="sd">    |              x1                      x2</span>
-<span class="sd">    |   __________________________________________________</span>
-<span class="sd">    |   |                    |                           |</span>
-<span class="sd">    |   |                    |                           |</span>
-<span class="sd">    |   |         r2         |           r1              |    y2</span>
-<span class="sd">    |   |                    |                           |</span>
-<span class="sd">    |   |____________________|___________________________|</span>
-<span class="sd">    |                        |                           |</span>
-<span class="sd">    |                        |                           |</span>
-<span class="sd">    |                        |           r0              |    y1</span>
-<span class="sd">    |                        |                           |</span>
-<span class="sd">    | (0,0)                  |___________________________|</span>
-<span class="sd">    |</span>
+<span class="sd">     __________________________________________________</span>
+<span class="sd">    ||                    |                           |</span>
+<span class="sd">    ||                    |                           |</span>
+<span class="sd">    ||         r2         |           r1              |    y2</span>
+<span class="sd">    ||                    |                           |</span>
+<span class="sd">    ||____________________|___________________________|</span>
+<span class="sd">    |            (x1, y1) |                           |</span>
+<span class="sd">    |                     |                           |</span>
+<span class="sd">    |                     |           r0              |    y1</span>
+<span class="sd">    |                     |                           |</span>
+<span class="sd">    | (0,0)               |___________________________|</span>
 <span class="sd">    .--------------------------------------------------------------&gt; x</span>
 <span class="sd">    z</span>
 
@@ -563,11 +571,18 @@ document.write(`
             <span class="mi">2</span><span class="p">:</span> <span class="p">[</span><span class="kc">None</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span>    <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">],</span>
         <span class="p">}</span>
     <span class="k">elif</span> <span class="n">esd</span> <span class="o">==</span> <span class="mi">3</span><span class="p">:</span>
-        <span class="n">region_map</span> <span class="o">=</span> <span class="p">{</span>
-            <span class="mi">0</span><span class="p">:</span> <span class="p">[</span><span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span>    <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">],</span>
-            <span class="mi">1</span><span class="p">:</span> <span class="p">[</span><span class="mi">2</span><span class="p">,</span>    <span class="kc">None</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span>    <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">],</span>
-            <span class="mi">2</span><span class="p">:</span> <span class="p">[</span><span class="kc">None</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span>    <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">],</span>
-        <span class="p">}</span>
+        <span class="k">if</span> <span class="n">periodic</span><span class="p">:</span>
+            <span class="n">region_map</span> <span class="o">=</span> <span class="p">{</span>
+                <span class="mi">0</span><span class="p">:</span> <span class="p">[</span><span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span>    <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span>
+                <span class="mi">1</span><span class="p">:</span> <span class="p">[</span><span class="mi">2</span><span class="p">,</span>    <span class="kc">None</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span>    <span class="kc">None</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span>
+                <span class="mi">2</span><span class="p">:</span> <span class="p">[</span><span class="kc">None</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span>    <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">],</span>
+            <span class="p">}</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">region_map</span> <span class="o">=</span> <span class="p">{</span>
+                <span class="mi">0</span><span class="p">:</span> <span class="p">[</span><span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span>    <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">],</span>
+                <span class="mi">1</span><span class="p">:</span> <span class="p">[</span><span class="mi">2</span><span class="p">,</span>    <span class="kc">None</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span>    <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">],</span>
+                <span class="mi">2</span><span class="p">:</span> <span class="p">[</span><span class="kc">None</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span>    <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">],</span>
+            <span class="p">}</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="k">raise</span> <span class="ne">Exception</span><span class="p">()</span>
 
@@ -598,7 +613,7 @@ document.write(`
     <span class="k">else</span><span class="p">:</span>
         <span class="k">raise</span> <span class="ne">Exception</span><span class="p">()</span>
 
-    <span class="k">return</span> <span class="n">region_map</span><span class="p">,</span> <span class="n">mapping_dict</span><span class="p">,</span> <span class="n">Jacobian_matrix_dict</span><span class="p">,</span> <span class="n">mtype_dict</span>
+    <span class="k">return</span> <span class="n">region_map</span><span class="p">,</span> <span class="n">mapping_dict</span><span class="p">,</span> <span class="n">Jacobian_matrix_dict</span><span class="p">,</span> <span class="n">mtype_dict</span><span class="p">,</span> <span class="kc">None</span>
 </pre></div>
 
                 </article>
@@ -654,7 +669,7 @@ By Andrea Brugnoli, Ramy Rashad, Stefano Stramigioli, Yi Zhang
   <div class="footer-item">
     
 <div class="extra_footer">
-  <div>Last updated on May 28, 2023, 19:33:54, W. Europe Daylight Time</div>
+  <div>Last updated on August 18, 2023, 23:03:17, W. Europe Daylight Time</div>
 </div>
   </div>
   

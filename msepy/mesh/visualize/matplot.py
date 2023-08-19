@@ -1,7 +1,5 @@
 # -*- coding: utf-8 -*-
-"""
-@author: Yi Zhang
-@contact: zhangyi_aero@hotmail.com
+r"""
 """
 import numpy as np
 import sys
@@ -27,18 +25,18 @@ class MsePyMeshVisualizeMatplot(Frozen):
         self._freeze()
 
     def __call__(
-            self,
-            sampling_factor=1,
-            figsize=(10, 6),
-            aspect='equal',
-            usetex=True,
-            labelsize=12,
-            ticksize=12,
-            xlim=None, ylim=None,
-            saveto=None,
-            linewidth=0.75,
-            color='k',
-            title=True,  # True, False, None or custom
+        self,
+        sampling_factor=1,
+        figsize=(10, 6),
+        aspect='equal',
+        usetex=True,
+        labelsize=12,
+        ticksize=12,
+        xlim=None, ylim=None,
+        saveto=None,
+        linewidth=0.75,
+        color='k',
+        title=True,  # True, False, None or custom
 
     ):
         """Default matplot method."""
@@ -123,7 +121,7 @@ class MsePyMeshVisualizeMatplot(Frozen):
                                 for n in range(S2):
                                     plt.plot(
                                         axis0[:, m, n], axis1[:, m, n], axis2[:, m, n],
-                                        color=color, linewidth=linewidth
+                                        color=color, linewidth=linewidth,
                                     )
                         elif j == 1:
                             S0, S2 = np.shape(axis0)[0], np.shape(axis0)[2]
@@ -131,7 +129,7 @@ class MsePyMeshVisualizeMatplot(Frozen):
                                 for n in range(S2):
                                     plt.plot(
                                         axis0[m, :, n], axis1[m, :, n], axis2[m, :, n],
-                                        color=color, linewidth=linewidth
+                                        color=color, linewidth=linewidth,
                                     )
                         elif j == 2:
                             S0, S1 = np.shape(axis0)[:2]
@@ -139,7 +137,7 @@ class MsePyMeshVisualizeMatplot(Frozen):
                                 for n in range(S1):
                                     plt.plot(
                                         axis0[m, n, :], axis1[m, n, :], axis2[m, n, :],
-                                        color=color, linewidth=linewidth
+                                        color=color, linewidth=linewidth,
                                     )
                         else:
                             raise Exception()
@@ -167,13 +165,16 @@ class MsePyMeshVisualizeMatplot(Frozen):
         else:
             plt.title(title)
 
-        # ----- save -----------------------------------------------------
-        plt.tight_layout()
+        # save -----------------------------------------------------------
         if saveto is not None and saveto != '':
             plt.savefig(saveto, bbox_inches='tight')
         else:
-            from src.config import _setting
-            plt.show(block=_setting['block'])
+            from src.config import _setting, _pr_cache
+            if _setting['pr_cache']:
+                _pr_cache(fig, filename='MsePyMeshVisualization')
+            else:
+                plt.tight_layout()
+                plt.show(block=_setting['block'])
         return fig
 
 

@@ -169,6 +169,14 @@ class MsePyRootForm(Frozen):
             cochain_local = self.space.reduce(self.cf, t, self.degree, **kwargs)
 
         else:
+            # remember, space reduce only accept cf object. So we do the following
+            if target.__class__ is MsePyContinuousForm:
+                pass
+            else:
+                template_cf = MsePyContinuousForm(self)  # make a new `cf`, it does not affect the `cf` of self.
+                template_cf.field = target
+                target = template_cf
+
             cochain_local = self.space.reduce(target, t, self.degree, **kwargs)
 
         if update_cochain:
@@ -258,20 +266,6 @@ if __name__ == '__main__':
 
     manifold = ph.manifold(space_dim, is_periodic=False)
     mesh = ph.mesh(manifold)
-    # L0 = ph.space.new('Lambda', 0)
-    # f0 = L0.make_form('f^0', '0-f')
-    # L1 = ph.space.new('Lambda', 1)
-    # f1 = L1.make_form('f^1', '1-f')
-    # L1o = ph.space.new('Lambda', 1, orientation='outer')
-    # f1o = L1o.make_form('f^1', '1-f-o')
-    # L1i = ph.space.new('Lambda', 1, orientation='inner')
-    # f1i = L1i.make_form('h^1', '1-f-i')
-    # L2 = ph.space.new('Lambda', 2)
-    # f2 = L2.make_form('f^2', '2-f')
-    # L3 = ph.space.new('Lambda', 3)
-    # f3 = L3.make_form('f^3', '3-f')
-
-    # df0 = ph.exterior_derivative(f0)
 
     mesh.partition(r'\Gamma1', r'\Gamma2')
     ph.space.finite((3, 3, 3))
@@ -286,16 +280,7 @@ if __name__ == '__main__':
     mesh = obj['mesh']
     Gamma1 = msepy.base['manifolds'][r"\Gamma1"]
     Gamma2 = msepy.base['manifolds'][r"\Gamma2"]
-    # print(obj)
 
-    # f0 = obj['f0']
-    # f1 = obj['f1']
-    #
-    # f1o = obj['f1o']
-    # f1i = obj['f1i']
-    # f2 = obj['f2']
-    # f3 = obj['f3']
-    #
     # msepy.config(manifold)('crazy', c=0., periodic=False, bounds=[[0, 2] for _ in range(space_dim)])
     msepy.config(manifold)('crazy', c=0.0, bounds=[[0, 2] for _ in range(space_dim)], periodic=False)
     msepy.config(Gamma1)(manifold, {0: [0, 0, 1, 0]})
@@ -304,115 +289,3 @@ if __name__ == '__main__':
     msepy.config(mesh)(5)
     # # msepy.config(mesh)(([3, 3, 2], ))
     # # mesh.visualize()
-
-    # for mesh_repr in msepy.base['meshes']:
-    #     mesh = msepy.base['meshes'][mesh_repr]
-    #     print(mesh_repr)
-
-    # def fx(t, x, y, z):
-    #     return np.cos(2*np.pi*x) * np.cos(np.pi*y) * np.cos(np.pi*z) + t
-
-    # def phi_func(t, x, y, z):
-    #     """"""
-    #     return - np.sin(2 * np.pi * x) * np.sin(2 * np.pi * y) * np.sin(2 * np.pi * z) + t * 1
-
-    # def ux(t, x, y):
-    #     return np.sin(np.pi*x) * np.cos(np.pi*y) + t*0
-    #
-    # def uy(t, x, y):
-    #     return np.cos(np.pi*x) * np.sin(np.pi*y) + t*0
-
-    # def uz(t, x, y, z):
-    #     return np.cos(2*np.pi*x) * np.cos(2*np.pi*y) * np.sin(np.pi*z) + t
-
-    # scalar = ph.vc.scalar(phi_func)
-    # vector = ph.vc.vector(ux, uy)
-    #
-    # M0 = f0.matrix.mass
-    # M1 = f1.matrix.mass
-    # M2 = f2.matrix.mass
-    # M3 = f3.matrix.mass
-
-    # gm = f3.cochain.gathering_matrix
-
-    # f3.cf = scalar
-    # f3[0].reduce()
-    # # f3[0].visualize()
-    # print(f3[0].error())
-    # print(f3[0].norm())
-    # df0 = f0[2].coboundary()
-    # print(df0[2].error())
-
-    # f1o.cf = vector
-    # f1i.cf = vector
-    #
-    # f1o[2].reduce()
-    # f1o[2].visualize(plot_type='quiver', sampling_factor=0.01)
-
-    # # print(f1[2].error())
-    #
-    # f2.cf = vector
-    # f2[2].reduce()
-    # f2[2].visualize()
-    # # print(f2[2].error())
-    #
-    # f3.cf = scalar
-    # f3[2].reduce()
-    # f3[2].visualize()
-    # # print(f3[2].error())
-
-    # f0[2].visualize(f1, f2, f3)
-
-    # print()
-
-    # def fx(t, x, y):
-    #     return np.sin(2*np.pi*x) * np.sin(np.pi*y) + t
-    #
-    # scalar = ph.vc.scalar(fx)
-    # f0.cf = scalar
-    # f0[2].reduce()
-    # # f0[2].visualize()
-    # f2.cf = scalar
-    # f2[2].reduce()
-    # # f2[2].visualize()
-    #
-    # def ux(t, x, y):
-    #     return np.sin(2*np.pi*x) * np.cos(2*np.pi*y) + t
-    #
-    # def uy(t, x, y):
-    #     return np.cos(np.pi*x) * np.sin(np.pi*y) + t
-    #
-    # vector = ph.vc.vector(ux, uy)
-    #
-    # f1o.cf = vector
-    # f1o[2].reduce()
-    # # f1o[2].visualize()
-    #
-    # # mesh.visualize()
-    # f1i.cf = vector
-    # f1i[2].reduce()
-    # # f1i[2].visualize()
-    #
-    # M = f1o.matrix.mass
-
-    # def fx(t, x):
-    #     return np.sin(2*np.pi*x) + t
-    # scalar = ph.vc.scalar(fx)
-    #
-    # # f1.cf = scalar
-    # # f1[2].reduce()
-    # # f1[2].visualize()
-    #
-    # f0.cf = scalar
-    # f0[2].reduce()
-    # # f0[2].visualize()
-    # f_error = f0[2].error()  # by default, we will compute the L^2 error.
-    # print(f_error)
-    #
-    # df0 = f0.coboundary[2]()
-    # df_error = df0[2].error()
-    # print(f_error, df_error)
-    #
-    # # df0[2].visualize()
-    # # # df0 = f0[2].coboundary()
-    # # # print(df0)

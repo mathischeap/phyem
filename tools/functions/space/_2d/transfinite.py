@@ -41,7 +41,7 @@ class TransfiniteMapping(Frozen):
          |          - 0 +
          |_______________________> x
         
-        The indices of `gamma` and `dgamma` are as above. And the directs of the
+        The indices of `gamma` and `dgamma` are as above. And the directions of the
         mappings are indicated as well.
         
         Parameters
@@ -157,3 +157,25 @@ class TransfiniteMapping(Frozen):
                 (1-r)*dgamma4_ydt + r*dgamma2_ydt - gamma1_ys + gamma3_ys -
                 (1-r)*(-self.gamma1_y0 + self.gamma3_y0) - r*(-self.gamma1_y1 + self.gamma3_y1))
         return dy_deta_result
+
+    def illustrate(self):
+        """illustrate self."""
+        import matplotlib.pyplot as plt
+        fig, ax = plt.subplots(figsize=(8, 6))
+        ax.set_aspect('equal')
+        _ = np.linspace(0, 1, 7)
+        density = np.linspace(0, 1, 100)
+        r_lines = np.meshgrid(_, density, indexing='ij')
+        s_lines = np.meshgrid(density, _, indexing='ij')
+        r_lines = self.mapping(*r_lines)
+        s_lines = self.mapping(*s_lines)
+        x, y = r_lines
+        for xi, yi in zip(x, y):
+            plt.plot(xi, yi, '-k', linewidth=0.8)
+        x, y = s_lines
+        x = x.T
+        y = y.T
+        for xi, yi in zip(x, y):
+            plt.plot(xi, yi, '-k', linewidth=0.8)
+        plt.show()
+        plt.close()

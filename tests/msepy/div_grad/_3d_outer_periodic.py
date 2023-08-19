@@ -1,9 +1,5 @@
 # -*- coding: utf-8 -*-
-"""
-pH-lib@RAM-EEMCS-UT
-Yi Zhang
-Created at 11:53 AM on 5/17/2023
-
+r"""
 """
 
 # python tests/msepy/div_grad/_3d_outer_periodic.py

@@ -147,6 +147,22 @@ class RegularGatheringMatrix(Frozen):
             ogm = other._gm
             return np.all(sgm == ogm)
 
+    def _find_global_numbering(self, elements, local_dofs):
+        """find the global numbering at positions indicated by `elements` and `local_dofs`
+
+        So for element #i (elements[i]), we find the global numbering at locations: local_dofs[i]
+        """
+        global_numbering = set()
+        assert len(elements) == len(local_dofs), f"positions are not correct."
+        for j, ele in enumerate(elements):
+            local_dofs_ele = local_dofs[j]
+            global_numbering.update(
+                self._gm[ele, local_dofs_ele]
+            )
+        global_numbering = list(global_numbering)
+        global_numbering.sort()
+        return global_numbering
+
     def _find_elements_and_local_indices_of_dofs(self, dofs):
         """
 

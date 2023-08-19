@@ -1,7 +1,5 @@
 # -*- coding: utf-8 -*-
-"""
-@author: Yi Zhang
-@contact: zhangyi_aero@hotmail.com
+r"""
 """
 import sys
 if './' not in sys.path:
@@ -284,7 +282,7 @@ class MsePyMeshCoordinateTransformation(Frozen):
                 inverse_Jacobian_matrix_dict[re] = [
                     [iJ00, iJ01, iJ02],
                     [iJ10, iJ11, iJ12],
-                    [iJ20, iJ21, iJ22]
+                    [iJ20, iJ21, iJ22],
                 ]
 
             else:

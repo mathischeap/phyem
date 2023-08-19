@@ -1,5 +1,7 @@
 # -*- coding: utf-8 -*-
-""""""
+r"""
+
+"""
 import numpy as np
 from tools.frozen import Frozen
 from msepy.tools.vector.static.local import MsePyStaticLocalVector

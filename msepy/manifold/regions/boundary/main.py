@@ -1,8 +1,5 @@
 # -*- coding: utf-8 -*-
-"""
-pH-lib@RAM-EEMCS-UT
-Yi Zhang
-Created at 3:07 PM on 5/24/2023
+r"""
 """
 from tools.frozen import Frozen
 from msepy.manifold.regions.boundary.ct import MsePyBoundaryRegionCoordinateTransformation

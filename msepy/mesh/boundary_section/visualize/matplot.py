@@ -1,5 +1,4 @@
 # -*- coding: utf-8 -*-
-
 from tools.frozen import Frozen
 
 import matplotlib.pyplot as plt
@@ -107,10 +106,14 @@ class Matplot(Frozen):
             plt.title(title)
 
         # ------- config the output --------------------------------
-        plt.tight_layout()
+
         if saveto is not None and saveto != '':
             plt.savefig(saveto, bbox_inches='tight')
         else:
-            from src.config import _setting
-            plt.show(block=_setting['block'])
+            from src.config import _setting, _pr_cache
+            if _setting['pr_cache']:
+                _pr_cache(fig, filename='MsePyMeshBoundarySection')
+            else:
+                plt.tight_layout()
+                plt.show(block=_setting['block'])
         return fig

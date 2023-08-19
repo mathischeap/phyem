@@ -1,8 +1,5 @@
 # -*- coding: utf-8 -*-
-"""
-pH-lib@RAM-EEMCS-UT
-Yi Zhang
-Created at 4:18 PM on 5/1/2023
+r"""
 """
 
 import numpy as np

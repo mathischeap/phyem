@@ -308,7 +308,7 @@ def _crazy_multi(mf, bounds=None, c=0, Ns=None, periodic=False):
 
         mtype_dict[r] = mtype
 
-    return region_map, mapping_dict, Jacobian_matrix_dict, mtype_dict
+    return region_map, mapping_dict, Jacobian_matrix_dict, mtype_dict, None
 
 
 class _MesPyRegionCrazyMultiMapping(Frozen):

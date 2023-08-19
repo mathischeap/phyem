@@ -13,7 +13,7 @@ from src.spaces.main import _sep
 from src.spaces.main import _default_A_x_B_ip_C_reprs
 
 
-def msepy_mda_parser(mda):
+def msepy_nonlinear_operator_parser(mda):
     """"""
     if mda.__class__ is TermNonLinearOperatorAlgebraicProxy:
         pure_lin_repr = mda._pure_lin_repr
@@ -25,6 +25,8 @@ def msepy_mda_parser(mda):
                 msepy_form = base['forms'][msepy_form_repr]
                 if msepy_form.abstract is rf:
                     msepy_correspondence.append(msepy_form)
+                else:
+                    pass
 
         mda_pure_lin_repr = pure_lin_repr.split(_nonlinear_ap_test_form_repr['lin'])[0]
 

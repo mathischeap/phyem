@@ -129,10 +129,11 @@ def _list_forms(variable_range=None):
                          cellLoc='left', colWidths=[0.15, 0.125, 0.125, 0.375, 0.075])
         table.scale(1, 8)
         table.set_fontsize(50)
-        fig.tight_layout()
+
         from src.config import _setting, _pr_cache
         if _setting['pr_cache']:
             _pr_cache(fig, filename='formList')
         else:
+            fig.tight_layout()
             plt.show(block=_setting['block'])
         return fig

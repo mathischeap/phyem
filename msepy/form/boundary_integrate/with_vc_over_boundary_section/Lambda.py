@@ -42,6 +42,7 @@ class BoundaryIntegrateVCBSLambda(Frozen):
             return self._m2_n2_k0_inner(t, vc, msepy_boundary_section)
 
         else:
+
             raise NotImplementedError(
                 f"BoundaryIntegrateVCBSLambda: not implemented for `form (<vc | tr form>)` in : "
                 f"m{m} n{n}, k{k}, orientation: {orientation}"

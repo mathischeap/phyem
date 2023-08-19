@@ -1,13 +1,6 @@
 # -*- coding: utf-8 -*-
+r"""
 """
-@author: Yi Zhang
-@contact: zhangyi_aero@hotmail.com
-@time: 11/26/2022 2:56 PM
-"""
-import sys
-
-if './' not in sys.path:
-    sys.path.append('./')
 from tools.frozen import Frozen
 from src.form.others import _find_form
 from src.config import _wf_term_default_simple_patterns as _simple_patterns
@@ -264,89 +257,3 @@ class OrdinaryDifferentialEquation(Frozen):
         if self._discretize is None:
             self._discretize = OrdinaryDifferentialEquationDiscretize(self)
         return self._discretize
-
-
-if __name__ == '__main__':
-    # python src/ode/rct.py
-    import __init__ as ph
-    # import phlib as ph
-    # ph.config.set_embedding_space_dim(3)
-    manifold = ph.manifold(3)
-    mesh = ph.mesh(manifold)
-    ph.space.set_mesh(mesh)
-    O1 = ph.space.new('Omega', 1)
-    O2 = ph.space.new('Omega', 2)
-    O3 = ph.space.new('Omega', 3)
-    # ph.list_meshes()
-
-    w = O1.make_form(r'\omega^1', "vorticity1")
-    u = O2.make_form(r'u^2', "velocity2")
-    f = O2.make_form(r'f^2', "body-force")
-    P = O3.make_form(r'P^3', "total-pressure3")
-    wXu = w.wedge(ph.Hodge(u))
-    dsP = ph.codifferential(P)
-    dsu = ph.codifferential(u)
-    du = ph.d(u)
-    du_dt = ph.time_derivative(u)
-    exp = [
-        'du_dt + wXu - dsP = f',
-        'w = dsu',
-        'du = 0',
-    ]
-
-    pde = ph.pde(exp, globals())
-    pde.unknowns = [u, w, P]
-
-    # pde.print_representations()
-
-    wf = pde.test_with([O2, O1, O3], sym_repr=[r'v^2', r'w^1', r'q^3'])
-    wf = wf.derive.integration_by_parts('0-2')
-    wf = wf.derive.integration_by_parts('1-1')
-    wf = wf.derive.rearrange(
-        {
-            0: '0, 1, 2 = 4, 3',
-            1: '1, 0 = 2',
-            2: ' = 0',
-        }
-    )
-    # wf.print_representations()
-
-    i = 0
-    terms = wf._term_dict[i]
-    signs = wf._sign_dict[i]
-    ode_i = ph.ode(terms_and_signs=[terms, signs])
-    # ode_i.print_representations()
-
-    term0 = ode_i['0'][1]
-    term4 = ode_i['4'][1]
-    # term4.print_representations()
-
-    ats = ph.time_sequence()
-    dt = ats.make_time_interval('k-1', 'k')   # dt = t[k] - t[k-1/2]
-    # term0.print_representations()
-
-    u_km1 = u @ dt.start
-    u_k = u @ dt.end
-    # print(dt._lin_repr, dt._sym_repr)
-    # print(dt.start._lin_repr)
-    # u_km1.print_representations()
-
-    u_km1_dt = u_km1 / dt
-    u_k_dt = u_k / dt
-    u_2 = u / 2
-
-    # u_km1.print_representations()
-    # u_2.print_representations()
-    # u_km1_dt.print_representations()
-    # u_k_dt.print_representations()
-
-    # ut.print_representations()
-
-    new_terms, signs = term0.split('f0', [u_km1, u_k], ['-', '+'], factors=[1/dt, 1/dt])
-
-    print(new_terms[0])
-
-    new_terms[0].pr()
-    # new_terms[1].print_representations()
-
-    # ph.list_forms(globals())

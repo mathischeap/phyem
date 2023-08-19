@@ -1,8 +1,5 @@
 # -*- coding: utf-8 -*-
-"""
-pH-lib@RAM-EEMCS-UT
-Yi Zhang
-Created at 4:18 PM on 5/1/2023
+r"""
 """
 
 import numpy as np
@@ -55,7 +52,11 @@ class MsePySpaceNormLambda(Frozen):
             dis_v = v[start:end, :]
             metric = J(range(start, end))
             integral.extend(
-                np.einsum('ij, ij -> i', dis_v ** d, metric * quad_weights, optimize='optimal')
+                np.einsum(
+                    'ij -> i',
+                    dis_v ** d * metric * quad_weights,
+                    optimize='optimal'
+                )
             )
 
         return np.sum(integral) ** (1/d)
@@ -80,7 +81,12 @@ class MsePySpaceNormLambda(Frozen):
             metric = J(range(start, end))
             diff = dis_u ** d + dis_v ** d
             integral.extend(
-                np.einsum('eij, eij, i, j -> i', diff, metric, *quad_weights, optimize='optimal')
+                np.einsum(
+                    'eij, i, j -> i',
+                    diff * metric,
+                    *quad_weights,
+                    optimize='optimal'
+                )
             )
 
         return np.sum(integral) ** (1/d)
@@ -101,7 +107,12 @@ class MsePySpaceNormLambda(Frozen):
 
             diff = dis_v ** d
             integral.extend(
-                np.einsum('eij, eij, i, j -> i', diff, metric, *quad_weights, optimize='optimal')
+                np.einsum(
+                    'eij, i, j -> i',
+                    diff * metric,
+                    *quad_weights,
+                    optimize='optimal'
+                )
             )
 
         return np.sum(integral) ** (1/d)
@@ -122,7 +133,12 @@ class MsePySpaceNormLambda(Frozen):
 
             diff = dis_v ** d
             integral.extend(
-                np.einsum('eijk, eijk, i, j, k -> i', diff, metric, *quad_weights, optimize='optimal')
+                np.einsum(
+                    'eijk, i, j, k -> i',
+                    diff * metric,
+                    *quad_weights,
+                    optimize='optimal'
+                )
             )
 
         return np.sum(integral) ** (1/d)
@@ -148,7 +164,11 @@ class MsePySpaceNormLambda(Frozen):
             metric = J(range(start, end))
             diff = dis_u ** d + dis_v ** d + dis_w ** d
             integral.extend(
-                np.einsum('eijk, eijk, i, j, k -> i', diff, metric, *quad_weights, optimize='optimal')
+                np.einsum(
+                    'eijk, i, j, k -> i',
+                    diff * metric,
+                    *quad_weights,
+                    optimize='optimal')
             )
 
         return np.sum(integral) ** (1/d)

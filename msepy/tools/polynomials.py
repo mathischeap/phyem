@@ -231,11 +231,11 @@ class _OneDimPolynomial(Frozen):
         plt.show(block=_setting['block'])
 
     def plot_edge_basis(
-            self, dual=False, plot_density=300, ylim_ratio=0.1,
-            title=True, left=0.15, bottom=0.15, fill_between=1,
-            minor_tick_length=5, major_tick_length=10, tick_pad=7,
-            tick_size=15, label_size=15, title_size=15,
-            linewidth=1.2, saveto=None, figsize=(6, 4), usetex=True
+        self, dual=False, plot_density=300, ylim_ratio=0.1,
+        title=True, left=0.15, bottom=0.15, fill_between=1,
+        minor_tick_length=5, major_tick_length=10, tick_pad=7,
+        tick_size=15, label_size=15, title_size=15,
+        linewidth=1.2, saveto=None, figsize=(6, 4), usetex=True,
     ):
         """
         Plot the lagrange edge functions in reference 1d domain ``[-1,1]``.
@@ -284,7 +284,7 @@ class _OneDimPolynomial(Frozen):
             interval = 0.1
         ylim = [bmi - interval * ylim_ratio, bmx + interval * ylim_ratio]
         # ___________ do THE PLOT ______________________________________________________
-        plt.figure(figsize=figsize)
+        fig = plt.figure(figsize=figsize)
         for basis_i in basis:
             plt.plot(x, basis_i, linewidth=1 * linewidth)
         for i in self.nodes:
@@ -341,15 +341,20 @@ class _OneDimPolynomial(Frozen):
                         plt.fill_between(xi, 0, yi, color='grey', alpha=0.4)
                     else:
                         plt.fill_between(xi, 0, yi, color='grey', alpha=0.2)
-            # ____ ELSE: error ...
+            # ____ ELSE: error .......................................................
             else:
                 raise Exception(' <Polynomials1D> : fill_between={} wrong.'.format(fill_between))
-            # --------------------------------------------------------------------------
-        # ------------------------------------------------------------------------------
+            # -------------------------------------------------------------------------------------
+        # -------------------------------------------------
         if saveto is not None:
             plt.savefig(saveto, bbox_inches='tight')
-        from src.config import _setting
-        plt.show(block=_setting['block'])
+        else:
+            from src.config import _setting, _pr_cache
+            if _setting['pr_cache']:
+                _pr_cache(fig, filename='MsePyMeshVisualization')
+            else:
+                plt.tight_layout()
+                plt.show(block=_setting['block'])
 
 
 if __name__ == "__main__":

@@ -10,8 +10,8 @@ from msepy.tools.vector.static.local import MsePyStaticLocalVector
 from msepy.form.cochain.vector.static import MsePyRootFormStaticCochainVector
 from msepy.form.static import MsePyRootFormStaticCopy
 from msepy.form.main import MsePyRootForm
-from msepy.tools.nonlinear_system.static.customize import MsePyNonlinearSystemCustomize
-from msepy.tools.nonlinear_system.static.solve.main import MsePyNonlinearSystemSolve
+from msepy.tools.nonlinear_system.static.customize import MsePyStaticNonlinearSystemCustomize
+from msepy.tools.nonlinear_system.static.solve.main import MsePyStaticNonlinearSystemSolve
 
 
 class MsePyStaticLocalNonLinearSystem(Frozen):
@@ -59,8 +59,8 @@ class MsePyStaticLocalNonLinearSystem(Frozen):
             assert tf._is_base(), f"test forms must be generic or base forms."
         self._tfs = test_forms
         self._uks = unknowns
-        self._solve = MsePyNonlinearSystemSolve(self)
-        self._customize = MsePyNonlinearSystemCustomize(self)
+        self._solve = MsePyStaticNonlinearSystemSolve(self)
+        self._customize = MsePyStaticNonlinearSystemCustomize(self)
         self._freeze()
 
     @property
@@ -267,12 +267,12 @@ class MsePyStaticLocalNonLinearSystem(Frozen):
             plt.text(0.05, 0.47, text, ha='left', va='top', size=15)
 
         plt.title(f'Local-Linear-System evaluated @ [{self._str_args}]')
-        plt.tight_layout()
 
         from src.config import _setting, _pr_cache
         if _setting['pr_cache']:
             _pr_cache(fig, filename='msepy_staticLocalNonLinearSystem')
         else:
+            plt.tight_layout()
             plt.show(block=_setting['block'])
 
         return fig

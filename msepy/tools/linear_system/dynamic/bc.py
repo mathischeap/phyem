@@ -4,6 +4,9 @@ r"""
 from tools.frozen import Frozen
 from msepy.manifold.main import MsePyManifold
 
+from msepy.form.static import MsePyRootFormStaticCopy
+from msepy.form.cochain.vector.static import MsePyRootFormStaticCochainVector
+
 from msepy.form.cf import MsePyContinuousForm
 from msepy.mesh.boundary_section.main import MsePyBoundarySectionMesh
 
@@ -141,7 +144,6 @@ class MsePyDLSBoundaryCondition(Frozen):
 
     def __init__(self, msepy_boundary_manifold, raw_ls_bc):
         """"""
-
         self._msepy_boundary_manifold = msepy_boundary_manifold
         self._raw_ls_bc = raw_ls_bc
         self._category = None       # configuration category
@@ -182,7 +184,7 @@ class MsePyDLSNaturalBoundaryCondition(MsePyDLSBoundaryCondition):
         assert found_msepy_bf0 is not None, f"we must have found a msepy form."
         assert self._category is None, f"bc config-ed, change the configuration is dangerous!"
 
-        # --------------------- 0: general vc -----------------------------------------------------
+        # --------------------- 0: general vc ------------------------------------
         if category in (0, 'general_vc'):
             # we provide ONE general vc object as ``tr star bf0`` (NOT bf0) everywhere.
 
@@ -195,14 +197,14 @@ class MsePyDLSNaturalBoundaryCondition(MsePyDLSBoundaryCondition):
             self._category = 'general_vc'
             self._configuration = configuration
 
-        # ---------------- else: not implemented -------------------------------------------------
+        # ---------------- else: not implemented ---------------------------------
         else:
             raise Exception(f"type = {type} is not understandable.")
 
 
 class MsePyDLSEssentialBoundaryCondition(MsePyDLSBoundaryCondition):
     """"""
-    def config(self, *args, category=0):
+    def config(self, *args):
         """config the bc to be particular."""
         from msepy.main import base
         bf0 = self._raw_ls_bc._provided_root_form
@@ -219,43 +221,47 @@ class MsePyDLSEssentialBoundaryCondition(MsePyDLSBoundaryCondition):
         assert found_msepy_bf0 is not None, f"we must have found a msepy form."
         assert self._category is None, f"bc config-ed, change the configuration is dangerous!"
 
-        # --------------------- 0: general vc ------------------------------------------------------
-        if category in (0, 'cf'):
+        # ---------------- 0: general vc -------------------------------
+        if len(args) == 1 and args[0].__class__ is MsePyContinuousForm:
             # we provide ONE general cf as the bc. Reducing this cf to boundary dofs leads to given boundary dofs.
-
-            assert len(args) == 1, f"for ``general_vc`` type configuration, only provide a vc object."
-
-            configuration = args[0]
-            assert configuration.__class__ is MsePyContinuousForm, \
-                f"'cf' category must receive a MsePyContinuousForm instance."
-
             self._category = 'cf'
-            self._configuration = configuration
+            self._configuration = args[0]
+        elif len(args) == 1 and hasattr(args[0], f"_is_time_space_func"):
+            self._category = 'general_vc'
+            self._configuration = args[0]
 
-        # ---------------- else: not implemented --------------------------------------------------
+        # ---------------- else: not implemented -----------------------
         else:
-            raise Exception(f"type = {type} is not understandable.")
+            raise Exception(f"configuration args not understandable.")
 
-    def apply(self, dls, A, x, b):
+    def apply(self, *args):
         """
 
         Parameters
         ----------
-        dls
-        A :
-            Static A.
-        x :
-            Static x.
-        b :
-            Static b.
+        args
 
         Returns
         -------
 
         """
-        assert dls.shape[0] == len(A) == len(x) == len(b), f"check!"
+        from msepy.tools.linear_system.dynamic.main import MsePyDynamicLinearSystem
+        from msepy.tools.nonlinear_system.static.local import MsePyStaticLocalNonLinearSystem
 
-        # below, we try to find the msepy mesh boundary section where the essential bc will apply.------
+        # apply this essential boundary condition to dynamic linear system
+        if len(args) == 4 and args[0].__class__ is MsePyDynamicLinearSystem:
+            dls, A, x, b = args
+            self._apply_to_dynamic_linear_system(dls, A, x, b)
+        # apply this essential boundary condition to static local nonlinear system
+        elif len(args) == 1 and args[0].__class__ is MsePyStaticLocalNonLinearSystem:
+            nls = args[0]
+            self._apply_to_static_local_nonlinear_system(nls)
+        else:
+            raise NotImplementedError()
+
+    def _find_dofs_and_cochains(self, unknowns, global_or_local='global'):
+
+        # below, we try to find the msepy mesh boundary section where the essential bc will apply.
         from msepy.main import base
         meshes = base['meshes']  # find mesh here! because only when we call it, the meshes are config-ed.
         found_msepy_boundary_section_mesh = None
@@ -284,7 +290,7 @@ class MsePyDLSEssentialBoundaryCondition(MsePyDLSBoundaryCondition):
                 pass
         assert found_msepy_bf0 is not None, f"we must have found a msepy form."
 
-        # -- now, we  try to find the mesh-elements, local-dofs to be used.--------------------
+        # now, we  try to find the mesh-elements, local-dofs to be used.-----
 
         faces = found_msepy_boundary_section_mesh.faces
         if len(faces) == 0:  # this bc is valid on no faces. Just skip.
@@ -303,19 +309,35 @@ class MsePyDLSEssentialBoundaryCondition(MsePyDLSBoundaryCondition):
                 face.find_corresponding_local_dofs_of(found_msepy_bf0)
             )
 
-        # --- below, we try to find the coefficients to be used. This is the most important part.----
+        # below, we try to find the coefficients to be used. This is the most important part.
 
         i = self._raw_ls_bc._i
-        time = x[i]._time
+
+        unknown = unknowns[i]
+        if unknown.__class__ is MsePyRootFormStaticCopy:
+            time = unknown._t
+            if found_msepy_bf0._is_base():  # unknown._f must be the base form.
+                assert found_msepy_bf0 is unknown._f, 'safety check!'
+            else:
+                assert found_msepy_bf0._base is unknown._f, 'safety check!'
+
+        elif unknown.__class__ is MsePyRootFormStaticCochainVector:
+            time = unknown._time
+        else:
+            raise Exception()
 
         if self._category == 'cf':
             cf = self._configuration
-
             full_local_cochain = found_msepy_bf0.reduce(time, update_cochain=False, target=cf)
+
+        elif self._category == 'general_vc':
+            vc = self._configuration
+            full_local_cochain = found_msepy_bf0.reduce(time, update_cochain=False, target=vc)
 
         else:
             raise NotImplementedError(f"not implemented for bc config category = {self._category}")
 
+        # now, we try to pick the correct dofs from the full_local_cochain.
         _2_cochain = list()
         for i, e in enumerate(_0_elements):
             local_dofs = _1_local_dofs[i]
@@ -325,15 +347,31 @@ class MsePyDLSEssentialBoundaryCondition(MsePyDLSBoundaryCondition):
                 _cochain
             )
 
-        # -- below, we use _0_elements, _1_local_dofs to find global dofs and assemble _3_cochain accordingly.
-        gm = found_msepy_bf0.cochain.gathering_matrix
-        global_dofs = list()
-        global_cochain = list()
-        for i, e in enumerate(_0_elements):
-            global_dofs.extend(gm[e][_1_local_dofs[i]])
-            global_cochain.extend(_2_cochain[i])
+        if global_or_local == 'local':
+            assert len(_0_elements) == len(_1_local_dofs) == len(_2_cochain), f'safety check!'
+            return _0_elements, _1_local_dofs, _2_cochain
+        elif global_or_local == 'global':
+            # -- below, we use _0_elements, _1_local_dofs to find global dofs and assemble _3_cochain accordingly.
+            gm = found_msepy_bf0.cochain.gathering_matrix
+            global_dofs = list()
+            global_cochain = list()
+            for i, e in enumerate(_0_elements):
+                global_dofs.extend(gm[e][_1_local_dofs[i]])
+                global_cochain.extend(_2_cochain[i])
 
-        # -- customize the system -----------------------------------------------------------
+            assert len(global_dofs) == len(global_cochain), f"must be the case."
+            return global_dofs, global_cochain
+
+        else:
+            raise Exception()
+
+    def _apply_to_dynamic_linear_system(self, dls, A, x, b):
+        """"""
+        assert dls.shape[0] == len(A) == len(x) == len(b), f"check!"
+
+        global_dofs, global_cochain = self._find_dofs_and_cochains(x, global_or_local='global')
+
+        # -- customize the system -----------------------------------------
         if len(global_dofs) > 0:
             i = self._raw_ls_bc._i
             Ai = A[i]
@@ -347,5 +385,15 @@ class MsePyDLSEssentialBoundaryCondition(MsePyDLSBoundaryCondition):
 
             bi.customize.set_values(global_dofs, global_cochain)
 
+        else:
+            pass
+
+    def _apply_to_static_local_nonlinear_system(self, nls):
+        """"""
+        elements, local_dofs, local_cochain = self._find_dofs_and_cochains(nls.unknowns, global_or_local='local')
+        if len(elements) > 0:
+            i = self._raw_ls_bc._i
+            nls.customize.set_x0_from_local_dofs(i, elements, local_dofs, local_cochain)
+            nls.customize.set_no_evaluation_of_local_dofs(i, elements, local_dofs)
         else:
             pass

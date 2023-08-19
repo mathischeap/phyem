@@ -16,7 +16,7 @@ class MsePyStaticLocalMatrixAssemble(Frozen):
         self._M = M
         self._freeze()
 
-    def __call__(self, _format='csr'):
+    def __call__(self, _format='csc'):
         """"""
         gm_row = self._M._gm0_row
         gm_col = self._M._gm1_col

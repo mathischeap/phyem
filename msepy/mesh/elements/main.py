@@ -1,7 +1,5 @@
 # -*- coding: utf-8 -*-
-"""
-@author: Yi Zhang
-@contact: zhangyi_aero@hotmail.com
+r"""
 """
 import sys
 if './' not in sys.path:
@@ -105,7 +103,7 @@ class MsePyMeshElements(Frozen):
         if len(layouts) == 1:
             pass
         else:
-            if self._mesh.manifold.regions.is_structured():
+            if self._mesh.manifold.regions.is_structured() and self._mesh.n == 2:
                 region_map = self._mesh.manifold.regions.map
                 for i in region_map:
                     layout_i = layouts[i]
@@ -113,8 +111,17 @@ class MsePyMeshElements(Frozen):
                         if target is not None:
                             axis = j // 2
                             layout_j = layouts[target]
+
+                            if axis == 0:
+                                axis = 1
+                            elif axis == 1:
+                                axis = 0
+                            else:
+                                raise Exception()
+
                             ly_i_axis = layout_i[axis]
                             ly_j_axis = layout_j[axis]
+
                             try:
                                 np.testing.assert_array_almost_equal(ly_i_axis, ly_j_axis, decimal=5)
                             except AssertionError:

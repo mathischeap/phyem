@@ -168,7 +168,7 @@ def _crazy(mf, bounds=None, c=0, periodic=False):
         0: mtype
     }
 
-    return region_map, mapping_dict, Jacobian_matrix_dict, mtype_dict
+    return region_map, mapping_dict, Jacobian_matrix_dict, mtype_dict, None
 
 
 class _MesPyRegionCrazyMapping(Frozen):

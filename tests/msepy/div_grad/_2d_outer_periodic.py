@@ -1,7 +1,5 @@
 # -*- coding: utf-8 -*-
 r"""
-
-
 Here we demonstrate how to use PHYEM, the ``msepy`` implementation, to solve the two-dimensional div-grad problem.
 
 In two-dimensions, the mixed formulation of the div-grad problem is

@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-"""
+r"""
 """
 import sys
 
@@ -218,11 +218,12 @@ class AlgebraicProxy(Frozen):
         plt.axis([0, 1, 0, 1])
         plt.axis('off')
         plt.text(0.05, 0.5, seek_text + '\n' + symbolic + bc_text, ha='left', va='center', size=15)
-        plt.tight_layout()
+
         from src.config import _setting, _pr_cache
         if _setting['pr_cache']:
             _pr_cache(fig, filename='algebraicProxy')
         else:
+            plt.tight_layout()
             plt.show(block=_setting['block'])
         return fig
 

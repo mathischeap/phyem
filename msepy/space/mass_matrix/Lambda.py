@@ -1,7 +1,5 @@
 # -*- coding: utf-8 -*-
-"""
-@author: Yi Zhang
-@contact: zhangyi_aero@hotmail.com
+r"""
 """
 from tools.frozen import Frozen
 from tools.quadrature import Quadrature
@@ -79,7 +77,7 @@ class MsePyMassMatrixLambda(Frozen):
                 'im, jm, m -> ij',
                 bf, bf, _1_over_det_jm * quad_weights,
                 optimize='optimal',
-                        )
+            )
             M[re] = csr_matrix(M_re)
         return M
 
@@ -331,7 +329,7 @@ class MsePyMassMatrixLambda(Frozen):
                 'im, jm, m -> ij',
                 bf, bf, det_jm * quad_weights,
                 optimize='optimal',
-                        )
+            )
             M[re] = csr_matrix(M_re)
         return M
 
@@ -350,6 +348,6 @@ class MsePyMassMatrixLambda(Frozen):
                 'im, jm, m -> ij',
                 bf, bf, reciprocal_det_jm * quad_weights,
                 optimize='optimal',
-                        )
+            )
             M[re] = csr_matrix(M_re)
         return M

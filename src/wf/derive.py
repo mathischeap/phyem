@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-"""
+r"""
 """
 from tools.frozen import Frozen
 from copy import deepcopy
@@ -264,3 +264,8 @@ class _Derive(Frozen):
         term = self._wf[index][1]
         terms, signs = term.split(*args, **kwargs)
         return self.replace(index, terms, signs)
+
+    def delete(self, index):
+        """Delete the term of ``index``."""
+        wf = self.replace(index, [], [])
+        return wf

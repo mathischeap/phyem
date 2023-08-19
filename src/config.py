@@ -108,7 +108,7 @@ def _pr_cache(fig, filename=None):
     else:
         pass
 
-    plt.savefig(folder_current + filename_personal, dpi=200)
+    plt.savefig(folder_current + filename_personal, bbox_inches='tight', dpi=200)
 
     _setting["pr_cache_counter"] += 1
     plt.close(fig)
@@ -159,11 +159,11 @@ def _clear_all():
     Make sure that, when we add new global cache, put it here.
     """
     from src.algebra.array import _global_root_arrays
-    from src.algebra.nonlinear_operator import _global_md_arrays
+    from src.algebra.nonlinear_operator import _global_nop_arrays
     from src.form.main import _global_forms
     from src.form.main import _global_root_forms_lin_dict
     _clear_a_dict(_global_root_arrays)
-    _clear_a_dict(_global_md_arrays)
+    _clear_a_dict(_global_nop_arrays)
     _clear_a_dict(_global_forms)
     _clear_a_dict(_global_root_forms_lin_dict)
     from src.form.parameters import _global_root_constant_scalars

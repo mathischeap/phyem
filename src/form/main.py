@@ -1,7 +1,5 @@
 # -*- coding: utf-8 -*-
-"""
-pH-lib@RAM-EEMCS-UT
-created at: 3/8/2023 12:05 PM
+r"""
 """
 from tools.frozen import Frozen
 from typing import Dict

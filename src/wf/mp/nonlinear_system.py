@@ -35,16 +35,17 @@ class MatrixProxyNoneLinearSystem(Frozen):
         if self._mp_ls.bc is None or len(self._mp_ls.bc) == 0:
             bc_text = ''
         else:
-            bc_text = self._mp_ls._bc_text()
+            bc_text = self._mp_ls._bc._bc_text()
         fig = plt.figure(figsize=figsize)
         plt.axis([0, 1, 0, 1])
         plt.axis('off')
         plt.text(0.05, 0.5, seek_text + symbolic + bc_text, ha='left', va='center', size=15)
-        plt.tight_layout()
+
         from src.config import _setting, _pr_cache
         if _setting['pr_cache']:
             _pr_cache(fig, filename='matrixProxyNonLinearSystem')
         else:
+            plt.tight_layout()
             plt.show(block=_setting['block'])
         return fig
 

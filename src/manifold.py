@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-"""
+r"""
 """
 import sys
 
@@ -34,7 +34,7 @@ class Manifold(Frozen):
         self, ndim,
         sym_repr=None,
         lin_repr=None,
-        is_periodic=False,
+        is_periodic=False,   # means fully periodic
         # add other representations here.
     ):
         """"""

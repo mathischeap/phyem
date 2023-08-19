@@ -1,13 +1,12 @@
 # -*- coding: utf-8 -*-
+r"""
 """
-pH-lib@RAM-EEMCS-UT
-created at: 3/30/2023 7:02 PM
-"""
-from importlib import import_module
 from tools.frozen import Frozen
 from src.config import get_embedding_space_dim
 
 from src.manifold import NullManifold
+
+from msepy.manifold.predefined.distributor import PredefinedMsePyManifoldDistributor
 
 from msepy.manifold.regions.main import MseManifoldRegions
 from msepy.manifold.coordinate_transformation import MsePyManifoldsCoordinateTransformation
@@ -26,12 +25,19 @@ def config(mf, arg, *args, **kwargs):
 
     if isinstance(arg, str):  # use predefined mappings, this leads to region map type: 0
 
-        predefined_path = '.'.join(str(MsePyManifold).split(' ')[1][1:-2].split('.')[:-2]) + \
-                          '.predefined.' + arg
-        _module = import_module(predefined_path)
-        region_map, mapping_dict, Jacobian_matrix_dict, mtype_dict = getattr(
-            _module, '_'+arg
-        )(mf, **kwargs)
+        _the_mf_config = PredefinedMsePyManifoldDistributor()(arg)
+
+        if _the_mf_config.__class__ is config.__class__:
+            mf._configuration = None
+            region_map, mapping_dict, Jacobian_matrix_dict, mtype_dict, default_element_layout = (
+                _the_mf_config(mf, **kwargs)
+            )
+
+        else:  # we got a class
+            mf._configuration = _the_mf_config(mf, **kwargs)
+            region_map, mapping_dict, Jacobian_matrix_dict, mtype_dict, default_element_layout = (
+                mf._configuration()
+            )
 
         mf._parse_regions_from_region_map(
             0,
@@ -42,6 +48,7 @@ def config(mf, arg, *args, **kwargs):
         )
         assert mf.regions.map is not None, f"predefined manifold only config manifold with region map."
         assert mf.regions._map_type == 0, f"must be!"
+        mf._default_element_layout_maker = default_element_layout
 
     elif arg.__class__ is MsePyManifold:  # this leads to region map type: 1
 
@@ -70,6 +77,8 @@ class MsePyManifold(Frozen):
         self._ct = None
         self._regions = None
         self._visualize = None
+        self._default_element_layout_maker = None
+        self._configuration = None
         self._freeze()
 
     def _parse_regions_from_region_map(
@@ -293,7 +302,8 @@ class MsePyManifold(Frozen):
         """check if `boundary_dict` covers all boundaries of the regions represented by `region_map`."""
         # firstly, merge boundary_dicts into one ----------------------------------
         for b_regions in boundary_regions:
-            assert b_regions._base_regions is base_regions, f"boundary regions and base regions dis-match."
+            assert b_regions._base_regions is base_regions, \
+                f"boundary regions and base regions dis-match."
 
         base_region_map = base_regions.map
         boundary_dict = {}
@@ -345,7 +355,8 @@ class MsePyManifold(Frozen):
                         )
 
                 count_bds = bds.count(1)
-                assert count_bds <= 1, f"region boundary [{i}][{j}] appears more than once in boundary sections."
+                assert count_bds <= 1, \
+                    f"region boundary [{i}][{j}] appears more than once in boundary sections."
 
                 if mp is None:
                     if 1 in bds:
@@ -395,7 +406,8 @@ class MsePyManifold(Frozen):
     @property
     def regions(self):
         """"""
-        assert self._regions is not None, f"regions of {self} is not configured, config it through `msepy.config`"
+        assert self._regions is not None, \
+            f"regions of {self} is not configured, config it through `msepy.config`"
         return self._regions
 
     @property

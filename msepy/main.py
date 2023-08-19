@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-"""
+r"""
 """
 from tools.frozen import Frozen
 from msepy.manifold.main import MsePyManifold
@@ -154,7 +154,7 @@ def config(obj):
     return _Config(obj)
 
 
-def info():
+def info(*others_2b_printed):
     """We print the info, as much as possible, of the current msepy implementation."""
     forms = base['forms']
     # -- first we print the newest time of the cochain (if there is) of each form.
@@ -180,7 +180,11 @@ def info():
     for ats_lin in _global_abstract_time_sequence:
         ats = _global_abstract_time_sequence[ats_lin]
         ats.info()
-    print()
+
+    print(f"\n~) Others: ~~~~")
+    for i, other in enumerate(others_2b_printed):
+        print(f"  {i}) -> {other}\n")
+
     _info_cache['info_count'] = count + 1
     _info_cache['info_time'] = new_time
     return

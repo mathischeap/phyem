@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-"""
+r"""
 """
 import numpy as np
 from tools.frozen import Frozen
@@ -292,6 +292,11 @@ class MsePyStaticLocalVectorCustomize(Frozen):
     def set_values(self, global_dofs, cochain):
         """set `v[global_dofs]` to be `cochain`."""
         # first we build up one-2-one relation between dofs and cochain
+        if isinstance(cochain, (int, float)):
+            cochain = np.ones(len(global_dofs)) * cochain
+        else:
+            pass
+
         assert len(global_dofs) == len(cochain), f"len(dofs) != len(cochains)"
         dof_cochain_dict = {}
         for dof, cc in zip(global_dofs, cochain):

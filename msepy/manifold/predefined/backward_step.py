@@ -110,14 +110,15 @@ def _make_an_illustration(saveto, x1=1, x2=1, y1=0.25, y2=0.25):
     plt.text(x1/2, y1 + 0.03, r'$x1$', ha='center')
     plt.text(- 0.07, y1 + y2/2, r'$y2$', va='center')
     plt.text(x1 - 0.07, y1/2, r'$y1$', va='center')
+    plt.text(x1, y1, r'$(x1, y1)$', va='bottom', ha='left')
 
     plt.xlabel(r"$x$")
     plt.ylabel(r"$y$")
-    plt.savefig(saveto, bbox_inches='tight')
+    plt.savefig(saveto, bbox_inches='tight', dpi=200)
     plt.close()
 
 
-def backward_step(x1=1, x2=1, y1=0.25, y2=0.25, z=None):
+def backward_step(x1=1, x2=1, y1=0.25, y2=0.25, z=None, periodic=False):
     """
 
     Parameters
@@ -133,28 +134,29 @@ def backward_step(x1=1, x2=1, y1=0.25, y2=0.25, z=None):
     z : float, None, default=None
         When it is ``None``, it gives a two-dimensional domain. Otherwise, :math:`(z>0)`, it gives a three-dimensional
         one.
+    periodic : bool, default=False
+        When the domain is 3d, whether it is periodic along the ``z``-axis?
 
     """
-    raise Exception(x1, x2, y1, y2, z)
+    raise Exception(x1, x2, y1, y2, z, periodic)
 
 
-def _backward_step(mf, x1=1, x2=1, y1=0.25, y2=0.25, z=None):
+def _backward_step(mf, x1=1, x2=1, y1=0.25, y2=0.25, z=None, periodic=False):
     """
     ^ y
     |
     |              x1                      x2
-    |   __________________________________________________
-    |   |                    |                           |
-    |   |                    |                           |
-    |   |         r2         |           r1              |    y2
-    |   |                    |                           |
-    |   |____________________|___________________________|
-    |                        |                           |
-    |                        |                           |
-    |                        |           r0              |    y1
-    |                        |                           |
-    | (0,0)                  |___________________________|
-    |
+     __________________________________________________
+    ||                    |                           |
+    ||                    |                           |
+    ||         r2         |           r1              |    y2
+    ||                    |                           |
+    ||____________________|___________________________|
+    |            (x1, y1) |                           |
+    |                     |                           |
+    |                     |           r0              |    y1
+    |                     |                           |
+    | (0,0)               |___________________________|
     .--------------------------------------------------------------> x
     z
 
@@ -206,11 +208,18 @@ def _backward_step(mf, x1=1, x2=1, y1=0.25, y2=0.25, z=None):
             2: [None, 1,    None, None],
         }
     elif esd == 3:
-        region_map = {
-            0: [None, None, None, 1,    None, None],
-            1: [2,    None, 0,    None, None, None],
-            2: [None, 1,    None, None, None, None],
-        }
+        if periodic:
+            region_map = {
+                0: [None, None, None, 1,    0, 0],
+                1: [2,    None, 0,    None, 1, 1],
+                2: [None, 1,    None, None, 2, 2],
+            }
+        else:
+            region_map = {
+                0: [None, None, None, 1,    None, None],
+                1: [2,    None, 0,    None, None, None],
+                2: [None, 1,    None, None, None, None],
+            }
     else:
         raise Exception()
 
@@ -241,4 +250,4 @@ def _backward_step(mf, x1=1, x2=1, y1=0.25, y2=0.25, z=None):
     else:
         raise Exception()
 
-    return region_map, mapping_dict, Jacobian_matrix_dict, mtype_dict
+    return region_map, mapping_dict, Jacobian_matrix_dict, mtype_dict, None

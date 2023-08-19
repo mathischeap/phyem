@@ -63,7 +63,7 @@ u.cf = phi_scalar.gradient
 f.cf = - phi_scalar.gradient.divergence
 
 ls.bc.config(Gamma_phi)(phi_scalar)
-ls.bc.config(Gamma_u)(u.cf)
+ls.bc.config(Gamma_u)(phi_scalar.gradient)
 
 f[0].reduce()
 # phi[0].reduce()
@@ -73,6 +73,7 @@ ls0 = ls(0)
 
 # ls0.customize.set_dof(-1, phi[0].cochain.of_dof(-1))
 als = ls0.assemble()
+# als.solve.scheme = 'gmres'
 als.solve()
 
 # phi[0].visualize()

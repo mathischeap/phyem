@@ -2,7 +2,6 @@
 """
 Algebraic Proxy.
 """
-
 from src.spaces.main import _default_mass_matrix_reprs
 from src.spaces.main import _default_astA_x_astB_ip_tC_reprs
 from src.spaces.main import _default_astA_x_B_ip_tC_reprs

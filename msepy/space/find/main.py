@@ -1,7 +1,5 @@
 # -*- coding: utf-8 -*-
 r"""
-pH-lib@RAM-EEMCS-UT
-Yi Zhang
 """
 from tools.frozen import Frozen
 from msepy.space.find.local_dofs import _MsePySpaceFindLocalDofs

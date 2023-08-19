@@ -1,7 +1,5 @@
 # -*- coding: utf-8 -*-
-"""
-pH-lib@RAM-EEMCS-UT
-created at: 4/3/2023 5:46 PM
+r"""
 """
 from tools.frozen import Frozen
 

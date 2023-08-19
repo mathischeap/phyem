@@ -357,12 +357,12 @@ class PartialDifferentialEquations(Frozen):
             pass
         else:
             plt.title(title)
-        plt.tight_layout()
 
         from src.config import _setting, _pr_cache
         if _setting['pr_cache']:
             _pr_cache(fig, filename='pde_vc')
         else:
+            plt.tight_layout()
             plt.show(block=_setting['block'])
         return fig
 
@@ -515,11 +515,11 @@ class PartialDifferentialEquations(Frozen):
             pass
         else:
             plt.title(title)
-        plt.tight_layout()
         from src.config import _setting, _pr_cache
         if _setting['pr_cache']:
             _pr_cache(fig, filename='pde')
         else:
+            plt.tight_layout()
             plt.show(block=_setting['block'])
         return fig
 

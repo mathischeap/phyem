@@ -11,8 +11,10 @@ class BundleValuedFormSpace(SpaceBase):
         super().__init__(mesh, orientation)
         assert isinstance(k, int) and 0 <= k <= mesh.ndim, f" k={k} illegal on {mesh}."
         self._k = k
+
         if orientation == 'outer':
             self._sym_repr = r"\widetilde{\mathcal{B}}^{(" + str(self.k) + r')}' + rf"({self.manifold._sym_repr})"
+
         else:
             self._sym_repr = r"\mathcal{B}^{(" + str(self.k) + r')}' + rf"({self.manifold._sym_repr})"
 

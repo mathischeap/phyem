@@ -1,8 +1,5 @@
 # -*- coding: utf-8 -*-
-"""
-pH-lib@RAM-EEMCS-UT
-Yi Zhang
-Created at 4:03 PM on 5/22/2023
+r"""
 """
 
 from numpy import sqrt, sin, cos, pi

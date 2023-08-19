@@ -1,11 +1,8 @@
 # -*- coding: utf-8 -*-
-"""
+r"""
 These codes are copied from a legacy. They are not very efficient. Luckily, they most likely will be
 executed only once. Thus, we keep these codes.
 
-pH-lib@RAM-EEMCS-UT
-Yi Zhang
-Created at 1:46 PM on 5/2/2023
 """
 from tools.frozen import Frozen
 import numpy as np
@@ -123,9 +120,11 @@ class MsePyMeshTopology(Frozen):
                         assert gathering[i, k] != -1, " <Geometry> "  # this corner has to be numbered now.
 
                         current += 1
+
                     else:  # it is numbered, we skip it.
                         pass
             self._corner_numbering = gathering.astype(int)
+
         elif n == 3:
             c_i2n = {0: 'NWB', 1: 'SWB', 2: 'NEB', 3: 'SEB', 4: 'NWF', 5: 'SWF', 6: "NEF", 7: 'SEF'}
             c_n2i = {
@@ -134,7 +133,7 @@ class MsePyMeshTopology(Frozen):
                 'WNB': 0, 'WSB': 1, 'ENB': 2, 'ESB': 3, 'WNF': 4, 'WSF': 5, "ENF": 6, 'ESF': 7,
                 'WBN': 0, 'WBS': 1, 'EBN': 2, 'EBS': 3, 'WFN': 4, 'WFS': 5, "EFN": 6, 'EFS': 7,
                 'BNW': 0, 'BSW': 1, 'BNE': 2, 'BSE': 3, 'FNW': 4, 'FSW': 5, "FNE": 6, 'FSE': 7,
-                'BWN': 0, 'BWS': 1, 'BEN': 2, 'BES': 3, 'FWN': 4, 'FWS': 5, "FEN": 6, 'FES': 7
+                'BWN': 0, 'BWS': 1, 'BEN': 2, 'BES': 3, 'FWN': 4, 'FWS': 5, "FEN": 6, 'FES': 7,
             }
 
             gathering = -np.ones((self._mesh.elements._num, 8))
@@ -333,15 +332,19 @@ class MsePyMeshTopology(Frozen):
                                 ARGS.append(self._find_the_elements_sharing_corner_edge(I_, _dict_[I_][0:2]))
                                 ARGS.append(self._find_the_elements_sharing_corner_edge(I_, _dict_[I_][1:3]))
                                 ARGS.append(self._find_the_elements_sharing_corner_edge(I_, _dict_[I_][0:3:2]))
+                            else:
+                                pass
+
                     return self._group_edges_into_corners(i, *args, *ARGS)
 
                 elif len(_dict_[key]) == 3:
                     pass
+
                 else:
-                    raise Exception
+                    raise Exception()
 
             else:
-                raise Exception
+                raise Exception()
 
         _corner_index_to_name_ = {
             0: 'NWB', 1: 'SWB', 2: 'NEB', 3: 'SEB', 4: 'NWF', 5: 'SWF', 6: "NEF", 7: 'SEF'
@@ -360,7 +363,8 @@ class MsePyMeshTopology(Frozen):
                 corner_name = _corner_index_to_name_[_corner_name_to_index_[_dict_[key]]]
                 output.update({str(key)+'-'+corner_name, })
             else:
-                raise Exception
+                raise Exception()
+
         output = tuple(output)  # we do this to avoid uncertainty during using `set`.
         return output
 
@@ -378,7 +382,9 @@ class MsePyMeshTopology(Frozen):
             (4): Number the edge in all 4 elements.
 
         """
+
         if self._mesh.n == 3:
+
             e_i2n = {
                 0: 'WB', 1: 'EB', 2: 'WF', 3: 'EF', 4: 'NB', 5: 'SB',
                 6: 'NF', 7: 'SF', 8: 'NW', 9: 'SW', 10: 'NE', 11: 'SE'
@@ -387,12 +393,13 @@ class MsePyMeshTopology(Frozen):
                 'WB': 0, 'EB': 1, 'WF': 2, 'EF': 3, 'NB': 4, 'SB': 5,
                 'NF': 6, 'SF': 7, 'NW': 8, 'SW': 9, 'NE': 10, 'SE': 11,
                 'BW': 0, 'BE': 1, 'FW': 2, 'FE': 3, 'BN': 4, 'BS': 5,
-                'FN': 6, 'FS': 7, 'WN': 8, 'WS': 9, 'EN': 10, 'ES': 11
+                'FN': 6, 'FS': 7, 'WN': 8, 'WS': 9, 'EN': 10, 'ES': 11,
             }
 
             gathering = -np.ones((self._mesh.elements._num, 12))
             correct_num = 0
             self._edge_attachment = {}
+
             for i in range(self._mesh.elements._num):
                 for k in range(12):
                     if gathering[i, k] == -1:  # not numbered yet
@@ -400,6 +407,7 @@ class MsePyMeshTopology(Frozen):
                         edge_name = e_i2n[k]
                         self._edge_attachment[correct_num] = \
                             self._find_the_elements_sharing_corner_edge(i, edge_name)
+                        # noinspection PyUnresolvedReferences
                         for item in self._edge_attachment[correct_num]:
                             # now, we number this group edges
 
@@ -408,17 +416,21 @@ class MsePyMeshTopology(Frozen):
 
                         assert gathering[i, k] != -1, " <Geometry3D> "  # this edge has to be numbered now.
                         correct_num += 1
+
                     else:  # it is numbered, we skip it.
                         pass
+
             for i in self._edge_attachment:
                 self._edge_attachment[i] = tuple(dict.fromkeys(self._edge_attachment[i]))
             self._edge_numbering = gathering.astype(int)
+
         else:
             raise Exception()
 
     def _generate_numbering_gathering_sides_(self):
         """ """
         if self._mesh.n == 3:
+
             s_n2i = {'N': 0, 'S': 1, 'W': 2, 'E': 3, 'B': 4, 'F': 5}
             s_i2n = {0: 'N', 1: 'S', 2: 'W', 3: 'E', 4: 'B', 5: 'F'}
             s_pair = {'N': 'S', 'S': 'N', 'W': 'E', 'E': 'W', 'B': 'F', 'F': 'B'}

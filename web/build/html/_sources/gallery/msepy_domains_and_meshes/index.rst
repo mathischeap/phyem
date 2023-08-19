@@ -25,6 +25,12 @@ showcased below
 
    msepy/backward_step
 
+
+.. toctree::
+   :maxdepth: 1
+
+   msepy/cylinder_channel
+
 |
 
 ↩️  Back to :ref:`GALLERY-Gallery`.

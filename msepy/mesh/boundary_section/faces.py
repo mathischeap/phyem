@@ -1,8 +1,5 @@
 # -*- coding: utf-8 -*-
-"""
-pH-lib@RAM-EEMCS-UT
-Yi Zhang
-Created at 5:23 PM on 5/25/2023
+r"""
 """
 import numpy as np
 from tools.frozen import Frozen

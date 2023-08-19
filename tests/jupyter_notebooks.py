@@ -1,9 +1,5 @@
 # -*- coding: utf-8 -*-
 r"""
-pH-lib@RAM-EEMCS-UT
-Yi Zhang
-Created at 7:36 PM on 5/2/2023
-
 To run a particular jupyter notebook, do:
 
 $ jupyter nbconvert --to notebook --inplace --execute  ./web/source/jupyter/test1.ipynb

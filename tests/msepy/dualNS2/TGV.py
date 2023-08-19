@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-"""
+r"""
 2D TGV test.
 
 python tests/msepy/dualNS2/TGV.py

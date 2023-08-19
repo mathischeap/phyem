@@ -24,14 +24,11 @@ class ArcAntiClockWise(object):
             self.end_theta += 2 * np.pi
 
     # o in [0, 1]
-    def _gamma(self, o):
+    def gamma(self, o):
         theta = o * (self.end_theta - self.start_theta) + self.start_theta
         return self.x0 + self.r * np.cos(theta), self.y0 + self.r * np.sin(theta)
 
-    def _dgamma(self, o):
+    def dgamma(self, o):
         theta = o * (self.end_theta - self.start_theta) + self.start_theta
         return -self.r * np.sin(theta) * (self.end_theta - self.start_theta), \
             self.r * np.cos(theta) * (self.end_theta - self.start_theta)
-
-    def __call__(self):
-        return self._gamma, self._dgamma

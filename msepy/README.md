@@ -1,1 +1,1 @@
-Mimetic Spectral Elements
+Mimetic spectral element implementation.

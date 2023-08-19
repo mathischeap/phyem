@@ -1,8 +1,5 @@
 # -*- coding: utf-8 -*-
-"""
-pH-lib@RAM-EEMCS-UT
-Yi Zhang
-Created at 3:12 PM on 5/2/2023
+r"""
 """
 import numpy as np
 import sys
@@ -45,7 +42,7 @@ def contourf(*args, **kwargs):
 def contour(
         x, y, v,
         figsize=(8, 6),
-        levels=None, num_levels=20, linewidth=1, linestyle=None,
+        levels=None, level_range=None, num_levels=20, linewidth=1, linestyle=None,
         usetex=True, colormap='coolwarm',
         show_colorbar=True,
         colorbar_label=None, colorbar_orientation='vertical', colorbar_aspect=20,
@@ -71,6 +68,7 @@ def contour(
         value data. Put in dict for multiple patches. Each patch must be a 2d-ndarray
     figsize
     levels
+    level_range
     num_levels
     linewidth
     linestyle:
@@ -138,7 +136,16 @@ def contour(
     ax.tick_params(labelsize=ticksize)
 
     if levels is None:
-        levels = ___set_contour_levels___(v, num_levels)
+        assert num_levels is not None, f"num_levels cannot be None when `levels` is not provided."
+        assert isinstance(num_levels, (int, float)) and num_levels > 0 and num_levels % 1 == 0, \
+            f"num_levels = {num_levels} wrong. It must be a positive integer."
+        if level_range is None:
+            levels = ___set_contour_levels___(v, num_levels)
+        else:
+            assert len(level_range) == 2 and level_range[0] < level_range[1], \
+                f"level range must be two increasing number"
+            l_bound, u_bound = level_range
+            levels = np.linspace(l_bound, u_bound, num_levels)
     else:
         pass
     # -------------- contour plot --------------------------------------------------------

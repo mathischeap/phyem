@@ -1,9 +1,6 @@
 # -*- coding: utf-8 -*-
-"""
+r"""
 How to parse a degree for Mse Py space.
-
-@author: Yi Zhang
-@contact: zhangyi_aero@hotmail.com
 """
 from tools.frozen import Frozen
 from tools.quadrature import Quadrature

@@ -1,7 +1,5 @@
 # -*- coding: utf-8 -*-
-"""
-By Yi Zhang
-Created at 6:34 PM on 8/13/2023
+r"""
 """
 import numpy as np
 from time import time
@@ -58,7 +56,25 @@ class MsePyNonlinearSystemNewtonRaphsonSolve(Frozen):
             inner_solver_scheme='spsolve',
             inner_solver_kwargs=None          # args for the inner linear solver.
     ):
-        """"""
+        """
+
+        Parameters
+        ----------
+        x0 :
+            The initial guess. Usually be a list of forms. We will parse x0 from the newest cochain of
+            these forms.
+        atol :
+            Outer Newton iterations stop when norm(dx) < atol.
+        maxiter :
+            Outer Newton iterations stop when ITER > maxiter.
+        inner_solver_package :
+        inner_solver_scheme :
+        inner_solver_kwargs :
+
+        Returns
+        -------
+
+        """
 
         t_start = time()
 
@@ -72,13 +88,42 @@ class MsePyNonlinearSystemNewtonRaphsonSolve(Frozen):
 
         # initialize the variables ---------------------------------------------------------------- 1
 
-        xi = self.x0   # a list of 2d arrays;
+        x0 = self.x0   # a list of 2d arrays;
+        assert isinstance(x0, list) and all([isinstance(_, np.ndarray) and _.ndim == 2 for _ in x0]), \
+            f"x0 must be a list of 2d array."
         ITER = 0
         message = ''
         BETA = list()
 
         t_iteration_start = time()
 
+        # ------ some customizations need to be applied here.
+        for customization in self._nls.customize._customizations:
+            method_name = customization[0]
+            method_para = customization[1]
+
+            if method_name == "set_x0_from_local_dofs":
+                # we make the #i dof unchanged .....
+                i, elements, local_dofs, local_values = method_para
+                assert len(elements) == len(local_dofs) == len(local_values), f"positions are not correct."
+
+                x0_i = x0[i]
+                assert isinstance(x0_i, np.ndarray) and x0_i.ndim == 2, f'safety check'
+
+                for j,  e in enumerate(elements):
+                    x0_i[e, local_dofs[j]] = local_values[j]
+
+                x0[i] = x0_i
+
+            else:
+                pass
+
+        xi = x0
+
+        # --- some caches ----------------------------
+        _global_dofs_cache = None
+
+        # -- start the Newton iterations ----------------------------
         while 1:
             ITER += 1
 
@@ -174,20 +219,35 @@ class MsePyNonlinearSystemNewtonRaphsonSolve(Frozen):
 
             ls = MsePyStaticLocalLinearSystem(LHS, x, f)
 
-            # ---------------- adopt customizations ------------------------------------------2
+            # adopt customizations: important ------------------------------------------ 2
             for customization in self._nls.customize._customizations:
                 method_name = customization[0]
                 method_para = customization[1]
 
-                A, f = ls.A._mA, ls.b._vb
-                # ------------------------------------------------------------3
+                A = ls.A._mA  # local matrix A for elements
+                f = ls.b._vb  # local vector b for elements
+                # ------------------------------------------------------------ 3
                 if method_name == "set_no_evaluation":
                     # we make the #i dof unchanged .....
-                    A.customize.identify_row(method_para)
-                    f.customize.set_value(method_para, 0)
+                    dof = method_para
+                    A.customize.identify_row(dof)
+                    f.customize.set_value(dof, 0)
+
+                elif method_name == 'set_no_evaluation_for_overall_local_dofs':
+                    if _global_dofs_cache is None:
+                        elements, overall_local_dofs = method_para
+                        gm = A._gm0_row
+                        global_dofs = gm._find_global_numbering(elements, overall_local_dofs)
+                        _global_dofs_cache = global_dofs
+                    else:
+                        global_dofs = _global_dofs_cache
+                    A.customize.identify_diagonal(global_dofs)
+                    f.customize.set_values(global_dofs, 0)
 
                 else:
-                    raise NotImplementedError(f"Cannot handle customization = {method_name}")
+                    pass
+
+            # ==================================================================================
 
             als = ls.assemble()
             solve = als.solve
@@ -196,21 +256,24 @@ class MsePyNonlinearSystemNewtonRaphsonSolve(Frozen):
             solve.x0 = 0
             A_shape = solve._A.shape
 
-            solve(update_x=True, **inner_solver_kwargs)  # results updated to the unknowns of the nonlinear system
+            solve(update_x=True, **inner_solver_kwargs)
+            # results updated to the unknowns of the nonlinear system to make the 2d local cochain
             LSm = solve.message
 
             dx = list()
             for f in self._nls.unknowns:
                 dx.append(f.cochain.local)
 
-            beta = sum(
+            beta = sum(  # this beta is larger than the real vector norm of dx which can be computed after assembling.
                 [
                     np.sum(_**2) for _ in dx
                 ]
             )
+
             BETA.append(beta)
-            JUDGE, stop_iteration, convergence_info, JUDGE_explanation = \
-                _nLS_stop_criterion(BETA, atol, ITER, maxiter)
+            JUDGE, stop_iteration, convergence_info, JUDGE_explanation = _nLS_stop_criterion(
+                BETA, atol, ITER, maxiter
+            )
 
             xi1 = list()
             for _xi, _dx in zip(xi, dx):
@@ -226,7 +289,7 @@ class MsePyNonlinearSystemNewtonRaphsonSolve(Frozen):
         # ------ Newton iteration completed xi1 is the solution...
         results = xi1
         for k, uk in enumerate(self._nls.unknowns):
-            uk.cochain = results[k]  # the results will be sent to the unknowns.
+            uk.cochain = results[k]  # results sent to the unknowns. Important since yet they are occupied by dx
 
         t_iteration_end = time()
         Ta = t_iteration_end-t_start
@@ -241,7 +304,7 @@ class MsePyNonlinearSystemNewtonRaphsonSolve(Frozen):
                    f" = [beta: %.4e]" \
                    f" = [{convergence_info}-{JUDGE_explanation}]" \
                    f" -> nLS solving costs %.2f, each ITER cost %.2f" % (BETA[-1], Ta, TiT/ITER) \
-                   + '\n --- Last Linear Solver Message: \n' + LSm
+                   + '\n(-*-) Last Linear Solver Message:(-*-)\n' + LSm + '\n'
 
         info = {
             'total cost': Ta,

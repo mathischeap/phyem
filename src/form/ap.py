@@ -1,7 +1,5 @@
 # -*- coding: utf-8 -*-
-"""
-pH-lib@RAM-EEMCS-UT
-created at: 3/20/2023 3:57 PM
+r"""
 """
 from src.config import _form_evaluate_at_repr_setting, _root_form_ap_vec_setting
 from src.algebra.array import _root_array

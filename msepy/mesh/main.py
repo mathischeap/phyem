@@ -1,8 +1,5 @@
 # -*- coding: utf-8 -*-
-"""
-@author: Yi Zhang
-@contact: zhangyi_aero@hotmail.com
-@time: 11/26/2022 2:56 PM
+r"""
 """
 import sys
 import numpy as np
@@ -153,7 +150,18 @@ class MsePyMesh(Frozen):
     def _parse_elements_from_element_layout(self, element_layout):
         """"""
         if isinstance(element_layout, (int, float)):
-            element_layout = [element_layout for _ in range(self.ndim)]
+            if self.manifold._default_element_layout_maker is None:
+                element_layout = [element_layout for _ in range(self.ndim)]
+            else:
+                element_layout = self.manifold._default_element_layout_maker(element_layout)
+                assert isinstance(element_layout, dict), \
+                    f"default_element_layout_maker must return a dict indicating the element layouts in all regions."
+                assert len(element_layout) == len(self.manifold.regions), \
+                    f"default_element_layout_maker must return a dict indicating the element layouts in all regions."
+                for i in element_layout:
+                    assert i in self.manifold.regions, \
+                            (f"default_element_layout_maker must return a dict indicating the element layouts "
+                             f"in all regions.")
         else:
             pass
         if not isinstance(element_layout, dict):
@@ -165,9 +173,10 @@ class MsePyMesh(Frozen):
             pass
 
         layout = dict()
+        assert isinstance(element_layout, dict), f"element_layout must eventually be parsed as a dict!"
         for i in element_layout:  # element layout for i# region.
             layout_i = element_layout[i]
-            assert len(layout_i) == self.ndim, \
+            assert layout_i is not None and len(layout_i) == self.ndim, \
                 f"element_layout for region #{i} = {layout_i} is illegal"
 
             _temp = list()

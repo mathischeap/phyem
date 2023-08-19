@@ -1,7 +1,5 @@
 # -*- coding: utf-8 -*-
-"""
-@author: Yi Zhang
-@contact: zhangyi_aero@hotmail.com
+r"""
 """
 from tools.frozen import Frozen
 from msepy.space.gathering_matrix.Lambda import MsePyGatheringMatrixLambda

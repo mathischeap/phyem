@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-"""
+r"""
 """
 from tools.frozen import Frozen
 from src.spaces.main import _sep
@@ -83,7 +83,6 @@ def msepy_root_array_parser(dls, array_lin_repr):
         elif type_indicator == _default_astA_x_astB_ip_tC_reprs[1].split(_sep)[0]:
             A, time_indicator = _parse_astA_x_astB_ip_tC(*info_indicators)
             text = r"\mathsf{c}"
-
         elif type_indicator == _default_astA_x_B_ip_tC_reprs[1].split(_sep)[0]:
             A, time_indicator = _parse_astA_x_B_ip_tC(*info_indicators)
             text = r"\mathsf{C}"

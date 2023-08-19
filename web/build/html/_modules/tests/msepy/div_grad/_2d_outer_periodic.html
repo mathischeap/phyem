@@ -198,10 +198,19 @@
 <li class="toctree-l3"><a class="reference internal" href="../../../../gallery/msepy_domains_and_meshes/msepy/crazy.html">Crazy domain and mesh</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../../gallery/msepy_domains_and_meshes/msepy/crazy_multi.html">Multi-crazy domain and mesh</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../../gallery/msepy_domains_and_meshes/msepy/backward_step.html">Backward step</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../gallery/msepy_domains_and_meshes/msepy/cylinder_channel.html">Cylinder channel</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../gallery/div_grad/index.html">div-grad</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../gallery/canonical_linear_port_Hamiltonian/index.html">Canonical linear port Hamiltonian</a></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../../../../gallery/Navier_Stokes/index.html">Navier-Stokes equations</a><input class="toctree-checkbox" id="toctree-checkbox-4" name="toctree-checkbox-4" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-4"><i class="fa-solid fa-chevron-down"></i></label><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../../gallery/Navier_Stokes/shear_layer_rollup/index.html">Shear layer rollup</a></li>
+</ul>
+</li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../../../../gallery/MHD/index.html">MHD (magnetohydrodynamics)</a><input class="toctree-checkbox" id="toctree-checkbox-5" name="toctree-checkbox-5" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-5"><i class="fa-solid fa-chevron-down"></i></label><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../../gallery/MHD/Orszag_Tang_vortex/index.html">Orszag-Tang Vortex</a></li>
+</ul>
+</li>
 </ul>
 </li>
 </ul>
@@ -354,8 +363,6 @@ document.write(`
   <h1>Source code for tests.msepy.div_grad._2d_outer_periodic</h1><div class="highlight"><pre>
 <span></span><span class="c1"># -*- coding: utf-8 -*-</span>
 <span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
-
-
 <span class="sd">Here we demonstrate how to use PHYEM, the ``msepy`` implementation, to solve the two-dimensional div-grad problem.</span>
 
 <span class="sd">In two-dimensions, the mixed formulation of the div-grad problem is</span>
@@ -416,7 +423,7 @@ document.write(`
 
 
 <span class="k">def</span> <span class="nf">phi_func</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;&quot;&quot;&quot;</span>
+    <span class="sd">&quot;&quot;&quot;&quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="mi">2</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span> <span class="o">*</span> <span class="n">x</span><span class="p">)</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="mi">2</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span> <span class="o">*</span> <span class="n">y</span><span class="p">)</span> <span class="o">+</span> <span class="n">t</span> <span class="o">*</span> <span class="mi">0</span>
 
 
@@ -429,7 +436,7 @@ document.write(`
 
 
 <div class="viewcode-block" id="div_grad_2d_periodic_manufactured_test"><a class="viewcode-back" href="../../../../gallery/div_grad/index.html#tests.msepy.div_grad._2d_outer_periodic.div_grad_2d_periodic_manufactured_test">[docs]</a><span class="k">def</span> <span class="nf">div_grad_2d_periodic_manufactured_test</span><span class="p">(</span><span class="n">degree</span><span class="p">,</span> <span class="n">K</span><span class="p">,</span> <span class="n">c</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
-<span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
+    <span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
@@ -549,7 +556,7 @@ By Andrea Brugnoli, Ramy Rashad, Stefano Stramigioli, Yi Zhang
   <div class="footer-item">
     
 <div class="extra_footer">
-  <div>Last updated on July 31, 2023, 14:53:57, W. Europe Daylight Time</div>
+  <div>Last updated on August 19, 2023, 00:00:45, W. Europe Daylight Time</div>
 </div>
   </div>
   
