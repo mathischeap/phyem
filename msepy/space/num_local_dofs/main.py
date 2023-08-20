@@ -3,6 +3,7 @@ r"""
 """
 from tools.frozen import Frozen
 from msepy.space.num_local_dofs.Lambda import MsePyNumLocalDofsLambda
+from msepy.space.num_local_dofs.bundle import MsePyNumLocalDofsBundle
 
 
 class MsePyNumLocalDofs(Frozen):
@@ -12,6 +13,7 @@ class MsePyNumLocalDofs(Frozen):
         """"""
         self._space = space
         self._Lambda = None
+        self._bundle = None
         self._freeze()
 
     def __call__(self, degree):
@@ -19,6 +21,8 @@ class MsePyNumLocalDofs(Frozen):
         indicator = self._space.abstract.indicator
         if indicator == 'Lambda':
             return self.Lambda(degree)
+        elif indicator == 'bundle':
+            return self.bundle(degree)
         else:
             raise NotImplementedError()
 
@@ -27,3 +31,9 @@ class MsePyNumLocalDofs(Frozen):
         if self._Lambda is None:
             self._Lambda = MsePyNumLocalDofsLambda(self._space)
         return self._Lambda
+
+    @property
+    def bundle(self):
+        if self._bundle is None:
+            self._bundle = MsePyNumLocalDofsBundle(self._space)
+        return self._bundle

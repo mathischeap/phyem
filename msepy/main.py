@@ -10,6 +10,8 @@ from src.wf.mp.linear_system import MatrixProxyLinearSystem
 from src.wf.mp.nonlinear_system import MatrixProxyNoneLinearSystem
 from src.config import SIZE   # MPI.SIZE
 from time import time
+from tools.miscellaneous.timer import MyTimer
+from msepy.tools.gathering_matrix import _cgm_cache
 
 
 __all__ = [
@@ -34,6 +36,7 @@ base = {
 
 
 _info_cache = {
+    'start_time': -1.,
     'info_count': 0,
     'info_time': -1.,
 }
@@ -50,6 +53,11 @@ def _clear_self():
     base['meshes'] = dict()
     base['spaces'] = dict()
     base['forms'] = dict()
+    _info_cache['start_time'] = -1.
+    _info_cache['info_count'] = 0
+    _info_cache['info_time'] = -1.
+    _cgm_cache['signatures'] = ''
+    _cgm_cache['cgm'] = None
 
 
 def _parse_manifolds(abstract_manifolds):
@@ -160,12 +168,19 @@ def info(*others_2b_printed):
     # -- first we print the newest time of the cochain (if there is) of each form.
     count = _info_cache['info_count']
     old_time = _info_cache['info_time']
+    if _info_cache['start_time'] == -1.:
+        _info_cache['start_time'] = time()
+    else:
+        pass
+    start_time = _info_cache['start_time']
     if old_time == -1:
         old_time = time()
     else:
         pass
     new_time = time()
-    print(f'=== [{count}] -after- %.2f(s) <----' % (new_time - old_time))
+    total_cost = new_time - start_time
+    print(f'=== [{count}] {MyTimer.current_time()} -after- %.2f(s),'
+          f' total: {MyTimer.seconds2dhms(total_cost)} <----' % (new_time - old_time))
     print(f"~) Form with newest cochain @ --------- ")
     for form_sym in forms:
         form = forms[form_sym]

@@ -1,11 +1,7 @@
 # -*- coding: utf-8 -*-
 r"""
 """
-import sys
 import numpy as np
-
-if './' not in sys.path:
-    sys.path.append('./')
 
 from tools.frozen import Frozen
 from msepy.manifold.main import MsePyManifold
@@ -278,37 +274,3 @@ class MsePyMesh(Frozen):
         if self._topology is None:
             self._topology = MsePyMeshTopology(self)
         return self._topology
-
-
-if __name__ == '__main__':
-    # python msepy/mesh/main.py
-    import __init__ as ph
-    space_dim = 1
-    ph.config.set_embedding_space_dim(space_dim)
-
-    manifold = ph.manifold(space_dim)
-    print(manifold._sym_repr)
-    mesh = ph.mesh(manifold)
-
-    msepy, obj = ph.fem.apply('msepy', locals())
-
-    mnf = obj['manifold']
-    msh = obj['mesh']
-
-    msepy.config(mnf)('crazy_multi', c=0.3, periodic=False, bounds=[[0, 2] for _ in range(space_dim)])
-    msepy.config(msh)([3 for _ in range(space_dim)])
-
-    # ph.config.set_embedding_space_dim(3)
-    # manifold = ph.manifold(3)
-    #
-    # print(manifold._sym_repr)
-
-    # mesh = ph.mesh(manifold)
-    #
-    # msepy, obj = ph.fem.apply('msepy', locals())
-    #
-    # mnf = obj['manifold']
-    # msh = obj['mesh']
-    #
-    # msepy.config(mnf)('crazy', c=0.3, periodic=False, bounds=[[0, 2] for _ in range(space_dim)])
-    # msepy.config(msh)([3 for _ in range(space_dim)])

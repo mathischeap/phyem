@@ -2,9 +2,6 @@
 r"""
 """
 import numpy as np
-import sys
-if './' not in sys.path:
-    sys.path.append('./')
 
 from tools.frozen import Frozen
 import matplotlib.pyplot as plt
@@ -176,27 +173,3 @@ class MsePyMeshVisualizeMatplot(Frozen):
                 plt.tight_layout()
                 plt.show(block=_setting['block'])
         return fig
-
-
-if __name__ == '__main__':
-    # python msepy/mesh/visualize/matplot.py
-    import __init__ as ph
-    space_dim = 3
-    ph.config.set_embedding_space_dim(space_dim)
-
-    manifold = ph.manifold(space_dim)
-    mesh = ph.mesh(manifold)
-
-    msepy, obj = ph.fem.apply('msepy', locals())
-
-    mnf = obj['manifold']
-    msh = obj['mesh']
-
-    # msepy.config(mnf)('crazy', c=0.3, periodic=True, bounds=[[0, 2] for _ in range(space_dim)])
-    msepy.config(mnf)('backward_step')
-    msepy.config(msh)([3 for _ in range(space_dim)])
-    # msepy.config(msh)([(1,2,2,1), (3,3,2,1,2)])
-
-    # msh.visualize()
-    # print(msh.elements._layout_cache_key)
-    msh.visualize()

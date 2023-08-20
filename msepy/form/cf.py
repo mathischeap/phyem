@@ -5,6 +5,7 @@ import numpy as np
 from tools.frozen import Frozen
 from src.spaces.operators import _d_to_vc, _d_ast_to_vc
 from src.spaces.continuous.Lambda import ScalarValuedFormSpace
+from src.spaces.continuous.bundle import BundleValuedFormSpace
 
 
 class MsePyContinuousForm(Frozen):
@@ -52,6 +53,14 @@ class MsePyContinuousForm(Frozen):
                     self._shape = (1, )
                 else:
                     self._shape = (n, )
+
+            elif space.__class__ is BundleValuedFormSpace:
+                n, k = space.n, space.k
+
+                if k == 0 or k == n:
+                    self._shape = (n, )
+                else:
+                    self._shape = (n, n)
 
             else:
                 raise Exception()

@@ -96,7 +96,7 @@ def _pr_cache(fig, filename=None):
     else:
         subfolder_name = _setting["pr_cache_subfolder"]
         assert subfolder_name != '', f"something is wrong!"
-    plt.savefig(subfolder_name + filename_personal, dpi=200)
+    plt.savefig(subfolder_name + filename_personal, bbox_inches='tight', dpi=200)
 
     folder_current = (
         phcache_folder + '/' + _setting["pr_cache_folder_prefix"] + _setting["pr_cache_current_folder"]

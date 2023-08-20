@@ -3,6 +3,7 @@ r"""
 """
 from tools.frozen import Frozen
 from msepy.space.mass_matrix.Lambda import MsePyMassMatrixLambda
+from msepy.space.mass_matrix.bundle import MsePyMassMatrixBundle
 
 
 class MsePyMassMatrix(Frozen):
@@ -12,6 +13,7 @@ class MsePyMassMatrix(Frozen):
         """"""
         self._space = space
         self._Lambda = None
+        self._bundle = None
         self._freeze()
 
     def __call__(self, degree, quad=None):
@@ -19,6 +21,8 @@ class MsePyMassMatrix(Frozen):
         indicator = self._space.abstract.indicator
         if indicator == 'Lambda':
             return self.Lambda(degree, quad=quad)
+        elif indicator == 'bundle':
+            return self.bundle(degree, quad=quad)
         else:
             raise NotImplementedError()
 
@@ -27,3 +31,9 @@ class MsePyMassMatrix(Frozen):
         if self._Lambda is None:
             self._Lambda = MsePyMassMatrixLambda(self._space)
         return self._Lambda
+
+    @property
+    def bundle(self):
+        if self._bundle is None:
+            self._bundle = MsePyMassMatrixBundle(self._space)
+        return self._bundle

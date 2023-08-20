@@ -60,6 +60,10 @@ class _MsePySpaceFindLocalDofs(Frozen):
                 else:
                     raise NotImplementedError()
 
+            elif indicator == 'bundle':
+
+                raise NotImplementedError()
+
             else:
                 raise NotImplementedError()
 

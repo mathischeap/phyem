@@ -14,6 +14,7 @@ __all__ = [
     "ManufacturedSolutionMHD2Ideal1",
     "ManufacturedSolutionNS2TGV",
     "ConditionsFlowAroundCylinder2",
+    "ConditionsNormalDipoleCollision2",
 ]
 
 from tests.samples.canonical_pH_pde import pde_canonical_pH
@@ -21,6 +22,7 @@ from tests.samples.div_grad_wf import wf_div_grad
 from tests.samples.iniCond_shear_layer_rollup import InitialConditionShearLayerRollUp
 from tests.samples.iniCond_Orszag_Tang_vortex import InitialConditionOrszagTangVortex
 from tests.samples.conditions_flow_around_cylinder_2d import ConditionsFlowAroundCylinder2
+from tests.samples.conditions_normal_dipole_collision import ConditionsNormalDipoleCollision2
 from tests.samples.manuSolution_Eigen2 import Eigen2
 from tests.samples.manuSolution_MHD2 import ManufacturedSolutionMHD2Ideal1
 from tests.samples.manuSolution_NS2 import ManufacturedSolutionNS2TGV

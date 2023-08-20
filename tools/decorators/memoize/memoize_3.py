@@ -1,4 +1,7 @@
 # -*- coding: utf-8 -*-
+r"""
+
+"""
 
 
 def memoize3(f):

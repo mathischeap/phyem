@@ -38,7 +38,8 @@ class BoundaryCondition(Frozen):
                                            f"sections, and values are the B.C.s on the corresponding sections."
         from src.form.main import Form
         for key in bcs_dict:
-            assert key in self._boundary._sub_manifolds, f"boundary section: {key} is not defined yet."
+            assert key in self._boundary._sub_manifolds, \
+                f"boundary section: {key} is not defined yet. Be among {self._boundary._sub_manifolds}"
 
             bcs = bcs_dict[key]
 

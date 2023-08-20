@@ -29,6 +29,11 @@ class _OneDimPolynomial(Frozen):
         self._eb_cache_ = {'x': -100, 'cache': np.array([])}
         self._freeze()
 
+    def __repr__(self):
+        """repr"""
+        super_repr = super().__repr__().split('object')[1]
+        return rf"<OneDimPolynomial built on {self._nodes_}" + super_repr
+
     @property
     def isKronecker(self):
         """"""

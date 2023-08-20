@@ -1,9 +1,6 @@
 # -*- coding: utf-8 -*-
 r"""
 """
-import sys
-if './' not in sys.path:
-    sys.path.append('./')
 
 from tools.frozen import Frozen
 import numpy as np
@@ -397,34 +394,3 @@ class MsePyMeshCoordinateTransformation(Frozen):
         return self._mesh.elements._index_mapping.distribute_according_to_reference_elements_dict(
             inverse_metric_matrix_dict
         )
-
-
-if __name__ == '__main__':
-    # python msepy/mesh/coordinate_transformation.py
-    import __init__ as ph
-
-    space_dim = 3
-    ph.config.set_embedding_space_dim(space_dim)
-
-    manifold = ph.manifold(space_dim)
-    mesh = ph.mesh(manifold)
-
-    msepy, obj = ph.fem.apply('msepy', locals())
-
-    mnf = obj['manifold']
-    msh = obj['mesh']
-
-    msepy.config(mnf)('crazy', c=0., periodic=False, bounds=[[0, 2] for _ in range(space_dim)])
-    # msepy.config(mnf)('backward_step')
-    msepy.config(msh)([5 for _ in range(space_dim)])
-    # msepy.config(msh)(([1, 2, 1], [2, 3], [1, 2, 2, 4]))
-    # msepy.config(msh)(([1, 2, 2], [2, 3]))
-
-    # xi_et_sg = [np.array([-0.5, 0, 0.25, 0.5]) for _ in range(space_dim)]
-    # xi_et_sg = [np.linspace(-1, 1, 4) for _ in range(space_dim)]
-    xi_et_sg = [np.random.rand(7, 11) for _ in range(space_dim)]
-
-    xyz = msh.ct.mapping(*xi_et_sg)
-    # jm = msh.ct.inverse_metric_matrix(*xi_et_sg)
-    jm = msh.ct.inverse_metric_matrix(*xi_et_sg)
-    msh.visualize(sampling_factor=1)

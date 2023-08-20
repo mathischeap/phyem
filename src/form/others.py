@@ -80,11 +80,6 @@ def _list_forms(variable_range=None):
     else:
         pass
 
-    if variable_range is None:
-        col_name_0 = 'form id'
-    else:
-        col_name_0 = 'variable name'
-
     if variable_range is None and len(_global_forms) >= 8:
         for form_id in _global_forms:
             form = _global_forms[form_id]
@@ -109,27 +104,28 @@ def _list_forms(variable_range=None):
                 else:
                     var_name = ','.join(var_name)
 
-            cell_text.append([r'\texttt{' + str(var_name) + '}',
-                              rf"${form.space._sym_repr}$",
-                              f"${form._sym_repr}$",
-                              form._lin_repr,
-                              form.is_root()])
+            cell_text.append(
+                r'$\quad$'.join(
+                    [
+                        r'\texttt{' + str(var_name) + '}',
+                        rf"${form.space._sym_repr}$",
+                        f"${form._sym_repr}$",
+                        form._lin_repr,
+                        'root' if form.is_root() else 'not-root'
+                    ]
+                )
+            )
 
         if len(cell_text) == 0:
             return
         else:
             pass
 
-        fig, ax = plt.subplots(figsize=(16, (1 + len(cell_text))))
-        fig.patch.set_visible(False)
+        fig, ax = plt.subplots(figsize=(10, 5))
+        fig.patch.set_visible(True)
         ax.axis('off')
-        table = ax.table(cellText=cell_text, loc='center',
-                         colLabels=[col_name_0, 'space', 'symbolic', 'linguistic', 'is_root()'],
-                         colLoc='left', colColours='rgmcy',
-                         cellLoc='left', colWidths=[0.15, 0.125, 0.125, 0.375, 0.075])
-        table.scale(1, 8)
-        table.set_fontsize(50)
-
+        cell_text = '\n'.join(cell_text)
+        plt.text(0, 1, cell_text, va='top', ha='left', fontsize=20)
         from src.config import _setting, _pr_cache
         if _setting['pr_cache']:
             _pr_cache(fig, filename='formList')

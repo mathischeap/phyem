@@ -1,5 +1,7 @@
 # -*- coding: utf-8 -*-
+r"""
 
+"""
 from tools.decorators.classproperty.descriptor import ClassPropertyDescriptor
 
 

@@ -3,6 +3,7 @@ r"""
 """
 from tools.frozen import Frozen
 from msepy.space.basis_functions.Lambda import MsePyBasisFunctionsLambda
+from msepy.space.basis_functions.bundle import MsePyBasisFunctionsBundle
 
 
 class MsePyBasisFunctions(Frozen):
@@ -12,6 +13,7 @@ class MsePyBasisFunctions(Frozen):
         """"""
         self._space = space
         self._Lambda_cache = {}
+        self._bundle_cache = {}
         self._freeze()
 
     def __getitem__(self, degree):
@@ -25,5 +27,14 @@ class MsePyBasisFunctions(Frozen):
                 Lambda_bf = MsePyBasisFunctionsLambda(self._space, degree)
                 self._Lambda_cache[key] = Lambda_bf
             return Lambda_bf
+
+        elif indicator == 'bundle':
+            if key in self._bundle_cache:
+                bundle_bf = self._bundle_cache[key]
+            else:
+                bundle_bf = MsePyBasisFunctionsBundle(self._space, degree)
+                self._bundle_cache[key] = bundle_bf
+            return bundle_bf
+
         else:
             raise NotImplementedError()

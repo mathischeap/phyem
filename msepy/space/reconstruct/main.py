@@ -4,6 +4,7 @@ r"""
 
 from tools.frozen import Frozen
 from msepy.space.reconstruct.Lambda import MsePySpaceReconstructLambda
+from msepy.space.reconstruct.bundle import MsePySpaceReconstructBundle
 
 
 class MsePySpaceReconstruct(Frozen):
@@ -21,6 +22,8 @@ class MsePySpaceReconstruct(Frozen):
             indicator = self._space.abstract.indicator
             if indicator == 'Lambda':
                 self._reconstruct = MsePySpaceReconstructLambda(self._space)
+            elif indicator == 'bundle':
+                self._reconstruct = MsePySpaceReconstructBundle(self._space)
             else:
                 raise NotImplementedError(f"{indicator}.")
 

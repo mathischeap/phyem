@@ -49,7 +49,9 @@ class MsePyDynamicLocalNonlinearOperator(Frozen):
         # make the static msepy mda.
         if self._dtype == 'static':
             static = MsePyStaticLocalNonlinearOperator(
-                self._data, particular_forms, direct_derivative_contribution=self._direct_derivative_contribution
+                self._data,
+                particular_forms,
+                direct_derivative_contribution=self._direct_derivative_contribution
             )
         else:
             raise NotImplementedError(f"data type = {self._dtype} is wrong!")

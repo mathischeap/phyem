@@ -2,10 +2,6 @@
 r"""
 """
 import numpy as np
-import sys
-if './' not in sys.path:
-    sys.path.append('./')
-
 from tools.frozen import Frozen
 from msepy.mesh.visualize.matplot import MsePyMeshVisualizeMatplot
 from msepy.mesh.visualize.vtk_ import MsePyMeshVisualizeVTK
@@ -113,26 +109,3 @@ class MsePyMeshVisualize(Frozen):
                 Lines[i].append(axis2_lines)
 
         return Lines
-
-
-if __name__ == '__main__':
-    # python msepy/mesh/visualize/matplot.py
-    import __init__ as ph
-    space_dim = 2
-    ph.config.set_embedding_space_dim(space_dim)
-
-    manifold = ph.manifold(space_dim)
-    mesh = ph.mesh(manifold)
-
-    msepy, obj = ph.fem.apply('msepy', locals())
-
-    mnf = obj['manifold']
-    msh = obj['mesh']
-
-    # msepy.config(mnf)('crazy', c=0., periodic=True, bounds=[[0, 2] for _ in range(space_dim)])
-    msepy.config(mnf)('backward_step')
-    msepy.config(msh)([3 for _ in range(space_dim)])
-
-    # msh.visualize()
-    # print(msh.elements._layout_cache_key)
-    msh.visualize()

@@ -27,7 +27,7 @@ class BundleValuedFormSpace(SpaceBase):
     @property
     def indicator(self):
         """The string that indicates Scalar valued form spaces."""
-        return "Bundle"
+        return "bundle"
 
     def __repr__(self):
         """By construction, it will be unique."""

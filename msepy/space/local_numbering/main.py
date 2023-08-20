@@ -3,6 +3,7 @@ r"""
 """
 from tools.frozen import Frozen
 from msepy.space.local_numbering.Lambda import MsePyLocalNumberingLambda
+from msepy.space.local_numbering.bundle import MsePyLocalNumberingBundle
 
 
 class MsePyLocalNumbering(Frozen):
@@ -12,6 +13,7 @@ class MsePyLocalNumbering(Frozen):
         """"""
         self._space = space
         self._Lambda = None
+        self._bundle = None
         self._freeze()
 
     def __call__(self, degree):
@@ -19,6 +21,8 @@ class MsePyLocalNumbering(Frozen):
         indicator = self._space.abstract.indicator
         if indicator == 'Lambda':
             return self.Lambda(degree)
+        elif indicator == 'bundle':
+            return self.bundle(degree)
         else:
             raise NotImplementedError()
 
@@ -27,3 +31,9 @@ class MsePyLocalNumbering(Frozen):
         if self._Lambda is None:
             self._Lambda = MsePyLocalNumberingLambda(self._space)
         return self._Lambda
+
+    @property
+    def bundle(self):
+        if self._bundle is None:
+            self._bundle = MsePyLocalNumberingBundle(self._space)
+        return self._bundle

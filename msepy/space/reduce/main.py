@@ -3,6 +3,7 @@ r"""
 """
 from tools.frozen import Frozen
 from msepy.space.reduce.Lambda import MsePySpaceReduceLambda
+from msepy.space.reduce.bundle import MsePySpaceReduceBundle
 
 
 class MsePySpaceReduce(Frozen):
@@ -20,6 +21,8 @@ class MsePySpaceReduce(Frozen):
             indicator = self._space.abstract.indicator
             if indicator == 'Lambda':
                 self._reduce = MsePySpaceReduceLambda(self._space)
+            elif indicator == 'bundle':
+                self._reduce = MsePySpaceReduceBundle(self._space)
             else:
                 raise NotImplementedError(f"{indicator}.")
 

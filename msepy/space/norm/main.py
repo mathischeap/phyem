@@ -3,6 +3,7 @@ r"""
 """
 from tools.frozen import Frozen
 from msepy.space.norm.Lambda import MsePySpaceNormLambda
+from msepy.space.norm.bundle import MsePySpaceNormBundle
 
 
 class MsePySpaceNorm(Frozen):
@@ -20,6 +21,8 @@ class MsePySpaceNorm(Frozen):
         if self._norm is None:
             if indicator == 'Lambda':
                 self._norm = MsePySpaceNormLambda(self._space)
+            elif indicator == 'bundle':
+                self._norm = MsePySpaceNormBundle(self._space)
             else:
                 raise NotImplementedError(f"{indicator}.")
 

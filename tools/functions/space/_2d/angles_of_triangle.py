@@ -1,8 +1,5 @@
 # -*- coding: utf-8 -*-
-"""
-@author: Yi Zhang
-@contact: zhangyi_aero@hotmail.com
-@time: 10/6/2022 5:36 PM
+r"""
 """
 from tools.functions.space._2d.distance import distance
 import math
