@@ -204,6 +204,16 @@ class MsePyDLSNaturalBoundaryCondition(MsePyDLSBoundaryCondition):
 
 class MsePyDLSEssentialBoundaryCondition(MsePyDLSBoundaryCondition):
     """"""
+    def __init__(self, msepy_boundary_manifold, raw_ls_bc):
+        """"""
+        super().__init__(msepy_boundary_manifold, raw_ls_bc)
+        self._melt()
+        self._cache1 = {
+            'key': '',
+            'find': tuple()
+        }
+        self._freeze()
+
     def config(self, *args):
         """config the bc to be particular."""
         from msepy.main import base
@@ -260,6 +270,16 @@ class MsePyDLSEssentialBoundaryCondition(MsePyDLSBoundaryCondition):
             raise NotImplementedError()
 
     def _find_dofs_and_cochains(self, unknowns, global_or_local='global'):
+        """"""
+        i = self._raw_ls_bc._i
+        unknown = unknowns[i]
+
+        key = unknown.__repr__() + global_or_local
+
+        if key == self._cache1['key']:
+            return self._cache1['find']
+        else:
+            self._cache1['key'] = key
 
         # below, we try to find the msepy mesh boundary section where the essential bc will apply.
         from msepy.main import base
@@ -294,7 +314,8 @@ class MsePyDLSEssentialBoundaryCondition(MsePyDLSBoundaryCondition):
 
         faces = found_msepy_boundary_section_mesh.faces
         if len(faces) == 0:  # this bc is valid on no faces. Just skip.
-            return
+            self._cache1['find'] = tuple()
+            return self._cache1['find']
         else:
             pass
 
@@ -311,9 +332,6 @@ class MsePyDLSEssentialBoundaryCondition(MsePyDLSBoundaryCondition):
 
         # below, we try to find the coefficients to be used. This is the most important part.
 
-        i = self._raw_ls_bc._i
-
-        unknown = unknowns[i]
         if unknown.__class__ is MsePyRootFormStaticCopy:
             time = unknown._t
             if found_msepy_bf0._is_base():  # unknown._f must be the base form.
@@ -349,9 +367,9 @@ class MsePyDLSEssentialBoundaryCondition(MsePyDLSBoundaryCondition):
 
         if global_or_local == 'local':
             assert len(_0_elements) == len(_1_local_dofs) == len(_2_cochain), f'safety check!'
-            return _0_elements, _1_local_dofs, _2_cochain
+            self._cache1['find'] = _0_elements, _1_local_dofs, _2_cochain
         elif global_or_local == 'global':
-            # -- below, we use _0_elements, _1_local_dofs to find global dofs and assemble _3_cochain accordingly.
+            # below, we use _0_elements, _1_local_dofs to find global dofs and assemble _3_cochain accordingly.
             gm = found_msepy_bf0.cochain.gathering_matrix
             global_dofs = list()
             global_cochain = list()
@@ -360,18 +378,24 @@ class MsePyDLSEssentialBoundaryCondition(MsePyDLSBoundaryCondition):
                 global_cochain.extend(_2_cochain[i])
 
             assert len(global_dofs) == len(global_cochain), f"must be the case."
-            return global_dofs, global_cochain
+            self._cache1['find'] = global_dofs, global_cochain
 
         else:
             raise Exception()
+
+        return self._cache1['find']
 
     def _apply_to_dynamic_linear_system(self, dls, A, x, b):
         """"""
         assert dls.shape[0] == len(A) == len(x) == len(b), f"check!"
 
-        global_dofs, global_cochain = self._find_dofs_and_cochains(x, global_or_local='global')
+        _ = self._find_dofs_and_cochains(x, global_or_local='global')
+        if _ == tuple():
+            return
+        else:
+            global_dofs, global_cochain = _
 
-        # -- customize the system -----------------------------------------
+        # customize the system
         if len(global_dofs) > 0:
             i = self._raw_ls_bc._i
             Ai = A[i]
@@ -390,7 +414,11 @@ class MsePyDLSEssentialBoundaryCondition(MsePyDLSBoundaryCondition):
 
     def _apply_to_static_local_nonlinear_system(self, nls):
         """"""
-        elements, local_dofs, local_cochain = self._find_dofs_and_cochains(nls.unknowns, global_or_local='local')
+        _ = self._find_dofs_and_cochains(nls.unknowns, global_or_local='local')
+        if _ == tuple():
+            return
+        else:
+            elements, local_dofs, local_cochain = _
         if len(elements) > 0:
             i = self._raw_ls_bc._i
             nls.customize.set_x0_from_local_dofs(i, elements, local_dofs, local_cochain)

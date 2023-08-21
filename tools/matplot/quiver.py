@@ -11,7 +11,7 @@ import matplotlib.pyplot as plt
 def quiver(
         X, Y, U, V,
         title=None,
-        usetex=False, colormap='cool', xlim=None, ylim=None,
+        usetex=False, colormap='binary', xlim=None, ylim=None,
         show_colorbar=True,
         colorbar_label=None, colorbar_orientation='vertical', colorbar_aspect=20,
         colorbar_labelsize=12.5, colorbar_extend='both',

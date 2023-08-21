@@ -40,7 +40,14 @@ class MsePyStaticNonlinearSystemSolve(Frozen):
                         particular_bc._num_application += 1
 
                     else:
-                        pass
+                        assert number_application == 1
+
+            # clean all number_application, to make sure in future static system, they are applied!
+            # This is because this bc is from the dynamic linear system, and it is never changed.
+            for boundary_section in self._bc:
+                bcs = self._bc[boundary_section]
+                for j, bc in enumerate(bcs):
+                    bc._num_application = 0
 
     @property
     def scheme(self):

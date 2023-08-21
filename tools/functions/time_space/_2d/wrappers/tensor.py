@@ -29,6 +29,10 @@ class T2dTensor(TimeSpaceFunctionBase):
         self._t01_ = t01
         self._t10_ = t10
         self._t11_ = t11
+        self._ts_ = (
+            [t00, t01],
+            [t10, t11]
+        )
         self.__NPD00__ = None
         self.__NPD01__ = None
         self.__NPD10__ = None

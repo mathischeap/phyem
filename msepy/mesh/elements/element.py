@@ -364,8 +364,10 @@ class _FaceCooTrans(Frozen):
     def Jacobian_matrix(self, *xi_et):
         """"""
         m, n = self._m, self._n
-        assert len(xi_et) == self._element_dimensions - 1, f"xi_et wrong!"
         if self._element_dimensions == 2:
+
+            assert len(xi_et) == self._element_dimensions - 1, f"xi_et wrong!"
+
             t = xi_et[0]
             ones = np.ones(len(t))
             if m == 0:  # x-direction
@@ -391,11 +393,59 @@ class _FaceCooTrans(Frozen):
             else:
                 raise Exception()
 
+        elif self._element_dimensions == 3:
+            if len(xi_et) == self._element_dimensions - 1:
+                t, s = xi_et
+                ones = np.ones(len(t))
+
+                if m == 0:  # x-direction
+                    if n == 0:
+                        J = self._element.ct.Jacobian_matrix(-ones, t, s)
+                    elif n == 1:
+                        J = self._element.ct.Jacobian_matrix(ones, t, s)
+                    else:
+                        raise Exception
+
+                    return ((J[0][1], J[0][2]),
+                            (J[1][1], J[1][2]),
+                            (J[2][1], J[2][2]))
+
+                elif m == 1:
+                    if n == 0:
+                        J = self._element.ct.Jacobian_matrix(s, -ones, t)
+                    elif n == 1:
+                        J = self._element.ct.Jacobian_matrix(s, ones, t)
+                    else:
+                        raise Exception
+
+                    return ((J[0][2], J[0][0]),
+                            (J[1][2], J[1][0]),
+                            (J[2][2], J[2][0]))
+                elif m == 2:
+                    if n == 0:
+                        J = self._element.ct.Jacobian_matrix(t, s, -ones)
+                    elif n == 1:
+                        J = self._element.ct.Jacobian_matrix(t, s, ones)
+                    else:
+                        raise Exception
+
+                    return ((J[0][0], J[0][1]),
+                            (J[1][0], J[1][1]),
+                            (J[2][0], J[2][1]))
+                else:
+                    raise Exception
+
+            elif len(xi_et) == self._element_dimensions:
+                raise NotImplementedError(f" we have to select from r, s, t for particular element face.")
+
+            else:
+                raise NotImplementedError()
+
         else:
             raise NotImplementedError(f"not implemented for {self._element_dimensions}-dimensional elements!")
 
     def outward_unit_normal_vector(self, *xi_et):
-        """The outward unit norm vector."""
+        """The outward unit norm vector (vec{n})."""
 
         assert len(xi_et) == self._element_dimensions - 1, f"xi_et wrong!"
         if self._element_dimensions == 2:  # 2-d mesh elements.
@@ -417,6 +467,28 @@ class _FaceCooTrans(Frozen):
             magnitude = np.sqrt(vx**2 + vy**2)
 
             return vx / magnitude, vy / magnitude
+
+        elif self._element_dimensions == 3:  # 3-d mesh elements.
+
+            J = self.Jacobian_matrix(*xi_et)
+
+            a = (J[0][0], J[1][0], J[2][0])
+            b = (J[0][1], J[1][1], J[2][1])
+            acb0 = a[1] * b[2] - a[2] * b[1]
+            acb1 = a[2] * b[0] - a[0] * b[2]
+            acb2 = a[0] * b[1] - a[1] * b[0]
+            norm = np.sqrt(acb0**2 + acb1**2 + acb2**2)
+
+            nx = acb0 / norm
+            ny = acb1 / norm
+            nz = acb2 / norm
+
+            n = self._n
+
+            if n == 0:  # x-, y-, z- face
+                return -nx, -ny, -nz
+            else:
+                return nx, ny, nz
 
         else:
             raise NotImplementedError(f"not implemented for {self._element_dimensions}-dimensional elements!")

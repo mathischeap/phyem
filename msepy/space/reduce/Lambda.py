@@ -15,7 +15,11 @@ class MsePySpaceReduceLambda(Frozen):
         """"""
         self._mesh = space.mesh
         self._space = space
-        self._cache = {}
+        self._cache221 = {}
+        self._cache222 = {}
+        self._cache331 = {}
+        self._cache332 = {}
+        self._cache333 = {}
         self._freeze()
 
     def __call__(self, cf, t, degree, **kwargs):
@@ -255,8 +259,8 @@ class MsePySpaceReduceLambda(Frozen):
 
     def _n2_k1_preparation(self, d_, degree, quad_degree):
         key = d_ + str(degree) + str(quad_degree)
-        if key in self._cache:
-            data = self._cache[key]
+        if key in self._cache221:
+            data = self._cache221[key]
         else:
             nodes = self._space[degree].nodes
             p = self._space[degree].p
@@ -284,7 +288,7 @@ class MsePySpaceReduceLambda(Frozen):
             else:
                 raise Exception()
 
-            self._cache[key] = data
+            self._cache221[key] = data
         return data
 
     def _m2_n2_k2(self, cf, t, degree, quad_degree=None):
@@ -317,8 +321,8 @@ class MsePySpaceReduceLambda(Frozen):
     def _preparation_m2n2k2(self, degree, quad_degree):
         """"""
         key = str(degree) + str(quad_degree)
-        if key in self._cache:
-            data = self._cache[key]
+        if key in self._cache222:
+            data = self._cache222[key]
         else:
             p = self._space[degree].p
             quad_degree = quad_degree
@@ -339,7 +343,7 @@ class MsePySpaceReduceLambda(Frozen):
                     volume[m] = (nodes[0][i+1]-nodes[0][i]) \
                         * (nodes[1][j+1]-nodes[1][j]) * magic_factor
             data = xi, et, volume, quad_weights
-            self._cache[key] = data
+            self._cache222[key] = data
         return data
 
     def _m3_n3_k0(self, cf, t, degree):
@@ -454,8 +458,8 @@ class MsePySpaceReduceLambda(Frozen):
         """
         key = d_ + str(degree) + str(quad_degree)
 
-        if key in self._cache:
-            data = self._cache[key]
+        if key in self._cache331:
+            data = self._cache331[key]
         else:
 
             p = self._space[degree].p
@@ -514,7 +518,7 @@ class MsePySpaceReduceLambda(Frozen):
             else:
                 raise Exception()
 
-            self._cache[key] = data
+            self._cache331[key] = data
 
         return data
 
@@ -528,8 +532,8 @@ class MsePySpaceReduceLambda(Frozen):
         quad_nodes, quad_weights = Quadrature(quad_degree, category='Gauss').quad
         key = str(degree) + str(quad_degree)
 
-        if key in self._cache:
-            data = self._cache[key]
+        if key in self._cache332:
+            data = self._cache332[key]
 
         else:
             num_basis_components = self._space[degree].num_local_dof_components
@@ -593,7 +597,7 @@ class MsePySpaceReduceLambda(Frozen):
                     coo_y, Jy, area_dzdx,
                     coo_z, Jz, area_dxdy)
 
-            self._cache[key] = data
+            self._cache332[key] = data
 
         # ----------------------------------------------
         coo_x, Jx, area_dydz, \
@@ -691,8 +695,8 @@ class MsePySpaceReduceLambda(Frozen):
         quad_nodes, quad_weights = Quadrature(quad_degree, category='Gauss').quad
 
         key = str(degree) + str(quad_degree)
-        if key in self._cache:
-            data = self._cache[key]
+        if key in self._cache333:
+            data = self._cache333[key]
 
         else:
             p = self._space[degree].p
@@ -727,7 +731,7 @@ class MsePySpaceReduceLambda(Frozen):
                             * (nodes[2][k+1]-nodes[2][k])
 
             data = xi, et, si, volume * 0.125
-            self._cache[key] = data
+            self._cache333[key] = data
 
         xi, et, si, volume = data
 

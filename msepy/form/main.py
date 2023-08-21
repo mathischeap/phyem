@@ -15,6 +15,8 @@ from msepy.form.coboundary import MsePyRootFormCoboundary
 from msepy.form.matrix import MsePyRootFormMatrix
 from msepy.form.boundary_integrate.main import MsePyRootFormBoundaryIntegrate
 
+from tools.miscellaneous.ndarray_cache import ndarray_key_comparer, add_to_ndarray_cache
+
 
 class MsePyRootForm(Frozen):
     """"""
@@ -41,6 +43,7 @@ class MsePyRootForm(Frozen):
         self._matrix = None
         self._boundary_integrate = MsePyRootFormBoundaryIntegrate(self)
         self._reconstruct_matrix = None
+        self._reconstruct_matrix_cache = dict()
         self._freeze()
 
     def _saving_check(self):
@@ -247,9 +250,21 @@ class MsePyRootForm(Frozen):
 
     def reconstruction_matrix(self, *meshgrid_xi_et_sg, element_range=None):
         """compute reconstruction matrices for particular elements."""
-        return self._space.reconstruction_matrix(
+        cached, data = ndarray_key_comparer(
+            self._reconstruct_matrix_cache, meshgrid_xi_et_sg, check_str=str(element_range)
+        )
+        if cached:
+            return data
+        else:
+            pass
+
+        data = self._space.reconstruction_matrix(
             self._degree, *meshgrid_xi_et_sg, element_range=element_range
         )
+        add_to_ndarray_cache(
+            self._reconstruct_matrix_cache, meshgrid_xi_et_sg, data, check_str=str(element_range)
+        )
+        return data
 
     def _find_local_dofs_on(self, m, n):
         """find the local dofs numbering on the `n`-face along `m`-direction of element #`element`."""

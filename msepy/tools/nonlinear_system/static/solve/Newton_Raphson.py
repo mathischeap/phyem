@@ -234,6 +234,7 @@ class MsePyNonlinearSystemNewtonRaphsonSolve(Frozen):
                     f.customize.set_value(dof, 0)
 
                 elif method_name == 'set_no_evaluation_for_overall_local_dofs':
+
                     if _global_dofs_cache is None:
                         elements, overall_local_dofs = method_para
                         gm = A._gm0_row
@@ -241,6 +242,7 @@ class MsePyNonlinearSystemNewtonRaphsonSolve(Frozen):
                         _global_dofs_cache = global_dofs
                     else:
                         global_dofs = _global_dofs_cache
+
                     A.customize.identify_diagonal(global_dofs)
                     f.customize.set_values(global_dofs, 0)
 

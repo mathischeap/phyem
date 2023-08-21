@@ -43,7 +43,7 @@ def contour(
         x, y, v,
         figsize=(8, 6),
         levels=None, level_range=None, num_levels=20, linewidth=1, linestyle=None,
-        usetex=True, colormap='coolwarm',
+        usetex=True, colormap='bwr',
         show_colorbar=True,
         colorbar_label=None, colorbar_orientation='vertical', colorbar_aspect=20,
         colorbar_labelsize=12.5, colorbar_extend='both',

@@ -2,6 +2,7 @@
 r"""
 """
 from tools.frozen import Frozen
+from tools.miscellaneous.ndarray_cache import ndarray_key_comparer, add_to_ndarray_cache
 
 
 class MsePyBoundarySectionMeshCooTrans(Frozen):
@@ -32,7 +33,7 @@ class MsePyBoundarySectionMeshCooTrans(Frozen):
 
         self._cache_indices_dict = cache_indices_dict
         # keys are the cache keys for the faces, values are the faces under these keys.
-
+        self._cache1 = dict()
         self._freeze()
 
     def mapping(self, *xi_et):
@@ -63,6 +64,14 @@ class MsePyBoundarySectionMeshCooTrans(Frozen):
 
     def outward_unit_normal_vector(self, *xi_et):
         """"""
+        cached, cache_data = ndarray_key_comparer(self._cache1, xi_et)
+
+        if cached:
+            return cache_data
+
+        else:
+            pass
+
         outward_unv_dict = {}
 
         for cache_key in self._cache_indices_dict:
@@ -77,5 +86,7 @@ class MsePyBoundarySectionMeshCooTrans(Frozen):
 
             for face_id in faces_id:
                 outward_unv_dict[face_id] = outward_unit_normal_vector
+
+        add_to_ndarray_cache(self._cache1, xi_et, outward_unv_dict)
 
         return outward_unv_dict

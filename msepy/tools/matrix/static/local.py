@@ -544,6 +544,7 @@ class _MsePyStaticLocalMatrixCustomize(Frozen):
         """
         assert self._M._is_regularly_square(), f"need a regularly square matrix."
         elements_local_rows = self._M._gm0_row._find_elements_and_local_indices_of_dofs(i)
+
         dof = list(elements_local_rows.keys())[0]
         elements, local_rows = elements_local_rows[dof]
         assert len(elements) == len(local_rows), f"something is wrong!"

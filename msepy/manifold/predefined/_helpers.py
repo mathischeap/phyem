@@ -132,10 +132,12 @@ class _Transfinite2(Frozen):
         )
 
     def illustrate(self):
+        """"""
         return self._tf.illustrate()
 
     @property
     def mtype(self):
+        """"""
         if self._mtype is None:
             names = (
                 self._geo_x0._name,

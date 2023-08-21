@@ -232,13 +232,51 @@ class MsePyContinuousFormPartialTime(Frozen):
                 for c in range(num_components):
                     values[c].append(value_region[c])
 
+            elif len(self._f.cf.shape) == 2:  # tensor
+
+                S0, S1 = self._f.cf.shape
+
+                if values is None:
+                    values = dict()
+                    for s0 in range(S0):
+                        for s1 in range(S1):
+                            values[(s0, s1)] = list()
+                else:
+                    pass
+
+                for s0 in range(S0):
+                    for s1 in range(S1):
+                        values[(s0, s1)].append(
+                            value_region[s0][s1]
+                        )
+
             else:
                 raise NotImplementedError('not implemented for tensor form.')
 
         if len(self._f.cf.shape) == 1:  # scalar or vector form
             for i, val in enumerate(values):
                 values[i] = np.concatenate(val, axis=axis)
+
+        elif len(self._f.cf.shape) == 2:  # tensor
+
+            S0, S1 = self._f.cf.shape
+
+            for s0 in range(S0):
+                for s1 in range(S1):
+                    values[(s0, s1)] = np.concatenate(
+                        values[(s0, s1)],
+                        axis=axis
+                    )
+
+            tensor_values = [[None for _ in range(S1)] for _ in range(S0)]
+
+            for s0 in range(S0):
+                for s1 in range(S1):
+                    tensor_values[s0][s1] = values[(s0, s1)]
+
+            values = tensor_values
+
         else:
-            raise NotImplementedError('not implemented for tensor form.')
+            raise NotImplementedError()
 
         return values

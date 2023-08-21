@@ -15,6 +15,7 @@ class MsePyBoundarySectionFaces(Frozen):
         self._bm = bs.base  # base mesh
         self._initialize_elements()
         self._local_faces = None
+        self._face_elements = None
         self._freeze()
 
     def _initialize_elements(self):
@@ -47,6 +48,16 @@ class MsePyBoundarySectionFaces(Frozen):
                             elements = base_elements_numbering[ri][N, :]
                         elif m == 1:
                             elements = base_elements_numbering[ri][:, N]
+                        else:
+                            raise NotImplementedError()
+
+                    elif base.n == 3:  # the base mesh is 3-dimensional, the boundary section is 2-.
+                        if m == 0:
+                            elements = base_elements_numbering[ri][N, :, :]
+                        elif m == 1:
+                            elements = base_elements_numbering[ri][:, N, :]
+                        elif m == 2:
+                            elements = base_elements_numbering[ri][:, :, N]
                         else:
                             raise NotImplementedError()
 
@@ -124,6 +135,37 @@ class MsePyBoundarySectionFaces(Frozen):
             self._bm._face_dict[key] = face
 
         return face
+
+    def _find_elements(self):
+        """"""
+        if self._face_elements is None:
+            if self._bs.n == 1:
+
+                N_elements, S_elements, W_elements, E_elements = list(), list(), list(), list()
+                for element, m, n in zip(*self._elements_m_n):
+                    if m == 0:
+                        if n == 0:
+                            N_elements.append(element)
+                        elif n == 1:
+                            S_elements.append(element)
+                        else:
+                            raise Exception()
+                    elif m == 1:
+                        if n == 0:
+                            W_elements.append(element)
+                        elif n == 1:
+                            E_elements.append(element)
+                        else:
+                            raise Exception()
+                    else:
+                        raise Exception()
+
+                self._face_elements = N_elements, S_elements, W_elements, E_elements
+
+            else:
+                raise NotImplementedError()
+
+        return self._face_elements
 
 
 class _MsePyBoundarySectionFace(Frozen):

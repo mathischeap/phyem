@@ -45,15 +45,11 @@ class ConditionsFlowAroundCylinder2(Frozen):
         """"""
         return 1 + 0 * x
 
-    @staticmethod
-    def _u_other(t, x, y):
-        return 0 + 0 * x
-
     def _u(self, t, x, y):
         return genpiecewise(
             [t, x, y],
             [x < self._left_boundary_limit, x >= self._left_boundary_limit],
-            [self._u_in, self._u_other]
+            [self._u_in, self._0]
         )
 
     @staticmethod

@@ -32,17 +32,18 @@ class MsePyMassMatrixLambda(Frozen):
                 if high_accuracy:
                     quad_degree = [p + 1 for p in self._space[degree].p]
                     # +1 for conservation
+                    quad_type = 'Gauss'
                 else:
                     quad_degree = [p for p in self._space[degree].p]
                     # + 0 for much sparser matrices.
-                quad_type = self._space[degree].ntype
+                    quad_type = self._space[degree].ntype
                 quad = (quad_degree, quad_type)
             else:
                 quad_degree = [p + 2 for p in self._space[degree].p]
                 quad = (quad_degree, 'Gauss')
 
         else:
-            pass
+            raise NotImplementedError()
 
         m = self._m
         n = self._n
