@@ -26,6 +26,10 @@ def constant_scalar(*args):
                 sym_repr, lin_repr = r"\frac{1}{2}", str(arg)
             elif arg == 0.25:
                 sym_repr, lin_repr = r"\frac{1}{4}", str(arg)
+            elif arg == -0.5:
+                sym_repr, lin_repr = r"-\frac{1}{2}", str(arg)
+            elif arg == -0.25:
+                sym_repr, lin_repr = r"-\frac{1}{4}", str(arg)
             else:
                 sym_repr, lin_repr = str(arg), str(arg)
             is_real = True

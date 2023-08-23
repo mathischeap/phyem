@@ -123,7 +123,7 @@ class OrdinaryDifferentialEquation(Frozen):
                     overall_order.append(order)
                     pattern = self._pattern[i][j]
                     assert pattern is not None, f"trivial check."
-                    if pattern == '(partial_t root-sf, sf)':
+                    if pattern == '(partial_t root-f, f)':
                         f0 = term._f0
                         f0_lin_repr = f0._lin_repr
                         rf_lin_repr = r'\textsf{' + f0_lin_repr.split(r'\textsf{')[1]

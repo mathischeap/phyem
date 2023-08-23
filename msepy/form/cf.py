@@ -6,6 +6,7 @@ from tools.frozen import Frozen
 from src.spaces.operators import _d_to_vc, _d_ast_to_vc
 from src.spaces.continuous.Lambda import ScalarValuedFormSpace
 from src.spaces.continuous.bundle import BundleValuedFormSpace
+from src.spaces.continuous.bundle_diagonal import DiagonalBundleValuedFormSpace
 
 
 class MsePyContinuousForm(Frozen):
@@ -61,6 +62,9 @@ class MsePyContinuousForm(Frozen):
                     self._shape = (n, )
                 else:
                     self._shape = (n, n)
+            elif space.__class__ is DiagonalBundleValuedFormSpace:
+
+                self._shape = (1, )   # only accept scalar
 
             else:
                 raise Exception()
@@ -246,6 +250,7 @@ class MsePyContinuousFormPartialTime(Frozen):
 
                 for s0 in range(S0):
                     for s1 in range(S1):
+                        # noinspection PyTypeChecker
                         values[(s0, s1)].append(
                             value_region[s0][s1]
                         )

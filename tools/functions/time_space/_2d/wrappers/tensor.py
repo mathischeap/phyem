@@ -9,6 +9,8 @@ from functools import partial
 
 from tools.numerical.time_space._2d.partial_derivative_as_functions import \
     NumericalPartialDerivativeTxyFunctions
+from tools.functions.time_space._2d.wrappers.helpers.scalar_add import t2d_ScalarAdd
+from tools.functions.time_space._2d.wrappers.helpers.scalar_sub import t2d_ScalarSub
 
 
 class T2dTensor(TimeSpaceFunctionBase):
@@ -37,6 +39,8 @@ class T2dTensor(TimeSpaceFunctionBase):
         self.__NPD01__ = None
         self.__NPD10__ = None
         self.__NPD11__ = None
+        self._divergence = None
+        self._rot = None
         self._freeze()
 
     def __call__(self, t, x, y):
@@ -91,3 +95,39 @@ class T2dTensor(TimeSpaceFunctionBase):
         pt11_pt = self._NPD11_('t')
         return self.__class__(pt00_pt, pt01_pt,
                               pt10_pt, pt11_pt)
+
+    @property
+    def divergence(self):
+        if self._divergence is None:
+
+            p00 = self._NPD00_('x')
+            p01 = self._NPD01_('y')
+            p10 = self._NPD10_('x')
+            p11 = self._NPD11_('y')
+
+            v0 = t2d_ScalarAdd(p00, p01)
+            v1 = t2d_ScalarAdd(p10, p11)
+
+            from tools.functions.time_space._2d.wrappers.vector import T2dVector
+
+            self._divergence = T2dVector(v0, v1)
+
+        return self._divergence
+
+    @property
+    def rot(self):
+        if self._rot is None:
+
+            p01_px = self._NPD01_('x')
+            p00_py = self._NPD00_('y')
+            p11_px = self._NPD11_('x')
+            p10_py = self._NPD10_('y')
+
+            v0 = t2d_ScalarSub(p01_px, p00_py)
+            v1 = t2d_ScalarSub(p11_px, p10_py)
+
+            from tools.functions.time_space._2d.wrappers.vector import T2dVector
+
+            self._rot = T2dVector(v0, v1)
+
+        return self._rot

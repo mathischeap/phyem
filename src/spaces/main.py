@@ -20,6 +20,12 @@ _implemented_spaces = {
     # indicator: (class path                    ,  class name            , description                 , parameters),
     'Lambda':    ('src.spaces.continuous.Lambda', 'ScalarValuedFormSpace', 'scalar valued k-form space', ['k', ]),
     'bundle':    ('src.spaces.continuous.bundle', 'BundleValuedFormSpace', 'bundle valued k-form space', ['k', ]),
+    'bundle-diagonal': (
+        'src.spaces.continuous.bundle_diagonal',
+        'DiagonalBundleValuedFormSpace',
+        'diagonal bundle valued k-form space',
+        ['k', ]
+    ),
 }
 
 _default_mass_matrix_reprs = [

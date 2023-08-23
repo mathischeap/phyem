@@ -56,6 +56,28 @@ def wedge(s1, s2):
         raise NotImplementedError()
 
 
+def tensor_product(s1, s2):
+    """"""
+    from src.spaces.continuous.bundle import BundleValuedFormSpace
+
+    if s1.__class__ is BundleValuedFormSpace and s2.__class__ is BundleValuedFormSpace:
+
+        assert s1.mesh == s2.mesh, f"two entries have different meshes."
+
+        m, n = s1.mesh.m, s1.mesh.n
+
+        if m == n == 2: # on 2d mesh in 2d space.
+            k1 = s1.k
+            k2 = s2.k
+
+            if k1 == 0 and k2 == 0 and s1.orientation == 'inner' and s2.orientation == 'inner':
+                return new('bundle', 1, mesh=s1.mesh, orientation='inner')
+            else:
+                raise NotImplementedError()
+
+    else:
+        raise NotImplementedError()
+
 def cross_product(s1, s2):
     """"""
     from src.spaces.continuous.Lambda import ScalarValuedFormSpace
@@ -138,7 +160,7 @@ def _d_to_vc(space_indicator, *args):
         curl -> div
 
     """
-    if space_indicator == 'Lambda':  # scalar valued form spaces.
+    if space_indicator in ('Lambda', 'bundle'):  # scalar valued form spaces.
         m, n, k, ori = args
 
         if m == n == 1 and k == 0:  # 0-form on 1d manifold in 1d space.
@@ -179,7 +201,7 @@ def _d_to_vc(space_indicator, *args):
 def _d_ast_to_vc(space_indicator, *args):
     """The correspondence between codifferential and vector calculus operators.
     """
-    if space_indicator == 'Lambda':  # scalar valued form spaces.
+    if space_indicator in ('Lambda', 'bundle'):  # scalar valued form spaces.
         m, n, k, ori = args
         if m == n == 1 and k == 1:  # 1-form on 1d manifold in 1d space.
             return '-', 'derivative'

@@ -103,7 +103,7 @@ class MsePySpaceReconstructBundle(Frozen):
                 cache[0].append(x[i].reshape(shape, order='F'))
                 cache[1].append(y[i].reshape(shape, order='F'))
                 cache[2].append(v0[i].reshape(shape, order='F'))
-                cache[2].append(v1[i].reshape(shape, order='F'))
+                cache[3].append(v1[i].reshape(shape, order='F'))
 
             x, y, v0, v1 = [np.array(cache[_]) for _ in range(4)]
 

@@ -14,7 +14,7 @@ matplotlib.use('TkAgg')
 
 from src.config import _global_lin_repr_setting
 from src.config import _parse_lin_repr
-from src.form.operators import wedge, time_derivative, d, codifferential, cross_product
+from src.form.operators import wedge, time_derivative, d, codifferential, cross_product, tensor_product
 from src.config import _check_sym_repr
 from src.form.parameters import constant_scalar
 from src.config import _global_operator_lin_repr_setting
@@ -231,6 +231,10 @@ class Form(Frozen):
     def cross_product(self, other):
         """"""
         return cross_product(self, other)
+
+    def tensor_product(self, other):
+        """"""
+        return tensor_product(self, other)
 
     def __neg__(self):
         """- self"""

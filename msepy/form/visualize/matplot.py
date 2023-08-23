@@ -17,25 +17,33 @@ class MsePyRootFormVisualizeMatplot(Frozen):
         self._mesh = rf.mesh
         self._freeze()
 
-    def __call__(self, *args, title=None, **kwargs):
+    def __call__(self, title=None, **kwargs):
         """Call the default plotter coded in this module as well."""
         abs_sp = self._f.space.abstract
         m = abs_sp.m
         n = abs_sp.n
         k = abs_sp.k
-        orientation = abs_sp.orientation
 
         if title is None:
             title = r'$t=%.3f$' % self._f.visualize._t  # this visualize is for cochain @ t
         else:
             pass
 
-        if m == n == 2 and k == 1:
-            return getattr(self, f'_m{m}_n{n}_k{k}_{orientation}')(*args, title=title, **kwargs)
-        else:
-            return getattr(self, f'_m{m}_n{n}_k{k}')(*args, title=title, **kwargs)
+        indicator = self._f._space.abstract.indicator
 
-    def _m1_n1_k0(
+        if indicator in ('Lambda', 'bundle-diagonal'):
+            return getattr(self, f'_Lambda_m{m}_n{n}_k{k}')(title=title, **kwargs)
+
+        elif indicator == 'bundle':
+            if k in (0, n):  # vector forms
+                return getattr(self, f'_Lambda_m{m}_n{n}_k1')(title=title, **kwargs)
+            else:
+                return getattr(self, f'_bundle_m{m}_n{n}_k1')(title=title, **kwargs)
+
+        else:
+            raise NotImplementedError(f"msepy matplot not implemented for {indicator}")
+
+    def _Lambda_m1_n1_k0(
             self, sampling_factor=1,
             figsize=(10, 6),
             color='k',
@@ -65,11 +73,11 @@ class MsePyRootFormVisualizeMatplot(Frozen):
         )
         return fig
 
-    def _m1_n1_k1(self, *args, **kwargs):
+    def _Lambda_m1_n1_k1(self, *args, **kwargs):
         """"""
-        return self._m1_n1_k0(*args, **kwargs)
+        return self._Lambda_m1_n1_k0(*args, **kwargs)
 
-    def _m2_n2_k0(
+    def _Lambda_m2_n2_k0(
             self, sampling_factor=1,
             plot_type='contourf',
             **kwargs
@@ -99,7 +107,7 @@ class MsePyRootFormVisualizeMatplot(Frozen):
 
         return fig
 
-    def _m2_n2_k1_inner(
+    def _Lambda_m2_n2_k1(
             self, sampling_factor=1,
             plot_type='contourf',
             saveto=None,
@@ -164,13 +172,9 @@ class MsePyRootFormVisualizeMatplot(Frozen):
 
         return fig
 
-    def _m2_n2_k1_outer(self, **kwargs):
+    def _Lambda_m2_n2_k2(self, **kwargs):
         """"""
-        return self._m2_n2_k1_inner(**kwargs)
-
-    def _m2_n2_k2(self, **kwargs):
-        """"""
-        return self._m2_n2_k0(**kwargs)
+        return self._Lambda_m2_n2_k0(**kwargs)
 
     @staticmethod
     def _quiver(
@@ -192,3 +196,77 @@ class MsePyRootFormVisualizeMatplot(Frozen):
         X = np.array(X).ravel()
         Y = np.array(Y).ravel()
         return quiver(X, Y, U, V, **kwargs)
+
+    def _bundle_m2_n2_k1(
+            self, sampling_factor=1,
+            plot_type='contourf',
+            saveto=None,
+            title=None,
+            title_components=None,
+            **kwargs
+    ):
+        """"""
+        samples = 10000 * sampling_factor
+        samples = int((np.ceil(samples / self._mesh.elements._num))**(1/self._mesh.m))
+
+        if samples > 75:
+            samples = 75
+        elif samples < 5:
+            samples = 5
+        else:
+            samples = int(samples)
+
+        xi_et = np.linspace(-1, 1, samples)
+        t = self._f.visualize._t
+        xy, V = self._f[t].reconstruct(xi_et, xi_et)  # ravel=False by default
+        x, y = xy
+        V0, V1 = V
+        v00, v01 = V0
+        v10, v11 = V1
+        x, y, v00, v01, v10, v11 = self._mesh._regionwsie_stack(x, y, v00, v01, v10, v11)
+        if plot_type in ('contourf', 'contour'):
+            if saveto is None:
+                saveto_00 = None
+                saveto_01 = None
+                saveto_10 = None
+                saveto_11 = None
+            else:
+                saveto0, saveto1 = saveto.split('.')
+                saveto_00 = saveto0 + '_00' + '.' + saveto1
+                saveto_01 = saveto0 + '_01' + '.' + saveto1
+                saveto_10 = saveto0 + '_10' + '.' + saveto1
+                saveto_11 = saveto0 + '_11' + '.' + saveto1
+
+            if title_components is None:
+                title_00 = '$00$-component'
+                title_01 = '$01$-component'
+                title_10 = '$10$-component'
+                title_11 = '$11$-component'
+            else:
+                title_00, title_01, title_10, title_11 = title_components
+
+            if plot_type in ('contourf', 'contour'):
+                if plot_type == 'contourf':
+                    plotter = contourf
+                else:
+                    plotter = contour
+
+                fig = [
+                    plotter(x, y, v00, title=title_00, saveto=saveto_00, **kwargs),
+                    plotter(x, y, v01, title=title_01, saveto=saveto_01, **kwargs),
+                    plotter(x, y, v10, title=title_10, saveto=saveto_10, **kwargs),
+                    plotter(x, y, v11, title=title_11, saveto=saveto_11, **kwargs),
+                ]
+
+            else:
+                raise Exception()
+
+        else:
+            raise NotImplementedError(f'Not implemented for plot_type={plot_type}')
+
+        if title is None:
+            pass
+        else:
+            plt.suptitle(title)
+
+        return fig

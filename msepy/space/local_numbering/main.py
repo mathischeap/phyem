@@ -23,6 +23,8 @@ class MsePyLocalNumbering(Frozen):
             return self.Lambda(degree)
         elif indicator == 'bundle':
             return self.bundle(degree)
+        elif indicator == 'bundle-diagonal':
+            return self.Lambda(degree)
         else:
             raise NotImplementedError()
 

@@ -26,7 +26,7 @@ from src.config import _form_evaluate_at_repr_setting
 class WeakFormulation(Frozen):
     """Weak Formulation."""
 
-    def __init__(self, test_forms, term_sign_dict=None, expression=None, merge=None):
+    def __init__(self, test_forms, term_sign_dict=None, expression=None, interpreter=None, merge=None):
         """
 
         Parameters
@@ -43,7 +43,7 @@ class WeakFormulation(Frozen):
         elif expression is not None:
             assert term_sign_dict is None
             assert merge is None
-            self._parse_expression(expression, test_forms)
+            self._parse_expression(expression, interpreter, test_forms)
 
         elif merge is not None:  # merge multiple weak formulations
             assert term_sign_dict is None
@@ -84,9 +84,53 @@ class WeakFormulation(Frozen):
         self._ind_dict = ind_dict
         self._indexing = indexing
 
-    def _parse_expression(self, expression, test_forms):
+    def _parse_expression(self, expression, interpreter, test_forms):
         """"""
-        raise NotImplementedError()
+        term_dict = dict()
+        sign_dict = dict()
+        ind_dict = dict()
+        indexing = dict()
+        for i, equation in enumerate(expression):
+
+            equation = equation.replace(' ', '')  # remove all spaces
+            equation = equation.replace('-', '+-')  # let all terms be connected by +
+
+            term_dict[i] = ([], [])  # for left terms and right terms of ith equation
+            sign_dict[i] = ([], [])  # for left terms and right terms of ith equation
+            ind_dict[i] = ([], [])  # for left terms and right terms of ith equation
+
+            k = 0
+            for j, lor in enumerate(equation.split('=')):
+                local_terms = lor.split('+')
+
+                for loc_term in local_terms:
+                    if loc_term == '' or loc_term == '-':  # found empty terms, just ignore.
+                        pass
+                    else:
+                        if loc_term == '0':
+                            pass
+                        else:
+                            if loc_term[0] == '-':
+                                assert loc_term[1:] in interpreter, f"found term {loc_term[1:]} not interpreted."
+                                sign = '-'
+                                term = interpreter[loc_term[1:]]
+                            else:
+                                assert loc_term in interpreter, f"found term {loc_term} not interpreted"
+                                sign = '+'
+                                term = interpreter[loc_term]
+
+                            sign_dict[i][j].append(sign)
+                            term_dict[i][j].append(term)
+                            index = str(i) + '-' + str(k)
+                            k += 1
+                            indexing[index] = (sign, term)
+                            ind_dict[i][j].append(index)
+
+        self._test_forms = test_forms
+        self._term_dict = term_dict
+        self._sign_dict = sign_dict
+        self._ind_dict = ind_dict
+        self._indexing = indexing
 
     def _initialize_through_merging(self, merge, test_forms):
         """"""

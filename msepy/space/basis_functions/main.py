@@ -14,13 +14,14 @@ class MsePyBasisFunctions(Frozen):
         self._space = space
         self._Lambda_cache = {}
         self._bundle_cache = {}
+        self._bundle_diagonal_cache = {}
         self._freeze()
 
     def __getitem__(self, degree):
         """Return"""
         indicator = self._space.abstract.indicator
         key = str(degree)
-        if indicator == 'Lambda':
+        if indicator in ('Lambda', 'bundle-diagonal'):
             if key in self._Lambda_cache:
                 Lambda_bf = self._Lambda_cache[key]
             else:

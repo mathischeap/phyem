@@ -23,7 +23,7 @@ class MsePySpaceDegree(Frozen):
         """We get `p`, `nodes` and `ntype` (node types). """
         self._degree = degree
 
-        if self._indicator == 'Lambda':
+        if self._indicator in ('Lambda', 'bundle-diagonal'):
             if isinstance(degree, (int, float)):
                 # for example, degree = 3
                 assert degree % 1 == 0 and degree > 0, f"degree wrong."
@@ -51,6 +51,18 @@ class MsePySpaceDegree(Frozen):
             if isinstance(degree, (int, float)):
                 assert degree % 1 == 0 and degree > 0, f"degree wrong."
                 p = tuple([[degree for _ in range(self._space.n)] for _ in range(self._space.n)])
+                nodes = [[] for _ in range(self._space.n)]
+                ntype = [[] for _ in range(self._space.n)]
+                for i in range(self._space.n):
+                    for j in range(self._space.n):
+                        nodes[i].append(
+                            Quadrature(p[i][j], category='Lobatto').quad[0]
+                        )
+                        ntype[i].append('Lobatto')
+                p_shape = (self._space.n, self._space.n)
+            elif isinstance(degree, (list, tuple)) and all([isinstance(_, int) for _ in degree]):
+                assert len(degree) == self._space.n, f"degree dimension wrong."
+                p = tuple([degree for _ in range(self._space.n)])
                 nodes = [[] for _ in range(self._space.n)]
                 ntype = [[] for _ in range(self._space.n)]
                 for i in range(self._space.n):
@@ -91,7 +103,7 @@ class MsePySpaceDegree(Frozen):
     def edges(self):
         """edges"""
         if self._edges is None:
-            if self._indicator == 'Lambda':
+            if self._indicator in ('Lambda', 'bundle-diagonal'):
                 self._edges = tuple([nodes[1:]-nodes[:-1] for nodes in self._nodes])
             elif self._indicator == 'bundle':
                 s0, s1 = self._p_shape
@@ -109,7 +121,7 @@ class MsePySpaceDegree(Frozen):
     def bfs(self):
         """1d basis functions."""
         if self._bfs is None:
-            if self._indicator == 'Lambda':
+            if self._indicator in ('Lambda', 'bundle-diagonal'):
                 self._bfs = tuple([_OneDimPolynomial(nodes) for nodes in self.nodes])
             elif self._indicator == 'bundle':
                 s0, s1 = self._p_shape

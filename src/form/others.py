@@ -72,7 +72,7 @@ def _find_form(lin_repr, upon=None):
     return the_one
 
 
-def _list_forms(variable_range=None):
+def _list_forms():
     """"""
     from src.config import RANK, MASTER_RANK
     if RANK != MASTER_RANK:
@@ -80,56 +80,48 @@ def _list_forms(variable_range=None):
     else:
         pass
 
-    if variable_range is None and len(_global_forms) >= 8:
-        for form_id in _global_forms:
-            form = _global_forms[form_id]
-            print('--->', form_id, '|', form._sym_repr, '=', form._lin_repr)
-    else:
-        cell_text = list()
-        for form_id in _global_forms:
-            form = _global_forms[form_id]
-
-            if variable_range is None:
-                var_name = form_id
-            else:
-                var_name = list()
-                for var in variable_range:
-                    if variable_range[var] is form:
-                        var_name.append(var)
-
-                if len(var_name) == 0:  # a form is not involved in the variable_range.
-                    continue
-                elif len(var_name) == 1:
-                    var_name = var_name[0]
-                else:
-                    var_name = ','.join(var_name)
-
-            cell_text.append(
-                r'$\quad$'.join(
-                    [
-                        r'\texttt{' + str(var_name) + '}',
-                        rf"${form.space._sym_repr}$",
-                        f"${form._sym_repr}$",
-                        form._lin_repr,
-                        'root' if form.is_root() else 'not-root'
-                    ]
-                )
+    cell_text = list()
+    for form_id in _global_forms:
+        form = _global_forms[form_id]
+        cell_text.append(
+            r'$\quad$'.join(
+                [
+                    r'\texttt{' + str(form_id) + '}',
+                    rf"${form.space._sym_repr}$",
+                    f"${form._sym_repr}$",
+                    form._lin_repr,
+                    'root' if form.is_root() else 'not-root'
+                ]
             )
+        )
 
-        if len(cell_text) == 0:
-            return
-        else:
-            pass
+    from src.wf.term.main import _global_wf_terms
+    for term_id in _global_wf_terms:
+        wft = _global_wf_terms[term_id]
+        cell_text.append(
+            r'$\quad$'.join(
+                [
+                    r'\texttt{' + str(term_id) + '}',
+                    rf"${wft._sym_repr}$",
+                    wft._lin_repr
+                ]
+            )
+        )
 
-        fig, ax = plt.subplots(figsize=(10, 5))
-        fig.patch.set_visible(True)
-        ax.axis('off')
-        cell_text = '\n'.join(cell_text)
-        plt.text(0, 1, cell_text, va='top', ha='left', fontsize=20)
-        from src.config import _setting, _pr_cache
-        if _setting['pr_cache']:
-            _pr_cache(fig, filename='formList')
-        else:
-            fig.tight_layout()
-            plt.show(block=_setting['block'])
-        return fig
+    if len(cell_text) == 0:
+        return
+    else:
+        pass
+
+    fig, ax = plt.subplots(figsize=(10, 5))
+    fig.patch.set_visible(True)
+    ax.axis('off')
+    cell_text = '\n'.join(cell_text)
+    plt.text(0, 1, cell_text, va='top', ha='left', fontsize=20)
+    from src.config import _setting, _pr_cache
+    if _setting['pr_cache']:
+        _pr_cache(fig, filename='formList')
+    else:
+        fig.tight_layout()
+        plt.show(block=_setting['block'])
+    return fig

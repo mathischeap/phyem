@@ -39,6 +39,8 @@ class T2dVector(TimeSpaceFunctionBase):
         self._time_derivative = None
         self._rot = None
         self._divergence = None
+        self._gradient = None
+        self._curl = None
         self._freeze()
 
     def __call__(self, t, x, y):
@@ -105,6 +107,38 @@ class T2dVector(TimeSpaceFunctionBase):
             self._time_derivative = self.__class__(pv0_pt, pv1_pt)
         return self._time_derivative
 
+    @property
+    def gradient(self):
+        """Gives a 2 by 2 tensor."""
+        if self._gradient is None:
+            p0_px = self._NPD0_('x')
+            p0_py = self._NPD0_('y')
+            p1_px = self._NPD1_('x')
+            p1_py = self._NPD1_('y')
+
+            from tools.functions.time_space._2d.wrappers.tensor import T2dTensor
+
+            self._gradient = T2dTensor(p0_px, p0_py, p1_px, p1_py)
+
+        return self._gradient
+    
+    @property
+    def curl(self):
+        if self._curl is None:
+            p0_px = self._NPD0_('x')
+            p0_py = self._NPD0_('y')
+            p1_px = self._NPD1_('x')
+            p1_py = self._NPD1_('y')
+
+            neg_p0_px = t2d_ScalarNeg(p0_px)
+            neg_p1_px = t2d_ScalarNeg(p1_px)
+
+            from tools.functions.time_space._2d.wrappers.tensor import T2dTensor
+
+            self._curl = T2dTensor(p0_py, neg_p0_px, p1_py, neg_p1_px)
+
+        return self._curl
+    
     @property
     def divergence(self):
         """div(self)"""

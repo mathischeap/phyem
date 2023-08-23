@@ -23,6 +23,8 @@ class MsePySpaceReduce(Frozen):
                 self._reduce = MsePySpaceReduceLambda(self._space)
             elif indicator == 'bundle':
                 self._reduce = MsePySpaceReduceBundle(self._space)
+            elif indicator == 'bundle-diagonal':
+                self._reduce = MsePySpaceReduceLambda(self._space)
             else:
                 raise NotImplementedError(f"{indicator}.")
 

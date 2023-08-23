@@ -24,6 +24,8 @@ class MsePySpaceReconstruct(Frozen):
                 self._reconstruct = MsePySpaceReconstructLambda(self._space)
             elif indicator == 'bundle':
                 self._reconstruct = MsePySpaceReconstructBundle(self._space)
+            elif indicator == 'bundle-diagonal':
+                self._reconstruct = MsePySpaceReconstructLambda(self._space)
             else:
                 raise NotImplementedError(f"{indicator}.")
 

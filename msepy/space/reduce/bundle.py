@@ -172,12 +172,12 @@ class MsePySpaceReduceBundle(Frozen):
         for i in range(2):
 
             if quad_degree is None:
-                quad_degree = [p + 2 for p in self._space[degree].p[i]]  # ** i **
+                qd = [p + 2 for p in self._space[degree].p[i]]  # ** i **
             else:
                 raise NotImplementedError()
 
             # dx edge cochain, x-axis direction component.
-            xi, et, edge_size_d, quad_weights = self._n2_k1_preparation('x', degree, quad_degree, i)  # ** i **
+            xi, et, edge_size_d, quad_weights = self._n2_k1_preparation('x', degree, qd, i)  # ** i **
             x, y = self._mesh.ct.mapping(xi, et)
             J = self._mesh.ct.Jacobian_matrix(xi, et)
             u, v = cf[t](x, y, axis=-1)[i]  # ** i **
@@ -206,7 +206,7 @@ class MsePySpaceReduceBundle(Frozen):
             cochain_local_dx = J.merge(cochain_local_dx, axis=0)
 
             # dy edge cochain, y-axis direction component.
-            xi, et, edge_size_d, quad_weights = self._n2_k1_preparation('y', degree, quad_degree, i)  # ** i **
+            xi, et, edge_size_d, quad_weights = self._n2_k1_preparation('y', degree, qd, i)  # ** i **
             x, y = self._mesh.ct.mapping(xi, et)
             J = self._mesh.ct.Jacobian_matrix(xi, et)
             u, v = cf[t](x, y, axis=-1)[i]  # ** i **
@@ -248,12 +248,12 @@ class MsePySpaceReduceBundle(Frozen):
         local_cochains = list()
         for i in range(2):
             if quad_degree is None:
-                quad_degree = [p + 2 for p in self._space[degree].p[i]]  # ** i **
+                qd = [p + 2 for p in self._space[degree].p[i]]  # ** i **
             else:
                 raise NotImplementedError()
 
             # dx edge cochain, x-axis direction component.
-            xi, et, edge_size_d, quad_weights = self._n2_k1_preparation('x', degree, quad_degree, i)  # ** i **
+            xi, et, edge_size_d, quad_weights = self._n2_k1_preparation('x', degree, qd, i)  # ** i **
             x, y = self._mesh.ct.mapping(xi, et)
             J = self._mesh.ct.Jacobian_matrix(xi, et)
             u, v = cf[t](x, y, axis=-1)[i]  # ** i **
@@ -282,7 +282,7 @@ class MsePySpaceReduceBundle(Frozen):
             cochain_local_dx = J.merge(cochain_local_dx, axis=0)
 
             # dy edge cochain, y-axis direction component.
-            xi, et, edge_size_d, quad_weights = self._n2_k1_preparation('y', degree, quad_degree, i)  # ** i **
+            xi, et, edge_size_d, quad_weights = self._n2_k1_preparation('y', degree, qd, i)  # ** i **
             x, y = self._mesh.ct.mapping(xi, et)
             J = self._mesh.ct.Jacobian_matrix(xi, et)
             u, v = cf[t](x, y, axis=-1)[i]  # ** i **
@@ -324,11 +324,11 @@ class MsePySpaceReduceBundle(Frozen):
         local_cochains = list()
         for i in range(2):
             if quad_degree is None:
-                quad_degree = [p + 2 for p in self._space[degree].p[i]]  # ** i **
+                qd = [p + 2 for p in self._space[degree].p[i]]  # ** i **
             else:
                 raise NotImplementedError()
 
-            xi, et, volume, quad_weights = self._preparation_m2n2k2(degree, quad_degree, i)  # ** i **
+            xi, et, volume, quad_weights = self._preparation_m2n2k2(degree, qd, i)  # ** i **
             x, y = self._mesh.ct.mapping(xi, et)
             J = self._mesh.ct.Jacobian(xi, et)
             u = cf[t](x, y, axis=-1)[i]  # ** i **
@@ -386,13 +386,13 @@ class MsePySpaceReduceBundle(Frozen):
         local_cochains = list()
         for _I_ in range(3):
             if quad_degree is None:
-                quad_degree = [p + 2 for p in self._space[degree].p[_I_]]
+                qd = [p + 2 for p in self._space[degree].p[_I_]]
             else:
                 raise NotImplementedError()
 
-            quad_nodes, quad_weights = Quadrature(quad_degree, category='Gauss').quad
+            quad_nodes, quad_weights = Quadrature(qd, category='Gauss').quad
 
-            key = str(degree) + str(quad_degree) + str(_I_)
+            key = str(degree) + str(qd) + str(_I_)
             if key in self._cache333:
                 data = self._cache333[key]
 
@@ -400,9 +400,9 @@ class MsePySpaceReduceBundle(Frozen):
                 p = self._space[degree].p[_I_]
                 nodes = self._space[degree].nodes[_I_]
                 num_basis = self._space[degree].num_local_dofs_components[_I_]
-                xi = np.zeros((num_basis, quad_degree[0] + 1, quad_degree[1] + 1, quad_degree[2] + 1))
-                et = np.zeros((num_basis, quad_degree[0] + 1, quad_degree[1] + 1, quad_degree[2] + 1))
-                si = np.zeros((num_basis, quad_degree[0] + 1, quad_degree[1] + 1, quad_degree[2] + 1))
+                xi = np.zeros((num_basis, qd[0] + 1, qd[1] + 1, qd[2] + 1))
+                et = np.zeros((num_basis, qd[0] + 1, qd[1] + 1, qd[2] + 1))
+                si = np.zeros((num_basis, qd[0] + 1, qd[1] + 1, qd[2] + 1))
                 volume = np.zeros(num_basis)
 
                 for k in range(p[2]):
@@ -410,18 +410,18 @@ class MsePySpaceReduceBundle(Frozen):
                         for i in range(p[0]):
                             m = i + j*p[0] + k*p[0]*p[1]
                             xi[m, ...] = (quad_nodes[0][:, np.newaxis].repeat(
-                                quad_degree[1] + 1, axis=1
-                            )[:, :, np.newaxis].repeat(quad_degree[2] + 1, axis=2) + 1) \
+                                qd[1] + 1, axis=1
+                            )[:, :, np.newaxis].repeat(qd[2] + 1, axis=2) + 1) \
                                 * (nodes[0][i+1]-nodes[0][i])/2 + nodes[0][i]
 
                             et[m, ...] = (quad_nodes[1][np.newaxis, :].repeat(
-                                quad_degree[0] + 1, axis=0
-                            )[:, :, np.newaxis].repeat(quad_degree[2] + 1, axis=2) + 1) \
+                                qd[0] + 1, axis=0
+                            )[:, :, np.newaxis].repeat(qd[2] + 1, axis=2) + 1) \
                                 * (nodes[1][j+1]-nodes[1][j])/2 + nodes[1][j]
 
                             si[m, ...] = (quad_nodes[2][np.newaxis, :].repeat(
-                                quad_degree[1] + 1, axis=0
-                            )[np.newaxis, :, :].repeat(quad_degree[0] + 1, axis=0) + 1) \
+                                qd[1] + 1, axis=0
+                            )[np.newaxis, :, :].repeat(qd[0] + 1, axis=0) + 1) \
                                 * (nodes[2][k+1]-nodes[2][k])/2 + nodes[2][k]
 
                             volume[m] = (nodes[0][i+1]-nodes[0][i]) \
@@ -463,12 +463,12 @@ class MsePySpaceReduceBundle(Frozen):
         local_cochains = list()
         for _I_ in range(3):
             if quad_degree is None:
-                quad_degree = [p + 2 for p in self._space[degree].p[_I_]]
+                qd = [p + 2 for p in self._space[degree].p[_I_]]
             else:
                 raise NotImplementedError()
 
-            quad_nodes, quad_weights = Quadrature(quad_degree, category='Gauss').quad
-            key = str(degree) + str(quad_degree) + str(_I_)
+            quad_nodes, quad_weights = Quadrature(qd, category='Gauss').quad
+            key = str(degree) + str(qd) + str(_I_)
 
             if key in self._cache332:
                 data = self._cache332[key]
@@ -479,53 +479,53 @@ class MsePySpaceReduceBundle(Frozen):
                 nodes = self._space[degree].nodes[_I_]
 
                 # dy dz face ________________________________________________________________________
-                xi = np.zeros((num_basis_components[0], quad_degree[1] + 1, quad_degree[2] + 1))
-                et = np.zeros((num_basis_components[0], quad_degree[1] + 1, quad_degree[2] + 1))
-                si = np.zeros((num_basis_components[0], quad_degree[1] + 1, quad_degree[2] + 1))
+                xi = np.zeros((num_basis_components[0], qd[1] + 1, qd[2] + 1))
+                et = np.zeros((num_basis_components[0], qd[1] + 1, qd[2] + 1))
+                si = np.zeros((num_basis_components[0], qd[1] + 1, qd[2] + 1))
                 area_dydz = np.zeros((num_basis_components[0]))
                 for k in range(p[2]):
                     for j in range(p[1]):
                         for i in range(p[0]+1):
                             m = i + j*(p[0]+1) + k*(p[0]+1)*p[1]
-                            xi[m, ...] = np.ones((quad_degree[1] + 1, quad_degree[2] + 1)) * nodes[0][i]
-                            et[m, ...] = (quad_nodes[1][:, np.newaxis].repeat(quad_degree[2] + 1, axis=1) + 1) * (
+                            xi[m, ...] = np.ones((qd[1] + 1, qd[2] + 1)) * nodes[0][i]
+                            et[m, ...] = (quad_nodes[1][:, np.newaxis].repeat(qd[2] + 1, axis=1) + 1) * (
                                     nodes[1][j+1]-nodes[1][j]) / 2 + nodes[1][j]
-                            si[m, ...] = (quad_nodes[2][np.newaxis, :].repeat((quad_degree[1] + 1), axis=0) + 1) * (
+                            si[m, ...] = (quad_nodes[2][np.newaxis, :].repeat((qd[1] + 1), axis=0) + 1) * (
                                     nodes[2][k+1]-nodes[2][k]) / 2 + nodes[2][k]
                             area_dydz[m] = (nodes[2][k + 1] - nodes[2][k]) * (nodes[1][j+1]-nodes[1][j])
                 coo_x = self._mesh.ct.mapping(xi, et, si)
                 Jx = self._mesh.ct.Jacobian_matrix(xi, et, si)
                 # dz dx face _________________________________________________________________________
-                xi = np.zeros((num_basis_components[1], quad_degree[0] + 1, quad_degree[2] + 1))
-                et = np.zeros((num_basis_components[1], quad_degree[0] + 1, quad_degree[2] + 1))
-                si = np.zeros((num_basis_components[1], quad_degree[0] + 1, quad_degree[2] + 1))
+                xi = np.zeros((num_basis_components[1], qd[0] + 1, qd[2] + 1))
+                et = np.zeros((num_basis_components[1], qd[0] + 1, qd[2] + 1))
+                si = np.zeros((num_basis_components[1], qd[0] + 1, qd[2] + 1))
                 area_dzdx = np.zeros((num_basis_components[1]))
                 for k in range(p[2]):
                     for j in range(p[1]+1):
                         for i in range(p[0]):
                             m = i + j*p[0] + k*(p[1]+1)*p[0]
-                            xi[m, ...] = (quad_nodes[0][:, np.newaxis].repeat(quad_degree[2] + 1, axis=1) + 1) * (
+                            xi[m, ...] = (quad_nodes[0][:, np.newaxis].repeat(qd[2] + 1, axis=1) + 1) * (
                                     nodes[0][i+1]-nodes[0][i]) / 2 + nodes[0][i]
-                            et[m, ...] = np.ones((quad_degree[0] + 1, quad_degree[2] + 1)) * nodes[1][j]
-                            si[m, ...] = (quad_nodes[2][np.newaxis, :].repeat(quad_degree[0] + 1, axis=0) + 1) * (
+                            et[m, ...] = np.ones((qd[0] + 1, qd[2] + 1)) * nodes[1][j]
+                            si[m, ...] = (quad_nodes[2][np.newaxis, :].repeat(qd[0] + 1, axis=0) + 1) * (
                                     nodes[2][k+1]-nodes[2][k]) / 2 + nodes[2][k]
                             area_dzdx[m] = (nodes[2][k + 1] - nodes[2][k]) * (nodes[0][i + 1] - nodes[0][i])
                 coo_y = self._mesh.ct.mapping(xi, et, si)
                 Jy = self._mesh.ct.Jacobian_matrix(xi, et, si)
                 # dx dy face _________________________________________________________________________
-                xi = np.zeros((num_basis_components[2], quad_degree[0] + 1, quad_degree[1] + 1))
-                et = np.zeros((num_basis_components[2], quad_degree[0] + 1, quad_degree[1] + 1))
-                si = np.zeros((num_basis_components[2], quad_degree[0] + 1, quad_degree[1] + 1))
+                xi = np.zeros((num_basis_components[2], qd[0] + 1, qd[1] + 1))
+                et = np.zeros((num_basis_components[2], qd[0] + 1, qd[1] + 1))
+                si = np.zeros((num_basis_components[2], qd[0] + 1, qd[1] + 1))
                 area_dxdy = np.zeros((num_basis_components[2]))
                 for k in range(p[2]+1):
                     for j in range(p[1]):
                         for i in range(p[0]):
                             m = i + j*p[0] + k*p[1]*p[0]
-                            xi[m, ...] = (quad_nodes[0][:, np.newaxis].repeat(quad_degree[1] + 1, axis=1) + 1) * (
+                            xi[m, ...] = (quad_nodes[0][:, np.newaxis].repeat(qd[1] + 1, axis=1) + 1) * (
                                     nodes[0][i+1]-nodes[0][i]) / 2 + nodes[0][i]
-                            et[m, ...] = (quad_nodes[1][np.newaxis, :].repeat(quad_degree[0] + 1, axis=0) + 1) * (
+                            et[m, ...] = (quad_nodes[1][np.newaxis, :].repeat(qd[0] + 1, axis=0) + 1) * (
                                     nodes[1][j+1]-nodes[1][j]) / 2 + nodes[1][j]
-                            si[m, ...] = np.ones((quad_degree[0] + 1, quad_degree[1] + 1)) * nodes[2][k]
+                            si[m, ...] = np.ones((qd[0] + 1, qd[1] + 1)) * nodes[2][k]
                             area_dxdy[m] = (nodes[1][j + 1] - nodes[1][j]) * (nodes[0][i+1]-nodes[0][i])
                 coo_z = self._mesh.ct.mapping(xi, et, si)
                 Jz = self._mesh.ct.Jacobian_matrix(xi, et, si)
@@ -630,22 +630,22 @@ class MsePySpaceReduceBundle(Frozen):
         local_cochains = list()
         for _I_ in range(3):
             if quad_degree is None:
-                quad_degree = [p + 2 for p in self._space[degree].p[_I_]]
+                qd = [p + 2 for p in self._space[degree].p[_I_]]
             else:
-                pass
+                raise NotImplementedError()
 
             xi, eta, sigma, edge_size_dxi, quad_weights = \
-                self._m3n3k1_preparation('x', degree, quad_degree, _I_)
+                self._m3n3k1_preparation('x', degree, qd, _I_)
             coo_dx = self._mesh.ct.mapping(xi, eta, sigma)
             Jx = self._mesh.ct.Jacobian_matrix(xi, eta, sigma)
 
             xi, eta, sigma, edge_size_deta, quad_weights = \
-                self._m3n3k1_preparation('y', degree, quad_degree, _I_)
+                self._m3n3k1_preparation('y', degree, qd, _I_)
             coo_dy = self._mesh.ct.mapping(xi, eta, sigma)
             Jy = self._mesh.ct.Jacobian_matrix(xi, eta, sigma)
 
             xi, eta, sigma, edge_size_dsigma, quad_weights = \
-                self._m3n3k1_preparation('z', degree, quad_degree, _I_)
+                self._m3n3k1_preparation('z', degree, qd, _I_)
             coo_dz = self._mesh.ct.mapping(xi, eta, sigma)
             Jz = self._mesh.ct.Jacobian_matrix(xi, eta, sigma)
 

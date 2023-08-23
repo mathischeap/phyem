@@ -29,8 +29,11 @@ __all__ = [
     'd', 'exterior_derivative', 'trace',
     'codifferential',
     'time_derivative',
+
     'pde',
     'ode',
+    'wf',
+
     'time_sequence',
     'constant_scalar',
 
@@ -72,6 +75,7 @@ from src.operators import time_derivative
 
 from src.pde import pde
 from src.ode.main import ode
+from src.wf.main import WeakFormulation as wf
 
 from src.time_sequence import abstract_time_sequence as time_sequence
 from src.form.parameters import constant_scalar

@@ -15,6 +15,12 @@ plt.rcParams.update({
 })
 matplotlib.use('TkAgg')
 
+_global_wf_terms = dict()
+
+from src.spaces.continuous.Lambda import ScalarValuedFormSpace
+from src.spaces.continuous.bundle import BundleValuedFormSpace
+from src.spaces.continuous.bundle_diagonal import DiagonalBundleValuedFormSpace
+
 from tools.frozen import Frozen
 from src.form.others import _find_form
 from src.form.operators import codifferential, d, trace, Hodge
@@ -26,6 +32,8 @@ from src.config import _non_root_lin_sep
 from src.wf.term.ap import _SimplePatternAPParser
 from src.wf.term.pattern import _dp_simpler_pattern_examiner_scalar_valued_forms
 from src.wf.term.pattern import _inner_simpler_pattern_examiner_scalar_valued_forms
+from src.wf.term.pattern import _inner_simpler_pattern_examiner_bundle_valued_forms
+from src.wf.term.pattern import _inner_simpler_pattern_examiner_diagonal_bundle_valued_forms
 _cs1 = constant_scalar(1)
 
 
@@ -35,6 +43,9 @@ class _WeakFormulationTerm(Frozen):
 
     def __init__(self, f0, f1, factor=None):
         """"""
+        # cache all weak formulation terms.
+        _global_wf_terms[id(self)] = self
+
         self._mesh = f0.mesh
         self._f0 = f0
         self._f1 = f1
@@ -315,7 +326,7 @@ class DualityPairingTerm(_WeakFormulationTerm):
                 s1.__class__.__name__ == 'ScalarValuedFormSpace':
             return _dp_simpler_pattern_examiner_scalar_valued_forms(factor, f0, f1)
         else:
-            return tuple()
+            raise NotImplementedError()
 
 
 def inner(f0, f1, factor=None, method='L2'):
@@ -341,9 +352,17 @@ def inner(f0, f1, factor=None, method='L2'):
     s0 = f0.space
     s1 = f1.space
 
-    if s0.__class__.__name__ == 'ScalarValuedFormSpace' and s1.__class__.__name__ == 'ScalarValuedFormSpace':
+    if s0.__class__ is ScalarValuedFormSpace and s1.__class__ is ScalarValuedFormSpace:
         assert s0.mesh == s1.mesh and s0.k == s1.k, \
             f"cannot do inner product between {f0} in {s0} and {f1} in {s1}."
+
+    elif s0.__class__ is BundleValuedFormSpace and s1.__class__ is BundleValuedFormSpace:
+        assert s0.mesh == s1.mesh and s0.k == s1.k, \
+            f"cannot do inner product between {f0} in {s0} and {f1} in {s1}."
+
+    elif s0.__class__ is DiagonalBundleValuedFormSpace and s1.__class__ is BundleValuedFormSpace:
+        assert s0.mesh == s1.mesh and 0 < s1.k < s1.mesh.n
+
     else:
         raise Exception(f'cannot do inner product between {f0} in {s0} and {f1} in {s1}.')
 
@@ -370,11 +389,17 @@ class L2InnerProductTerm(_WeakFormulationTerm):
         f0
         f1
         """
-        s1 = f0.space
-        s2 = f1.space
+        s0 = f0.space
+        s1 = f1.space
         super().__init__(f0, f1, factor=factor)
-        if s1.__class__.__name__ == 'ScalarValuedFormSpace' and s2.__class__.__name__ == 'ScalarValuedFormSpace':
-            assert s1 == s2, f"spaces dis-match. {s1} and {s2}"   # mesh consistence checked here.
+        if s0.__class__ is ScalarValuedFormSpace and s1.__class__ is ScalarValuedFormSpace:
+            assert s0 == s1, f"spaces dis-match. {s0} and {s1}"   # mesh consistence checked here.
+            over_ = self._mesh.manifold._sym_repr
+        elif s0.__class__ is BundleValuedFormSpace and s1.__class__ is BundleValuedFormSpace:
+            assert s0 == s1, f"spaces dis-match. {s0} and {s1}"   # mesh consistence checked here.
+            over_ = self._mesh.manifold._sym_repr
+        elif s0.__class__ is DiagonalBundleValuedFormSpace and s1.__class__ is BundleValuedFormSpace:
+            assert s0.mesh == s1.mesh and 0 < s1.k < s1.mesh.n
             over_ = self._mesh.manifold._sym_repr
         else:
             raise NotImplementedError()
@@ -401,11 +426,14 @@ class L2InnerProductTerm(_WeakFormulationTerm):
         """"""
         s0 = f0.space
         s1 = f1.space
-        if s0.__class__.__name__ == 'ScalarValuedFormSpace' and \
-                s1.__class__.__name__ == 'ScalarValuedFormSpace':
+        if s0.__class__ is ScalarValuedFormSpace and s1.__class__ is ScalarValuedFormSpace:
             return _inner_simpler_pattern_examiner_scalar_valued_forms(factor, f0, f1, self._extra_info)
+        if s0.__class__ is BundleValuedFormSpace and s1.__class__ is BundleValuedFormSpace:
+            return _inner_simpler_pattern_examiner_bundle_valued_forms(factor, f0, f1, self._extra_info)
+        if s0.__class__ is DiagonalBundleValuedFormSpace and s1.__class__ is BundleValuedFormSpace:
+            return _inner_simpler_pattern_examiner_diagonal_bundle_valued_forms(factor, f0, f1, self._extra_info)
         else:
-            return tuple()
+            raise NotImplementedError()
 
     def _integration_by_parts(self):
         """"""

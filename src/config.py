@@ -190,6 +190,9 @@ def _clear_all():
     _clear_a_dict(_space_set)
     _clear_a_dict(_mesh_set)
 
+    from src.wf.term.main import _global_wf_terms
+    _clear_a_dict(_global_wf_terms)
+
 
 def _clear_a_dict(the_dict):
     """"""
@@ -296,6 +299,7 @@ _global_operator_lin_repr_setting = {  # coded operators
     'multiply': r' \emph{multiply} ',
 
     'cross_product': r"$\times$",
+    'tensor_product': r"$\otimes$"
 }
 
 
@@ -312,20 +316,24 @@ _global_operator_sym_repr_setting = {  # coded operators
     'time_derivative': r'\partial_{t}',
     'trace': r'\mathrm{tr}',
     'division': [r'\frac{', r'}{', r"}"],
-    'cross_product': r"{\times}"
+    'cross_product': r"{\times}",
+    'tensor_product': r"{\otimes}"
 }
 
 
 _wf_term_default_simple_patterns = {   # use only str to represent a simple pattern.
     # indicator : simple pattern
-    '(pt,)': '(partial_t root-sf, sf)',   # (partial_time_derivative of root-sf, sf)
-    '(cd,)': '(codifferential sf, sf)',
+    '(pt,)': '(partial_t root-f, f)',   # (partial_time_derivative of root-sf, sf)
+    '(cd,)': '(codifferential f, f)',
 
     # below, we have simple patterns only for root-sf.
-    '(rt,rt)': '(root-sf, root-sf)',
-    '(d,)': '(d root-sf, root-sf)',
-    '(,d)': '(root-sf, d root-sf)',
-    '<tr star | tr >': '<tr star root-sf | trace root-sf>',
+    '(rt,rt)': '(root-f, root-f)',
+    '(d,)': '(d root-f, root-f)',
+    '(,d)': '(root-f, d root-f)',
+
+    '(<db>,d<b>)': '(root-diagonal-bf, d root-bf)',
+
+    '<tr star | tr >': '<tr star root-f | trace root-f>',
 
     '(*x*,)': '(known-root-sf cross-product known-root-sf, root-sf)',   # vector
     '(*x,)': '(known-root-sf cross-product root-sf, root-sf)',
