@@ -77,7 +77,8 @@ def _inner_simpler_pattern_examiner_scalar_valued_forms(factor, f0, f1, extra_in
             f_a = _find_form(a_lin)
             f_b = _find_form(b_lin)
 
-            if f_a.is_root() and f_b.is_root() and f1.is_root():
+            if (f_a.is_root() and f_b.is_root() and f1.is_root() and
+                    (f_a is not f_b) and (f_a is not f1) and (f_b is not f1)):
                 # a, b and c are all root-forms. This is good!
 
                 if 'known-cross-product-form' in extra_info:
@@ -110,7 +111,7 @@ def _inner_simpler_pattern_examiner_scalar_valued_forms(factor, f0, f1, extra_in
                             }
 
                     else:
-                        pass
+                        raise Exception
 
                 else:
                     # this term will be a nonlinear one! Take care it in the future!
@@ -184,6 +185,97 @@ def _inner_simpler_pattern_examiner_bundle_valued_forms(factor, f0, f1, extra_in
             else:
                 pass
 
+        tensor_product_lin = _global_operator_lin_repr_setting['tensor_product']
+
+        # (a tp b, _)
+        if tensor_product_lin in f0._lin_repr and f0._lin_repr.count(tensor_product_lin) == 1 and f1.is_root():
+
+            # it is like `a` x `b` for f0
+            a_lin, b_lin = f0._lin_repr.split(tensor_product_lin)
+
+            f_a = _find_form(a_lin)
+            f_b = _find_form(b_lin)
+
+            # (`a` tp `a`, f1), a, b, f1 are all root.
+            if f_a.is_root() and f_b.is_root():
+                if f_a is f_b:
+                    if 'known-tensor-product-form' in extra_info:
+                        raise Exception(f"to be implemented")  # do not use NotImplementedError
+                    else:
+                        # this term will be a nonlinear one
+                        return _simple_patterns['(0tp0,)'], {
+                            'a': f_a,
+                            'c': f1
+                        }
+                else:
+                    if 'known-tensor-product-form' in extra_info:
+                        known_forms = extra_info['known-tensor-product-form']
+
+                        if known_forms is f_a:
+                            return _simple_patterns['(*tp,)'], {
+                                'a': f_a,
+                                'b': f_b,
+                                'c': f1
+                            }
+
+                    else:
+                        pass
+
+            else:
+                pass
+
+        # (d bf0, b tp c)
+        if (f0._lin_repr[:len(lin_d)] == lin_d and
+                tensor_product_lin in f1._lin_repr and f1._lin_repr.count(tensor_product_lin) == 1):
+
+            a_lin, b_lin = f1._lin_repr.split(tensor_product_lin)
+
+            f_b = _find_form(a_lin)
+            f_c = _find_form(b_lin)
+
+            bf0 = _find_form(f0._lin_repr, upon=d)
+
+            if bf0.is_root() and f_b.is_root() and f_c.is_root():
+                # bf0 b c are different.
+                if (bf0 is not f_b) and (bf0 is not f_c) and (f_b is not f_c):
+                    if 'known-tensor-product-form' in extra_info:
+                        known_forms = extra_info['known-tensor-product-form']
+
+                        if known_forms is f_b:
+                            return _simple_patterns['(d,*tp)'], {
+                                'a': bf0,
+                                'b': f_b,
+                                'c': f_c
+                            }
+
+                        elif known_forms is bf0:
+                            return _simple_patterns['(d*,tp)'], {
+                                'a': bf0,
+                                'b': f_b,
+                                'c': f_c
+                            }
+                        else:
+                            pass
+
+                    else:
+                        pass
+
+                # (d bf0, bf0 tp c) are different.
+                elif (bf0 is f_b) and (bf0 is not f_c):
+                    if 'known-tensor-product-form' in extra_info:
+                        known_forms = extra_info['known-tensor-product-form']
+                        if known_forms is bf0:
+                            return _simple_patterns['(d0*,0*tp)'], {
+                                'a': bf0,
+                                'c': f_c
+                            }
+                    else:
+                        # this term will be a nonlinear one
+                        return _simple_patterns['(d0,0tp)'], {
+                            'a': bf0,
+                            'c': f_c
+                        }
+
         return '', None
 
     else:
@@ -202,8 +294,8 @@ def _inner_simpler_pattern_examiner_diagonal_bundle_valued_forms(factor, f0, f1,
                 pass
             elif f0.is_root() and bf1.is_root():
                 return _simple_patterns['(<db>,d<b>)'], {
-                    'rsf0': f0,     # root-scalar-form-0
-                    'rsf1': bf1,    # root-scalar-form-1
+                    'db0': f0,
+                    'bf1': bf1,
                 }
             else:
                 pass

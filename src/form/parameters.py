@@ -26,6 +26,8 @@ def constant_scalar(*args):
                 sym_repr, lin_repr = r"\frac{1}{2}", str(arg)
             elif arg == 0.25:
                 sym_repr, lin_repr = r"\frac{1}{4}", str(arg)
+            elif arg == 0.125:
+                sym_repr, lin_repr = r"\frac{1}{8}", str(arg)
             elif arg == -0.5:
                 sym_repr, lin_repr = r"-\frac{1}{2}", str(arg)
             elif arg == -0.25:
@@ -125,6 +127,12 @@ class ConstantScalar0Form(Frozen):
                 return ''
             elif f == 0.5:
                 return r'\frac{1}{2}'
+            elif f == -0.5:
+                return r'-\frac{1}{2}'
+            elif f == 0.25:
+                return r'\frac{1}{4}'
+            elif f == -0.25:
+                return r'-\frac{1}{4}'
             else:
                 return str(f)
         else:

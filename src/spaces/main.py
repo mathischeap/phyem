@@ -55,6 +55,11 @@ _default_astA_x_astB_ip_tC_reprs = [
     _sep.join(["c_ip:Mat", "[{A}]", "[{B}]", "[{C}]"]),
 ]
 
+_default_dastA_astA_tp_tC_reprs = [
+    r"\mathsf{dtp}",
+    _sep.join(["c_ip:Mat", "[{A}]", "[{C}]"]),
+]
+
 _default_astA_x_B_ip_tC_reprs = [
     r"\mathsf{C}",
     _sep.join(["X_ip:Mat", "[{A}]", "[{B}]", "[{C}]"]),
@@ -65,10 +70,51 @@ _default_A_x_astB_ip_tC_reprs = [
     _sep.join(["C_ip:Mat", "[{A}]", "[{B}]", "[{C}]"]),
 ]
 
+_default_dA_astB_tp_tC_reprs = [
+    r"\ddot{\mathsf{dtp}}",
+    _sep.join(["dA-*BtpC", "[{A}]", "[{B}]", "[{C}]"]),
+]
+
+_default_dastA_B_tp_tC_reprs = [
+    r"\dot{\mathtt{dtp}}",
+    _sep.join(["d*A--B-tp-tC", "[{A}]", "[{B}]", "[{C}]"]),
+]
+
+_default_astA_tp_B_tC_reprs = [
+    r"\dot{\mathtt{tp}}",
+    _sep.join(["*A-tp-B--tC", "[{A}]", "[{B}]", "[{C}]"]),
+]
+
 _default_A_x_B_ip_C_reprs = [
     r"\mathsf{X}",
     _sep.join(["X:Mat", "[{A}]", "[{B}]", "[{C}]"]),
 ]
+
+_default_A_tp_A_ip_C_reprs = [
+    r"\mathsf{T_p}",
+    _sep.join(["AoA-c", "[{A}]", "[{C}]"]),
+
+]
+
+_default_dA_dA_tp_C_reprs = [
+    r"\mathsf{dT_p}",
+    _sep.join(["dA--A-tp-c", "[{A}]", "[{C}]"]),
+]
+
+_default_mass_matrix_db_bf_reprs = [
+    r"\mathbb{M}_{\mathcal{S}}",
+    _sep.join(
+        ["db-M-bf", "{db_space_pure_lin_repr}", "{bf_space_pure_lin_repr}", "{degree_db}", "{degree_bf}"]
+    ),
+]
+
+_default_mass_matrix_bf_db_reprs = [
+    r"\mathbb{M}^{\mathsf{T}}_{\mathcal{S}}",
+    _sep.join(
+        ["bf-M-db", "{bf_space_pure_lin_repr}", "{db_space_pure_lin_repr}", "{degree_bf}", "{degree_db}"]
+    ),
+]
+
 
 _default_space_degree_repr = ':D-'
 

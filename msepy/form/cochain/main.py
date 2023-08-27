@@ -72,10 +72,33 @@ class MsePyRootFormCochain(Frozen):
                     pass
                 else:
                     new_tcd[newest_t] = self._tcd[newest_t]
+
+            if isinstance(what, (int, float)):
+
+                what = int(what)
+                if what < 0:  # clean all cochain except the last newest `what` ones.
+
+                    leave_amount = -what
+                    keys = list(self._tcd.keys())
+                    keys.sort()
+
+                    if len(keys) <= leave_amount:
+                        new_tcd = self._tcd
+                    else:
+                        keys = keys[-leave_amount:]
+                        for key in keys:
+                            new_tcd[key] = self._tcd[key]
+
+                else:
+                    raise NotImplementedError(f"cannot clean {what}!")
+
             elif what == 'all':
-                pass
+                raise NotImplementedError(f"cannot clean {what}!")
             else:
                 raise NotImplementedError(f"cannot clean {what}!")
+
+            self._tcd = new_tcd
+
         else:
             rf._base.cochain.clean(what=what)
 

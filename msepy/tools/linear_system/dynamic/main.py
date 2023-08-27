@@ -4,12 +4,6 @@ r"""
 import matplotlib.pyplot as plt
 import matplotlib
 
-plt.rcParams.update({
-    "text.usetex": True,
-    "font.family": "DejaVu Sans",
-    "text.latex.preamble": r"\usepackage{amsmath, amssymb}",
-})
-matplotlib.use('TkAgg')
 
 from tools.frozen import Frozen
 from msepy.tools.matrix.static.local import MsePyStaticLocalMatrix
@@ -348,6 +342,17 @@ class MsePyDynamicLinearSystem(Frozen):
 
     def pr(self, figsize=(10, 4)):
         """pr"""
+        from src.config import _setting, _pr_cache
+        plt.rcParams.update({
+            "text.usetex": True,
+            "font.family": "DejaVu Sans",
+            "text.latex.preamble": r"\usepackage{amsmath, amssymb}",
+        })
+        if _setting['pr_cache']:
+            matplotlib.use('Agg')
+        else:
+            matplotlib.use('TkAgg')
+
         assert self._A is not None, f"dynamic linear system initialized but not applied, do `.apply()` firstly."
 
         A_text = self._A_pr_text()
@@ -366,7 +371,6 @@ class MsePyDynamicLinearSystem(Frozen):
         plt.axis([0, 1, 0, 1])
         plt.axis('off')
         plt.text(0.05, 0.5, text + bc_text, ha='left', va='center', size=15)
-        from src.config import _setting, _pr_cache
         if _setting['pr_cache']:
             _pr_cache(fig, filename='msepy_DynamicLinearSystem')
         else:

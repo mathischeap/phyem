@@ -320,6 +320,29 @@ class T2dVector(TimeSpaceFunctionBase):
         else:
             raise NotImplementedError()
 
+    def tensor_product(self, other):
+        """self otimes other"""
+
+        if other.__class__ is self.__class__:
+            from tools.functions.time_space._2d.wrappers.tensor import T2dTensor
+
+            # self = (u, v)
+            # other = (a ,b)
+            # self otimes other = ([ua, ub], [va, vb])
+
+            u, v = self._v0_, self._v1_
+            a, b = other._v0_, other._v1_
+
+            t00 = t2d_ScalarMultiply(u, a)
+            t01 = t2d_ScalarMultiply(u, b)
+            t10 = t2d_ScalarMultiply(v, a)
+            t11 = t2d_ScalarMultiply(v, b)
+
+            return T2dTensor(t00, t01, t10, t11)
+
+        else:
+            raise NotImplementedError()
+
     def _merge_msepy_form_over_boundary(self, msepy_form, boundary_msepy_manifold, sampling_factor=1):
         """For the boundary of `msepy_form.mesh`, on the `boundary_msepy_manifold` part, we return
         the reconstruction of `msepy_form`, on else part, we return the evaluation of self!

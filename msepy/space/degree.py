@@ -84,6 +84,10 @@ class MsePySpaceDegree(Frozen):
         self._nodes = nodes
         self._ntype = ntype
 
+    def __repr__(self):
+        """repr"""
+        return rf"<Degree [{self._degree}] copy of {self._space}>"
+
     @property
     def p(self):
         """(px, py, ...) of all elements."""
@@ -157,3 +161,10 @@ class MsePySpaceDegree(Frozen):
     @property
     def local_numbering(self):
         return self._space.local_numbering(self._degree)
+
+    def inner_product(self, other, special_key=None):
+        """"""
+        if other.__class__ is self.__class__:
+            return self._space.inner_product(self._degree, other, special_key=special_key)
+        else:
+            raise NotImplementedError()

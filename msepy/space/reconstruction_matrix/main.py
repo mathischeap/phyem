@@ -23,6 +23,8 @@ class MsePyReconstructMatrix(Frozen):
             return self.Lambda(degree, *meshgrid_xi_et_sg, element_range=element_range)
         elif indicator == 'bundle':
             return self.bundle(degree, *meshgrid_xi_et_sg, element_range=element_range)
+        elif indicator == 'bundle-diagonal':
+            return self.Lambda(degree, *meshgrid_xi_et_sg, element_range=element_range)
         else:
             raise NotImplementedError()
 

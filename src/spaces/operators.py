@@ -66,7 +66,7 @@ def tensor_product(s1, s2):
 
         m, n = s1.mesh.m, s1.mesh.n
 
-        if m == n == 2: # on 2d mesh in 2d space.
+        if m == n == 2:  # on 2d mesh in 2d space.
             k1 = s1.k
             k2 = s2.k
 
@@ -77,6 +77,7 @@ def tensor_product(s1, s2):
 
     else:
         raise NotImplementedError()
+
 
 def cross_product(s1, s2):
     """"""

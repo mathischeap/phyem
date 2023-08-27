@@ -50,7 +50,7 @@ class _WeakFormulationTerm(Frozen):
         self._f0 = f0
         self._f1 = f1
 
-        if factor is None:
+        if factor is None or factor == 1:
             self._factor = _cs1
         elif isinstance(factor, (int, float)):
             self._factor = constant_scalar(factor)
@@ -102,6 +102,7 @@ class _WeakFormulationTerm(Frozen):
         else:
             if self._factor.is_root():
                 return self._factor._sym_repr + self.___sym_repr___
+
             else:
                 frac = _global_operator_sym_repr_setting['division'][0]
                 if self._factor._sym_repr[:len(frac)] == frac:
@@ -215,7 +216,7 @@ class _WeakFormulationTerm(Frozen):
         if f in ('f0', 'f1'):
             assert which is None, f"When specify f0 or f1, no need to set `which`."
             term_class = self.__class__
-            f1 = self._f1
+
             assert isinstance(into, (list, tuple)), f"put split objects into a list or tuple even there is only one."
             assert len(into) >= 1, f"number of split objects must be equal to or larger than 1."
             assert len(into) == len(signs), f"objects and signs length dis-match."
@@ -229,13 +230,27 @@ class _WeakFormulationTerm(Frozen):
             assert len(signs) == len(factors), f"signs and factors length dis-match."
 
             new_terms = list()
-            for i, ifi in enumerate(into):
-                assert signs[i] in ('+', '-'), f"{i}th sign = {signs[i]} is wrong."
-                assert ifi.__class__.__name__ == 'Form', f"{i}th object = {ifi} is not a form."
-                assert ifi.mesh == f1.mesh, f"mesh of {i}th object = {ifi.mesh} does not fit."
-                term = term_class(ifi, f1, factor=factors[i])
-                new_terms.append(term)
-            return new_terms, signs
+
+            if f == 'f0':
+                f1 = self._f1
+                for i, ifi in enumerate(into):
+                    assert signs[i] in ('+', '-'), f"{i}th sign = {signs[i]} is wrong."
+                    assert ifi.__class__.__name__ == 'Form', f"{i}th object = {ifi} is not a form."
+                    assert ifi.mesh == f1.mesh, f"mesh of {i}th object = {ifi.mesh} does not fit."
+                    term = term_class(ifi, f1, factor=factors[i])
+                    new_terms.append(term)
+                return new_terms, signs
+            elif f == 'f1':
+                f0 = self._f0
+                for i, ifi in enumerate(into):
+                    assert signs[i] in ('+', '-'), f"{i}th sign = {signs[i]} is wrong."
+                    assert ifi.__class__.__name__ == 'Form', f"{i}th object = {ifi} is not a form."
+                    assert ifi.mesh == f0.mesh, f"mesh of {i}th object = {ifi.mesh} does not fit."
+                    term = term_class(f0, ifi, factor=factors[i])
+                    new_terms.append(term)
+                return new_terms, signs
+            else:
+                raise Exception()
 
         else:
             raise NotImplementedError()

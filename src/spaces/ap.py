@@ -4,11 +4,16 @@ Algebraic Proxy.
 """
 from src.spaces.main import _default_mass_matrix_reprs
 from src.spaces.main import _default_astA_x_astB_ip_tC_reprs
-from src.spaces.main import _default_astA_x_B_ip_tC_reprs
-from src.spaces.main import _default_A_x_astB_ip_tC_reprs
-from src.spaces.main import _default_A_x_B_ip_C_reprs
+from src.spaces.main import _default_astA_x_B_ip_tC_reprs, _default_astA_tp_B_tC_reprs
+from src.spaces.main import _default_A_x_astB_ip_tC_reprs, _default_dastA_astA_tp_tC_reprs
+from src.spaces.main import _default_A_x_B_ip_C_reprs, _default_A_tp_A_ip_C_reprs, _default_dA_dA_tp_C_reprs
 from src.spaces.main import _default_d_matrix_reprs, _default_d_matrix_transpose_reprs
-from src.spaces.main import _default_boundary_dp_vector_reprs
+from src.spaces.main import _default_boundary_dp_vector_reprs, _default_dA_astB_tp_tC_reprs
+from src.spaces.main import _default_dastA_B_tp_tC_reprs
+from src.spaces.main import _default_mass_matrix_db_bf_reprs, _default_mass_matrix_bf_db_reprs
+
+from src.config import _transpose_text
+
 from src.config import _form_evaluate_at_repr_setting
 
 from src.spaces.main import _default_space_degree_repr
@@ -42,6 +47,56 @@ def _parse_l2_inner_product_mass_matrix(s0, s1, d0, d1):
             s1._sym_repr + _default_space_degree_repr + str_d1
         ), symmetric=True,
     )
+
+
+def _parse_l2_inner_product_db_bf(db, bf, transpose=False):
+    """
+    if ``transpose``, 0-axis of the output refers to `bd`, else, 0-axis refers to `df`.
+
+    Parameters
+    ----------
+    db
+    bf
+    transpose
+
+    Returns
+    -------
+
+    """
+    db_space = db.space
+    bf_space = bf.space
+    if transpose:
+        sym, lin = _default_mass_matrix_bf_db_reprs
+
+    else:
+        sym, lin = _default_mass_matrix_db_bf_reprs
+
+    lin = lin.replace('{db_space_pure_lin_repr}', str(db_space._pure_lin_repr))
+    lin = lin.replace('{bf_space_pure_lin_repr}', str(bf_space._pure_lin_repr))
+
+    degree_db = db._degree
+    degree_bf = bf._degree
+
+    str_db = _degree_str_maker(degree_db)
+    str_bf = _degree_str_maker(degree_bf)
+
+    lin = lin.replace('{degree_db}', str_db)
+    lin = lin.replace('{degree_bf}', str_bf)
+
+    if transpose:
+        return _root_array(
+            sym, lin, (
+                bf_space._sym_repr + _default_space_degree_repr + str_bf,
+                db_space._sym_repr + _default_space_degree_repr + str_db
+            ), symmetric=False,
+        )
+    else:
+        return _root_array(
+            sym, lin, (
+                db_space._sym_repr + _default_space_degree_repr + str_db,
+                bf_space._sym_repr + _default_space_degree_repr + str_bf
+            ), symmetric=False,
+        )
 
 
 def _parse_d_matrix(f, transpose=False):
@@ -176,6 +231,81 @@ def _parse_A_x_astB_ip_tC(A, gB, tC):
     return ra
 
 
+def _parse_dA_astB_tp_tC(A, gB, tC):
+    """"""
+
+    sym, lin = _default_dA_astB_tp_tC_reprs[:2]
+
+    sym += r"_{" + gB._sym_repr + r"}"
+    lin = lin.replace('{A}', A._pure_lin_repr)
+    lin = lin.replace('{B}', gB._pure_lin_repr)
+    lin = lin.replace('{C}', tC._pure_lin_repr)
+
+    s0 = tC.space
+    s1 = A.space
+    d0 = tC._degree
+    d1 = A._degree
+    str_d0 = _degree_str_maker(d0)
+    str_d1 = _degree_str_maker(d1)
+
+    shape0 = s0._sym_repr + _default_space_degree_repr + str_d0
+    shape1 = s1._sym_repr + _default_space_degree_repr + str_d1
+
+    shape = (shape0, shape1)
+    ra = _root_array(sym, lin, shape)
+    return ra
+
+
+def _parse_dastA_B_tp_tC(gA, B, tC):
+    """"""
+
+    sym, lin = _default_dastA_B_tp_tC_reprs[:2]
+
+    sym += r"_{" + gA._sym_repr + r"}"
+    lin = lin.replace('{A}', gA._pure_lin_repr)
+    lin = lin.replace('{B}', B._pure_lin_repr)
+    lin = lin.replace('{C}', tC._pure_lin_repr)
+
+    s0 = tC.space
+    s1 = B.space
+    d0 = tC._degree
+    d1 = B._degree
+    str_d0 = _degree_str_maker(d0)
+    str_d1 = _degree_str_maker(d1)
+
+    shape0 = s0._sym_repr + _default_space_degree_repr + str_d0
+    shape1 = s1._sym_repr + _default_space_degree_repr + str_d1
+
+    shape = (shape0, shape1)
+    ra = _root_array(sym, lin, shape)
+    return ra
+
+
+def _parse_astA_tp_B_tC(gA, B, tC):
+    """"""
+
+    sym, lin = _default_astA_tp_B_tC_reprs[:2]
+
+    sym += r"_{" + gA._sym_repr + r"}"
+    lin = lin.replace('{A}', gA._pure_lin_repr)
+    lin = lin.replace('{B}', B._pure_lin_repr)
+    lin = lin.replace('{C}', tC._pure_lin_repr)
+
+    s0 = tC.space
+    s1 = B.space
+    d0 = tC._degree
+    d1 = B._degree
+    str_d0 = _degree_str_maker(d0)
+    str_d1 = _degree_str_maker(d1)
+
+    shape0 = s0._sym_repr + _default_space_degree_repr + str_d0
+    shape1 = s1._sym_repr + _default_space_degree_repr + str_d1
+
+    shape = (shape0, shape1)
+    ra = _root_array(sym, lin, shape)
+    return ra
+
+
 def _parse_A_x_B_ip_C(A, B, C):
     """"""
     sym, lin = _default_A_x_B_ip_C_reprs[:2]
@@ -187,3 +317,45 @@ def _parse_A_x_B_ip_C(A, B, C):
 
     mda = AbstractNonlinearOperator(sym, lin)
     return mda
+
+
+def _parse_fa_tp_fa__ip__f1(A, C):
+    """(a otimes a, c)"""
+    sym, lin = _default_A_tp_A_ip_C_reprs[:2]
+
+    sym += rf"\left({A._sym_repr}, {A._sym_repr}, {C._sym_repr}\right)"
+    lin = lin.replace('{A}', A._pure_lin_repr)
+    lin = lin.replace('{C}', C._pure_lin_repr)
+    mda = AbstractNonlinearOperator(sym, lin)
+    return mda
+
+
+def _parse_dA_dA_tp_C(A, C):
+    """(dA, A otimes c)"""
+    sym, lin = _default_dA_dA_tp_C_reprs[:2]
+
+    sym += rf"\left({A._sym_repr}, {A._sym_repr}, {C._sym_repr}\right)"
+    lin = lin.replace('{A}', A._pure_lin_repr)
+    lin = lin.replace('{C}', C._pure_lin_repr)
+
+    mda = AbstractNonlinearOperator(sym, lin)
+    return mda
+
+
+def _parse_dastA_astA_tp_C(gA, tC):
+    """(dgA, gA otimes c)"""
+    sym, lin = _default_dastA_astA_tp_tC_reprs[:2]
+
+    sym += r"_{(" + gA._sym_repr + ',' + gA._sym_repr + r")}"
+    lin = lin.replace('{A}', gA._pure_lin_repr)
+    lin = lin.replace('{C}', tC._pure_lin_repr)
+
+    s0 = tC.space
+    d0 = tC._degree
+    str_d0 = _degree_str_maker(d0)
+
+    shape0 = s0._sym_repr + _default_space_degree_repr + str_d0
+
+    shape = (shape0, 1)
+    ra = _root_array(sym, lin, shape)
+    return ra

@@ -36,6 +36,7 @@ class MsePyRootFormVisualizeVTK(Frozen):
                 file_path, sampling_factor,
                 data_only=data_only, builder=builder
             )
+
         else:   # we save a couple of forms together with this form.
             if file_path is None:
                 file_path = 'msepy_forms_vtk'
@@ -83,6 +84,7 @@ class MsePyRootFormVisualizeVTK(Frozen):
                 return vtk_builder, {self._f.name: v}
             else:
                 return {self._f.name: v}
+
         else:
             vtk_builder = BuildVtkHexahedron(x, y, z, cell_layout=p)
             vtk_builder(file_path, point_data={self._f.name: v})
@@ -101,6 +103,7 @@ class MsePyRootFormVisualizeVTK(Frozen):
                 p[i] = 1
             else:
                 pass
+
         nodes = [np.linspace(-1, 1, p_i+1) for p_i in p]
         t = self._f.visualize._t
         xyz, v = self._f[t].reconstruct(*nodes, ravel=True)
@@ -109,12 +112,13 @@ class MsePyRootFormVisualizeVTK(Frozen):
         if data_only:
             if builder:
                 vtk_builder = BuildVtkHexahedron(x, y, z, cell_layout=p)
-                return vtk_builder, {self._f.name: v}
+                return vtk_builder, {self._f.name: v, }
             else:
-                return {self._f.name: v}
+                return {self._f.name: v, }
+
         else:
             vtk_builder = BuildVtkHexahedron(x, y, z, cell_layout=p)
-            vtk_builder(file_path, point_data={self._f.name: v})
+            vtk_builder(file_path, point_data={self._f.name: v, })
 
             return 0
 

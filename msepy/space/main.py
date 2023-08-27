@@ -5,6 +5,7 @@ from tools.frozen import Frozen
 from msepy.space.gathering_matrix.main import MsePyGatheringMatrix
 from msepy.space.incidence_matrix.main import MsePyIncidenceMatrix
 from msepy.space.mass_matrix.main import MsePyMassMatrix
+from msepy.space.inner_product.main import MsePyInnerProduct
 from msepy.space.local_numbering.main import MsePyLocalNumbering
 from msepy.space.num_local_dofs.main import MsePyNumLocalDofs
 from msepy.space.num_local_dof_components.main import MsePyNumLocalDofComponents
@@ -47,6 +48,7 @@ class MsePySpace(Frozen):
         self._reconstruction_matrix = None
         self._error = None
         self._norm = None
+        self._ip = None
         self._degree_cache = {}
         self._find = None
         self._freeze()
@@ -186,3 +188,9 @@ class MsePySpace(Frozen):
         if self._find is None:
             self._find = MsePySpaceFind(self)
         return self._find
+
+    @property
+    def inner_product(self):
+        if self._ip is None:
+            self._ip = MsePyInnerProduct(self)
+        return self._ip

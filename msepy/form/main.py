@@ -14,6 +14,7 @@ from msepy.form.visualize.main import MsePyRootFormVisualize
 from msepy.form.coboundary import MsePyRootFormCoboundary
 from msepy.form.matrix import MsePyRootFormMatrix
 from msepy.form.boundary_integrate.main import MsePyRootFormBoundaryIntegrate
+from msepy.form.numeric.main import MsePyRootFormNumeric
 
 from tools.miscellaneous.ndarray_cache import ndarray_key_comparer, add_to_ndarray_cache
 
@@ -44,6 +45,7 @@ class MsePyRootForm(Frozen):
         self._boundary_integrate = MsePyRootFormBoundaryIntegrate(self)
         self._reconstruct_matrix = None
         self._reconstruct_matrix_cache = dict()
+        self._numeric = None
         self._freeze()
 
     def _saving_check(self):
@@ -243,6 +245,13 @@ class MsePyRootForm(Frozen):
         if self._matrix is None:
             self._matrix = MsePyRootFormMatrix(self)
         return self._matrix
+
+    @property
+    def numeric(self):
+        """matrix"""
+        if self._numeric is None:
+            self._numeric = MsePyRootFormNumeric(self)
+        return self._numeric
 
     @property
     def boundary_integrate(self):

@@ -10,6 +10,11 @@ import matplotlib
 import matplotlib.pyplot as plt
 from matplotlib import cm
 
+matplotlib.use('TkAgg')
+plt.rcParams.update({
+    "font.family": "DejaVu sans",
+})
+
 
 def ___set_contour_levels___(v, num_levels):
     """ We set the `num_levels` according to the values `v` to be plotted. """
@@ -111,12 +116,8 @@ def contour(
     y = {0: y} if not isinstance(y, dict) else y
     v = {0: v} if not isinstance(v, dict) else v
 
-    if saveto is not None:
-        matplotlib.use('Agg')
-
     plt.rcParams.update({
         "text.usetex": usetex,
-        "font.family": "DejaVu sans",
     })
 
     if usetex:
@@ -191,5 +192,6 @@ def contour(
         plt.savefig(saveto, bbox_inches='tight', pad_inches=pad_inches, dpi=dpi)
         plt.close()
 
+    plt.close()
     # --------------------------------------------------------------------------
     return fig

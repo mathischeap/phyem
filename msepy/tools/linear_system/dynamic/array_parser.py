@@ -11,6 +11,8 @@ from src.spaces.main import _default_boundary_dp_vector_reprs
 from src.spaces.main import _default_astA_x_astB_ip_tC_reprs
 from src.spaces.main import _default_astA_x_B_ip_tC_reprs
 from src.spaces.main import _default_A_x_astB_ip_tC_reprs
+from src.spaces.main import _default_dastA_B_tp_tC_reprs, _default_astA_tp_B_tC_reprs
+from src.spaces.main import _default_mass_matrix_bf_db_reprs, _default_mass_matrix_db_bf_reprs
 
 from src.spaces.main import _str_degree_parser
 
@@ -27,6 +29,8 @@ _len_rf_ap_lin_repr = len(_root_form_ap_lin_repr)
 
 from msepy.main import base
 from msepy.form.tools.operations.nonlinear.AxB_ip_C import _AxBipC
+from msepy.form.tools.operations.nonlinear.dA_ip_BtpC import _dAipBtpC
+from msepy.form.tools.operations.nonlinear.AtpB_C import _AtpBC
 
 from msepy.tools.matrix.static.local import MsePyStaticLocalMatrix
 from msepy.tools.vector.dynamic import MsePyDynamicLocalVector
@@ -89,6 +93,20 @@ def msepy_root_array_parser(dls, array_lin_repr):
         elif type_indicator == _default_A_x_astB_ip_tC_reprs[1].split(_sep)[0]:
             A, time_indicator = _parse_A_x_astB_ip_tC(*info_indicators)
             text = r"\boldsymbol{C}"
+        elif type_indicator == _default_dastA_B_tp_tC_reprs[1].split(_sep)[0]:
+            A, time_indicator = _parse_dastA_B_tp_tC(*info_indicators)
+            text = r"\mathsf{t^\ast}"
+        elif type_indicator == _default_mass_matrix_bf_db_reprs[1].split(_sep)[0]:
+            A, time_indicator = _parse_bf_db(*info_indicators)
+            text = r"\mathbb{M}^{\mathsf{T}}_{\mathcal{S}}"
+        elif type_indicator == _default_mass_matrix_db_bf_reprs[1].split(_sep)[0]:
+            sp_db, sp_bf, d_db, d_bf = info_indicators
+            M, time_indicator = _parse_bf_db(sp_bf, sp_db, d_bf, d_db)
+            A = M.T
+            text = r"\mathbb{M}_{\mathcal{S}}"
+        elif type_indicator == _default_astA_tp_B_tC_reprs[1].split(_sep)[0]:
+            A, time_indicator = _parse_astA_tp_B_tC(*info_indicators)
+            text = r"\mathsf{tp}"
         else:
             raise NotImplementedError(f"I cannot parse: {array_lin_repr} of type {type_indicator}")
 
@@ -96,6 +114,96 @@ def msepy_root_array_parser(dls, array_lin_repr):
             return A.T, text + r"^{\mathsf{T}}", time_indicator
         else:
             return A, text, time_indicator
+
+
+def _parse_bf_db(sp_bf, sp_db, d_bf, d_db):
+    """"""
+    sp_bf = _find_space_through_pure_lin_repr(sp_bf)
+    sp_db = _find_space_through_pure_lin_repr(sp_db)
+    d_bf = _str_degree_parser(d_bf)
+    d_db = _str_degree_parser(d_db)
+
+    M = sp_bf[d_bf].inner_product(sp_db[d_db], special_key=0)
+
+    gm_row = sp_bf.gathering_matrix(d_bf)
+    gm_col = sp_db.gathering_matrix(d_db)
+
+    M = MsePyStaticLocalMatrix(  # make a new copy every single time.
+        M,
+        gm_row,
+        gm_col,
+    )
+
+    return M, None  # time_indicator is None, mean M is same at all time.
+
+
+def _find_space_through_pure_lin_repr(_target_space_lin_repr):
+    """"""
+    spaces = base['spaces']
+    the_msepy_space = None
+    for space_lin_repr in spaces:
+        msepy_space = spaces[space_lin_repr]
+        abs_space_pure_lin_repr = msepy_space.abstract._pure_lin_repr
+        if abs_space_pure_lin_repr == _target_space_lin_repr:
+            the_msepy_space = msepy_space
+            break
+        else:
+            pass
+    assert the_msepy_space is not None, f"Find no msepy space."
+    return the_msepy_space
+
+
+def _find_from_bracket_ABC(A, B, C, default_repr):
+    """"""
+    lin_reprs = default_repr[1]
+    base_Ar, base_Br, base_Cr = lin_reprs.split(_sep)[1:]
+    replace_keys = (r"{A}", r"{B}", r"{C}")
+    # now we try to find the form gA, B and tC
+    ABC_forms = list()
+
+    msepy_forms = base['forms']
+
+    for format_form, base_rp, replace_key in zip((A, B, C), (base_Ar, base_Br, base_Cr), replace_keys):
+        found_root_form = None
+        for root_form_lin_repr in _global_root_forms_lin_dict:
+            check_form = _global_root_forms_lin_dict[root_form_lin_repr]
+            check_temp = base_rp.replace(replace_key, check_form._pure_lin_repr)
+            if check_temp == format_form:
+                found_root_form = check_form
+                break
+            else:
+                pass
+        assert found_root_form is not None, f"must have found root-for for {format_form}."
+
+        msepy_base_form = None
+        for _pure_lin_repr in msepy_forms:
+            if _pure_lin_repr == found_root_form._pure_lin_repr:
+                msepy_base_form = msepy_forms[_pure_lin_repr]
+                break
+            else:
+                pass
+        assert msepy_base_form is not None, f"we must have found a msepy copy of the root-form."
+        ABC_forms.append(msepy_base_form)
+
+    return ABC_forms
+
+
+def _parse_dastA_B_tp_tC(gA, B, tC):
+    """"""
+    ABC_forms = _find_from_bracket_ABC(gA, B, tC, _default_dastA_B_tp_tC_reprs)
+    msepy_A, msepy_B, msepy_C = ABC_forms  # A is given
+    nonlinear_operation = _dAipBtpC(*ABC_forms)
+    C = nonlinear_operation(2, msepy_C, msepy_B)
+    return C, msepy_A.cochain._ati_time_caller  # since A is given, its ati determine the time of C.
+
+
+def _parse_astA_tp_B_tC(gA, B, tC):
+    """"""
+    ABC_forms = _find_from_bracket_ABC(gA, B, tC, _default_astA_tp_B_tC_reprs)
+    msepy_A, msepy_B, msepy_C = ABC_forms  # A is given
+    nonlinear_operation = _AtpBC(*ABC_forms)
+    C = nonlinear_operation(2, msepy_C, msepy_B)
+    return C, msepy_A.cochain._ati_time_caller  # since A is given, its ati determine the time of C.
 
 
 def _parse_root_form(root_form_vec_lin_repr):
@@ -180,80 +288,20 @@ def _parse_E_matrix(space, degree):
 
 def _parse_astA_x_astB_ip_tC(gA, gB, tC):
     """(A X B, C), A and B are given, C is the test form, so it gives a dynamic vector."""
-    lin_reprs = _default_astA_x_astB_ip_tC_reprs[1]
-    base_Ar, base_Br, base_Cr = lin_reprs.split(_sep)[1:]
-    replace_keys = (r"{A}", r"{B}", r"{C}")
-    # now we try to find the form gA, B and tC
-    ABC_forms = list()
 
-    msepy_forms = base['forms']
-
-    for format_form, base_rp, replace_key in zip((gA, gB, tC), (base_Ar, base_Br, base_Cr), replace_keys):
-        found_root_form = None
-        for root_form_lin_repr in _global_root_forms_lin_dict:
-            check_form = _global_root_forms_lin_dict[root_form_lin_repr]
-            check_temp = base_rp.replace(replace_key, check_form._pure_lin_repr)
-            if check_temp == format_form:
-                found_root_form = check_form
-                break
-            else:
-                pass
-        assert found_root_form is not None, f"must have found root-for for {format_form}."
-
-        msepy_base_form = None
-        for _pure_lin_repr in msepy_forms:
-            if _pure_lin_repr == found_root_form._pure_lin_repr:
-                msepy_base_form = msepy_forms[_pure_lin_repr]
-                break
-            else:
-                pass
-        assert msepy_base_form is not None, f"we must have found a msepy copy of the root-form."
-        ABC_forms.append(msepy_base_form)
-
-    _, _, msepy_C = ABC_forms  # A is given
-
+    ABC_forms = _find_from_bracket_ABC(gA, gB, tC, _default_astA_x_astB_ip_tC_reprs)
+    _, _, msepy_C = ABC_forms
     nonlinear_operation = _AxBipC(*ABC_forms)
-
     c, time_caller = nonlinear_operation(1, msepy_C)
-
     return c, time_caller  # since A is given, its ati determine the time of C.
 
 
 def _parse_astA_x_B_ip_tC(gA, B, tC):
     """Remember, for this term, gA, b, tC must be root-forms."""
-    lin_reprs = _default_astA_x_B_ip_tC_reprs[1]
-    base_Ar, base_Br, base_Cr = lin_reprs.split(_sep)[1:]
-    replace_keys = (r"{A}", r"{B}", r"{C}")
-    # now we try to find the form gA, B and tC
-    ABC_forms = list()
 
-    msepy_forms = base['forms']
-
-    for format_form, base_rp, replace_key in zip((gA, B, tC), (base_Ar, base_Br, base_Cr), replace_keys):
-        found_root_form = None
-        for root_form_lin_repr in _global_root_forms_lin_dict:
-            check_form = _global_root_forms_lin_dict[root_form_lin_repr]
-            check_temp = base_rp.replace(replace_key, check_form._pure_lin_repr)
-            if check_temp == format_form:
-                found_root_form = check_form
-                break
-            else:
-                pass
-        assert found_root_form is not None, f"must have found root-for for {format_form}."
-
-        msepy_base_form = None
-        for _pure_lin_repr in msepy_forms:
-            if _pure_lin_repr == found_root_form._pure_lin_repr:
-                msepy_base_form = msepy_forms[_pure_lin_repr]
-                break
-            else:
-                pass
-        assert msepy_base_form is not None, f"we must have found a msepy copy of the root-form."
-        ABC_forms.append(msepy_base_form)
-
+    ABC_forms = _find_from_bracket_ABC(gA, B, tC, _default_astA_x_B_ip_tC_reprs)
     msepy_A, msepy_B, msepy_C = ABC_forms  # A is given
     nonlinear_operation = _AxBipC(*ABC_forms)
-
     C = nonlinear_operation(2, msepy_C, msepy_B)
 
     return C, msepy_A.cochain._ati_time_caller  # since A is given, its ati determine the time of C.
@@ -261,40 +309,10 @@ def _parse_astA_x_B_ip_tC(gA, B, tC):
 
 def _parse_A_x_astB_ip_tC(A, gB, tC):
     """"""
-    lin_reprs = _default_A_x_astB_ip_tC_reprs[1]
-    base_Ar, base_Br, base_Cr = lin_reprs.split(_sep)[1:]
-    replace_keys = (r"{A}", r"{B}", r"{C}")
-
-    # now we try to find the form A, gB and tC
-    ABC_forms = list()
-    msepy_forms = base['forms']
-    for format_form, base_rp, replace_key in zip((A, gB, tC), (base_Ar, base_Br, base_Cr), replace_keys):
-        found_root_form = None
-        for root_form_lin_repr in _global_root_forms_lin_dict:
-            check_form = _global_root_forms_lin_dict[root_form_lin_repr]
-            check_temp = base_rp.replace(replace_key, check_form._pure_lin_repr)
-            if check_temp == format_form:
-                found_root_form = check_form
-                break
-            else:
-                pass
-        assert found_root_form is not None, f"must have found root-for for {format_form}."
-
-        msepy_base_form = None
-        for _pure_lin_repr in msepy_forms:
-            if _pure_lin_repr == found_root_form._pure_lin_repr:
-                msepy_base_form = msepy_forms[_pure_lin_repr]
-                break
-            else:
-                pass
-        assert msepy_base_form is not None, f"we must have found a msepy copy of the root-form."
-        ABC_forms.append(msepy_base_form)
-
+    ABC_forms = _find_from_bracket_ABC(A, gB, tC, _default_A_x_astB_ip_tC_reprs)
     msepy_A, msepy_B, msepy_C = ABC_forms  # B is given
     nonlinear_operation = _AxBipC(*ABC_forms)
-
     C = nonlinear_operation(2, msepy_C, msepy_A)
-
     return C, msepy_B.cochain._ati_time_caller  # since B is given, its ati determine the time of C.
 
 

@@ -323,28 +323,39 @@ _global_operator_sym_repr_setting = {  # coded operators
 
 _wf_term_default_simple_patterns = {   # use only str to represent a simple pattern.
     # indicator : simple pattern
-    '(pt,)': '(partial_t root-f, f)',   # (partial_time_derivative of root-sf, sf)
+    '(pt,)': '(partial_t $\mathsf{rf}$, f)',   # (partial_time_derivative of root-sf, sf)
     '(cd,)': '(codifferential f, f)',
 
     # below, we have simple patterns only for root-sf.
-    '(rt,rt)': '(root-f, root-f)',
-    '(d,)': '(d root-f, root-f)',
-    '(,d)': '(root-f, d root-f)',
+    '(rt,rt)': '($\mathsf{rf}$, $\mathsf{rf}$)',
+    '(d,)': '(d $\mathsf{rf}$, $\mathsf{rf}$)',
+    '(,d)': '($\mathsf{rf}$, d $\mathsf{rf}$)',
 
     '(<db>,d<b>)': '(root-diagonal-bf, d root-bf)',
 
-    '<tr star | tr >': '<tr star root-f | trace root-f>',
+    '<tr star | tr >': '<tr star $\mathsf{rf}$ | trace $\mathsf{rf}$>',
 
-    '(*x*,)': '(known-root-sf cross-product known-root-sf, root-sf)',   # vector
-    '(*x,)': '(known-root-sf cross-product root-sf, root-sf)',
-    '(x*,)': '(root-sf cross-product known-root-sf, root-sf)',
+    '(*x*,)': r'($\mathsf{krf}$ $\times$ $\mathsf{krf}$, $\mathsf{rf}$)',   # vector
+    '(*x,)': r'($\mathsf{krf}$ $\times$ $\mathsf{rf}$, $\mathsf{rf}$)',
+    '(x*,)': r'($\mathsf{rf}$ $\times$ $\mathsf{krf}$, $\mathsf{rf}$)',
 
-    '(x,)': '(root-sf cross-product root-sf, root-sf)',   # nonlinear term.
+    '(x,)': r'($\mathsf{rf}$ $\times$ $\mathsf{rf}$, $\mathsf{rf}$)',   # nonlinear term.
+
+    '(0tp0,)': r'($\mathsf{rf}$-0 $\otimes$ $\mathsf{rf}$-0, $\mathsf{rf}$)',
+    '(*tp,)': r'($\mathsf{krf}$ $\otimes$ $\mathsf{rf}$, $\mathsf{rf}$)',
+
+    '(d,tp)': r'(d $\mathsf{rf}$, $\mathsf{rf}$ $\otimes$ $\mathsf{rf}$)',
+    '(d,*tp)': r'(d $\mathsf{rf}$, $\mathsf{krf}$ $\otimes$ $\mathsf{rf}$)',
+    '(d*,tp)': r'(d $\mathsf{krf}$, $\mathsf{rf}$ $\otimes$ $\mathsf{rf}$)',
+
+    '(d0,0tp)': r'(d $\mathsf{rf}$-0, $\mathsf{rf}$-0 $\otimes$ $\mathsf{rf}$)',
+    '(d0*,0*tp)': r'(d $\mathsf{krf}$-0, $\mathsf{krf}$-0 $\otimes$ $\mathsf{rf}$)',
+
 }
 
 _pde_test_form_lin_repr = 'th-test-form'
 
 _nonlinear_ap_test_form_repr = {
-    'sym': r'\wr',
+    'sym': r' \wr ',
     'lin': ' >=~=< ',
 }

@@ -105,11 +105,11 @@ class AlgebraicProxy(Frozen):
 
         self._unknowns = list()
         for wfu in wf.unknowns:
-            self._unknowns.append(wfu._ap)
+            self._unknowns.append(wfu.ap())
 
         self._tvs = list()
         for tf in wf.test_forms:
-            self._tvs.append(tf._ap)
+            self._tvs.append(tf.ap())
 
     @property
     def unknowns(self):

@@ -197,6 +197,7 @@ class MsePyContinuousFormPartialTime(Frozen):
         self._field = field_t
         self._freeze()
 
+    # noinspection PyTypeChecker
     def __call__(self, *xyz, axis=0):
         """No matter what `axis` is, in the results, also `axis` is elements-wise.
 
@@ -250,7 +251,6 @@ class MsePyContinuousFormPartialTime(Frozen):
 
                 for s0 in range(S0):
                     for s1 in range(S1):
-                        # noinspection PyTypeChecker
                         values[(s0, s1)].append(
                             value_region[s0][s1]
                         )

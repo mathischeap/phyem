@@ -361,7 +361,6 @@ class MsePyMassMatrixBundle(Frozen):
                     (None, M1)
                 ], format='csr'
             )
-
         return M
 
     def _m2_n2_k2(self, degree, quad):

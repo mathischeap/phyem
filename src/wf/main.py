@@ -332,7 +332,10 @@ class WeakFormulation(Frozen):
     def unknowns(self, unknowns):
         """The unknowns of this weak formulation"""
         if self._unknowns is not None:
-            f"unknowns exists; not allowed to change them."
+            raise Exception(f"unknowns exists; not allowed to change them.")
+        if unknowns is None:
+            self._unknowns = None
+            return
 
         if len(self) == 1 and not isinstance(unknowns, (list, tuple)):
             unknowns = [unknowns, ]
@@ -352,13 +355,101 @@ class WeakFormulation(Frozen):
     def test_forms(self):
         return self._test_forms
 
-    def pr(self, indexing=True):
+    def _pr_pattern(self, indexing=True):
+        """"""
+        pattern_text = ''
+
+        for i in self._term_dict:
+            terms = self._term_dict[i]
+            signs = self._sign_dict[i]
+
+            left_terms, right_terms = terms
+            left_signs, right_signs = signs
+
+            left_text = ''
+            right_text = ''
+
+            if len(left_terms) == 0:
+                left_text = '0'
+            else:
+                for j, term in enumerate(left_terms):
+                    sign = left_signs[j]
+                    if j == 0 and sign == '+':
+                        sign = ''
+                    elif sign == '-':
+                        sign = r'$-$'
+                    else:
+                        pass
+
+                    pattern_str = term._simple_pattern
+                    if pattern_str == '':
+                        pattern_str = 'tbd.'
+
+                    if indexing:
+                        index = self._ind_dict[i][0][j]
+                        pattern_str = r'$\underbrace{\text{' + pattern_str + r'}}_{' + \
+                                      rf"{index}" + '}$'
+                    else:
+                        pass
+
+                    left_text += sign + pattern_str
+
+            if len(right_terms) == 0:
+                right_text = '0'
+            else:
+                for j, term in enumerate(right_terms):
+                    sign = right_signs[j]
+                    if j == 0 and sign == '+':
+                        sign = ''
+                    elif sign == '-':
+                        sign = r'$-$'
+                    else:
+                        pass
+
+                    pattern_str = term._simple_pattern
+                    if pattern_str == '':
+                        pattern_str = 'tbd.'
+                    if indexing:
+                        index = self._ind_dict[i][1][j]
+                        pattern_str = r'$\underbrace{\text{' + pattern_str + r'}}_{' + \
+                                      rf"{index}" + '}$'
+                    else:
+                        pass
+
+                    right_text += sign + pattern_str
+
+            text_i = left_text + '=' + right_text
+
+            if i < len(self._term_dict) - 1:
+                text_i += '\n\n'
+
+            pattern_text += text_i
+
+        fig = plt.figure(figsize=(10, 5))
+        plt.axis([0, 1, 0, 1])
+        plt.axis('off')
+        plt.text(0.05, 0.5, pattern_text, ha='left', va='center', size=15)
+        from src.config import _setting, _pr_cache
+        if _setting['pr_cache']:
+            _pr_cache(fig, filename='weakFormulation_patterns')
+        else:
+            plt.tight_layout()
+            plt.show(block=_setting['block'])
+        return fig
+
+    def pr(self, indexing=True, patterns=False):
         """Print the representations"""
         from src.config import RANK, MASTER_RANK
         if RANK != MASTER_RANK:
             return
         else:
             pass
+
+        if patterns:
+            return self._pr_pattern(indexing=indexing)
+        else:
+            pass
+
         seek_text = self._mesh.manifold._manifold_text()
         if self.unknowns is None:
             seek_text += r'for $\left('
@@ -722,6 +813,7 @@ class WeakFormulation(Frozen):
                                 ha='center', va='center',
                                 fontsize=15
                             )
+
                     if 1 in time_instant_hierarchy:
                         minor_nodes = time_instant_hierarchy[1]
                         plt.scatter(

@@ -72,7 +72,7 @@ class OrdinaryDifferentialEquationDiscretize(Frozen):
                 diff_term = (ptm.__class__(term0, bf1), '+')
                 self._eq_terms[index] = [diff_term, ]
             else:
-                raise NotImplementedError()
+                raise NotImplementedError(pattern)
 
         else:
             raise NotImplementedError()

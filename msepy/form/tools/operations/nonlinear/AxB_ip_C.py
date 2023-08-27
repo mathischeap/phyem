@@ -63,9 +63,6 @@ class _AxBipC(Frozen):
             degrees = np.max(degrees, axis=0)
             degrees = [int(_ * 1.5) + 1 for _ in degrees]
             types = 'Gauss'
-        elif isinstance(self._quad, int):
-            degrees = [self._quad for _ in range(self._mesh_dimensions)]
-            types = 'Gauss'
         else:
             raise NotImplementedError()
 

@@ -33,14 +33,14 @@ class MsePyReconstructMatrixLambda(Frozen):
 
         if m == n == 2 and k == 1:
             return getattr(self, f'_m{m}_n{n}_k{k}_{orientation}')(
-                degree, *meshgrid_xi_et_sg, element_range=element_range
+                degree, element_range, *meshgrid_xi_et_sg
             )
         else:
             return getattr(self, f'_m{m}_n{n}_k{k}')(
-                degree, *meshgrid_xi_et_sg, element_range=element_range
+                degree, element_range, *meshgrid_xi_et_sg
             )
 
-    def _m1_n1_k0(self, degree, *meshgrid_xi, element_range=None):
+    def _m1_n1_k0(self, degree, element_range, *meshgrid_xi):
         """"""
         xi = meshgrid_xi[0]
         assert np.ndim(xi) == 1, f"I need 1d xi"
@@ -62,7 +62,7 @@ class MsePyReconstructMatrixLambda(Frozen):
 
         return rm_dict
 
-    def _m1_n1_k1(self, degree, *meshgrid_xi, element_range=None):
+    def _m1_n1_k1(self, degree, element_range, *meshgrid_xi):
         """"""
         xi = meshgrid_xi[0]
         assert np.ndim(xi) == 1, f"I need 1d xi"
@@ -85,7 +85,7 @@ class MsePyReconstructMatrixLambda(Frozen):
 
         return rm_dict
 
-    def _m2_n2_k0(self, degree, *meshgrid_xi_et, element_range=None):
+    def _m2_n2_k0(self, degree, element_range, *meshgrid_xi_et):
         """"""
         xi, et = meshgrid_xi_et
         assert np.ndim(xi) == np.ndim(et) == 1, f"I need 1d xi and et"
@@ -107,7 +107,7 @@ class MsePyReconstructMatrixLambda(Frozen):
 
         return rm_dict
 
-    def _m2_n2_k1_outer(self, degree, *meshgrid_xi_et, element_range=None):
+    def _m2_n2_k1_outer(self, degree, element_range, *meshgrid_xi_et):
         """"""
         xi, et = meshgrid_xi_et
         assert np.ndim(xi) == np.ndim(et) == 1, f"I need 1d xi and et"
@@ -142,7 +142,7 @@ class MsePyReconstructMatrixLambda(Frozen):
 
         return rm_dict
 
-    def _m2_n2_k1_inner(self, degree, *meshgrid_xi_et, element_range=None):
+    def _m2_n2_k1_inner(self, degree, element_range, *meshgrid_xi_et):
         """"""
         xi, et = meshgrid_xi_et
         assert np.ndim(xi) == np.ndim(et) == 1, f"I need 1d xi and et"
@@ -177,7 +177,7 @@ class MsePyReconstructMatrixLambda(Frozen):
 
         return rm_dict
 
-    def _m2_n2_k2(self, degree, *meshgrid_xi_et, element_range=None):
+    def _m2_n2_k2(self, degree, element_range, *meshgrid_xi_et):
         """"""
         xi, et = meshgrid_xi_et
         assert np.ndim(xi) == np.ndim(et) == 1, f"I need 1d xi and et"
@@ -200,7 +200,7 @@ class MsePyReconstructMatrixLambda(Frozen):
 
         return rm_dict
 
-    def _m3_n3_k0(self, degree, *meshgrid_xi_et_sg, element_range=None):
+    def _m3_n3_k0(self, degree, element_range, *meshgrid_xi_et_sg):
         """"""
         xi, et, sg = meshgrid_xi_et_sg
         assert np.ndim(xi) == np.ndim(et) == np.ndim(sg) == 1, f"I need 1d xi and et"
@@ -222,7 +222,7 @@ class MsePyReconstructMatrixLambda(Frozen):
 
         return rm_dict
 
-    def _m3_n3_k1(self, degree, *meshgrid_xi_et_sg, element_range=None):
+    def _m3_n3_k1(self, degree, element_range, *meshgrid_xi_et_sg):
         """"""
         xi, et, sg = meshgrid_xi_et_sg
         assert np.ndim(xi) == np.ndim(et) == np.ndim(sg) == 1, f"I need 1d xi, et and sg."
@@ -263,7 +263,7 @@ class MsePyReconstructMatrixLambda(Frozen):
 
         return rm_dict
 
-    def _m3_n3_k2(self, degree, *meshgrid_xi_et_sg, element_range=None):
+    def _m3_n3_k2(self, degree, element_range, *meshgrid_xi_et_sg):
         """"""
         xi, et, sg = meshgrid_xi_et_sg
         assert np.ndim(xi) == np.ndim(et) == np.ndim(sg) == 1, f"I need 1d xi, et and sg."
@@ -301,7 +301,7 @@ class MsePyReconstructMatrixLambda(Frozen):
 
         return rm_dict
 
-    def _m3_n3_k3(self, degree, *meshgrid_xi_et_sg, element_range=None):
+    def _m3_n3_k3(self, degree, element_range, *meshgrid_xi_et_sg):
         """"""
         xi, et, sg = meshgrid_xi_et_sg
         assert np.ndim(xi) == np.ndim(et) == np.ndim(sg) == 1, f"I need 1d xi and et"
