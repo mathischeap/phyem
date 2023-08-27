@@ -12,14 +12,13 @@ from src.mesh import _global_meshes  # [mesh_sym_repr] -> mesh
 from src.spaces.main import _space_set  # [mesh_sym_repr][space_sym_repr] -> space
 from src.form.main import _global_root_forms_lin_dict  # [root-form_lin_repr] -> root-form
 import msepy.main as msepy
+import msehy.py2.main as msehy_py2
 
 
 _implemented_finite_elements = {
-    'msepy': msepy,   # mimetic spectral elements
+    'msepy': msepy,   # mimetic spectral elements, python implementation
+    'msehy-py2': msehy_py2,  # hybrid mimetic spectral elements , python implementation , 2-dimensions.
 }
-
-
-_finite_elements_setup = dict()
 
 
 def apply(fe_name, obj_dict):

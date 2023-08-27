@@ -12,8 +12,6 @@ from src.spaces.main import _default_boundary_dp_vector_reprs, _default_dA_astB_
 from src.spaces.main import _default_dastA_B_tp_tC_reprs
 from src.spaces.main import _default_mass_matrix_db_bf_reprs, _default_mass_matrix_bf_db_reprs
 
-from src.config import _transpose_text
-
 from src.config import _form_evaluate_at_repr_setting
 
 from src.spaces.main import _default_space_degree_repr

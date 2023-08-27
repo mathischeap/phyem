@@ -29,8 +29,8 @@ _len_rf_ap_lin_repr = len(_root_form_ap_lin_repr)
 
 from msepy.main import base
 from msepy.form.tools.operations.nonlinear.AxB_ip_C import _AxBipC
-from msepy.form.tools.operations.nonlinear.dA_ip_BtpC import _dAipBtpC
-from msepy.form.tools.operations.nonlinear.AtpB_C import _AtpBC
+from msepy.form.tools.operations.nonlinear.dA_ip_BtpC import __dA_ip_BtpC__
+from msepy.form.tools.operations.nonlinear.AtpB_C import ___AtpB_C__
 
 from msepy.tools.matrix.static.local import MsePyStaticLocalMatrix
 from msepy.tools.vector.dynamic import MsePyDynamicLocalVector
@@ -192,7 +192,7 @@ def _parse_dastA_B_tp_tC(gA, B, tC):
     """"""
     ABC_forms = _find_from_bracket_ABC(gA, B, tC, _default_dastA_B_tp_tC_reprs)
     msepy_A, msepy_B, msepy_C = ABC_forms  # A is given
-    nonlinear_operation = _dAipBtpC(*ABC_forms)
+    nonlinear_operation = __dA_ip_BtpC__(*ABC_forms)
     C = nonlinear_operation(2, msepy_C, msepy_B)
     return C, msepy_A.cochain._ati_time_caller  # since A is given, its ati determine the time of C.
 
@@ -201,7 +201,7 @@ def _parse_astA_tp_B_tC(gA, B, tC):
     """"""
     ABC_forms = _find_from_bracket_ABC(gA, B, tC, _default_astA_tp_B_tC_reprs)
     msepy_A, msepy_B, msepy_C = ABC_forms  # A is given
-    nonlinear_operation = _AtpBC(*ABC_forms)
+    nonlinear_operation = ___AtpB_C__(*ABC_forms)
     C = nonlinear_operation(2, msepy_C, msepy_B)
     return C, msepy_A.cochain._ati_time_caller  # since A is given, its ati determine the time of C.
 
@@ -233,16 +233,8 @@ def _parse_M_matrix(space, degree0, degree1):
     """"""
     degree0 = _str_degree_parser(degree0)
     degree1 = _str_degree_parser(degree1)
-    spaces = base['spaces']
-    the_msepy_space = None
-    for space_lin_repr in spaces:
-        msepy_space = spaces[space_lin_repr]
-        abs_space_pure_lin_repr = msepy_space.abstract._pure_lin_repr
-        if abs_space_pure_lin_repr == space:
-            the_msepy_space = msepy_space
-            break
-        else:
-            pass
+
+    the_msepy_space = _find_space_through_pure_lin_repr(space)
 
     if degree0 == degree1:
         degree = degree0
@@ -264,16 +256,7 @@ def _parse_M_matrix(space, degree0, degree1):
 def _parse_E_matrix(space, degree):
     """"""
     degree = _str_degree_parser(degree)
-    spaces = base['spaces']
-    the_msepy_space = None
-    for space_lin_repr in spaces:
-        msepy_space = spaces[space_lin_repr]
-        abs_space_pure_lin_repr = msepy_space.abstract._pure_lin_repr
-        if abs_space_pure_lin_repr == space:
-            the_msepy_space = msepy_space
-            break
-        else:
-            pass
+    the_msepy_space = _find_space_through_pure_lin_repr(space)
     gm0 = the_msepy_space.gathering_matrix._next(degree)
     gm1 = the_msepy_space.gathering_matrix(degree)
 

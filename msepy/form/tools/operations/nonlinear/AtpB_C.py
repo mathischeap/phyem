@@ -7,12 +7,11 @@ from msepy.form.main import MsePyRootForm
 from src.spaces.main import _degree_str_maker
 from tools.quadrature import Quadrature
 from msepy.tools.matrix.dynamic import MsePyDynamicLocalMatrix
-from msepy.tools.matrix.static.local import MsePyStaticLocalMatrix
 from src.spaces.continuous.bundle import BundleValuedFormSpace
-from msepy.form.tools.operations.nonlinear.AxB_ip_C import _MatrixCaller
+from msepy.form.tools.operations.nonlinear.AxB_ip_C import _D2MatrixCallerRow2Col0, _D2MatrixCallerRow2Col1
 
 
-class _AtpBC(Frozen):
+class ___AtpB_C__(Frozen):
     """"""
 
     def __init__(self, A, B, C, quad=None):
@@ -205,66 +204,13 @@ class _AtpBC(Frozen):
                 col_index = i
 
         if row_index == 2 and col_index == 1:
-            caller = self._2d_matrix_caller_r2_c1
+            caller = _D2MatrixCallerRow2Col1(self._ABC, self._3d_data)
 
         elif row_index == 2 and col_index == 0:
-            caller = self._2d_matrix_caller_r2_c0
+            # caller = self._2d_matrix_caller_r2_c0
+            caller = _D2MatrixCallerRow2Col0(self._ABC, self._3d_data)
 
         else:
             raise NotImplementedError()
 
         return MsePyDynamicLocalMatrix(caller)
-
-    def _2d_matrix_caller_r2_c1(self, *args, **kwargs):
-        """This must return a `MsePyStaticLocalMatrix` object.
-
-        As _3d_data does not change, ``*args, **kwargs`` will be used to determine the abstract time
-        instant for the cochain of the given form. Then this cochain is used to make 2d data which are
-        stored in a `MsePyStaticLocalMatrix`.
-
-        Parameters
-        ----------
-        args
-        kwargs
-
-        Returns
-        -------
-
-        """
-        gm_row = self._ABC[2].cochain.gathering_matrix
-        gm_col = self._ABC[1].cochain.gathering_matrix
-        given_form = self._ABC[0]
-        given_form_cochain = given_form.cochain._callable_cochain(*args, **kwargs)
-        array_cochain = given_form_cochain.data
-        _3d_data = self._3d_data
-        _2d_matrix_caller = _MatrixCaller(
-            0, array_cochain, _3d_data, given_form.mesh, 2, 1
-        )
-        return MsePyStaticLocalMatrix(_2d_matrix_caller, gm_row, gm_col, cache_key='unique')
-
-    def _2d_matrix_caller_r2_c0(self, *args, **kwargs):
-        """This must return a `MsePyStaticLocalMatrix` object.
-
-        As _3d_data does not change, ``*args, **kwargs`` will be used to determine the abstract time
-        instant for the cochain of the given form. Then this cochain is used to make 2d data which are
-        stored in a `MsePyStaticLocalMatrix`.
-
-        Parameters
-        ----------
-        args
-        kwargs
-
-        Returns
-        -------
-
-        """
-        gm_row = self._ABC[2].cochain.gathering_matrix
-        gm_col = self._ABC[0].cochain.gathering_matrix
-        given_form = self._ABC[1]
-        given_form_cochain = given_form.cochain._callable_cochain(*args, **kwargs)
-        array_cochain = given_form_cochain.data
-        _3d_data = self._3d_data
-        _2d_matrix_caller = _MatrixCaller(
-            1, array_cochain, _3d_data, given_form.mesh, 2, 0
-        )
-        return MsePyStaticLocalMatrix(_2d_matrix_caller, gm_row, gm_col, cache_key='unique')
