@@ -2,16 +2,7 @@
 r"""
 """
 from src.config import _wf_term_default_simple_patterns as _simple_patterns
-from src.spaces.ap import _parse_l2_inner_product_mass_matrix
-from src.spaces.ap import _parse_d_matrix
-from src.spaces.ap import _parse_boundary_dp_vector
-from src.spaces.ap import _parse_astA_x_astB_ip_tC
-from src.spaces.ap import _parse_astA_x_B_ip_tC
-from src.spaces.ap import _parse_A_x_astB_ip_tC, _parse_astA_tp_B_tC
-from src.spaces.ap import _parse_dA_astB_tp_tC, _parse_dastA_B_tp_tC
-from src.spaces.ap import _parse_A_x_B_ip_C
-from src.spaces.ap import _parse_fa_tp_fa__ip__f1, _parse_dA_dA_tp_C, _parse_dastA_astA_tp_C
-from src.spaces.ap import _parse_l2_inner_product_db_bf
+from src.spaces.ap import *
 from src.form.parameters import ConstantScalar0Form, constant_scalar
 from src.config import _parse_lin_repr  # _parse_lin_repr('TermNonLinearAlgebraicProxy', lin_repr)
 from src.config import _nonlinear_ap_test_form_repr
@@ -150,8 +141,10 @@ class _SimplePatternAPParser(Frozen):
                 return self._parse_reprs_d_(test_form=test_form)
             elif sp == _simple_patterns['(,d)']:
                 return self._parse_reprs__d(test_form=test_form)
+
             elif sp == _simple_patterns['<tr star | tr >']:
                 return self._parse_reprs_tr_star_star(test_form=test_form)
+
             elif sp == _simple_patterns['(*x*,)']:
                 return self._parse_reprs_astA_x_astB_ip_C(test_form=test_form)
             elif sp == _simple_patterns['(*x,)']:
@@ -160,20 +153,26 @@ class _SimplePatternAPParser(Frozen):
                 return self._parse_reprs_A_x_astB_ip_C(test_form=test_form)
             elif sp == _simple_patterns['(x,)']:  # nonlinear term A, B, C all are unknown
                 return self._parse_reprs_A_x_B_ip_C(test_form)
-            elif sp == _simple_patterns['(<db>,d<b>)']:
-                return self._parse_reprs_dbdb(test_form=test_form)
-            elif sp == _simple_patterns['(0tp0,)']:
-                return self._parse_reprs_0tp0(test_form=test_form)
-            elif sp == _simple_patterns['(*tp,)']:
-                return self._parse_reprs_astA_tp_B_C(test_form=test_form)
+
             elif sp == _simple_patterns['(d,*tp)']:
                 return self._parse_reprs_dA_astB_tp_C(test_form=test_form)
             elif sp == _simple_patterns['(d*,tp)']:
                 return self._parse_reprs_dastA_B_tp_C(test_form=test_form)
-            elif sp == _simple_patterns['(d0,0tp)']:  # nonlinear
-                return self._parse_reprs_dA_A_tp_C(test_form=test_form)
             elif sp == _simple_patterns['(d0*,0*tp)']:  # vector
                 return self._parse_reprs_dastA_astA_tp_C(test_form=test_form)
+            elif sp == _simple_patterns['(d0,0tp)']:  # nonlinear
+                return self._parse_reprs_dA_A_tp_C(test_form=test_form)
+
+            elif sp == _simple_patterns['(<db>,d<b>)']:
+                return self._parse_reprs_dbdb(test_form=test_form)
+
+            elif sp == _simple_patterns['(*tp,)']:
+                return self._parse_reprs_astA_tp_B_C(test_form=test_form)
+            elif sp == _simple_patterns['(0*tp0*,)']:
+                return self._parse_reprs_astA_tp_astA_C(test_form=test_form)
+            elif sp == _simple_patterns['(0tp0,)']:  # nonlinear
+                return self._parse_reprs_0tp0(test_form=test_form)
+
             else:
                 raise NotImplementedError(f"not implemented for pattern = {sp}")
 
@@ -185,7 +184,7 @@ class _SimplePatternAPParser(Frozen):
         s0 = self._wft._f0.space
         s1 = self._wft._f1.space
         d1 = self._wft._f1._degree
-        mass_matrix = _parse_l2_inner_product_mass_matrix(s0, s1, d0, d1)
+        mass_matrix = _VarPar_M(s0, s1, d0, d1)
         v1 = self._wft._f1.ap()
 
         if test_form == self._wft._f1:
@@ -208,7 +207,7 @@ class _SimplePatternAPParser(Frozen):
         s1 = f1.space
         d0 = f0._degree
         d1 = f1._degree
-        mass_matrix = _parse_l2_inner_product_mass_matrix(s0, s1, d0, d1)
+        mass_matrix = _VarPar_M(s0, s1, d0, d1)
         if test_form == f1:
             v0 = f0.ap()
             v1 = f1.ap().T
@@ -229,15 +228,15 @@ class _SimplePatternAPParser(Frozen):
         s0 = self._wft._f0.space
         s1 = self._wft._f1.space
         d1 = self._wft._f1._degree
-        mass_matrix = _parse_l2_inner_product_mass_matrix(s0, s1, d0, d1)
+        mass_matrix = _VarPar_M(s0, s1, d0, d1)
 
         if test_form == self._wft._f1:
-            d_matrix = _parse_d_matrix(bf0)
+            d_matrix = _VarPar_E(bf0)
             v0 = bf0.ap()
             v1 = self._wft._f1.ap().T
             term_ap = v1 @ mass_matrix @ d_matrix @ v0
         else:
-            dT_matrix = _parse_d_matrix(bf0, transpose=True)
+            dT_matrix = _VarPar_E(bf0, transpose=True)
             v0 = bf0.ap().T
             v1 = self._wft._f1.ap()
             term_ap = v0 @ dT_matrix @ mass_matrix @ v1
@@ -254,15 +253,15 @@ class _SimplePatternAPParser(Frozen):
         bf1 = spk['rsf1']
         d1 = bf1._degree
         s1 = self._wft._f1.space
-        mass_matrix = _parse_l2_inner_product_mass_matrix(s0, s1, d0, d1)
+        mass_matrix = _VarPar_M(s0, s1, d0, d1)
 
         if test_form == bf1:
-            dT_matrix = _parse_d_matrix(bf1, transpose=True)
+            dT_matrix = _VarPar_E(bf1, transpose=True)
             v0 = self._wft._f0.ap()
             v1 = bf1.ap().T
             term_ap = v1 @ dT_matrix @ mass_matrix @ v0
         else:
-            d_matrix = _parse_d_matrix(bf1)
+            d_matrix = _VarPar_E(bf1)
             v0 = self._wft._f0.ap().T
             v1 = bf1.ap()
             term_ap = v0 @ mass_matrix @ d_matrix @ v1
@@ -278,7 +277,7 @@ class _SimplePatternAPParser(Frozen):
 
         v1 = bf1.ap()
         # s1 = bf1.space
-        boundary_wedge_vector = _parse_boundary_dp_vector(bf0, bf1)
+        boundary_wedge_vector = _VarPar_boundary_dp_vector(bf0, bf1)
 
         if test_form == bf1:  # when bf1 is the testing form.
             term_ap = v1.T @ boundary_wedge_vector
@@ -296,7 +295,7 @@ class _SimplePatternAPParser(Frozen):
 
         if test_form == C:
 
-            cpm = _parse_astA_x_astB_ip_tC(A, B, C)  # a root-array matrix
+            cpm = _VarPar_astA_x_astB_ip_tC(A, B, C)  # a root-array matrix
 
             v0 = C.ap().T
             term_ap = v0 @ cpm
@@ -316,7 +315,7 @@ class _SimplePatternAPParser(Frozen):
 
         if test_form == C:
 
-            cpm = _parse_astA_x_B_ip_tC(A, B, C)  # a root-array matrix
+            cpm = _VarPar_astA_x_B_ip_tC(A, B, C)  # a root-array matrix
 
             v0 = C.ap().T
             v1 = B.ap()
@@ -337,7 +336,7 @@ class _SimplePatternAPParser(Frozen):
 
         if test_form == C:
 
-            cpm = _parse_A_x_astB_ip_tC(A, B, C)  # a root-array matrix
+            cpm = _VarPar_A_x_astB_ip_tC(A, B, C)  # a root-array matrix
 
             v0 = C.ap().T
             v1 = A.ap()
@@ -358,7 +357,7 @@ class _SimplePatternAPParser(Frozen):
         if test_form == C:
             tC = C
 
-            cpm = _parse_dA_astB_tp_tC(A, gB, tC)  # a root-array matrix
+            cpm = _VarPar_dA_astB_tp_tC(A, gB, tC)  # a root-array matrix
 
             v0 = tC.ap().T
             v1 = A.ap()
@@ -379,7 +378,7 @@ class _SimplePatternAPParser(Frozen):
         if test_form == C:
             tC = C
 
-            cpm = _parse_dastA_B_tp_tC(gA, B, tC)  # a root-array matrix
+            cpm = _VarPar_dastA_B_tp_tC(gA, B, tC)  # a root-array matrix
 
             v0 = tC.ap().T
             v1 = B.ap()
@@ -401,11 +400,30 @@ class _SimplePatternAPParser(Frozen):
         if test_form == C:
             tC = C
 
-            cpm = _parse_astA_tp_B_tC(gA, B, tC)  # a root-array matrix
+            cpm = _VarPar_astA_tp_B_tC(gA, B, tC)  # a root-array matrix
 
             v0 = tC.ap().T
             v1 = B.ap()
             term_ap = v0 @ cpm @ v1
+
+        else:
+            raise Exception('TO BE IMPLEMENTED!')  # better not to use NotImplementedError
+
+        term = self._wft._factor * TermLinearAlgebraicProxy(term_ap)
+        sign = '+'
+
+        return term, sign, 'linear'
+
+    def _parse_reprs_astA_tp_astA_C(self, test_form):
+        spk = self._wft.___simple_pattern_keys___
+        gA, C = spk['a'], spk['c']
+        if test_form == C:
+            tC = C
+
+            cpm = _VarPar_astA_tp_astA_tC(gA, tC)  # a root-array matrix
+
+            v0 = tC.ap().T
+            term_ap = v0 @ cpm
 
         else:
             raise Exception('TO BE IMPLEMENTED!')  # better not to use NotImplementedError
@@ -422,7 +440,7 @@ class _SimplePatternAPParser(Frozen):
 
         assert test_form in (A, B, C)
 
-        multi_dimensional_array = _parse_A_x_B_ip_C(A, B, C)
+        multi_dimensional_array = _VarPar_A_x_B_ip_C(A, B, C)
 
         term = self._wft._factor * TermNonLinearOperatorAlgebraicProxy(
             multi_dimensional_array,
@@ -443,15 +461,15 @@ class _SimplePatternAPParser(Frozen):
         dbf1._degree = bf1._degree
 
         if test_form == bf1:
-            mass_matrix = _parse_l2_inner_product_db_bf(db0, dbf1, transpose=True)
-            dT_matrix = _parse_d_matrix(bf1, transpose=True)
+            mass_matrix = _VarPar_l2_inner_product_db_bf(db0, dbf1, transpose=True)
+            dT_matrix = _VarPar_E(bf1, transpose=True)
             v0 = db0.ap()
             v1 = bf1.ap().T
             term_ap = v1 @ dT_matrix @ mass_matrix @ v0
 
         else:
-            mass_matrix = _parse_l2_inner_product_db_bf(db0, dbf1, transpose=False)
-            d_matrix = _parse_d_matrix(bf1)
+            mass_matrix = _VarPar_l2_inner_product_db_bf(db0, dbf1, transpose=False)
+            d_matrix = _VarPar_E(bf1)
             v0 = db0.ap().T
             v1 = bf1.ap()
             term_ap = v0 @ mass_matrix @ d_matrix @ v1
@@ -467,7 +485,7 @@ class _SimplePatternAPParser(Frozen):
 
         assert test_form in (A, C)
 
-        multi_dimensional_array = _parse_fa_tp_fa__ip__f1(A, C)
+        multi_dimensional_array = _VarPar_A_tp_A__ip__C(A, C)
 
         term = self._wft._factor * TermNonLinearOperatorAlgebraicProxy(
             multi_dimensional_array,
@@ -486,7 +504,7 @@ class _SimplePatternAPParser(Frozen):
 
         assert test_form in (A, C)
 
-        multi_dimensional_array = _parse_dA_dA_tp_C(A, C)
+        multi_dimensional_array = _VarPar_dA_A_tp_C(A, C)
 
         term = self._wft._factor * TermNonLinearOperatorAlgebraicProxy(
             multi_dimensional_array,
@@ -505,7 +523,7 @@ class _SimplePatternAPParser(Frozen):
 
         if test_form == C:
 
-            cpm = _parse_dastA_astA_tp_C(A, C)  # a root-array matrix
+            cpm = _VarPar_dastA_astA_tp_C(A, C)  # a root-array matrix
 
             v0 = C.ap().T
             term_ap = v0 @ cpm

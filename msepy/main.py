@@ -153,15 +153,6 @@ def _parse(obj):
         # raise NotImplementedError(f"cannot parse msepy implementation for {obj}.")
 
 
-from msepy.manifold.main import config as _mf_config
-from msepy.mesh.main import config as _mh_config
-
-
-def config(obj):
-    """wrapper of _Config class."""
-    return _Config(obj)
-
-
 def info(*others_2b_printed):
     """We print the info, as much as possible, of the current msepy implementation."""
     forms = base['forms']
@@ -265,16 +256,28 @@ def find_mesh_of_manifold(msepy_or_abstract_manifold):
     return the_mesh
 
 
+from msepy.manifold.main import config as _mf_config
+from msepy.mesh.main import config as _mh_config
+
+
+def config(obj):
+    """wrapper of _Config class."""
+    return _Config(obj)
+
+
 class _Config(Frozen):
     """"""
     def __init__(self, obj):
+        """"""
         self._obj = obj
+        self._freeze()
 
-    def __call__(self, *args, **kwargs):
-        if self._obj.__class__ is MsePyManifold:
+    def __call__(self, *args, **kwargs):                        # Can config the following objects:
+        """"""
+        if self._obj.__class__ is MsePyManifold:                # 1: config msepy manifold
             return _mf_config(self._obj, *args, **kwargs)
 
-        elif self._obj.__class__ is MsePyMesh:
+        elif self._obj.__class__ is MsePyMesh:                  # 2: config msepy mesh
             mesh = self._obj
             abstract_mesh = mesh.abstract
             abstract_manifold = abstract_mesh.manifold

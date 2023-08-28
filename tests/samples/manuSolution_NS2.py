@@ -4,6 +4,9 @@ Manufactured solutions for 2d NS.
 
 """
 import sys
+
+import numpy as np
+
 if './' not in sys.path:
     sys.path.append('./')
 
@@ -18,7 +21,12 @@ class ManufacturedSolutionNS2TGV(Frozen):
     """"""
 
     def __init__(self, Re=100):
-        """"""
+        """
+
+        Parameters
+        ----------
+        Re : int, float
+        """
         self._Re = Re
         self._velocity = T2dVector(self._u, self._v)
         self._pressure = T2dScalar(self._p)
@@ -73,5 +81,5 @@ class ManufacturedSolutionNS2TGV(Frozen):
 
 if __name__ == '__main__':
     # python tests/samples/manuSolution_NS2.py
-    ic = ManufacturedSolutionNS2TGV()
-    ic.f.visualize([0, 2], 0)
+    ic = ManufacturedSolutionNS2TGV(Re=np.inf)
+    ic.omega.visualize([0, 2], 0)

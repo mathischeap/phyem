@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 r"""
-python tests/unittests/msepy/main.py
+python tests/msepy/main.py
 """
 import os
 import sys

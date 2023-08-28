@@ -1,20 +1,23 @@
 # -*- coding: utf-8 -*-
 r"""
 """
+import numpy as np
 import sys
 from typing import Dict
+from random import random
+from time import time
 
 if './' not in sys.path:
     sys.path.append('./')
 from tools.frozen import Frozen
 from msepy.form.cf import MsePyContinuousForm
 from msepy.form.cochain.main import MsePyRootFormCochain
+from msepy.form.cochain.passive import MsePyRootFormCochainPassive
 from msepy.form.static import MsePyRootFormStaticCopy
 from msepy.form.visualize.main import MsePyRootFormVisualize
 from msepy.form.coboundary import MsePyRootFormCoboundary
 from msepy.form.matrix import MsePyRootFormMatrix
 from msepy.form.boundary_integrate.main import MsePyRootFormBoundaryIntegrate
-from msepy.form.numeric.main import MsePyRootFormNumeric
 
 from tools.miscellaneous.ndarray_cache import ndarray_key_comparer, add_to_ndarray_cache
 
@@ -159,6 +162,110 @@ class MsePyRootForm(Frozen):
         """A more reasonable method name."""
         self.cf = cf
 
+    def d(self):
+        """d(self)"""
+        E = self.coboundary.incidence_matrix._data.toarray()
+
+        def _d_cochain(t):
+            self_cochain_t = self.cochain[t].local
+            d_cochain_at_t = np.einsum(
+                'ij, kj -> ki',
+                E, self_cochain_t,
+                optimize='optimal',
+            )
+            return d_cochain_at_t
+
+        df = self.coboundary._make_df()
+        df._cochain = MsePyRootFormCochainPassive(df, reference_form_cochain=self.cochain)
+        df._cochain._realtime_local_cochain_caller = _d_cochain
+
+        cf = self.cf.field
+
+        if cf is None:
+            pass
+        else:
+            # cannot use cf.field.exterior_derivative().
+            df.cf = self.cf.exterior_derivative()
+
+        return df
+
+    def _copy(self):
+        """Make a copy of df of empty cochain; do not specify cochain."""
+        ab_space = self.abstract.space
+        sym_repr = str(hash(random() + time()))      # random sym_repr <-- important, do not try to print its repr
+        lin_repr = str(hash(random() + time() + 2))  # random lin_repr <-- important, do not try to print its repr
+        # The below abstract root-form is not recorded.
+        ab_f = self.abstract.__class__(ab_space, sym_repr, lin_repr, True, update_cache=False)
+        ab_f.degree = self.degree
+        f = self.__class__(ab_f)
+        return f
+
+    def __sub__(self, other):
+        """self - other"""
+        if other.__class__ is self.__class__:
+
+            assert other.mesh == self.mesh, f"meshes do not match"
+            assert other.space == self.space, f"spaces do not match"
+            assert other.degree == self.degree, f"degrees do not match"
+
+            def cochain_sub_caller(t):
+                self_cochain_t = self.cochain[t].local
+                other_cochain_t = other.cochain[t].local
+                return self_cochain_t - other_cochain_t
+
+            f = self._copy()
+            f._cochain = MsePyRootFormCochainPassive(
+                f,
+                reference_form_cochain=[self.cochain, other.cochain]
+            )
+            f._cochain._realtime_local_cochain_caller = cochain_sub_caller
+
+            scf = self.cf.field
+            ocf = other.cf.field
+
+            if scf is None or ocf is None:
+                pass
+            else:
+                f.cf = scf - ocf
+
+            return f
+
+        else:
+            raise NotImplementedError(f"{other}")
+
+    def __add__(self, other):
+        """self - other"""
+        if other.__class__ is self.__class__:
+
+            assert other.mesh == self.mesh, f"meshes do not match"
+            assert other.space == self.space, f"spaces do not match"
+            assert other.degree == self.degree, f"degrees do not match"
+
+            def cochain_add_caller(t):
+                self_cochain_t = self.cochain[t].local
+                other_cochain_t = other.cochain[t].local
+                return self_cochain_t + other_cochain_t
+
+            f = self._copy()
+            f._cochain = MsePyRootFormCochainPassive(
+                f,
+                reference_form_cochain=[self.cochain, other.cochain]
+            )
+            f._cochain._realtime_local_cochain_caller = cochain_add_caller
+
+            scf = self.cf.field
+            ocf = other.cf.field
+
+            if scf is None or ocf is None:
+                pass
+            else:
+                f.cf = scf + ocf
+
+            return f
+
+        else:
+            raise NotImplementedError(f"{other}")
+
     @property
     def cochain(self):
         """The cochain class."""
@@ -247,13 +354,6 @@ class MsePyRootForm(Frozen):
         return self._matrix
 
     @property
-    def numeric(self):
-        """matrix"""
-        if self._numeric is None:
-            self._numeric = MsePyRootFormNumeric(self)
-        return self._numeric
-
-    @property
     def boundary_integrate(self):
         return self._boundary_integrate
 
@@ -282,7 +382,6 @@ class MsePyRootForm(Frozen):
 
 if __name__ == '__main__':
     # python msepy/form/main.py
-    # import numpy as np
     import __init__ as ph
 
     space_dim = 2
@@ -291,25 +390,57 @@ if __name__ == '__main__':
     manifold = ph.manifold(space_dim, is_periodic=False)
     mesh = ph.mesh(manifold)
 
-    mesh.partition(r'\Gamma1', r'\Gamma2')
-    ph.space.finite((3, 3, 3))
+    L0i = ph.space.new('Lambda', 0, orientation='inner')
+    L0o = ph.space.new('Lambda', 0, orientation='outer')
+    L1i = ph.space.new('Lambda', 1, orientation='inner')
+    L1o = ph.space.new('Lambda', 1, orientation='outer')
+    L2 = ph.space.new('Lambda', 2)
+
+    f0i = L0i.make_form('f_i^0', '0-f-i')
+    f0o = L0o.make_form('f_o^0', '0-f-o')
+    f1i = L1i.make_form('f_i^1', '1-f-i')
+    f1o = L1o.make_form('f_o^1', '1-f-o')
+    f2 = L2.make_form('f^2', '2-f')
+
+    ph.space.finite(5)
 
     msepy, obj = ph.fem.apply('msepy', locals())
 
-    # print(msepy.base['meshes'])
-    # print()
-    # print(msepy.base['manifolds'])
-
     manifold = obj['manifold']
     mesh = obj['mesh']
-    Gamma1 = msepy.base['manifolds'][r"\Gamma1"]
-    Gamma2 = msepy.base['manifolds'][r"\Gamma2"]
 
-    # msepy.config(manifold)('crazy', c=0., periodic=False, bounds=[[0, 2] for _ in range(space_dim)])
     msepy.config(manifold)('crazy', c=0.0, bounds=[[0, 2] for _ in range(space_dim)], periodic=False)
-    msepy.config(Gamma1)(manifold, {0: [0, 0, 1, 0]})
-    # # msepy.config(mnf)('backward_step')
-    # msepy.config(mesh)((2, 2, 2))
-    msepy.config(mesh)(5)
-    # # msepy.config(mesh)(([3, 3, 2], ))
-    # # mesh.visualize()
+    msepy.config(mesh)(15)
+
+    f0i = obj['f0i']
+    f0o = obj['f0o']
+    f1i = obj['f1i']
+    f1o = obj['f1o']
+    f2 = obj['f2']
+
+    def fx(t, x, y):
+        return np.sin(2*np.pi*x) * np.sin(np.pi*y) + t
+
+
+    def ux(t, x, y):
+        return np.sin(2*np.pi*x) * np.cos(2*np.pi*y) + t
+
+
+    def uy(t, x, y):
+        return -np.cos(2*np.pi*x) * np.sin(2*np.pi*y) + t
+
+
+    scalar = ph.vc.scalar(fx)
+    vector = ph.vc.vector(ux, uy)
+
+    f1o.cf = vector
+    f2.cf = scalar
+
+    f2[0].reduce()
+    f1o[0].reduce()
+    d_f1o = f1o.d()
+    # d_f1o[None].visualize()
+
+    f = d_f1o - f2
+    f2[None].visualize()
+    f[None].visualize()

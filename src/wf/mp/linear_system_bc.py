@@ -6,7 +6,7 @@ from src.form.main import _global_root_forms_lin_dict
 from src.config import _global_operator_lin_repr_setting, _non_root_lin_sep
 from src.config import _global_lin_repr_setting, _root_form_ap_vec_setting
 from src.config import _form_evaluate_at_repr_setting
-from src.spaces.main import _default_boundary_dp_vector_reprs, _sep
+from src.spaces.main import _VarSetting_boundary_dp_vector, _sep
 
 
 class _BoundaryCondition(Frozen):
@@ -72,7 +72,7 @@ class _NaturalBoundaryCondition(_BoundaryCondition):
         start, end = _global_lin_repr_setting['array']
         pure_lin_repr = self._abstract_array._lin_repr[len(start):-len(end)]
         testing_form_part = pure_lin_repr.split(_sep)[2]
-        template = _default_boundary_dp_vector_reprs[1].split(_sep)[2]
+        template = _VarSetting_boundary_dp_vector[1].split(_sep)[2]
 
         testing_form = None
         for bf_lin in _global_root_forms_lin_dict:
@@ -146,7 +146,7 @@ class _NaturalBoundaryCondition(_BoundaryCondition):
 
                 b = ls._b
 
-                target_lin_repr = _default_boundary_dp_vector_reprs[1]
+                target_lin_repr = _VarSetting_boundary_dp_vector[1]
                 target_lin_repr = target_lin_repr.replace('{f0}', root_form._pure_lin_repr)
                 target_header, target_lin_repr = target_lin_repr.split(_sep)[:2]
                 target = target_header + _sep + target_lin_repr

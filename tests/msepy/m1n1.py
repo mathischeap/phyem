@@ -76,8 +76,8 @@ def test_function(K, N, c):
     f0_error = f0[2].error()  # by default, we will compute the L^2 error.
     f1_error = f1[2].error()  # by default, we will compute the L^2 error.
 
-    df0 = f0.coboundary[2]()
-    df_error = df0[2].error()  # by default, we will compute the L^2 error.
+    df0 = f0.coboundary[2]
+    df_error = df0.error()  # by default, we will compute the L^2 error.
 
     return f0_error, f1_error, df_error
 

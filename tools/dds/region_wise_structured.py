@@ -7,7 +7,28 @@ from tools.matplot.contour import contour, contourf
 
 
 class DDSRegionWiseStructured(Frozen):
-    """"""
+    """We organize data set in a region-wise (as keys of dictionaries) approach. For example, if
+
+        `coo_dict_list = [x, y, z]`
+        `val_dict_list = [v0, ]`
+
+    This represents a scalar in 3d space. And x, y, z, v0 in this case must be dictionaries whose values
+    are ndarray of ndim = 3 and all values must be of the same shape. The keys of all dictionaries must
+    be same as well.
+
+    Similarly, if
+
+        `coo_dict_list = [x, y, z]`
+        `val_dict_list = [v0, v1, v2]`
+
+    This represents a vector in 3d space. And, if
+
+        `coo_dict_list = [x, y, z]`
+        `val_dict_list = ([v00, v01, v02], [v10, v11, v12], [v20, v21, v22])`
+
+    This represents a tensor in three dimensions.
+
+    """
 
     def __init__(self, coo_dict_list, val_dict_list):
         """"""

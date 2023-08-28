@@ -10,7 +10,7 @@ from msepy.main import base
 from msepy.form.tools.operations.nonlinear.AxB_ip_C import _AxBipC
 
 from src.spaces.main import _sep
-from src.spaces.main import _default_A_x_B_ip_C_reprs
+from src.spaces.main import _VarSetting_A_x_B_ip_C
 
 
 def msepy_nonlinear_operator_parser(mda):
@@ -33,7 +33,7 @@ def msepy_nonlinear_operator_parser(mda):
         indicators = mda_pure_lin_repr.split(_sep)  # these section represents all info of this root-array.
         type_indicator = indicators[0]   # this first one indicates the type
         info_indicators = indicators[1:]  # the others indicate the details.
-        if type_indicator == _default_A_x_B_ip_C_reprs[1].split(_sep)[0]:
+        if type_indicator == _VarSetting_A_x_B_ip_C[1].split(_sep)[0]:
             M, time_indicator = _parse_AxB_C(*info_indicators)
             text = r'\mathsf{X}'
         else:
@@ -49,7 +49,7 @@ def msepy_nonlinear_operator_parser(mda):
 
 def _parse_AxB_C(A, B, C):
     """"""
-    lin_reprs = _default_A_x_B_ip_C_reprs[1]
+    lin_reprs = _VarSetting_A_x_B_ip_C[1]
     base_Ar, base_Br, base_Cr = lin_reprs.split(_sep)[1:]
     replace_keys = (r"{A}", r"{B}", r"{C}")
     ABC_forms = list()

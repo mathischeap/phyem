@@ -3,6 +3,7 @@ r"""
 """
 import numpy as np
 from tools.frozen import Frozen
+from tools.functions.region_wise_wrapper import RegionWiseFunctionWrapper
 from src.spaces.operators import _d_to_vc, _d_ast_to_vc
 from src.spaces.continuous.Lambda import ScalarValuedFormSpace
 from src.spaces.continuous.bundle import BundleValuedFormSpace
@@ -35,10 +36,10 @@ class MsePyContinuousForm(Frozen):
     def field(self, _field):
         """"""
         _field = self._proceed_field(_field)
-        if _field.__class__ is _FieldWrapper:
+        if _field.__class__ is RegionWiseFunctionWrapper:
             self._field = _field
         else:
-            self._field = _FieldWrapper(_field)  # initialization: dict({...})
+            self._field = RegionWiseFunctionWrapper(_field)  # initialization: dict({...})
         self._check_field()
 
     @property
@@ -90,7 +91,7 @@ class MsePyContinuousForm(Frozen):
         regions = self._f.mesh.regions
         if isinstance(_field, dict):
             pass
-        elif isinstance(_field, _FieldWrapper):
+        elif isinstance(_field, RegionWiseFunctionWrapper):
             pass
         else:
             _fd = dict()
@@ -109,7 +110,7 @@ class MsePyContinuousForm(Frozen):
         if self.field is None:
             raise Exception('No cf, set it first!')
         else:
-            new_d_cf = _FieldWrapper()
+            new_d_cf = RegionWiseFunctionWrapper()
             for i in self.field:
                 field_i = self.field[i]
                 if hasattr(field_i, "_is_time_space_func") and field_i._is_time_space_func():
@@ -125,7 +126,7 @@ class MsePyContinuousForm(Frozen):
         if self.field is None:
             raise Exception('No cf, set it first!')
         else:
-            new_cd_cf = _FieldWrapper()
+            new_cd_cf = RegionWiseFunctionWrapper()
             for i in self.field:
                 field_i = self.field[i]
                 if hasattr(field_i, "_is_time_space_func") and field_i._is_time_space_func():
@@ -149,7 +150,7 @@ class MsePyContinuousForm(Frozen):
         if self.field is None:
             raise Exception('No cf, set it first!')
         else:
-            new_cd_cf = _FieldWrapper()
+            new_cd_cf = RegionWiseFunctionWrapper()
             for i in self.field:
                 field_i = self.field[i]
                 if hasattr(field_i, "_is_time_space_func") and field_i._is_time_space_func():
@@ -176,16 +177,6 @@ class MsePyContinuousForm(Frozen):
         m, n, k = space.m, space.n, space.k
         ori = space.orientation
         return _d_ast_to_vc(space_indicator, m, n, k, ori)
-
-
-class _FieldWrapper(dict):
-    """Use this wrapper to enable -cf."""
-
-    def __neg__(self):
-        new_neg_field = _FieldWrapper()
-        for i in self:
-            new_neg_field[i] = - self[i]
-        return new_neg_field
 
 
 class MsePyContinuousFormPartialTime(Frozen):

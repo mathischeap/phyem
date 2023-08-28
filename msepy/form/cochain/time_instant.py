@@ -3,8 +3,6 @@ r"""
 """
 from tools.frozen import Frozen
 import numpy as np
-from msepy.tools.vector.static.local import MsePyStaticLocalVector
-from msepy.tools.vector.static.assembled import MsePyStaticAssembledVector
 
 
 class _CochainAtOneTime(Frozen):
@@ -16,6 +14,8 @@ class _CochainAtOneTime(Frozen):
         self._f = rf
         self._t = t
         self._local_cochain = None
+        self._local_cochain_caller = None
+        self._type = None
         self._freeze()
 
     def __repr__(self):
@@ -33,17 +33,30 @@ class _CochainAtOneTime(Frozen):
             assert np.shape(cochain) == gm.shape, f"local cochain shape = {np.shape(cochain)} wrong, " \
                                                   f"should be {gm.shape}."
             self._local_cochain = cochain
-        elif cochain.__class__ is MsePyStaticLocalVector:
-            raise NotImplementedError()
-        elif cochain.__class__ is MsePyStaticAssembledVector:
-            raise NotImplementedError()
+            self._type = 'ndarray'
+        elif callable(cochain):
+            self._local_cochain_caller = cochain
+            self._type = 'realtime'
         else:
             raise Exception(f"Cannot receive cochain from {cochain.__class__}")
+        assert self._type is not None, f"When receive a cochain, its type must be specified."
 
     @property
     def local(self):
         """2d-numpy-array."""
-        return self._local_cochain
+        if self._type == 'ndarray':
+            return self._local_cochain
+        elif self._type == 'realtime':
+            local_cochain = self._local_cochain_caller(self._t)
+            assert local_cochain.__class__.__name__ == 'ndarray', \
+                (f"local_cochain @ time = {self._t} is wrong. "
+                 f"It must be a ndarray, now it is {local_cochain.__class__}.")
+            assert np.shape(local_cochain) == self._f.cochain.gathering_matrix.shape, \
+                (f"local_cochain @ time = {self._t} is wrong. "
+                 f"It must be a 2d ndarray of shape {self._f.cochain.gathering_matrix.shape}")
+            return local_cochain
+        else:
+            raise Exception
 
     def of_dof(self, i, average=True):
         """The cochain for the global dof `#i`."""

@@ -54,6 +54,8 @@ def contour(
         colorbar_labelsize=12.5, colorbar_extend='both',
         ticksize=12,
         labelsize=15,
+        xlabel=r'$x$',
+        ylabel=r'$y$',
         title=None,
         saveto=None,
         colorbar_only=False,
@@ -100,6 +102,8 @@ def contour(
 
     ticksize
     labelsize
+    xlabel
+    ylabel
     title
     saveto
     plot_type:
@@ -132,8 +136,8 @@ def contour(
     ax.spines['right'].set_visible(False)
     ax.spines['left'].set_visible(True)
     ax.spines['bottom'].set_visible(True)
-    plt.xlabel('$x$', fontsize=labelsize)
-    plt.ylabel('$y$', fontsize=labelsize)
+    plt.xlabel(xlabel, fontsize=labelsize)
+    plt.ylabel(ylabel, fontsize=labelsize)
     ax.tick_params(labelsize=ticksize)
 
     if levels is None:

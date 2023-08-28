@@ -3,6 +3,7 @@ r"""
 """
 from tools.frozen import Frozen
 from msepy.form.cochain.vector.static import MsePyRootFormStaticCochainVector
+from msepy.form.numeric.main import MsePyRootFormNumeric
 
 
 class MsePyRootFormStaticCopy(Frozen):
@@ -78,3 +79,7 @@ class MsePyRootFormStaticCopy(Frozen):
 
         else:
             return False
+
+    @property
+    def numeric(self):
+        return MsePyRootFormNumeric(self._f, self._t)

@@ -1,1 +1,1 @@
-Mimetic spectral element implementation.
+Mimetic spectral element implementation with python.

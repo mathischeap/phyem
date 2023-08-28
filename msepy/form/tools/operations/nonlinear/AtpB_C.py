@@ -7,10 +7,13 @@ from msepy.form.main import MsePyRootForm
 from src.spaces.main import _degree_str_maker
 from tools.quadrature import Quadrature
 from msepy.tools.matrix.dynamic import MsePyDynamicLocalMatrix
+from msepy.tools.vector.dynamic import MsePyDynamicLocalVector
 from src.spaces.continuous.bundle import BundleValuedFormSpace
 from msepy.form.tools.operations.nonlinear.AxB_ip_C import _D2MatrixCallerRow2Col0, _D2MatrixCallerRow2Col1
+from msepy.form.tools.operations.nonlinear.AxB_ip_C import _OneDimVector
 
 
+# noinspection PyPep8Naming
 class ___AtpB_C__(Frozen):
     """"""
 
@@ -164,7 +167,10 @@ class ___AtpB_C__(Frozen):
             pass
 
         if dimensions == 1:
-            raise NotImplementedError()
+            vector_form = args[0]
+            # we reduce the 3d data into 1d according to vector-form's basis functions.
+            _vector_data_caller = _OneDimVector(self, vector_form)
+            return MsePyDynamicLocalVector(_vector_data_caller), _vector_data_caller._time_caller
 
         elif dimensions == 2:
 

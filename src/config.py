@@ -342,6 +342,7 @@ _wf_term_default_simple_patterns = {   # use only str to represent a simple patt
     '(x,)': r'($\mathsf{rf}$ $\times$ $\mathsf{rf}$, $\mathsf{rf}$)',   # nonlinear term.
 
     '(0tp0,)': r'($\mathsf{rf}$-0 $\otimes$ $\mathsf{rf}$-0, $\mathsf{rf}$)',
+    '(0*tp0*,)': r'($\mathsf{krf}$-0 $\otimes$ $\mathsf{krf}$-0, $\mathsf{rf}$)',
     '(*tp,)': r'($\mathsf{krf}$ $\otimes$ $\mathsf{rf}$, $\mathsf{rf}$)',
 
     '(d,tp)': r'(d $\mathsf{rf}$, $\mathsf{rf}$ $\otimes$ $\mathsf{rf}$)',

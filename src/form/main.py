@@ -165,12 +165,19 @@ class Form(Frozen):
             self._efs = set(efs)
         return self._efs
 
-    def _limit_to_finite_space(self, degree):
+    @property
+    def degree(self):
+        """"""
+        assert self._degree is not None, f"degree of form {self} is empty, set it firstly."
+        return self._degree
+
+    @degree.setter
+    def degree(self, _degree):
         """Limit this form to a particular finite dimensional space of degree `degree`."""
         assert self._degree is None, f"This form: {self} already has a degree ({self._degree}), " \
                                      f"change it may lead to unpredictable issue."
-        assert isinstance(degree, (int, float, list, tuple)), f"Can only use int, float, list or tuple for the degree."
-        self.space.finite.specify_form(self, degree)
+        assert isinstance(_degree, (int, float, list, tuple)), f"Can only use int, float, list or tuple for the degree."
+        self.space.finite.specify_form(self, _degree)
 
     def ap(self, sym_repr=None):
         """Algebraic proxy."""

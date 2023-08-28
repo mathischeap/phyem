@@ -190,17 +190,23 @@ def _inner_simpler_pattern_examiner_bundle_valued_forms(factor, f0, f1, extra_in
         # (a tp b, _)
         if tensor_product_lin in f0._lin_repr and f0._lin_repr.count(tensor_product_lin) == 1 and f1.is_root():
 
-            # it is like `a` x `b` for f0
+            # it is like `a` tp `b` for f0
             a_lin, b_lin = f0._lin_repr.split(tensor_product_lin)
 
             f_a = _find_form(a_lin)
             f_b = _find_form(b_lin)
 
-            # (`a` tp `a`, f1), a, b, f1 are all root.
+            # (`a` tp `b`, f1), a, b, f1 are all root.
             if f_a.is_root() and f_b.is_root():
-                if f_a is f_b:
+                if f_a is f_b:  # (`a` tp `a`, f1)
                     if 'known-tensor-product-form' in extra_info:
-                        raise Exception(f"to be implemented")  # do not use NotImplementedError
+                        known_forms = extra_info['known-tensor-product-form']
+                        if known_forms is f_a:
+                            return _simple_patterns['(0*tp0*,)'], {
+                                'a': f_a,
+                                'c': f1
+                            }
+
                     else:
                         # this term will be a nonlinear one
                         return _simple_patterns['(0tp0,)'], {

@@ -120,15 +120,15 @@ def test_function(K, N, c):
     f1i_error = f1i[2].error()  # by default, we will compute the L^2 error.
     f1o_error = f1o[2].error()  # by default, we will compute the L^2 error.
 
-    df0i = f0i.coboundary[2]()
-    df0i_error = df0i[2].error()  # by default, we will compute the L^2 error.
-    df0o = f0o.coboundary[2]()
-    df0o_error = df0o[2].error()  # by default, we will compute the L^2 error.
+    df0i = f0i.coboundary[2]
+    df0i_error = df0i.error()  # by default, we will compute the L^2 error.
+    df0o = f0o.coboundary[2]
+    df0o_error = df0o.error()  # by default, we will compute the L^2 error.
 
-    df1i = f1i.coboundary[2]()
-    df1i_error = df1i[2].error()  # by default, we will compute the L^2 error.
-    df1o = f1o.coboundary[2]()
-    df1o_error = df1o[2].error()  # by default, we will compute the L^2 error.
+    df1i = f1i.coboundary[2]
+    df1i_error = df1i.error()  # by default, we will compute the L^2 error.
+    df1o = f1o.coboundary[2]
+    df1o_error = df1o.error()  # by default, we will compute the L^2 error.
 
     return f0i_error, f0o_error, f2_error, \
         f1i_error, f1o_error, \

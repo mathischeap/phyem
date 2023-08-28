@@ -276,6 +276,7 @@ class _D2MatrixCallerRow2Col0(Frozen):
         self._freeze()
 
     def __call__(self, *args, **kwargs):
+        """"""
         gm_row = self._ABC[2].cochain.gathering_matrix
         gm_col = self._ABC[0].cochain.gathering_matrix
         given_form = self._ABC[1]
@@ -351,6 +352,7 @@ class _MatrixCaller(Frozen):
     """"""
 
     def __init__(self, given_index, cochain, _3d_data, mesh, row_index, col_index):
+        """"""
         self._cochain = cochain
         self._3d_data = _3d_data
         self._mesh = mesh

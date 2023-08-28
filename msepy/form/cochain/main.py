@@ -28,6 +28,7 @@ class MsePyRootFormCochain(Frozen):
     @staticmethod
     def _parse_t(t):
         """To make time safer."""
+        assert t is not None, f"time is None!"
         return round(t, 8)  # to make it safer.
 
     def _set(self, t, cochain):
@@ -104,6 +105,10 @@ class MsePyRootFormCochain(Frozen):
 
     def __getitem__(self, t):
         """Return the cochain at time `t`."""
+        if t is None:
+            t = self.newest
+        else:
+            pass
         rf = self._f
         if rf._is_base():
             t = self._parse_t(t)
