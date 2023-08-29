@@ -28,10 +28,10 @@ __all__ = [
 
 # will be cleared whenever new msepy implementation is called.
 base = {
-    'manifolds': dict(),
-    'meshes': dict(),
+    'manifolds': dict(),  # keys: abstract manifold sym_repr
+    'meshes': dict(),     # keys: abstract mesh sym_repr
     'spaces': dict(),  # keys: abstract space sym_repr, values: MsePy spaces
-    'forms': dict(),  # root-forms
+    'forms': dict(),  # keys: abstract root form pure_lin_repr, values: root-forms,
 }
 
 

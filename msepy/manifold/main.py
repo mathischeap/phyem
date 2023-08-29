@@ -50,12 +50,15 @@ def config(mf, arg, *args, **kwargs):
         assert mf.regions._map_type == 0, f"must be!"
         mf._default_element_layout_maker = default_element_layout
 
-    elif arg.__class__ is MsePyManifold:  # this leads to region map type: 1
+    elif arg.__class__ is MsePyManifold or arg.__class__.__name__ == 'MseHyPy2Manifold':
+        # this leads to region map type: 1
+
+        if arg.__class__.__name__ == 'MseHyPy2Manifold':
+            base_manifold = arg.background
+        else:
+            base_manifold = arg
 
         # by doing this, we config a manifold being the (a part of) the boundary of this given manifold: arg
-
-        base_manifold = arg
-
         boundary_dict = args[0]
 
         mf._parse_regions_from_boundary_dict(base_manifold, boundary_dict)
@@ -66,6 +69,8 @@ def config(mf, arg, *args, **kwargs):
         raise NotImplementedError(f"config arg = {arg} is not understandable.")
 
     assert mf.regions is not None, f"we need to set regions for the manifold by this `config` function."
+
+    return 0
 
 
 class MsePyManifold(Frozen):
@@ -261,7 +266,7 @@ class MsePyManifold(Frozen):
                             else:
                                 configured_sections.append(section)
 
-                        assert self in configured_sections, f'Must be this case.'
+                        assert self in configured_sections, f'Must be this case. {not_configured_sections}'
 
                         if len(not_configured_sections) == 0:
 

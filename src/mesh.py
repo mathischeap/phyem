@@ -138,7 +138,7 @@ class Mesh(Frozen):   # Mesh -
         """Give the mesh of dimensions (n+1) on the inclusion manifold."""
         return self._inclusion
 
-    def partition(self, *sym_reprs, config_name=None):
+    def boundary_partition(self, *sym_reprs, config_name=None):
         """Define boundary sections by partition the mesh boundary into sections defined by `*sym_reprs`."""
         if self._boundary is None:
             _ = self.boundary()

@@ -25,7 +25,7 @@ from src.spaces.main import _degree_str_maker
 
 
 _global_forms = dict()   # cache keys are id
-_global_root_forms_lin_dict = dict()
+_global_root_forms_lin_dict = dict()   # keys are root form lin_repr
 _global_form_variables = {
     'update_cache': True   # the global switcher  ---------- (1)
 }
@@ -174,9 +174,13 @@ class Form(Frozen):
     @degree.setter
     def degree(self, _degree):
         """Limit this form to a particular finite dimensional space of degree `degree`."""
-        assert self._degree is None, f"This form: {self} already has a degree ({self._degree}), " \
-                                     f"change it may lead to unpredictable issue."
         assert isinstance(_degree, (int, float, list, tuple)), f"Can only use int, float, list or tuple for the degree."
+
+        for _lin_repr in _global_root_forms_lin_dict:
+            root_form = _global_root_forms_lin_dict[_lin_repr]
+            if root_form._pAti_form['base_form'] is self:
+                root_form._degree = _degree
+
         self.space.finite.specify_form(self, _degree)
 
     def ap(self, sym_repr=None):

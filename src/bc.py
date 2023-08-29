@@ -30,7 +30,7 @@ class BoundaryCondition(Frozen):
 
     def partition(self, *sym_reprs, config_name=None):
         """Define boundary sections by partition the mesh boundary into sections defined by `*sym_reprs`."""
-        self._mesh.partition(*sym_reprs, config_name=config_name)
+        self._mesh.boundary_partition(*sym_reprs, config_name=config_name)
 
     def define_bc(self, bcs_dict):
         """"""

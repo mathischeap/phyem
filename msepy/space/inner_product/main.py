@@ -96,7 +96,7 @@ def _make_inner_product_matrix(space0, space1, degree0, degree1, special_key):
 
 
 def _special0(m0, m1, metric):
-    """This case is for bundle 1-form inner diagonal-bundle-2-form, in 2D."""
+    """This case is for bundle 1-form inner diagonal-bundle-form, in 2D."""
 
     dim0 = _find_dim(m0)
     dim1 = _find_dim(m1)

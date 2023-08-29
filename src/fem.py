@@ -14,6 +14,8 @@ from src.form.main import _global_root_forms_lin_dict  # [root-form_lin_repr] ->
 import msepy.main as msepy
 import msehy.py2.main as msehy_py2
 
+from src.config import get_embedding_space_dim
+
 
 _implemented_finite_elements = {
     'msepy': msepy,   # mimetic spectral elements, python implementation
@@ -23,6 +25,15 @@ _implemented_finite_elements = {
 
 def apply(fe_name, obj_dict):
     """"""
+    if fe_name == 'msehy':
+        m = get_embedding_space_dim()
+        if m == 2:
+            fe_name = 'msehy-py2'
+        else:
+            raise NotImplementedError()
+    else:
+        pass
+
     assert fe_name in _implemented_finite_elements, \
         f"finite element name={fe_name} is wrong, should be one of {_implemented_finite_elements.keys()}"
 

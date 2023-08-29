@@ -238,7 +238,7 @@ class LinearSystem(Frozen):
                 xj = Xj[0]
 
                 for k, aij in enumerate(Aij):
-                    assert aij.shape[1] == _shapes[j], f"k's component of A[{i}][{j}], {aij}, shape wrong."
+                    assert aij.shape[1] == _shapes[j], f"{k}th component of A[{i}][{j}], {aij}, shape wrong."
                 assert xj.shape[0] == _shapes[j], f"x[{j}] shape wrong."
 
         self._shapes = _shapes

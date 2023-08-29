@@ -41,15 +41,31 @@ def _clear_self():
     _info_cache['info_time'] = -1.
 
 
+from msehy.py2.manifold.main import MseHyPy2Manifold
+from msehy.py2.mesh.main import MseHyPy2Mesh
+
+
 def _parse_manifolds(abstract_manifolds):
     """"""
+    from msepy.main import _parse_manifolds as _parse_msepy_manifolds
+    _parse_msepy_manifolds(abstract_manifolds)  # implement all msepy manifold at the background.
+
     manifold_dict = {}
+    for sym in abstract_manifolds:
+        manifold = MseHyPy2Manifold(abstract_manifolds[sym])
+        manifold_dict[sym] = manifold
     base['manifolds'] = manifold_dict
 
 
 def _parse_meshes(abstract_meshes):
     """"""
+    from msepy.main import _parse_meshes as _parse_msepy_meshes
+    _parse_msepy_meshes(abstract_meshes)  # implement all msepy meshes at the background.
+
     mesh_dict = {}
+    for sym in abstract_meshes:
+        mesh = MseHyPy2Mesh(abstract_meshes[sym])
+        mesh_dict[sym] = mesh
     base['meshes'] = mesh_dict
 
 
@@ -70,3 +86,18 @@ def _parse(obj):
     particular fem setting.
     """
     return None
+
+
+from msepy.main import _Config as _msepy_Config
+
+
+def config(obj):
+    """"""
+    if obj.__class__ is MseHyPy2Manifold:  # 1: to config a msehy-py2 manifold, config its background msepy manifold
+        obj = obj.background
+        return _msepy_Config(obj)
+    elif obj.__class__ is MseHyPy2Mesh:    # 2: to config a msehy-py2 mesh, config its background msepy mesh
+        obj = obj.background
+        return _msepy_Config(obj)
+    else:
+        raise NotImplementedError()

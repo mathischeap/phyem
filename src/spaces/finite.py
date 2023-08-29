@@ -20,7 +20,6 @@ class SpaceFiniteSetting(Frozen):
     @staticmethod
     def specify_form(f, degree):
         """specify a form `f` to be an element of a particular finite dimensional space of degree `degree`."""
-        assert f._degree is None, f"change degrees of a form may be very dangerous!"
         f._degree = degree
 
     def specify_all(self, degree):
