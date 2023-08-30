@@ -103,6 +103,7 @@ class MsePyIncidenceMatrixBundle(Frozen):
     def _n2_k0_inner(self, p):
         """"""
         p0, p1 = p
+
         E00 = self._space.incidence_matrix.Lambda._n2_k0_inner(p0)
         E11 = self._space.incidence_matrix.Lambda._n2_k0_inner(p1)
 

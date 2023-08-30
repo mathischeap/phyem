@@ -4,6 +4,14 @@ r"""
 from src.config import SIZE   # MPI.SIZE
 from src.config import _global_variables
 
+
+__setting__ = {   # can be config through ph.config.set_implementation('msehy-py2')
+    'refining_examining_factor': 3,
+    # To config this factor, do ``ph.config.set_implementation('msehy-py2')['refining_examining_factor'] = 4``
+    'refining_examining_scheme': 0,
+}
+
+
 __all__ = [
 
 ]

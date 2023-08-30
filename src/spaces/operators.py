@@ -9,6 +9,11 @@ _implemented_space_operators = (
     'd',
     'codifferential',
     'trace',
+
+    'cross_product',
+    'tensor_product',
+
+    'project_to',
 )
 
 
@@ -247,3 +252,9 @@ def trace(space):
 
     else:
         raise NotImplementedError(f"trace of {space} is not implemented or not even possible.")
+
+
+def project_to(from_space, to_space):
+    """"""
+    assert from_space != to_space
+    return to_space

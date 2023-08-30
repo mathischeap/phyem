@@ -8,6 +8,7 @@ from src.spaces.operators import d as space_d
 from src.spaces.operators import codifferential as space_codifferential
 from src.spaces.operators import cross_product as space_cross_product
 from src.spaces.operators import tensor_product as space_tensor_product
+from src.spaces.operators import project_to as space_project_to
 
 from src.config import _global_operator_lin_repr_setting
 from src.config import _global_operator_sym_repr_setting
@@ -27,6 +28,37 @@ def _parse_related_time_derivative(f):
         if op_lin_rp in f._lin_repr:
             related.append(op_name)
     return related
+
+
+def _project_to(from_f, to_space):  # can be called only from a form. If used it somewhere else, wrap it.
+    """"""
+    from_space = from_f.space
+    to_space = space_project_to(from_space, to_space)
+
+    lr = from_f._lin_repr
+    sr = from_f._sym_repr
+
+    op_lin_repr = _global_operator_lin_repr_setting['projection']
+    sr_operator = _global_operator_sym_repr_setting['projection']
+
+    if from_f.is_root():
+        lr = op_lin_repr + lr
+    else:
+        lr = op_lin_repr + _non_root_lin_sep[0] + lr + _non_root_lin_sep[1]
+
+    if from_f.is_root():
+        sr = sr_operator + sr
+    else:
+        sr = sr_operator + r"\left(" + sr + r"\right)"
+
+    f = from_f.__class__(
+        to_space,  # space
+        sr,  # symbolic representation
+        lr,
+        False,
+    )
+
+    return f
 
 
 def wedge(f1, f2):

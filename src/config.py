@@ -56,6 +56,15 @@ def set_pr_cache(_bool):
     _setting['pr_cache'] = _bool
 
 
+def set_implementation(implementation_name):
+    """"""
+    if implementation_name == 'msehy-py2':
+        from msehy.py2.main import __setting__
+        return __setting__
+    else:
+        raise NotImplementedError()
+
+
 def _pr_cache(fig, filename=None):
     """
 
@@ -299,7 +308,9 @@ _global_operator_lin_repr_setting = {  # coded operators
     'multiply': r' \emph{multiply} ',
 
     'cross_product': r"$\times$",
-    'tensor_product': r"$\otimes$"
+    'tensor_product': r"$\otimes$",
+
+    'projection': r'$\pi$ '
 }
 
 
@@ -316,41 +327,38 @@ _global_operator_sym_repr_setting = {  # coded operators
     'time_derivative': r'\partial_{t}',
     'trace': r'\mathrm{tr}',
     'division': [r'\frac{', r'}{', r"}"],
+
     'cross_product': r"{\times}",
-    'tensor_product': r"{\otimes}"
+    'tensor_product': r"{\otimes}",
+
+    'projection': r'{\pi}'
 }
 
 
 _wf_term_default_simple_patterns = {   # use only str to represent a simple pattern.
     # indicator : simple pattern
-    '(pt,)': '(partial_t $\mathsf{rf}$, f)',   # (partial_time_derivative of root-sf, sf)
+    '(pt,)': '(partial_t rf, f)',   # (partial_time_derivative of root-sf, sf)
     '(cd,)': '(codifferential f, f)',
 
     # below, we have simple patterns only for root-sf.
-    '(rt,rt)': '($\mathsf{rf}$, $\mathsf{rf}$)',
-    '(d,)': '(d $\mathsf{rf}$, $\mathsf{rf}$)',
-    '(,d)': '($\mathsf{rf}$, d $\mathsf{rf}$)',
+    '(rt,rt)': '(rf, rf)',
+    '(d,)': '(d rf, rf)',
+    '(,d)': '(rf, d rf)',
 
     '(<db>,d<b>)': '(root-diagonal-bf, d root-bf)',
 
-    '<tr star | tr >': '<tr star $\mathsf{rf}$ | trace $\mathsf{rf}$>',
+    '<tr star | tr >': '<tr star rf | trace rf>',
 
-    '(*x*,)': r'($\mathsf{krf}$ $\times$ $\mathsf{krf}$, $\mathsf{rf}$)',   # vector
-    '(*x,)': r'($\mathsf{krf}$ $\times$ $\mathsf{rf}$, $\mathsf{rf}$)',
-    '(x*,)': r'($\mathsf{rf}$ $\times$ $\mathsf{krf}$, $\mathsf{rf}$)',
+    '(,d-pi)': '(rf, d(pi(rf)))',
 
-    '(x,)': r'($\mathsf{rf}$ $\times$ $\mathsf{rf}$, $\mathsf{rf}$)',   # nonlinear term.
+    '(*x*,)': r'(krf $\times$ krf, rf)',   # vector
+    '(*x,)': r'(krf $\times$ rf, rf)',
+    '(x*,)': r'(rf $\times$ krf, rf)',
 
-    '(0tp0,)': r'($\mathsf{rf}$-0 $\otimes$ $\mathsf{rf}$-0, $\mathsf{rf}$)',
-    '(0*tp0*,)': r'($\mathsf{krf}$-0 $\otimes$ $\mathsf{krf}$-0, $\mathsf{rf}$)',
-    '(*tp,)': r'($\mathsf{krf}$ $\otimes$ $\mathsf{rf}$, $\mathsf{rf}$)',
+    '(x,)': r'(rf $\times$ rf, rf)',   # nonlinear term.
 
-    '(d,tp)': r'(d $\mathsf{rf}$, $\mathsf{rf}$ $\otimes$ $\mathsf{rf}$)',
-    '(d,*tp)': r'(d $\mathsf{rf}$, $\mathsf{krf}$ $\otimes$ $\mathsf{rf}$)',
-    '(d*,tp)': r'(d $\mathsf{krf}$, $\mathsf{rf}$ $\otimes$ $\mathsf{rf}$)',
-
-    '(d0,0tp)': r'(d $\mathsf{rf}$-0, $\mathsf{rf}$-0 $\otimes$ $\mathsf{rf}$)',
-    '(d0*,0*tp)': r'(d $\mathsf{krf}$-0, $\mathsf{krf}$-0 $\otimes$ $\mathsf{rf}$)',
+    '(d0*,0*tp)': r'(d krf-0, krf-0 $\otimes$ rf)',
+    '(d,0*tp0*)': r'(d rf, krf-0 $\otimes$ krf-0)',
 
 }
 

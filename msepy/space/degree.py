@@ -60,9 +60,15 @@ class MsePySpaceDegree(Frozen):
                         )
                         ntype[i].append('Lobatto')
                 p_shape = (self._space.n, self._space.n)
-            elif isinstance(degree, (list, tuple)) and all([isinstance(_, int) for _ in degree]):
+            elif isinstance(degree, (list, tuple)) and all([isinstance(_, (list, tuple)) for _ in degree]):
                 assert len(degree) == self._space.n, f"degree dimension wrong."
-                p = tuple([degree for _ in range(self._space.n)])
+                for i, Di in enumerate(degree):
+                    assert len(Di) == self._space.n, f"degree dimension wrong."
+                    for j, pij in enumerate(Di):
+                        assert isinstance(pij, (int, float)), f"degree[{i}][{j}] = {pij} wrong, it must be a number."
+                        assert pij % 1 == 0 and pij > 0, \
+                            f"degree[{i}][{j}] = {pij} wrong, it must be a positive integer."
+                p = degree
                 nodes = [[] for _ in range(self._space.n)]
                 ntype = [[] for _ in range(self._space.n)]
                 for i in range(self._space.n):

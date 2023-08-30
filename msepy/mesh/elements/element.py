@@ -41,6 +41,10 @@ class MsePyElement(Frozen):
                 else:
                     pass
 
+    @property
+    def region(self):
+        return self._region
+
 
 class MsePyElementCoordinateTransformation(Frozen):
     """"""

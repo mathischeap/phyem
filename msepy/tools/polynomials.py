@@ -8,6 +8,10 @@ import matplotlib.pyplot as plt
 from tools.quadrature import Quadrature
 import numpy as np
 from tools.frozen import Frozen
+from tools.miscellaneous.ndarray_cache import ndarray_key_comparer, add_to_ndarray_cache
+
+_cache_nodes = dict()
+_cache_edges = dict()
 
 
 class _OneDimPolynomial(Frozen):
@@ -23,10 +27,15 @@ class _OneDimPolynomial(Frozen):
         assert np.all(np.diff(nodes) > 0) and np.max(nodes) == 1 and np.min(nodes) == -1, \
             " <Polynomials1D> : nodes={} wrong, need to be increasing and bounded in [-1, 1].".format(nodes)
         self._nodes_ = nodes
+        str_nodes_key = list()
+        for node in nodes:
+            if node in (-1, 1):
+                str_nodes_key.append(str(node))
+            else:
+                str_nodes_key.append("%.5f" % node)
+        self._str_nodes_key = '|'.join(str_nodes_key)
         self._p_ = np.size(self.nodes) - 1
         self._isKronecker_ = True
-        self._Lb_cache_ = {'x': -100, 'cache': np.array([])}
-        self._eb_cache_ = {'x': -100, 'cache': np.array([])}
         self._freeze()
 
     def __repr__(self):
@@ -61,37 +70,41 @@ class _OneDimPolynomial(Frozen):
 
     def lagrange_basis(self, x):
         """Return the lagrange polynomials evaluated at ``x``."""
-        if x.__class__.__name__ == 'ndarray' and np.shape(x) == np.shape(self._Lb_cache_['x']) and \
-                np.all(self._Lb_cache_['x'] == x):
-            return self._Lb_cache_['cache']
+        cached, cache_data = ndarray_key_comparer(_cache_nodes, [x, ], check_str=self._str_nodes_key)
+        if cached:
+            return cache_data
         else:
-            p = np.size(self.nodes)
-            basis = np.ones((p, np.size(x)))
-            # lagrange basis functions
-            for i in range(p):
-                for j in range(p):
-                    if i != j:
-                        basis[i, :] *= (x - self.nodes[j]) / (self.nodes[i] - self.nodes[j])
+            pass
 
-            self._Lb_cache_['x'] = x
-            self._Lb_cache_['cache'] = basis
-            return basis
+        p = np.size(self.nodes)
+        basis = np.ones((p, np.size(x)))
+        # lagrange basis functions
+        for i in range(p):
+            for j in range(p):
+                if i != j:
+                    basis[i, :] *= (x - self.nodes[j]) / (self.nodes[i] - self.nodes[j])
+
+        add_to_ndarray_cache(_cache_nodes, [x, ], basis, check_str=self._str_nodes_key, maximum=10)
+
+        return basis
 
     def edge_basis(self, x):
         """Return the edge polynomials evaluated at ``x``."""
-        if x.__class__.__name__ == 'ndarray' and np.shape(x) == np.shape(self._eb_cache_['x']) and \
-                np.all(self._eb_cache_['x'] == x):
-            return self._eb_cache_['cache']
+        cached, cache_data = ndarray_key_comparer(_cache_edges, [x, ], check_str=self._str_nodes_key)
+        if cached:
+            return cache_data
         else:
-            p = np.size(self.nodes) - 1
-            derivatives_poly = self._derivative_poly_(p, x)
-            edge_poly = np.zeros((p, np.size(x)))
-            for i in range(p):
-                for j in range(i + 1):
-                    edge_poly[i] -= derivatives_poly[j, :]
-            self._eb_cache_['x'] = x
-            self._eb_cache_['cache'] = edge_poly
-            return edge_poly
+            pass
+        p = np.size(self.nodes) - 1
+        derivatives_poly = self._derivative_poly_(p, x)
+        edge_poly = np.zeros((p, np.size(x)))
+        for i in range(p):
+            for j in range(i + 1):
+                edge_poly[i] -= derivatives_poly[j, :]
+
+        add_to_ndarray_cache(_cache_edges, [x, ], edge_poly, check_str=self._str_nodes_key, maximum=10)
+
+        return edge_poly
 
     @property
     def node_reference_mass_matrix(self):

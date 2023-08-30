@@ -22,16 +22,10 @@ __all__ = [
     '_VarPar_A_x_astB_ip_tC',
     '_VarPar_A_x_B_ip_C',
 
-    '_VarPar_dA_astB_tp_tC',
-    '_VarPar_dastA_astA_tp_C',
-    '_VarPar_dastA_B_tp_tC',
-    '_VarPar_dA_A_tp_C',
+    '_VarPar_dastA_astA_tp_tC',
+    '_VarPar_dtA_astB_tp_astB',
 
     '_VarPar_l2_inner_product_db_bf',
-
-    '_VarPar_astA_tp_B_tC',
-    '_VarPar_astA_tp_astA_tC',
-    '_VarPar_A_tp_A__ip__C',
 ]
 
 
@@ -211,59 +205,8 @@ def _VarPar_A_x_B_ip_C(A, B, C):
 
 
 # -----(dA, B otimes C) ----------------------------------------------------------------------------
-
-def _VarPar_dA_astB_tp_tC(A, gB, tC):
-    """"""
-
-    sym, lin = _VarSetting_dA_astB_tp_tC[:2]
-
-    sym += r"_{" + gB._sym_repr + r"}"
-    lin = lin.replace('{A}', A._pure_lin_repr)
-    lin = lin.replace('{B}', gB._pure_lin_repr)
-    lin = lin.replace('{C}', tC._pure_lin_repr)
-
-    s0 = tC.space
-    s1 = A.space
-    d0 = tC._degree
-    d1 = A._degree
-    str_d0 = _degree_str_maker(d0)
-    str_d1 = _degree_str_maker(d1)
-
-    shape0 = s0._sym_repr + _default_space_degree_repr + str_d0
-    shape1 = s1._sym_repr + _default_space_degree_repr + str_d1
-
-    shape = (shape0, shape1)
-    ra = _root_array(sym, lin, shape)
-    return ra
-
-
-def _VarPar_dastA_B_tp_tC(gA, B, tC):
-    """"""
-
-    sym, lin = _VarSetting_dastA_B_tp_tC[:2]
-
-    sym += r"_{" + gA._sym_repr + r"}"
-    lin = lin.replace('{A}', gA._pure_lin_repr)
-    lin = lin.replace('{B}', B._pure_lin_repr)
-    lin = lin.replace('{C}', tC._pure_lin_repr)
-
-    s0 = tC.space
-    s1 = B.space
-    d0 = tC._degree
-    d1 = B._degree
-    str_d0 = _degree_str_maker(d0)
-    str_d1 = _degree_str_maker(d1)
-
-    shape0 = s0._sym_repr + _default_space_degree_repr + str_d0
-    shape1 = s1._sym_repr + _default_space_degree_repr + str_d1
-
-    shape = (shape0, shape1)
-    ra = _root_array(sym, lin, shape)
-    return ra
-
-
-def _VarPar_dastA_astA_tp_C(gA, tC):
-    """(dgA, gA otimes c)"""
+def _VarPar_dastA_astA_tp_tC(gA, tC):
+    """<d(gA), gA otimes tC>"""
     sym, lin = _VarSetting_dastA_astA_tp_tC[:2]
 
     sym += r"_{(" + gA._sym_repr + ',' + gA._sym_repr + r")}"
@@ -271,9 +214,7 @@ def _VarPar_dastA_astA_tp_C(gA, tC):
     lin = lin.replace('{C}', tC._pure_lin_repr)
 
     s0 = tC.space
-    d0 = tC._degree
-    str_d0 = _degree_str_maker(d0)
-
+    str_d0 = _degree_str_maker(tC._degree)
     shape0 = s0._sym_repr + _default_space_degree_repr + str_d0
 
     shape = (shape0, 1)
@@ -281,20 +222,24 @@ def _VarPar_dastA_astA_tp_C(gA, tC):
     return ra
 
 
-def _VarPar_dA_A_tp_C(A, C):
-    """(dA, A otimes c)"""
-    sym, lin = _VarSetting_dA_A_tp_C[:2]
+def _VarPar_dtA_astB_tp_astB(tA, gB):
+    """<dtA, gB otimes gB>"""
+    sym, lin = _VarSetting_dtA_astB_tp_astB[:2]
 
-    sym += rf"\left({A._sym_repr}, {A._sym_repr}, {C._sym_repr}\right)"
-    lin = lin.replace('{A}', A._pure_lin_repr)
-    lin = lin.replace('{C}', C._pure_lin_repr)
+    sym += r"_{(" + gB._sym_repr + ',' + gB._sym_repr + r")}"
+    lin = lin.replace('{A}', tA._pure_lin_repr)
+    lin = lin.replace('{B}', gB._pure_lin_repr)
 
-    mda = AbstractNonlinearOperator(sym, lin)
-    return mda
+    s0 = tA.space
+    str_d0 = _degree_str_maker(tA._degree)
+    shape0 = s0._sym_repr + _default_space_degree_repr + str_d0
+
+    shape = (shape0, 1)
+    ra = _root_array(sym, lin, shape)
+    return ra
 
 
 # --- (bundle form, special diagonal bundle form)----------------------------------------------------
-
 def _VarPar_l2_inner_product_db_bf(db, bf, transpose=False):
     """
     if ``transpose``, 0-axis of the output refers to `bd`, else, 0-axis refers to `df`.
@@ -343,60 +288,3 @@ def _VarPar_l2_inner_product_db_bf(db, bf, transpose=False):
                 bf_space._sym_repr + _default_space_degree_repr + str_bf
             ), symmetric=False,
         )
-
-
-# ---- (A otimes B, C) -----------------------------------------------------------------------------
-
-def _VarPar_astA_tp_astA_tC(gA, tC):
-    """"""
-    sym, lin = _VarSetting_astA_tp_astA_tC[:2]
-
-    sym += r"_{(" + gA._sym_repr + ',' + gA._sym_repr + r")}"
-    lin = lin.replace('{A}', gA._pure_lin_repr)
-    lin = lin.replace('{C}', tC._pure_lin_repr)
-
-    s0 = tC.space
-    d0 = tC._degree
-    str_d0 = _degree_str_maker(d0)
-
-    shape0 = s0._sym_repr + _default_space_degree_repr + str_d0
-
-    shape = (shape0, 1)
-    ra = _root_array(sym, lin, shape)
-    return ra
-
-
-def _VarPar_astA_tp_B_tC(gA, B, tC):
-    """"""
-
-    sym, lin = _VarSetting_astA_tp_B_tC[:2]
-
-    sym += r"_{" + gA._sym_repr + r"}"
-    lin = lin.replace('{A}', gA._pure_lin_repr)
-    lin = lin.replace('{B}', B._pure_lin_repr)
-    lin = lin.replace('{C}', tC._pure_lin_repr)
-
-    s0 = tC.space
-    s1 = B.space
-    d0 = tC._degree
-    d1 = B._degree
-    str_d0 = _degree_str_maker(d0)
-    str_d1 = _degree_str_maker(d1)
-
-    shape0 = s0._sym_repr + _default_space_degree_repr + str_d0
-    shape1 = s1._sym_repr + _default_space_degree_repr + str_d1
-
-    shape = (shape0, shape1)
-    ra = _root_array(sym, lin, shape)
-    return ra
-
-
-def _VarPar_A_tp_A__ip__C(A, C):
-    """(a otimes a, c)"""
-    sym, lin = _VarSetting_A_tp_A_C[:2]
-
-    sym += rf"\left({A._sym_repr}, {A._sym_repr}, {C._sym_repr}\right)"
-    lin = lin.replace('{A}', A._pure_lin_repr)
-    lin = lin.replace('{C}', C._pure_lin_repr)
-    mda = AbstractNonlinearOperator(sym, lin)
-    return mda

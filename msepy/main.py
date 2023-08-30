@@ -14,6 +14,9 @@ from tools.miscellaneous.timer import MyTimer
 from msepy.tools.gathering_matrix import _cgm_cache
 
 
+__setting__ = {}
+
+
 __all__ = [
     '_parse_manifolds',
     '_parse_meshes',
@@ -191,6 +194,7 @@ def info(*others_2b_printed):
     for i, other in enumerate(others_2b_printed):
         print(f"  {i}) -> {other}\n")
 
+    print()
     _info_cache['info_count'] = count + 1
     _info_cache['info_time'] = new_time
     return

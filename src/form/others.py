@@ -18,6 +18,26 @@ from src.config import _global_operator_lin_repr_setting
 from src.form.main import _global_forms, _global_form_variables
 
 
+def _find_root_forms_through_lin_repr(lin_repr):
+    """"""
+    forms = list()
+    for form_in in _global_forms:
+        form = _global_forms[form_in]
+        if form._is_root and form._lin_repr in lin_repr:
+            forms.append(form)
+    return forms
+
+
+def _find_forms_through_lin_repr(lin_repr):
+    """"""
+    forms = list()
+    for form_in in _global_forms:
+        form = _global_forms[form_in]
+        if form._lin_repr in lin_repr:
+            forms.append(form)
+    return forms
+
+
 def _find_form(lin_repr, upon=None):
     """Find a form according to (pure) linguistic_representation.
 

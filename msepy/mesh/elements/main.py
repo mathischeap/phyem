@@ -7,6 +7,7 @@ if './' not in sys.path:
 
 import numpy as np
 from tools.frozen import Frozen
+from tools.quadrature import Quadrature
 from msepy.mesh.elements.element import MsePyElement
 from msepy.mesh.elements.coordinate_transformation import MsePyMeshElementsCooTrans
 
@@ -57,6 +58,19 @@ class MsePyMeshElements(Frozen):
     def map(self):
         """using -1 when the neighbour is a boundary."""
         return self._map
+
+    def area(self, element_range=None):
+        """Area of all elements"""
+        if self._mesh.n != 2:
+            raise Exception()
+        quad = Quadrature([5, 5], category='Gauss')
+        nodes = quad.quad_ndim[:-1]
+        weights = quad.quad_ndim[-1]
+        detJ = self.ct.Jacobian(*nodes, element_range=element_range)
+        area = dict()
+        for e in detJ:
+            area[e] = np.sum(detJ[e] * weights)
+        return area
 
     def _elements_in_region(self, ri):
         """return the range of elements in region"""

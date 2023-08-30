@@ -41,19 +41,13 @@ __all__ = [
     '_VarSetting_A_x_B_ip_C',                      # nonlinear
 
     '_VarSetting_dastA_astA_tp_tC',                #
-    '_VarSetting_dA_astB_tp_tC',                   #
-    '_VarSetting_dastA_B_tp_tC',                   #
-    '_VarSetting_dA_A_tp_C',                       # nonlinear
+    '_VarSetting_dtA_astB_tp_astB',
 
     '_VarSetting_mass_matrix_db_bf',               #
     '_VarSetting_mass_matrix_bf_db',               #
-
-    '_VarSetting_astA_tp_B_tC',                    #
-    '_VarSetting_astA_tp_astA_tC',                 #
-    '_VarSetting_A_tp_A_C',                     # nonlinear
 ]
 
-# ------ basic ------------------------------------------------------------------------------------------
+# ------ basic -----------------------------------------------------------------------------------
 _VarSetting_mass_matrix = [
     r"\mathsf{M}",
     _sep.join(["Mass:Mat", "{space_pure_lin_repr}", "{d0}", "{d1}"]),
@@ -69,7 +63,7 @@ _VarSetting_d_matrix_transpose = [
     _sep.join(["d:T:Mat", "{space_pure_lin_repr}", "{d}"]),
 ]
 
-# Natural bc -----------------------------------------------------------------------------------------
+# Natural bc -------------------------------------------------------------------------------------
 
 _VarSetting_boundary_dp_vector = [
     # once we know f0, we can find the correct basis functions it wedged with
@@ -92,38 +86,27 @@ _VarSetting_astA_x_B_ip_tC = [
 
 _VarSetting_A_x_astB_ip_tC = [
     r"\boldsymbol{C}",
-    _sep.join(["C_ip:Mat", "[{A}]", "[{B}]", "[{C}]"]),
+    _sep.join(["_Xip:Mat", "[{A}]", "[{B}]", "[{C}]"]),
 ]
 
 _VarSetting_A_x_B_ip_C = [
     r"\mathsf{X}",
-    _sep.join(["X:Mat", "[{A}]", "[{B}]", "[{C}]"]),
+    _sep.join(["_X_:", "[{A}]", "[{B}]", "[{C}]"]),
 ]
 
-# -----(dA, B otimes C) ----------------------------------------------------------------------------
+# -----(dA, B otimes C) --------------------------------------------------------------------------
 
 _VarSetting_dastA_astA_tp_tC = [
-    r"\mathsf{dtp}",
+    r"\left<\mathsf{d\cdot,\cdot\otimes\_}\right>",
     _sep.join(["d*A--*A-tp-tC:Mat", "[{A}]", "[{C}]"]),
 ]
 
-
-_VarSetting_dA_astB_tp_tC = [
-    r"\ddot{\mathsf{dtp}}",
-    _sep.join(["dA-*BtpC", "[{A}]", "[{B}]", "[{C}]"]),
+_VarSetting_dtA_astB_tp_astB = [
+    r"\left<\mathsf{d\_,\cdot\otimes\cdot}\right>",
+    _sep.join(["dtA--*B-tp-*B:Mat", "[{A}]", "[{B}]"]),
 ]
 
-_VarSetting_dastA_B_tp_tC = [
-    r"\dot{\mathtt{dtp}}",
-    _sep.join(["d*A--B-tp-tC", "[{A}]", "[{B}]", "[{C}]"]),
-]
-
-_VarSetting_dA_A_tp_C = [
-    r"\mathsf{dT_p}",
-    _sep.join(["dA--A-tp-c", "[{A}]", "[{C}]"]),
-]
-
-# (bundle form, special diagonal bundle form)----------------------------------------------------------
+# (bundle form, special diagonal bundle form)------------------------------------------------------
 
 _VarSetting_mass_matrix_db_bf = [
     r"\mathbb{M}_{\mathcal{S}}",
@@ -138,27 +121,6 @@ _VarSetting_mass_matrix_bf_db = [
         ["bf-M-db", "{bf_space_pure_lin_repr}", "{db_space_pure_lin_repr}", "{degree_bf}", "{degree_db}"]
     ),
 ]
-
-# ---- (A otimes B, C) -----------------------------------------------------------------------------
-
-_VarSetting_astA_tp_B_tC = [
-    r"\dot{\mathtt{tp}}",
-    _sep.join(["*A-tp-B--tC", "[{A}]", "[{B}]", "[{C}]"]),
-]
-
-
-_VarSetting_astA_tp_astA_tC = [
-    r"\mathtt{TP}",
-    _sep.join(["*A-tp-*A--tC", "[{A}]", "[{C}]"]),
-
-]
-
-_VarSetting_A_tp_A_C = [
-    r"\mathsf{T_p}",
-    _sep.join(["AoA-c", "[{A}]", "[{C}]"]),
-
-]
-
 
 _default_space_degree_repr = ':D-'
 

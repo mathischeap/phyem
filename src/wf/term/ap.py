@@ -154,24 +154,16 @@ class _SimplePatternAPParser(Frozen):
             elif sp == _simple_patterns['(x,)']:  # nonlinear term A, B, C all are unknown
                 return self._parse_reprs_A_x_B_ip_C(test_form)
 
-            elif sp == _simple_patterns['(d,*tp)']:
-                return self._parse_reprs_dA_astB_tp_C(test_form=test_form)
-            elif sp == _simple_patterns['(d*,tp)']:
-                return self._parse_reprs_dastA_B_tp_C(test_form=test_form)
             elif sp == _simple_patterns['(d0*,0*tp)']:  # vector
                 return self._parse_reprs_dastA_astA_tp_C(test_form=test_form)
-            elif sp == _simple_patterns['(d0,0tp)']:  # nonlinear
-                return self._parse_reprs_dA_A_tp_C(test_form=test_form)
+            elif sp == _simple_patterns['(d,0*tp0*)']:  # vector
+                return self._parse_reprs_dA_astB_tp_astB(test_form=test_form)
 
             elif sp == _simple_patterns['(<db>,d<b>)']:
                 return self._parse_reprs_dbdb(test_form=test_form)
 
-            elif sp == _simple_patterns['(*tp,)']:
-                return self._parse_reprs_astA_tp_B_C(test_form=test_form)
-            elif sp == _simple_patterns['(0*tp0*,)']:
-                return self._parse_reprs_astA_tp_astA_C(test_form=test_form)
-            elif sp == _simple_patterns['(0tp0,)']:  # nonlinear
-                return self._parse_reprs_0tp0(test_form=test_form)
+            elif sp == _simple_patterns['(,d-pi)']:
+                return self._parse_reprs___d_pi(test_form=test_form)
 
             else:
                 raise NotImplementedError(f"not implemented for pattern = {sp}")
@@ -288,6 +280,7 @@ class _SimplePatternAPParser(Frozen):
         sign = '+'
         return term, sign, 'linear'
 
+    # (w x u, v) ---------------------------------------------------------------------------
     def _parse_reprs_astA_x_astB_ip_C(self, test_form=None):
         """"""
         spk = self._wft.___simple_pattern_keys___
@@ -350,89 +343,6 @@ class _SimplePatternAPParser(Frozen):
 
         return term, sign, 'linear'
 
-    def _parse_reprs_dA_astB_tp_C(self, test_form):
-        """"""
-        spk = self._wft.___simple_pattern_keys___
-        A, gB, C = spk['a'], spk['b'], spk['c']
-        if test_form == C:
-            tC = C
-
-            cpm = _VarPar_dA_astB_tp_tC(A, gB, tC)  # a root-array matrix
-
-            v0 = tC.ap().T
-            v1 = A.ap()
-            term_ap = v0 @ cpm @ v1
-
-        else:
-            raise Exception('TO BE IMPLEMENTED!')  # better not to use NotImplementedError
-
-        term = self._wft._factor * TermLinearAlgebraicProxy(term_ap)
-        sign = '+'
-
-        return term, sign, 'linear'
-
-    def _parse_reprs_dastA_B_tp_C(self, test_form):
-        """"""
-        spk = self._wft.___simple_pattern_keys___
-        gA, B, C = spk['a'], spk['b'], spk['c']
-        if test_form == C:
-            tC = C
-
-            cpm = _VarPar_dastA_B_tp_tC(gA, B, tC)  # a root-array matrix
-
-            v0 = tC.ap().T
-            v1 = B.ap()
-            term_ap = v0 @ cpm @ v1
-
-        else:
-            raise Exception('TO BE IMPLEMENTED!')  # better not to use NotImplementedError
-
-        term = self._wft._factor * TermLinearAlgebraicProxy(term_ap)
-        sign = '+'
-
-        return term, sign, 'linear'
-
-    def _parse_reprs_astA_tp_B_C(self, test_form):
-        """"""
-        spk = self._wft.___simple_pattern_keys___
-        gA, B, C = spk['a'], spk['b'], spk['c']
-
-        if test_form == C:
-            tC = C
-
-            cpm = _VarPar_astA_tp_B_tC(gA, B, tC)  # a root-array matrix
-
-            v0 = tC.ap().T
-            v1 = B.ap()
-            term_ap = v0 @ cpm @ v1
-
-        else:
-            raise Exception('TO BE IMPLEMENTED!')  # better not to use NotImplementedError
-
-        term = self._wft._factor * TermLinearAlgebraicProxy(term_ap)
-        sign = '+'
-
-        return term, sign, 'linear'
-
-    def _parse_reprs_astA_tp_astA_C(self, test_form):
-        spk = self._wft.___simple_pattern_keys___
-        gA, C = spk['a'], spk['c']
-        if test_form == C:
-            tC = C
-
-            cpm = _VarPar_astA_tp_astA_tC(gA, tC)  # a root-array matrix
-
-            v0 = tC.ap().T
-            term_ap = v0 @ cpm
-
-        else:
-            raise Exception('TO BE IMPLEMENTED!')  # better not to use NotImplementedError
-
-        term = self._wft._factor * TermLinearAlgebraicProxy(term_ap)
-        sign = '+'
-
-        return term, sign, 'linear'
-
     def _parse_reprs_A_x_B_ip_C(self, test_form):
         """(A x B, C),  this term is nonlinear."""
         spk = self._wft.___simple_pattern_keys___
@@ -452,6 +362,50 @@ class _SimplePatternAPParser(Frozen):
 
         return term, sign, 'nonlinear'
 
+    # (dA, B tp C) ---------------------------------------------------------------------------
+
+    def _parse_reprs_dastA_astA_tp_C(self, test_form):
+        """"""
+        spk = self._wft.___simple_pattern_keys___
+        A, C = spk['A'], spk['C']
+
+        if test_form == C:
+            gA, tC = A, C
+
+            cpm = _VarPar_dastA_astA_tp_tC(gA, tC)  # a root-array matrix
+
+            v0 = tC.ap().T
+            term_ap = v0 @ cpm
+
+        else:
+            raise Exception
+
+        term = self._wft._factor * TermLinearAlgebraicProxy(term_ap)
+        sign = '+'
+
+        return term, sign, 'linear'
+
+    def _parse_reprs_dA_astB_tp_astB(self, test_form):
+        """"""
+        spk = self._wft.___simple_pattern_keys___
+        A, B = spk['A'], spk['B']
+        if test_form == A:
+            tA, gB = A, B
+
+            cpm = _VarPar_dtA_astB_tp_astB(tA, gB)  # a root-array matrix
+
+            v0 = tA.ap().T
+            term_ap = v0 @ cpm
+
+        else:
+            raise Exception
+
+        term = self._wft._factor * TermLinearAlgebraicProxy(term_ap)
+        sign = '+'
+
+        return term, sign, 'linear'
+
+    # (bundle form, special diagonal bundle form)------------------------------------------------------
     def _parse_reprs_dbdb(self, test_form):
         """"""
         spk = self._wft.___simple_pattern_keys___
@@ -478,60 +432,34 @@ class _SimplePatternAPParser(Frozen):
         sign = '+'
         return term, sign, 'linear'
 
-    def _parse_reprs_0tp0(self, test_form):
-        """(A otimes A, C)"""
+    # ------ (A, d(pi(B)) ----------------------------------------------------------------------------
+    def _parse_reprs___d_pi(self, test_form):
+        """A, B are root-forms"""
+
+        f0, f1 = self._wft._f0, self._wft._f1  # f0 is A actually.
+        s0 = f0.space
+        s1 = f1.space
+        d0 = f0._degree
+        d1 = f1._degree
+        # mass_matrix = _VarPar_M(s0, s1, d0, d1)
+
         spk = self._wft.___simple_pattern_keys___
-        A, C = spk['a'], spk['c']
+        A, B = spk['A'], spk['B']
+        pi_B = spk['pi(B)']
 
-        assert test_form in (A, C)
+        print(f1._degree, pi_B._degree)
 
-        multi_dimensional_array = _VarPar_A_tp_A__ip__C(A, C)
-
-        term = self._wft._factor * TermNonLinearOperatorAlgebraicProxy(
-            multi_dimensional_array,
-            [A, C]
-        )
-        sign = '+'
-
-        term.set_test_form(test_form)
-
-        return term, sign, 'nonlinear'
-
-    def _parse_reprs_dA_A_tp_C(self, test_form):  # nonlinear
-        """"""
-        spk = self._wft.___simple_pattern_keys___
-        A, C = spk['a'], spk['c']
-
-        assert test_form in (A, C)
-
-        multi_dimensional_array = _VarPar_dA_A_tp_C(A, C)
-
-        term = self._wft._factor * TermNonLinearOperatorAlgebraicProxy(
-            multi_dimensional_array,
-            [A, C]
-        )
-        sign = '+'
-
-        term.set_test_form(test_form)
-
-        return term, sign, 'nonlinear'
-
-    def _parse_reprs_dastA_astA_tp_C(self, test_form):
-        """"""
-        spk = self._wft.___simple_pattern_keys___
-        A, C = spk['a'], spk['c']
-
-        if test_form == C:
-
-            cpm = _VarPar_dastA_astA_tp_C(A, C)  # a root-array matrix
-
-            v0 = C.ap().T
-            term_ap = v0 @ cpm
-
-        else:
-            raise Exception('TO BE IMPLEMENTED!')  # better not to use NotImplementedError
-
-        term = self._wft._factor * TermLinearAlgebraicProxy(term_ap)
-        sign = '+'
-
-        return term, sign, 'linear'
+        #
+        # if test_form == B:
+        #     dT_matrix = _VarPar_E(bf1, transpose=True)
+        #     v0 = self._wft._f0.ap()
+        #     v1 = bf1.ap().T
+        #     term_ap = v1 @ dT_matrix @ mass_matrix @ v0
+        # else:
+        #     d_matrix = _VarPar_E(bf1)
+        #     v0 = self._wft._f0.ap().T
+        #     v1 = bf1.ap()
+        #     term_ap = v0 @ mass_matrix @ d_matrix @ v1
+        # term = self._wft._factor * TermLinearAlgebraicProxy(term_ap)
+        # sign = '+'
+        # return term, sign, 'linear'
