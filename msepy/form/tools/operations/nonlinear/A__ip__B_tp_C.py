@@ -4,19 +4,19 @@ r"""
 import numpy as np
 from msepy.form.main import MsePyRootForm
 from src.spaces.main import _degree_str_maker
-from src.spaces.continuous.bundle import BundleValuedFormSpace
 from tools.quadrature import Quadrature
+from src.spaces.continuous.bundle import BundleValuedFormSpace
 from msepy.form.tools.operations.nonlinear.base_3_entries import Base3Entries
 
-_3d_data_cache_1 = {}
+_3d_data_cache_2 = {}
 
 
 # noinspection PyPep8Naming
-class __dA_ip_BtpC__(Base3Entries):
+class _A__ip__B_tp_C_(Base3Entries):
     """"""
 
     def __init__(self, A, B, C, quad=None):
-        """(AxB, C)"""
+        """(A, B otimes C)"""
         super().__init__()
         assert A.mesh is B.mesh and A.mesh is C.mesh, f"Meshes do not match!"
         cache_key = list()
@@ -51,8 +51,8 @@ class __dA_ip_BtpC__(Base3Entries):
         else:
             pass
 
-        if self._cache_key in _3d_data_cache_1:
-            self._3d_data = _3d_data_cache_1[self._cache_key]
+        if self._cache_key in _3d_data_cache_2:
+            self._3d_data = _3d_data_cache_2[self._cache_key]
             return
 
         if self._quad is None and self._type == 'bundle':
@@ -82,12 +82,9 @@ class __dA_ip_BtpC__(Base3Entries):
         quad_nodes = quad.quad_nodes
         quad_weights = quad.quad_weights_ravel
 
+        rm_A = self._A.reconstruction_matrix(*quad_nodes)
         rm_B = self._B.reconstruction_matrix(*quad_nodes)
         rm_C = self._C.reconstruction_matrix(*quad_nodes)
-
-        EA = self._A.coboundary.incidence_matrix._data.toarray()
-        dA = self._A.coboundary._make_df()
-        rm_dA = dA.reconstruction_matrix(*quad_nodes)
 
         if self._mesh.n == 2:
             xi, et = np.meshgrid(*quad_nodes, indexing='ij')
@@ -114,51 +111,45 @@ class __dA_ip_BtpC__(Base3Entries):
 
             else:
                 if self._type == 'bundle':
-                    # make the data --------------- for 2d meshes -----------------------------------
+                    # make the data --------------- for 2d meshes ---------------------------
                     if self._mesh.n == 2:
 
                         dJi = detJ[e]
+                        metric = quad_weights * dJi
 
-                        A0, A1 = rm_dA[e]
+                        A0, A1 = rm_A[e]
                         A00, A01 = A0
                         A10, A11 = A1
-
-                        dA00 = A00 @ EA
-                        dA01 = A01 @ EA
-                        dA10 = A10 @ EA
-                        dA11 = A11 @ EA
 
                         b0, b1 = rm_B[e]
                         c0, c1 = rm_C[e]
 
-                        # (dA, B otimes C)
-                        # dA = ([dA00, dA01], [dA01, dA11])
+                        # (A, B otimes C)
+                        # A = ([A00, A01], [A01, A11])
                         # B = [b0, b1]
                         # C = [c0, c1]
                         # B otimes C = ([b0 * c0, b0 * c1], [b1 * c0, b1 * c1])
-                        # dA.dot( B otimes C ) = (
-                        #       [dA00 * b0 * c0, dA01 * b0 * c1],
-                        #       [dA10 * b1 * c0, dA11 * b1 * c1],
+                        # A.dot( B otimes C ) = (
+                        #       [A00 * b0 * c0, A01 * b0 * c1],
+                        #       [A10 * b1 * c0, A11 * b1 * c1],
                         # )
 
-                        metric = quad_weights * dJi
-
                         o00 = np.einsum(
-                            'li, lj, lk, l -> ijk', dA00, b0, c0, metric, optimize='optimal'
+                            'li, lj, lk, l -> ijk', A00, b0, c0, metric, optimize='optimal'
                         )
                         o01 = np.einsum(
-                            'li, lj, lk, l -> ijk', dA01, b0, c1, metric, optimize='optimal'
+                            'li, lj, lk, l -> ijk', A01, b0, c1, metric, optimize='optimal'
                         )
                         o10 = np.einsum(
-                            'li, lj, lk, l -> ijk', dA10, b1, c0, metric, optimize='optimal'
+                            'li, lj, lk, l -> ijk', A10, b1, c0, metric, optimize='optimal'
                         )
                         o11 = np.einsum(
-                            'li, lj, lk, l -> ijk', dA11, b1, c1, metric, optimize='optimal'
+                            'li, lj, lk, l -> ijk', A11, b1, c1, metric, optimize='optimal'
                         )
 
                         data = o00 + o01 + o10 + o11
 
-                    # else: must be wrong, we do not do this in 1d ----------------------------------
+                    # else: must be wrong, we do not do this in 1d -------------------------
                     else:
                         raise Exception()
 
@@ -170,4 +161,4 @@ class __dA_ip_BtpC__(Base3Entries):
             _3d_data[e] = _data_cache[cache_index]
 
         self._3d_data = _3d_data
-        _3d_data_cache_1[self._cache_key] = _3d_data
+        _3d_data_cache_2[self._cache_key] = _3d_data

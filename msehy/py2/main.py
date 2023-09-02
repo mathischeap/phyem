@@ -5,16 +5,18 @@ from src.config import SIZE   # MPI.SIZE
 from src.config import _global_variables
 
 
-__setting__ = {   # can be config through ph.config.set_implementation('msehy-py2')
+__msehy_py2_setting__ = {   # can be config through ph.config.set_implementation('msehy-py2')
     'refining_examining_factor': 3,
     # To config this factor, do ``ph.config.set_implementation('msehy-py2')['refining_examining_factor'] = 4``
     'refining_examining_scheme': 0,
+    # refining_examining_schemes:
+    #   0)   a := int(strength function) / element_area, if a >= threshold, do refining.
 }
 
 
 __all__ = [
-
 ]
+
 
 # will be cleared whenever new msepy implementation is called.
 base = {
@@ -74,6 +76,7 @@ def _parse_meshes(abstract_meshes):
     for sym in abstract_meshes:
         mesh = MseHyPy2Mesh(abstract_meshes[sym])
         mesh_dict[sym] = mesh
+
     base['meshes'] = mesh_dict
 
 

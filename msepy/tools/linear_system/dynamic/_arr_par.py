@@ -13,6 +13,8 @@ from msepy.tools.matrix.static.local import MsePyStaticLocalMatrix
 
 from src.config import _form_evaluate_at_repr_setting
 from msepy.form.tools.operations.nonlinear.AxB_ip_C import _AxBipC
+from msepy.form.tools.operations.nonlinear.dA_ip_BtpC import __dA_ip_BtpC__
+from msepy.form.tools.operations.nonlinear.A__ip__B_tp_C import _A__ip__B_tp_C_
 
 from msepy.tools.vector.dynamic import MsePyDynamicLocalVector
 from msepy.tools.vector.static.local import MsePyStaticLocalVector
@@ -38,6 +40,17 @@ __all__ = [
     'Parse__astA_x_astB_ip_tC',
     'Parse__astA_x_B_ip_tC',
     'Parse__A_x_astB_ip_tC',
+
+    'Parse__IP_matrix_bf_db',
+
+    'Parse__dastA_astA_tp_tC',
+    'Parse__dastA_tB_tp_astA',
+    'Parse__dtA_astB_tp_astB',
+    'Parse__dA_B_tp_C__1Known',
+    'Parse__dA_B_tp_C__2Known',
+
+    'Parse__A_B_tp_C__1Known',
+    'Parse__A_B_tp_C__2Known',
 ]
 
 
@@ -61,8 +74,16 @@ def _indicator_check():
             }
 
 
+_indicator_cache = {}
+
+
 def _find_indicator(default_setting):
-    return default_setting[1].split(_sep)[0]
+    key = str(default_setting)
+    if key in _indicator_cache:
+        pass
+    else:
+        _indicator_cache[key] = default_setting[1].split(_sep)[0]
+    return _indicator_cache[key]
 
 
 def _find_from_bracket_ABC(default_repr, *ABC, key_words=("{A}", "{B}", "{C}")):
@@ -338,6 +359,7 @@ class _TrStarRf0DualPairingTrS1(Frozen):
         return full_vector
 
 
+# - (w x u, v) ------------------------------------------------------------------------------------
 def Parse__astA_x_astB_ip_tC(gA, gB, tC):
     """(A X B, C), A and B are given, C is the test form, so it gives a dynamic vector."""
 
@@ -366,3 +388,107 @@ def Parse__A_x_astB_ip_tC(A, gB, tC):
     nonlinear_operation = _AxBipC(*ABC_forms)
     C = nonlinear_operation(2, msepy_C, msepy_A)
     return C, msepy_B.cochain._ati_time_caller  # since B is given, its ati determine the time of C.
+
+
+# - (bf, db) ------------------------------------------------------------------------------------
+
+def Parse__IP_matrix_bf_db(sp_bf, sp_db, d_bf, d_db):
+    """"""
+    sp_bf = _find_space_through_pure_lin_repr(sp_bf)
+    sp_db = _find_space_through_pure_lin_repr(sp_db)
+    d_bf = _str_degree_parser(d_bf)
+    d_db = _str_degree_parser(d_db)
+
+    M = sp_bf[d_bf].inner_product(sp_db[d_db], special_key='(bf1, db)')
+
+    gm_row = sp_bf.gathering_matrix(d_bf)
+    gm_col = sp_db.gathering_matrix(d_db)
+
+    M = MsePyStaticLocalMatrix(  # make a new copy every single time.
+        M,
+        gm_row,
+        gm_col,
+    )
+
+    return M, None  # time_indicator is None, mean M is same at all time.
+
+
+# (dA, B otimes C) ------------------------------------------------------------------------------------
+def Parse__dastA_astA_tp_tC(gA, tC):
+    """"""
+    AC_forms = _find_from_bracket_ABC(_VarSetting_dastA_astA_tp_tC, gA, tC, key_words=("{A}", "{C}"))
+    gA, tC = AC_forms
+    nonlinear_operation = __dA_ip_BtpC__(gA, gA, tC)
+    c, time_caller = nonlinear_operation(1, tC)
+    return c, time_caller  # since A is given, its ati determine the time of tC.
+
+
+def Parse__dastA_tB_tp_astA(gA, tB):
+    """"""
+    AB_forms = _find_from_bracket_ABC(_VarSetting_dastA_tB_tp_astA, gA, tB, key_words=("{A}", "{B}"))
+    gA, tB = AB_forms
+    nonlinear_operation = __dA_ip_BtpC__(gA, tB, gA)
+    b, time_caller = nonlinear_operation(1, tB)
+    return b, time_caller  # since A is given, its ati determine the time of tB.
+
+
+def Parse__dtA_astB_tp_astB(tA, gB):
+    """"""
+    AB_forms = _find_from_bracket_ABC(_VarSetting_dtA_astB_tp_astB, tA, gB, key_words=("{A}", "{B}"))
+    tA, gB = AB_forms
+    nonlinear_operation = __dA_ip_BtpC__(tA, gB, gB)
+    a, time_caller = nonlinear_operation(1, tA)
+    return a, time_caller  # since B is given, its ati determine the time of tA.
+
+
+def Parse__dA_B_tp_C__1Known(A, B, C, kf, tf, uk):
+    """"""
+    forms = _find_from_bracket_ABC(
+        _VarSetting_dA_B_tp_C__1Known,
+        A, B, C, kf, tf, uk,
+        key_words=("{A}", "{B}", "{C}", "{K}", "{T}", "{U}")
+    )
+    A, B, C, kf, tf, uk = forms
+    nonlinear_operation = __dA_ip_BtpC__(A, B, C)
+    M = nonlinear_operation(2, tf, uk)
+    return M, kf.cochain._ati_time_caller
+
+
+def Parse__dA_B_tp_C__2Known(A, B, C, kf1, kf2, tf):
+    """"""
+    forms = _find_from_bracket_ABC(
+        _VarSetting_dA_B_tp_C__2Known,
+        A, B, C, kf1, kf2, tf,
+        key_words=("{A}", "{B}", "{C}", "{K1}", "{K2}", "{T}")
+    )
+    A, B, C, kf1, kf2, tf = forms
+    nonlinear_operation = __dA_ip_BtpC__(A, B, C)
+    V, time_caller = nonlinear_operation(1, tf)
+    return V, time_caller
+
+
+# (A, B otimes C) ------------------------------------------------------------------------------------
+def Parse__A_B_tp_C__1Known(A, B, C, kf, tf, uk):
+    """"""
+    forms = _find_from_bracket_ABC(
+        _VarSetting_A_B_tp_C__1Known,
+        A, B, C, kf, tf, uk,
+        key_words=("{A}", "{B}", "{C}", "{K}", "{T}", "{U}")
+    )
+    A, B, C, kf, tf, uk = forms
+    nonlinear_operation = _A__ip__B_tp_C_(A, B, C)
+    M = nonlinear_operation(2, tf, uk)
+    return M, kf.cochain._ati_time_caller
+
+
+def Parse__A_B_tp_C__2Known(A, B, C, kf1, kf2, tf):
+    """"""
+    forms = _find_from_bracket_ABC(
+        _VarSetting_A_B_tp_C__2Known,
+        A, B, C, kf1, kf2, tf,
+        key_words=("{A}", "{B}", "{C}", "{K1}", "{K2}", "{T}")
+    )
+    A, B, C, kf1, kf2, tf = forms
+    nonlinear_operation = _A__ip__B_tp_C_(A, B, C)
+    V, time_caller = nonlinear_operation(1, tf)
+    return V, time_caller

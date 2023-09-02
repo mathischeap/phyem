@@ -196,16 +196,18 @@ class MsePyDynamicNonLinearSystem(Frozen):
         nonlinear_text = ''
         for i in range(self.shape[0]):
             if i in self._nonlinear_texts:
+                signs = self._nonlinear_signs[i]
                 texts = self._nonlinear_texts[i]
                 factors = self._nonlinear_factors[i]
                 for j, factor in enumerate(factors):
-                    text = texts[i]
-                    nonlinear_text += factor._sym_repr + text
-
-                    if j < len(factors) - 1:
-                        nonlinear_text += r'&'
+                    sign = signs[j]
+                    text = texts[j]
+                    if j == 0 and sign == '+':
+                        sign = ''
                     else:
                         pass
+
+                    nonlinear_text += sign + factor._sym_repr + text
 
             else:
 

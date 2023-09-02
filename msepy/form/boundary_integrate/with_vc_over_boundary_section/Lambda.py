@@ -255,6 +255,7 @@ class BoundaryIntegrateVCBSLambda(Frozen):
             # below, we evaluate vc on the boundary
             trStar_vc = vc(t, *xy)[0]  # this vector calculus object (a scalar) is for all regions; # <trStar_vc | ~>
             trace_1f = vx * nx + vy * ny  # <~ | trace-f>
+
             if face.is_orthogonal():
                 length = face.length
                 Jacobian = length / 2

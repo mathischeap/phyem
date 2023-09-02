@@ -5,7 +5,7 @@ from src.form.operators import _parse_related_time_derivative
 from src.form.main import _global_root_forms_lin_dict
 from src.form.operators import time_derivative, d
 from src.config import _global_operator_lin_repr_setting
-from src.form.others import _find_form, _find_root_forms_through_lin_repr, _find_forms_through_lin_repr
+from src.form.others import _find_form, _find_root_forms_through_lin_repr
 from src.config import _non_root_lin_sep
 from src.config import _wf_term_default_simple_patterns as _simple_patterns
 from src.form.parameters import ConstantScalar0Form
@@ -221,6 +221,16 @@ def _inner_simpler_pattern_examiner_bundle_valued_forms(factor, f0, f1, extra_in
                                 'C': C
                             }
 
+                # (d A, B tp A).
+                elif (A is C) and (A is not B):
+                    if 'known-tensor-product-form' in extra_info:
+                        known_forms = extra_info['known-tensor-product-form']
+                        if known_forms is A:
+                            return _simple_patterns['(d0*,tp0*)'], {
+                                'A': A,
+                                'B': B
+                            }
+
                 # (d A, B tp B).
                 elif (B is C) and (A is not B):
                     if 'known-tensor-product-form' in extra_info:
@@ -230,6 +240,68 @@ def _inner_simpler_pattern_examiner_bundle_valued_forms(factor, f0, f1, extra_in
                                 'A': A,
                                 'B': B
                             }
+
+                elif (A is not C) and (A is not B) and (B is not C):
+                    if 'known-tensor-product-form' in extra_info:
+                        known_forms = extra_info['known-tensor-product-form']
+                        if known_forms in (A, B, C):  # only one known
+                            return _simple_patterns['(d,tp):1K'], {
+                                'A': A,
+                                'B': B,
+                                'C': C,
+                                'K': known_forms,
+                            }
+                        elif len(known_forms) == 2:  # two known forms
+                            return _simple_patterns['(d,tp):2K'], {
+                                'A': A,
+                                'B': B,
+                                'C': C,
+                                'K1': known_forms[0],
+                                'K2': known_forms[1],
+                            }
+
+                    else:  # nonlinear
+                        return _simple_patterns['(d,tp)'], {
+                            'A': A,
+                            'B': B,
+                            'C': C,
+                        }
+
+        # (A, B tp C) --------------------------------------------------------------------------
+        if tensor_product_lin in f1._lin_repr and f1._lin_repr.count(tensor_product_lin) == 1:
+            A = _find_form(f0._lin_repr)
+            B_lin_repr, C_lin_repr = f1._lin_repr.split(tensor_product_lin)
+            B = _find_form(B_lin_repr)
+            C = _find_form(C_lin_repr)
+
+            # A, B, C are all root forms.
+            if A.is_root() and B.is_root() and C.is_root():
+                # A, B, C are all different root forms.
+                if (A is not C) and (A is not B) and (B is not C):
+                    if 'known-tensor-product-form' in extra_info:
+                        known_forms = extra_info['known-tensor-product-form']
+                        if known_forms in (A, B, C):  # only one known
+                            return _simple_patterns['(,tp):1K'], {
+                                'A': A,
+                                'B': B,
+                                'C': C,
+                                'K': known_forms,
+                            }
+                        elif len(known_forms) == 2:  # two known forms
+                            return _simple_patterns['(,tp):2K'], {
+                                'A': A,
+                                'B': B,
+                                'C': C,
+                                'K1': known_forms[0],
+                                'K2': known_forms[1],
+                            }
+
+                    else:  # nonlinear
+                        return _simple_patterns['(,tp)'], {
+                            'A': A,
+                            'B': B,
+                            'C': C,
+                        }
 
         # ========= No pattern found !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! =======================
         return '', None

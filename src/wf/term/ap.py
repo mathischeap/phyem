@@ -155,9 +155,24 @@ class _SimplePatternAPParser(Frozen):
                 return self._parse_reprs_A_x_B_ip_C(test_form)
 
             elif sp == _simple_patterns['(d0*,0*tp)']:  # vector
-                return self._parse_reprs_dastA_astA_tp_C(test_form=test_form)
+                return self._parse_reprs_dastA_astA_tp_C(test_form=test_form)  #
+            elif sp == _simple_patterns['(d0*,tp0*)']:  # vector
+                return self._parse_reprs_dastA_tB_tp_astA(test_form=test_form)  #
             elif sp == _simple_patterns['(d,0*tp0*)']:  # vector
                 return self._parse_reprs_dA_astB_tp_astB(test_form=test_form)
+            elif sp == _simple_patterns['(d,tp):1K']:  # matrix
+                return self._parse_reprs_dA_B_tp_C__1Known(test_form=test_form)  #
+            elif sp == _simple_patterns['(d,tp):2K']:  # matrix
+                return self._parse_reprs_dA_B_tp_C__2Known(test_form=test_form)  #
+            elif sp == _simple_patterns['(d,tp)']:  # nonlinear term, A, B, C all are unknown
+                return self._parse_reprs_dA_B_tp_C(test_form=test_form)
+
+            elif sp == _simple_patterns['(,tp):1K']:  # matrix
+                return self._parse_reprs_A_B_tp_C__1Known(test_form=test_form)  #
+            elif sp == _simple_patterns['(,tp):2K']:  # matrix
+                return self._parse_reprs_A_B_tp_C__2Known(test_form=test_form)  #
+            elif sp == _simple_patterns['(,tp)']:  # nonlinear term, A, B, C all are unknown
+                return self._parse_reprs_A_B_tp_C(test_form=test_form)
 
             elif sp == _simple_patterns['(<db>,d<b>)']:
                 return self._parse_reprs_dbdb(test_form=test_form)
@@ -385,6 +400,27 @@ class _SimplePatternAPParser(Frozen):
 
         return term, sign, 'linear'
 
+    def _parse_reprs_dastA_tB_tp_astA(self, test_form):
+        """"""
+        spk = self._wft.___simple_pattern_keys___
+        A, B = spk['A'], spk['B']
+
+        if test_form == B:
+            gA, tB = A, B
+
+            cpm = _VarPar_dastA_tB_tp_astA(gA, tB)  # a root-array matrix
+
+            v0 = tB.ap().T
+            term_ap = v0 @ cpm
+
+        else:
+            raise Exception
+
+        term = self._wft._factor * TermLinearAlgebraicProxy(term_ap)
+        sign = '+'
+
+        return term, sign, 'linear'
+
     def _parse_reprs_dA_astB_tp_astB(self, test_form):
         """"""
         spk = self._wft.___simple_pattern_keys___
@@ -405,7 +441,111 @@ class _SimplePatternAPParser(Frozen):
 
         return term, sign, 'linear'
 
+    def _parse_reprs_dA_B_tp_C__1Known(self, test_form):
+        """"""
+        spk = self._wft.___simple_pattern_keys___
+        A, B, C, kf = spk['A'], spk['B'], spk['C'], spk['K']
+        tf = test_form
+        unknown = None
+        for _ in (A, B, C):
+            if kf is _ or tf is _:
+                pass
+            else:
+                assert unknown is None, f'must have found only one unknown form.'
+                unknown = _
+        assert unknown is not None, f'must have found the unknown form.'
+        cpm = _VarPar_dA_B_tp_C__1Known(A, B, C, kf, tf)
+        v0 = tf.ap().T
+        v1 = unknown.ap()
+        term_ap = v0 @ cpm @ v1
+        term = self._wft._factor * TermLinearAlgebraicProxy(term_ap)
+        sign = '+'
+        return term, sign, 'linear'
+
+    def _parse_reprs_dA_B_tp_C__2Known(self, test_form):
+        spk = self._wft.___simple_pattern_keys___
+        A, B, C, kf1, kf2 = spk['A'], spk['B'], spk['C'], spk['K1'], spk['K2']
+        cpm = _VarPar_dA_B_tp_C__2Known(A, B, C, kf1, kf2, test_form)
+        v0 = test_form.ap().T
+        term_ap = v0 @ cpm
+        term = self._wft._factor * TermLinearAlgebraicProxy(term_ap)
+        sign = '+'
+        return term, sign, 'linear'
+
+    def _parse_reprs_dA_B_tp_C(self, test_form):
+        """(dA, B otimes C), nonlinear"""
+        spk = self._wft.___simple_pattern_keys___
+        A, B, C = spk['A'], spk['B'], spk['C']
+        assert A is not B and B is not C and A is not C, f"A, B, C must be different."
+
+        assert test_form in (A, B, C)
+
+        multi_dimensional_array = _VarPar_dA_B_tp_C(A, B, C)
+
+        term = self._wft._factor * TermNonLinearOperatorAlgebraicProxy(
+            multi_dimensional_array,
+            [A, B, C]
+        )
+        sign = '+'
+
+        term.set_test_form(test_form)
+
+        return term, sign, 'nonlinear'
+
+    # --- (A, B otimes C) --------------------------------------------------------------
+    def _parse_reprs_A_B_tp_C__1Known(self, test_form):
+        """"""
+        spk = self._wft.___simple_pattern_keys___
+        A, B, C, kf = spk['A'], spk['B'], spk['C'], spk['K']
+        tf = test_form
+        unknown = None
+        for _ in (A, B, C):
+            if kf is _ or tf is _:
+                pass
+            else:
+                assert unknown is None, f'must have found only one unknown form.'
+                unknown = _
+        assert unknown is not None, f'must have found the unknown form.'
+        cpm = _VarPar_A_B_tp_C__1Known(A, B, C, kf, tf)
+        v0 = tf.ap().T
+        v1 = unknown.ap()
+        term_ap = v0 @ cpm @ v1
+        term = self._wft._factor * TermLinearAlgebraicProxy(term_ap)
+        sign = '+'
+        return term, sign, 'linear'
+
+    def _parse_reprs_A_B_tp_C__2Known(self, test_form):
+        spk = self._wft.___simple_pattern_keys___
+        A, B, C, kf1, kf2 = spk['A'], spk['B'], spk['C'], spk['K1'], spk['K2']
+        cpm = _VarPar_A_B_tp_C__2Known(A, B, C, kf1, kf2, test_form)
+        v0 = test_form.ap().T
+        term_ap = v0 @ cpm
+        term = self._wft._factor * TermLinearAlgebraicProxy(term_ap)
+        sign = '+'
+        return term, sign, 'linear'
+
+    def _parse_reprs_A_B_tp_C(self, test_form):
+        """(dA, B otimes C), nonlinear"""
+        spk = self._wft.___simple_pattern_keys___
+        A, B, C = spk['A'], spk['B'], spk['C']
+        assert A is not B and B is not C and A is not C, f"A, B, C must be different."
+
+        assert test_form in (A, B, C)
+
+        multi_dimensional_array = _VarPar_A_B_tp_C(A, B, C)
+
+        term = self._wft._factor * TermNonLinearOperatorAlgebraicProxy(
+            multi_dimensional_array,
+            [A, B, C]
+        )
+        sign = '+'
+
+        term.set_test_form(test_form)
+
+        return term, sign, 'nonlinear'
+
     # (bundle form, special diagonal bundle form)------------------------------------------------------
+
     def _parse_reprs_dbdb(self, test_form):
         """"""
         spk = self._wft.___simple_pattern_keys___
@@ -463,3 +603,5 @@ class _SimplePatternAPParser(Frozen):
         # term = self._wft._factor * TermLinearAlgebraicProxy(term_ap)
         # sign = '+'
         # return term, sign, 'linear'
+
+        raise NotImplementedError()

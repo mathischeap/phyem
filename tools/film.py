@@ -1,11 +1,11 @@
 # -*- coding: utf-8 -*-
+r"""
 """
-making moves
+import sys
 
-pH-lib@RAM-EEMCS-UT
-Yi Zhang
-Created at 5:39 PM on 7/30/2023
-"""
+if './' not in sys.path:
+    sys.path.append('./')
+
 import cv2
 import os
 from src.config import RANK, MASTER_RANK
@@ -14,7 +14,7 @@ from tools.miscellaneous.random_ import string_digits
 
 
 # noinspection PyUnresolvedReferences
-def images(image_folder, video_name=None, duration=5, clean_images=False):
+def images(image_folder, video_name=None, duration=5, clean_images=False, sort_key=None):
     """Make a move from images in the folder named `image_folder`.
 
     Each image will be a frame of the video. Images must be named in an increasing sequence
@@ -50,7 +50,14 @@ def images(image_folder, video_name=None, duration=5, clean_images=False):
             images.append(file)
 
     # ----- sort the images ------------------------------------------
-    images.sort(key=lambda x: int(x.split('.')[0]))
+    if sort_key is None:
+        images.sort(
+            key=lambda x: int(x.split('.')[0])
+        )
+    else:
+        images.sort(
+            key=sort_key
+        )
 
     # -------- make the video ----------------------------------------
     total_frames = len(images)
@@ -80,3 +87,13 @@ def images(image_folder, video_name=None, duration=5, clean_images=False):
             os.remove(image_folder + '/' + file)
     else:
         pass
+
+if __name__ == '__main__':
+    # python tools/film.py
+    images(
+        r'C:\Users\zhangy6\OneDrive\Codes\phyem\__phcache__\_images2\du',
+        duration=8,
+        sort_key=lambda x: int(
+            x.split('.')[0].split('_')[1]
+        )
+    )

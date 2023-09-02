@@ -22,18 +22,13 @@ def constant_scalar(*args):
                 arg = int(arg)
             else:
                 pass
-            if arg == 0.5:
-                sym_repr, lin_repr = r"\frac{1}{2}", str(arg)
-            elif arg == 0.25:
-                sym_repr, lin_repr = r"\frac{1}{4}", str(arg)
-            elif arg == 0.125:
-                sym_repr, lin_repr = r"\frac{1}{8}", str(arg)
-            elif arg == -0.5:
-                sym_repr, lin_repr = r"-\frac{1}{2}", str(arg)
-            elif arg == -0.25:
-                sym_repr, lin_repr = r"-\frac{1}{4}", str(arg)
+            if arg == 1:
+                sym_repr = '1'
+            elif arg != 0 and (1 / arg) % 1 == 0:
+                sym_repr = r'\frac{1}{' + str(int(1/arg)) + '}'
             else:
-                sym_repr, lin_repr = str(arg), str(arg)
+                sym_repr = str(arg)
+            lin_repr = str(arg)
             is_real = True
         else:
             raise NotImplementedError()
@@ -125,14 +120,8 @@ class ConstantScalar0Form(Frozen):
             f = float(self._pure_lin_repr)
             if f == 1:
                 return ''
-            elif f == 0.5:
-                return r'\frac{1}{2}'
-            elif f == -0.5:
-                return r'-\frac{1}{2}'
-            elif f == 0.25:
-                return r'\frac{1}{4}'
-            elif f == -0.25:
-                return r'-\frac{1}{4}'
+            elif f != 0 and (1 / f) % 1 == 0:
+                return r'\frac{1}{' + str(int(1/f)) + '}'
             else:
                 return str(f)
         else:

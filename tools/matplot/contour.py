@@ -191,6 +191,7 @@ def contour(
         pass
     if saveto is None:
         from src.config import _setting
+        matplotlib.use('TkAgg')
         plt.show(block=_setting['block'])
     else:
         plt.savefig(saveto, bbox_inches='tight', pad_inches=pad_inches, dpi=dpi)

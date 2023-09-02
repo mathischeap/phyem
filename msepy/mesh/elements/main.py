@@ -60,10 +60,23 @@ class MsePyMeshElements(Frozen):
         return self._map
 
     def area(self, element_range=None):
-        """Area of all elements"""
+        """Area of elements"""
         if self._mesh.n != 2:
             raise Exception()
         quad = Quadrature([5, 5], category='Gauss')
+        nodes = quad.quad_ndim[:-1]
+        weights = quad.quad_ndim[-1]
+        detJ = self.ct.Jacobian(*nodes, element_range=element_range)
+        area = dict()
+        for e in detJ:
+            area[e] = np.sum(detJ[e] * weights)
+        return area
+
+    def volume(self, element_range=None):
+        """volume of elements"""
+        if self._mesh.n != 3:
+            raise Exception()
+        quad = Quadrature([3, 3, 3], category='Gauss')
         nodes = quad.quad_ndim[:-1]
         weights = quad.quad_ndim[-1]
         detJ = self.ct.Jacobian(*nodes, element_range=element_range)

@@ -144,11 +144,24 @@ class MsePyStaticLocalLinearSystem(Frozen):
         """
         return self._b
 
-    def assemble(self):
-        """"""
-        A = self.A._mA.assemble()
+    def assemble(self, cache=None):
+        """
+
+        Parameters
+        ----------
+        cache : {None, str}, default, None
+            We can manually cache the assembled A matrix by set ``cache`` to be a string. When next time
+            it sees the same `cache` it will return the cached A matrix from the cache.
+
+            This is very helpful, for example, when the A matrix does not change in all iterations.
+
+        Returns
+        -------
+
+        """
+        A = self.A._mA.assemble(cache=cache)
         b = self.b._vb.assemble()
-        ALS = MsePyStaticLinearSystemAssembled(self, A, b)
+        ALS = MsePyStaticLinearSystemAssembled(self, A, b, cache=cache)
         return ALS
 
     @property

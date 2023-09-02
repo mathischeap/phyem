@@ -54,12 +54,14 @@ class MseHyPy2Mesh(Frozen):
     @property
     def elements(self):
         """"""
-        assert self.background.__class__ is MsePyMesh, f"Only meshes access to elements."
+        assert self.background.__class__ is MsePyMesh, \
+            f"Only meshes access to elements."
         return self.___elements___
 
     @property
     def faces(self):
-        assert self.background.__class__ is MsePyBoundarySectionMesh, f"Only boundary sections access to elements."
+        assert self.background.__class__ is MsePyBoundarySectionMesh, \
+            f"Only boundary sections access to elements."
         if self.___faces___ is None:
             self.___faces___ = MseHyPy2BoundarySectionFaces(self)
         return self.___faces___
@@ -77,14 +79,16 @@ class MseHyPy2Mesh(Frozen):
         -------
 
         """
-        assert self.background.__class__ is MsePyMesh, f"can only renew based on a msepy mesh background."
-        # - Now we make the elements ------------------------------------------------------------------------
+        self.___generation___ += 1
+        assert self.background.__class__ is MsePyMesh, \
+            f"can only renew based on a msepy mesh background."
+        # - Now we make the elements -----------------------------------------------------------------
         elements = MseHyPy2MeshElements(self, region_wise_refining_strength_function, refining_thresholds)
 
-        # --- renew elements --------------------------------------------------------------------------------
+        # --- renew elements -------------------------------------------------------------------------
         self.___elements___ = elements
-        self.___generation___ += 1
-        # --- renew all boundary sections -------------------------------------------------------------------
+
+        # --- renew all boundary sections ------------------------------------------------------------
         self._renew_boundary_sections()
 
     def _renew_boundary_sections(self):
@@ -149,4 +153,6 @@ if __name__ == '__main__':
     # for msh in msehy.base['meshes']:
     #     msh = msehy.base['meshes'][msh]
     #     print(msh)
-    print(mesh.elements.levels[0].elements)
+    elements = mesh.elements.levels[0].elements
+    for i in elements:
+        print(elements[i])

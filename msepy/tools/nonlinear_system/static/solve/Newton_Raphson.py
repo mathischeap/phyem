@@ -351,14 +351,8 @@ def _nLS_stop_criterion(BETA, atol, ITER, maxiter):
         judge_2 = ITER >= maxiter  # judge 2: reach max iteration number
 
         # judge 3: divergence
-        if (not judge_1) and len(BETA) > 1 and BETA[-1] > BETA[-2]:  # error grows after one iteration
-            if BETA[-2] > 1 and (BETA[-1] - BETA[-2]) > 0.5 * BETA[-2]:
-                judge_3 = True
-            elif BETA[-1] > 10e6:
-                judge_3 = True
-            elif (BETA[-1] - BETA[-2]) > 10:
-                judge_3 = True
-            elif BETA[-1] > 10 * BETA[-2]:
+        if (not judge_1) and len(BETA) > 1 and BETA[-1] > BETA[-2]:  # error grows by much
+            if BETA[-1] > 100 * BETA[-2]:
                 judge_3 = True
             else:
                 judge_3 = False

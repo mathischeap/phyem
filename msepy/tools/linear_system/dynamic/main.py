@@ -577,7 +577,8 @@ class DynamicTerm(Frozen):
             _mat_sym_repr += sym_repr
 
             assert callable(time_indicator) or time_indicator is None, \
-                f"time_indicator {time_indicator} must be callable or None (means the term does not change over time.)"
+                (f"time_indicator {time_indicator} must be callable or None "
+                 f"(means the term does not change over time.)")
             time_indicators.append(time_indicator)  # It does not cover time indicator of factor!
 
         self._time_indicators = time_indicators  # It does not cover time indicator of factor!

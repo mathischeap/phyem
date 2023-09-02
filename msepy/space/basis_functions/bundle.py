@@ -24,16 +24,16 @@ class MsePyBasisFunctionsBundle(Frozen):
         for i in range(n):  # do some regular checks.
             ref_coo = meshgrid_xi_et_sg[i]
             assert ref_coo.__class__.__name__ in ('list', 'ndarray'), \
-                " <Polynomials> : xi_et_sg[{}].type={} is wrong.".format(
+                " <bf> : xi_et_sg[{}].type={} is wrong.".format(
                     i, ref_coo.__class__.__name__
                 )
             assert np.ndim(ref_coo) == 1, \
-                " <Polynomials> : ndim(xi_et_sg[{}])={} is wrong.".format(
+                " <bf> : ndim(xi_et_sg[{}])={} is wrong.".format(
                     i, np.ndim(ref_coo)
                 )
             if np.size(ref_coo) > 1:
                 assert np.all(np.diff(ref_coo) > 0) and np.max(ref_coo) <= 1 and np.min(ref_coo) >= -1, \
-                    " <Polynomials> : ref_coo={} wrong, need to be increasing and bounded in [-1, 1].".format(
+                    " <bf> : ref_coo={} wrong, need to be increasing and bounded in [-1, 1].".format(
                         ref_coo)
             else:
                 pass

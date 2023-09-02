@@ -41,10 +41,18 @@ __all__ = [
     '_VarSetting_A_x_B_ip_C',                      # nonlinear
 
     '_VarSetting_dastA_astA_tp_tC',                #
+    '_VarSetting_dastA_tB_tp_astA',
     '_VarSetting_dtA_astB_tp_astB',
+    '_VarSetting_dA_B_tp_C__1Known',
+    '_VarSetting_dA_B_tp_C__2Known',
+    '_VarSetting_dA_B_tp_C',                       # nonlinear
 
-    '_VarSetting_mass_matrix_db_bf',               #
-    '_VarSetting_mass_matrix_bf_db',               #
+    '_VarSetting_A_B_tp_C__1Known',
+    '_VarSetting_A_B_tp_C__2Known',
+    '_VarSetting_A_B_tp_C',                       # nonlinear
+
+    '_VarSetting_IP_matrix_db_bf',                #
+    '_VarSetting_IP_matrix_bf_db',                #
 ]
 
 # ------ basic -----------------------------------------------------------------------------------
@@ -76,17 +84,17 @@ _VarSetting_boundary_dp_vector = [
 
 _VarSetting_astA_x_astB_ip_tC = [
     r"\mathsf{c}",
-    _sep.join(["c_ip:Mat", "[{A}]", "[{B}]", "[{C}]"]),
+    _sep.join(["c_ip", "[{A}]", "[{B}]", "[{C}]"]),
 ]
 
 _VarSetting_astA_x_B_ip_tC = [
     r"\mathsf{C}",
-    _sep.join(["X_ip:Mat", "[{A}]", "[{B}]", "[{C}]"]),
+    _sep.join(["X_ip", "[{A}]", "[{B}]", "[{C}]"]),
 ]
 
 _VarSetting_A_x_astB_ip_tC = [
     r"\boldsymbol{C}",
-    _sep.join(["_Xip:Mat", "[{A}]", "[{B}]", "[{C}]"]),
+    _sep.join(["_Xip", "[{A}]", "[{B}]", "[{C}]"]),
 ]
 
 _VarSetting_A_x_B_ip_C = [
@@ -98,24 +106,74 @@ _VarSetting_A_x_B_ip_C = [
 
 _VarSetting_dastA_astA_tp_tC = [
     r"\left<\mathsf{d\cdot,\cdot\otimes\_}\right>",
-    _sep.join(["d*A--*A-tp-tC:Mat", "[{A}]", "[{C}]"]),
+    _sep.join(["d*A--*A-tp-tC", "[{A}]", "[{C}]"]),
+]
+
+_VarSetting_dastA_tB_tp_astA = [
+    r"\left<\mathsf{d\cdot,\_\otimes\cdot}\right>",
+    _sep.join(["d*A--tB-tp-*A", "[{A}]", "[{B}]"]),
 ]
 
 _VarSetting_dtA_astB_tp_astB = [
     r"\left<\mathsf{d\_,\cdot\otimes\cdot}\right>",
-    _sep.join(["dtA--*B-tp-*B:Mat", "[{A}]", "[{B}]"]),
+    _sep.join(["dtA--*B-tp-*B", "[{A}]", "[{B}]"]),
 ]
+
+
+_VarSetting_dastA_astA_tp_tC = [
+    r"\left<\mathsf{d\cdot,\cdot\otimes\_}\right>",
+    _sep.join(["d*A--*A-tp-tC", "[{A}]", "[{C}]"]),
+]
+
+
+_VarSetting_dA_B_tp_C__1Known = [   # A, B, C are different; and it must have a test form
+    r"\left<\mathsf{d\_,\_\otimes\_}\right>",
+    _sep.join(["dA--B-tp-C:1:Known", "[{A}]", "[{B}]", "[{C}]", "[{K}]", "[{T}]", "[{U}]"]),
+]
+
+
+_VarSetting_dA_B_tp_C__2Known = [  # A, B, C are different; two of them are known, and the rest one is the test form
+    r"\left<\mathsf{d\_,\_\otimes\_}\right>",
+    _sep.join(["dA--B-tp-C:2:Known", "[{A}]", "[{B}]", "[{C}]", "[{K1}]", "[{K2}]", "[{T}]"]),
+]
+
+
+_VarSetting_dA_B_tp_C = [  # A, B, C are different; # nonlinear
+    r"\left<\mathsf{d\cdot,\cdot\otimes\cdot}\right>",
+    _sep.join(["dA--B-tp-C", "[{A}]", "[{B}]", "[{C}]"]),
+]
+
+
+# (A, B otimes C) -------------------------------------------------------
+
+_VarSetting_A_B_tp_C__1Known = [   # A, B, C are different; and it must have a test form
+    r"\left<\mathsf{\_,\_\otimes\_}\right>",
+    _sep.join(["A--B-tp-C:1:Known", "[{A}]", "[{B}]", "[{C}]", "[{K}]", "[{T}]", "[{U}]"]),
+]
+
+
+_VarSetting_A_B_tp_C__2Known = [  # A, B, C are different; two of them are known, and the rest one is the test form
+    r"\left<\mathsf{\_,\_\otimes\_}\right>",
+    _sep.join(["A--B-tp-C:2:Known", "[{A}]", "[{B}]", "[{C}]", "[{K1}]", "[{K2}]", "[{T}]"]),
+]
+
+
+_VarSetting_A_B_tp_C = [  # A, B, C are different; # nonlinear
+    r"\left<\mathsf{\cdot,\cdot\otimes\cdot}\right>",
+    _sep.join(["A--B-tp-C", "[{A}]", "[{B}]", "[{C}]"]),
+]
+
 
 # (bundle form, special diagonal bundle form)------------------------------------------------------
 
-_VarSetting_mass_matrix_db_bf = [
+_VarSetting_IP_matrix_db_bf = [
     r"\mathbb{M}_{\mathcal{S}}",
     _sep.join(
         ["db-M-bf", "{db_space_pure_lin_repr}", "{bf_space_pure_lin_repr}", "{degree_db}", "{degree_bf}"]
     ),
 ]
 
-_VarSetting_mass_matrix_bf_db = [
+_VarSetting_IP_matrix_bf_db = [
     r"\mathbb{M}^{\mathsf{T}}_{\mathcal{S}}",
     _sep.join(
         ["bf-M-db", "{bf_space_pure_lin_repr}", "{db_space_pure_lin_repr}", "{degree_bf}", "{degree_db}"]

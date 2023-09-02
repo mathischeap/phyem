@@ -379,7 +379,6 @@ class MsePyDLSEssentialBoundaryCondition(MsePyDLSBoundaryCondition):
 
             assert len(global_dofs) == len(global_cochain), f"must be the case."
             self._cache1['find'] = global_dofs, global_cochain
-
         else:
             raise Exception()
 
@@ -415,10 +414,12 @@ class MsePyDLSEssentialBoundaryCondition(MsePyDLSBoundaryCondition):
     def _apply_to_static_local_nonlinear_system(self, nls):
         """"""
         _ = self._find_dofs_and_cochains(nls.unknowns, global_or_local='local')
+
         if _ == tuple():
             return
         else:
             elements, local_dofs, local_cochain = _
+
         if len(elements) > 0:
             i = self._raw_ls_bc._i
             nls.customize.set_x0_from_local_dofs(i, elements, local_dofs, local_cochain)

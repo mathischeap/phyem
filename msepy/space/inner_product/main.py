@@ -179,4 +179,3 @@ def _special_bf1_db(m0, m1, metric):
     o0 = np.einsum('ij, ik, i -> jk', m00, m1, metric, optimize='optimal')
     o1 = np.einsum('ij, ik, i -> jk', m11, m1, metric, optimize='optimal')
     return o0 + o1
-

@@ -10,13 +10,14 @@ from msepy.tools.linear_system.static.assembled.solve import MsePyStaticLinearSy
 class MsePyStaticLinearSystemAssembled(Frozen):
     """Assembled system."""
 
-    def __init__(self, static, A, b):
+    def __init__(self, static, A, b, cache=None):
         """"""
         assert isinstance(A, MsePyStaticAssembledMatrix) and isinstance(b, MsePyStaticAssembledVector), \
             f"A or b type wrong."
         self._static = static
         self._A = A
         self._b = b
+        self._cache = cache
         self._solve = MsePyStaticLinearSystemAssembledSolve(self)
         self._freeze()
 

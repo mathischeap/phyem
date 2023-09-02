@@ -8,7 +8,7 @@ from msehy.py2.mesh.elements.level.elements import MseHyPy2MeshElementsLevelElem
 class MseHyPy2MeshElementsLevel(Frozen):
     """"""
 
-    def __init__(self, msehy_elements, level_num, base_elements, leveling_elements):
+    def __init__(self, msehy_elements, level_num, base_elements, refining_elements):
         """"""
         # the fundamental msehy-py2 elements instance
         self._msehy_elements = msehy_elements
@@ -20,7 +20,7 @@ class MseHyPy2MeshElementsLevel(Frozen):
 
         # the basement level.
         self._base_level_elements = base_elements  # When level_num == 0, it is the background msepy mesh elements.
-        self._leveling_elements = leveling_elements  # labels of elements of previous level on which I am refining.
+        self._refining_elements = refining_elements  # labels of elements of previous level on which I am refining.
 
         if self.num == 0:
             assert self._base_level_elements is self._mesh.background.elements, f"must be"
@@ -38,9 +38,14 @@ class MseHyPy2MeshElementsLevel(Frozen):
 
     def __repr__(self):
         """repr"""
-        return rf"<G[{self._msehy_elements.generation}] level#{self._level_num} of {self._mesh}>"
+        return rf"<G[{self._msehy_elements.generation}] levels[{self._level_num}] of {self._mesh}>"
     
     @property
     def elements(self):
         """All the elements on this level."""
         return self._elements
+
+    @property
+    def threshold(self):
+        """"""
+        return self._msehy_elements.thresholds[self.num]

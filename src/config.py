@@ -59,8 +59,8 @@ def set_pr_cache(_bool):
 def set_implementation(implementation_name):
     """"""
     if implementation_name == 'msehy-py2':
-        from msehy.py2.main import __setting__
-        return __setting__
+        from msehy.py2.main import __msehy_py2_setting__
+        return __msehy_py2_setting__
     else:
         raise NotImplementedError()
 
@@ -358,7 +358,15 @@ _wf_term_default_simple_patterns = {   # use only str to represent a simple patt
     '(x,)': r'(rf $\times$ rf, rf)',   # nonlinear term.
 
     '(d0*,0*tp)': r'(d krf-0, krf-0 $\otimes$ rf)',
+    '(d0*,tp0*)': r'(d krf-0, rf $\otimes$ krf-0)',
     '(d,0*tp0*)': r'(d rf, krf-0 $\otimes$ krf-0)',
+    '(d,tp):1K': r'(d rf, rf $\otimes$ rf):1K',
+    '(d,tp):2K': r'(d rf, rf $\otimes$ rf):2K',
+    '(d,tp)': r'(d rf, rf $\otimes$ rf)',
+
+    '(,tp):1K': r'(rf, rf $\otimes$ rf):1K',
+    '(,tp):2K': r'(rf, rf $\otimes$ rf):2K',
+    '(,tp)': r'(rf, rf $\otimes$ rf)',
 
 }
 

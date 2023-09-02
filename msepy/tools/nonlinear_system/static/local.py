@@ -316,7 +316,7 @@ class MsePyStaticLocalNonLinearSystem(Frozen):
                             if t % 1 == 0:
                                 str_time.append(str(int(t)))
                             else:
-                                t = round(t, 2)
+                                t = round(t, 3)
                                 str_time.append(str(t))
 
                     str_time = r'\left<' + ','.join(str_time) + r'\right>'
@@ -425,14 +425,14 @@ class MsePyStaticLocalNonLinearSystem(Frozen):
                 else:
                     f[i] += fi_2b_added
 
-        # -- add the original b to f --------------------------------
+        # -- add the original b to f ---------------------------------------------------
         for i in range(S0):
             if f[i] is None:
                 f[i] = - self._b[i]   # b[i] cannot be None
             else:
                 f[i] += - self._b[i]
 
-        # ------ return f
+        # ------ neg -------------------------------------------------------------------
         if neg:
             for i in range(S0):
                 # noinspection PyUnresolvedReferences
@@ -440,4 +440,5 @@ class MsePyStaticLocalNonLinearSystem(Frozen):
         else:
             pass
 
+        # --------- return -------------------------------------------------------------
         return f

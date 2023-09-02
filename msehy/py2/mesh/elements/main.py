@@ -41,7 +41,13 @@ class MseHyPy2MeshElements(Frozen):
 
     @property
     def max_levels(self):
+        """max levels"""
         return len(self._thresholds)
+
+    @property
+    def thresholds(self):
+        """thresholds."""
+        return self._thresholds
 
     @property
     def num_levels(self):
@@ -78,10 +84,14 @@ class MseHyPy2MeshElements(Frozen):
         # -- now let's do the refining and put the results in levels -----------------------------------------
         self._refine_background_elements(region_wise_refining_strength_function, refining_thresholds[0])
 
+        # ----- do deeper level refining ---------------------------------------------------------------------
+        for j, threshold in enumerate(refining_thresholds[1:]):
+            print(f"{j+1}th level of threshold {threshold} to be made.")
+
     def _refine_background_elements(self, func, threshold):
         """"""
-        from msehy.py2.main import __setting__
-        scheme = __setting__['refining_examining_scheme']
+        from msehy.py2.main import __msehy_py2_setting__
+        scheme = __msehy_py2_setting__['refining_examining_scheme']
         elements_to_be_refined = self._examining(
             self.mesh.background.elements, None, func, threshold, scheme=scheme,
         )
@@ -94,8 +104,8 @@ class MseHyPy2MeshElements(Frozen):
 
     def _examining(self, elements, element_range, func, threshold, scheme=0):
         """"""
-        from msehy.py2.main import __setting__
-        degree = __setting__['refining_examining_factor']
+        from msehy.py2.main import __msehy_py2_setting__
+        degree = __msehy_py2_setting__['refining_examining_factor']
         degree = [degree for _ in range(self.mesh.background.n)]  # must be 2
         quad = Quadrature(degree, category='Gauss')
         nodes = quad.quad_ndim[:-1]

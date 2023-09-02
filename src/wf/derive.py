@@ -147,11 +147,13 @@ class _Derive(Frozen):
                     _.extend(right_terms)
                 else:
                     right_terms = 0
+                _ = [int(__) for __ in _]
                 _.sort()
+                _ = [str(__) for __ in _]
 
                 number_terms = len(self._wf._term_dict[i][0]) + len(self._wf._term_dict[i][1])
                 assert _ == [str(j) for j in range(number_terms)], \
-                    f'indices of rearrangement for {i}th equation: {ri} are wrong.'
+                    f'indices of rearrangement for {i}th equation: {ri} are wrong. {_}'
 
                 if left_terms == 0:
                     pass

@@ -7,6 +7,9 @@ from numpy import diff
 from msepy.tools.matrix.static.assembled import MsePyStaticAssembledMatrix
 # import numpy as np
 
+_msepy_assembled_StaticMatrix_cache = {}
+# we can cache the assembled matrices in case that it is the same for many or even all time steps.
+
 
 class MsePyStaticLocalMatrixAssemble(Frozen):
     """"""
@@ -16,8 +19,31 @@ class MsePyStaticLocalMatrixAssemble(Frozen):
         self._M = M
         self._freeze()
 
-    def __call__(self, _format='csc'):
-        """"""
+    def __call__(self, _format='csc', cache=None):
+        """
+
+        Parameters
+        ----------
+        _format
+        cache :
+            We can manually cache the assembled matrix by set ``cache`` to be a string. When next time
+            it sees the same `cache` it will return the cached matrix from the cache, i.e.,
+            ``_msepy_assembled_StaticMatrix_cache``.
+
+        Returns
+        -------
+
+        """
+        if cache is not None:
+            assert isinstance(cache, str), f" ``cache`` must a string."
+            if cache in _msepy_assembled_StaticMatrix_cache:
+                return _msepy_assembled_StaticMatrix_cache[cache]
+            else:
+                pass
+
+        else:
+            pass
+
         gm_row = self._M._gm0_row
         gm_col = self._M._gm1_col
 
@@ -81,5 +107,7 @@ class MsePyStaticLocalMatrixAssemble(Frozen):
         # A += _
 
         A = SPA_MATRIX((DAT, (ROW, COL)), shape=(dep, wid))
-
-        return MsePyStaticAssembledMatrix(A, gm_row, gm_col)
+        A = MsePyStaticAssembledMatrix(A, gm_row, gm_col)
+        if isinstance(cache, str):
+            _msepy_assembled_StaticMatrix_cache[cache] = A
+        return A
