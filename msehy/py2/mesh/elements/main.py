@@ -4,30 +4,33 @@ r"""
 import numpy as np
 from tools.frozen import Frozen
 from tools.quadrature import Quadrature
-from msehy.py2.mesh.elements.level.main import MseHyPy2MeshElementsLevel
+from msehy.py2.mesh.elements.level.main import MseHyPy2MeshLevel
+from msehy.py2.mesh.elements.visualize import MseHyPy2MeshElementsVisualize
 
 
 class MseHyPy2MeshElements(Frozen):
     """"""
 
-    def __init__(self, mesh, region_wise_refining_strength_function, refining_thresholds):
+    def __init__(self, generation, background, region_wise_refining_strength_function, refining_thresholds):
         """"""
-        self._mesh = mesh
+        self.___generation___ = generation
+        self._background = background
         self._refining(region_wise_refining_strength_function, refining_thresholds)
+        self._visualize = None
         self._freeze()
+
+    @property
+    def background(self):
+        return self._background
 
     def __repr__(self):
         """repr"""
-        return rf"<{self.generation}th generation elements of {self._mesh}>"
+        return rf"<{self.generation}th generation msehy-elements UPON {self.background}>"
 
     @property
     def generation(self):
         """I am the ``generation``th generation."""
-        return self.mesh.___generation___
-
-    @property
-    def mesh(self):
-        return self._mesh
+        return self.___generation___
 
     @property
     def leveling(self):
@@ -52,13 +55,19 @@ class MseHyPy2MeshElements(Frozen):
     @property
     def num_levels(self):
         """the amount of valid levels. Because maybe, for no refinement is made for some high thresholds."""
-        raise NotImplementedError()
+        return len(self.levels)
+
+    @property
+    def visualize(self):
+        if self._visualize is None:
+            self._visualize = MseHyPy2MeshElementsVisualize(self)
+        return self._visualize
 
     def _refining(self, region_wise_refining_strength_function, refining_thresholds):
         """"""
         self._leveling = list()
         self._levels = list()
-        bgm = self.mesh.background
+        bgm = self.background
         # --- parse refining_thresholds ---------------------------------------------------------------------
         if not isinstance(refining_thresholds, np.ndarray):
             refining_thresholds = np.array(refining_thresholds)
@@ -69,9 +78,9 @@ class MseHyPy2MeshElements(Frozen):
         if len(refining_thresholds) == 0:
             return
 
-        assert refining_thresholds.ndim == 1 and np.alltrue(np.diff(refining_thresholds) > 0), \
+        assert refining_thresholds.ndim == 1 and np.alltrue(np.diff(refining_thresholds) >= 0), \
             f"refining_thresholds={refining_thresholds} is wrong, it must be a increasing 1d array."
-        assert refining_thresholds[0] > 0, \
+        assert refining_thresholds[0] >= 0, \
             f"refining_thresholds={refining_thresholds} wrong, thresholds must > 0."
 
         # - check region_wise_refining_strength_function ----------------------------------------------------
@@ -82,49 +91,137 @@ class MseHyPy2MeshElements(Frozen):
             f"region_wise_refining_strength_function should be a dict whose keys cover all region indices."
 
         # -- now let's do the refining and put the results in levels -----------------------------------------
-        self._refine_background_elements(region_wise_refining_strength_function, refining_thresholds[0])
+        continue_refining = self._refine_background_elements(
+            region_wise_refining_strength_function, refining_thresholds[0]
+        )
 
-        # ----- do deeper level refining ---------------------------------------------------------------------
-        for j, threshold in enumerate(refining_thresholds[1:]):
-            print(f"{j+1}th level of threshold {threshold} to be made.")
+        if continue_refining:
+            # ----- do deeper level refining ------------------------------------------------------------------
+            for j, threshold in enumerate(refining_thresholds[1:]):
+                continue_refining = self._refine_triangle_level(
+                    j+1, region_wise_refining_strength_function, threshold
+                )
+                if continue_refining:
+                    pass
+                else:
+                    break
 
     def _refine_background_elements(self, func, threshold):
         """"""
         from msehy.py2.main import __msehy_py2_setting__
         scheme = __msehy_py2_setting__['refining_examining_scheme']
         elements_to_be_refined = self._examining(
-            self.mesh.background.elements, None, func, threshold, scheme=scheme,
-        )
-        self._leveling.append(
-            elements_to_be_refined
-        )
-        self._levels.append(
-            MseHyPy2MeshElementsLevel(self, 0, self.mesh.background.elements, elements_to_be_refined)
+            self.background.elements, None, 0, func, threshold, scheme=scheme,
         )
 
-    def _examining(self, elements, element_range, func, threshold, scheme=0):
+        if len(elements_to_be_refined) > 0:
+            self._leveling.append(
+                elements_to_be_refined
+            )
+            self._levels.append(
+                MseHyPy2MeshLevel(self, 0, self.background.elements, elements_to_be_refined)
+            )
+            return 1
+        else:
+            return 0
+
+    def _refine_triangle_level(self, level_num, func, threshold):
         """"""
         from msehy.py2.main import __msehy_py2_setting__
+        scheme = __msehy_py2_setting__['refining_examining_scheme']
+        newest_leve = self._levels[-1].triangles
+        triangle_range = list()
+        for t in newest_leve:
+            triangle = newest_leve[t]
+            p2 = triangle.pair_to
+            if p2 is None:
+                triangle_range.append(t)
+            elif isinstance(p2, str) and p2.count('-') == triangle._index.count('-'):
+                triangle_range.append(t)
+            else:
+                pass
+
+        triangles_to_be_refined = self._examining(
+            newest_leve, triangle_range, 1, func, threshold, scheme=scheme,
+        )
+        pair_triangles_extension = list()
+        for i in triangles_to_be_refined:
+            triangle = newest_leve[i]
+            p2 = triangle.pair_to
+            if isinstance(p2, str):
+                assert p2.count('-') == triangle._index.count('-'), f'must be this case'
+                pair_triangles_extension.append(p2)
+        triangles_to_be_refined.extend(pair_triangles_extension)
+        triangles_to_be_refined = set(triangles_to_be_refined)
+        triangles_to_be_refined = list(triangles_to_be_refined)
+        triangles_to_be_refined.sort()
+
+        if len(triangles_to_be_refined) > 0:
+
+            self._leveling.append(
+                triangles_to_be_refined
+            )
+
+            self._levels.append(
+                MseHyPy2MeshLevel(self, level_num, newest_leve, triangles_to_be_refined)
+            )
+
+            return 1
+        else:
+            return 0
+
+    def _examining(
+            self,
+            elements_or_triangles,
+            element_or_triangle_range,
+            element_type,
+            func,
+            threshold,
+            scheme=0
+    ):
+        """
+
+        Parameters
+        ----------
+        elements_or_triangles : base elements or level triangles
+        element_or_triangle_range
+        func
+        threshold
+        scheme
+
+        Returns
+        -------
+
+        """
+        from msehy.py2.main import __msehy_py2_setting__
         degree = __msehy_py2_setting__['refining_examining_factor']
-        degree = [degree for _ in range(self.mesh.background.n)]  # must be 2
+        degree = [degree for _ in range(self.background.n)]  # must be 2
         quad = Quadrature(degree, category='Gauss')
         nodes = quad.quad_ndim[:-1]
         weights = quad.quad_ndim[-1]
-        xyz = elements.ct.mapping(*nodes, element_range=element_range)
-        detJ = elements.ct.Jacobian(*nodes, element_range=element_range)
-        elements_to_be_refined = list()
-        area = elements.area(element_range=element_range)  # since this is for 2-d, it must be area.
+        if element_type == 0:
+            xyz = elements_or_triangles.ct.mapping(*nodes, element_range=element_or_triangle_range)
+            detJ = elements_or_triangles.ct.Jacobian(*nodes, element_range=element_or_triangle_range)
+            area = elements_or_triangles.area(element_range=element_or_triangle_range)   # 2d: area
+        elif element_type == 1:  # they are triangles Now
+            xyz = elements_or_triangles.ct.mapping(*nodes, triangle_range=element_or_triangle_range)
+            detJ = elements_or_triangles.ct.Jacobian(*nodes, triangle_range=element_or_triangle_range)
+            area = elements_or_triangles.area(triangle_range=element_or_triangle_range)  # 2d: area
+        else:
+            raise Exception()
+
+        elements_or_triangles_to_be_refined = list()
         if scheme == 0:  # a := int(strength function) / element_area, if a >= threshold, do refining.
             for e in xyz:
                 x_y_z = xyz[e]
                 det_J = detJ[e]
-                region = elements[e].region
+                region = elements_or_triangles[e].region
                 fun = func[region]
                 integration = np.sum(np.abs(fun(*x_y_z)) * det_J * weights)
                 mean = integration / area[e]
                 if mean >= threshold:
-                    elements_to_be_refined.append(e)
+                    elements_or_triangles_to_be_refined.append(e)
         else:
             raise NotImplementedError()
 
-        return elements_to_be_refined
+        return elements_or_triangles_to_be_refined

@@ -1,35 +1,54 @@
 # -*- coding: utf-8 -*-
 r"""
 """
+import numpy as np
+import matplotlib.pyplot as plt
+# import matplotlib
+plt.rcParams.update({
+    "text.usetex": True,
+    "font.family": "DejaVu Sans",
+    "text.latex.preamble": r"\usepackage{amsmath, amssymb}",
+})
 from tools.frozen import Frozen
-from msehy.py2.mesh.elements.level.elements import MseHyPy2MeshElementsLevelElements
+from msehy.py2.mesh.elements.level.triangles import MseHyPy2MeshElementsLevelTriangles
 
 
-class MseHyPy2MeshElementsLevel(Frozen):
+class MseHyPy2MeshLevel(Frozen):
     """"""
 
-    def __init__(self, msehy_elements, level_num, base_elements, refining_elements):
+    def __init__(self, elements, level_num, base_elements, refining_elements):
         """"""
         # the fundamental msehy-py2 elements instance
-        self._msehy_elements = msehy_elements
-        self._mesh = msehy_elements.mesh
+        self._elements = elements
+        self._background = elements.background
 
         # I am (level_num+1)th level.
         assert isinstance(level_num, int) and level_num >= 0, f'Must be.'
         self._level_num = level_num
+
+        if level_num == 0:
+            refining_elements.sort()
+        else:
+            refining_elements.sort(
+                key=lambda x: int(x.split('=')[0])
+            )
 
         # the basement level.
         self._base_level_elements = base_elements  # When level_num == 0, it is the background msepy mesh elements.
         self._refining_elements = refining_elements  # labels of elements of previous level on which I am refining.
 
         if self.num == 0:
-            assert self._base_level_elements is self._mesh.background.elements, f"must be"
+            assert self._base_level_elements is self.background.elements, f"must be"
         else:
-            assert self._base_level_elements.__class__ is self.__class__, f'Must be.'
+            assert self._base_level_elements.__class__ is MseHyPy2MeshElementsLevelTriangles, f'Must be.'
 
         # Below are my person stuffs.
-        self._elements = MseHyPy2MeshElementsLevelElements(self)
+        self._triangles = MseHyPy2MeshElementsLevelTriangles(self)
         self._freeze()
+
+    @property
+    def background(self):
+        return self._background
 
     @property
     def num(self):
@@ -38,14 +57,28 @@ class MseHyPy2MeshElementsLevel(Frozen):
 
     def __repr__(self):
         """repr"""
-        return rf"<G[{self._msehy_elements.generation}] levels[{self._level_num}] of {self._mesh}>"
+        return rf"<G[{self._elements.generation}] levels[{self._level_num}] of {self.background}>"
     
     @property
-    def elements(self):
+    def triangles(self):
         """All the elements on this level."""
-        return self._elements
+        return self._triangles
 
     @property
     def threshold(self):
         """"""
-        return self._msehy_elements.thresholds[self.num]
+        return self._elements.thresholds[self.num]
+
+    def _visualize(self, fig, density, color='k'):
+        """"""
+        ct = self.triangles.ct
+        xi = np.linspace(-1, 1, density)
+        et = np.ones(density)
+        xy0 = ct.mapping(xi, -et)
+        xy1 = ct.mapping(xi, et)
+        for t in xy0:
+            x, y = xy0[t]
+            plt.plot(x, y, linewidth='0.75', color=color)
+            x, y = xy1[t]
+            plt.plot(x, y, linewidth='0.75', color=color)
+        return fig

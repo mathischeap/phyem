@@ -11,7 +11,7 @@ from msepy.mesh.main import MsePyMesh
 from msepy.mesh.boundary_section.main import MsePyBoundarySectionMesh
 from msepy.main import base as msepy_base
 from msehy.py2.mesh.elements.main import MseHyPy2MeshElements
-from msehy.py2.mesh.boundary_section.faces import MseHyPy2BoundarySectionFaces
+from msehy.py2.mesh.faces.main import MseHyPy2MeshFaces
 
 
 class MseHyPy2Mesh(Frozen):
@@ -19,11 +19,18 @@ class MseHyPy2Mesh(Frozen):
 
     def __init__(self, abstract_mesh):
         self._abstract = abstract_mesh
-        self.___generation___ = 0
-        self.___elements___ = MseHyPy2MeshElements(
-            self, None, []
+        self.___most_recent_generation___ = 0
+        self.___current_elements___ = MseHyPy2MeshElements(
+            0, self.background, None, []
         )  # initialize the elements as a not-refined one.
-        self.___faces___ = None
+        self.___current_faces___ = MseHyPy2MeshFaces(
+            self.background,
+            self.___current_elements___,
+        )
+
+        self.___last_elements___ = None
+        self.___last_faces___ = None
+
         self._freeze()
 
     def __repr__(self):
@@ -52,19 +59,17 @@ class MseHyPy2Mesh(Frozen):
         return msepy_base['meshes'][self.abstract._sym_repr]
 
     @property
-    def elements(self):
+    def current_elements(self):
         """"""
         assert self.background.__class__ is MsePyMesh, \
             f"Only meshes access to elements."
-        return self.___elements___
+        return self.___current_elements___
 
     @property
-    def faces(self):
+    def current_faces(self):
         assert self.background.__class__ is MsePyBoundarySectionMesh, \
             f"Only boundary sections access to elements."
-        if self.___faces___ is None:
-            self.___faces___ = MseHyPy2BoundarySectionFaces(self)
-        return self.___faces___
+        return self.___current_faces___
 
     def renew(self, region_wise_refining_strength_function, refining_thresholds):
         """
@@ -79,33 +84,26 @@ class MseHyPy2Mesh(Frozen):
         -------
 
         """
-        self.___generation___ += 1
+        self.___most_recent_generation___ += 1
         assert self.background.__class__ is MsePyMesh, \
             f"can only renew based on a msepy mesh background."
         # - Now we make the elements -----------------------------------------------------------------
-        elements = MseHyPy2MeshElements(self, region_wise_refining_strength_function, refining_thresholds)
+        new_elements = MseHyPy2MeshElements(
+            self.___most_recent_generation___,
+            self.background,
+            region_wise_refining_strength_function,
+            refining_thresholds
+        )
+        new_faces = MseHyPy2MeshFaces(
+            self.background,
+            new_elements,
+        )  # to be implemented
 
-        # --- renew elements -------------------------------------------------------------------------
-        self.___elements___ = elements
+        self.___last_elements___ = self.___current_elements___    # save last elements
+        self.___last_faces___ = self.___current_faces___          # save last faces
 
-        # --- renew all boundary sections ------------------------------------------------------------
-        self._renew_boundary_sections()
-
-    def _renew_boundary_sections(self):
-        """"""
-        from msehy.py2.main import base
-        all_meshes = base['meshes']
-        boundary_sections_2b_refined = list()
-        for sym in all_meshes:
-            mesh = all_meshes[sym]
-            if mesh.background.__class__ is MsePyBoundarySectionMesh:
-                if mesh.background.base is self.background:
-                    boundary_sections_2b_refined.append(mesh)
-            else:
-                pass
-        # to implement the refining of boundary sections. For example,
-        for bs in boundary_sections_2b_refined:
-            bs.faces._renew()
+        self.___current_elements___ = new_elements  # override the current elements.
+        self.___current_faces___ = new_faces        # override the current faces.
 
 
 if __name__ == '__main__':
@@ -124,7 +122,7 @@ if __name__ == '__main__':
     manifold = msehy.base['manifolds'][r'\mathcal{M}']
     mesh = msehy.base['meshes'][r'\mathfrak{M}']
 
-    msehy.config(manifold)('crazy')
+    msehy.config(manifold)('crazy', c=0., bounds=([-1, 1], [-1, 1]))
 
     # manifold.background.visualize()
 
@@ -135,24 +133,41 @@ if __name__ == '__main__':
             0: [1, 0, 1, 0],
         }
     )
-    msehy.config(mesh)(5)    # element layout
+    msehy.config(mesh)([7, 7])    # element layout
 
-    for msh in msehy.base['meshes']:
-        msh = msehy.base['meshes'][msh]
-        # msh.background.visualize()
-        # print(msh.background)
+    # for msh in msehy.base['meshes']:
+    #     msh = msehy.base['meshes'][msh]
+    #     msh.background.visualize()
+    #     print(msh)
 
     def refining_strength(x, y):
         """"""
         return np.sin(2*np.pi*x) * np.cos(2*np.pi*y)
 
     mesh.renew(
-        {0: refining_strength}, [0.3, 0.7]
+        {0: refining_strength}, [0.3, 0.5, 1.5, 2]
     )
 
-    # for msh in msehy.base['meshes']:
-    #     msh = msehy.base['meshes'][msh]
-    #     print(msh)
-    elements = mesh.elements.levels[0].elements
-    for i in elements:
-        print(elements[i])
+    # # for msh in msehy.base['meshes']:
+    # #     msh = msehy.base['meshes'][msh]
+    # #     print(msh)
+    current_elements = mesh.current_elements
+    # # print(current_elements.thresholds)
+    #
+    levels = current_elements.levels
+    # # print(levels[1].num)
+    triangles = levels[0].triangles
+    #
+    for i in triangles:
+        triangle = triangles[i]
+    #     # p2 = triangle.pair_to
+    #     # if isinstance(p2, str):
+    #     #     print(i, elements[p2].pair_to)
+    #     print(i, triangle.angle_degree)
+
+    # mesh.current_elements.visualize()
+
+    print(current_elements.max_levels, current_elements.num_levels)
+
+    for level in levels:
+        print(len(level.triangles))

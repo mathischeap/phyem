@@ -82,6 +82,8 @@ def _pr_cache(fig, filename=None):
     from tools.os_ import mkdir, empty_dir, isdir
     from tools.miscellaneous.random_ import string_digits
     import matplotlib.pyplot as plt
+    import matplotlib
+    matplotlib.use('Agg')
 
     phcache_folder = _setting[r'cache_folder']
     if isdir(phcache_folder):

@@ -10,6 +10,11 @@ import numpy as np
 from functools import partial
 from scipy.special import legendre, roots_legendre
 
+_global_cache_0 = {}
+_global_cache_1 = {}
+_global_cache_2 = {}
+_global_cache_3 = {}
+
 
 class Quadrature(object):
     """ Here we store the class for 1d-quadrature nodes and weights. """
@@ -30,13 +35,14 @@ class Quadrature(object):
         p = (p,) if isinstance(p, (int, float)) else p
         self._ndim_ = len(p)
         assert all([pi >= 0 and pi % 1 == 0 for pi in p]), " <Quadrature> : p = {} is wrong.".format(p)
+        p = [int(_) for _ in p]
         self._p_ = p
         _category_ = [category for _ in range(self.ndim)] if isinstance(category, str) else category
         assert all([ci in self.___PRIVATE_coded_quadrature___() for ci in _category_]), \
             f"quad category = {_category_} wrong."
         self._category_ = _category_
+        self._cache_key = str(p) + '-'.join(_category_)
         self.___PRIVATE_check_p___()
-        self._quad_ = None
 
     def __repr__(self):
         """repr"""
@@ -101,30 +107,44 @@ class Quadrature(object):
     @property
     def quad_weights_ravel(self):
         """"""
-        if self.ndim == 1:
-            return self.quad[1]
+        if self._cache_key in _global_cache_0:
+            data = _global_cache_0[self._cache_key]
+
         else:
-            temp_weights = self.quad[1][0]
-            for i in range(self.ndim):
-                if i == 0:
-                    pass
-                else:
-                    temp_weights = np.tensordot(temp_weights, self.quad[1][i], axes=0)
-            return temp_weights.ravel('F')
+            if self.ndim == 1:
+                data = self.quad[1]
+            else:
+                temp_weights = self.quad[1][0]
+                for i in range(self.ndim):
+                    if i == 0:
+                        pass
+                    else:
+                        temp_weights = np.tensordot(temp_weights, self.quad[1][i], axes=0)
+                data = temp_weights.ravel('F')
+
+            _global_cache_0[self._cache_key] = data
+
+        return data
 
     @property
     def quad(self):
         """(Tuple) ``quad[0]`` are the nodes, ``quad[1]`` are the weights."""
-        if self._quad_ is None:
+        if self._cache_key in _global_cache_1:
+            _quad_ = _global_cache_1[self._cache_key]
+
+        else:
             if self.ndim == 1:
-                self._quad_ = getattr(self, '___PRIVATE_compute_'+self.category[0]+'___')(self.p[0])
+                _quad_ = getattr(self, '___PRIVATE_compute_'+self.category[0]+'___')(self.p[0])
             else:
-                self._quad_ = ([], [])
+                _quad_ = ([], [])
                 for i in range(self.ndim):
                     nodes, weights = getattr(self, '___PRIVATE_compute_'+self.category[i]+'___')(self.p[i])
-                    self._quad_[0].append(nodes)
-                    self._quad_[1].append(weights)
-        return self._quad_
+                    _quad_[0].append(nodes)
+                    _quad_[1].append(weights)
+
+            _global_cache_1[self._cache_key] = _quad_
+
+        return _quad_
         
     @property
     def quad_ndim(self):
@@ -132,23 +152,38 @@ class Quadrature(object):
         The same as the ``quad`` but now we have tensor product them; so we have high dimensional quad
         nodes and the nd weights; in total the quad_ndim is of shape(n+1,x,y,z)
         """
-        if self.ndim == 1:
-            quad_ndim = self.quad
+        if self._cache_key in _global_cache_2:
+            quad_ndim = _global_cache_2[self._cache_key]
+
         else:
-            temp_weights = self.quad[1][0]
-            for i in range(self.ndim):
-                if i == 0:
-                    pass
-                else:
-                    temp_weights = np.tensordot(temp_weights, self.quad[1][i], axes=0)
-            nodes = np.meshgrid(*self.quad[0], indexing='ij')
-            quad_ndim = *nodes, temp_weights
+            if self.ndim == 1:
+                quad_ndim = self.quad
+            else:
+                temp_weights = self.quad[1][0]
+                for i in range(self.ndim):
+                    if i == 0:
+                        pass
+                    else:
+                        temp_weights = np.tensordot(temp_weights, self.quad[1][i], axes=0)
+                nodes = np.meshgrid(*self.quad[0], indexing='ij')
+                quad_ndim = *nodes, temp_weights
+
+            _global_cache_2[self._cache_key] = quad_ndim
+
         return quad_ndim
         
     @property
     def quad_ndim_ravel(self):
         """Same as `quad_ndim` but now we have raveled it, so it is of shape (n+1, x*y*z)."""
-        return [qn.ravel('F') for qn in self.quad_ndim]
+        if self._cache_key in _global_cache_3:
+            quad_ndim = _global_cache_3[self._cache_key]
+
+        else:
+            quad_ndim = [qn.ravel('F') for qn in self.quad_ndim]
+
+            _global_cache_3[self._cache_key] = quad_ndim
+
+        return quad_ndim
 
     def ___PRIVATE_compute_Lobatto___(self, p):
         """ """
