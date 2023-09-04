@@ -4,7 +4,7 @@ r"""
 from tools.frozen import Frozen
 
 
-class MseHyPy2MeshElementsLevelTrianglesCT(Frozen):
+class MseHyPy2TrianglesCoordinateTransformation(Frozen):
     """Not a level ct. Call me from ``level.elements``."""
 
     def __init__(self, level_triangles):

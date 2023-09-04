@@ -1,6 +1,8 @@
 # -*- coding: utf-8 -*-
 r"""
 """
+import numpy as np
+
 from tools.frozen import Frozen
 import matplotlib.pyplot as plt
 import matplotlib
@@ -9,6 +11,7 @@ plt.rcParams.update({
     "font.family": "DejaVu Sans",
     "text.latex.preamble": r"\usepackage{amsmath, amssymb}",
 })
+from matplotlib import cm
 
 
 class MseHyPy2MeshElementsVisualize(Frozen):
@@ -49,14 +52,58 @@ class MseHyPy2MeshElementsVisualize(Frozen):
         density = len(axis0)
         return fig, density
 
-    def __call__(self, sampling_factor=1, saveto=None):
-        """"""
+    def __call__(
+            self,
+            sampling_factor=1, saveto=None,
+            show_refining_strength_distribution=True, colormap='Reds', num_levels=20,
+    ):
+        """
+
+        Parameters
+        ----------
+        sampling_factor
+        saveto
+        show_refining_strength_distribution
+        colormap
+        num_levels
+
+        Returns
+        -------
+
+        """
         fig, density = self._make_base_mesh(sampling_factor=sampling_factor)
 
         if density < 20:
             density = 20
         else:
             pass
+        plt.rcParams['image.cmap'] = colormap
+        if show_refining_strength_distribution:
+            from tools.matplot.contour import ___set_contour_levels___
+            func = self._elements._refining_function
+            r = s = np.linspace(0, 1, density*3)
+            r, s = np.meshgrid(r, s, indexing='ij')
+            X = dict()
+            Y = dict()
+            v = dict()
+            for region in func:
+                R = self._elements.background.manifold.regions[region]
+                x, y = R._ct.mapping(r, s)
+                X[region] = x
+                Y[region] = y
+                func_region = func[region]
+                strength = func_region(x, y)
+                v[region] = strength
+
+            levels = ___set_contour_levels___(v, num_levels=num_levels)
+
+            for region in v:
+                plt.contourf(X[region], Y[region], v[region], levels=levels)
+
+            mappable = cm.ScalarMappable()
+            mappable.set_array(np.array(levels))
+            cb = plt.colorbar(mappable)
+            cb.ax.tick_params()
 
         for level in self._elements._levels:
             fig = level._visualize(fig, density, color='k')

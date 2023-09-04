@@ -133,7 +133,7 @@ if __name__ == '__main__':
             0: [1, 0, 1, 0],
         }
     )
-    msehy.config(mesh)([7, 7])    # element layout
+    msehy.config(mesh)([20, 20])    # element layout
 
     # for msh in msehy.base['meshes']:
     #     msh = msehy.base['meshes'][msh]
@@ -145,7 +145,7 @@ if __name__ == '__main__':
         return np.sin(2*np.pi*x) * np.cos(2*np.pi*y)
 
     mesh.renew(
-        {0: refining_strength}, [0.3, 0.5, 1.5, 2]
+        {0: refining_strength}, [0.3, 0.5, 0.7, 0.9]
     )
 
     # # for msh in msehy.base['meshes']:
@@ -156,18 +156,21 @@ if __name__ == '__main__':
     #
     levels = current_elements.levels
     # # print(levels[1].num)
-    triangles = levels[0].triangles
+    # triangles = levels[0].triangles
     #
-    for i in triangles:
-        triangle = triangles[i]
+    # for i in triangles:
+    #     triangle = triangles[i]
     #     # p2 = triangle.pair_to
     #     # if isinstance(p2, str):
     #     #     print(i, elements[p2].pair_to)
     #     print(i, triangle.angle_degree)
 
-    # mesh.current_elements.visualize()
+    mesh.current_elements.visualize()
+    #
+    # print(len(current_elements), current_elements.num_levels)
+    # print(current_elements.map)
+    # for i in current_elements:
+    #     print(i, current_elements[i].ct)
 
-    print(current_elements.max_levels, current_elements.num_levels)
-
-    for level in levels:
-        print(len(level.triangles))
+    # for level in levels:
+    #     print(len(level.triangles))

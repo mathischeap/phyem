@@ -10,7 +10,7 @@ __msehy_py2_setting__ = {   # can be config through ph.config.set_implementation
     # To config this factor, do ``ph.config.set_implementation('msehy-py2')['refining_examining_factor'] = 4``
     'refining_examining_scheme': 0,
     # refining_examining_schemes:
-    #   0)   a := int(strength function) / element_area, if a >= threshold, do refining.
+    #   0)   a := int(abs(strength function)) / element_area, if a >= threshold, do refining.
 }
 
 

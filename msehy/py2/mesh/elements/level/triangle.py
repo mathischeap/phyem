@@ -204,18 +204,18 @@ class MseHyPy2MeshElementsLevelTriangle(Frozen):
 
     @property
     def metric_signature(self):
+        """"""
         if self._metric_signature is None:
             base_metric_signature = self._base_element.metric_signature
             if base_metric_signature is None:
-                base_metric_signature = str(id(self._base_element))
+                self._metric_signature = id(self)
             else:
-                pass
-            signature = base_metric_signature + self.topology_signature
-            if signature in _metric_signature_pool:
-                pass
-            else:
-                _metric_signature_pool[signature] = signature
-            self._metric_signature = _metric_signature_pool[signature]
+                signature = base_metric_signature + self.topology_signature
+                if signature in _metric_signature_pool:
+                    pass
+                else:
+                    _metric_signature_pool[signature] = signature
+                self._metric_signature = _metric_signature_pool[signature]
         return self._metric_signature
 
     @property

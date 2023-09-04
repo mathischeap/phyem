@@ -6,6 +6,8 @@ from tools.frozen import Frozen
 from tools.quadrature import Quadrature
 from msehy.py2.mesh.elements.level.main import MseHyPy2MeshLevel
 from msehy.py2.mesh.elements.visualize import MseHyPy2MeshElementsVisualize
+from msehy.py2.mesh.elements.coordinate_transformation import MseHyPy2MeshElementsCoordinateTransformation
+from msehy.py2.mesh.elements.fundamental_cell import MseHyPy2MeshFundamentalCell
 
 
 class MseHyPy2MeshElements(Frozen):
@@ -17,6 +19,9 @@ class MseHyPy2MeshElements(Frozen):
         self._background = background
         self._refining(region_wise_refining_strength_function, refining_thresholds)
         self._visualize = None
+        self._ct = None
+        self._collecting_fundamental_cells()
+        self._map = None
         self._freeze()
 
     @property
@@ -31,6 +36,72 @@ class MseHyPy2MeshElements(Frozen):
     def generation(self):
         """I am the ``generation``th generation."""
         return self.___generation___
+
+    def __iter__(self):
+        """go through all fundamental cells"""
+        for index in self._fundamental_cells:
+            yield index
+
+    def __len__(self):
+        """How many fundamental cells?"""
+        return len(self._fundamental_cells)
+
+    def __contains__(self, index):
+        """If index indicating a fundamental cell?"""
+        return index in self._fundamental_cells
+
+    def __getitem__(self, index):
+        """Get the fundamental cell instance of index ``index`."""
+        return self._fundamental_cells[index]
+
+    @property
+    def map(self):
+        """collection of the map of all fundamental cells."""
+        if self._map is None:
+            self._map = dict()
+            for i in self:
+                self._map[i] = self[i].map
+        return self._map
+
+    def _collecting_fundamental_cells(self):
+        """"""
+        self._fundamental_cells = dict()
+        if self.num_levels == 0:
+            if self.background._elements is None:
+                return
+            else:
+                base_element_num = self.background.elements._num
+                msepy_element_indices = range(base_element_num)
+                fundamental_triangle_indices = set()
+        else:
+            fundamental_triangle_indices = set()
+            exclude = set()
+            for i in range(self.num_levels)[::-1]:
+                lvl = self.levels[i]
+                triangles = lvl.triangles
+                lvl_indices = triangles._triangle_dict.keys()
+                fundamental_indices = lvl_indices - exclude
+                fundamental_triangle_indices.update(fundamental_indices)
+                exclude = set(lvl._refining_elements)
+
+            fundamental_triangle_indices = list(fundamental_triangle_indices)
+            fundamental_triangle_indices.sort(
+                key=lambda x: int(x.split('=')[0])
+            )
+            base_element_num = self.background.elements._num
+            msepy_element_indices = set(range(base_element_num))
+            msepy_element_indices = msepy_element_indices - exclude
+            msepy_element_indices = list(msepy_element_indices)
+            msepy_element_indices.sort()
+
+        self._msepy_element_indices = msepy_element_indices
+        self._fundamental_triangle_indices = fundamental_triangle_indices
+
+        # initialize fundamental cells -----------------------------------------
+        for i in msepy_element_indices:
+            self._fundamental_cells[i] = MseHyPy2MeshFundamentalCell(self, i)
+        for i in fundamental_triangle_indices:
+            self._fundamental_cells[i] = MseHyPy2MeshFundamentalCell(self, i)
 
     @property
     def leveling(self):
@@ -63,6 +134,13 @@ class MseHyPy2MeshElements(Frozen):
             self._visualize = MseHyPy2MeshElementsVisualize(self)
         return self._visualize
 
+    @property
+    def ct(self):
+        """ct"""
+        if self._ct is None:
+            self._ct = MseHyPy2MeshElementsCoordinateTransformation(self)
+        return self._ct
+
     def _refining(self, region_wise_refining_strength_function, refining_thresholds):
         """"""
         self._leveling = list()
@@ -89,6 +167,8 @@ class MseHyPy2MeshElements(Frozen):
         assert (len(region_wise_refining_strength_function) == len(bgm.regions) and
                 all([_ in region_wise_refining_strength_function for _ in bgm.regions])), \
             f"region_wise_refining_strength_function should be a dict whose keys cover all region indices."
+
+        self._refining_function = region_wise_refining_strength_function
 
         # -- now let's do the refining and put the results in levels -----------------------------------------
         continue_refining = self._refine_background_elements(
@@ -157,15 +237,12 @@ class MseHyPy2MeshElements(Frozen):
         triangles_to_be_refined.sort()
 
         if len(triangles_to_be_refined) > 0:
-
             self._leveling.append(
                 triangles_to_be_refined
             )
-
             self._levels.append(
                 MseHyPy2MeshLevel(self, level_num, newest_leve, triangles_to_be_refined)
             )
-
             return 1
         else:
             return 0
@@ -211,7 +288,7 @@ class MseHyPy2MeshElements(Frozen):
             raise Exception()
 
         elements_or_triangles_to_be_refined = list()
-        if scheme == 0:  # a := int(strength function) / element_area, if a >= threshold, do refining.
+        if scheme == 0:  # a := int(abs(strength function)) / element_area, if a >= threshold, do refining.
             for e in xyz:
                 x_y_z = xyz[e]
                 det_J = detJ[e]

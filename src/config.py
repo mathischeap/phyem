@@ -83,7 +83,7 @@ def _pr_cache(fig, filename=None):
     from tools.miscellaneous.random_ import string_digits
     import matplotlib.pyplot as plt
     import matplotlib
-    matplotlib.use('Agg')
+    matplotlib.use('TkAgg')
 
     phcache_folder = _setting[r'cache_folder']
     if isdir(phcache_folder):

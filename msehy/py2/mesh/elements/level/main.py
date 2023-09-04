@@ -10,7 +10,7 @@ plt.rcParams.update({
     "text.latex.preamble": r"\usepackage{amsmath, amssymb}",
 })
 from tools.frozen import Frozen
-from msehy.py2.mesh.elements.level.triangles import MseHyPy2MeshElementsLevelTriangles
+from msehy.py2.mesh.elements.level.triangles import MseHyPy2LevelTriangles
 
 
 class MseHyPy2MeshLevel(Frozen):
@@ -40,10 +40,10 @@ class MseHyPy2MeshLevel(Frozen):
         if self.num == 0:
             assert self._base_level_elements is self.background.elements, f"must be"
         else:
-            assert self._base_level_elements.__class__ is MseHyPy2MeshElementsLevelTriangles, f'Must be.'
+            assert self._base_level_elements.__class__ is MseHyPy2LevelTriangles, f'Must be.'
 
         # Below are my person stuffs.
-        self._triangles = MseHyPy2MeshElementsLevelTriangles(self)
+        self._triangles = MseHyPy2LevelTriangles(self)
         self._freeze()
 
     @property
