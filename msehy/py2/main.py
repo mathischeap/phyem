@@ -53,6 +53,8 @@ def _clear_self():
 
 from msehy.py2.manifold.main import MseHyPy2Manifold
 from msehy.py2.mesh.main import MseHyPy2Mesh
+from msehy.py2.spaces.main import MseHyPy2Space
+from msehy.py2.form.main import MseHyPy2RootForm
 
 
 def _parse_manifolds(abstract_manifolds):
@@ -83,12 +85,57 @@ def _parse_meshes(abstract_meshes):
 def _parse_spaces(abstract_spaces):
     """"""
     space_dict = {}
+    for ab_msh_sym_repr in abstract_spaces:
+        ab_sps = abstract_spaces[ab_msh_sym_repr]
+
+        for ab_sp_sym_repr in ab_sps:
+            ab_sp = ab_sps[ab_sp_sym_repr]
+
+            if ab_sp.orientation != 'unknown':  # Those spaces are probably not for root-forms, skipping is OK.
+                space = MseHyPy2Space(ab_sp)
+                space_dict[ab_sp_sym_repr] = space
+            else:
+                pass
     base['spaces'] = space_dict
 
 
 def _parse_root_forms(abstract_rfs):
     """"""
     rf_dict = {}
+    for rf_lin_repr in abstract_rfs:  # do it for all general root-forms
+        rf = abstract_rfs[rf_lin_repr]
+        pure_lin_repr = rf._pure_lin_repr
+
+        if rf._pAti_form['base_form'] is None:  # this is not a root-form at a particular time-instant.
+            prf = MseHyPy2RootForm(rf)
+            rf_dict[pure_lin_repr] = prf
+        else:
+            pass
+
+    for rf_lin_repr in abstract_rfs:  # then do it for all root-forms at particular time instant
+        rf = abstract_rfs[rf_lin_repr]
+        pure_lin_repr = rf._pure_lin_repr
+        if rf._pAti_form['base_form'] is None:
+            pass
+        else:  # this is a root-form at a particular time-instant.
+            base_form = rf._pAti_form['base_form']
+            ats = rf._pAti_form['ats']
+            ati = rf._pAti_form['ati']
+
+            particular_base_form = rf_dict[base_form._pure_lin_repr]
+            prf = MseHyPy2RootForm(rf)
+            prf._pAti_form['base_form'] = particular_base_form
+            prf._pAti_form['ats'] = ats
+            prf._pAti_form['ati'] = ati
+            rf_dict[pure_lin_repr] = prf
+
+            assert rf_lin_repr not in particular_base_form._ats_particular_forms
+            particular_base_form._ats_particular_forms[rf_lin_repr] = prf
+
+    for pure_lin_repr in rf_dict:
+        assert rf_dict[pure_lin_repr].degree is not None
+
+    base['forms'] = rf_dict
     base['forms'] = rf_dict
 
 
@@ -111,4 +158,6 @@ def config(obj):
         obj = obj.background
         return _msepy_Config(obj)
     else:
-        raise NotImplementedError()
+        raise NotImplementedError(
+            f"msehy-py2 implementation cannot config {obj} of class: {obj.__class__.__name__}"
+        )

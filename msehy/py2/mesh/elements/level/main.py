@@ -47,6 +47,10 @@ class MseHyPy2MeshLevel(Frozen):
         self._freeze()
 
     @property
+    def generation(self):
+        return self._elements.generation
+
+    @property
     def background(self):
         return self._background
 
@@ -57,7 +61,7 @@ class MseHyPy2MeshLevel(Frozen):
 
     def __repr__(self):
         """repr"""
-        return rf"<G[{self._elements.generation}] levels[{self._level_num}] of {self.background}>"
+        return rf"<G[{self.generation}] levels[{self._level_num}] of {self.background}>"
     
     @property
     def triangles(self):

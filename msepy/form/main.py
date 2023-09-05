@@ -34,14 +34,14 @@ class MsePyRootForm(Frozen):
         assert degree is not None, f"{abstract_root_form} has no degree."
         self._degree = None  # it will be updated to degree below
         self.space.finite.specify_form(self, degree)  # will make new degree if this degree is not saved.
-        self._cf = None
-        self._cochain = None  # do not initialize cochain here!
         self._pAti_form: Dict = {
             'base_form': None,   # the base form
             'ats': None,   # abstract time sequence
             'ati': None,   # abstract time instant
         }
         self._ats_particular_forms = dict()   # the abstract forms based on this form.
+        self._cf = None
+        self._cochain = None  # do not initialize cochain here!
         self._visualize = None
         self._coboundary = None
         self._matrix = None

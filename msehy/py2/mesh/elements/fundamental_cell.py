@@ -16,6 +16,29 @@ class MseHyPy2MeshFundamentalCell(Frozen):
         self._ct = None
         self._freeze()
 
+    def __repr__(self):
+        """"""
+        return f"<fundamental cell {self._i} of {self._elements}>"
+
+    @property
+    def representative(self):
+        """It presents a triangle or a basic msepy element (quadrilateral)? Return the object!"""
+        if isinstance(self._i, str):
+            return self._elements.levels[self.level_num].triangles[self.index]
+        else:
+            return self._elements.background.elements[self.index]
+
+    @property
+    def index(self):
+        """
+        when it is a str, it is a triangle. When it is an int, it is a basic msepy element (quadrilateral).
+
+        Returns
+        -------
+
+        """
+        return self._i
+
     @property
     def level_num(self):
         if isinstance(self._i, str):

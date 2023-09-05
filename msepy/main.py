@@ -115,6 +115,7 @@ def _parse_root_forms(abstract_rfs):
     for rf_lin_repr in abstract_rfs:  # then do it for all root-forms at particular time instant
         rf = abstract_rfs[rf_lin_repr]
         pure_lin_repr = rf._pure_lin_repr
+
         if rf._pAti_form['base_form'] is None:
             pass
         else:  # this is a root-form at a particular time-instant.
@@ -133,7 +134,8 @@ def _parse_root_forms(abstract_rfs):
             particular_base_form._ats_particular_forms[rf_lin_repr] = prf
 
     for pure_lin_repr in rf_dict:
-        assert rf_dict[pure_lin_repr].degree is not None
+        assert rf_dict[pure_lin_repr].degree is not None, \
+            f"must be, an abstract root of no degree cannot be implemented."
 
     base['forms'] = rf_dict
 

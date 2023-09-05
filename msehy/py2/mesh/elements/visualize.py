@@ -54,8 +54,9 @@ class MseHyPy2MeshElementsVisualize(Frozen):
 
     def __call__(
             self,
-            sampling_factor=1, saveto=None,
+            sampling_factor=1, saveto=None, color='k',
             show_refining_strength_distribution=True, colormap='Reds', num_levels=20,
+            intermediate=False,
     ):
         """
 
@@ -63,9 +64,11 @@ class MseHyPy2MeshElementsVisualize(Frozen):
         ----------
         sampling_factor
         saveto
+        color
         show_refining_strength_distribution
         colormap
         num_levels
+        intermediate
 
         Returns
         -------
@@ -102,23 +105,29 @@ class MseHyPy2MeshElementsVisualize(Frozen):
 
             mappable = cm.ScalarMappable()
             mappable.set_array(np.array(levels))
-            cb = plt.colorbar(mappable)
-            cb.ax.tick_params()
+            cb = plt.colorbar(mappable, extend='both')
+            cb.ax.tick_params(labelsize=12)
 
         for level in self._elements._levels:
-            fig = level._visualize(fig, density, color='k')
+            fig = level._visualize(fig, density, color=color)
+
+        sym_repr = self._elements.background.abstract._sym_repr
+        plt.title(rf"${sym_repr}$")
 
         # save -----------------------------------------------------------
-        if saveto is not None and saveto != '':
-            plt.savefig(saveto, bbox_inches='tight')
+        if intermediate:
+            return fig
         else:
-            from src.config import _setting, _pr_cache
-
-            if _setting['pr_cache']:
-                _pr_cache(fig, filename='msehy_py2_mesh')
+            if saveto is not None and saveto != '':
+                plt.savefig(saveto, bbox_inches='tight')
             else:
-                matplotlib.use('TkAgg')
-                plt.tight_layout()
-                plt.show(block=_setting['block'])
+                from src.config import _setting, _pr_cache
 
-        return fig
+                if _setting['pr_cache']:
+                    _pr_cache(fig, filename='msehy_py2_mesh')
+                else:
+                    matplotlib.use('TkAgg')
+                    plt.tight_layout()
+                    plt.show(block=_setting['block'])
+
+            return fig

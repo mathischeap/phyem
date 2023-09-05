@@ -4,10 +4,12 @@ r"""
 import numpy as np
 from tools.frozen import Frozen
 from tools.quadrature import Quadrature
+from msepy.mesh.main import MsePyMesh
 from msehy.py2.mesh.elements.level.main import MseHyPy2MeshLevel
 from msehy.py2.mesh.elements.visualize import MseHyPy2MeshElementsVisualize
 from msehy.py2.mesh.elements.coordinate_transformation import MseHyPy2MeshElementsCoordinateTransformation
 from msehy.py2.mesh.elements.fundamental_cell import MseHyPy2MeshFundamentalCell
+from msehy.py2.mesh.faces.fundamental_face import MseHyPy2MeshFundamentalFace
 
 
 class MseHyPy2MeshElements(Frozen):
@@ -16,12 +18,14 @@ class MseHyPy2MeshElements(Frozen):
     def __init__(self, generation, background, region_wise_refining_strength_function, refining_thresholds):
         """"""
         self.___generation___ = generation
+        assert background.__class__ is MsePyMesh, f'Must be!'
         self._background = background
         self._refining(region_wise_refining_strength_function, refining_thresholds)
         self._visualize = None
         self._ct = None
         self._collecting_fundamental_cells()
         self._map = None
+        self._ff_cache = dict()
         self._freeze()
 
     @property
@@ -30,7 +34,7 @@ class MseHyPy2MeshElements(Frozen):
 
     def __repr__(self):
         """repr"""
-        return rf"<{self.generation}th generation msehy-elements UPON {self.background}>"
+        return rf"<G[{self.generation}] msehy2-elements UPON {self.background}>"
 
     @property
     def generation(self):
@@ -67,12 +71,10 @@ class MseHyPy2MeshElements(Frozen):
         """"""
         self._fundamental_cells = dict()
         if self.num_levels == 0:
-            if self.background._elements is None:
-                return
-            else:
-                base_element_num = self.background.elements._num
-                msepy_element_indices = range(base_element_num)
-                fundamental_triangle_indices = set()
+            assert self.background._elements is not None
+            base_element_num = self.background.elements._num
+            msepy_element_indices = range(base_element_num)
+            fundamental_triangle_indices = set()
         else:
             fundamental_triangle_indices = set()
             exclude = set()
@@ -303,3 +305,11 @@ class MseHyPy2MeshElements(Frozen):
             raise NotImplementedError()
 
         return elements_or_triangles_to_be_refined
+
+    def _get_boundary_fundamental_faces(self, ff_index):
+        """"""
+        if ff_index in self._ff_cache:
+            pass
+        else:
+            self._ff_cache[ff_index] = MseHyPy2MeshFundamentalFace(self, ff_index)
+        return self._ff_cache[ff_index]

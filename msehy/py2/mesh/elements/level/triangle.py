@@ -43,7 +43,8 @@ class MseHyPy2MeshElementsLevelTriangle(Frozen):
 
     def __repr__(self):
         """"""
-        return f"<hy-Triangle {self._index} on level[{self._level._level_num}] UPON {self._level.background}>"
+        return (f"<hy-Triangle {self._index} on G[{self._level.generation}] "
+                f"level[{self._level._level_num}] UPON {self._level.background}>")
 
     @property
     def level_num(self):
@@ -257,10 +258,30 @@ class _TriangleCoordinateTransformation(Frozen):
         self._triangle = triangle
         self._topo_ct = triangle._topology._ct
         self._base_ct = triangle._base_element.ct
+        self._edges = {}
         self._freeze()
 
     def __repr__(self):
         return f"<CT of {self._triangle}>"
+
+    def edge(self, edge_index):
+        """
+
+        Parameters
+        ----------
+        edge_index : {'b', 0, 1}
+
+        Returns
+        -------
+
+        """
+        if edge_index in self._edges:
+            pass
+        else:
+            self._edges[edge_index] = _TriangleEdgeCT(
+                self, edge_index
+            )
+        return self._edges[edge_index]
 
     def mapping(self, xi, et):
         """"""
@@ -350,6 +371,65 @@ class _TriangleCoordinateTransformation(Frozen):
                 if i != j:
                     iG[j][i] = iG[i][j]
         return iG
+
+
+class _TriangleEdgeCT(Frozen):
+    """"""
+    def __init__(self, ct, edge_index):
+        """"""
+        assert edge_index in ('b', 0, 1), f"edge index = {edge_index} wrong; it must be among 'b', 0, 1."
+        self._ct = ct
+        self._edge_index = edge_index
+        self._freeze()
+
+    def mapping(self, xi):
+        """"""
+        ei = self._edge_index
+        ones = np.ones_like(xi)
+        if ei == 'b':  # bottom edge
+            return self._ct.mapping(ones, xi)
+        elif ei == 0:  # edge0
+            return self._ct.mapping(xi, -ones)
+        elif ei == 1:  # edge1
+            return self._ct.mapping(xi, ones)
+        else:
+            raise Exception()
+
+    def Jacobian_matrix(self, xi):
+        """"""
+        e = self._edge_index
+        t = xi
+        ones = np.ones_like(t)
+        if e == 'b':  # x+
+            JM = self._ct.Jacobian_matrix(ones, t)
+            return JM[0][1], JM[1][1]
+
+        else:
+            if e == 0:  # y-
+                JM = self._ct.Jacobian_matrix(t, -ones)
+            elif e == 1:  # y+
+                JM = self._ct.Jacobian_matrix(t, ones)
+            else:
+                raise Exception()
+
+            return JM[0][0], JM[1][0]
+
+    def outward_unit_normal_vector(self, xi):
+        """The outward unit norm vector (vec{n})."""
+        JM = self.Jacobian_matrix(xi)
+
+        x, y = JM
+
+        e = self._edge_index
+
+        if e == 1:
+            vx, vy = -y, x
+        else:
+            vx, vy = y, -x
+
+        magnitude = np.sqrt(vx**2 + vy**2)
+
+        return vx / magnitude, vy / magnitude
 
 
 class _TriangleTopology(Frozen):
