@@ -276,6 +276,7 @@ class MseHyPy2MeshElements(Frozen):
         quad = Quadrature(degree, category='Gauss')
         nodes = quad.quad_ndim[:-1]
         weights = quad.quad_ndim[-1]
+
         if element_type == 0:
             xyz = elements_or_triangles.ct.mapping(*nodes, element_range=element_or_triangle_range)
             detJ = elements_or_triangles.ct.Jacobian(*nodes, element_range=element_or_triangle_range)

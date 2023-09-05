@@ -418,6 +418,7 @@ if __name__ == '__main__':
     f1o = obj['f1o']
     f2 = obj['f2']
 
+
     def fx(t, x, y):
         return np.sin(2*np.pi*x) * np.sin(np.pi*y) + t
 

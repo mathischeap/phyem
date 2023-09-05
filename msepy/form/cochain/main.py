@@ -142,7 +142,8 @@ class MsePyRootFormCochain(Frozen):
             return MsePyRootFormStaticCochainVector(self._f, t, self[t].local, self.gathering_matrix)
         else:
             # this one is usually used to receive a cochain.
-            return MsePyRootFormStaticCochainVector(self._f, t, None, self.gathering_matrix)  # the data is None
+            return MsePyRootFormStaticCochainVector(self._f, t, None, self.gathering_matrix)
+            # the data is None (empty)
 
     @property
     def dynamic_vec(self):

@@ -6,7 +6,7 @@ from msepy.form.cochain.time_instant import _CochainAtOneTime
 
 
 class MsePyRootFormCochainPassive(Frozen):
-    """We can only retrieve a cochain at a particular time from a passive cochain. """
+    """From a passive cochain, we can only retrieve, cannot set, an instant cochain."""
 
     def __init__(self, rf, reference_form_cochain):
         """"""
