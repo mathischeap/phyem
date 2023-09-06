@@ -40,10 +40,7 @@ class MseHyPy2Cochain(Frozen):
 
             t = self._parse_t(t)
 
-            if generation is None:
-                generation = self._f.mesh.current_generation
-            else:
-                pass
+            generation = self._f._pg(generation)
             _cochain_at_time = _IrregularCochainAtOneTime(self._f, t, generation)
 
             _cochain_at_time._receive(cochain)
@@ -136,11 +133,11 @@ class MseHyPy2Cochain(Frozen):
         else:
             return len(self._f._base.cochain._tcd)
 
-    @property
-    def gathering_matrix(self):
+    def gathering_matrix(self, generation=None):
         """"""
-        return self._f.space.gathering_matrix(self._f.degree)
+        return self._f.space.gathering_matrix(self._f.degree, generation)
 
-    # @property
-    # def local_numbering(self):
-    #     return self._f.space.local_numbering(self._f.degree)
+    @property
+    def local_numbering(self):
+        """"""
+        return self._f.space.local_numbering(self._f.degree)

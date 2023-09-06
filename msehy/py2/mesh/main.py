@@ -12,6 +12,7 @@ from msepy.mesh.boundary_section.main import MsePyBoundarySectionMesh
 from msepy.main import base as msepy_base
 from msehy.py2.mesh.elements.main import MseHyPy2MeshElements
 from msehy.py2.mesh.faces.main import MseHyPy2MeshFaces
+from msehy.py2.mesh.generations import _MesHyPy2MeshGenerations
 
 
 class MseHyPy2Mesh(Frozen):
@@ -68,6 +69,26 @@ class MseHyPy2Mesh(Frozen):
     def __len__(self):
         """How many generations I am caching."""
         return len(self.___generations___._pool)
+
+    def _pg(self, generation):
+        """"""
+        if generation is None or generation == -1:
+            generation = self.current_generation
+        else:
+            assert generation % 1 == 0, f"generation = {generation} wrong, must be integer."
+
+            if generation >= 0:
+                pass
+            else:  # generation < 0
+                cg = self.current_generation
+                generation = cg + generation + 1
+        assert generation >= 0 and generation % 1 == 0, f"generation={generation} wrong!"
+        return generation
+
+    def __getitem__(self, generation):
+        """Get the representative of `generation`."""
+        generation = self._pg(generation)
+        return self.generations[generation]
 
     @property
     def current_generation(self):
@@ -177,42 +198,6 @@ class MseHyPy2Mesh(Frozen):
             else:
                 pass
         assert self.current_representative.generation == self.current_generation, 'must be!'
-
-
-class _MesHyPy2MeshGenerations(Frozen):
-    """"""
-    def __init__(self, mesh):
-        """"""
-        self._mesh = mesh
-        self._pool = list()
-        self._max_generations = 2
-        self._freeze()
-
-    def _add(self, new_generation):
-        """"""
-        if len(self._pool) >= self._max_generations:
-            self._pool = self._pool[:(self._max_generations-1)]
-        else:
-            pass
-        if self._mesh._is_mesh():
-            assert new_generation.__class__ is MseHyPy2MeshElements
-        else:
-            assert new_generation.__class__ is MseHyPy2MeshFaces
-
-        self._pool.append(new_generation)
-
-    def __getitem__(self, item):
-        if len(self._pool) == 0:
-            _ = self._mesh.current_representative
-        return self._pool[item]
-
-    def __repr__(self):
-        """repr"""
-        return f"<Generation storage of {self._mesh}>"
-
-    def __len__(self):
-        """How many generations I am caching."""
-        return len(self._pool)
 
 
 if __name__ == '__main__':

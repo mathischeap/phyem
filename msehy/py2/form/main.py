@@ -8,7 +8,7 @@ import sys
 if './' not in sys.path:
     sys.path.append('./')
 from tools.frozen import Frozen
-from msehy.py2.spaces.main import MseHyPy2Space
+from msehy.py2.space.main import MseHyPy2Space
 from msehy.py2.form.cf import MseHyPy2ContinuousForm
 from msehy.py2.form.cochain.main import MseHyPy2Cochain
 
@@ -69,6 +69,9 @@ class MseHyPy2RootForm(Frozen):
     def mesh(self):
         """The objective mesh."""
         return self.space.mesh
+
+    def _pg(self, generation):
+        return self.mesh._pg(generation)
 
     @property
     def cf(self):
@@ -167,16 +170,29 @@ if __name__ == '__main__':
     f0o.cf = scalar
     f2.cf = scalar
 
-    print(f2.space[f2.degree])
+    # print(f2.space[f2.degree])
+    # _ = f2.cochain.local_numbering
+    # f2_0 = f2.space[1]
+    _ = f2.space.basis_functions
+    print(_[3])
 
-    # def refining_strength(x, y):
-    #     """"""
-    #     return np.sin(2*np.pi*x) * np.cos(2*np.pi*y)
-    #
-    # # mesh.visualize()
+    def refining_strength(x, y):
+        """"""
+        return np.sin(2*np.pi*x) * np.cos(2*np.pi*y)
+
+    # mesh.visualize()
     # mesh.renew(
     #     {0: refining_strength}, [0.3, 0.5, 0.7, 0.9]
     # )
+    # f2.cochain.gathering_matrix(-1)
+    # mesh.renew(
+    #     {0: refining_strength}, [0.3, 0.5, 0.7, 0.9]
+    # )
+    # f2.cochain.gathering_matrix(-1)
+    # mesh.renew(
+    #     {0: refining_strength}, [0.3, 0.5, 0.7, 0.9]
+    # )
+    # f2.cochain.gathering_matrix(-1)
 
     # f1o.cf = vector
     # f2[0].reduce()

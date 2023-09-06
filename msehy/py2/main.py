@@ -53,7 +53,7 @@ def _clear_self():
 
 from msehy.py2.manifold.main import MseHyPy2Manifold
 from msehy.py2.mesh.main import MseHyPy2Mesh
-from msehy.py2.spaces.main import MseHyPy2Space
+from msehy.py2.space.main import MseHyPy2Space
 from msehy.py2.form.main import MseHyPy2RootForm
 
 
@@ -161,3 +161,19 @@ def config(obj):
         raise NotImplementedError(
             f"msehy-py2 implementation cannot config {obj} of class: {obj.__class__.__name__}."
         )
+
+
+# make new stuffs later on ...
+def new(abstract_obj):
+    """"""
+    if abstract_obj._is_space():   #
+        ab_sp_sym_repr = abstract_obj._sym_repr
+        if ab_sp_sym_repr in base['spaces']:
+            space = base['spaces'][ab_sp_sym_repr]
+        else:
+            space = MseHyPy2Space(abstract_obj)
+            base['spaces'][ab_sp_sym_repr] = space
+        assert abstract_obj._objective is space, f"Make sure we did not switch implementation!"
+        return space
+    else:
+        raise NotImplementedError()

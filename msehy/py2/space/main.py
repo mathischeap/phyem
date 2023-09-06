@@ -6,6 +6,10 @@ from src.spaces.finite import SpaceFiniteSetting
 from msehy.py2.mesh.main import MseHyPy2Mesh
 from msepy.space.degree import PySpaceDegree
 
+from msehy.py2.space.gathering_matrix.main import MseHyPy2GatheringMatrix
+from msehy.py2.space.local_numbering.main import MseHyPy2LocalNumbering
+from msehy.py2.space.basis_functions.main import MseHyPy2BasisFunctions
+
 
 class MseHyPy2Space(Frozen):
     """"""
@@ -20,6 +24,9 @@ class MseHyPy2Space(Frozen):
         self._mesh = mesh
         self._finite = SpaceFiniteSetting(self)  # this is a necessary attribute for a particular space.
         self._degree_cache = {}
+        self._gm = None
+        self._ln = None
+        self._bfs = None
         self._freeze()
 
     @property
@@ -39,6 +46,9 @@ class MseHyPy2Space(Frozen):
     @property
     def mesh(self):
         return self._mesh
+
+    def _pg(self, generation):
+        return self.mesh._pg(generation)
 
     @property
     def esd(self):
@@ -67,5 +77,27 @@ class MseHyPy2Space(Frozen):
         if key in self._degree_cache:
             pass
         else:
+            assert isinstance(degree, int) and degree > 0, f"msehy-py2 can only accept integer degree that > 0."
             self._degree_cache[key] = PySpaceDegree(self, degree)
         return self._degree_cache[key]
+
+    @property
+    def gathering_matrix(self):
+        """Gathering matrix; generation dependent"""
+        if self._gm is None:
+            self._gm = MseHyPy2GatheringMatrix(self)
+        return self._gm
+
+    @property
+    def local_numbering(self):
+        """local numbering; generation in-dependent."""
+        if self._ln is None:
+            self._ln = MseHyPy2LocalNumbering(self)
+        return self._ln
+
+    @property
+    def basis_functions(self):
+        """local numbering; generation in-dependent."""
+        if self._bfs is None:
+            self._bfs = MseHyPy2BasisFunctions(self)
+        return self._bfs
