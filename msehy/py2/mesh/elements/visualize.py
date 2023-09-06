@@ -81,7 +81,7 @@ class MseHyPy2MeshElementsVisualize(Frozen):
         else:
             pass
         plt.rcParams['image.cmap'] = colormap
-        if show_refining_strength_distribution:
+        if show_refining_strength_distribution and self._elements.num_levels > 0:
             from tools.matplot.contour import ___set_contour_levels___
             func = self._elements._refining_function
             r = s = np.linspace(0, 1, density*3)

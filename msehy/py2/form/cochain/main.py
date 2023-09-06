@@ -2,16 +2,14 @@
 r"""
 """
 from tools.frozen import Frozen
-from msepy.form.cochain.time_instant import _CochainAtOneTime
-from msepy.form.cochain.vector.static import MsePyRootFormStaticCochainVector
-from msepy.form.cochain.vector.dynamic import MsePyRootFormDynamicCochainVector
+from msehy.py2.form.cochain.time_instant import _IrregularCochainAtOneTime
 
 
-class MsePyLockCochainError(Exception):
+class MseHyPy2CochainError(Exception):
     """"""
 
 
-class MsePyRootFormCochain(Frozen):
+class MseHyPy2Cochain(Frozen):
     """"""
 
     def __init__(self, rf):
@@ -31,17 +29,22 @@ class MsePyRootFormCochain(Frozen):
         assert t is not None, f"time is None!"
         return round(t, 8)  # to make it safer.
 
-    def _set(self, t, cochain):
+    def _set(self, t, cochain, generation=None):
         """add to cochain at `t` to be cochain."""
         if self._locker:  # cochain locked, cannot set new cochain.
-            raise MsePyLockCochainError(f"Cochain of {self._f} is locked!")
+            raise MseHyPy2CochainError(f"Cochain of {self._f} is locked!")
 
         rf = self._f
 
         if rf._is_base():
+
             t = self._parse_t(t)
 
-            _cochain_at_time = _CochainAtOneTime(self._f, t)
+            if generation is None:
+                generation = self._f.mesh.current_generation
+            else:
+                pass
+            _cochain_at_time = _IrregularCochainAtOneTime(self._f, t, generation)
 
             _cochain_at_time._receive(cochain)
 
@@ -49,7 +52,7 @@ class MsePyRootFormCochain(Frozen):
             self._newest_t = t
 
         else:
-            rf._base.cochain._set(t, cochain)
+            rf._base.cochain._set(t, cochain, generation=generation)
 
     @property
     def newest(self):
@@ -61,18 +64,34 @@ class MsePyRootFormCochain(Frozen):
         else:
             return rf._base.cochain._newest_t
 
+    def __getitem__(self, t):
+        """Return the cochain at time `t`."""
+        if t is None:
+            t = self.newest
+        else:
+            pass
+        rf = self._f
+        if rf._is_base():
+            t = self._parse_t(t)
+            assert t in self._tcd, f"t={t} is not in cochain of form {self._f}."
+            return self._tcd[t]
+        else:
+            return rf._base.cochain[t]
+
     def clean(self, what=None):
         """Clean instances for particular time instants in cochain."""
         rf = self._f
 
         if rf._is_base():
             new_tcd = {}
-            if what is None:  # clear all t except the newest t
-                newest_t = self._newest_t
-                if new_tcd is None:
-                    pass
-                else:
-                    new_tcd[newest_t] = self._tcd[newest_t]
+            if what is None:  # clear all instant cochains that live on old generations of the mesh.
+                # different from the msepy cochain clean method.
+                for t in self._tcd:
+                    cochain = self._tcd[t]
+                    if cochain.generation == self._f.mesh.current_generation:
+                        new_tcd[t] = cochain
+                    else:
+                        pass
 
             elif isinstance(what, (int, float)):
 
@@ -93,9 +112,6 @@ class MsePyRootFormCochain(Frozen):
                 else:
                     raise NotImplementedError(f"cannot clean {what}!")
 
-            elif what == 'all':
-                raise NotImplementedError(f"cannot clean {what}!")
-
             else:
                 raise NotImplementedError(f"cannot clean {what}!")
 
@@ -103,20 +119,6 @@ class MsePyRootFormCochain(Frozen):
 
         else:
             rf._base.cochain.clean(what=what)
-
-    def __getitem__(self, t):
-        """Return the cochain at time `t`."""
-        if t is None:
-            t = self.newest
-        else:
-            pass
-        rf = self._f
-        if rf._is_base():
-            t = self._parse_t(t)
-            assert t in self._tcd, f"t={t} is not in cochain of form {self._f}."
-            return self._tcd[t]
-        else:
-            return rf._base.cochain[t]
 
     def __contains__(self, t):
         """if rf has cochain at time`t`?"""
@@ -139,36 +141,6 @@ class MsePyRootFormCochain(Frozen):
         """"""
         return self._f.space.gathering_matrix(self._f.degree)
 
-    @property
-    def local_numbering(self):
-        return self._f.space.local_numbering(self._f.degree)
-
-    def static_vec(self, t):
-        """"""
-        assert isinstance(t, (int, float)), f"t={t} is wrong."
-        if t in self:
-            return MsePyRootFormStaticCochainVector(self._f, t, self[t].local, self.gathering_matrix)
-        else:
-            # this one is usually used to receive a cochain.
-            return MsePyRootFormStaticCochainVector(self._f, t, None, self.gathering_matrix)
-            # the data is None (empty)
-
-    @property
-    def dynamic_vec(self):
-        """"""
-        return MsePyRootFormDynamicCochainVector(self._f, self._callable_cochain)
-
-    def _callable_cochain(self, *args, **kwargs):
-        """"""
-        t = self._ati_time_caller(*args, **kwargs)
-        return self.static_vec(t)
-
-    def _ati_time_caller(self, *args, **kwargs):
-        """"""
-        if self._f._is_base():
-            t = args[0]
-            assert isinstance(t, (int, float)), f"for general root-form, I receive a real number!"
-        else:
-            ati = self._f._pAti_form['ati']
-            t = ati(**kwargs)()
-        return t
+    # @property
+    # def local_numbering(self):
+    #     return self._f.space.local_numbering(self._f.degree)

@@ -16,6 +16,7 @@ class MsePyContinuousForm(Frozen):
     def __init__(self, rf):
         """"""
         self._f = rf
+        self._regions = self._f.mesh.regions
         self._field = None
         self._shape = None
         self._freeze()
@@ -23,7 +24,7 @@ class MsePyContinuousForm(Frozen):
     def __getitem__(self, t):
         """Return the partial functions at time `t` in all regions."""
         field_t = dict()
-        for i in self._f.mesh.regions:
+        for i in self._regions:
             field_t[i] = self.field[i][t]
         return MsePyContinuousFormPartialTime(self._f, field_t)
 
@@ -74,8 +75,8 @@ class MsePyContinuousForm(Frozen):
 
     def _check_field(self):
         """"""
-        assert (len(self._field) == len(self._f.mesh.regions) and
-                all([region in self._field for region in self._f.mesh.regions])), \
+        assert (len(self._field) == len(self._regions) and
+                all([region in self._field for region in self._regions])), \
             f"cf does not cover all regions."
 
         abstract = self._f.abstract
@@ -88,7 +89,7 @@ class MsePyContinuousForm(Frozen):
 
     def _proceed_field(self, _field):
         """"""
-        regions = self._f.mesh.regions
+        regions = self._regions
         if isinstance(_field, dict):
             pass
         elif isinstance(_field, RegionWiseFunctionWrapper):

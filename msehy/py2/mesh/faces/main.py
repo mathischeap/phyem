@@ -38,7 +38,7 @@ class MseHyPy2MeshFaces(Frozen):
 
     def __repr__(self):
         """repr"""
-        return rf"<{self.generation}th generation msehy2-boundary-faces UPON {self.background.base}>"
+        return rf"<G[{self.generation}] msehy2-boundary-faces UPON {self.background.base}>"
 
     def _collecting_fundamental_faces(self):
         """"""

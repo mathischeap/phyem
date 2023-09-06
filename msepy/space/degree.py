@@ -7,12 +7,13 @@ from tools.quadrature import Quadrature
 from msepy.tools.polynomials import _OneDimPolynomial
 
 
-class MsePySpaceDegree(Frozen):
+class PySpaceDegree(Frozen):
     """"""
 
     def __init__(self, space, degree):
         """"""
         self._space = space
+        self._n = space.n
         self._indicator = self._space.abstract.indicator
         self._parse_degree(degree)
         self._edges = None
@@ -27,22 +28,22 @@ class MsePySpaceDegree(Frozen):
             if isinstance(degree, (int, float)):
                 # for example, degree = 3
                 assert degree % 1 == 0 and degree > 0, f"degree wrong."
-                p = tuple([degree for _ in range(self._space.n)])
+                p = tuple([degree for _ in range(self._n)])
                 nodes = tuple(
-                    [Quadrature(degree, category='Lobatto').quad[0] for _ in range(self._space.n)]
+                    [Quadrature(degree, category='Lobatto').quad[0] for _ in range(self._n)]
                 )
                 ntype = ['Lobatto' for _ in p]
-                p_shape = (self._space.n, )
+                p_shape = (self._n, )
 
             elif isinstance(degree, (list, tuple)) and all([isinstance(_, int) for _ in degree]):
                 # for example, degree = (3, 2, ...)
-                assert len(degree) == self._space.n, f"degree dimension wrong."
+                assert len(degree) == self._n, f"degree dimension wrong."
                 p = tuple(self._degree)
                 nodes = tuple(
                     [Quadrature(_, category='Lobatto').quad[0] for _ in p]
                 )
                 ntype = ['Lobatto' for _ in p]
-                p_shape = (self._space.n, )
+                p_shape = (self._n, )
 
             else:
                 raise NotImplementedError(f"cannot parse degree={degree}.")
@@ -50,34 +51,34 @@ class MsePySpaceDegree(Frozen):
         elif self._indicator == 'bundle':
             if isinstance(degree, (int, float)):
                 assert degree % 1 == 0 and degree > 0, f"degree wrong."
-                p = tuple([[degree for _ in range(self._space.n)] for _ in range(self._space.n)])
-                nodes = [[] for _ in range(self._space.n)]
-                ntype = [[] for _ in range(self._space.n)]
-                for i in range(self._space.n):
-                    for j in range(self._space.n):
+                p = tuple([[degree for _ in range(self._n)] for _ in range(self._n)])
+                nodes = [[] for _ in range(self._n)]
+                ntype = [[] for _ in range(self._n)]
+                for i in range(self._n):
+                    for j in range(self._n):
                         nodes[i].append(
                             Quadrature(p[i][j], category='Lobatto').quad[0]
                         )
                         ntype[i].append('Lobatto')
-                p_shape = (self._space.n, self._space.n)
+                p_shape = (self._n, self._n)
             elif isinstance(degree, (list, tuple)) and all([isinstance(_, (list, tuple)) for _ in degree]):
-                assert len(degree) == self._space.n, f"degree dimension wrong."
+                assert len(degree) == self._n, f"degree dimension wrong."
                 for i, Di in enumerate(degree):
-                    assert len(Di) == self._space.n, f"degree dimension wrong."
+                    assert len(Di) == self._n, f"degree dimension wrong."
                     for j, pij in enumerate(Di):
                         assert isinstance(pij, (int, float)), f"degree[{i}][{j}] = {pij} wrong, it must be a number."
                         assert pij % 1 == 0 and pij > 0, \
                             f"degree[{i}][{j}] = {pij} wrong, it must be a positive integer."
                 p = degree
-                nodes = [[] for _ in range(self._space.n)]
-                ntype = [[] for _ in range(self._space.n)]
-                for i in range(self._space.n):
-                    for j in range(self._space.n):
+                nodes = [[] for _ in range(self._n)]
+                ntype = [[] for _ in range(self._n)]
+                for i in range(self._n):
+                    for j in range(self._n):
                         nodes[i].append(
                             Quadrature(p[i][j], category='Lobatto').quad[0]
                         )
                         ntype[i].append('Lobatto')
-                p_shape = (self._space.n, self._space.n)
+                p_shape = (self._n, self._n)
 
             else:
                 raise NotImplementedError(f"cannot parse degree.p={degree} for `bundle` spaces.")

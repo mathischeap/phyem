@@ -14,7 +14,7 @@ from msepy.space.reduce.main import MsePySpaceReduce
 from msepy.space.reconstruct.main import MsePySpaceReconstruct
 from msepy.space.error.main import MsePySpaceError
 from msepy.space.norm.main import MsePySpaceNorm
-from msepy.space.degree import MsePySpaceDegree
+from msepy.space.degree import PySpaceDegree
 from msepy.space.reconstruction_matrix.main import MsePyReconstructMatrix
 
 from msepy.mesh.main import MsePyMesh
@@ -36,6 +36,7 @@ class MsePySpace(Frozen):
         assert mesh.__class__ is MsePyMesh, f"mesh type wrong."
         self._mesh = mesh
         self._finite = SpaceFiniteSetting(self)  # this is a necessary attribute for a particular space.
+        self._degree_cache = {}
         self._local_numbering = None
         self._gathering_matrix = None
         self._incidence_matrix = None
@@ -49,7 +50,6 @@ class MsePySpace(Frozen):
         self._error = None
         self._norm = None
         self._ip = None
-        self._degree_cache = {}
         self._find = None
         self._freeze()
 
@@ -99,7 +99,7 @@ class MsePySpace(Frozen):
         if key in self._degree_cache:
             pass
         else:
-            self._degree_cache[key] = MsePySpaceDegree(self, degree)
+            self._degree_cache[key] = PySpaceDegree(self, degree)
         return self._degree_cache[key]
 
     @property

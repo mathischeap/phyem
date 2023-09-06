@@ -10,6 +10,7 @@ from time import time
 if './' not in sys.path:
     sys.path.append('./')
 from tools.frozen import Frozen
+from msepy.space.main import MsePySpace
 from msepy.form.cf import MsePyContinuousForm
 from msepy.form.cochain.main import MsePyRootFormCochain
 from msepy.form.cochain.passive import MsePyRootFormCochainPassive
@@ -30,6 +31,7 @@ class MsePyRootForm(Frozen):
         self._abstract = abstract_root_form
         abstract_space = abstract_root_form.space
         self._space = abstract_space._objective
+        assert self.space.__class__ is MsePySpace, f"space must be a {MsePySpace}."
         degree = self.abstract._degree
         assert degree is not None, f"{abstract_root_form} has no degree."
         self._degree = None  # it will be updated to degree below

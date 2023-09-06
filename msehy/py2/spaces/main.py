@@ -4,6 +4,7 @@ r"""
 from tools.frozen import Frozen
 from src.spaces.finite import SpaceFiniteSetting
 from msehy.py2.mesh.main import MseHyPy2Mesh
+from msepy.space.degree import PySpaceDegree
 
 
 class MseHyPy2Space(Frozen):
@@ -18,6 +19,7 @@ class MseHyPy2Space(Frozen):
         assert mesh.__class__ is MseHyPy2Mesh, f"mesh type {mesh} wrong."
         self._mesh = mesh
         self._finite = SpaceFiniteSetting(self)  # this is a necessary attribute for a particular space.
+        self._degree_cache = {}
         self._freeze()
 
     @property
@@ -37,3 +39,33 @@ class MseHyPy2Space(Frozen):
     @property
     def mesh(self):
         return self._mesh
+
+    @property
+    def esd(self):
+        return self.abstract.mesh.manifold.esd
+
+    @property
+    def ndim(self):
+        return self.abstract.mesh.ndim
+
+    @property
+    def m(self):
+        return self.esd
+
+    @property
+    def n(self):
+        return self.ndim
+
+    @property
+    def manifold(self):
+        """The manifold."""
+        return self._mesh.manifold
+
+    def __getitem__(self, degree):
+        """"""
+        key = str(degree)
+        if key in self._degree_cache:
+            pass
+        else:
+            self._degree_cache[key] = PySpaceDegree(self, degree)
+        return self._degree_cache[key]

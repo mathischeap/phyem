@@ -25,6 +25,7 @@ class MseHyPy2Mesh(Frozen):
         self.___current_faces___ = None
         self.___last_elements___ = None
         self.___last_faces___ = None
+        self.___generations___ = _MesHyPy2MeshGenerations(self)
         self._freeze()
 
     def __repr__(self):
@@ -34,11 +35,6 @@ class MseHyPy2Mesh(Frozen):
             return f"<MseHyPy2-Mesh " + self._abstract._sym_repr + super_repr
         else:
             return f"<MseHyPy2-Boundary-Section " + self._abstract._sym_repr + super_repr
-
-    @property
-    def current_generation(self):
-        """Generation."""
-        return self.___current_generation___
 
     def _is_mesh(self):
         """"""
@@ -57,6 +53,26 @@ class MseHyPy2Mesh(Frozen):
     def visualize(self):
         """visualization object."""
         return self.current_representative.visualize
+
+    def _set_max_generation_cache(self, max_generations):
+        """"""
+        assert max_generations % 1 == 0 and max_generations >= 2, \
+            f"max_generations={max_generations} wrong; it must be an integer >= 2"
+        self.generations._max_generations = max_generations
+
+    @property
+    def generations(self):
+        """"""
+        return self.___generations___
+
+    def __len__(self):
+        """How many generations I am caching."""
+        return len(self.___generations___._pool)
+
+    @property
+    def current_generation(self):
+        """Generation."""
+        return self.___current_generation___
 
     @property
     def current_representative(self):
@@ -78,6 +94,7 @@ class MseHyPy2Mesh(Frozen):
             self.___current_elements___ = MseHyPy2MeshElements(
                 0, self.background, None, []
             )  # initialize the elements as a not-refined one.
+            self.generations._add(self.___current_elements___)
 
         return self.___current_elements___
 
@@ -102,6 +119,10 @@ class MseHyPy2Mesh(Frozen):
                 self.background,
                 mesh.current_elements
             )
+            assert self.___current_faces___.generation == 0, f'Must be!'
+
+            self.generations._add(self.___current_faces___)
+
         return self.___current_faces___
 
     def renew(self, region_wise_refining_strength_function, refining_thresholds):
@@ -117,6 +138,14 @@ class MseHyPy2Mesh(Frozen):
         -------
 
         """
+        # -------------------------------------------------------------------------------------------
+        from msehy.py2.main import base
+        all_meshes = base['meshes']
+        for sym in all_meshes:
+            mesh = all_meshes[sym]
+            _ = mesh.current_representative   # make sure the 0th generation is made.
+
+        # ------------------------------------------------------------------------------------------
         self.___current_generation___ += 1
         assert self.background.__class__ is MsePyMesh, \
             f"can only renew based on a msepy mesh background."
@@ -127,28 +156,63 @@ class MseHyPy2Mesh(Frozen):
             region_wise_refining_strength_function,
             refining_thresholds
         )
-
         self.___last_elements___ = self.current_elements    # save last elements,
-        # in above line: do not use ___current_elements___
         self.___current_elements___ = new_elements  # override the current elements.
-
+        self.generations._add(self.current_representative)
         # -- renew dependent boundary section faces. --------------------------------------------------
-        from msehy.py2.main import base
         from msepy.mesh.boundary_section.main import MsePyBoundarySectionMesh
-        all_meshes = base['meshes']
         for sym in all_meshes:
             mesh = all_meshes[sym]
             if mesh.background.__class__ is MsePyBoundarySectionMesh:
                 if mesh.background.base == self.background:
                     # this mesh is a msehy-py2 mesh upon a dependent boundary section.
-                    mesh.___last_faces___ = mesh.current_faces  # will also make sure the 0th generation is made.
-                    # in above line: do not use ___current_faces__
+                    mesh.___last_faces___ = mesh.current_faces
                     mesh.___current_faces___ = MseHyPy2MeshFaces(
                         mesh.background,
                         self.current_elements
                     )
+                    mesh.generations._add(mesh.current_representative)
+                    mesh.___current_generation___ += 1
+                    assert mesh.current_generation == self.current_generation, 'must be!'
             else:
                 pass
+        assert self.current_representative.generation == self.current_generation, 'must be!'
+
+
+class _MesHyPy2MeshGenerations(Frozen):
+    """"""
+    def __init__(self, mesh):
+        """"""
+        self._mesh = mesh
+        self._pool = list()
+        self._max_generations = 2
+        self._freeze()
+
+    def _add(self, new_generation):
+        """"""
+        if len(self._pool) >= self._max_generations:
+            self._pool = self._pool[:(self._max_generations-1)]
+        else:
+            pass
+        if self._mesh._is_mesh():
+            assert new_generation.__class__ is MseHyPy2MeshElements
+        else:
+            assert new_generation.__class__ is MseHyPy2MeshFaces
+
+        self._pool.append(new_generation)
+
+    def __getitem__(self, item):
+        if len(self._pool) == 0:
+            _ = self._mesh.current_representative
+        return self._pool[item]
+
+    def __repr__(self):
+        """repr"""
+        return f"<Generation storage of {self._mesh}>"
+
+    def __len__(self):
+        """How many generations I am caching."""
+        return len(self._pool)
 
 
 if __name__ == '__main__':
@@ -180,15 +244,19 @@ if __name__ == '__main__':
     msehy.config(mesh)([13, 13])    # element layout
 
     # msh = msehy.base['meshes'][msh]
-    for msh in msehy.base['meshes']:
-        msh = msehy.base['meshes'][msh]
-        cr = msh.current_representative
-        # print(cr)
-        # print(msh)
+    # for msh in msehy.base['meshes']:
+    #     msh = msehy.base['meshes'][msh]
+    #     cr = msh.current_representative
+    # print(cr)
+    # print(msh)
 
     def refining_strength(x, y):
         """"""
         return np.sin(2*np.pi*x) * np.cos(2*np.pi*y)
+
+    mesh.renew(
+        {0: refining_strength}, [0.3, 0.5, 0.7, 0.9]
+    )
 
     mesh.renew(
         {0: refining_strength}, [0.3, 0.5, 0.7, 0.9]
@@ -208,7 +276,7 @@ if __name__ == '__main__':
     #     # if isinstance(p2, str):
     #     #     print(i, elements[p2].pair_to)
     #     print(i, triangle.angle_degree)
-    mesh.visualize()
+    # mesh.visualize()
     # print(len(current_elements), current_elements.num_levels)
     # print(current_elements.map)
     # for i in current_elements:
@@ -219,3 +287,8 @@ if __name__ == '__main__':
     # for msh in msehy.base['meshes']:
     #     msh = msehy.base['meshes'][msh]
     #     msh.visualize()
+
+    for msh in msehy.base['meshes']:
+        msh = msehy.base['meshes'][msh]
+        # msh.visualize()
+        print(msh.generations[-1])

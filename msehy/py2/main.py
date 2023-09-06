@@ -159,5 +159,5 @@ def config(obj):
         return _msepy_Config(obj)
     else:
         raise NotImplementedError(
-            f"msehy-py2 implementation cannot config {obj} of class: {obj.__class__.__name__}"
+            f"msehy-py2 implementation cannot config {obj} of class: {obj.__class__.__name__}."
         )
