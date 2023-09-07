@@ -11,17 +11,15 @@ class MseHyPy2BasisFunctionsLambda(Frozen):
     def __init__(self, space, degree):
         r"""Store required info."""
         self._k = space.abstract.k
-        self._n = space.abstract.n  # manifold dimensions
-        self._m = space.abstract.m  # esd
         self._orientation = space.abstract.orientation
         self._bfs = space[degree].bfs
         self._freeze()
 
     def __call__(self, *meshgrid_xi_et_sg):
         r"""meshgrid means we have to do meshgrid to the 1d xi, et, sg ..."""
-        m, n, k = self._m, self._n, self._k
+        k = self._k
 
-        for i in range(n):
+        for i in range(2):
             ref_coo = meshgrid_xi_et_sg[i]
             assert ref_coo.__class__.__name__ in ('list', 'ndarray'), \
                 " <bf> : xi_et_sg[{}].type={} is wrong.".format(
@@ -38,12 +36,12 @@ class MseHyPy2BasisFunctionsLambda(Frozen):
             else:
                 pass
 
-        if self._n == 2 and self._k == 1:
-            return getattr(self, f"_m{m}_n{n}_k{k}_{self._orientation}")(*meshgrid_xi_et_sg)
+        if self._k == 1:
+            return getattr(self, f"_k{k}_{self._orientation}")(*meshgrid_xi_et_sg)
         else:
-            return getattr(self, f"_m{m}_n{n}_k{k}")(*meshgrid_xi_et_sg)
+            return getattr(self, f"_k{k}")(*meshgrid_xi_et_sg)
 
-    def _m2_n2_k2(self, *domain):
+    def _k2(self, *domain):
         r""""""
         xi, eta = np.meshgrid(*domain, indexing='ij')
         mesh_grid = (xi.ravel('F'), eta.ravel('F'))
@@ -59,8 +57,39 @@ class MseHyPy2BasisFunctionsLambda(Frozen):
         }
         return mesh_grid, bf
 
-    def _m2_n2_k1_inner(self, *domain):
-        r""""""
+    def _k1_inner(self, *domain):
+        r"""For example, p = 3
+
+        component 0; dx:
+
+        ^ y
+        |
+        |
+
+                     11
+                 10
+               9
+               6  7  8
+        top <  3  4  5
+               0
+                  1
+                     2
+
+        -------------------------> x
+
+        component 1; dy:
+
+                    8
+                  7
+               6
+        top <  3  4 5
+               0
+                  1
+                    2
+
+        -------------------------> x
+
+        """
         xi, eta = np.meshgrid(*domain, indexing='ij')
         mesh_grid = (xi.ravel('F'), eta.ravel('F'))
 
@@ -73,8 +102,8 @@ class MseHyPy2BasisFunctionsLambda(Frozen):
         bf_edge_det = np.kron(ed_et, lb_xi)
         _basis_q_ = (bf_edge_dxi, bf_edge_det)
 
-        basis_dy = np.kron(ed_et, lb_xi)
-        basis_dx = np.kron(lb_et[1:, :], ed_xi)
+        basis_dx = np.kron(lb_et, ed_xi)
+        basis_dy = np.kron(ed_et, lb_xi[1:, :])
         _basis_t_ = (basis_dx, basis_dy)
 
         bf = {
@@ -83,13 +112,47 @@ class MseHyPy2BasisFunctionsLambda(Frozen):
         }
         return mesh_grid, bf
 
-    def _m2_n2_k1_outer(self, *domain):
-        r""""""
+    def _k1_outer(self, *domain):
+        r"""For example, p = 3
+
+        component 0; dy:
+
+                    8
+                  7
+               6
+        top <  3  4 5
+               0
+                  1
+                    2
+
+        -------------------------> x
+
+
+        component 1; dx:
+
+                      11
+                  10
+               9
+               6  7   8
+        top <  3  4  5
+               0
+                  1
+                     2
+
+        Parameters
+        ----------
+        domain
+
+        Returns
+        -------
+
+        """
         xi, eta = np.meshgrid(*domain, indexing='ij')
         mesh_grid = (xi.ravel('F'), eta.ravel('F'))
 
         lb_xi = self._bfs[0].node_basis(x=domain[0])
         ed_et = self._bfs[1].edge_basis(x=domain[1])
+
         ed_xi = self._bfs[0].edge_basis(x=domain[0])
         lb_et = self._bfs[1].node_basis(x=domain[1])
 
@@ -97,8 +160,8 @@ class MseHyPy2BasisFunctionsLambda(Frozen):
         bf_edge_dxi = np.kron(lb_et, ed_xi)
         _basis_q_ = (bf_edge_det, bf_edge_dxi)
 
-        basis_dy = np.kron(ed_et, lb_xi)
-        basis_dx = np.kron(lb_et[1:, :], ed_xi)
+        basis_dy = np.kron(ed_et, lb_xi[1:, :])
+        basis_dx = np.kron(lb_et, ed_xi)
         _basis_t_ = (basis_dy, basis_dx)
 
         bf = {
@@ -107,8 +170,31 @@ class MseHyPy2BasisFunctionsLambda(Frozen):
         }
         return mesh_grid, bf
 
-    def _m2_n2_k0(self, *domain):
-        r""""""
+    def _k0(self, *domain):
+        r"""
+        ^ y
+        |
+        |
+            /|
+           / |
+          /. |
+        0/  .|
+         \ 4 |.
+         1\ 5|
+           \ |6
+          2 \|
+             3
+
+        o---------------> x
+
+        Parameters
+        ----------
+        domain
+
+        Returns
+        -------
+
+        """
         xi, eta = np.meshgrid(*domain, indexing='ij')
         mesh_grid = (xi.ravel('F'), eta.ravel('F'))
 
@@ -118,12 +204,13 @@ class MseHyPy2BasisFunctionsLambda(Frozen):
         bf = np.kron(bf_et, bf_xi)
         _basis_q_ = (bf,)
 
-        basis_singular = np.sum(np.kron(bf_et[0, :], bf_xi), axis=0)[np.newaxis, :]
-        basis_regular = np.kron(bf_et[1:, :], bf_xi)
+        basis_singular = np.sum(np.kron(bf_et, bf_xi[0, :]), axis=0)[np.newaxis, :]
+        basis_regular = np.kron(bf_et, bf_xi[1:, :])
         _basis_t_ = (np.vstack((basis_singular, basis_regular)),)
 
         bf = {
             'q': _basis_q_,   # for quadrilateral or triangle cell
             't': _basis_t_,   # for quadrilateral or triangle cell
         }
+
         return mesh_grid, bf

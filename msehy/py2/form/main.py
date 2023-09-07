@@ -11,6 +11,9 @@ from tools.frozen import Frozen
 from msehy.py2.space.main import MseHyPy2Space
 from msehy.py2.form.cf import MseHyPy2ContinuousForm
 from msehy.py2.form.cochain.main import MseHyPy2Cochain
+from msehy.py2.form.static import MseHyPy2RootFormStaticCopy
+from msehy.py2.form.visualize.main import MseHyPy2RootFormVisualize
+from msehy.py2.form.coboundary import MseHyPy2RootFormCoboundary
 
 
 class MseHyPy2RootForm(Frozen):
@@ -34,12 +37,31 @@ class MseHyPy2RootForm(Frozen):
         self._ats_particular_forms = dict()   # the abstract forms based on this form.
         self._cf = None
         self._cochain = None
+        self._visualize = None
+        self._coboundary = None
         self._freeze()
 
     def __repr__(self):
         """repr"""
         ab_rf_repr = self._abstract.__repr__().split(' at ')[0][1:]
         return "<MseHyPy2 " + ab_rf_repr + '>'
+
+    def __getitem__(self, t_g):
+        """return the realtime copy of `self` at time `t`."""
+        if t_g is None:
+            t_g = self.cochain.newest  # newest time
+        else:
+            pass
+        t, g = t_g
+        t = self.cochain._parse_t(t)  # round off the truncation error to make it clear.
+        g = self._pg(g)
+        if isinstance(t, (int, float)):
+            if self._is_base():
+                return MseHyPy2RootFormStaticCopy(self, t, g)
+            else:
+                return MseHyPy2RootFormStaticCopy(self._base, t, g)
+        else:
+            raise Exception(f"cannot accept t={t}.")
 
     def _is_base(self):
         """Am I a base root-form (not abstracted at a time.)"""
@@ -70,7 +92,12 @@ class MseHyPy2RootForm(Frozen):
         """The objective mesh."""
         return self.space.mesh
 
+    def _pt(self, t):
+        """parse t"""
+        return self.cochain._parse_t(t)
+
     def _pg(self, generation):
+        """parse generation."""
         return self.mesh._pg(generation)
 
     @property
@@ -98,6 +125,90 @@ class MseHyPy2RootForm(Frozen):
         if self._cochain is None:
             self._cochain = MseHyPy2Cochain(self)
         return self._cochain
+
+    def reduce(self, t, g, update_cochain=True, target=None, **kwargs):
+        """reduce `self.cf` if ``targe`` is None else ``target``
+        at time `t`, on generation `g`, and decide whether update the cochain.
+        """
+        g = self._pg(g)
+
+        if target is None:
+            cochain_local = self.space.reduce(self.cf, t, g, self.degree, **kwargs)
+
+        else:
+            # remember, space reduce only accept cf object. So we do the following
+            if target.__class__ is MseHyPy2ContinuousForm:
+                pass
+            else:
+                template_cf = MseHyPy2ContinuousForm(self)  # make a new `cf`, it does not affect the `cf` of self.
+                template_cf.field = target
+                target = template_cf
+
+            cochain_local = self.space.reduce(target, t, g, self.degree, **kwargs)
+
+        if update_cochain:
+            self[(t, g)].cochain = cochain_local
+        else:
+            pass
+
+        return cochain_local
+
+    def reconstruct(self, t, g, *meshgrid, **kwargs):
+        """Reconstruct self at time `t`."""
+        if t is None:
+            t = self.cochain.newest
+        else:
+            assert isinstance(t, (int, float)), f"t={t} type wrong!"
+
+        cochain = self.cochain[(t, g)]
+        assert self.degree == cochain._f.degree, f"degree does not match"
+        return self.space.reconstruct(g, cochain, *meshgrid, **kwargs)
+
+    def error(self, t=None, g=None, quad_degree=None, **kwargs):
+        """error"""
+        if t is None:
+            t = self.cochain.newest[0]
+        else:
+            assert isinstance(t, (int, float)), f"t={t} type wrong!"
+
+        if g is None:
+            g = self.cochain.newest[1]
+        else:
+            pass
+        g = self._pg(g)
+        cochain = self.cochain[(t, g)]
+        assert self.degree == cochain._f.degree, f"degree does not match"
+        return self.space.error(self.cf, cochain, quad_degree=quad_degree, **kwargs)
+
+    def norm(self, t=None, g=None, quad_degree=None, **kwargs):
+        """norm"""
+        if t is None:
+            t = self.cochain.newest[0]
+        else:
+            assert isinstance(t, (int, float)), f"t={t} type wrong!"
+
+        if g is None:
+            g = self.cochain.newest[1]
+        else:
+            pass
+        g = self._pg(g)
+        cochain = self.cochain[(t, g)]
+        assert self.degree == cochain._f.degree, f"degree does not match"
+        return self.space.norm(cochain, quad_degree=quad_degree, **kwargs)
+
+    @property
+    def visualize(self):
+        """visualize"""
+        if self._visualize is None:
+            self._visualize = MseHyPy2RootFormVisualize(self)
+        return self._visualize
+
+    @property
+    def coboundary(self):
+        """coboundary"""
+        if self._coboundary is None:
+            self._coboundary = MseHyPy2RootFormCoboundary(self)
+        return self._coboundary
 
 
 if __name__ == '__main__':
@@ -135,7 +246,7 @@ if __name__ == '__main__':
     mesh = obj['mesh']
 
     msehy.config(manifold)('crazy', c=0.0, bounds=[[0, 2], [0, 2]], periodic=False)
-    msehy.config(mesh)(15)
+    msehy.config(mesh)(7)
 
     # mesh.visualize()
 
@@ -168,27 +279,51 @@ if __name__ == '__main__':
 
     f0i.cf = scalar
     f0o.cf = scalar
+    f1i.cf = vector
+    f1o.cf = vector
     f2.cf = scalar
-
-    # print(f2.space[f2.degree])
-    # _ = f2.cochain.local_numbering
-    # f2_0 = f2.space[1]
-    _ = f2.space.basis_functions
-    print(_[3])
 
     def refining_strength(x, y):
         """"""
         return np.sin(2*np.pi*x) * np.cos(2*np.pi*y)
 
+    mesh.renew(
+        {0: refining_strength}, [0.3, ]
+    )
     # mesh.visualize()
+
+    # f0i[(0, 1)].reduce()
+    # f0o[(0, 1)].reduce()
+    # f1i[(0, 1)].reduce()
+    # f1o[(0, 1)].reduce()
+    f2[(0, 0)].reduce()
+
+    # print(f0i[(0, 1)].error())
+    # print(f0o[(0, 1)].error())
+    # print(f1i[(0, 1)].error())
+    # print(f1o[(0, 1)].error())
+    # print(f2[(0, 1)].error())
+
+    # f1o[(0, 1)].visualize()
+    # f1i[(0, 1)].visualize()
+    # f0i[(0, 1)].visualize()
+    # f0o[(0, 1)].visualize()
+    f2[(0, 0)].visualize()
+
+    # print(f2.space[f2.degree])
+    # _ = f2.cochain.local_numbering
+    # f2_0 = f2.space[1]
+    # _ = f2.space.basis_functions
+    # print(f2.space[3].gathering_matrix)
+
+    # f0i.space.basis_functions[3](np.array([-1,0,1]), np.array([-1,0,1]))
+
+    # # f2.cochain.gathering_matrix(-1)
     # mesh.renew(
     #     {0: refining_strength}, [0.3, 0.5, 0.7, 0.9]
     # )
     # f2.cochain.gathering_matrix(-1)
-    # mesh.renew(
-    #     {0: refining_strength}, [0.3, 0.5, 0.7, 0.9]
-    # )
-    # f2.cochain.gathering_matrix(-1)
+
     # mesh.renew(
     #     {0: refining_strength}, [0.3, 0.5, 0.7, 0.9]
     # )

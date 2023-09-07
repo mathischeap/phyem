@@ -9,6 +9,12 @@ from msepy.space.degree import PySpaceDegree
 from msehy.py2.space.gathering_matrix.main import MseHyPy2GatheringMatrix
 from msehy.py2.space.local_numbering.main import MseHyPy2LocalNumbering
 from msehy.py2.space.basis_functions.main import MseHyPy2BasisFunctions
+from msehy.py2.space.num_local_dofs.main import MseHyPy2NumLocalDofs
+from msehy.py2.space.num_local_dof_components.main import MseHyPy2NumLocalDofComponents
+from msehy.py2.space.reduce.main import MseHyPySpaceReduce
+from msehy.py2.space.reconstruct.main import MseHyPy2SpaceReconstruct
+from msehy.py2.space.error.main import MseHyPy2SpaceError
+from msehy.py2.space.norm.main import MseHyPy2SpaceNorm
 
 
 class MseHyPy2Space(Frozen):
@@ -27,6 +33,12 @@ class MseHyPy2Space(Frozen):
         self._gm = None
         self._ln = None
         self._bfs = None
+        self._num_local_dofs = None
+        self._num_local_dof_components = None
+        self._reduce = None
+        self._reconstruct = None
+        self._error = None
+        self._norm = None
         self._freeze()
 
     @property
@@ -77,7 +89,8 @@ class MseHyPy2Space(Frozen):
         if key in self._degree_cache:
             pass
         else:
-            assert isinstance(degree, int) and degree > 0, f"msehy-py2 can only accept integer degree that > 0."
+            assert isinstance(degree, int) and degree > 0, \
+                f"msehy-py2 can only accept integer degree that > 0."
             self._degree_cache[key] = PySpaceDegree(self, degree)
         return self._degree_cache[key]
 
@@ -101,3 +114,45 @@ class MseHyPy2Space(Frozen):
         if self._bfs is None:
             self._bfs = MseHyPy2BasisFunctions(self)
         return self._bfs
+
+    @property
+    def num_local_dofs(self):
+        """local numbering; generation in-dependent."""
+        if self._num_local_dofs is None:
+            self._num_local_dofs = MseHyPy2NumLocalDofs(self)
+        return self._num_local_dofs
+
+    @property
+    def num_local_dof_components(self):
+        """local numbering; generation in-dependent."""
+        if self._num_local_dof_components is None:
+            self._num_local_dof_components = MseHyPy2NumLocalDofComponents(self)
+        return self._num_local_dof_components
+
+    @property
+    def reduce(self):
+        """Reduction; generation dependent"""
+        if self._reduce is None:
+            self._reduce = MseHyPySpaceReduce(self)
+        return self._reduce
+
+    @property
+    def reconstruct(self):
+        """Reconstruction; generation dependent"""
+        if self._reconstruct is None:
+            self._reconstruct = MseHyPy2SpaceReconstruct(self)
+        return self._reconstruct
+
+    @property
+    def error(self):
+        """Reconstruction; generation dependent"""
+        if self._error is None:
+            self._error = MseHyPy2SpaceError(self)
+        return self._error
+
+    @property
+    def norm(self):
+        """Reconstruction; generation dependent"""
+        if self._norm is None:
+            self._norm = MseHyPy2SpaceNorm(self)
+        return self._norm

@@ -51,9 +51,9 @@ class MsePySpaceNormLambda(Frozen):
             start, end = self._mesh.elements._elements_in_region(ri)
             dis_v = v[start:end, :]
             metric = J(range(start, end))
-            integral.extend(
+            integral.append(
                 np.einsum(
-                    'ij -> i',
+                    'ij -> ',
                     dis_v ** d * metric * quad_weights,
                     optimize='optimal'
                 )
@@ -80,9 +80,9 @@ class MsePySpaceNormLambda(Frozen):
             dis_v = v[start:end, :]
             metric = J(range(start, end))
             diff = dis_u ** d + dis_v ** d
-            integral.extend(
+            integral.append(
                 np.einsum(
-                    'eij, i, j -> i',
+                    'eij, i, j -> ',
                     diff * metric,
                     *quad_weights,
                     optimize='optimal'
@@ -106,9 +106,9 @@ class MsePySpaceNormLambda(Frozen):
             metric = J(range(start, end))
 
             diff = dis_v ** d
-            integral.extend(
+            integral.append(
                 np.einsum(
-                    'eij, i, j -> i',
+                    'eij, i, j -> ',
                     diff * metric,
                     *quad_weights,
                     optimize='optimal'
@@ -132,9 +132,9 @@ class MsePySpaceNormLambda(Frozen):
             metric = J(range(start, end))
 
             diff = dis_v ** d
-            integral.extend(
+            integral.append(
                 np.einsum(
-                    'eijk, i, j, k -> i',
+                    'eijk, i, j, k -> ',
                     diff * metric,
                     *quad_weights,
                     optimize='optimal'
@@ -163,9 +163,9 @@ class MsePySpaceNormLambda(Frozen):
             dis_w = w[start:end, :]
             metric = J(range(start, end))
             diff = dis_u ** d + dis_v ** d + dis_w ** d
-            integral.extend(
+            integral.append(
                 np.einsum(
-                    'eijk, i, j, k -> i',
+                    'eijk, i, j, k -> ',
                     diff * metric,
                     *quad_weights,
                     optimize='optimal')

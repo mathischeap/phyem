@@ -14,6 +14,7 @@ class MseHyPy2MeshFundamentalCell(Frozen):
         self._map = None
         self._metric_signature = None
         self._ct = None
+        self._type = 't' if isinstance(index, str) else 'q'
         self._freeze()
 
     def __repr__(self):
@@ -27,6 +28,10 @@ class MseHyPy2MeshFundamentalCell(Frozen):
             return self._elements.levels[self.level_num].triangles[self.index]
         else:
             return self._elements.background.elements[self.index]
+
+    @property
+    def region(self):
+        return self.representative.region
 
     @property
     def index(self):

@@ -82,6 +82,7 @@ class MseHyPy2Mesh(Frozen):
             else:  # generation < 0
                 cg = self.current_generation
                 generation = cg + generation + 1
+
         assert generation >= 0 and generation % 1 == 0, f"generation={generation} wrong!"
         return generation
 

@@ -49,7 +49,7 @@ class _MesHyPy2MeshGenerations(Frozen):
     def _add(self, new_generation):
         """"""
         # delete extra generations
-        if len(self._pool) >= int(1.5 * self._max_generations):  # * 1.5 as a margin.
+        if len(self._pool) >= int(1.5 * self._max_generations):  # * 1.5 for a margin.
             new_pool = dict()
             keys = list(self._pool.keys())
             keys.sort()
@@ -65,7 +65,14 @@ class _MesHyPy2MeshGenerations(Frozen):
         else:
             assert new_generation.__class__ is MseHyPy2MeshFaces
 
-        self._pool[new_generation.generation] = new_generation
+        g = new_generation.generation
+        assert g not in self._pool, f"must be"
+        if len(self._pool) > 0:
+            assert g == max(self._pool.keys()) + 1, 'must be'
+        else:
+            assert len(self._pool) == 0 and g == 0, 'must be'
+
+        self._pool[g] = new_generation
 
     def __getitem__(self, generation):
         """"""

@@ -15,7 +15,7 @@ class MseHyPy2GatheringMatrix(Frozen):
         self._Lambda = None
         self._freeze()
 
-    def __call__(self, degree, generation=None):
+    def __call__(self, degree, generation):
         """"""
         indicator = self._space.abstract.indicator
         if indicator == 'Lambda':

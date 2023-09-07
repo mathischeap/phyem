@@ -12,7 +12,6 @@ class MseHyPy2GatheringMatrixLambda(Frozen):
         self._space = space
         self._mesh = space.mesh
         self._k = space.abstract.k
-        self._n = space.abstract.n  # manifold dimensions
         self._orientation = space.abstract.orientation
         self._cache = dict()
         self._freeze()
@@ -27,14 +26,14 @@ class MseHyPy2GatheringMatrixLambda(Frozen):
             return cache_gm
         else:
             pass
-        if self._n == 2 and self._k == 1:
-            method_name = f"_n{self._n}_k{self._k}_{self._orientation}"
+        if self._k == 1:
+            method_name = f"_k{self._k}_{self._orientation}"
         else:
-            method_name = f"_n{self._n}_k{self._k}"
-        gm = getattr(self, method_name)(p)
+            method_name = f"_k{self._k}"
+        gm = getattr(self, method_name)(generation, p)
         self._mesh.generations.sync_cache(self._cache, generation, cache_key, data=gm)
         return gm
 
-    def _n2_k2(self, p):
+    def _k2(self, generation, p):
         """"""
-        raise NotImplementedError()
+        raise NotImplementedError(generation, p)

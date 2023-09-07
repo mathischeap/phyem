@@ -43,6 +43,7 @@ class MsePyElement(Frozen):
 
     @property
     def region(self):
+        """I am in this region (index)"""
         return self._region
 
 

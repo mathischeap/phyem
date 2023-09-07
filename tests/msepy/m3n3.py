@@ -178,8 +178,8 @@ orders = PR.visualize(
     xlabel=r'$1/K$',
     ylabel=r"$\left\| f^1_h\right\|_{L^2-\mathrm{error}}$",
     order_text_size=15,
-    plot_order_triangle={0: {'tp': (0.02, -0.5), 'order': 2},
-                         1: {'tp': (0.02, 0.2), 'order': 4}},
+    plot_order_triangle={0: {'tp': (0.02, -0.5), 'order': 1},
+                         1: {'tp': (0.02, 0.2), 'order': 3}},
     saveto=current_dir + '/images/f1_3d_error.png',
     return_order=True,
 )
@@ -197,8 +197,8 @@ orders = PR.visualize(
     xlabel=r'$1/K$',
     ylabel=r"$\left\| f^2_h\right\|_{L^2-\mathrm{error}}$",
     order_text_size=15,
-    plot_order_triangle={0: {'tp': (0.02, -0.5), 'order': 2},
-                         1: {'tp': (0.02, 0.2), 'order': 4}},
+    plot_order_triangle={0: {'tp': (0.02, -0.5), 'order': 1},
+                         1: {'tp': (0.02, 0.2), 'order': 3}},
     saveto=current_dir + '/images/f2_3d_error.png',
     return_order=True,
 )
@@ -216,8 +216,8 @@ orders = PR.visualize(
     xlabel=r'$1/K$',
     ylabel=r"$\left\| f^3_h\right\|_{L^2-\mathrm{error}}$",
     order_text_size=15,
-    plot_order_triangle={0: {'tp': (0.02, -0.5), 'order': 2},
-                         1: {'tp': (0.02, 0.2), 'order': 4}},
+    plot_order_triangle={0: {'tp': (0.02, -0.5), 'order': 1},
+                         1: {'tp': (0.02, 0.2), 'order': 3}},
     saveto=current_dir + '/images/f3_3d_error.png',
     return_order=True,
 )

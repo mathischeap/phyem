@@ -158,8 +158,16 @@ class PySpaceDegree(Frozen):
 
     @property
     def gathering_matrix(self):
-        """"""
-        return self._space.gathering_matrix(self._degree)
+        """For msehy-py spaces, access gathering matrix here only for more recent generation mesh!"""
+        from msepy.mesh.main import MsePyMesh
+        from msehy.py2.mesh.main import MseHyPy2Mesh
+        mesh_class = self._space.mesh.__class__
+        if mesh_class is MsePyMesh:
+            return self._space.gathering_matrix(self._degree)
+        elif mesh_class is MseHyPy2Mesh:
+            return self._space.gathering_matrix(self._degree, None)
+        else:
+            raise Exception()
 
     @property
     def incidence_matrix(self):
