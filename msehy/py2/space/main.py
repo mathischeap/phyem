@@ -11,6 +11,7 @@ from msehy.py2.space.local_numbering.main import MseHyPy2LocalNumbering
 from msehy.py2.space.basis_functions.main import MseHyPy2BasisFunctions
 from msehy.py2.space.num_local_dofs.main import MseHyPy2NumLocalDofs
 from msehy.py2.space.num_local_dof_components.main import MseHyPy2NumLocalDofComponents
+from msehy.py2.space.local_dof_representative_coordinates.main import MseHyPy2LocalDofsRepresentativeCoo
 from msehy.py2.space.reduce.main import MseHyPySpaceReduce
 from msehy.py2.space.reconstruct.main import MseHyPy2SpaceReconstruct
 from msehy.py2.space.error.main import MseHyPy2SpaceError
@@ -35,6 +36,7 @@ class MseHyPy2Space(Frozen):
         self._bfs = None
         self._num_local_dofs = None
         self._num_local_dof_components = None
+        self._local_dof_rc = None
         self._reduce = None
         self._reconstruct = None
         self._error = None
@@ -128,6 +130,12 @@ class MseHyPy2Space(Frozen):
         if self._num_local_dof_components is None:
             self._num_local_dof_components = MseHyPy2NumLocalDofComponents(self)
         return self._num_local_dof_components
+
+    @property
+    def local_dof_representative_coordinates(self):
+        if self._local_dof_rc is None:
+            self._local_dof_rc = MseHyPy2LocalDofsRepresentativeCoo(self)
+        return self._local_dof_rc
 
     @property
     def reduce(self):

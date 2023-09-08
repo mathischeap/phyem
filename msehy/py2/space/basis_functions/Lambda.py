@@ -65,7 +65,6 @@ class MseHyPy2BasisFunctionsLambda(Frozen):
         ^ y
         |
         |
-
                      11
                  10
                9
@@ -74,11 +73,13 @@ class MseHyPy2BasisFunctionsLambda(Frozen):
                0
                   1
                      2
-
         -------------------------> x
 
         component 1; dy:
 
+        ^ y
+        |
+        |
                     8
                   7
                6
@@ -86,7 +87,6 @@ class MseHyPy2BasisFunctionsLambda(Frozen):
                0
                   1
                     2
-
         -------------------------> x
 
         """
@@ -117,6 +117,9 @@ class MseHyPy2BasisFunctionsLambda(Frozen):
 
         component 0; dy:
 
+        ^ y
+        |
+        |
                     8
                   7
                6
@@ -124,12 +127,13 @@ class MseHyPy2BasisFunctionsLambda(Frozen):
                0
                   1
                     2
-
         -------------------------> x
-
 
         component 1; dx:
 
+        ^ y
+        |
+        |
                       11
                   10
                9
@@ -138,6 +142,7 @@ class MseHyPy2BasisFunctionsLambda(Frozen):
                0
                   1
                      2
+        -------------------------> x
 
         Parameters
         ----------

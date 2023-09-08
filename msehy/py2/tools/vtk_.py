@@ -4,7 +4,7 @@ r"""
 from tools.frozen import Frozen
 
 
-class BuildVtkUnstruct(Frozen):
+class BuildVtkUnStruct(Frozen):
     """"""
 
     def __init__(self):

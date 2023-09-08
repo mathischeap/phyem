@@ -34,7 +34,7 @@ class MseHyPy2LocalNumberingLambda(Frozen):
         _q_ = (local_numbering,)  # do not remove (,)
 
         assert px == py
-        ln = np.zeros((px+1, py+1))
+        ln = np.zeros((px+1, py+1), dtype=int)
         ln[1:, :] = np.arange(1, 1+px*(py+1)).reshape((px, py+1), order='F')
         _t_ = (ln, )
 
@@ -59,6 +59,7 @@ class MseHyPy2LocalNumberingLambda(Frozen):
         LN_dy = np.arange(0, px*py).reshape((px, py), order='F')
         LN_dx = np.arange(px*py, px*py + px*(py+1)).reshape((px, py+1), order='F')
         _t_ = (LN_dy, LN_dx)
+
         return {
             'q': _q_,
             't': _t_,

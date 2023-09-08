@@ -9,13 +9,13 @@ class MseHyPy2BasisFunctions(Frozen):
     """"""
 
     def __init__(self, space):
-        """"""
+        """Generation in-dependent."""
         self._space = space
         self._Lambda_cache = {}
         self._freeze()
 
     def __getitem__(self, degree):
-        """Return"""
+        """Generation in-dependent."""
         indicator = self._space.abstract.indicator
         key = str(degree)
         if indicator in ('Lambda', ):

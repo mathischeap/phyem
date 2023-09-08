@@ -4,7 +4,7 @@ Export to corresponding vtk files.
 """
 import numpy as np
 from tools.frozen import Frozen
-from msehy.py2.tools.vtk_ import BuildVtkUnstruct
+from msehy.py2.tools.vtk_ import BuildVtkUnStruct
 
 
 class MseHyPy2RootFormVisualizeVTK(Frozen):
@@ -29,14 +29,12 @@ class MseHyPy2RootFormVisualizeVTK(Frozen):
             else:
                 pass
             abs_sp = self._f.space.abstract
-            m = abs_sp.m
-            n = abs_sp.n
             k = abs_sp.k
 
             indicator = self._f._space.abstract.indicator
 
             if indicator in ('Lambda', ):
-                return getattr(self, f'_Lambda_m{m}_n{n}_k{k}')(
+                return getattr(self, f'_Lambda_k{k}')(
                     file_path, sampling_factor,
                     data_only=data_only, builder=builder
                 )
@@ -77,7 +75,7 @@ class MseHyPy2RootFormVisualizeVTK(Frozen):
 
             return 0
 
-    def _Lambda_m2_n2_k0(
+    def _Lambda_k0(
               self, file_path, sampling_factor,
               data_only=False, builder=True
     ):
@@ -98,18 +96,18 @@ class MseHyPy2RootFormVisualizeVTK(Frozen):
 
         if data_only:
             if builder:
-                vtk_builder = BuildVtkUnstruct(x, y, cell_layout=p)
+                vtk_builder = BuildVtkUnStruct(x, y, cell_layout=p)
                 return vtk_builder, {self._f.name: v}
             else:
                 return {self._f.name: v}
 
         else:
-            vtk_builder = BuildVtkUnstruct(x, y, cell_layout=p)
+            vtk_builder = BuildVtkUnStruct(x, y, cell_layout=p)
             vtk_builder(file_path, point_data={self._f.name: v})
 
             return 0
 
-    def _Lambda_m2_n2_k1(
+    def _Lambda_k1(
             self, file_path, sampling_factor,
             data_only=False, builder=True
     ):
@@ -129,17 +127,45 @@ class MseHyPy2RootFormVisualizeVTK(Frozen):
 
         if data_only:
             if builder:
-                vtk_builder = BuildVtkUnstruct(x, y, cell_layout=p)
+                vtk_builder = BuildVtkUnStruct(x, y, cell_layout=p)
                 return vtk_builder, {self._f.name: v, }
             else:
                 return {self._f.name: v, }
 
         else:
-            vtk_builder = BuildVtkUnstruct(x, y, cell_layout=p)
+            vtk_builder = BuildVtkUnStruct(x, y, cell_layout=p)
             vtk_builder(file_path, point_data={self._f.name: v, })
 
             return 0
 
-    def _Lambda_m2_n2_k2(self, *args, **kwargs):
+    def _Lambda_k2(
+            self, file_path, sampling_factor,
+            data_only=False, builder=True
+    ):
         """"""
-        return self._Lambda_m2_n2_k0(*args, **kwargs)
+        p = self._f.space[self._f.degree].p
+        p = [int(i*sampling_factor*1.5) for i in p]
+        for i, p_i in enumerate(p):
+            if p_i < 1:
+                p[i] = 1
+            else:
+                pass
+
+        nodes = [np.linspace(-1, 1, p_i+1) for p_i in p]
+        t = self._f.visualize._t
+        xy, v = self._f[t].reconstruct(*nodes, ravel=True)
+        x, y = xy
+        v = v[0]
+
+        if data_only:
+            if builder:
+                vtk_builder = BuildVtkUnStruct(x, y, cell_layout=p)
+                return vtk_builder, {self._f.name: v}
+            else:
+                return {self._f.name: v}
+
+        else:
+            vtk_builder = BuildVtkUnStruct(x, y, cell_layout=p)
+            vtk_builder(file_path, point_data={self._f.name: v})
+
+            return 0

@@ -233,7 +233,7 @@ if __name__ == '__main__':
     f1o = L1o.make_form('f_o^1', '1-f-o')
     f2 = L2.make_form('f^2', '2-f')
 
-    ph.space.finite(5)
+    ph.space.finite(2)
 
     msehy, obj = ph.fem.apply('msehy', locals())
 
@@ -288,7 +288,7 @@ if __name__ == '__main__':
         return np.sin(2*np.pi*x) * np.cos(2*np.pi*y)
 
     mesh.renew(
-        {0: refining_strength}, [0.3, ]
+        {0: refining_strength}, [0.3, 0.5, 0.7, 0.88]
     )
     # mesh.visualize()
 
@@ -296,7 +296,7 @@ if __name__ == '__main__':
     # f0o[(0, 1)].reduce()
     # f1i[(0, 1)].reduce()
     # f1o[(0, 1)].reduce()
-    f2[(0, 0)].reduce()
+    # f2[(0, 0)].reduce()
 
     # print(f0i[(0, 1)].error())
     # print(f0o[(0, 1)].error())
@@ -308,7 +308,16 @@ if __name__ == '__main__':
     # f1i[(0, 1)].visualize()
     # f0i[(0, 1)].visualize()
     # f0o[(0, 1)].visualize()
-    f2[(0, 0)].visualize()
+    # f2[(0, 0)].visualize()
+
+    gm = f1i.cochain.gathering_matrix(1)
+
+    # rc = f1i.space.local_dof_representative_coordinates(f0i.degree)
+
+    # print(rc)
+
+    # for i in gm:
+    #     print(i, gm[i])
 
     # print(f2.space[f2.degree])
     # _ = f2.cochain.local_numbering

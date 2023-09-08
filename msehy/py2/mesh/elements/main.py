@@ -106,6 +106,14 @@ class MseHyPy2MeshElements(Frozen):
             self._fundamental_cells[i] = MseHyPy2MeshFundamentalCell(self, i)
 
     @property
+    def _q_range(self):
+        return self._msepy_element_indices
+
+    @property
+    def _t_range(self):
+        return self._fundamental_triangle_indices
+
+    @property
     def leveling(self):
         """the levels indicating a refining."""
         return self._leveling
