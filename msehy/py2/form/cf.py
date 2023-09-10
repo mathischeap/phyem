@@ -1,7 +1,5 @@
 # -*- coding: utf-8 -*-
 r"""
-pH-lib@RAM-EEMCS-UT
-Yi Zhang
 """
 from msepy.form.cf import MsePyContinuousForm
 from tools.functions.region_wise_wrapper import RegionWiseFunctionWrapper

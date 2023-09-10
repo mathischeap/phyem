@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 r"""
 """
+from typing import Dict
 import numpy as np
 from tools.frozen import Frozen
 from tools.quadrature import Quadrature
@@ -15,6 +16,7 @@ class MseHyPy2SpaceReduceLambda(Frozen):
         self._space = space
         self._cache221 = {}
         self._cache222 = {}
+        self._checked = False
         self._freeze()
 
     def __call__(self, cf, t, g, degree, **kwargs):
@@ -24,9 +26,37 @@ class MseHyPy2SpaceReduceLambda(Frozen):
         k = abs_sp.k
         orientation = abs_sp.orientation
         if k == 1:
-            return getattr(self, f'_k{k}_{orientation}')(cf, t, g, degree, **kwargs)
+            local_cochain = getattr(self, f'_k{k}_{orientation}')(cf, t, g, degree, **kwargs)
         else:
-            return getattr(self, f'_k{k}')(cf, t, g, degree, **kwargs)
+            local_cochain = getattr(self, f'_k{k}')(cf, t, g, degree, **kwargs)
+
+        if k == 0:
+            self._check_consistence(degree, g, local_cochain)
+        elif k == 1:
+            self._check_consistence(degree, g, local_cochain)
+        else:
+            pass
+        return local_cochain
+
+    def _check_consistence(self, degree, g, local_cochain):
+        """"""
+        iGM = self._space.gathering_matrix(degree, g)
+        if iGM.num_dofs < 15000 and self._checked is False:  # only check it once when it is affordable!
+            cochain_dict: Dict = dict()
+            for dof in range(iGM.num_dofs):
+                cochain_dict[dof] = None
+            for index in local_cochain:
+                gm = iGM[index]
+                cochain = local_cochain[index]
+                for j, _ in enumerate(gm):
+                    if cochain_dict[_] is None:
+                        cochain_dict[_] = cochain[j]
+                    else:
+                        assert np.isclose(cochain_dict[_], cochain[j])
+            self._checked = True  # only do it once.
+        else:
+            pass
+        return 0  # exit correctly.
 
     def _k0(self, cf, t, generation, degree):
         """0-form on 1-manifold in 1d space."""
@@ -140,9 +170,21 @@ class MseHyPy2SpaceReduceLambda(Frozen):
 
         # time to merge the two cochain components
         cochain_local = dict()
+        csm = self._space.basis_functions.cochain_switch_matrix(degree, generation)
+
         for e in cochain_local_dx:
+            _dx = cochain_local_dx[e]
+            _dy = cochain_local_dy[e]
+
+            if e in csm:
+                csm0, csm1 = csm[e]
+                _dx = csm0 @ _dx
+                _dy = csm1 @ _dy
+            else:
+                pass
+
             cochain_local[e] = np.concatenate(
-                [cochain_local_dx[e], cochain_local_dy[e]]
+                [_dx, _dy]
             )
         return cochain_local
 
@@ -228,9 +270,20 @@ class MseHyPy2SpaceReduceLambda(Frozen):
 
         # time to merge the two cochain components
         cochain_local = dict()
+        csm = self._space.basis_functions.cochain_switch_matrix(degree, generation)
         for e in cochain_local_dx:
+            _dy = cochain_local_dy[e]
+            _dx = cochain_local_dx[e]
+
+            if e in csm:
+                csm0, csm1 = csm[e]
+                _dy = csm0 @ _dy
+                _dx = csm1 @ _dx
+            else:
+                pass
+
             cochain_local[e] = np.concatenate(
-                [cochain_local_dy[e], cochain_local_dx[e]]
+                [_dy, _dx]
             )
         return cochain_local
 

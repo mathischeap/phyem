@@ -75,34 +75,41 @@ class MseHyPy2RootFormVisualizeVTK(Frozen):
 
             return 0
 
-    def _Lambda_k0(
-              self, file_path, sampling_factor,
-              data_only=False, builder=True
-    ):
-        """"""
+    def _parse_p_nodes(self, sampling_factor, anti_top_corner_singularity=0):
         p = self._f.space[self._f.degree].p
-        p = [int(i*sampling_factor*1.5) for i in p]
+        p = [int(i*sampling_factor) for i in p]
         for i, p_i in enumerate(p):
             if p_i < 1:
                 p[i] = 1
             else:
                 pass
+        interval = 0.03
+        nodes = [np.linspace(-1 + anti_top_corner_singularity*interval, 1, _+1) for _ in p]
+        return p, nodes
 
-        nodes = [np.linspace(-1, 1, p_i+1) for p_i in p]
+    def _Lambda_k0(
+              self, file_path, sampling_factor,
+              data_only=False, builder=True
+    ):
+        """"""
         t = self._f.visualize._t
-        xy, v = self._f[t].reconstruct(*nodes, ravel=True)
-        x, y = xy
+        g = self._f.visualize._g
+        p, nodes = self._parse_p_nodes(sampling_factor)
+
+        xy, v = self._f[(t, g)].reconstruct(*nodes, ravel=False)
         v = v[0]
 
         if data_only:
             if builder:
-                vtk_builder = BuildVtkUnStruct(x, y, cell_layout=p)
+                numbering = self._f.space.gathering_matrix.Lambda._k0(g, p)
+                vtk_builder = BuildVtkUnStruct(numbering, xy, cell_layout=p)
                 return vtk_builder, {self._f.name: v}
             else:
                 return {self._f.name: v}
 
         else:
-            vtk_builder = BuildVtkUnStruct(x, y, cell_layout=p)
+            numbering = self._f.space.gathering_matrix.Lambda._k0(g, p)
+            vtk_builder = BuildVtkUnStruct(numbering, xy, cell_layout=p)
             vtk_builder(file_path, point_data={self._f.name: v})
 
             return 0
@@ -112,29 +119,24 @@ class MseHyPy2RootFormVisualizeVTK(Frozen):
             data_only=False, builder=True
     ):
         """"""
-        p = self._f.space[self._f.degree].p
-        p = [int(i*sampling_factor*1.5) for i in p]
-        for i, p_i in enumerate(p):
-            if p_i < 1:
-                p[i] = 1
-            else:
-                pass
-
-        nodes = [np.linspace(-1, 1, p_i+1) for p_i in p]
         t = self._f.visualize._t
-        xy, v = self._f[t].reconstruct(*nodes, ravel=True)
-        x, y = xy
+        g = self._f.visualize._g
+        p, nodes = self._parse_p_nodes(sampling_factor, anti_top_corner_singularity=1)
+
+        xy, v = self._f[(t, g)].reconstruct(*nodes, ravel=False)
 
         if data_only:
             if builder:
-                vtk_builder = BuildVtkUnStruct(x, y, cell_layout=p)
-                return vtk_builder, {self._f.name: v, }
+                numbering = self._f.space.gathering_matrix.Lambda._k0(g, p)
+                vtk_builder = BuildVtkUnStruct(numbering, xy, cell_layout=p)
+                return vtk_builder, {self._f.name: v}
             else:
-                return {self._f.name: v, }
+                return {self._f.name: v}
 
         else:
-            vtk_builder = BuildVtkUnStruct(x, y, cell_layout=p)
-            vtk_builder(file_path, point_data={self._f.name: v, })
+            numbering = self._f.space.gathering_matrix.Lambda._k0(g, p)
+            vtk_builder = BuildVtkUnStruct(numbering, xy, cell_layout=p)
+            vtk_builder(file_path, point_data={self._f.name: v})
 
             return 0
 
@@ -143,29 +145,24 @@ class MseHyPy2RootFormVisualizeVTK(Frozen):
             data_only=False, builder=True
     ):
         """"""
-        p = self._f.space[self._f.degree].p
-        p = [int(i*sampling_factor*1.5) for i in p]
-        for i, p_i in enumerate(p):
-            if p_i < 1:
-                p[i] = 1
-            else:
-                pass
-
-        nodes = [np.linspace(-1, 1, p_i+1) for p_i in p]
         t = self._f.visualize._t
-        xy, v = self._f[t].reconstruct(*nodes, ravel=True)
-        x, y = xy
+        g = self._f.visualize._g
+        p, nodes = self._parse_p_nodes(sampling_factor, anti_top_corner_singularity=2)
+
+        xy, v = self._f[(t, g)].reconstruct(*nodes, ravel=False)
         v = v[0]
 
         if data_only:
             if builder:
-                vtk_builder = BuildVtkUnStruct(x, y, cell_layout=p)
+                numbering = self._f.space.gathering_matrix.Lambda._k0(g, p)
+                vtk_builder = BuildVtkUnStruct(numbering, xy, cell_layout=p)
                 return vtk_builder, {self._f.name: v}
             else:
                 return {self._f.name: v}
 
         else:
-            vtk_builder = BuildVtkUnStruct(x, y, cell_layout=p)
+            numbering = self._f.space.gathering_matrix.Lambda._k0(g, p)
+            vtk_builder = BuildVtkUnStruct(numbering, xy, cell_layout=p)
             vtk_builder(file_path, point_data={self._f.name: v})
 
             return 0

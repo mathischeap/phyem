@@ -64,38 +64,37 @@ class MseHyPy2MeshFundamentalCell(Frozen):
                 for _mp in self._map:
                     if isinstance(_mp, tuple):
                         ind = _mp[0]
-                        ele = ind[0:ind.index('=')]
-                        if ele in facing_msepy_elements:
+                        if ind in self._elements:
                             pass
                         else:
-                            facing_msepy_elements.append(ele)
+                            ele = ind[0:ind.index('=')]
+                            if ele in facing_msepy_elements:
+                                pass
+                            else:
+                                facing_msepy_elements.append(ele)
 
-                if self.level_num < self._elements.num_levels - 1:
-                    edge_indices = ['b', 0, 1]
-                    next_level = self._elements.levels[self.level_num + 1]
-                    local_map = next_level.triangles.local_map
-                    for next_i in local_map:
-                        if next_i[0:next_i.index('=')] in facing_msepy_elements:
-                            _next_map_i = local_map[next_i]
-                            for j, obj in enumerate(_next_map_i):
-                                if isinstance(obj, tuple) and obj[0] == self.index:
-                                    edge = edge_indices[j]
-                                    sign = obj[2]
-                                    correct_map = (next_i, edge, sign)
-
-                                    for k, _ in enumerate(self._map):
-                                        if isinstance(_, tuple) and _[0] in next_i:
-                                            self._map[k] = correct_map
-                                else:
-                                    pass
-
-                else:
+                if len(facing_msepy_elements) == 0:
                     pass
+                else:
+                    if self.level_num < self._elements.num_levels - 1:
+                        edge_indices = ['b', 0, 1]
+                        next_level = self._elements.levels[self.level_num + 1]
+                        local_map = next_level.triangles.local_map
+                        for next_i in local_map:
+                            if next_i[0:next_i.index('=')] in facing_msepy_elements:
+                                _next_map_i = local_map[next_i]
+                                for j, obj in enumerate(_next_map_i):
+                                    if isinstance(obj, tuple) and obj[0] == self.index:
+                                        edge = edge_indices[j]
+                                        sign = obj[2]
+                                        correct_map = (next_i, edge, sign)
+
+                                        for k, _ in enumerate(self._map):
+                                            if isinstance(_, tuple) and _[0] in next_i:
+                                                self._map[k] = correct_map
 
             else:  # msepy element
-
                 raw_map = list(self._elements.background.elements.map[self._i])
-
                 for j, obj in enumerate(raw_map):
                     if obj == -1:
                         raw_map[j] = None
@@ -113,6 +112,7 @@ class MseHyPy2MeshFundamentalCell(Frozen):
                         else:
                             raise Exception
                 self._map = raw_map
+
         return self._map
 
     @property

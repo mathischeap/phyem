@@ -72,16 +72,21 @@ class MseHyPy2Mesh(Frozen):
 
     def _pg(self, generation):
         """"""
-        if generation is None or generation == -1:
+        if isinstance(generation, (int, float)):
+            if generation == -1:
+                generation = self.current_generation
+            else:
+                assert generation % 1 == 0, f"generation = {generation} wrong, must be integer."
+
+                if generation >= 0:
+                    pass
+                else:  # generation < 0
+                    cg = self.current_generation
+                    generation = cg + generation + 1
+        elif generation is None:
             generation = self.current_generation
         else:
-            assert generation % 1 == 0, f"generation = {generation} wrong, must be integer."
-
-            if generation >= 0:
-                pass
-            else:  # generation < 0
-                cg = self.current_generation
-                generation = cg + generation + 1
+            raise Exception(f"{generation}")
 
         assert generation >= 0 and generation % 1 == 0, f"generation={generation} wrong!"
         return generation

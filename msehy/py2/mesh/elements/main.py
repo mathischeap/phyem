@@ -26,6 +26,8 @@ class MseHyPy2MeshElements(Frozen):
         self._collecting_fundamental_cells()
         self._map = None
         self._ff_cache = dict()
+        self._opposite_pairs_inner_ = None
+        self._opposite_pairs_outer_ = None
         self._freeze()
 
     @property
@@ -63,7 +65,7 @@ class MseHyPy2MeshElements(Frozen):
         """collection of the map of all fundamental cells."""
         if self._map is None:
             self._map = dict()
-            for i in self:
+            for i in self._fundamental_cells:
                 self._map[i] = self[i].map
         return self._map
 
@@ -100,10 +102,258 @@ class MseHyPy2MeshElements(Frozen):
         self._fundamental_triangle_indices = fundamental_triangle_indices
 
         # initialize fundamental cells -----------------------------------------
+        _fundamental_cells = dict()
         for i in msepy_element_indices:
-            self._fundamental_cells[i] = MseHyPy2MeshFundamentalCell(self, i)
+            _fundamental_cells[i] = MseHyPy2MeshFundamentalCell(self, i)
         for i in fundamental_triangle_indices:
-            self._fundamental_cells[i] = MseHyPy2MeshFundamentalCell(self, i)
+            _fundamental_cells[i] = MseHyPy2MeshFundamentalCell(self, i)
+
+        good_sequence = list()
+        for i in self.background.elements:
+            if i in self._q_range:
+                fc_indices = [i]
+            else:
+                look_for = f'{i}='
+                len_lf = len(look_for)
+                str_indices = list()
+                for t_i in self._t_range:
+                    if t_i[:len_lf] == look_for:
+                        str_indices.append(t_i)
+                    else:
+                        pass
+                str_indices.sort(
+                    key=lambda x: x.split('=')[1]
+                )
+                fc_indices = str_indices
+
+            good_sequence.extend(fc_indices)
+
+        for i in good_sequence:
+            self._fundamental_cells[i] = _fundamental_cells[i]
+    
+    @property
+    def opposite_pairs_inner(self):
+        """Return the pairs that have different positive directions."""
+        if self._opposite_pairs_inner_ is None:
+
+            self._opposite_pairs_inner_ = dict()
+
+            for index in self:
+                map_i = self.map[index]
+                if isinstance(index, str):  # triangle fc
+                    for j, mp in zip(['b', 0, 1], map_i):
+                        if mp is None:
+                            pass
+                        else:
+                            if isinstance(mp, tuple):
+                                sign = mp[2]
+                                location = mp[:2]
+                            elif isinstance(mp, list):
+                                sign = mp[3]
+                                location = tuple(mp[:3])
+                            else:
+                                raise Exception
+
+                            if sign == '-':
+                                self_position = (index, j)
+
+                                if location not in self._opposite_pairs_inner_:
+                                    assert self_position not in self._opposite_pairs_inner_, 'must be!'
+                                    self._opposite_pairs_inner_[self_position] = location
+                                else:
+                                    assert self._opposite_pairs_inner_[location] == self_position, 'must be!'
+                            else:
+                                assert sign == '+'
+
+                else:
+                    for j, mp in enumerate(map_i):
+                        if mp is None:
+                            pass
+                        else:
+                            if isinstance(mp, tuple):
+                                sign = mp[2]
+                                location = mp[:2]
+                            elif isinstance(mp, list):
+                                sign = mp[3]
+                                location = tuple(mp[:3])
+                            else:
+                                sign = '+'
+                                location = ''
+
+                            if sign == '-':
+                                m = j // 2
+                                n = j % 2
+
+                                self_position = (index, m, n)
+
+                                if location not in self._opposite_pairs_inner_:
+                                    assert self_position not in self._opposite_pairs_inner_, 'must be!'
+                                    self._opposite_pairs_inner_[self_position] = location
+                                else:
+                                    assert self._opposite_pairs_inner_[location] == self_position, 'must be!'
+                            else:
+                                assert sign == '+'
+
+            # check _opposite_pairs: to make it safer ---------------------------
+            for index in self.map:
+                map_i = self.map[index]
+                if isinstance(index, str):
+                    for edge_index, mp in zip(['b', 0, 1], map_i):
+                        self_location = (index, edge_index)
+                        if isinstance(mp, tuple):
+                            other_location = mp[:2]
+                            if mp[-1] == '-':
+                                if self_location in self._opposite_pairs_inner_:
+                                    assert self._opposite_pairs_inner_[self_location] == other_location
+                                else:
+                                    assert self._opposite_pairs_inner_[other_location] == self_location
+                            else:
+                                assert (self_location not in self._opposite_pairs_inner_ and
+                                        other_location not in self._opposite_pairs_inner_)
+                        elif isinstance(mp, list):
+                            other_location = tuple(mp[:3])
+                            if mp[-1] == '-':
+                                if self_location in self._opposite_pairs_inner_:
+                                    assert self._opposite_pairs_inner_[self_location] == other_location
+                                else:
+                                    assert self._opposite_pairs_inner_[other_location] == self_location
+                            else:
+                                assert (self_location not in self._opposite_pairs_inner_ and
+                                        other_location not in self._opposite_pairs_inner_)
+                        else:
+                            assert mp is None or mp % 1 == 0
+                else:
+                    for edge_index, mp in zip([0, 1, 2, 3], map_i):
+
+                        m = edge_index // 2
+                        n = edge_index % 2
+                        self_location = (index, m, n)
+
+                        if isinstance(mp, tuple):
+                            other_location = mp[:2]
+                            if mp[-1] == '-':
+                                if self_location in self._opposite_pairs_inner_:
+                                    assert self._opposite_pairs_inner_[self_location] == other_location
+                                else:
+                                    assert self._opposite_pairs_inner_[other_location] == self_location
+                            else:
+                                assert (self_location not in self._opposite_pairs_inner_ and
+                                        other_location not in self._opposite_pairs_inner_)
+                        elif isinstance(mp, list):
+                            other_location = tuple(mp[:3])
+                            if mp[-1] == '-':
+                                if self_location in self._opposite_pairs_inner_:
+                                    assert self._opposite_pairs_inner_[self_location] == other_location
+                                else:
+                                    assert self._opposite_pairs_inner_[other_location] == self_location
+                            else:
+                                assert (self_location not in self._opposite_pairs_inner_ and
+                                        other_location not in self._opposite_pairs_inner_)
+                        else:
+                            assert mp is None or mp % 1 == 0
+
+        return self._opposite_pairs_inner_
+
+    @property
+    def opposite_pairs_outer(self):
+        if self._opposite_pairs_outer_ is None:
+
+            _pd_ = dict()
+
+            for index in self:
+                _map = self.map[index]
+                if isinstance(index, str):  # index represents a triangle
+                    for j, mp in zip(['b', 0, 1], _map):
+                        if mp is None:
+                            pass
+                        else:
+                            self_place = (index, j)
+
+                            if isinstance(mp, list):
+                                other_place = tuple(mp[:3])
+                            elif isinstance(mp, tuple):
+                                other_place = mp[:2]
+                            else:
+                                raise Exception
+                            ds = self._find_orientation_at(self_place)
+                            do = self._find_orientation_at(other_place)
+
+                            if ds != do:
+                                pass
+                            else:
+
+                                if other_place not in _pd_:
+                                    assert self_place not in _pd_, 'must be!'
+                                    _pd_[self_place] = other_place
+                                else:
+                                    assert _pd_[other_place] == self_place, 'must be!'
+
+                else:  # index represents a quadrilateral
+                    assert len(_map) == 4, 'must be'
+                    for j, mp in enumerate(_map):
+                        m = j // 2
+                        n = j % 2
+                        if isinstance(mp, (list, tuple)):
+                            self_place = (index, m, n)
+
+                            if isinstance(mp, list):
+                                other_place = tuple(mp[:3])
+                            elif isinstance(mp, tuple):
+                                other_place = mp[:2]
+                            else:
+                                raise Exception
+
+                            ds = self._find_orientation_at(self_place)
+                            do = self._find_orientation_at(other_place)
+
+                            if ds != do:
+                                pass
+                            else:
+
+                                if other_place not in _pd_:
+                                    assert self_place not in _pd_, 'must be!'
+                                    _pd_[self_place] = other_place
+                                else:
+                                    assert _pd_[other_place] == self_place, 'must be!'
+
+                        else:
+                            assert mp is None or mp % 1 == 0
+
+            self._opposite_pairs_outer_ = _pd_
+
+        return self._opposite_pairs_outer_
+
+    @staticmethod
+    def _find_orientation_at(place):
+        """"""
+        qt = len(place)
+        if qt == 2:  # edge of triangle
+            assert isinstance(place[0], str)
+            edge_index = place[1]
+            if edge_index == 0:
+                return 'in'
+            elif edge_index == 1:
+                return 'out'
+            elif edge_index == 'b':
+                return 'out'
+            else:
+                raise Exception()
+
+        elif qt == 3:  # edge of quadrilateral
+            assert place[0] % 1 == 0
+            m, n = place[1:]
+            if m == 0 and n == 0:
+                return 'in'
+            elif m == 0 and n == 1:
+                return 'out'
+            elif m == 1 and n == 0:
+                return 'in'
+            elif m == 1 and n == 1:
+                return 'out'
+            else:
+                raise Exception()
+        else:
+            raise Exception()
 
     @property
     def _q_range(self):

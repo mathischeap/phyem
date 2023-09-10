@@ -20,6 +20,7 @@ class MseHyPy2GatheringMatrixLambda(Frozen):
             'gp': (-1, -1),
             'iGM': IrregularGatheringMatrix({})
         }
+        self._checked = False
         self._freeze()
 
     def __call__(self, degree, g):
@@ -37,37 +38,47 @@ class MseHyPy2GatheringMatrixLambda(Frozen):
         else:
             method_name = f"_k{self._k}"
         iGM = getattr(self, method_name)(g, p)
-        self._check_iGM(iGM, degree, g)
+        if self._k != 2:
+            self._check_iGM(iGM, degree, g)
+        else:
+            pass
         self._mesh.generations.sync_cache(self._cache, g, cache_key, data=iGM)
         return iGM
 
     def _check_iGM(self, iGM, degree, g):
         """"""
-        local_dof_coo = self._space.local_dof_representative_coordinates(degree)
-        q_coo = local_dof_coo['q']
-        t_coo = local_dof_coo['t']
-        q_x, q_y = q_coo
-        t_x, t_y = t_coo
-        representative = self._mesh[g]
-        dof_coo_dict = dict()
-        assert len(representative) == len(iGM), f"gathering matrix length wrong."
-        for i in representative:
-            assert i in iGM, f"numbering for fundamental cell {i} is missed."
-            gm = iGM[i]
-            fc = representative[i]
-            if isinstance(i, str):
-                coo = np.vstack(fc.ct.mapping(t_x, t_y))
-            else:
-                coo = np.vstack(fc.ct.mapping(q_x, q_y))
-
-            coo[np.isclose(coo, 0)] = 0
-            coo = np.round(coo, decimals=5).T
-            for c, gmc in zip(coo, gm):
-                coo_str = str(c)
-                if coo_str in dof_coo_dict:
-                    assert gmc == dof_coo_dict[coo_str], f"global number #{gmc} appears at different places."
+        num_dofs = iGM.num_dofs
+        if num_dofs < 20000 and self._checked is False:  # only do it once when it is affordable!
+            local_dof_coo = self._space.local_dof_representative_coordinates(degree)
+            q_coo = local_dof_coo['q']
+            t_coo = local_dof_coo['t']
+            q_x, q_y = q_coo
+            t_x, t_y = t_coo
+            representative = self._mesh[g]
+            dof_coo_dict = dict()
+            assert len(representative) == len(iGM), f"gathering matrix length wrong."
+            for i in representative:
+                assert i in iGM, f"numbering for fundamental cell {i} is missed."
+                gm = iGM[i]
+                fc = representative[i]
+                if isinstance(i, str):
+                    coo = np.vstack(fc.ct.mapping(t_x, t_y))
                 else:
-                    dof_coo_dict[coo_str] = gmc
+                    coo = np.vstack(fc.ct.mapping(q_x, q_y))
+
+                coo[np.isclose(coo, 0)] = 0
+                coo = np.round(coo, decimals=5).T
+                for c, gmc in zip(coo, gm):
+                    coo_str = str(c)
+                    if coo_str in dof_coo_dict:
+                        assert gmc == dof_coo_dict[coo_str], f"global number #{gmc} appears at different places."
+                    else:
+                        dof_coo_dict[coo_str] = gmc
+
+            self._checked = True
+        else:
+            pass
+        return 0  # exit correctly.
 
     def _k0(self, g, p):
         """"""
@@ -161,319 +172,307 @@ class MseHyPy2GatheringMatrixLambda(Frozen):
 
         num_basis_internal = (px - 1) * (py - 1)
         current = 0
-        for i in representative.background.elements:
-            fc_indices = list()
-            if i in representative._q_range:
-                fc_indices.append(i)
-            else:
-                look_for = f'{i}='
-                len_lf = len(look_for)
-                for t_i in representative._t_range:
-                    if t_i[:len_lf] == look_for:
-                        fc_indices.append(t_i)
+
+        for fc_index in representative:
+            mp_i = _map[fc_index]
+            assert fc_index not in NUMBERING, f"fundamental cell {fc_index} is already numbered."
+
+            if isinstance(fc_index, int):
+                numbering_ = - np.ones(q_num_basis, dtype=int)
+                # this is a `q` fundamental cell
+                assert all([_ in corner_dict for _ in corner_coo_q[fc_index]]), f"must be!"
+                corner_00, corner_10, corner_01, corner_11 = corner_coo_q[fc_index]
+
+                # 1) number x-, y- corner -------------------------------------------------------------
+                if corner_dict[corner_00] == -1:
+                    corner_dict[corner_00] = current
+                    current += 1
+                numbering_[q_c00] = corner_dict[corner_00]
+
+                # 2) number y- edge -------------------------------------------------------------------
+                indicator = mp_i[2]
+                if indicator is None:
+                    _nbr = np.arange(current, current + px - 1)
+                    current += px - 1
+                elif isinstance(indicator, tuple):
+                    target_index = indicator[0]
+                    assert len(indicator) == 3 and indicator[1] == 'b', \
+                        f"a base mesh element must pair to bottom of a triangle"
+                    if target_index in NUMBERING:
+                        sign = indicator[2]
+                        _nbr = NUMBERING[target_index][t_e_bottom]
+                        if sign == '-':
+                            _nbr = _nbr[::-1]
+                        else:
+                            pass
                     else:
-                        pass
-
-            for fc_index in fc_indices:
-                mp_i = _map[fc_index]
-                assert fc_index not in NUMBERING, f"fundamental cell {fc_index} is already numbered."
-
-                if isinstance(fc_index, int):
-                    numbering_ = - np.ones(q_num_basis, dtype=int)
-                    # this is a `q` fundamental cell
-                    assert all([_ in corner_dict for _ in corner_coo_q[fc_index]]), f"must be!"
-                    corner_00, corner_10, corner_01, corner_11 = corner_coo_q[fc_index]
-
-                    # 1) number x-, y- corner -------------------------------------------------------------
-                    if corner_dict[corner_00] == -1:
-                        corner_dict[corner_00] = current
-                        current += 1
-                    numbering_[q_c00] = corner_dict[corner_00]
-
-                    # 2) number y- edge -------------------------------------------------------------------
-                    indicator = mp_i[2]
-                    if indicator is None:
                         _nbr = np.arange(current, current + px - 1)
                         current += px - 1
-                    elif isinstance(indicator, tuple):
-                        target_index = indicator[0]
-                        assert len(indicator) == 3 and indicator[1] == 'b', \
-                            f"a base mesh element must pair to bottom of a triangle"
-                        if target_index in NUMBERING:
-                            sign = indicator[2]
-                            _nbr = NUMBERING[target_index][t_e_bottom]
-                            if sign == '-':
-                                _nbr = _nbr[::-1]
-                            else:
-                                pass
-                        else:
-                            _nbr = np.arange(current, current + px - 1)
-                            current += px - 1
+                else:
+                    assert indicator % 1 == 0, f"must be"
+                    if indicator not in NUMBERING:
+                        _nbr = np.arange(current, current + px - 1)
+                        current += px - 1
                     else:
-                        assert indicator % 1 == 0, f"must be"
-                        if indicator not in NUMBERING:
-                            _nbr = np.arange(current, current + px - 1)
-                            current += px - 1
+                        _nbr = NUMBERING[indicator][q_e11]
+
+                numbering_[q_e10] = _nbr
+
+                # 3) number x+, y- corner -------------------------------------------------------------
+                if corner_dict[corner_10] == -1:
+                    corner_dict[corner_10] = current
+                    current += 1
+                numbering_[q_c10] = corner_dict[corner_10]
+
+                # 4) number x- edge -------------------------------------------------------------------
+                indicator = mp_i[0]
+                if indicator is None:
+                    _nbr = np.arange(current, current + py - 1)
+                    current += py - 1
+                elif isinstance(indicator, tuple):
+                    target_index = indicator[0]
+                    assert len(indicator) == 3 and indicator[1] == 'b', \
+                        f"a base mesh element must pair to bottom of a triangle"
+                    if target_index in NUMBERING:
+                        sign = indicator[2]
+                        _nbr = NUMBERING[target_index][t_e_bottom]
+                        if sign == '-':
+                            _nbr = _nbr[::-1]
                         else:
-                            _nbr = NUMBERING[indicator][q_e11]
-
-                    numbering_[q_e10] = _nbr
-
-                    # 3) number x+, y- corner -------------------------------------------------------------
-                    if corner_dict[corner_10] == -1:
-                        corner_dict[corner_10] = current
-                        current += 1
-                    numbering_[q_c10] = corner_dict[corner_10]
-
-                    # 4) number x- edge -------------------------------------------------------------------
-                    indicator = mp_i[0]
-                    if indicator is None:
+                            pass
+                    else:
                         _nbr = np.arange(current, current + py - 1)
                         current += py - 1
-                    elif isinstance(indicator, tuple):
-                        target_index = indicator[0]
-                        assert len(indicator) == 3 and indicator[1] == 'b', \
-                            f"a base mesh element must pair to bottom of a triangle"
-                        if target_index in NUMBERING:
-                            sign = indicator[2]
-                            _nbr = NUMBERING[target_index][t_e_bottom]
-                            if sign == '-':
-                                _nbr = _nbr[::-1]
-                            else:
-                                pass
-                        else:
-                            _nbr = np.arange(current, current + py - 1)
-                            current += py - 1
-                    else:
-                        assert indicator % 1 == 0, f"must be"
-                        if indicator not in NUMBERING:
-                            _nbr = np.arange(current, current + py - 1)
-                            current += py - 1
-                        else:
-                            _nbr = NUMBERING[indicator][q_e01]
-
-                    numbering_[q_e00] = _nbr
-
-                    # 5) number internal ------------------------------------------------------------
-                    numbering_[q_internal] = np.arange(current, current + num_basis_internal)
-                    current += num_basis_internal
-
-                    # 6) number x+ edge -------------------------------------------------------------
-                    indicator = mp_i[1]
-                    if indicator is None:
+                else:
+                    assert indicator % 1 == 0, f"must be"
+                    if indicator not in NUMBERING:
                         _nbr = np.arange(current, current + py - 1)
                         current += py - 1
-                    elif isinstance(indicator, tuple):
-                        target_index = indicator[0]
-                        assert len(indicator) == 3 and indicator[1] == 'b', \
-                            f"a base mesh element must pair to bottom of a triangle"
-                        if target_index in NUMBERING:
-                            sign = indicator[2]
-                            _nbr = NUMBERING[target_index][t_e_bottom]
-                            if sign == '-':
-                                _nbr = _nbr[::-1]
-                            else:
-                                pass
-                        else:
-                            _nbr = np.arange(current, current + py - 1)
-                            current += py - 1
                     else:
-                        assert indicator % 1 == 0, f"must be"
-                        if indicator not in NUMBERING:
-                            _nbr = np.arange(current, current + py - 1)
-                            current += py - 1
+                        _nbr = NUMBERING[indicator][q_e01]
+
+                numbering_[q_e00] = _nbr
+
+                # 5) number internal ------------------------------------------------------------
+                numbering_[q_internal] = np.arange(current, current + num_basis_internal)
+                current += num_basis_internal
+
+                # 6) number x+ edge -------------------------------------------------------------
+                indicator = mp_i[1]
+                if indicator is None:
+                    _nbr = np.arange(current, current + py - 1)
+                    current += py - 1
+                elif isinstance(indicator, tuple):
+                    target_index = indicator[0]
+                    assert len(indicator) == 3 and indicator[1] == 'b', \
+                        f"a base mesh element must pair to bottom of a triangle"
+                    if target_index in NUMBERING:
+                        sign = indicator[2]
+                        _nbr = NUMBERING[target_index][t_e_bottom]
+                        if sign == '-':
+                            _nbr = _nbr[::-1]
                         else:
-                            _nbr = NUMBERING[indicator][q_e00]
-
-                    numbering_[q_e01] = _nbr
-
-                    # 7) number x-, y+ corner -------------------------------------------------------------
-                    if corner_dict[corner_01] == -1:
-                        corner_dict[corner_01] = current
-                        current += 1
-                    numbering_[q_c01] = corner_dict[corner_01]
-
-                    # 8) number y+ edge -------------------------------------------------------------
-                    indicator = mp_i[3]
-                    if indicator is None:
-                        _nbr = np.arange(current, current + px - 1)
-                        current += px - 1
-                    elif isinstance(indicator, tuple):
-                        target_index = indicator[0]
-                        assert len(indicator) == 3 and indicator[1] == 'b', \
-                            f"a base mesh element must pair to bottom of a triangle"
-                        if target_index in NUMBERING:
-                            sign = indicator[2]
-                            _nbr = NUMBERING[target_index][t_e_bottom]
-                            if sign == '-':
-                                _nbr = _nbr[::-1]
-                            else:
-                                pass
-                        else:
-                            _nbr = np.arange(current, current + px - 1)
-                            current += px - 1
+                            pass
                     else:
-                        assert indicator % 1 == 0, f"must be"
-                        if indicator not in NUMBERING:
-                            _nbr = np.arange(current, current + px - 1)
-                            current += px - 1
-                        else:
-                            _nbr = NUMBERING[indicator][q_e10]
-
-                    numbering_[q_e11] = _nbr
-
-                    # 9) number x+, y+ corner -------------------------------------------------------------
-                    if corner_dict[corner_11] == -1:
-                        corner_dict[corner_11] = current
-                        current += 1
-                    numbering_[q_c11] = corner_dict[corner_11]
-
-                elif isinstance(fc_index, str):
-                    numbering_ = - np.ones(t_num_basis, dtype=int)
-                    # this is a `q` fundamental cell
-                    assert all([_ in corner_dict for _ in corner_coo_t[fc_index]]), f"must be!"
-                    corner_top, corner_0, corner_1 = corner_coo_t[fc_index]
-
-                    # 1) number top corner -------------------------------------------------------------
-                    if corner_dict[corner_top] == -1:
-                        corner_dict[corner_top] = current
-                        current += 1
-                    numbering_[t_c_top] = corner_dict[corner_top]
-
-                    # 2) number edge0 -------------------------------------------------------------------
-                    indicator = mp_i[1]
-                    if indicator is None:
-                        _nbr = np.arange(current, current + px - 1)
-                        current += px - 1
-                    else:
-                        assert isinstance(indicator, tuple)
-                        target_index = indicator[0]
-
-                        if target_index in NUMBERING:
-                            i1 = indicator[1]
-                            if i1 == 0:
-                                _ = t_e0
-                            elif i1 == 1:
-                                _ = t_e1
-                            else:
-                                _ = t_e_bottom
-                            sign = indicator[2]
-                            _nbr = NUMBERING[target_index][_]
-                            if sign == '-':
-                                _nbr = _nbr[::-1]
-                            else:
-                                pass
-                        else:
-                            _nbr = np.arange(current, current + px - 1)
-                            current += px - 1
-                    numbering_[t_e0] = _nbr
-
-                    # 3) number corner 0 -------------------------------------------------------------
-                    if corner_dict[corner_0] == -1:
-                        corner_dict[corner_0] = current
-                        current += 1
-                    numbering_[t_c0] = corner_dict[corner_0]
-
-                    # 4) number internal -------------------------------------------------------------
-                    numbering_[t_internal] = np.arange(current, current + num_basis_internal)
-                    current += num_basis_internal
-
-                    # 5) number edge bottom ----------------------------------------------------------
-                    indicator = mp_i[0]
-                    if indicator is None:
                         _nbr = np.arange(current, current + py - 1)
                         current += py - 1
-                    elif isinstance(indicator, tuple):
-                        target_index = indicator[0]
-
-                        if target_index in NUMBERING:
-                            i1 = indicator[1]
-                            if i1 == 'b':
-                                _ = t_e_bottom
-                            elif i1 == 0:
-                                _ = t_e0
-                            else:
-                                _ = t_e1
-                            sign = indicator[2]
-                            _nbr = NUMBERING[target_index][_]
-                            if sign == '-':
-                                _nbr = _nbr[::-1]
-                            else:
-                                pass
-                        else:
-                            _nbr = np.arange(current, current + py - 1)
-                            current += py - 1
-
-                    elif isinstance(indicator, list):
-                        target_index = indicator[0]
-
-                        if target_index in NUMBERING:
-                            m, n = indicator[1:3]
-                            sign = indicator[3]
-
-                            if m == n == 0:
-                                _ = q_e00
-                            elif m == 0 and n == 1:
-                                _ = q_e01
-                            elif m == 1 and n == 0:
-                                _ = q_e10
-                            else:
-                                _ = q_e11
-
-                            _nbr = NUMBERING[target_index][_]
-                            if sign == '-':
-                                _nbr = _nbr[::-1]
-                            else:
-                                pass
-                        else:
-                            _nbr = np.arange(current, current + py - 1)
-                            current += py - 1
-
+                else:
+                    assert indicator % 1 == 0, f"must be"
+                    if indicator not in NUMBERING:
+                        _nbr = np.arange(current, current + py - 1)
+                        current += py - 1
                     else:
-                        raise Exception
+                        _nbr = NUMBERING[indicator][q_e00]
 
-                    numbering_[t_e_bottom] = _nbr
+                numbering_[q_e01] = _nbr
 
-                    # 6) number edge1 -------------------------------------------------------------------
-                    indicator = mp_i[2]
-                    if indicator is None:
+                # 7) number x-, y+ corner -------------------------------------------------------------
+                if corner_dict[corner_01] == -1:
+                    corner_dict[corner_01] = current
+                    current += 1
+                numbering_[q_c01] = corner_dict[corner_01]
+
+                # 8) number y+ edge -------------------------------------------------------------
+                indicator = mp_i[3]
+                if indicator is None:
+                    _nbr = np.arange(current, current + px - 1)
+                    current += px - 1
+                elif isinstance(indicator, tuple):
+                    target_index = indicator[0]
+                    assert len(indicator) == 3 and indicator[1] == 'b', \
+                        f"a base mesh element must pair to bottom of a triangle"
+                    if target_index in NUMBERING:
+                        sign = indicator[2]
+                        _nbr = NUMBERING[target_index][t_e_bottom]
+                        if sign == '-':
+                            _nbr = _nbr[::-1]
+                        else:
+                            pass
+                    else:
+                        _nbr = np.arange(current, current + px - 1)
+                        current += px - 1
+                else:
+                    assert indicator % 1 == 0, f"must be"
+                    if indicator not in NUMBERING:
                         _nbr = np.arange(current, current + px - 1)
                         current += px - 1
                     else:
-                        assert isinstance(indicator, tuple)
-                        target_index = indicator[0]
+                        _nbr = NUMBERING[indicator][q_e10]
 
-                        if target_index in NUMBERING:
-                            i1 = indicator[1]
-                            if i1 == 0:
-                                _ = t_e0
-                            elif i1 == 1:
-                                _ = t_e1
-                            else:
-                                _ = t_e_bottom
-                            sign = indicator[2]
-                            _nbr = NUMBERING[target_index][_]
-                            if sign == '-':
-                                _nbr = _nbr[::-1]
-                            else:
-                                pass
+                numbering_[q_e11] = _nbr
+
+                # 9) number x+, y+ corner -------------------------------------------------------------
+                if corner_dict[corner_11] == -1:
+                    corner_dict[corner_11] = current
+                    current += 1
+                numbering_[q_c11] = corner_dict[corner_11]
+
+            elif isinstance(fc_index, str):
+                numbering_ = - np.ones(t_num_basis, dtype=int)
+                # this is a `q` fundamental cell
+                assert all([_ in corner_dict for _ in corner_coo_t[fc_index]]), f"must be!"
+                corner_top, corner_0, corner_1 = corner_coo_t[fc_index]
+
+                # 1) number top corner -------------------------------------------------------------
+                if corner_dict[corner_top] == -1:
+                    corner_dict[corner_top] = current
+                    current += 1
+                numbering_[t_c_top] = corner_dict[corner_top]
+
+                # 2) number edge0 -------------------------------------------------------------------
+                indicator = mp_i[1]
+                if indicator is None:
+                    _nbr = np.arange(current, current + px - 1)
+                    current += px - 1
+                else:
+                    assert isinstance(indicator, tuple)
+                    target_index = indicator[0]
+
+                    if target_index in NUMBERING:
+                        i1 = indicator[1]
+                        if i1 == 0:
+                            _ = t_e0
+                        elif i1 == 1:
+                            _ = t_e1
                         else:
-                            _nbr = np.arange(current, current + px - 1)
-                            current += px - 1
-                    numbering_[t_e1] = _nbr
+                            _ = t_e_bottom
+                        sign = indicator[2]
+                        _nbr = NUMBERING[target_index][_]
+                        if sign == '-':
+                            _nbr = _nbr[::-1]
+                        else:
+                            pass
+                    else:
+                        _nbr = np.arange(current, current + px - 1)
+                        current += px - 1
+                numbering_[t_e0] = _nbr
 
-                    # 7) number corner 1 -------------------------------------------------------------
-                    if corner_dict[corner_1] == -1:
-                        corner_dict[corner_1] = current
-                        current += 1
-                    numbering_[t_c1] = corner_dict[corner_1]
+                # 3) number corner 0 -------------------------------------------------------------
+                if corner_dict[corner_0] == -1:
+                    corner_dict[corner_0] = current
+                    current += 1
+                numbering_[t_c0] = corner_dict[corner_0]
+
+                # 4) number internal -------------------------------------------------------------
+                numbering_[t_internal] = np.arange(current, current + num_basis_internal)
+                current += num_basis_internal
+
+                # 5) number edge bottom ----------------------------------------------------------
+                indicator = mp_i[0]
+                if indicator is None:
+                    _nbr = np.arange(current, current + py - 1)
+                    current += py - 1
+                elif isinstance(indicator, tuple):
+                    target_index = indicator[0]
+
+                    if target_index in NUMBERING:
+                        i1 = indicator[1]
+                        if i1 == 'b':
+                            _ = t_e_bottom
+                        elif i1 == 0:
+                            _ = t_e0
+                        else:
+                            _ = t_e1
+                        sign = indicator[2]
+                        _nbr = NUMBERING[target_index][_]
+                        if sign == '-':
+                            _nbr = _nbr[::-1]
+                        else:
+                            pass
+                    else:
+                        _nbr = np.arange(current, current + py - 1)
+                        current += py - 1
+
+                elif isinstance(indicator, list):
+                    target_index = indicator[0]
+
+                    if target_index in NUMBERING:
+                        m, n = indicator[1:3]
+                        sign = indicator[3]
+
+                        if m == n == 0:
+                            _ = q_e00
+                        elif m == 0 and n == 1:
+                            _ = q_e01
+                        elif m == 1 and n == 0:
+                            _ = q_e10
+                        else:
+                            _ = q_e11
+
+                        _nbr = NUMBERING[target_index][_]
+                        if sign == '-':
+                            _nbr = _nbr[::-1]
+                        else:
+                            pass
+                    else:
+                        _nbr = np.arange(current, current + py - 1)
+                        current += py - 1
 
                 else:
                     raise Exception
 
-                assert -1 not in numbering_, f"every local dof must be numbered."
+                numbering_[t_e_bottom] = _nbr
 
-                NUMBERING[fc_index] = numbering_
+                # 6) number edge1 -------------------------------------------------------------------
+                indicator = mp_i[2]
+                if indicator is None:
+                    _nbr = np.arange(current, current + px - 1)
+                    current += px - 1
+                else:
+                    assert isinstance(indicator, tuple)
+                    target_index = indicator[0]
+
+                    if target_index in NUMBERING:
+                        i1 = indicator[1]
+                        if i1 == 0:
+                            _ = t_e0
+                        elif i1 == 1:
+                            _ = t_e1
+                        else:
+                            _ = t_e_bottom
+                        sign = indicator[2]
+                        _nbr = NUMBERING[target_index][_]
+                        if sign == '-':
+                            _nbr = _nbr[::-1]
+                        else:
+                            pass
+                    else:
+                        _nbr = np.arange(current, current + px - 1)
+                        current += px - 1
+                numbering_[t_e1] = _nbr
+
+                # 7) number corner 1 -------------------------------------------------------------
+                if corner_dict[corner_1] == -1:
+                    corner_dict[corner_1] = current
+                    current += 1
+                numbering_[t_c1] = corner_dict[corner_1]
+
+            else:
+                raise Exception
+
+            assert -1 not in numbering_, f"every local dof must be numbered."
+
+            NUMBERING[fc_index] = numbering_
 
         iGM = IrregularGatheringMatrix(NUMBERING)
         self._cache0['iGM'] = iGM
@@ -545,292 +544,279 @@ class MseHyPy2GatheringMatrixLambda(Frozen):
         NUMBERING = dict()
         _map = representative.map
 
-        for i in representative.background.elements:
-            fc_indices = list()
-            if i in representative._q_range:
-                fc_indices.append(i)
-            else:
-                look_for = f'{i}='
-                len_lf = len(look_for)
-                for t_i in representative._t_range:
-                    if t_i[:len_lf] == look_for:
-                        fc_indices.append(t_i)
+        for fc_index in representative:
+            mp_i = _map[fc_index]
+            assert fc_index not in NUMBERING, f"fundamental cell {fc_index} is already numbered."
+
+            if isinstance(fc_index, int):
+                numbering_ = - np.ones(q_num_basis, dtype=int)
+                # this is a `q` fundamental cell
+                # 1) number y- edge -------------------------------------------------------------------
+                indicator = mp_i[2]
+                if indicator is None:
+                    _nbr = np.arange(current, current + px)
+                    current += px
+                elif isinstance(indicator, tuple):
+                    target_index = indicator[0]
+                    assert len(indicator) == 3 and indicator[1] == 'b', \
+                        f"a base mesh element must pair to bottom of a triangle"
+                    if target_index in NUMBERING:
+                        sign = indicator[2]
+                        _nbr = NUMBERING[target_index][t_dy_bottom]
+                        if sign == '-':
+                            _nbr = _nbr[::-1]
+                        else:
+                            pass
                     else:
-                        pass
-
-            for fc_index in fc_indices:
-                mp_i = _map[fc_index]
-                assert fc_index not in NUMBERING, f"fundamental cell {fc_index} is already numbered."
-
-                if isinstance(fc_index, int):
-                    numbering_ = - np.ones(q_num_basis, dtype=int)
-                    # this is a `q` fundamental cell
-                    # 1) number y- edge -------------------------------------------------------------------
-                    indicator = mp_i[2]
-                    if indicator is None:
                         _nbr = np.arange(current, current + px)
                         current += px
-                    elif isinstance(indicator, tuple):
-                        target_index = indicator[0]
-                        assert len(indicator) == 3 and indicator[1] == 'b', \
-                            f"a base mesh element must pair to bottom of a triangle"
-                        if target_index in NUMBERING:
-                            sign = indicator[2]
-                            _nbr = NUMBERING[target_index][t_dy_bottom]
-                            if sign == '-':
-                                _nbr = _nbr[::-1]
-                            else:
-                                pass
-                        else:
-                            _nbr = np.arange(current, current + px)
-                            current += px
-                    else:
-                        assert indicator % 1 == 0, f"must be"
-                        if indicator not in NUMBERING:
-                            _nbr = np.arange(current, current + px)
-                            current += px
-                        else:
-                            _nbr = NUMBERING[indicator][q_dx_1]
-
-                    numbering_[q_dx_0] = _nbr
-
-                    # 2) number dx internal ------------------------------------------------------------
-                    if num_dx_internal == 0:
-                        pass
-                    else:
-                        numbering_[q_dx_internal] = np.arange(current, current + num_dx_internal)
-                        current += num_dx_internal
-
-                    # 3) number y+ edge -------------------------------------------------------------
-                    indicator = mp_i[3]
-                    if indicator is None:
+                else:
+                    assert indicator % 1 == 0, f"must be"
+                    if indicator not in NUMBERING:
                         _nbr = np.arange(current, current + px)
                         current += px
-                    elif isinstance(indicator, tuple):
-                        target_index = indicator[0]
-                        assert len(indicator) == 3 and indicator[1] == 'b', \
-                            f"a base mesh element must pair to bottom of a triangle"
-                        if target_index in NUMBERING:
-                            sign = indicator[2]
-                            _nbr = NUMBERING[target_index][t_dy_bottom]
-                            if sign == '-':
-                                _nbr = _nbr[::-1]
-                            else:
-                                pass
-                        else:
-                            _nbr = np.arange(current, current + px)
-                            current += px
                     else:
-                        assert indicator % 1 == 0, f"must be"
-                        if indicator not in NUMBERING:
-                            _nbr = np.arange(current, current + px)
-                            current += px
+                        _nbr = NUMBERING[indicator][q_dx_1]
+
+                numbering_[q_dx_0] = _nbr
+
+                # 2) number dx internal ------------------------------------------------------------
+                if num_dx_internal == 0:
+                    pass
+                else:
+                    numbering_[q_dx_internal] = np.arange(current, current + num_dx_internal)
+                    current += num_dx_internal
+
+                # 3) number y+ edge -------------------------------------------------------------
+                indicator = mp_i[3]
+                if indicator is None:
+                    _nbr = np.arange(current, current + px)
+                    current += px
+                elif isinstance(indicator, tuple):
+                    target_index = indicator[0]
+                    assert len(indicator) == 3 and indicator[1] == 'b', \
+                        f"a base mesh element must pair to bottom of a triangle"
+                    if target_index in NUMBERING:
+                        sign = indicator[2]
+                        _nbr = NUMBERING[target_index][t_dy_bottom]
+                        if sign == '-':
+                            _nbr = _nbr[::-1]
                         else:
-                            _nbr = NUMBERING[indicator][q_dx_0]
+                            pass
+                    else:
+                        _nbr = np.arange(current, current + px)
+                        current += px
+                else:
+                    assert indicator % 1 == 0, f"must be"
+                    if indicator not in NUMBERING:
+                        _nbr = np.arange(current, current + px)
+                        current += px
+                    else:
+                        _nbr = NUMBERING[indicator][q_dx_0]
 
-                    numbering_[q_dx_1] = _nbr
+                numbering_[q_dx_1] = _nbr
 
-                    # 4) number x- edge -------------------------------------------------------------------
-                    indicator = mp_i[0]
-                    if indicator is None:
+                # 4) number x- edge -------------------------------------------------------------------
+                indicator = mp_i[0]
+                if indicator is None:
+                    _nbr = np.arange(current, current + py)
+                    current += py
+                elif isinstance(indicator, tuple):
+                    target_index = indicator[0]
+                    assert len(indicator) == 3 and indicator[1] == 'b', \
+                        f"a base mesh element must pair to bottom of a triangle"
+                    if target_index in NUMBERING:
+                        sign = indicator[2]
+                        _nbr = NUMBERING[target_index][t_dy_bottom]
+                        if sign == '-':
+                            _nbr = _nbr[::-1]
+                        else:
+                            pass
+                    else:
                         _nbr = np.arange(current, current + py)
                         current += py
-                    elif isinstance(indicator, tuple):
-                        target_index = indicator[0]
-                        assert len(indicator) == 3 and indicator[1] == 'b', \
-                            f"a base mesh element must pair to bottom of a triangle"
-                        if target_index in NUMBERING:
-                            sign = indicator[2]
-                            _nbr = NUMBERING[target_index][t_dy_bottom]
-                            if sign == '-':
-                                _nbr = _nbr[::-1]
-                            else:
-                                pass
-                        else:
-                            _nbr = np.arange(current, current + py)
-                            current += py
-                    else:
-                        assert indicator % 1 == 0, f"must be"
-                        if indicator not in NUMBERING:
-                            _nbr = np.arange(current, current + py)
-                            current += py
-                        else:
-                            _nbr = NUMBERING[indicator][q_dy_1]
-
-                    numbering_[q_dy_0] = _nbr
-
-                    # 5) number dy internal ------------------------------------------------------------
-                    if num_dy_internal == 0:
-                        pass
-                    else:
-                        numbering_[q_dy_internal] = np.arange(current, current + num_dy_internal)
-                        current += num_dy_internal
-
-                    # 6) number x+ edge -------------------------------------------------------------
-                    indicator = mp_i[1]
-                    if indicator is None:
+                else:
+                    assert indicator % 1 == 0, f"must be"
+                    if indicator not in NUMBERING:
                         _nbr = np.arange(current, current + py)
                         current += py
-                    elif isinstance(indicator, tuple):
-                        target_index = indicator[0]
-                        assert len(indicator) == 3 and indicator[1] == 'b', \
-                            f"a base mesh element must pair to bottom of a triangle"
-                        if target_index in NUMBERING:
-                            sign = indicator[2]
-                            _nbr = NUMBERING[target_index][t_dy_bottom]
-                            if sign == '-':
-                                _nbr = _nbr[::-1]
-                            else:
-                                pass
+                    else:
+                        _nbr = NUMBERING[indicator][q_dy_1]
+
+                numbering_[q_dy_0] = _nbr
+
+                # 5) number dy internal ------------------------------------------------------------
+                if num_dy_internal == 0:
+                    pass
+                else:
+                    numbering_[q_dy_internal] = np.arange(current, current + num_dy_internal)
+                    current += num_dy_internal
+
+                # 6) number x+ edge -------------------------------------------------------------
+                indicator = mp_i[1]
+                if indicator is None:
+                    _nbr = np.arange(current, current + py)
+                    current += py
+                elif isinstance(indicator, tuple):
+                    target_index = indicator[0]
+                    assert len(indicator) == 3 and indicator[1] == 'b', \
+                        f"a base mesh element must pair to bottom of a triangle"
+                    if target_index in NUMBERING:
+                        sign = indicator[2]
+                        _nbr = NUMBERING[target_index][t_dy_bottom]
+                        if sign == '-':
+                            _nbr = _nbr[::-1]
                         else:
-                            _nbr = np.arange(current, current + py)
-                            current += py
+                            pass
                     else:
-                        assert indicator % 1 == 0, f"must be"
-                        if indicator not in NUMBERING:
-                            _nbr = np.arange(current, current + py)
-                            current += py
-                        else:
-                            _nbr = NUMBERING[indicator][q_dy_0]
-
-                    numbering_[q_dy_1] = _nbr
-
-                elif isinstance(fc_index, str):
-                    numbering_ = - np.ones(t_num_basis, dtype=int)
-                    # this is a `t` fundamental cell
-
-                    # 1) number edge0 -------------------------------------------------------------------
-                    indicator = mp_i[1]
-                    if indicator is None:
-                        _nbr = np.arange(current, current + px)
-                        current += px
-                    else:
-                        assert isinstance(indicator, tuple)
-                        target_index = indicator[0]
-
-                        if target_index in NUMBERING:
-                            i1 = indicator[1]
-                            if i1 == 0:
-                                _ = t_dx_0
-                            elif i1 == 1:
-                                _ = t_dx_1
-                            else:
-                                _ = t_dy_bottom
-                            sign = indicator[2]
-                            _nbr = NUMBERING[target_index][_]
-                            if sign == '-':
-                                _nbr = _nbr[::-1]
-                            else:
-                                pass
-                        else:
-                            _nbr = np.arange(current, current + px)
-                            current += px
-                    numbering_[t_dx_0] = _nbr
-
-                    # 2) number dx internal -------------------------------------------------------------
-                    if num_dx_internal == 0:
-                        pass
-                    else:
-                        numbering_[t_dx_internal] = np.arange(current, current + num_dx_internal)
-                        current += num_dx_internal
-
-                    # 3) number edge1 -------------------------------------------------------------------
-                    indicator = mp_i[2]
-                    if indicator is None:
-                        _nbr = np.arange(current, current + px)
-                        current += px
-                    else:
-                        assert isinstance(indicator, tuple)
-                        target_index = indicator[0]
-
-                        if target_index in NUMBERING:
-                            i1 = indicator[1]
-                            if i1 == 0:
-                                _ = t_dx_0
-                            elif i1 == 1:
-                                _ = t_dx_1
-                            else:
-                                _ = t_dy_bottom
-                            sign = indicator[2]
-                            _nbr = NUMBERING[target_index][_]
-                            if sign == '-':
-                                _nbr = _nbr[::-1]
-                            else:
-                                pass
-                        else:
-                            _nbr = np.arange(current, current + px)
-                            current += px
-                    numbering_[t_dx_1] = _nbr
-
-                    # 4) number dy internal -------------------------------------------------------------
-                    if num_dy_internal == 0:
-                        pass
-                    else:
-                        numbering_[t_dy_internal] = np.arange(current, current + num_dy_internal)
-                        current += num_dy_internal
-
-                    # 5) number edge bottom ----------------------------------------------------------
-                    indicator = mp_i[0]
-                    if indicator is None:
                         _nbr = np.arange(current, current + py)
                         current += py
-                    elif isinstance(indicator, tuple):
-                        target_index = indicator[0]
-
-                        if target_index in NUMBERING:
-                            i1 = indicator[1]
-                            if i1 == 'b':
-                                _ = t_dy_bottom
-                            elif i1 == 0:
-                                _ = t_dx_0
-                            else:
-                                _ = t_dx_1
-                            sign = indicator[2]
-                            _nbr = NUMBERING[target_index][_]
-                            if sign == '-':
-                                _nbr = _nbr[::-1]
-                            else:
-                                pass
-                        else:
-                            _nbr = np.arange(current, current + py)
-                            current += py
-
-                    elif isinstance(indicator, list):
-                        target_index = indicator[0]
-
-                        if target_index in NUMBERING:
-                            m, n = indicator[1:3]
-                            sign = indicator[3]
-
-                            if m == n == 0:
-                                _ = q_dy_0
-                            elif m == 0 and n == 1:
-                                _ = q_dy_1
-                            elif m == 1 and n == 0:
-                                _ = q_dx_0
-                            else:
-                                _ = q_dx_1
-
-                            _nbr = NUMBERING[target_index][_]
-                            if sign == '-':
-                                _nbr = _nbr[::-1]
-                            else:
-                                pass
-                        else:
-                            _nbr = np.arange(current, current + py)
-                            current += py
-
+                else:
+                    assert indicator % 1 == 0, f"must be"
+                    if indicator not in NUMBERING:
+                        _nbr = np.arange(current, current + py)
+                        current += py
                     else:
-                        raise Exception
+                        _nbr = NUMBERING[indicator][q_dy_0]
 
-                    numbering_[t_dy_bottom] = _nbr
+                numbering_[q_dy_1] = _nbr
+
+            elif isinstance(fc_index, str):
+                numbering_ = - np.ones(t_num_basis, dtype=int)
+                # this is a `t` fundamental cell
+
+                # 1) number edge0 -------------------------------------------------------------------
+                indicator = mp_i[1]
+                if indicator is None:
+                    _nbr = np.arange(current, current + px)
+                    current += px
+                else:
+                    assert isinstance(indicator, tuple)
+                    target_index = indicator[0]
+
+                    if target_index in NUMBERING:
+                        i1 = indicator[1]
+                        if i1 == 0:
+                            _ = t_dx_0
+                        elif i1 == 1:
+                            _ = t_dx_1
+                        else:
+                            _ = t_dy_bottom
+                        sign = indicator[2]
+                        _nbr = NUMBERING[target_index][_]
+                        if sign == '-':
+                            _nbr = _nbr[::-1]
+                        else:
+                            pass
+                    else:
+                        _nbr = np.arange(current, current + px)
+                        current += px
+                numbering_[t_dx_0] = _nbr
+
+                # 2) number dx internal -------------------------------------------------------------
+                if num_dx_internal == 0:
+                    pass
+                else:
+                    numbering_[t_dx_internal] = np.arange(current, current + num_dx_internal)
+                    current += num_dx_internal
+
+                # 3) number edge1 -------------------------------------------------------------------
+                indicator = mp_i[2]
+                if indicator is None:
+                    _nbr = np.arange(current, current + px)
+                    current += px
+                else:
+                    assert isinstance(indicator, tuple)
+                    target_index = indicator[0]
+
+                    if target_index in NUMBERING:
+                        i1 = indicator[1]
+                        if i1 == 0:
+                            _ = t_dx_0
+                        elif i1 == 1:
+                            _ = t_dx_1
+                        else:
+                            _ = t_dy_bottom
+                        sign = indicator[2]
+                        _nbr = NUMBERING[target_index][_]
+                        if sign == '-':
+                            _nbr = _nbr[::-1]
+                        else:
+                            pass
+                    else:
+                        _nbr = np.arange(current, current + px)
+                        current += px
+                numbering_[t_dx_1] = _nbr
+
+                # 4) number dy internal -------------------------------------------------------------
+                if num_dy_internal == 0:
+                    pass
+                else:
+                    numbering_[t_dy_internal] = np.arange(current, current + num_dy_internal)
+                    current += num_dy_internal
+
+                # 5) number edge bottom ----------------------------------------------------------
+                indicator = mp_i[0]
+                if indicator is None:
+                    _nbr = np.arange(current, current + py)
+                    current += py
+                elif isinstance(indicator, tuple):
+                    target_index = indicator[0]
+
+                    if target_index in NUMBERING:
+                        i1 = indicator[1]
+                        if i1 == 'b':
+                            _ = t_dy_bottom
+                        elif i1 == 0:
+                            _ = t_dx_0
+                        else:
+                            _ = t_dx_1
+                        sign = indicator[2]
+                        _nbr = NUMBERING[target_index][_]
+                        if sign == '-':
+                            _nbr = _nbr[::-1]
+                        else:
+                            pass
+                    else:
+                        _nbr = np.arange(current, current + py)
+                        current += py
+
+                elif isinstance(indicator, list):
+                    target_index = indicator[0]
+
+                    if target_index in NUMBERING:
+                        m, n = indicator[1:3]
+                        sign = indicator[3]
+
+                        if m == n == 0:
+                            _ = q_dy_0
+                        elif m == 0 and n == 1:
+                            _ = q_dy_1
+                        elif m == 1 and n == 0:
+                            _ = q_dx_0
+                        else:
+                            _ = q_dx_1
+
+                        _nbr = NUMBERING[target_index][_]
+                        if sign == '-':
+                            _nbr = _nbr[::-1]
+                        else:
+                            pass
+                    else:
+                        _nbr = np.arange(current, current + py)
+                        current += py
 
                 else:
                     raise Exception
 
-                assert -1 not in numbering_, f"every local dof must be numbered."
+                numbering_[t_dy_bottom] = _nbr
 
-                NUMBERING[fc_index] = numbering_
+            else:
+                raise Exception
+
+            assert -1 not in numbering_, f"every local dof must be numbered."
+
+            NUMBERING[fc_index] = numbering_
 
         iGM = IrregularGatheringMatrix(NUMBERING)
         return iGM
@@ -843,21 +829,9 @@ class MseHyPy2GatheringMatrixLambda(Frozen):
         NUMBERING = dict()
         current = 0
         local_dofs = px * py
-        for i in representative.background.elements:
-            fc_indices = list()
-            if i in representative._q_range:
-                fc_indices.append(i)
-            else:
-                look_for = f'{i}='
-                len_lf = len(look_for)
-                for t_i in representative._t_range:
-                    if t_i[:len_lf] == look_for:
-                        fc_indices.append(t_i)
-                    else:
-                        pass
 
-            for fc_index in fc_indices:
-                NUMBERING[fc_index] = np.arange(current, current+local_dofs)
-                current += local_dofs
+        for fc_index in representative:
+            NUMBERING[fc_index] = np.arange(current, current+local_dofs)
+            current += local_dofs
 
         return IrregularGatheringMatrix(NUMBERING)

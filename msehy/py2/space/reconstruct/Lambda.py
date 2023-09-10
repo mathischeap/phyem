@@ -38,7 +38,7 @@ class MseHyPy2SpaceReconstructLambda(Frozen):
 
         xi, et = meshgrid_xi_et
         shape: list = [len(xi), len(et)]
-        xi_et, bf_qt = self._space.basis_functions[degree](*meshgrid_xi_et)
+        xi_et, bf_qt = self._space.basis_functions(degree, generation, *meshgrid_xi_et)
 
         xy = representative.ct.mapping(*xi_et)
 
@@ -49,9 +49,7 @@ class MseHyPy2SpaceReconstructLambda(Frozen):
             x, y = xy[e]
             x_dict[e] = x
             y_dict[e] = y
-
-            fc = representative[e]
-            bf = bf_qt[fc._type][0]
+            bf = bf_qt[e][0]
 
             lce = local_cochain[e]
             v = np.einsum('ij, i -> j', bf, lce, optimize='optimal')
@@ -75,7 +73,7 @@ class MseHyPy2SpaceReconstructLambda(Frozen):
 
         xi, et = meshgrid_xi_et
         shape: list = [len(xi), len(et)]
-        xi_et, bf_qt = self._space.basis_functions[degree](*meshgrid_xi_et)
+        xi_et, bf_qt = self._space.basis_functions(degree, generation, *meshgrid_xi_et)
 
         num_components_qt = self._space.num_local_dof_components(degree)
 
@@ -92,7 +90,7 @@ class MseHyPy2SpaceReconstructLambda(Frozen):
             y_dict[e] = y
 
             fc = representative[e]
-            bf = bf_qt[fc._type]
+            bf = bf_qt[e]
             lce = local_cochain[e]
 
             local_0 = lce[:num_components_qt[fc._type][0]]
@@ -138,7 +136,7 @@ class MseHyPy2SpaceReconstructLambda(Frozen):
 
         xi, et = meshgrid_xi_et
         shape: list = [len(xi), len(et)]
-        xi_et, bf_qt = self._space.basis_functions[degree](*meshgrid_xi_et)
+        xi_et, bf_qt = self._space.basis_functions(degree, generation, *meshgrid_xi_et)
 
         num_components_qt = self._space.num_local_dof_components(degree)
 
@@ -155,7 +153,7 @@ class MseHyPy2SpaceReconstructLambda(Frozen):
             y_dict[e] = y
 
             fc = representative[e]
-            bf = bf_qt[fc._type]
+            bf = bf_qt[e]
             lce = local_cochain[e]
 
             local_0 = lce[:num_components_qt[fc._type][0]]
@@ -201,7 +199,7 @@ class MseHyPy2SpaceReconstructLambda(Frozen):
 
         xi, et = meshgrid_xi_et
         shape: list = [len(xi), len(et)]
-        xi_et, bf_qt = self._space.basis_functions[degree](*meshgrid_xi_et)
+        xi_et, bf_qt = self._space.basis_functions(degree, generation, *meshgrid_xi_et)
         xy = representative.ct.mapping(*xi_et)
         iJ = representative.ct.inverse_Jacobian(*xi_et)
 
@@ -212,9 +210,7 @@ class MseHyPy2SpaceReconstructLambda(Frozen):
             x, y = xy[e]
             x_dict[e] = x
             y_dict[e] = y
-
-            fc = representative[e]
-            bf = bf_qt[fc._type][0]
+            bf = bf_qt[e][0]
             iJe = iJ[e]
             lce = local_cochain[e]
             v = np.einsum(

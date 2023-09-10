@@ -13,14 +13,17 @@ class MseHyPy2BasisFunctionsLambda(Frozen):
         self._k = space.abstract.k
         self._orientation = space.abstract.orientation
         self._bfs = space[degree].bfs
+        self._space = space
         self._freeze()
 
-    def __call__(self, *meshgrid_xi_et_sg):
+    def __call__(self, g, xi, et):
         r"""meshgrid means we have to do meshgrid to the 1d xi, et, sg ..."""
+        _ = self._space.mesh._pg(g)
+        # just to check g is correct or not, also to remind user that basis function is mesh-dependent.
         k = self._k
 
         for i in range(2):
-            ref_coo = meshgrid_xi_et_sg[i]
+            ref_coo = (xi, et)[i]
             assert ref_coo.__class__.__name__ in ('list', 'ndarray'), \
                 " <bf> : xi_et_sg[{}].type={} is wrong.".format(
                     i, ref_coo.__class__.__name__
@@ -37,9 +40,9 @@ class MseHyPy2BasisFunctionsLambda(Frozen):
                 pass
 
         if self._k == 1:
-            return getattr(self, f"_k{k}_{self._orientation}")(*meshgrid_xi_et_sg)
+            return getattr(self, f"_k{k}_{self._orientation}")(xi, et)
         else:
-            return getattr(self, f"_k{k}")(*meshgrid_xi_et_sg)
+            return getattr(self, f"_k{k}")(xi, et)
 
     def _k2(self, *domain):
         r""""""

@@ -17,6 +17,8 @@ from msehy.py2.space.reconstruct.main import MseHyPy2SpaceReconstruct
 from msehy.py2.space.error.main import MseHyPy2SpaceError
 from msehy.py2.space.norm.main import MseHyPy2SpaceNorm
 
+from msehy.py2.space.find.main import MseHyPy2SpaceFind
+
 
 class MseHyPy2Space(Frozen):
     """"""
@@ -41,6 +43,7 @@ class MseHyPy2Space(Frozen):
         self._reconstruct = None
         self._error = None
         self._norm = None
+        self._find = None
         self._freeze()
 
     @property
@@ -164,3 +167,9 @@ class MseHyPy2Space(Frozen):
         if self._norm is None:
             self._norm = MseHyPy2SpaceNorm(self)
         return self._norm
+
+    @property
+    def find(self):
+        if self._find is None:
+            self._find = MseHyPy2SpaceFind(self)
+        return self._find

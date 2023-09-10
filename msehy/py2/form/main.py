@@ -73,6 +73,11 @@ class MseHyPy2RootForm(Frozen):
         return self._pAti_form['base_form']
 
     @property
+    def name(self):
+        """name of this form is the pure linguistic representation."""
+        return self._abstract._pure_lin_repr
+
+    @property
     def abstract(self):
         """the abstract object this root-form is for."""
         return self._abstract
@@ -140,7 +145,8 @@ class MseHyPy2RootForm(Frozen):
             if target.__class__ is MseHyPy2ContinuousForm:
                 pass
             else:
-                template_cf = MseHyPy2ContinuousForm(self)  # make a new `cf`, it does not affect the `cf` of self.
+                template_cf = MseHyPy2ContinuousForm(self)
+                # make a new `cf`, it does not affect the `cf` of self.
                 template_cf.field = target
                 target = template_cf
 
@@ -181,7 +187,7 @@ class MseHyPy2RootForm(Frozen):
         return self.space.error(self.cf, cochain, quad_degree=quad_degree, **kwargs)
 
     def norm(self, t=None, g=None, quad_degree=None, **kwargs):
-        """norm"""
+        """norm."""
         if t is None:
             t = self.cochain.newest[0]
         else:
@@ -198,14 +204,14 @@ class MseHyPy2RootForm(Frozen):
 
     @property
     def visualize(self):
-        """visualize"""
+        """visualize."""
         if self._visualize is None:
             self._visualize = MseHyPy2RootFormVisualize(self)
         return self._visualize
 
     @property
     def coboundary(self):
-        """coboundary"""
+        """coboundary."""
         if self._coboundary is None:
             self._coboundary = MseHyPy2RootFormCoboundary(self)
         return self._coboundary
@@ -233,7 +239,7 @@ if __name__ == '__main__':
     f1o = L1o.make_form('f_o^1', '1-f-o')
     f2 = L2.make_form('f^2', '2-f')
 
-    ph.space.finite(2)
+    ph.space.finite(4)
 
     msehy, obj = ph.fem.apply('msehy', locals())
 
@@ -288,29 +294,37 @@ if __name__ == '__main__':
         return np.sin(2*np.pi*x) * np.cos(2*np.pi*y)
 
     mesh.renew(
-        {0: refining_strength}, [0.3, 0.5, 0.7, 0.88]
+        {0: refining_strength}, [0.3, 0.5]
     )
     # mesh.visualize()
 
-    # f0i[(0, 1)].reduce()
-    # f0o[(0, 1)].reduce()
-    # f1i[(0, 1)].reduce()
-    # f1o[(0, 1)].reduce()
-    # f2[(0, 0)].reduce()
+    # _ = mesh.current_representative.opposite_pairs
+    # f1i.cochain_switch_matrix()
+    # f1o.cochain_switch_matrix()
 
-    # print(f0i[(0, 1)].error())
-    # print(f0o[(0, 1)].error())
-    # print(f1i[(0, 1)].error())
-    # print(f1o[(0, 1)].error())
-    # print(f2[(0, 1)].error())
+    f0i[(0, 1)].reduce()
+    f0o[(0, 1)].reduce()
+    f1i[(0, 1)].reduce()
+    f1o[(0, 1)].reduce()
+    f2[(0, 1)].reduce()
 
-    # f1o[(0, 1)].visualize()
-    # f1i[(0, 1)].visualize()
-    # f0i[(0, 1)].visualize()
-    # f0o[(0, 1)].visualize()
-    # f2[(0, 0)].visualize()
+    print(f0i[(0, 1)].error())
+    print(f0o[(0, 1)].error())
+    print(f1i[(0, 1)].error())
+    print(f1o[(0, 1)].error())
+    print(f2[(0, 1)].error())
+    #
+    # f0i[(0, 1)].visualize(saveto='f0i.vtk')
+    # f0o[(0, 1)].visualize(saveto='f0o.vtk')
+    # f1i[(0, 1)].visualize(saveto='f1i.vtk')
+    # f1o[(0, 1)].visualize(saveto='f1o.vtk')
+    # f2[(0, 1)].visualize(saveto='f2.vtk')
 
-    gm = f1i.cochain.gathering_matrix(1)
+    # gm = f0i.cochain.gathering_matrix(1)
+    # gm = f0o.cochain.gathering_matrix(1)
+    # gm = f1i.cochain.gathering_matrix(1)
+    # gm = f1o.cochain.gathering_matrix(1)
+    # gm = f2.cochain.gathering_matrix(1)
 
     # rc = f1i.space.local_dof_representative_coordinates(f0i.degree)
 
