@@ -15,6 +15,8 @@ __all__ = [
     '_VarPar_M',
     '_VarPar_E',
 
+    '_VarPar_P',
+
     '_VarPar_boundary_dp_vector',
 
     '_VarPar_astA_x_astB_ip_tC',
@@ -63,32 +65,68 @@ def _VarPar_M(s0, s1, d0, d1):
     )
 
 
-def _VarPar_E(f, transpose=False):
+def _VarPar_E(f_or_space_degree, transpose=False):
     """"""
-    s = f.space
-    degree = f._degree
+    from src.form.main import Form
+    if f_or_space_degree.__class__ is Form:  # I receive a form. Space and degree are from this form.
+        f = f_or_space_degree
+        s = f.space
+        degree = f._degree
+    elif len(f_or_space_degree) == 2:  # I receive the space and degree!
+        s, degree = f_or_space_degree
+    else:
+        raise Exception()
+
+    degree = _degree_str_maker(degree)
+
+    E_shape = s._sym_repr + _default_space_degree_repr + degree
+
     assert degree is not None, f"space is not finite."
 
     ds = d(s)
-    degree = _degree_str_maker(degree)
+    dE_shape = ds._sym_repr + _default_space_degree_repr + degree
 
     if transpose:
         sym, lin = _VarSetting_d_matrix_transpose
         lin = lin.replace('{space_pure_lin_repr}', str(s._pure_lin_repr))
         lin = lin.replace('{d}', degree)
         sym += r"^{" + str((s.k, s.k+1)) + r"}"
-        shape = (f._ap_shape(), ds._sym_repr + _default_space_degree_repr + degree)
+        shape = (E_shape, dE_shape)
 
     else:
         sym, lin = _VarSetting_d_matrix
         lin = lin.replace('{space_pure_lin_repr}', str(s._pure_lin_repr))
         lin = lin.replace('{d}', degree)
         sym += r"^{" + str((s.k+1, s.k)) + r"}"
-        shape = (ds._sym_repr + _default_space_degree_repr + degree, f._ap_shape())
+        shape = (dE_shape, E_shape)
 
     D = _root_array(sym, lin, shape)
 
     return D
+
+
+def _VarPar_P(from_space__and__to_space, from_degree__and__to_degree, transpose=False):
+    """"""
+    fs, ts = from_space__and__to_space
+    fd, td = from_degree__and__to_degree
+    fd = _degree_str_maker(fd)
+    td = _degree_str_maker(td)
+    fr_shape = fs._sym_repr + _default_space_degree_repr + fd
+    to_shape = ts._sym_repr + _default_space_degree_repr + td
+
+    sym, lin = _VarSetting_pi_matrix
+    lin = lin.replace('{space_pure_lin_repr_from}', str(fs._pure_lin_repr))
+    lin = lin.replace('{space_pure_lin_repr_to}', str(ts._pure_lin_repr))
+    lin = lin.replace('{d_from}', str(fd))
+    lin = lin.replace('{d_to}', str(td))
+    sym += r"_{" + ts._sym_repr + r'\leftarrow' + fs._sym_repr + r"}"
+    shape = (to_shape, fr_shape)
+    P = _root_array(sym, lin, shape)
+    if transpose:
+        P = P.T
+    else:
+        pass
+    return P
 
 
 # --- natural bc ----------------------------------------------------------------------------------

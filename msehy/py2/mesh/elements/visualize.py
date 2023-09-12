@@ -55,8 +55,8 @@ class MseHyPy2MeshElementsVisualize(Frozen):
     def __call__(
             self,
             sampling_factor=1, saveto=None, color='k',
-            show_refining_strength_distribution=True, colormap='Reds', num_levels=20,
-            intermediate=False,
+            show_refining_strength_distribution=True, colormap='bwr', num_levels=20,
+            intermediate=False, check=True,
     ):
         """
 
@@ -69,6 +69,7 @@ class MseHyPy2MeshElementsVisualize(Frozen):
         colormap
         num_levels
         intermediate
+        check
 
         Returns
         -------
@@ -113,6 +114,21 @@ class MseHyPy2MeshElementsVisualize(Frozen):
 
         sym_repr = self._elements.background.abstract._sym_repr
         plt.title(rf"${sym_repr}$")
+
+        if check:
+            xy = self._elements.ct.mapping(
+                np.array([0]), np.array([0]), fc_range=None
+            )
+            fc_center_dict = dict()
+            for fc_index in xy:
+                x, y = xy[fc_index]
+                x = x[0]
+                y = y[0]
+                x = round(x, 5)
+                y = round(y, 5)
+                str_ = f"{x}-{y}"
+                assert str_ not in fc_center_dict
+                fc_center_dict[str_] = fc_index
 
         # save -----------------------------------------------------------
         if intermediate:

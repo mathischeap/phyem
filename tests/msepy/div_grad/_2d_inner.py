@@ -62,6 +62,9 @@ f[0].reduce()
 ls0 = ls(0)
 
 als = ls0.assemble()
+
+# als.solve.package = 'mkl'
+# als.solve.scheme = 'qr'
 als.solve()
 
 # phi[0].visualize()

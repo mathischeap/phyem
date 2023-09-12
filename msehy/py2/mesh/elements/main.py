@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 r"""
 """
+from typing import Dict
 import numpy as np
 from tools.frozen import Frozen
 from tools.quadrature import Quadrature
@@ -64,10 +65,566 @@ class MseHyPy2MeshElements(Frozen):
     def map(self):
         """collection of the map of all fundamental cells."""
         if self._map is None:
-            self._map = dict()
-            for i in self._fundamental_cells:
-                self._map[i] = self[i].map
+            x_minus_face = np.array([-1]), np.array([0])
+            x_plus_face = np.array([1]), np.array([0])
+            y_minus_face = np.array([0]), np.array([-1])
+            y_plus_face = np.array([0]), np.array([1])
+
+            edge_b = x_plus_face
+            edge_0 = y_minus_face
+            edge_1 = y_plus_face
+
+            edge_center_dict = dict()
+            for index in self:
+                fc = self[index]
+                if isinstance(index, str):
+                    edge_b_coo = fc.ct.mapping(*edge_b)
+                    edge_0_coo = fc.ct.mapping(*edge_0)
+                    edge_1_coo = fc.ct.mapping(*edge_1)
+
+                    x, y = edge_b_coo
+                    x = x[0]
+                    y = y[0]
+                    x = 0 if np.isclose(x, 0) else x
+                    y = 0 if np.isclose(y, 0) else y
+                    x = round(x, 5)
+                    y = round(y, 5)
+                    str_ = f"{x}-{y}"
+                    if str_ not in edge_center_dict:
+                        edge_center_dict[str_] = list()
+                    else:
+                        pass
+                    edge_center_dict[str_].append((index, 'b'))
+
+                    x, y = edge_0_coo
+                    x = x[0]
+                    y = y[0]
+                    x = 0 if np.isclose(x, 0) else x
+                    y = 0 if np.isclose(y, 0) else y
+                    x = round(x, 5)
+                    y = round(y, 5)
+                    str_ = f"{x}-{y}"
+                    if str_ not in edge_center_dict:
+                        edge_center_dict[str_] = list()
+                    else:
+                        pass
+                    edge_center_dict[str_].append((index, 0))
+
+                    x, y = edge_1_coo
+                    x = x[0]
+                    y = y[0]
+                    x = 0 if np.isclose(x, 0) else x
+                    y = 0 if np.isclose(y, 0) else y
+                    x = round(x, 5)
+                    y = round(y, 5)
+                    str_ = f"{x}-{y}"
+                    if str_ not in edge_center_dict:
+                        edge_center_dict[str_] = list()
+                    else:
+                        pass
+                    edge_center_dict[str_].append((index, 1))
+                else:
+                    face_0_coo = fc.ct.mapping(*x_minus_face)
+                    face_1_coo = fc.ct.mapping(*x_plus_face)
+                    face_2_coo = fc.ct.mapping(*y_minus_face)
+                    face_3_coo = fc.ct.mapping(*y_plus_face)
+
+                    x, y = face_0_coo
+                    x = x[0]
+                    y = y[0]
+                    x = 0 if np.isclose(x, 0) else x
+                    y = 0 if np.isclose(y, 0) else y
+                    x = round(x, 5)
+                    y = round(y, 5)
+                    str_ = f"{x}-{y}"
+                    if str_ not in edge_center_dict:
+                        edge_center_dict[str_] = list()
+                    else:
+                        pass
+                    edge_center_dict[str_].append([index, 0, 0])
+
+                    x, y = face_1_coo
+                    x = x[0]
+                    y = y[0]
+                    x = 0 if np.isclose(x, 0) else x
+                    y = 0 if np.isclose(y, 0) else y
+                    x = round(x, 5)
+                    y = round(y, 5)
+                    str_ = f"{x}-{y}"
+                    if str_ not in edge_center_dict:
+                        edge_center_dict[str_] = list()
+                    else:
+                        pass
+                    edge_center_dict[str_].append([index, 0, 1])
+
+                    x, y = face_2_coo
+                    x = x[0]
+                    y = y[0]
+                    x = 0 if np.isclose(x, 0) else x
+                    y = 0 if np.isclose(y, 0) else y
+                    x = round(x, 5)
+                    y = round(y, 5)
+                    str_ = f"{x}-{y}"
+                    if str_ not in edge_center_dict:
+                        edge_center_dict[str_] = list()
+                    else:
+                        pass
+                    edge_center_dict[str_].append([index, 1, 0])
+
+                    x, y = face_3_coo
+                    x = x[0]
+                    y = y[0]
+                    x = 0 if np.isclose(x, 0) else x
+                    y = 0 if np.isclose(y, 0) else y
+                    x = round(x, 5)
+                    y = round(y, 5)
+                    str_ = f"{x}-{y}"
+                    if str_ not in edge_center_dict:
+                        edge_center_dict[str_] = list()
+                    else:
+                        pass
+                    edge_center_dict[str_].append([index, 1, 1])
+
+            _map: Dict = dict()
+            for index in self:
+                if isinstance(index, str):
+                    _map[index] = [None for _ in range(3)]
+                else:
+                    _map[index] = [None for _ in range(4)]
+
+            for edge_coo in edge_center_dict:
+                sharing_edges = edge_center_dict[edge_coo]
+                if len(sharing_edges) == 2:
+
+                    if isinstance(sharing_edges[0], list) and isinstance(sharing_edges[1], list):
+                        q_index_0, m, n = sharing_edges[0]
+                        j0 = m * 2 + n
+                        q_index_1, m, n = sharing_edges[1]
+                        j1 = m * 2 + n
+                        _map[q_index_0][j0] = q_index_1
+                        _map[q_index_1][j1] = q_index_0
+
+                    else:
+                        direction0 = self._find_direct(sharing_edges[0])
+                        direction1 = self._find_direct(sharing_edges[1])
+
+                        if np.allclose(direction0, direction1):
+                            sign = '+'
+                        else:
+                            assert np.allclose(-direction0, direction1), f'must be'
+                            sign = '-'
+
+                        for k, pos in enumerate(sharing_edges):
+                            if k == 0:
+                                pair_position = sharing_edges[1]
+                            else:
+                                pair_position = sharing_edges[0]
+
+                            if isinstance(pos, list):
+                                q_index, m, n = pos
+                                j = m * 2 + n
+                                if isinstance(pair_position, list):
+                                    _map[q_index][j] = pair_position + [sign, ]
+                                elif isinstance(pair_position, tuple):
+                                    _map[q_index][j] = pair_position + (sign, )
+                                else:
+                                    raise Exception
+
+                            elif isinstance(pos, tuple):
+                                t_index, b_0_1 = pos
+                                if b_0_1 == 'b':
+                                    j = 0
+                                elif b_0_1 == 0:
+                                    j = 1
+                                elif b_0_1 == 1:
+                                    j = 2
+                                else:
+                                    raise Exception
+                                if isinstance(pair_position, list):
+                                    _map[t_index][j] = pair_position + [sign, ]
+                                elif isinstance(pair_position, tuple):
+                                    _map[t_index][j] = pair_position + (sign, )
+                                else:
+                                    raise Exception
+
+                            else:
+                                raise Exception()
+                else:
+                    pass
+
+            if self._background.abstract.manifold.is_periodic():
+                _map = self._update_periodic_map(_map)
+            else:
+                pass
+
+            self._map = _map
+            self._check_element_map()
+
         return self._map
+
+    def _find_direct(self, position):
+
+        if len(position) == 2:
+            t_index, b_0_1 = position
+            if b_0_1 == 'b':
+                coo = [
+                    np.array([1, 1]), np.array([-1, 1])
+                ]
+            elif b_0_1 == 0:
+                coo = [
+                    np.array([-1, 1]), np.array([-1, -1])
+                ]
+            elif b_0_1 == 1:
+                coo = [
+                    np.array([-1, 1]), np.array([1, 1])
+                ]
+            else:
+                raise Exception
+
+            coo = self[t_index].ct.mapping(*coo)
+            x, y = coo
+            x = x[1] - x[0]
+            y = y[1] - y[0]
+            return np.array([x, y])
+
+        elif len(position) == 3:
+            q_index, m, n = position
+            j = m * 2 + n
+            if j == 0:
+                coo = [
+                    np.array([-1, -1]), np.array([-1, 1])
+                ]
+            elif j == 1:
+                coo = [
+                    np.array([1, 1]), np.array([-1, 1])
+                ]
+            elif j == 2:
+                coo = [
+                    np.array([-1, 1]), np.array([-1, -1])
+                ]
+            elif j == 3:
+                coo = [
+                    np.array([-1, 1]), np.array([1, 1])
+                ]
+            else:
+                raise Exception
+
+            coo = self[q_index].ct.mapping(*coo)
+            x, y = coo
+            x = x[1] - x[0]
+            y = y[1] - y[0]
+            return np.array([x, y])
+
+        else:
+            raise NotImplementedError()
+
+    def _update_periodic_map(self, element_map):
+        """"""
+        bgm = self.background.elements.map
+
+        center_b = np.array([1]), np.array([0])
+        center_0 = np.array([0]), np.array([-1])
+        center_1 = np.array([0]), np.array([1])
+        for index in element_map:
+            _map = element_map[index]
+
+            if None not in _map:
+                pass
+            else:
+                if isinstance(index, str):  # we are trying to parse map for a triangle cell.
+                    t_fc = self[index]
+                    representative = t_fc.representative
+                    _base_i = representative._base_element._i
+                    face_indicator = index.split('=')[1][0]
+                    if face_indicator == '0':
+                        k = 1
+                        j = '2'
+                    elif face_indicator == '1':
+                        k = 3
+                        j = '3'
+                    elif face_indicator == '2':
+                        k = 0
+                        j = '0'
+                    elif face_indicator == '3':
+                        k = 2
+                        j = '1'
+                    else:
+                        raise Exception
+
+                    base_ele = bgm[_base_i][k]
+
+                    if base_ele == -1:
+                        pass
+                    elif base_ele in self:
+                        pass
+                    else:
+                        other_triangle_index_template = f"{base_ele}={j}"
+
+                        if j == '2' or j == '3':
+                            other_origin = np.array([-1]), np.array([-1])
+                        elif j == '0':
+                            other_origin = np.array([1]), np.array([-1])
+                        elif j == '1':
+                            other_origin = np.array([-1]), np.array([1])
+                        else:
+                            raise Exception
+
+                        other_origin = self.background.elements[base_ele].ct.mapping(*other_origin)
+                        oo_x, oo_y = other_origin
+                        oo_x = oo_x[0]
+                        oo_y = oo_y[0]
+                        oo_x = 0 if np.isclose(oo_x, 0) else oo_x
+                        oo_y = 0 if np.isclose(oo_y, 0) else oo_y
+
+                        if k == 0 or k == 2:
+                            self_origin = np.array([-1]), np.array([-1])
+                        elif k == 1:
+                            self_origin = np.array([1]), np.array([-1])
+                        elif k == 3:
+                            self_origin = np.array([-1]), np.array([1])
+                        else:
+                            raise Exception
+
+                        self_origin = representative._base_element.ct.mapping(*self_origin)
+                        so_x, so_y = self_origin
+                        so_x = so_x[0]
+                        so_y = so_y[0]
+                        so_x = 0 if np.isclose(so_x, 0) else so_x
+                        so_y = 0 if np.isclose(so_y, 0) else so_y
+
+                        num_None = 0
+                        for mp in _map:
+                            if mp is None:
+                                num_None += 1
+                        assert num_None == 1, f"A fundamental triangle cell can only have one edge on boundary!"
+
+                        for j, mp in zip(['b', 0, 1], _map):
+
+                            if mp is None:
+                                if j == 'b':
+                                    real_edge_index = 0
+                                    center = center_b
+                                elif j == 0:
+                                    real_edge_index = 1
+                                    center = center_0
+                                elif j == 1:
+                                    real_edge_index = 2
+                                    center = center_1
+                                else:
+                                    raise Exception
+
+                                self_center = t_fc.ct.mapping(*center)
+                                sc_x, sc_y = self_center
+                                sc_x = sc_x[0]
+                                sc_y = sc_y[0]
+                                sc_x = 0 if np.isclose(sc_x, 0) else sc_x
+                                sc_y = 0 if np.isclose(sc_y, 0) else sc_y
+
+                                self_vector = (sc_x - so_x, sc_y - so_y)
+
+                                for index_other in self:
+                                    if isinstance(index_other, str) and other_triangle_index_template in index_other:
+
+                                        for _k_ in ['b', 0, 1]:
+                                            if _k_ == 'b':
+                                                center = center_b
+                                            elif _k_ == 0:
+                                                center = center_0
+                                            elif _k_ == 1:
+                                                center = center_1
+                                            else:
+                                                raise Exception
+
+                                            other_center = self[index_other].ct.mapping(*center)
+                                            oc_x, oc_y = other_center
+                                            oc_x = oc_x[0]
+                                            oc_y = oc_y[0]
+                                            oc_x = 0 if np.isclose(oc_x, 0) else oc_x
+                                            oc_y = 0 if np.isclose(oc_y, 0) else oc_y
+
+                                            other_vector = (oc_x - oo_x, oc_y - oo_y)
+
+                                            if np.allclose(self_vector, other_vector):
+                                                assert element_map[index][real_edge_index] is None
+                                                element_map[index][real_edge_index] = (index_other, _k_)
+                                                break
+                                            else:
+                                                pass
+
+                                        if element_map[index][real_edge_index] is not None:
+                                            break
+                                assert element_map[index][real_edge_index] is not None
+                                break
+                            else:
+                                pass
+
+                else:
+                    q_fc = self[index]
+                    representative = q_fc.representative
+
+                    for j, mp in enumerate(_map):
+
+                        if mp is None:
+
+                            base_ele = bgm[representative._i][j]
+
+                            if base_ele == -1:
+                                pass
+                            else:
+                                if base_ele in self:
+                                    assert element_map[index][j] is None
+                                    element_map[index][j] = base_ele
+                                else:
+                                    if j == 0:
+                                        triangle_index = f"{base_ele}=0"
+                                    elif j == 1:
+                                        triangle_index = f"{base_ele}=2"
+                                    elif j == 2:
+                                        triangle_index = f"{base_ele}=1"
+                                    elif j == 3:
+                                        triangle_index = f"{base_ele}=3"
+                                    else:
+                                        raise Exception
+
+                                    assert triangle_index in self
+                                    assert element_map[index][j] is None
+                                    element_map[index][j] = (triangle_index, 'b')
+                                    assert element_map[triangle_index][0] is None
+                                    m = j // 2
+                                    n = j % 2
+                                    element_map[triangle_index][0] = [index, m, n]
+
+        for index in element_map:
+            _map = element_map[index]
+            for j, mp in enumerate(_map):
+                if isinstance(mp, (list, tuple)) and mp[-1] not in ('+', '-'):
+                    if isinstance(index, str):
+                        if j == 0:
+                            self_position = (index, 'b')
+                        elif j == 1:
+                            self_position = (index, 0)
+                        elif j == 2:
+                            self_position = (index, 1)
+                        else:
+                            raise Exception
+
+                    else:
+                        m = j // 2
+                        n = j % 2
+
+                        self_position = [index, m, n]
+
+                    other_position = mp
+
+                    direction0 = self._find_direct(self_position)
+                    direction1 = self._find_direct(other_position)
+
+                    if np.allclose(direction0, direction1):
+                        sign = '+'
+                    else:
+                        assert np.allclose(-direction0, direction1), f'must be'
+                        sign = '-'
+
+                    old_location = element_map[index][j]
+                    if isinstance(old_location, tuple):
+                        element_map[index][j] = old_location + (sign, )
+                    elif isinstance(old_location, list):
+                        element_map[index][j] = old_location + [sign, ]
+                    else:
+                        raise Exception
+
+                else:
+                    pass
+
+        return element_map
+
+    def _check_element_map(self):
+        """"""
+
+        background_map = self.background.elements.map
+        for index in self.map:
+            _map = self.map[index]
+            fc = self[index]
+            representative = fc.representative
+            if isinstance(index, str):  # a triangle
+                assert fc._type == 't', f"must be a triangle cell"
+                base_element = representative._base_element._i
+                bmp = background_map[base_element]
+                for j, mp in zip(['b', 0, 1], _map):
+                    if mp is None:
+                        face_indicator = index.split('=')[1][0]
+                        if face_indicator == '0':
+                            assert bmp[1] == -1
+                        elif face_indicator == '1':
+                            assert bmp[3] == -1
+                        elif face_indicator == '2':
+                            assert bmp[0] == -1
+                        elif face_indicator == '3':
+                            assert bmp[2] == -1
+                        else:
+                            raise Exception
+                    elif isinstance(mp, tuple):
+                        what = self._find_map_at(mp[:2])
+                        assert len(what) == 3, f"pair to this triangle cell."
+                        assert mp[-1] == what[-1], f"pair to this triangle cell."
+                        assert what[0] == index and what[1] == j, f"pair to this triangle cell."
+                    elif isinstance(mp, list):
+                        what = self._find_map_at(mp[:3])
+                        assert len(what) == 3, f"pair to this triangle cell."
+                        assert mp[-1] == what[-1], f"pair to this triangle cell."
+                        assert what[0] == index and what[1] == j, f"pair to this triangle cell."
+                        face_indicator = index.split('=')[1][0]
+                        if face_indicator == '0':
+                            assert bmp[1] == mp[0]
+                        elif face_indicator == '1':
+                            assert bmp[3] == mp[0]
+                        elif face_indicator == '2':
+                            assert bmp[0] == mp[0]
+                        elif face_indicator == '3':
+                            assert bmp[2] == mp[0]
+                        else:
+                            raise Exception
+                    else:
+                        raise Exception
+
+            else:
+                assert fc._type == 'q', f"must be a quadrilateral cell"
+                assert len(_map) == 4, f"a quadrilateral cell has four edges."
+                bmp = background_map[index]
+                for j, mp in enumerate(_map):
+                    if mp is None:
+                        assert bmp[j] == -1, f"base element {index} face #{j} must be on boundary!"
+                    elif isinstance(mp, tuple):
+                        what = self._find_map_at(mp[:2])
+                        assert len(what) == 4, f"pair to this quadrilateral cell."
+                        assert what[0] == index, f"pair to this quadrilateral cell."
+                        m, n = what[1:3]
+                        assert j == m * 2 + n, f"pair to this quadrilateral cell."
+                        assert what[-1] == mp[-1], f"pair sign must match."
+                    else:
+                        assert mp % 1 == 0, f"a base element is attached to another base element!"
+                        assert bmp[j] == mp, f"a base element is attached to another base element!"
+
+    def _find_map_at(self, place):
+        """"""
+        if isinstance(place, tuple) and len(place) == 2:
+            # a place of a triangle fundamental cell.
+            fc_index, edge_index = place
+            if edge_index == 'b':
+                edge_index = 0
+            elif edge_index == 0:
+                edge_index = 1
+            elif edge_index == 1:
+                edge_index = 2
+            else:
+                raise Exception
+            return self.map[fc_index][edge_index]
+        if isinstance(place, list) and len(place) == 3:
+            q_index, m, n = place
+            j = m * 2 + n
+            return self.map[q_index][j]
+        else:
+            raise NotImplementedError()
 
     def _collecting_fundamental_cells(self):
         """"""

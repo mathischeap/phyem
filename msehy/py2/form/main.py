@@ -224,6 +224,7 @@ if __name__ == '__main__':
     space_dim = 2
     ph.config.set_embedding_space_dim(space_dim)
 
+    # manifold = ph.manifold(space_dim, is_periodic=True)
     manifold = ph.manifold(space_dim, is_periodic=False)
     mesh = ph.mesh(manifold)
 
@@ -239,7 +240,7 @@ if __name__ == '__main__':
     f1o = L1o.make_form('f_o^1', '1-f-o')
     f2 = L2.make_form('f^2', '2-f')
 
-    ph.space.finite(4)
+    ph.space.finite(3)
 
     msehy, obj = ph.fem.apply('msehy', locals())
 
@@ -251,8 +252,9 @@ if __name__ == '__main__':
     manifold = obj['manifold']
     mesh = obj['mesh']
 
-    msehy.config(manifold)('crazy', c=0.0, bounds=[[0, 2], [0, 2]], periodic=False)
-    msehy.config(mesh)(7)
+    # msehy.config(manifold)('crazy', c=0., bounds=([-1, 1], [-1, 1]), periodic=True)
+    msehy.config(manifold)('crazy', c=0.0, bounds=[[-1, 1], [-1, 1]], periodic=False)
+    msehy.config(mesh)(13)
 
     # mesh.visualize()
 
@@ -289,14 +291,15 @@ if __name__ == '__main__':
     f1o.cf = vector
     f2.cf = scalar
 
-    def refining_strength(x, y):
-        """"""
-        return np.sin(2*np.pi*x) * np.cos(2*np.pi*y)
+    from msehy.py2.tools.randomrefiningstrengthfunction import RandomRefiningStrengthFunction
+    random_refining_strength = RandomRefiningStrengthFunction(([-1, 1], [-1, 1]))
 
     mesh.renew(
-        {0: refining_strength}, [0.3, 0.5]
+        {0: random_refining_strength}, [0.2, 0.3, 0.4, 0.5]
     )
-    # mesh.visualize()
+
+    _ = mesh.current_representative.map
+    mesh.visualize()
 
     # _ = mesh.current_representative.opposite_pairs
     # f1i.cochain_switch_matrix()
@@ -307,13 +310,13 @@ if __name__ == '__main__':
     f1i[(0, 1)].reduce()
     f1o[(0, 1)].reduce()
     f2[(0, 1)].reduce()
-
+    #
     print(f0i[(0, 1)].error())
     print(f0o[(0, 1)].error())
     print(f1i[(0, 1)].error())
     print(f1o[(0, 1)].error())
     print(f2[(0, 1)].error())
-    #
+
     # f0i[(0, 1)].visualize(saveto='f0i.vtk')
     # f0o[(0, 1)].visualize(saveto='f0o.vtk')
     # f1i[(0, 1)].visualize(saveto='f1i.vtk')

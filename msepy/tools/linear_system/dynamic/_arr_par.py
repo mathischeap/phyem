@@ -35,6 +35,7 @@ __all__ = [
 
     'Parse__M_matrix',
     'Parse__E_matrix',
+    'Parse__pi_matrix',
     'Parse__trStar_rf0_dp_tr_s1_vector',
 
     'Parse__astA_x_astB_ip_tC',
@@ -197,6 +198,17 @@ def Parse__E_matrix(space, degree):
     )
 
     return E, None  # time_indicator is None, mean E is same at all time.
+
+
+def Parse__pi_matrix(from_space, to_space, from_d, to_d):
+    """"""
+    from_d = _str_degree_parser(from_d)
+    to_d = _str_degree_parser(to_d)
+    from_space = _find_space_through_pure_lin_repr(from_space)
+    to_space = _find_space_through_pure_lin_repr(to_space)
+    from msepy.space.projection import MsePySpaceProjection
+    pi = MsePySpaceProjection(from_space, to_space, from_d, to_d)
+    return pi.matrix, None
 
 
 def Parse__trStar_rf0_dp_tr_s1_vector(dls, tr_star_rf0, tr_rf1):

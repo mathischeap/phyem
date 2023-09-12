@@ -217,7 +217,7 @@ if __name__ == '__main__':
     manifold = ph.manifold(space_dim, is_periodic=False)
     mesh = ph.mesh(manifold)
 
-    mesh.boundary_partition(r"\Gamma_\perp", r"\Gamma_P")
+    # mesh.boundary_partition(r"\Gamma_\perp", r"\Gamma_P")
 
     msehy, obj = ph.fem.apply('msehy', locals())
     manifold = msehy.base['manifolds'][r'\mathcal{M}']
@@ -225,14 +225,14 @@ if __name__ == '__main__':
 
     # msehy.config(manifold)('crazy', c=0., bounds=([-1, 1], [-1, 1]), periodic=True)
     msehy.config(manifold)('crazy', c=0., bounds=([-1, 1], [-1, 1]), periodic=False)
-    Gamma_perp = msehy.base['manifolds'][r"\Gamma_\perp"]
-    msehy.config(Gamma_perp)(
-        manifold, {
-            0: [1, 0, 0, 0],
-        }
-    )
+    # Gamma_perp = msehy.base['manifolds'][r"\Gamma_\perp"]
+    # msehy.config(Gamma_perp)(
+    #     manifold, {
+    #         0: [1, 0, 0, 0],
+    #     }
+    # )
 
-    msehy.config(mesh)([13, 13])    # element layout
+    msehy.config(mesh)([7, 7])    # element layout
 
     # msh = msehy.base['meshes'][msh]
     # for msh in msehy.base['meshes']:
@@ -240,18 +240,23 @@ if __name__ == '__main__':
     #     cr = msh.current_representative
     # print(cr)
     # print(msh)
+    # mesh.visualize()
 
     def refining_strength(x, y):
         """"""
         return np.sin(2*np.pi*x) * np.cos(2*np.pi*y)
 
     mesh.renew(
-        {0: refining_strength}, [0.3, 0.5, 0.7, 0.9]
+        {0: refining_strength}, [0.3, 0.5]
     )
-
-    mesh.renew(
-        {0: refining_strength}, [0.3, 0.5, 0.7, 0.9]
-    )
+    mesh.visualize()
+    # mesh.renew(
+    #     {0: refining_strength}, [0.3, 0.5, 0.7, 0.9]
+    # )
+    # mesh.visualize()
+    # MAP = mesh.current_representative.map
+    # for i in MAP:
+    #     print(i, MAP[i])
 
     # # for msh in msehy.base['meshes']:
     # #     msh = msehy.base['meshes'][msh]
@@ -267,7 +272,7 @@ if __name__ == '__main__':
     #     # if isinstance(p2, str):
     #     #     print(i, elements[p2].pair_to)
     #     print(i, triangle.angle_degree)
-    # mesh.visualize()
+    #
     # print(len(current_elements), current_elements.num_levels)
     # print(current_elements.map)
     # for i in current_elements:
@@ -278,8 +283,8 @@ if __name__ == '__main__':
     # for msh in msehy.base['meshes']:
     #     msh = msehy.base['meshes'][msh]
     #     msh.visualize()
-
-    for msh in msehy.base['meshes']:
-        msh = msehy.base['meshes'][msh]
-        # msh.visualize()
-        print(msh.generations[-1])
+    #
+    # for msh in msehy.base['meshes']:
+    #     msh = msehy.base['meshes'][msh]
+    #     # msh.visualize()
+    #     print(msh.generations[-2])

@@ -41,7 +41,7 @@ class MseHyPy2SpaceReduceLambda(Frozen):
     def _check_consistence(self, degree, g, local_cochain):
         """"""
         iGM = self._space.gathering_matrix(degree, g)
-        if iGM.num_dofs < 15000 and self._checked is False:  # only check it once when it is affordable!
+        if iGM.num_dofs < 30000 and self._checked is False:  # only check it once when it is affordable!
             cochain_dict: Dict = dict()
             for dof in range(iGM.num_dofs):
                 cochain_dict[dof] = None
@@ -52,7 +52,8 @@ class MseHyPy2SpaceReduceLambda(Frozen):
                     if cochain_dict[_] is None:
                         cochain_dict[_] = cochain[j]
                     else:
-                        assert np.isclose(cochain_dict[_], cochain[j])
+                        assert np.isclose(cochain_dict[_], cochain[j]), \
+                            f"{cochain_dict[_], cochain[j]}"
             self._checked = True  # only do it once.
         else:
             pass

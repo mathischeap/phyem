@@ -70,6 +70,9 @@ def msepy_root_array_parser(dls, array_lin_repr):
                 _VarSetting_d_matrix_transpose):
             A, _ti = Parse__E_matrix(*info_indicators)
             A = A.T
+        elif type_indicator == _find_indicator(
+                _VarSetting_pi_matrix):
+            A, _ti = Parse__pi_matrix(*info_indicators)
 
         # natural bc vector =================================================
         elif type_indicator == _find_indicator(

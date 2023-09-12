@@ -348,10 +348,7 @@ class MsePyDynamicLinearSystem(Frozen):
             "font.family": "DejaVu Sans",
             "text.latex.preamble": r"\usepackage{amsmath, amssymb}",
         })
-        if _setting['pr_cache']:
-            matplotlib.use('Agg')
-        else:
-            matplotlib.use('TkAgg')
+        matplotlib.use('TkAgg')
 
         assert self._A is not None, f"dynamic linear system initialized but not applied, do `.apply()` firstly."
 

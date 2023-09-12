@@ -19,6 +19,7 @@ from msepy.form.visualize.main import MsePyRootFormVisualize
 from msepy.form.coboundary import MsePyRootFormCoboundary
 from msepy.form.matrix import MsePyRootFormMatrix
 from msepy.form.boundary_integrate.main import MsePyRootFormBoundaryIntegrate
+from msepy.form.projection import MsePyFormProjection
 
 from tools.miscellaneous.ndarray_cache import ndarray_key_comparer, add_to_ndarray_cache
 
@@ -51,6 +52,7 @@ class MsePyRootForm(Frozen):
         self._reconstruct_matrix = None
         self._reconstruct_matrix_cache = dict()
         self._numeric = None
+        self._projection = None
         self._freeze()
 
     def _saving_check(self):
@@ -354,6 +356,18 @@ class MsePyRootForm(Frozen):
         if self._matrix is None:
             self._matrix = MsePyRootFormMatrix(self)
         return self._matrix
+
+    @property
+    def projection(self):
+        """Project self into another form.
+
+        Do self.projection(f1): this project self into f1.
+
+        The meshes must match of course!
+        """
+        if self._projection is None:
+            self._projection = MsePyFormProjection(self)
+        return self._projection
 
     @property
     def boundary_integrate(self):

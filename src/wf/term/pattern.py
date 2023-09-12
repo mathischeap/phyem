@@ -73,12 +73,12 @@ def _inner_simpler_pattern_examiner_scalar_valued_forms(factor, f0, f1, extra_in
             root_forms_in_f1 = _find_root_forms_through_lin_repr(f1._lin_repr)
             # Both A and B are root-form
             if len(root_forms_in_f1) == 1 and f0._is_root:
-                pi_B = _find_form(f1._lin_repr, upon=d)
+                A = f0
+                B = root_forms_in_f1[0]
                 return _simple_patterns['(,d-pi)'], {
-                    'A': f0,                     # root-form A
-                    'B': root_forms_in_f1[0],    # root-form B
-                    'pi(B)': pi_B
-                }
+                    'A': A,    # root-form A
+                    'B': B,    # root-form B
+                } # d(pi(B)) is in the same space of A, and is of same degree.
 
         # (a x b, c) types term, where x is cross product, and a, b, c are root-scalar-valued forms ----
         cross_product_lin = _global_operator_lin_repr_setting['cross_product']

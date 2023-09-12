@@ -558,7 +558,7 @@ class _DataDictDistributor(Frozen):
     def __init__(self, index_mapping, data_dict):
         """"""
         self._mp = index_mapping
-        self._dd = data_dict
+        self._dd = data_dict  # keys are reference elements, values are the data
         self._freeze()
 
     def _cache_key_generator(self, i):

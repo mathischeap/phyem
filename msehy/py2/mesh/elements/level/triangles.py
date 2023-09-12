@@ -268,12 +268,274 @@ class MseHyPy2LevelTriangles(Frozen):
                 ]
 
         else:
-            self._deeper_level_local_map_maker()
+            if self._background.abstract.manifold.is_periodic():
+                self._periodic_deeper_level_local_map_maker()
+            else:
+                self._non_periodic_deeper_level_local_map_maker()
 
-    def _deeper_level_local_map_maker(self):
-        """make element map for level 1+. This is a very silly scheme. Pls update it!"""
+    def _periodic_deeper_level_local_map_maker(self):
+        """"""
+        self._non_periodic_deeper_level_local_map_maker()  # we first do the non-periodic one!
+        local_map = self._local_map
+        to_be_decided_edges = dict()
+        base_msepy_elements_map = self._background.elements.map
+        for index in local_map:
+            _map = local_map[index]
+            assert len(_map) == 3, 'must be!'
+            for edge_index, mp in zip(['b', 0, 1], _map):
+                if mp is None:
+                    _ = index.index('=')
+                    side = index[_+1]
+                    if side == '2':
+                        k = 0
+                        j = 1
+                    elif side == '0':
+                        k = 1
+                        j = 0
+                    elif side == '3':
+                        k = 2
+                        j = 3
+                    elif side == '1':
+                        k = 3
+                        j = 2
+                    else:
+                        raise Exception()
+                    base_element = int(index[:_])
+
+                    b_map = base_msepy_elements_map[base_element][k]
+
+                    if b_map == -1:  # it is on a real boundary, just pase
+                        pass
+                    else:
+                        key = ((base_element, k), (b_map, j))
+                        if key not in to_be_decided_edges:
+                            to_be_decided_edges[key] = list()
+                        else:
+                            pass
+                        position = (index, edge_index)
+                        to_be_decided_edges[key].append(position)
+
+        now_triangles = self._triangle_dict
+
+        now_anchor_points = dict()
+        watching_faces = dict()
+        for key in to_be_decided_edges:
+            s_element_face, o_element_face = key
+            for face in key:
+                ele, face_id = face
+                if face_id == 0:
+                    _edge = '2'
+                elif face_id == 1:
+                    _edge = '0'
+                elif face_id == 2:
+                    _edge = '3'
+                elif face_id == 3:
+                    _edge = '1'
+                else:
+                    raise Exception
+
+                str_repr = f"{face[0]}=" + _edge
+
+                if str_repr in watching_faces:
+                    watching_faces[str_repr] += 1
+                else:
+                    watching_faces[str_repr] = 1
+
+            s_ele, s_face_index = s_element_face
+
+            if s_face_index in (0, 2):
+                anchor = (np.array([-1]), np.array([-1]))
+            elif s_face_index == 1:
+                anchor = (np.array([1]), np.array([-1]))
+            elif s_face_index == 3:
+                anchor = (np.array([-1]), np.array([1]))
+            else:
+                raise Exception()
+
+            anchor = self._background.elements[s_ele].ct.mapping(*anchor)
+            s_a_x, s_a_y = anchor
+            s_a_x = s_a_x[0]
+            s_a_y = s_a_y[0]
+
+            for triangle_edge in to_be_decided_edges[key]:
+                index, edge_index = triangle_edge
+                if edge_index == 'b':
+                    anchor = (np.array([1]), np.array([0]))
+                elif edge_index == 0:
+                    anchor = (np.array([0]), np.array([-1]))
+                elif edge_index == 1:
+                    anchor = (np.array([0]), np.array([1]))
+                else:
+                    raise Exception()
+
+                # noinspection PyUnresolvedReferences
+                anchor = now_triangles[index].ct.mapping(*anchor)
+                _a_x, _a_y = anchor
+                _a_x = _a_x[0]
+                _a_y = _a_y[0]
+
+                vector = (_a_x - s_a_x, _a_y - s_a_y)
+                assert triangle_edge not in now_anchor_points, f'must be new!'
+                now_anchor_points[triangle_edge] = vector
+
+        old_triangles = self._level._base_level_elements._triangle_dict
+        old_anchor_points = dict()
+        for index in old_triangles:
+            _index = index[:(index.index('=') + 2)]
+            if _index in watching_faces:
+                _f = _index[-1]
+                if _f == '0':
+                    anchor = (np.array([1]), np.array([-1]))
+                elif _f == '1':
+                    anchor = (np.array([-1]), np.array([1]))
+                elif _f == '2':
+                    anchor = (np.array([-1]), np.array([-1]))
+                elif _f == '3':
+                    anchor = (np.array([-1]), np.array([-1]))
+                else:
+                    raise Exception()
+
+                ot = old_triangles[index]
+
+                anchor = ot._base_element.ct.mapping(*anchor)
+                s_a_x, s_a_y = anchor
+                s_a_x = s_a_x[0]
+                s_a_y = s_a_y[0]
+
+                for j in ('b', 0, 1):
+                    if j == 'b':
+                        anchor = (np.array([1]), np.array([0]))
+                    elif j == 0:
+                        anchor = (np.array([0]), np.array([-1]))
+                    elif j == 1:
+                        anchor = (np.array([0]), np.array([1]))
+                    else:
+                        raise Exception()
+
+                    anchor = ot.ct.mapping(*anchor)
+                    _a_x, _a_y = anchor
+                    _a_x = _a_x[0]
+                    _a_y = _a_y[0]
+
+                    vector = (_a_x - s_a_x, _a_y - s_a_y)
+
+                    _save_index = (index, j)
+                    assert _save_index not in old_anchor_points, f'must be new!'
+                    old_anchor_points[_save_index] = vector
+
+        for p0_p1 in to_be_decided_edges:
+            positions = to_be_decided_edges[p0_p1]
+            p0, p1 = p0_p1
+
+            _ = p1[1]
+            if _ == 0:
+                str_ = f"{p1[0]}=2"
+            elif _ == 1:
+                str_ = f"{p1[0]}=0"
+            elif _ == 2:
+                str_ = f"{p1[0]}=3"
+            elif _ == 3:
+                str_ = f"{p1[0]}=1"
+            else:
+                raise Exception
+            len_str = len(str_)
+            reverse_position = (p1, p0)
+            for index_edge in positions:
+                index, edge_index = index_edge
+
+                if edge_index == 'b':
+                    real_edge_index = 0
+                elif edge_index == 0:
+                    real_edge_index = 1
+                elif edge_index == 1:
+                    real_edge_index = 2
+                else:
+                    raise Exception
+
+                assert self.local_map[index][real_edge_index] is None, \
+                    f"these locations are where we want to find correct pair."
+
+                anchor = now_anchor_points[index_edge]
+
+                if reverse_position in to_be_decided_edges:
+
+                    reverse_edges = to_be_decided_edges[reverse_position]
+                    for pos in reverse_edges:
+                        assert pos in now_anchor_points
+
+                        if np.allclose(anchor, now_anchor_points[pos]):
+                            assert self.local_map[index][real_edge_index] is None
+                            self.local_map[index][real_edge_index] = pos
+                            break
+                else:
+                    pass
+
+                if self.local_map[index][real_edge_index] is None:
+                    for old_index in old_anchor_points:
+                        if old_index[0][:len_str] == str_:
+
+                            old_anchor = old_anchor_points[old_index]
+
+                            if np.allclose(anchor, old_anchor):
+                                # noinspection PyTypeChecker
+                                self.local_map[index][real_edge_index] = old_index
+                                break
+                            else:
+                                pass
+                else:
+                    pass
+
+                assert self.local_map[index][real_edge_index] is not None, f'must pair it to someone!'
+
+                pos0 = (index, edge_index)
+                pos1 = self.local_map[index][real_edge_index]
+                sign = self._parse_sign_1(pos0, pos1)
+                pos1 += (sign, )
+                assert len(pos1) == 3, f'must be!'
+                self.local_map[index][real_edge_index] = pos1
+
+    def _parse_sign_1(self, position0, position1):
+        """"""
+        positions = (position0, position1)
+        vectors = list()
+        for pos in positions:
+            edge_index = pos[1]
+            if edge_index == 'b':
+                x = np.array([1, 1])
+                y = np.array([-1, 1])
+            elif edge_index == 0:
+                x = np.array([-1, 1])
+                y = np.array([-1, -1])
+            elif edge_index == 1:
+                x = np.array([-1, 1])
+                y = np.array([1, 1])
+            else:
+                raise Exception()
+
+            if pos[0].count('-') == self._level_num:
+                triangle = self[pos[0]]
+            else:  # position is at previous level
+                triangle = self._level._base_level_elements._triangle_dict[pos[0]]
+
+            # noinspection PyUnresolvedReferences
+            x, y = triangle.ct.mapping(x, y)
+            x = x[1] - x[0]
+            y = y[1] - y[0]
+            vectors.append((x, y))
+        x0y0, x1y1 = vectors
+        x0, y0 = x0y0
+        x1, y1 = x1y1
+        if np.isclose(x0, x1) and np.isclose(y0, y1):
+            return '+'
+        else:
+            return '-'
+
+    def _non_periodic_deeper_level_local_map_maker(self):
+        """Silly but works.
+        """
         assert self._level_num > 0, f'must be.'
-        refining_triangles = self._level._refining_elements  # since larger than 0 level, be triangles.
+        refining_triangles = self._level._refining_elements
+        # since the level is larger than 0 level, must be triangles.
         all_base_triangles = self._level._base_level_elements._triangle_dict
         not_refined_triangles = list()
         for t in all_base_triangles:
@@ -401,4 +663,29 @@ class MseHyPy2LevelTriangles(Frozen):
 
     def _check_local_map(self):
         """"""
-        pass
+        _pd_ = dict()
+        for index in self._local_map:
+            _map = self._local_map[index]
+            assert len(_map) == 3, f"must be!"
+            for j, mp in zip(['b', 0, 1], _map):
+                if mp is None:
+                    pass
+                else:
+
+                    self_position = (index, j)
+
+                    if isinstance(mp, tuple):
+                        if mp[0].count('-') == self._level_num:
+                            # at same level
+                            other_position = mp[:2]
+
+                            if other_position not in _pd_:
+                                assert self_position not in _pd_, 'must be!'
+                                _pd_[self_position] = other_position
+                            else:
+                                assert _pd_[other_position] == self_position, 'must be!'
+
+                    elif isinstance(mp, list):
+                        pass
+                    else:
+                        raise Exception()

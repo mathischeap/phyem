@@ -83,6 +83,9 @@ def _make_quad(space, degree):
     return quad
 
 
+from msepy.space.degree import PySpaceDegree
+
+
 class MsePyInnerProduct(Frozen):
     """"""
 
@@ -92,11 +95,39 @@ class MsePyInnerProduct(Frozen):
         self._freeze()
 
     def __call__(self, degree, other_space_at_degree, special_key=None):
-        """"""
+        """
+        self -> axis 0, other -> axis 1.
+
+             _________other________
+             |                    |
+             |                    |
+             |         M          |
+        self |                    |
+             |                    |
+             |                    |
+             |____________________|
+
+        Parameters
+        ----------
+        degree
+        other_space_at_degree
+        special_key
+
+        Returns
+        -------
+
+        """
         space0 = self._space
         degree0 = degree
-        space1 = other_space_at_degree._space
-        degree1 = other_space_at_degree._degree
+
+        if other_space_at_degree.__class__ is PySpaceDegree:
+            space1 = other_space_at_degree._space
+            degree1 = other_space_at_degree._degree
+        elif len(other_space_at_degree) == 2:
+            space1, degree1 = other_space_at_degree
+        else:
+            raise Exception()
+
         mesh0, mesh1 = space0.mesh, space1.mesh
         assert mesh0 is mesh1, f"mesh does not match."
         M_reference_element_dict = _make_inner_product_matrix(
@@ -108,7 +139,19 @@ class MsePyInnerProduct(Frozen):
 
 
 def _make_inner_product_matrix(space0, space1, degree0, degree1, special_key):
-    """"""
+    """
+    space0 -> axis 0, space1 -> axis 1.
+
+           _________space1_______
+           |                    |
+           |                    |
+           |         M          |
+    space0 |                    |
+           |                    |
+           |                    |
+           |____________________|
+
+    """
     quad0 = _make_quad(space0, degree0)
     quad1 = _make_quad(space1, degree1)
     qd0, qt0 = quad0
@@ -155,11 +198,11 @@ def _make_inner_product_matrix(space0, space1, degree0, degree1, special_key):
         metric = quad_weights * dJi
 
         if special_key is None:
-            raise NotImplementedError()
+            m = _regular_inner(m0, m1, metric)
         elif special_key == '(bf1, db)':
             m = _special_bf1_db(m0, m1, metric)
         else:
-            raise NotImplementedError()
+            raise NotImplementedError(f"inner product not implemented for special_key={special_key}")
 
         M_dict[re] = csr_matrix(m)
 
@@ -168,10 +211,8 @@ def _make_inner_product_matrix(space0, space1, degree0, degree1, special_key):
 
 def _special_bf1_db(m0, m1, metric):
     """This case is for bundle 1-form inner diagonal-bundle-form, in 2D."""
-
     dim0 = _find_dim(m0)
     dim1 = _find_dim(m1)
-
     assert dim0 == [2, 2] and dim1 == [1], f"safety check"
     m00 = m0[0][0]
     m11 = m0[1][1]
@@ -179,3 +220,31 @@ def _special_bf1_db(m0, m1, metric):
     o0 = np.einsum('ij, ik, i -> jk', m00, m1, metric, optimize='optimal')
     o1 = np.einsum('ij, ik, i -> jk', m11, m1, metric, optimize='optimal')
     return o0 + o1
+
+
+def _regular_inner(m0, m1, metric):
+    """"""
+    dim0 = _find_dim(m0)
+    dim1 = _find_dim(m1)
+    if dim0 == dim1 == [1]:
+        m0 = m0[0]
+        m1 = m1[0]
+        return np.einsum('ij, ik, i -> jk', m0, m1, metric, optimize='optimal')
+
+    elif dim0 == dim1 == [2]:
+        m0_0, m0_1 = m0
+        m1_0, m1_1 = m1
+        o00 = np.einsum('ij, ik, i -> jk', m0_0, m1_0, metric, optimize='optimal')
+        o11 = np.einsum('ij, ik, i -> jk', m0_1, m1_1, metric, optimize='optimal')
+        return o00 + o11
+
+    elif dim0 == dim1 == [3]:
+        m0_0, m0_1, m0_2 = m0
+        m1_0, m1_1, m1_2 = m1
+        o00 = np.einsum('ij, ik, i -> jk', m0_0, m1_0, metric, optimize='optimal')
+        o11 = np.einsum('ij, ik, i -> jk', m0_1, m1_1, metric, optimize='optimal')
+        o22 = np.einsum('ij, ik, i -> jk', m0_2, m1_2, metric, optimize='optimal')
+        return o00 + o11 + o22
+
+    else:
+        raise NotImplementedError()

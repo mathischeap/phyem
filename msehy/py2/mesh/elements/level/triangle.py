@@ -52,6 +52,10 @@ class MseHyPy2MeshElementsLevelTriangle(Frozen):
         return self._level._level_num
 
     @property
+    def local_map(self):
+        return self._triangles.local_map[self._index]
+
+    @property
     def pair_to(self):
         """The object (another same level triangle, a triangle of the last level, a base element, or boundary)
         at the bottom of a triangle.

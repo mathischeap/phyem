@@ -27,6 +27,7 @@ class MsePyStaticLinearSystemAssembledSolve(Frozen):
 
         # implemented packages
         self._package_scipy = _PackageScipy(self, self._system_info)
+        self._package_mkl = _PackageMKL(self, self._system_info)
 
         self._x0 = None
         self._freeze()
@@ -113,6 +114,29 @@ class MsePyStaticLinearSystemAssembledSolve(Frozen):
         self._message = results[1]
         self._info = results[2]
         return results
+
+
+class _PackageMKL(Frozen):
+    """"""
+    def __init__(self, solve, system_info):
+        self._solve = solve
+        self._system_info = system_info
+        self._freeze()
+
+    def qr(self, A, b, **kwargs):
+        """"""
+        from sparse_dot_mkl import sparse_qr_solve_mkl
+
+        t_start = time()
+        x = sparse_qr_solve_mkl(A, b, **kwargs)
+        t_cost = time() - t_start
+        t_cost = MyTimer.seconds2dhms(t_cost)
+        message = f"Linear system of shape: {self._system_info['shape']}" + \
+                  f" <sparse_qr_solve_mkl costs: {t_cost}> "
+        info = {
+            'total cost': t_cost,
+        }
+        return x, message, info
 
 
 class _PackageScipy(Frozen):

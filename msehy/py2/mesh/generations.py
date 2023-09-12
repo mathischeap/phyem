@@ -78,6 +78,7 @@ class _MesHyPy2MeshGenerations(Frozen):
         """"""
         if len(self._pool) == 0:
             _ = self._mesh.current_representative
+        generation = self._mesh._pg(generation)
         assert generation in self._pool, f'generation [{generation}] is not cached.'
         return self._pool[generation]
 

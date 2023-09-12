@@ -32,6 +32,7 @@ __all__ = [
     '_VarSetting_mass_matrix',                     #
     '_VarSetting_d_matrix',                        #
     '_VarSetting_d_matrix_transpose',              #
+    '_VarSetting_pi_matrix',
 
     '_VarSetting_boundary_dp_vector',              #
 
@@ -69,6 +70,15 @@ _VarSetting_d_matrix = [
 _VarSetting_d_matrix_transpose = [
     r"\mathbb{D}",
     _sep.join(["d:T:Mat", "{space_pure_lin_repr}", "{d}"]),
+]
+
+_VarSetting_pi_matrix = [
+    r"\mathsf{P}",
+    _sep.join([
+        "d:P:Mat",
+        "{space_pure_lin_repr_from}", "{space_pure_lin_repr_to}",
+        "{d_from}", "{d_to}"
+    ]),
 ]
 
 # Natural bc -------------------------------------------------------------------------------------

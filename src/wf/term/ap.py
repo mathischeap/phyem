@@ -574,34 +574,42 @@ class _SimplePatternAPParser(Frozen):
 
     # ------ (A, d(pi(B)) ----------------------------------------------------------------------------
     def _parse_reprs___d_pi(self, test_form):
-        """A, B are root-forms"""
+        """ <A , d pi B>, d pi B is in the same space and is of same degree of A.
 
-        f0, f1 = self._wft._f0, self._wft._f1  # f0 is A actually.
-        s0 = f0.space
-        s1 = f1.space
-        d0 = f0._degree
-        d1 = f1._degree
-        # mass_matrix = _VarPar_M(s0, s1, d0, d1)
-
+        A, B are root-forms.
+        """
         spk = self._wft.___simple_pattern_keys___
         A, B = spk['A'], spk['B']
-        pi_B = spk['pi(B)']
 
-        print(f1._degree, pi_B._degree)
+        mass_matrix = _VarPar_M(A.space, A.space, A.degree, A.degree)
+        from src.spaces.operators import codifferential
 
-        #
-        # if test_form == B:
-        #     dT_matrix = _VarPar_E(bf1, transpose=True)
-        #     v0 = self._wft._f0.ap()
-        #     v1 = bf1.ap().T
-        #     term_ap = v1 @ dT_matrix @ mass_matrix @ v0
-        # else:
-        #     d_matrix = _VarPar_E(bf1)
-        #     v0 = self._wft._f0.ap().T
-        #     v1 = bf1.ap()
-        #     term_ap = v0 @ mass_matrix @ d_matrix @ v1
-        # term = self._wft._factor * TermLinearAlgebraicProxy(term_ap)
-        # sign = '+'
-        # return term, sign, 'linear'
+        pi_B_space = codifferential(A.space)
+        pi_B_degree = A.degree
 
-        raise NotImplementedError()
+        if test_form == B:
+            dT = _VarPar_E((pi_B_space, pi_B_degree), transpose=True)
+            pT = _VarPar_P(
+                (B.space, pi_B_space),
+                (B.degree, pi_B_degree),
+                transpose=True
+            )
+            v0 = B.ap().T
+            v1 = A.ap()
+            term_ap = v0 @ pT @ dT @ mass_matrix @ v1
+
+        else:
+            assert test_form is A, f'must be!'
+            d = _VarPar_E((pi_B_space, pi_B_degree), transpose=False)
+            p = _VarPar_P(
+                (B.space, pi_B_space),
+                (B.degree, pi_B_degree),
+                transpose=False
+            )
+            v0 = A.ap().T
+            v1 = B.ap()
+            term_ap = v0 @ mass_matrix @ d @ p @ v1
+
+        term = self._wft._factor * TermLinearAlgebraicProxy(term_ap)
+        sign = '+'
+        return term, sign, 'linear'
