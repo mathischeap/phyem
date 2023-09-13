@@ -29,6 +29,7 @@ class MseHyPy2MeshElements(Frozen):
         self._ff_cache = dict()
         self._opposite_pairs_inner_ = None
         self._opposite_pairs_outer_ = None
+        self._sort_bg = None
         self._freeze()
 
     @property
@@ -60,6 +61,28 @@ class MseHyPy2MeshElements(Frozen):
     def __getitem__(self, index):
         """Get the fundamental cell instance of index ``index`."""
         return self._fundamental_cells[index]
+
+    def sort(self, order='background'):
+        """"""
+        if order == 'background':
+            # indices are sorted based the background elements
+            if self._sort_bg is None:
+                sorted_indices = dict()
+                for index in self:
+                    if isinstance(index, str):
+                        bg_element = int(index.split('=')[0])
+                    else:
+                        bg_element = index
+
+                    if bg_element not in sorted_indices:
+                        sorted_indices[bg_element] = list()
+                    else:
+                        pass
+                    sorted_indices[bg_element].append(index)
+                self._sort_bg = sorted_indices
+            return self._sort_bg
+        else:
+            raise NotImplementedError(f'{order}.')
 
     @property
     def map(self):

@@ -48,18 +48,6 @@ class _MesHyPy2MeshGenerations(Frozen):
 
     def _add(self, new_generation):
         """"""
-        # delete extra generations
-        if len(self._pool) >= int(1.5 * self._max_generations):  # * 1.5 for a margin.
-            new_pool = dict()
-            keys = list(self._pool.keys())
-            keys.sort()
-            new_keys = keys[:(self._max_generations-1)]
-            for key in new_keys:
-                new_pool[key] = self._pool[key]
-            self._pool = new_pool
-        else:
-            pass
-
         if self._mesh._is_mesh():
             assert new_generation.__class__ is MseHyPy2MeshElements
         else:
@@ -68,11 +56,23 @@ class _MesHyPy2MeshGenerations(Frozen):
         g = new_generation.generation
         assert g not in self._pool, f"must be"
         if len(self._pool) > 0:
-            assert g == max(self._pool.keys()) + 1, 'must be'
+            assert g == max(self._pool.keys()) + 1, f'{g}, {self._pool.keys()}'
         else:
             assert len(self._pool) == 0 and g == 0, 'must be'
 
         self._pool[g] = new_generation
+
+        # delete extra generations
+        if len(self._pool) > self._max_generations:
+            new_pool = dict()
+            keys = list(self._pool.keys())
+            keys.sort()
+            new_keys = keys[-self._max_generations:]
+            for key in new_keys:
+                new_pool[key] = self._pool[key]
+            self._pool = new_pool
+        else:
+            pass
 
     def __getitem__(self, generation):
         """"""
@@ -96,4 +96,5 @@ class _MesHyPy2MeshGenerations(Frozen):
         """If a generation is cached"""
         if len(self) == 0:
             _ = self._mesh.current_representative
+        generation = self._mesh._pg(generation)
         return generation in self._pool

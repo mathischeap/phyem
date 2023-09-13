@@ -24,9 +24,11 @@ class MseHyPy2Mesh(Frozen):
         self.___current_generation___ = 0
         self.___current_elements___ = None
         self.___current_faces___ = None
-        self.___last_elements___ = None
-        self.___last_faces___ = None
         self.___generations___ = _MesHyPy2MeshGenerations(self)
+        self._link_cache = {
+            'pair': (-1, -1),
+            'link': dict()
+        }
         self._freeze()
 
     def __repr__(self):
@@ -68,21 +70,21 @@ class MseHyPy2Mesh(Frozen):
 
     def __len__(self):
         """How many generations I am caching."""
-        return len(self.___generations___._pool)
+        return len(self.generations._pool)
+
+    def __contains__(self, g):
+        """If the generation #g is cached."""
+        return g in self.generations
 
     def _pg(self, generation):
         """"""
         if isinstance(generation, (int, float)):
-            if generation == -1:
-                generation = self.current_generation
-            else:
-                assert generation % 1 == 0, f"generation = {generation} wrong, must be integer."
-
-                if generation >= 0:
-                    pass
-                else:  # generation < 0
-                    cg = self.current_generation
-                    generation = cg + generation + 1
+            assert generation % 1 == 0, f"generation = {generation} wrong, must be integer."
+            if generation >= 0:
+                pass
+            else:  # generation < 0
+                cg = self.current_generation
+                generation = cg + generation + 1
         elif generation is None:
             generation = self.current_generation
         else:
@@ -100,6 +102,11 @@ class MseHyPy2Mesh(Frozen):
     def current_generation(self):
         """Generation."""
         return self.___current_generation___
+
+    @property
+    def g(self):
+        """short-cut of current generation."""
+        return self.current_generation
 
     @property
     def current_representative(self):
@@ -183,7 +190,6 @@ class MseHyPy2Mesh(Frozen):
             region_wise_refining_strength_function,
             refining_thresholds
         )
-        self.___last_elements___ = self.current_elements    # save last elements,
         self.___current_elements___ = new_elements  # override the current elements.
         self.generations._add(self.current_representative)
         # -- renew dependent boundary section faces. --------------------------------------------------
@@ -193,7 +199,6 @@ class MseHyPy2Mesh(Frozen):
             if mesh.background.__class__ is MsePyBoundarySectionMesh:
                 if mesh.background.base == self.background:
                     # this mesh is a msehy-py2 mesh upon a dependent boundary section.
-                    mesh.___last_faces___ = mesh.current_faces
                     mesh.___current_faces___ = MseHyPy2MeshFaces(
                         mesh.background,
                         self.current_elements
@@ -205,7 +210,79 @@ class MseHyPy2Mesh(Frozen):
                 pass
         assert self.current_representative.generation == self.current_generation, 'must be!'
 
+    def link(self, dest_g, source_g):
+        """We link all fundamental cells of dest_g to fundamental cells of source_g.
 
+        {
+            dest_fc_index: None,                                         # two fc be same (so they have same indices)
+            dest_fc_index: [source_fc_index_0, source_fc_index_1, ...],  # dest fc is consist of multiple source cells.
+            dest_fc_index: source_fc_index,                              # dest fc is a part of the source cell.
+            ...
+        }
+
+        Parameters
+        ----------
+        dest_g
+        source_g
+
+        Returns
+        -------
+
+        """
+        dest_g = self._pg(dest_g)
+        source_g = self._pg(source_g)
+        assert dest_g != source_g, f"cannot link to itself!"
+        assert self.background.__class__ is MsePyMesh, f"can only link elements of a msepy mesh background."
+        assert dest_g in self, f"destination generation {dest_g} is not available."
+        assert source_g in self, f"source generation {source_g} is not available."
+
+        key = (dest_g, source_g)
+        if key == self._link_cache['pair']:   # only cache the last computed link!
+            return self._link_cache['link']
+        else:
+            self._link_cache['pair'] = key
+
+        dest = self[dest_g]
+        sour = self[source_g]
+        dest_sort = dest.sort(order='background')
+        sour_sort = sour.sort(order='background')
+
+        link = dict()
+        for e in dest_sort:
+            dest_indices = dest_sort[e]
+            sour_indices = sour_sort[e]
+            for dest_index in dest_indices:
+                if dest_index in sour_indices:
+                    link[dest_index] = None
+                else:
+                    if isinstance(dest_index, str):
+                        if len(sour_indices) == 1:
+                            assert sour_indices[0] == e, f'must be'
+                            link[dest_index] = e
+                        else:
+                            for sour_index in sour_indices:
+                                assert sour_index != dest_index
+                                if sour_index in dest_index:
+                                    assert dest_index not in link, f'must be!'
+                                    link[dest_index] = sour_index
+                                elif dest_index in sour_index:
+                                    if dest_index not in link:
+                                        link[dest_index] = list()
+                                    else:
+                                        pass
+                                    link[dest_index].append(sour_index)
+                                else:
+                                    pass
+
+                    else:
+                        assert len(dest_indices) == 1 and dest_index == e, f'must be'
+                        assert len(sour_indices) > 1, f'must be!'
+                        link[dest_index] = sour_indices
+
+        self._link_cache['link'] = link
+        return link
+
+    
 if __name__ == '__main__':
     # python msehy/py2/mesh/main.py
     import __init__ as ph

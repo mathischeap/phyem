@@ -19,6 +19,9 @@ from msehy.py2.space.norm.main import MseHyPy2SpaceNorm
 
 from msehy.py2.space.find.main import MseHyPy2SpaceFind
 
+from msehy.py2.space.coarsen.main import MseHyPy2Coarsen
+from msehy.py2.space.refine.main import MseHyPy2Refine
+
 
 class MseHyPy2Space(Frozen):
     """"""
@@ -44,6 +47,8 @@ class MseHyPy2Space(Frozen):
         self._error = None
         self._norm = None
         self._find = None
+        self._coarsen = None
+        self._refine = None
         self._freeze()
 
     @property
@@ -173,3 +178,15 @@ class MseHyPy2Space(Frozen):
         if self._find is None:
             self._find = MseHyPy2SpaceFind(self)
         return self._find
+
+    @property
+    def coarsen(self):
+        if self._coarsen is None:
+            self._coarsen = MseHyPy2Coarsen(self)
+        return self._coarsen
+
+    @property
+    def refine(self):
+        if self._refine is None:
+            self._refine = MseHyPy2Refine(self)
+        return self._refine

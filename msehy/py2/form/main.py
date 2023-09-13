@@ -216,6 +216,62 @@ class MseHyPy2RootForm(Frozen):
             self._coboundary = MseHyPy2RootFormCoboundary(self)
         return self._coboundary
 
+    def evolve(self, source_t_g=None, des_generation=None):
+        """We evolve the form using its cochain (source_t_g) (on the corresponding generation) to the
+        `target_generation`. The new cochain is saved to cochain key (t, target_generation).
+
+        if `source_t_g` (`t, g = source_t_g`) is None, we use the newest time and newest generation.
+
+        If `target_generation` is None, we use `target_generation = self.mesh._pg(-1)`, i.e., the
+        most recent generation.
+
+        After parsing t, g, target_generation, if we found g == target_generation, raise Error.
+        """
+        if source_t_g is None:
+            source_t_g = self.cochain.newest
+        else:
+            pass
+        t, g = source_t_g
+        t = self.cochain._parse_t(t)
+        g = self._pg(g)
+        assert (t, g) in self.cochain, f"cochain @ {(t, g)} is not available."
+        dg = self._pg(des_generation)
+        assert g != dg, f"Source generation {g} must be different from Destination generation {dg}."
+        assert g in self.mesh, f"Source generation {g} is not available."
+        assert dg in self.mesh, f"Destination generation {dg} is not available."
+
+        link = self.mesh.link(dg, g)
+
+        sour_cochain = self.cochain[(t, g)].local
+        dest_cochain = dict()
+        for dest_index in link:
+            source_indices = link[dest_index]
+            if source_indices is None:   # cell is the same, just
+                dest_cochain[dest_index] = sour_cochain[dest_index]
+            else:
+                if isinstance(source_indices, list):   # dest cell is coarser: get cochain from multiple smaller cell.
+                    local_source_cochain = dict()
+                    for si in source_indices:
+                        local_source_cochain[si] = sour_cochain[si]
+
+                    dest_cochain[dest_index] = self.space.coarsen(
+                        (dg, dest_index), (g, source_indices, local_source_cochain)
+                    )
+                else:  # dest cell is smaller: get cochain from a bigger cell.
+                    dest_cochain[dest_index] = self.space.refine(
+                        (dg, dest_index), (g, source_indices, sour_cochain[source_indices])
+                    )
+
+        indicator = self.space.abstract.indicator
+        if indicator == 'Lambda':
+            k = self.space.abstract.k
+            if k == 1:
+                raise NotImplementedError('may need change sign for some dofs.')
+            else:
+                pass
+        else:
+            pass
+
 
 if __name__ == '__main__':
     # python msehy/py2/form/main.py
@@ -291,76 +347,41 @@ if __name__ == '__main__':
     f1o.cf = vector
     f2.cf = scalar
 
+
     from msehy.py2.tools.randomrefiningstrengthfunction import RandomRefiningStrengthFunction
     random_refining_strength = RandomRefiningStrengthFunction(([-1, 1], [-1, 1]))
-
     mesh.renew(
-        {0: random_refining_strength}, [0.2, 0.3, 0.4, 0.5]
+        {0: random_refining_strength}, [0.2, 0.3]
     )
+    f0i[(0, -1)].reduce()
 
-    _ = mesh.current_representative.map
-    mesh.visualize()
+    random_refining_strength = RandomRefiningStrengthFunction(([-1, 1], [-1, 1]))
+    mesh.renew(
+        {0: random_refining_strength}, [0.2, 0.3]
+    )
+    f0i.evolve()
+
+    # _ = mesh.current_representative.map
+    # mesh.visualize()
 
     # _ = mesh.current_representative.opposite_pairs
     # f1i.cochain_switch_matrix()
     # f1o.cochain_switch_matrix()
 
-    f0i[(0, 1)].reduce()
-    f0o[(0, 1)].reduce()
-    f1i[(0, 1)].reduce()
-    f1o[(0, 1)].reduce()
-    f2[(0, 1)].reduce()
-    #
-    print(f0i[(0, 1)].error())
-    print(f0o[(0, 1)].error())
-    print(f1i[(0, 1)].error())
-    print(f1o[(0, 1)].error())
-    print(f2[(0, 1)].error())
+    # f0i[(0, 1)].reduce()
+    # f0o[(0, 1)].reduce()
+    # f1i[(0, 1)].reduce()
+    # f1o[(0, 1)].reduce()
+    # f2[(0, 1)].reduce()
+    # #
+    # print(f0i[(0, 1)].error())
+    # print(f0o[(0, 1)].error())
+    # print(f1i[(0, 1)].error())
+    # print(f1o[(0, 1)].error())
+    # print(f2[(0, 1)].error())
 
     # f0i[(0, 1)].visualize(saveto='f0i.vtk')
     # f0o[(0, 1)].visualize(saveto='f0o.vtk')
     # f1i[(0, 1)].visualize(saveto='f1i.vtk')
     # f1o[(0, 1)].visualize(saveto='f1o.vtk')
     # f2[(0, 1)].visualize(saveto='f2.vtk')
-
-    # gm = f0i.cochain.gathering_matrix(1)
-    # gm = f0o.cochain.gathering_matrix(1)
-    # gm = f1i.cochain.gathering_matrix(1)
-    # gm = f1o.cochain.gathering_matrix(1)
-    # gm = f2.cochain.gathering_matrix(1)
-
-    # rc = f1i.space.local_dof_representative_coordinates(f0i.degree)
-
-    # print(rc)
-
-    # for i in gm:
-    #     print(i, gm[i])
-
-    # print(f2.space[f2.degree])
-    # _ = f2.cochain.local_numbering
-    # f2_0 = f2.space[1]
-    # _ = f2.space.basis_functions
-    # print(f2.space[3].gathering_matrix)
-
-    # f0i.space.basis_functions[3](np.array([-1,0,1]), np.array([-1,0,1]))
-
-    # # f2.cochain.gathering_matrix(-1)
-    # mesh.renew(
-    #     {0: refining_strength}, [0.3, 0.5, 0.7, 0.9]
-    # )
-    # f2.cochain.gathering_matrix(-1)
-
-    # mesh.renew(
-    #     {0: refining_strength}, [0.3, 0.5, 0.7, 0.9]
-    # )
-    # f2.cochain.gathering_matrix(-1)
-
-    # f1o.cf = vector
-    # f2[0].reduce()
-    # f1o[0].reduce()
-    # d_f1o = f1o.d()
-    # # d_f1o[None].visualize()
-    #
-    # f = d_f1o - f2
-    # f2[None].visualize()
-    # f[None].visualize()

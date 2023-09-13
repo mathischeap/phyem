@@ -7,14 +7,17 @@ from tools.frozen import Frozen
 class MseHyPy2RootFormStaticCopy(Frozen):
     """"""
 
-    def __init__(self, rf, t, generation):
+    def __init__(self, rf, t, g):
         """"""
         assert rf._is_base()  # we make copy only from a base form.
         self._f = rf
+
         t = rf._pt(t)
         self._t = t
-        generation = rf._pg(generation)
-        self._g = generation
+
+        g = rf._pg(g)
+        self._g = g
+
         self._freeze()
 
     @property
