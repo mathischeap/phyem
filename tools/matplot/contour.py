@@ -62,6 +62,7 @@ def contour(
         pad_inches=0,
         dpi=150,
         plot_type='contour',
+        intermediate=False,
 ):
     """
 
@@ -111,6 +112,7 @@ def contour(
     colorbar_only
     pad_inches
     dpi
+    intermediate
 
     Returns
     -------
@@ -189,14 +191,17 @@ def contour(
         ax.remove()
     else:
         pass
-    if saveto is None:
-        from src.config import _setting
-        matplotlib.use('TkAgg')
-        plt.show(block=_setting['block'])
+    if intermediate:
+        return fig
     else:
-        plt.savefig(saveto, bbox_inches='tight', pad_inches=pad_inches, dpi=dpi)
-        plt.close()
+        if saveto is None:
+            from src.config import _setting
+            matplotlib.use('TkAgg')
+            plt.show(block=_setting['block'])
+        else:
+            plt.savefig(saveto, bbox_inches='tight', pad_inches=pad_inches, dpi=dpi)
+            plt.close()
 
-    plt.close()
-    # --------------------------------------------------------------------------
-    return fig
+        plt.close()
+        # --------------------------------------------------------------------------
+        return fig

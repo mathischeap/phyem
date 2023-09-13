@@ -182,7 +182,7 @@ class MseHyPy2LevelTriangles(Frozen):
 
         _global_character_cache[index] = base_element, characters
 
-        return base_element, characters
+        return _global_character_cache[index]
 
     @property
     def local_map(self):

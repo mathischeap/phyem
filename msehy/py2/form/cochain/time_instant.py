@@ -38,6 +38,7 @@ class _IrregularCochainAtOneTime(Frozen):
         if isinstance(cochain, dict):
             # a dict whose keys are indices of all fundamental cell indices on self.generation.
             elements = self._f.mesh[self.generation]
+            assert len(elements) == len(cochain), f"cochain length wrong!"
             for i in elements:
                 assert i in cochain, f"We miss cochain for fc {i}."
                 fc = elements[i]

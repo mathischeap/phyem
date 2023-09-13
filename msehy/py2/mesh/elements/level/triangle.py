@@ -22,14 +22,16 @@ class MseHyPy2MeshElementsLevelTriangle(Frozen):
         # --- for a level 0 triangle, its index is like: ---
         # 'e=i' where e is the base element number and i in {0, 1, 2, 3}
         # `i` represents:
-        #    y
+        #      y
+        #    ^
         #    |________
         #    |\  1  /|
         #    | \   / |
         #    |  \ /  |
         #    |2 / \ 0|
         #    | / 3 \ |
-        #    |/_____\|_____ x
+        #    |/_____\|_____> x
+        #
         # ------ for deeper triangle, index is like: ---
         # 'e=i-j-k-...', i, j, k, ... in {0, 1}. Since each triangle is split into two on the next level,
         # and we indicate these two by 0, 1 and using the right hand rule (anti-clock-wise).
@@ -76,14 +78,16 @@ class MseHyPy2MeshElementsLevelTriangle(Frozen):
             if self.level_num == 0:
                 base_element, sequence = index.split('=')
                 # sequence means:
-                #    y
+                #     y
+                #    ^
                 #    |________
                 #    |\  1  /|
                 #    | \   / |
                 #    |  \ /  |
                 #    |2 / \ 0|
                 #    | / 3 \ |
-                #    |/_____\|_____ x
+                #    |/_____\|_____> x
+                #
                 m, n = None, None
                 pair_sequence = -1
                 match sequence:
@@ -610,13 +614,10 @@ class _TopologyCoordinateTransformation(Frozen):
             return cache_data
         else:
             pass
-
         xi_ = (xi + 1) / 2
         et_ = (et + 1) / 2
         mp = self._tfm.mapping(xi_, et_)
-
         add_to_ndarray_cache(self._cache_0_tp_mp, [xi, et], mp, maximum=5)
-
         return mp
 
     def Jacobian_matrix(self, xi, et):
@@ -630,6 +631,5 @@ class _TopologyCoordinateTransformation(Frozen):
         et_ = (et + 1) / 2
         jm = ((0.5 * self._tfm.dx_dr(xi_, et_), 0.5 * self._tfm.dx_ds(xi_, et_)),
               (0.5 * self._tfm.dy_dr(xi_, et_), 0.5 * self._tfm.dy_ds(xi_, et_)))
-
         add_to_ndarray_cache(self._cache_1_tp_jm, [xi, et], jm, maximum=5)
         return jm

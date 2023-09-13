@@ -1,11 +1,18 @@
 # -*- coding: utf-8 -*-
 r"""
 """
-import matplotlib.pyplot as plt
 import numpy as np
 from tools.frozen import Frozen
 from tools.matplot.contour import contour, contourf
 from tools.matplot.quiver import quiver
+
+import matplotlib
+import matplotlib.pyplot as plt
+
+matplotlib.use('TkAgg')
+plt.rcParams.update({
+    "font.family": "DejaVu sans",
+})
 
 
 class MseHyPy2RootFormVisualizeMatplot(Frozen):
@@ -36,7 +43,7 @@ class MseHyPy2RootFormVisualizeMatplot(Frozen):
 
     def _Lambda_k0(
             self, sampling_factor=1,
-            plot_type='contourf',
+            plot_type='contourf', show_mesh=False, saveto=None,
             **kwargs
     ):
         """"""
@@ -55,12 +62,37 @@ class MseHyPy2RootFormVisualizeMatplot(Frozen):
         xy, v = self._f[(t, g)].reconstruct(xi_et, xi_et)  # ravel=False by default
         x, y = xy
         v = v[0]
+
+        if show_mesh:
+            intermediate = True
+        else:
+            intermediate = False
+
         if plot_type == 'contourf':
-            fig = contourf(x, y, v, **kwargs)
+            fig = contourf(x, y, v, intermediate=intermediate, saveto=saveto, **kwargs)
         elif plot_type == 'contour':
-            fig = contour(x, y, v, **kwargs)
+            fig = contour(x, y, v, intermediate=intermediate, saveto=saveto, **kwargs)
         else:
             raise Exception()
+
+        if show_mesh:
+            mesh_data = self._mesh[self._f.visualize._g].visualize._make_mesh_data(
+                sampling_factor=sampling_factor)
+            for i in mesh_data:
+                for line in mesh_data[i]:
+                    plt.plot(*line, linewidth=0.5, color='gray')
+            if saveto is None:
+                from src.config import _setting
+                matplotlib.use('TkAgg')
+                plt.show(block=_setting['block'])
+            else:
+                plt.savefig(saveto, bbox_inches='tight', pad_inches=0, dpi=200)
+                plt.close()
+
+            plt.close()
+            # --------------------------------------------------------------------------
+        else:
+            pass
 
         return fig
 
@@ -131,7 +163,7 @@ class MseHyPy2RootFormVisualizeMatplot(Frozen):
 
     def _Lambda_k2(
         self, sampling_factor=1,
-        plot_type='contourf',
+        plot_type='contourf', show_mesh=False, saveto=None,
         **kwargs
     ):
         t, g = self._f.visualize._t, self._f.visualize._g
@@ -149,12 +181,37 @@ class MseHyPy2RootFormVisualizeMatplot(Frozen):
         xy, v = self._f[(t, g)].reconstruct(xi_et, xi_et)  # ravel=False by default
         x, y = xy
         v = v[0]
+
+        if show_mesh:
+            intermediate = True
+        else:
+            intermediate = False
+
         if plot_type == 'contourf':
-            fig = contourf(x, y, v, **kwargs)
+            fig = contourf(x, y, v, intermediate=intermediate, saveto=saveto, **kwargs)
         elif plot_type == 'contour':
-            fig = contour(x, y, v, **kwargs)
+            fig = contour(x, y, v, intermediate=intermediate, saveto=saveto, **kwargs)
         else:
             raise Exception()
+
+        if show_mesh:
+            mesh_data = self._mesh[self._f.visualize._g].visualize._make_mesh_data(
+                sampling_factor=sampling_factor)
+            for i in mesh_data:
+                for line in mesh_data[i]:
+                    plt.plot(*line, linewidth=0.75, color='lightgray')
+            if saveto is None:
+                from src.config import _setting
+                matplotlib.use('TkAgg')
+                plt.show(block=_setting['block'])
+            else:
+                plt.savefig(saveto, bbox_inches='tight', pad_inches=0, dpi=200)
+                plt.close()
+
+            plt.close()
+            # --------------------------------------------------------------------------
+        else:
+            pass
 
         return fig
 

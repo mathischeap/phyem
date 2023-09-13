@@ -30,17 +30,24 @@ class MseHyPy2SpaceReconstructLambda(Frozen):
             return getattr(self, f'_k{k}')(
                 generation, cochain, *meshgrid, **kwargs)
 
-    def _k0(self, generation, cochain, *meshgrid_xi_et, ravel=False):
+    def _k0(self, generation, cochain, *meshgrid_xi_et, ravel=False, fc_range=None, degree=None):
         """"""
-        degree = cochain._f.degree
         representative = self._mesh[generation]
-        local_cochain = cochain.local
+        if fc_range is None:
+            degree = cochain._f.degree
+            local_cochain = cochain.local
+        else:
+            assert degree is not None, f"when provide fc_range, also provide the degree."
+            local_cochain = cochain
+            assert len(cochain) == len(fc_range), f"miss some cochain."
+            for index in fc_range:
+                assert index in local_cochain, f"miss cochain for fc {index}"
 
         xi, et = meshgrid_xi_et
         shape: list = [len(xi), len(et)]
         xi_et, bf_qt = self._space.basis_functions(degree, generation, *meshgrid_xi_et)
 
-        xy = representative.ct.mapping(*xi_et)
+        xy = representative.ct.mapping(*xi_et, fc_range=fc_range)
 
         x_dict: Dict = dict()
         y_dict: Dict = dict()
@@ -65,11 +72,18 @@ class MseHyPy2SpaceReconstructLambda(Frozen):
 
         return (x_dict, y_dict), (v_dict, )
 
-    def _k1_inner(self, generation, cochain, *meshgrid_xi_et, ravel=False):
+    def _k1_inner(self, generation, cochain, *meshgrid_xi_et, ravel=False, fc_range=None, degree=None):
         """"""
-        degree = cochain._f.degree
         representative = self._mesh[generation]
-        local_cochain = cochain.local
+        if fc_range is None:
+            degree = cochain._f.degree
+            local_cochain = cochain.local
+        else:
+            assert degree is not None, f"when provide fc_range, also provide the degree."
+            local_cochain = cochain
+            assert len(cochain) == len(fc_range), f"miss some cochain."
+            for index in fc_range:
+                assert index in local_cochain, f"miss cochain for fc {index}"
 
         xi, et = meshgrid_xi_et
         shape: list = [len(xi), len(et)]
@@ -128,11 +142,18 @@ class MseHyPy2SpaceReconstructLambda(Frozen):
 
         return (x_dict, y_dict), (v0_dict, v1_dict)
 
-    def _k1_outer(self, generation, cochain, *meshgrid_xi_et, ravel=False):
+    def _k1_outer(self, generation, cochain, *meshgrid_xi_et, ravel=False, fc_range=None, degree=None):
         """"""
-        degree = cochain._f.degree
         representative = self._mesh[generation]
-        local_cochain = cochain.local
+        if fc_range is None:
+            degree = cochain._f.degree
+            local_cochain = cochain.local
+        else:
+            assert degree is not None, f"when provide fc_range, also provide the degree."
+            local_cochain = cochain
+            assert len(cochain) == len(fc_range), f"miss some cochain."
+            for index in fc_range:
+                assert index in local_cochain, f"miss cochain for fc {index}"
 
         xi, et = meshgrid_xi_et
         shape: list = [len(xi), len(et)]
@@ -191,11 +212,18 @@ class MseHyPy2SpaceReconstructLambda(Frozen):
 
         return (x_dict, y_dict), (v0_dict, v1_dict)
 
-    def _k2(self, generation, cochain, *meshgrid_xi_et, ravel=False):
+    def _k2(self, generation, cochain, *meshgrid_xi_et, ravel=False, fc_range=None, degree=None):
         """"""
-        degree = cochain._f.degree
         representative = self._mesh[generation]
-        local_cochain = cochain.local
+        if fc_range is None:
+            degree = cochain._f.degree
+            local_cochain = cochain.local
+        else:
+            assert degree is not None, f"when provide fc_range, also provide the degree."
+            local_cochain = cochain
+            assert len(cochain) == len(fc_range), f"miss some cochain."
+            for index in fc_range:
+                assert index in local_cochain, f"miss cochain for fc {index}"
 
         xi, et = meshgrid_xi_et
         shape: list = [len(xi), len(et)]

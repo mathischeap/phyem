@@ -244,23 +244,28 @@ class MseHyPy2RootForm(Frozen):
 
         sour_cochain = self.cochain[(t, g)].local
         dest_cochain = dict()
+        error_dict = dict()
         for dest_index in link:
             source_indices = link[dest_index]
             if source_indices is None:   # cell is the same, just
                 dest_cochain[dest_index] = sour_cochain[dest_index]
+                error_dict[dest_index] = 0
             else:
                 if isinstance(source_indices, list):   # dest cell is coarser: get cochain from multiple smaller cell.
+                    assert len(source_indices) > 1, f'Must be!'
                     local_source_cochain = dict()
                     for si in source_indices:
                         local_source_cochain[si] = sour_cochain[si]
-
-                    dest_cochain[dest_index] = self.space.coarsen(
-                        (dg, dest_index), (g, source_indices, local_source_cochain)
+                    cochain, error = self.space.coarsen(
+                        self.degree, (dg, dest_index), (g, source_indices, local_source_cochain)
                     )
                 else:  # dest cell is smaller: get cochain from a bigger cell.
-                    dest_cochain[dest_index] = self.space.refine(
-                        (dg, dest_index), (g, source_indices, sour_cochain[source_indices])
+                    cochain, error = self.space.refine(
+                        self.degree, (dg, dest_index), (g, source_indices, sour_cochain[source_indices])
                     )
+
+                dest_cochain[dest_index] = cochain
+                error_dict[dest_index] = error
 
         indicator = self.space.abstract.indicator
         if indicator == 'Lambda':
@@ -271,6 +276,7 @@ class MseHyPy2RootForm(Frozen):
                 pass
         else:
             pass
+        self.cochain._set(t, dg, dest_cochain)
 
 
 if __name__ == '__main__':
@@ -347,19 +353,21 @@ if __name__ == '__main__':
     f1o.cf = vector
     f2.cf = scalar
 
-
     from msehy.py2.tools.randomrefiningstrengthfunction import RandomRefiningStrengthFunction
     random_refining_strength = RandomRefiningStrengthFunction(([-1, 1], [-1, 1]))
     mesh.renew(
-        {0: random_refining_strength}, [0.2, 0.3]
+        {0: random_refining_strength}, [0.3, 0.5]
     )
-    f0i[(0, -1)].reduce()
+    # mesh.visualize()
+    f0i[(0, 1)].reduce()
+    # f0i[(0, 1)].visualize(show_mesh=True)
 
     random_refining_strength = RandomRefiningStrengthFunction(([-1, 1], [-1, 1]))
     mesh.renew(
-        {0: random_refining_strength}, [0.2, 0.3]
+        {0: random_refining_strength}, [0.25, 0.45]
     )
     f0i.evolve()
+    # f0i[(0, 2)].visualize(show_mesh=True)
 
     # _ = mesh.current_representative.map
     # mesh.visualize()

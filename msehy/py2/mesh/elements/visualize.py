@@ -52,6 +52,46 @@ class MseHyPy2MeshElementsVisualize(Frozen):
         density = len(axis0)
         return fig, density
 
+    def _make_mesh_data(self, sampling_factor=1):
+        """"""
+        density = int(5 * sampling_factor)
+        if density < 5:
+            density = 5
+        else:
+            pass
+        ones_ = np.ones(density)
+        space = np.linspace(-1, 1, density)
+
+        edge_00 = (-ones_, space)
+        edge_01 = (ones_, space)
+        edge_10 = (space, -ones_)
+        edge_11 = (space, ones_)
+
+        edge_b = edge_01
+        edge_0 = edge_10
+        edge_1 = edge_11
+
+        data_dict = dict()
+        for i in self._elements:
+            fc = self._elements[i]
+            if fc._type == 'q':
+                data_dict[i] = (
+                    fc.ct.mapping(*edge_00),
+                    fc.ct.mapping(*edge_01),
+                    fc.ct.mapping(*edge_10),
+                    fc.ct.mapping(*edge_11),
+                )
+            elif fc._type == 't':
+                data_dict[i] = (
+                    fc.ct.mapping(*edge_b),
+                    fc.ct.mapping(*edge_0),
+                    fc.ct.mapping(*edge_1),
+                )
+            else:
+                raise Exception
+
+        return data_dict
+
     def __call__(
             self,
             sampling_factor=1, saveto=None, color='k',
@@ -81,6 +121,7 @@ class MseHyPy2MeshElementsVisualize(Frozen):
             density = 20
         else:
             pass
+
         plt.rcParams['image.cmap'] = colormap
         if show_refining_strength_distribution and self._elements.num_levels > 0:
             from tools.matplot.contour import ___set_contour_levels___

@@ -17,6 +17,7 @@ class MseHyPy2SpaceReduceLambda(Frozen):
         self._cache221 = {}
         self._cache222 = {}
         self._checked = False
+        self._cache_k0 = {}
         self._freeze()
 
     def __call__(self, cf, t, g, degree, **kwargs):
@@ -59,18 +60,26 @@ class MseHyPy2SpaceReduceLambda(Frozen):
             pass
         return 0  # exit correctly.
 
+    def _k0_read_cache(self, degree):
+        if degree in self._cache_k0:
+            return self._cache_k0[degree]
+        else:
+            nodes = self._space[degree].nodes
+            px, py = self._space[degree].p
+            assert px == py
+            full_local_numbering = np.arange((px+1) * (py+1)).reshape((px+1, py+1), order='F')
+            using_dofs = np.concatenate(
+                [np.array([0, ]), full_local_numbering[1:, :].ravel('F')]
+            )
+            xi, et = np.meshgrid(*nodes, indexing='ij')
+            xi = xi.ravel('F')
+            et = et.ravel('F')
+            self._cache_k0[degree] = using_dofs, xi, et
+            return using_dofs, xi, et
+
     def _k0(self, cf, t, generation, degree):
         """0-form on 1-manifold in 1d space."""
-        nodes = self._space[degree].nodes
-        px, py = self._space[degree].p
-        assert px == py
-        full_local_numbering = np.arange((px+1) * (py+1)).reshape((px+1, py+1), order='F')
-        using_dofs = np.concatenate(
-            [np.array([0, ]), full_local_numbering[1:, :].ravel('F')]
-        )
-        xi, et = np.meshgrid(*nodes, indexing='ij')
-        xi = xi.ravel('F')
-        et = et.ravel('F')
+        using_dofs, xi, et = self._k0_read_cache(degree)
         representative = self._mesh[generation]
         xy = representative.ct.mapping(xi, et)
         func = cf[t]
@@ -80,6 +89,24 @@ class MseHyPy2SpaceReduceLambda(Frozen):
             x, y = xy[e]
             region = fc.region
             value = func[region](x, y)[0]  # the scalar evaluated at time `t`.
+            if fc._type == 'q':
+                pass
+            else:
+                value = value[using_dofs]
+            local_cochain[e] = value
+
+        return local_cochain
+
+    def _local_k0(self, func, generation, degree, fc_range):
+        """"""
+        using_dofs, xi, et = self._k0_read_cache(degree)
+        representative = self._mesh[generation]
+        xy = representative.ct.mapping(xi, et, fc_range=fc_range)
+        local_cochain = dict()
+        for e in xy:
+            fc = representative[e]
+            x, y = xy[e]
+            value = func(x, y)  # the scalar evaluated at time `t`.
             if fc._type == 'q':
                 pass
             else:
