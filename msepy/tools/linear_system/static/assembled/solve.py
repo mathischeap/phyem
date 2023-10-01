@@ -88,6 +88,7 @@ class MsePyStaticLinearSystemAssembledSolve(Frozen):
         else:
             raise NotImplementedError()
 
+        assert isinstance(self._x0, np.ndarray), f"x0 must be a ndarray."
         assert self._x0.shape == (self._als.b._gm.num_dofs, ), f"x0 shape wrong!"
         assert self._x0.shape == (self._A.shape[1], ), f"x0 shape wrong!"
 

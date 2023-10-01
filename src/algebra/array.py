@@ -148,7 +148,7 @@ class AbstractArray(Frozen):
                 if s is None:
                     s = shape
                 else:
-                    assert s[-1] == shape[0]
+                    assert s[-1] == shape[0], f"{s[-1]} @ {shape[0]}"
 
                     s = s[:-1] + shape[1:]
 

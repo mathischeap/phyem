@@ -12,7 +12,7 @@ from src.mesh import _global_meshes  # [mesh_sym_repr] -> mesh
 from src.spaces.main import _space_set  # [mesh_sym_repr][space_sym_repr] -> space
 from src.form.main import _global_root_forms_lin_dict  # [root-form_lin_repr] -> root-form
 import msepy.main as msepy
-import msehy.py2.main as msehy_py2
+import msehy.py._2d.main as msehy_py2
 
 from src.config import get_embedding_space_dim
 
@@ -53,6 +53,11 @@ def apply(fe_name, obj_dict):
             obj_space[obj_name] = particular_obj
         else:
             pass
+
+    if hasattr(implementation, '_post_initialization_actions'):
+        implementation._post_initialization_actions()
+    else:
+        pass
 
     return implementation, obj_space
 

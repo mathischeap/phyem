@@ -39,11 +39,6 @@ class MsePyDynamicLinearSystem(Frozen):
         self._b = None
         self._freeze()
 
-    @property
-    def bc(self):
-        """Bc"""
-        return self._bc
-
     def _set_bc(self, bc, msepy_base):
         """set boundary condition."""
         if bc is None:
@@ -52,6 +47,11 @@ class MsePyDynamicLinearSystem(Frozen):
             self._bc = MsePyDynamicLinearSystemBoundaryCondition(
                 self, bc, msepy_base
             )
+
+    @property
+    def bc(self):
+        """Bc"""
+        return self._bc
 
     @property
     def shape(self):

@@ -4,9 +4,7 @@ r"""
 from src.spaces.main import *
 from src.spaces.main import _sep
 from src.config import _global_lin_repr_setting
-from src.config import _form_evaluate_at_repr_setting, _transpose_text
-
-_rf_evaluate_at_lin_repr = _form_evaluate_at_repr_setting['lin']
+from src.config import _transpose_text
 
 from src.config import _root_form_ap_vec_setting
 
@@ -70,6 +68,7 @@ def msepy_root_array_parser(dls, array_lin_repr):
                 _VarSetting_d_matrix_transpose):
             A, _ti = Parse__E_matrix(*info_indicators)
             A = A.T
+
         elif type_indicator == _find_indicator(
                 _VarSetting_pi_matrix):
             A, _ti = Parse__pi_matrix(*info_indicators)

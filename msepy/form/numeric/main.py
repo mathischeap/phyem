@@ -4,10 +4,13 @@ r"""
 import numpy as np
 from tools.frozen import Frozen
 from tools.dds.region_wise_structured import DDSRegionWiseStructured
+from typing import Dict
+from tools.quadrature import Quadrature
+from scipy.interpolate import LinearNDInterpolator, NearestNDInterpolator
 
 
 class MsePyRootFormNumeric(Frozen):
-    """"""
+    """Numeric methods are approximate; less accurate than, for example, reconstruction."""
 
     def __init__(self, rf, time):
         """"""
@@ -16,7 +19,7 @@ class MsePyRootFormNumeric(Frozen):
         self._freeze()
 
     def rot(self, *grid_xi_et_sg):
-        """"""
+        """Compute the rot of the form at `time` and save the results in a region-wise structured data set."""
         time = self._time
         indicator = self._f.space.abstract.indicator
         if indicator == 'bundle':
@@ -44,7 +47,7 @@ class MsePyRootFormNumeric(Frozen):
             raise NotImplementedError()
 
     def divergence(self, *grid_xi_et_sg, magnitude=False):
-        """"""
+        """Compute the divergence of the form at `time` and save the results in a region-wise structured data set."""
         time = self._time
         indicator = self._f.space.abstract.indicator
         if indicator == 'bundle':
@@ -76,3 +79,103 @@ class MsePyRootFormNumeric(Frozen):
                 raise Exception(f"form of space {space} cannot perform curl.")
         else:
             raise NotImplementedError()
+
+    def region_wise_interp(self, density=30, saveto=None):
+        """Reconstruct the form at time `time` and use the reconstruction results to make interpolation functions
+        in each region.
+
+        These functions take (x, y, ...) (physical domain coordinates) are inputs.
+
+        Parameters
+        ----------
+        density
+        saveto
+
+        Returns
+        -------
+
+        """
+        time = self._time
+        indicator = self._f.space.abstract.indicator
+        if indicator == 'Lambda':
+            space = self._f.space.abstract
+            m, n, k = space.m, space.n, space.k
+            if m == n == 2 and k in (0, 2):
+                nodes = Quadrature(density, category='Gauss').quad_nodes
+                xyz, v = self._f[time].reconstruct(nodes, nodes, ravel=True)
+                shape = [1]
+                ndim = 2
+
+            else:
+                raise NotImplementedError()
+        else:
+            raise NotImplementedError()
+
+        regions = self._f.mesh.manifold.regions
+
+        if ndim == 2:
+            r = s = np.linspace(0, 1, 3*density)
+            r, s = np.meshgrid(r, s, indexing='ij')
+            r = r.ravel('F')
+            s = s.ravel('F')
+
+            X = dict()
+            Y = dict()
+            for region in regions:
+                X[region] = list()
+                Y[region] = list()
+            x, y = xyz
+
+            for region in regions:
+                elements = self._f.mesh.elements._elements_in_region(region)
+                for ele in range(*elements):
+                    X[region].extend(x[ele])
+                    Y[region].extend(y[ele])
+
+            if shape == [1]:
+                v = v[0]
+                V = dict()
+                interp: Dict = dict()
+                final_interp: Dict = dict()
+                for region in regions:
+                    V[region] = []
+                    interp[region] = None
+                    final_interp[region] = None
+
+                for region in regions:
+                    elements = self._f.mesh.elements._elements_in_region(region)
+                    for ele in range(*elements):
+                        V[region].extend(v[ele])
+
+                    region_xy = list(zip(X[region], Y[region]))
+                    interp[region] = NearestNDInterpolator(
+                        region_xy, V[region]
+                    )
+
+                for region in interp:
+                    x, y = regions[region]._ct.mapping(r, s)
+                    xy = np.vstack([x, y]).T
+                    v = interp[region](x, y)
+                    final_itp = LinearNDInterpolator(xy, v)
+                    final_interp[region] = final_itp
+
+            else:
+                raise NotImplementedError()
+        else:
+            raise NotImplementedError()
+
+        if saveto is None:
+            pass
+        else:
+            import pickle
+            from src.config import SIZE
+            if SIZE == 1:
+                # we are only calling one thread, so just go ahead with it.
+                with open(saveto, 'wb') as output:
+                    pickle.dump(final_interp, output, pickle.HIGHEST_PROTOCOL)
+                output.close()
+
+            else:
+                raise NotImplementedError()
+
+        return final_interp

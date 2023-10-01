@@ -28,6 +28,11 @@ class MsePyContinuousForm(Frozen):
             field_t[i] = self.field[i][t]
         return MsePyContinuousFormPartialTime(self._f, field_t)
 
+    @staticmethod
+    def _is_cf():
+        """A signature."""
+        return True
+
     @property
     def field(self):
         """the cf."""

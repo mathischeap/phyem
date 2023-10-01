@@ -18,7 +18,7 @@ The parameters of a crazy domain are
 The mapping transforming the domain
 -----------------------------------
 
-We the :math:`\mathbb{R}^3` as an example. Assume the crazy domain is
+We use :math:`\mathbb{R}^3` as an example. Assume the crazy domain is
 :math:`\Omega:=(x,y,z)\in[a,b]\times[e,f]\times[g,h]`,
 i.e., ``bounds = ([a, b], [e, f], [g, h])``. And let :math:`\mathring{\Omega}:=(r, s, t)\in [0,1]^3` be an orthogonal
 domain. The mapping :math:`\Phi` that transforms :math:`\mathring{\Omega}` into :math:`\Omega` is

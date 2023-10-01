@@ -32,6 +32,7 @@ class MsePyMeshElements(Frozen):
         self._elements = {}  # all individual elements.
         self._ct = None
         self._element_mtype_dict = None
+        self._periodic_pairs = None
         self._freeze()
 
     def _is_linear(self):
@@ -433,6 +434,72 @@ class MsePyMeshElements(Frozen):
 
     def __len__(self):
         return self._num
+
+    def _find_periodic_pairs(self):
+        """
+
+        Returns
+        -------
+        periodic_pairs : dict
+            {
+                (0, 0): (7, 1),  # the 0th-edge of element #0 is periodic to the 1st edge of element #7
+                ...,
+            }
+
+        """
+        if self._periodic_pairs is not None:
+            return self._periodic_pairs
+
+        if not self._mesh.manifold.abstract._is_periodic:
+            self._periodic_pairs = {}
+        else:
+            edge_centers = (
+                [np.array([-1]), np.array([0])],
+                [np.array([1]), np.array([0])],
+                [np.array([0]), np.array([-1])],
+                [np.array([0]), np.array([1])]
+            )
+            periodic_pairs = {}
+            for e in self:
+                _map = self.map[e]
+                for j, mp in enumerate(_map):
+                    self_edge_center = edge_centers[j]
+
+                    if j == 0:
+                        m = 1
+                    elif j == 1:
+                        m = 0
+                    elif j == 2:
+                        m = 3
+                    elif j == 3:
+                        m = 2
+                    else:
+                        raise Exception
+
+                    other_edge_center = edge_centers[m]
+
+                    slf_coo = self[e].ct.mapping(*self_edge_center)
+                    oth_coo = self[mp].ct.mapping(*other_edge_center)
+
+                    sx, sy = slf_coo
+                    ox, oy = oth_coo
+                    if np.allclose(sx, ox) and np.allclose(sy, oy):
+                        # this edge is not at periodic boundary
+                        pass
+                    else:  # we find a pair of periodic edges of base elements.
+
+                        edge_self = (e, j)
+                        edge_other = (mp, m)
+
+                        if e < mp:
+                            periodic_pairs[edge_self] = edge_other
+                        elif e > mp:
+                            assert periodic_pairs[edge_other] == edge_self
+                        elif e == mp:
+                            raise Exception(f"a base element is periodic to itself, "
+                                            f"not good, just make more elements.")
+            self._periodic_pairs = periodic_pairs
+        return self._periodic_pairs
 
 
 class MsePyMeshElementsIndexMapping(Frozen):

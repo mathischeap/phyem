@@ -46,10 +46,20 @@ def _inner_simpler_pattern_examiner_scalar_valued_forms(factor, f0, f1, extra_in
             if bf0 is None:
                 pass
             elif bf0.is_root() and f1.is_root():
-                return _simple_patterns['(d,)'], {
-                    'rsf0': bf0,   # root-scalar-form-0
-                    'rsf1': f1,    # root-scalar-form-1
-                }
+
+                if f1.is_dual_representation():
+
+                    return _simple_patterns['<d,>'], {
+                        'rsf0': bf0,   # root-scalar-form-0
+                        'rsf1': f1,    # root-scalar-form-1
+                    }
+
+                else:
+
+                    return _simple_patterns['(d,)'], {
+                        'rsf0': bf0,   # root-scalar-form-0
+                        'rsf1': f1,    # root-scalar-form-1
+                    }
             else:
                 pass
 
@@ -60,10 +70,18 @@ def _inner_simpler_pattern_examiner_scalar_valued_forms(factor, f0, f1, extra_in
             if bf1 is None:
                 pass
             elif f0.is_root() and bf1.is_root():
-                return _simple_patterns['(,d)'], {
-                    'rsf0': f0,     # root-scalar-form-0
-                    'rsf1': bf1,    # root-scalar-form-1
-                }
+
+                if f0.is_dual_representation():
+                    return _simple_patterns['<,d>'], {
+                        'rsf0': f0,     # root-scalar-form-0
+                        'rsf1': bf1,    # root-scalar-form-1
+                    }
+
+                else:
+                    return _simple_patterns['(,d)'], {
+                        'rsf0': f0,     # root-scalar-form-0
+                        'rsf1': bf1,    # root-scalar-form-1
+                    }
             else:
                 pass
 
@@ -78,7 +96,7 @@ def _inner_simpler_pattern_examiner_scalar_valued_forms(factor, f0, f1, extra_in
                 return _simple_patterns['(,d-pi)'], {
                     'A': A,    # root-form A
                     'B': B,    # root-form B
-                } # d(pi(B)) is in the same space of A, and is of same degree.
+                }  # d(pi(B)) is in the same space of A, and is of same degree.
 
         # (a x b, c) types term, where x is cross product, and a, b, c are root-scalar-valued forms ----
         cross_product_lin = _global_operator_lin_repr_setting['cross_product']

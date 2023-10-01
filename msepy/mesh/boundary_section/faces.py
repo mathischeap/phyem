@@ -178,6 +178,7 @@ class _MsePyBoundarySectionFace(Frozen):
         self._m = m
         self._n = n
         self._ct = None
+        self._fitting = None
         self._freeze()
 
     @property

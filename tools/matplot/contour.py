@@ -2,10 +2,6 @@
 r"""
 """
 import numpy as np
-import sys
-
-if './' not in sys.path:
-    sys.path.append('./')
 import matplotlib
 import matplotlib.pyplot as plt
 from matplotlib import cm
@@ -63,6 +59,8 @@ def contour(
         dpi=150,
         plot_type='contour',
         intermediate=False,
+        magnitude=False,
+        top_right_bounds=False,
 ):
     """
 
@@ -113,6 +111,8 @@ def contour(
     pad_inches
     dpi
     intermediate
+    magnitude
+    top_right_bounds
 
     Returns
     -------
@@ -121,6 +121,15 @@ def contour(
     x = {0: x} if not isinstance(x, dict) else x
     y = {0: y} if not isinstance(y, dict) else y
     v = {0: v} if not isinstance(v, dict) else v
+
+    if magnitude:
+        for patch in v:
+            _ = np.abs(v[patch])
+            _[_ < 1e-16] = 1e-16
+            _ = np.log10(_)
+            v[patch] = _
+    else:
+        pass
 
     plt.rcParams.update({
         "text.usetex": usetex,
@@ -134,8 +143,12 @@ def contour(
     fig, ax = plt.subplots(figsize=figsize)
     ax.set_aspect('equal')
     # ------- label and  ticks -------------------------------------------------------
-    ax.spines['top'].set_visible(False)
-    ax.spines['right'].set_visible(False)
+    if top_right_bounds:
+        ax.spines['top'].set_visible(True)
+        ax.spines['right'].set_visible(True)
+    else:
+        ax.spines['top'].set_visible(False)
+        ax.spines['right'].set_visible(False)
     ax.spines['left'].set_visible(True)
     ax.spines['bottom'].set_visible(True)
     plt.xlabel(xlabel, fontsize=labelsize)
@@ -157,10 +170,13 @@ def contour(
         pass
     # -------------- contour plot --------------------------------------------------------
     for patch in v:
+        v_patch = v[patch]
         if plot_type == 'contour':
-            plt.contour(x[patch], y[patch], v[patch], levels=levels, linewidths=linewidth, linestyles=linestyle)
+            plt.contour(
+                x[patch], y[patch], v_patch, levels=levels, linewidths=linewidth, linestyles=linestyle
+            )
         elif plot_type == 'contourf':
-            VAL = v[patch]
+            VAL = v_patch
             VAL[VAL > levels[-1]] = levels[-1]
             VAL[VAL < levels[0]] = levels[0]
             plt.contourf(x[patch], y[patch], VAL, levels=levels)

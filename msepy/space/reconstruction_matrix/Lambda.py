@@ -71,13 +71,13 @@ class MsePyReconstructMatrixLambda(Frozen):
         rm_cache = dict()
         rm_dict = dict()
         for e in element_range:
-            ij = iJ[e]
             cache_index = self._e2c[e]
 
             if cache_index in rm_cache:
                 pass
 
             else:
+                ij = iJ[e]
                 x0 = bf[0] * ij
                 rm_cache[cache_index] = (x0.T, )
 
@@ -117,10 +117,6 @@ class MsePyReconstructMatrixLambda(Frozen):
         rm_cache = dict()
         rm_dict = dict()
         for e in element_range:
-            assert e in iJ, f"element #{e} is out of range."
-            iJ0, iJ1 = iJ[e]
-            iJ00, iJ01 = iJ0
-            iJ10, iJ11 = iJ1
 
             cache_index = self._e2c[e]
 
@@ -128,6 +124,11 @@ class MsePyReconstructMatrixLambda(Frozen):
                 pass
 
             else:
+                assert e in iJ, f"element #{e} is out of range."
+                iJ0, iJ1 = iJ[e]
+                iJ00, iJ01 = iJ0
+                iJ10, iJ11 = iJ1
+
                 x0 = + u * iJ11
                 x1 = - v * iJ01
                 rm_e_x = np.vstack((x0, x1)).T
@@ -152,10 +153,6 @@ class MsePyReconstructMatrixLambda(Frozen):
         rm_cache = dict()
         rm_dict = dict()
         for e in element_range:
-            assert e in iJ, f"element #{e} is out of range."
-            iJ0, iJ1 = iJ[e]
-            iJ00, iJ01 = iJ0
-            iJ10, iJ11 = iJ1
 
             cache_index = self._e2c[e]
 
@@ -163,6 +160,11 @@ class MsePyReconstructMatrixLambda(Frozen):
                 pass
 
             else:
+                assert e in iJ, f"element #{e} is out of range."
+                iJ0, iJ1 = iJ[e]
+                iJ00, iJ01 = iJ0
+                iJ10, iJ11 = iJ1
+
                 x0 = u * iJ00
                 x1 = v * iJ10
                 rm_e_x = np.vstack((x0, x1)).T
@@ -186,13 +188,13 @@ class MsePyReconstructMatrixLambda(Frozen):
         rm_cache = dict()
         rm_dict = dict()
         for e in element_range:
-            ij = iJ[e]
             cache_index = self._e2c[e]
 
             if cache_index in rm_cache:
                 pass
 
             else:
+                ij = iJ[e]
                 x0 = bf[0] * ij
                 rm_cache[cache_index] = (x0.T, )
 
@@ -232,16 +234,16 @@ class MsePyReconstructMatrixLambda(Frozen):
         rm_cache = dict()
         rm_dict = dict()
         for e in element_range:
-            assert e in iJ, f"element #{e} is out of range."
-            iJ0, iJ1, iJ2 = iJ[e]
-            iJ00, iJ01, iJ02 = iJ0
-            iJ10, iJ11, iJ12 = iJ1
-            iJ20, iJ21, iJ22 = iJ2
             cache_index = self._e2c[e]
             if cache_index in rm_cache:
                 pass
 
             else:
+                assert e in iJ, f"element #{e} is out of range."
+                iJ0, iJ1, iJ2 = iJ[e]
+                iJ00, iJ01, iJ02 = iJ0
+                iJ10, iJ11, iJ12 = iJ1
+                iJ20, iJ21, iJ22 = iJ2
                 x0 = u * iJ00
                 x1 = v * iJ10
                 x2 = w * iJ20
@@ -273,13 +275,13 @@ class MsePyReconstructMatrixLambda(Frozen):
         rm_cache = dict()
         rm_dict = dict()
         for e in element_range:
-            assert e in iJ, f"element #{e} is out of range."
-            ij = iJ[e]
             cache_index = self._e2c[e]
             if cache_index in rm_cache:
                 pass
 
             else:
+                assert e in iJ, f"element #{e} is out of range."
+                ij = iJ[e]
                 x0 = u * (ij[1][1]*ij[2][2] - ij[1][2]*ij[2][1])
                 x1 = v * (ij[2][1]*ij[0][2] - ij[2][2]*ij[0][1])
                 x2 = w * (ij[0][1]*ij[1][2] - ij[0][2]*ij[1][1])
@@ -310,13 +312,13 @@ class MsePyReconstructMatrixLambda(Frozen):
         rm_cache = dict()
         rm_dict = dict()
         for e in element_range:
-            ij = iJ[e]
             cache_index = self._e2c[e]
 
             if cache_index in rm_cache:
                 pass
 
             else:
+                ij = iJ[e]
                 x0 = bf[0] * ij
                 rm_cache[cache_index] = (x0.T, )
 

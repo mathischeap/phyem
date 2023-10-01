@@ -89,7 +89,7 @@ class _Transfinite2(Frozen):
         Parameters
         ----------
         geo_x0 :
-            [str(geo_name), dict(geo_parameters)]
+            [str(geo_name), list(geo_parameters)]
         geo_x1
         geo_y0
         geo_y1

@@ -12,14 +12,17 @@ class MsePyStaticLinearSystemAssembled(Frozen):
 
     def __init__(self, static, A, b, cache=None):
         """"""
-        assert isinstance(A, MsePyStaticAssembledMatrix) and isinstance(b, MsePyStaticAssembledVector), \
-            f"A or b type wrong."
         self._static = static
         self._A = A
         self._b = b
         self._cache = cache
-        self._solve = MsePyStaticLinearSystemAssembledSolve(self)
+        self._check_Ab_and_initialize_solve(A, b)
         self._freeze()
+
+    def _check_Ab_and_initialize_solve(self, A, b):
+        assert isinstance(A, MsePyStaticAssembledMatrix) and isinstance(b, MsePyStaticAssembledVector), \
+            f"A or b type wrong."
+        self._solve = MsePyStaticLinearSystemAssembledSolve(self)
 
     @property
     def A(self):

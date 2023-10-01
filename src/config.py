@@ -56,15 +56,6 @@ def set_pr_cache(_bool):
     _setting['pr_cache'] = _bool
 
 
-def set_implementation(implementation_name):
-    """"""
-    if implementation_name == 'msehy-py2':
-        from msehy.py2.main import __msehy_py2_setting__
-        return __msehy_py2_setting__
-    else:
-        raise NotImplementedError()
-
-
 def _pr_cache(fig, filename=None):
     """
 
@@ -107,6 +98,7 @@ def _pr_cache(fig, filename=None):
     else:
         subfolder_name = _setting["pr_cache_subfolder"]
         assert subfolder_name != '', f"something is wrong!"
+
     plt.savefig(subfolder_name + filename_personal, bbox_inches='tight', dpi=200)
 
     folder_current = (
@@ -345,7 +337,9 @@ _wf_term_default_simple_patterns = {   # use only str to represent a simple patt
     # below, we have simple patterns only for root-sf.
     '(rt,rt)': '(rf, rf)',
     '(d,)': '(d rf, rf)',
+    '<d,>': '<d rf, dual-rf>',
     '(,d)': '(rf, d rf)',
+    '<,d>': '<dual-rf, d rf>',
 
     '(<db>,d<b>)': '(root-diagonal-bf, d root-bf)',
 

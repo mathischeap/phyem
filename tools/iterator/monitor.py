@@ -62,8 +62,8 @@ class IteratorMonitor(Frozen):
         self._ast = 360 * (1-monitoring_factor)  # auto_save_time
         self._rpt = 60 * (1-monitoring_factor)  # report time
 
-        self._last_ast = time() - self._ast
-        self._last_rpt = time() - self._rpt
+        self._last_ast = time() - self._ast  # this is correct, do not delete - self._ast
+        self._last_rpt = time() - self._rpt  # this is correct, do not delete - self._rpt
 
     @property
     def name(self):

@@ -142,6 +142,11 @@ class _SimplePatternAPParser(Frozen):
             elif sp == _simple_patterns['(,d)']:
                 return self._parse_reprs__d(test_form=test_form)
 
+            elif sp == _simple_patterns['<d,>']:
+                return self._parse_reprs_d_dual_(test_form=test_form)
+            elif sp == _simple_patterns['<,d>']:
+                return self._parse_reprs__dual_d(test_form=test_form)
+
             elif sp == _simple_patterns['<tr star | tr >']:
                 return self._parse_reprs_tr_star_star(test_form=test_form)
 
@@ -251,6 +256,23 @@ class _SimplePatternAPParser(Frozen):
         sign = '+'
         return term, sign, 'linear'
 
+    def _parse_reprs_d_dual_(self, test_form=None):
+        spk = self._wft.___simple_pattern_keys___
+        bf0 = spk['rsf0']
+        if test_form == self._wft._f1:
+            d_matrix = _VarPar_E(bf0)
+            v0 = bf0.ap()
+            v1 = self._wft._f1.ap().T
+            term_ap = v1 @ d_matrix @ v0
+        else:
+            dT_matrix = _VarPar_E(bf0, transpose=True)
+            v0 = bf0.ap().T
+            v1 = self._wft._f1.ap()
+            term_ap = v0 @ dT_matrix @ v1
+        term = self._wft._factor * TermLinearAlgebraicProxy(term_ap)
+        sign = '+'
+        return term, sign, 'linear'
+
     def _parse_reprs__d(self, test_form=None):
         """"""
         s0 = self._wft._f0.space
@@ -272,6 +294,25 @@ class _SimplePatternAPParser(Frozen):
             v0 = self._wft._f0.ap().T
             v1 = bf1.ap()
             term_ap = v0 @ mass_matrix @ d_matrix @ v1
+        term = self._wft._factor * TermLinearAlgebraicProxy(term_ap)
+        sign = '+'
+        return term, sign, 'linear'
+
+    def _parse_reprs__dual_d(self, test_form=None):
+        """"""
+        spk = self._wft.___simple_pattern_keys___
+        bf1 = spk['rsf1']
+
+        if test_form == bf1:
+            dT_matrix = _VarPar_E(bf1, transpose=True)
+            v0 = self._wft._f0.ap()
+            v1 = bf1.ap().T
+            term_ap = v1 @ dT_matrix @ v0
+        else:
+            d_matrix = _VarPar_E(bf1)
+            v0 = self._wft._f0.ap().T
+            v1 = bf1.ap()
+            term_ap = v0 @ d_matrix @ v1
         term = self._wft._factor * TermLinearAlgebraicProxy(term_ap)
         sign = '+'
         return term, sign, 'linear'

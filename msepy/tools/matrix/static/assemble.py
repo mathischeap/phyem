@@ -14,17 +14,21 @@ _msepy_assembled_StaticMatrix_cache = {}
 class MsePyStaticLocalMatrixAssemble(Frozen):
     """"""
 
+    @property
+    def ___assembled_class___(self):
+        return MsePyStaticAssembledMatrix
+
     def __init__(self, M):
         """"""
         self._M = M
         self._freeze()
 
-    def __call__(self, _format='csc', cache=None):
+    def __call__(self, format='csc', cache=None):
         """
 
         Parameters
         ----------
-        _format
+        format
         cache :
             We can manually cache the assembled matrix by set ``cache`` to be a string. When next time
             it sees the same `cache` it will return the cached matrix from the cache, i.e.,
@@ -54,9 +58,9 @@ class MsePyStaticLocalMatrixAssemble(Frozen):
         COL = list()
         DAT = list()
 
-        if _format == 'csc':
+        if format == 'csc':
             SPA_MATRIX = csc_matrix
-        elif _format == 'csr':
+        elif format == 'csr':
             SPA_MATRIX = csr_matrix
         else:
             raise Exception
@@ -107,7 +111,7 @@ class MsePyStaticLocalMatrixAssemble(Frozen):
         # A += _
 
         A = SPA_MATRIX((DAT, (ROW, COL)), shape=(dep, wid))
-        A = MsePyStaticAssembledMatrix(A, gm_row, gm_col)
+        A = self.___assembled_class___(A, gm_row, gm_col)
         if isinstance(cache, str):
             _msepy_assembled_StaticMatrix_cache[cache] = A
         return A

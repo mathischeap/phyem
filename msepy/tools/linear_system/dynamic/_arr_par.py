@@ -11,7 +11,6 @@ from src.spaces.main import *
 from src.form.main import _global_root_forms_lin_dict
 from msepy.tools.matrix.static.local import MsePyStaticLocalMatrix
 
-from src.config import _form_evaluate_at_repr_setting
 from msepy.form.tools.operations.nonlinear.AxB_ip_C import _AxBipC
 from msepy.form.tools.operations.nonlinear.dA_ip_BtpC import __dA_ip_BtpC__
 from msepy.form.tools.operations.nonlinear.A__ip__B_tp_C import _A__ip__B_tp_C_
@@ -22,6 +21,7 @@ from msepy.tools.vector.static.local import MsePyStaticLocalVector
 from msepy.tools.linear_system.dynamic.bc import MsePyDLSNaturalBoundaryCondition
 from msepy.mesh.boundary_section.main import MsePyBoundarySectionMesh
 
+from src.config import _form_evaluate_at_repr_setting
 _rf_evaluate_at_lin_repr = _form_evaluate_at_repr_setting['lin']
 
 __all__ = [

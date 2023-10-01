@@ -435,6 +435,7 @@ class WeakFormulation(Frozen):
         else:
             plt.tight_layout()
             plt.show(block=_setting['block'])
+            plt.close()
         return fig
 
     def pr(self, indexing=True, patterns=False):
@@ -550,6 +551,7 @@ class WeakFormulation(Frozen):
         else:
             plt.tight_layout()
             plt.show(block=_setting['block'])
+            plt.close()
         return fig
 
     @property

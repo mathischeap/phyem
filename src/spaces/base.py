@@ -67,13 +67,17 @@ class SpaceBase(Frozen):
         """the dimensions of the embedding space."""
         return get_embedding_space_dim()
 
-    def make_form(self, sym_repr, lin_repr):
+    def make_form(self, sym_repr, lin_repr, dual_representation=False):
         """"""
         assert isinstance(sym_repr, str), f"symbolic representation must be a str."
         f = Form(
             self, sym_repr, lin_repr,
             True,  # is_root
         )
+        if dual_representation:
+            f.set_dual_representation(True)
+        else:
+            pass
         return f
 
     def __eq__(self, other):

@@ -92,7 +92,7 @@ def div_grad_2d_periodic_manufactured_test(degree, K, c=0):
         The :math:`L^2`-error of solution :math:`u_h^1`.
 
     """
-    ls = ph.samples.wf_div_grad(n=2, degree=degree, orientation='outer', periodic=True)  # ls.pr()
+    ls = ph.samples.wf_div_grad(n=2, degree=degree, orientation='outer', periodic=True)[0]  # ls.pr()
     msepy, obj = ph.fem.apply('msepy', locals())
     manifold = msepy.base['manifolds'][r"\mathcal{M}"]
     mesh = msepy.base['meshes'][r'\mathfrak{M}']
@@ -117,7 +117,7 @@ def div_grad_2d_periodic_manufactured_test(degree, K, c=0):
     phi_scalar = ph.vc.scalar(phi_func)
     phi.cf = phi_scalar
     u.cf = phi.cf.codifferential()
-    f.cf = - u.cf.exterior_derivative()
+    f.cf = -u.cf.exterior_derivative()
     f[0].reduce()
     phi[0].reduce()
 
@@ -136,5 +136,5 @@ if __name__ == '__main__':
     # python tests/msepy/div_grad/_2d_outer_periodic.py
     import doctest
     doctest.testmod()
-    errors = div_grad_2d_periodic_manufactured_test(3, 4)
+    errors = div_grad_2d_periodic_manufactured_test(2, 8)
     print(errors)

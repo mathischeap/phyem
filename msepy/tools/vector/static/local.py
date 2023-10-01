@@ -187,8 +187,13 @@ class MsePyStaticLocalVector(Frozen):
             if self._dtype == 'None':
                 raise Exception(f"cannot do * for None type vector")
             elif self._dtype in ("homogeneous", "2d"):
-                data = other * self.data
+
+                if len(self.adjust) == 0:
+                    data = other * self.data
+                else:
+                    raise NotImplementedError()
                 return self.__class__(data, self._gm)
+
             elif self._dtype == 'callable':
                 raise NotImplementedError()
         else:
@@ -202,8 +207,13 @@ class MsePyStaticLocalVector(Frozen):
             if self._dtype == 'None' or other._dtype == 'None':
                 raise Exception(f"cannot do + for None type vector")
             elif self._dtype in ("homogeneous", "2d") and other._dtype in ("homogeneous", "2d"):
-                data = self.data + other.data
+
+                if len(self.adjust) == 0 and len(other.adjust) == 0:
+                    data = self.data + other.data
+                else:
+                    raise NotImplementedError()
                 return self.__class__(data, self._gm)
+
             elif self._dtype == 'callable' or other._dtype == 'callable':
                 raise NotImplementedError()
 
@@ -215,8 +225,13 @@ class MsePyStaticLocalVector(Frozen):
         if self._dtype == 'None':
             raise Exception(f"cannot do * for None type vector")
         elif self._dtype in ("homogeneous", "2d"):
-            data = - self.data
+
+            if len(self.adjust) == 0:
+                data = - self.data
+            else:
+                raise NotImplementedError()
             return self.__class__(data, self._gm)
+
         elif self._dtype == 'callable':
             raise NotImplementedError()
 

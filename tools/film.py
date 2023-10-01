@@ -25,6 +25,7 @@ def images(image_folder, video_name=None, duration=5, clean_images=False, sort_k
     :param video_name:
     :param duration: The video will be of time `duration` seconds.
     :param clean_images: {bool,} Do we delete the used images when we have released the video?
+    :param sort_key:
     :return:
     """
     if RANK != MASTER_RANK:
@@ -88,12 +89,14 @@ def images(image_folder, video_name=None, duration=5, clean_images=False, sort_k
     else:
         pass
 
+
 if __name__ == '__main__':
     # python tools/film.py
     images(
-        r'C:\Users\zhangy6\OneDrive\Codes\phyem\__phcache__\_images2\du',
-        duration=8,
-        sort_key=lambda x: int(
-            x.split('.')[0].split('_')[1]
-        )
+        r'C:\Users\zhangy6\OneDrive\Codes\phyem\__phcache__\normal_dipole_collision\amr24',
+        video_name='amr.mp4',
+        duration=10,
+        # sort_key=lambda x: int(
+        #     x.split('.')[0].split('_')[1]
+        # )
     )

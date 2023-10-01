@@ -82,7 +82,7 @@ def _outer_periodic_Poisson(n, degree):
     ph.space.finite(degree)
     mp = wf.mp()
     ls = mp.ls()
-    return ls
+    return ls, mp
 
 
 def _outer_Poisson(n, degree):

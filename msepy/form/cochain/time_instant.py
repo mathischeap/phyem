@@ -61,6 +61,7 @@ class _CochainAtOneTime(Frozen):
     def of_dof(self, i, average=True):
         """The cochain for the global dof `#i`."""
         elements_local_indices = self._f.cochain.gathering_matrix._find_elements_and_local_indices_of_dofs(i)
+
         i = list(elements_local_indices.keys())[0]
         elements, local_rows = elements_local_indices[i]
         values = list()
@@ -68,6 +69,7 @@ class _CochainAtOneTime(Frozen):
             values.append(
                 self.local[e][i]
             )
+
         if average:
             return sum(values) / len(values)
         else:

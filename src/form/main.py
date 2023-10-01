@@ -96,7 +96,15 @@ class Form(Frozen):
         self._ats_forms = dict()   # the abstract ats forms based on this form.
         self._degree = None
         self._ap = None
+        self._dual_representation = False
         self._freeze()
+
+    def is_dual_representation(self):
+        return self._dual_representation
+
+    def set_dual_representation(self, _bool):
+        assert isinstance(_bool, bool)
+        self._dual_representation = _bool
 
     # noinspection PyBroadException
     @staticmethod
@@ -397,6 +405,9 @@ class Form(Frozen):
                 ftk._pAti_form['base_form'] = self
                 ftk._pAti_form['ats'] = ati.time_sequence
                 ftk._pAti_form['ati'] = ati
+
+                ftk.set_dual_representation(self._dual_representation)
+
                 self._ats_forms[lin_repr] = ftk
 
             return self._ats_forms[lin_repr]

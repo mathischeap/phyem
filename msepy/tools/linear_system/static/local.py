@@ -59,14 +59,16 @@ class MsePyStaticLocalLinearSystem(Frozen):
                     if row_gms[i] is None:
                         row_gms[i] = row_gm_i
                     else:
-                        assert row_gms[i] is row_gm_i, f"by construction, this must be the case as we only construct" \
-                                                       f"gathering matrix once and store only once copy somewhere!"
+                        assert row_gms[i] is row_gm_i, \
+                            f"by construction, this must be the case as we only construct" \
+                            f"gathering matrix once and store only once copy somewhere!"
 
                     if col_gms[j] is None:
                         col_gms[j] = col_gm_j
                     else:
-                        assert col_gms[j] is col_gm_j, f"by construction, this must be the case as we only construct" \
-                                                       f"gathering matrix once and store only once copy somewhere!"
+                        assert col_gms[j] is col_gm_j, \
+                            f"by construction, this must be the case as we only construct" \
+                            f"gathering matrix once and store only once copy somewhere!"
 
         assert None not in row_gms and None not in col_gms, f"miss some gathering matrices."
         num_elements = list()
@@ -87,8 +89,9 @@ class MsePyStaticLocalLinearSystem(Frozen):
             x_j = x[j]
             assert x_j.__class__ is MsePyRootFormStaticCochainVector, f"x[{j}] is {x_j.__class__}, wrong"
             gm_j = x_j._gm
-            assert gm_j is self._col_gms[j], f"by construction, this must be the case as we only construct" \
-                                             f"gathering matrix once and store only once copy somewhere!"
+            assert gm_j is self._col_gms[j], \
+                f"by construction, this must be the case as we only construct" \
+                f"gathering matrix once and store only once copy somewhere!"
 
         # now we check gathering matrices in b.
         for i in range(row_shape):
@@ -99,8 +102,9 @@ class MsePyStaticLocalLinearSystem(Frozen):
                 assert b_i.__class__ in (MsePyStaticLocalVector, MsePyRootFormStaticCochainVector), \
                     f"b[{i}] is {b_i.__class__}, wrong"
                 gm_i = b_i._gm
-                assert gm_i is self._row_gms[i], f"by construction, this must be the case as we only construct" \
-                                                 f"gathering matrix once and store only once copy somewhere!"
+                assert gm_i is self._row_gms[i], \
+                    f"by construction, this must be the case as we only construct" \
+                    f"gathering matrix once and store only once copy somewhere!"
 
     @property
     def gathering_matrices(self):
