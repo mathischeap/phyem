@@ -77,7 +77,7 @@ class MseHyPy2RootForm(Frozen):
         """The base root-form I have."""
         return self._pAti_form['base_form']
 
-    # ------- key method ------------------------------------------------------------------------------------
+    # ------- key method ----------------------------------------------------------------------
     def evolve(self, amount_of_cochain=1):
         """take the cochain of `previous` and project them into `generic`."""
         link = self.space.mesh.link
@@ -102,7 +102,8 @@ class MseHyPy2RootForm(Frozen):
             dest_cochain: Dict = dict()
             for dest_index in link:
                 source_indices = link[dest_index]
-                if source_indices is None:   # cell is the same, cannot just pass it to the destination.
+                if source_indices is None:
+                    # cell is the same, cannot just pass it to the destination.
                     raw_cochain = sour_cochain[dest_index]
                     if dest_index in old_csm:
                         dest_cochain[dest_index] = old_csm[dest_index] @ raw_cochain
@@ -134,7 +135,7 @@ class MseHyPy2RootForm(Frozen):
                     pass
             cur_f.cochain._set(t, dest_cochain)
 
-    # --- properties ----------------------------------------------------------------------------------------
+    # --- properties -------------------------------------------------------------------------
     @property
     def cf(self):
         return self.generic._cf
@@ -148,7 +149,7 @@ class MseHyPy2RootForm(Frozen):
         """"""
         return self.generic[time]
 
-    # ----------- generic -----------------------------------------------------------------------------------
+    # ----------- generic ---------------------------------------------------------------------
     @property
     def generation(self):
         if self._do_initialize:

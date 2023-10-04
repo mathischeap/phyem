@@ -24,6 +24,12 @@ def mesh(manifold, sym_repr=None, lin_repr=None):
 
 def _list_meshes():
     """"""
+    from src.config import RANK, MASTER_RANK
+    if RANK != MASTER_RANK:
+        return
+    else:
+        pass
+
     print('\n Existing meshes:')
     print('{:>25} - {}'.format('---------------- symbolic', '<manifold> -------------------------'))
     for rp in _global_meshes:

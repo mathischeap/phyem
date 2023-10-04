@@ -137,26 +137,32 @@ class Form(Frozen):
 
     def pr(self, figsize=(12, 6)):
         """Print this form with matplotlib and latex."""
-        my_id = r'\texttt{' + str(id(self)) + '}'
-        if self._pAti_form['base_form'] is None:
-            pti_text = ''
+        from src.config import RANK, MASTER_RANK
+        if RANK != MASTER_RANK:
+            return
         else:
-            base_form, ats, ati = self._pAti_form['base_form'], self._pAti_form['ats'], self._pAti_form['ati']
-            pti_text = rf"\\(${base_form._sym_repr}$ at abstract time instant ${ati._sym_repr}$"
-        space_text = f'spaces: ${self.space._sym_repr}$'
-        space_text += rf"\ \ \ \ on ({self.mesh._lin_repr})"
-        fig = plt.figure(figsize=figsize)
-        plt.axis([0, 1, 0, 5])
-        plt.text(0, 4.5, f'form id: {my_id}', ha='left', va='center', size=15)
-        plt.text(0, 3.5, space_text, ha='left', va='center', size=15)
-        plt.text(0, 2.5, rf'\noindent symbolic : ' + f"${self._sym_repr}$" + pti_text, ha='left', va='center', size=15)
-        plt.text(0, 1.5, 'linguistic : ' + self._lin_repr, ha='left', va='center', size=15)
-        root_text = rf'is_root: {self.is_root()}'
-        plt.text(0, 0.5, root_text, ha='left', va='center', size=15)
-        plt.axis('off')
-        from src.config import _setting
-        plt.show(block=_setting['block'])
-        return fig
+            my_id = r'\texttt{' + str(id(self)) + '}'
+            if self._pAti_form['base_form'] is None:
+                pti_text = ''
+            else:
+                base_form, ats, ati = self._pAti_form['base_form'], self._pAti_form['ats'], self._pAti_form['ati']
+                pti_text = rf"\\(${base_form._sym_repr}$ at abstract time instant ${ati._sym_repr}$"
+            space_text = f'spaces: ${self.space._sym_repr}$'
+            space_text += rf"\ \ \ \ on ({self.mesh._lin_repr})"
+            fig = plt.figure(figsize=figsize)
+            plt.axis([0, 1, 0, 5])
+            plt.text(0, 4.5, f'form id: {my_id}', ha='left', va='center', size=15)
+            plt.text(0, 3.5, space_text, ha='left', va='center', size=15)
+            plt.text(0, 2.5,
+                     rf'\noindent symbolic : ' + f"${self._sym_repr}$" + pti_text,
+                     ha='left', va='center', size=15)
+            plt.text(0, 1.5, 'linguistic : ' + self._lin_repr, ha='left', va='center', size=15)
+            root_text = rf'is_root: {self.is_root()}'
+            plt.text(0, 0.5, root_text, ha='left', va='center', size=15)
+            plt.axis('off')
+            from src.config import _setting
+            plt.show(block=_setting['block'])
+            return fig
 
     def __repr__(self):
         """"""

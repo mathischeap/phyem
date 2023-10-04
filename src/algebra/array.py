@@ -9,6 +9,7 @@ plt.rcParams.update({
     "text.latex.preamble": r"\usepackage{amsmath, amssymb}",
 })
 matplotlib.use('TkAgg')
+from src.config import RANK, MASTER_RANK
 
 from tools.frozen import Frozen
 from src.config import _parse_lin_repr, _abstract_array_factor_sep, _abstract_array_connector
@@ -164,15 +165,18 @@ class AbstractArray(Frozen):
 
     def pr(self, figsize=(8, 6)):
         """print representations."""
-        text = r"$" + self._sym_repr + r"$"
-        text += "\n" + self._lin_repr
-        plt.figure(figsize=figsize)
-        plt.axis([0, 1, 0, 1])
-        plt.axis('off')
-        plt.text(0.05, 0.5, text, ha='left', va='center', size=15)
-        plt.tight_layout()
-        from src.config import _setting
-        plt.show(block=_setting['block'])
+        if RANK != MASTER_RANK:
+            return
+        else:
+            text = r"$" + self._sym_repr + r"$"
+            text += "\n" + self._lin_repr
+            plt.figure(figsize=figsize)
+            plt.axis([0, 1, 0, 1])
+            plt.axis('off')
+            plt.text(0.05, 0.5, text, ha='left', va='center', size=15)
+            plt.tight_layout()
+            from src.config import _setting
+            plt.show(block=_setting['block'])
 
     def __repr__(self):
         """repr"""

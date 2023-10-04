@@ -1,10 +1,5 @@
 # -*- coding: utf-8 -*-
-"""The numerical quadrature class.
-
-@author: Lorenzo & Yi
-Created on Sat Sep  1 23:58:01 2018
-Aerodynamics, AE
-TU Delft
+r"""
 """
 import numpy as np
 from functools import partial

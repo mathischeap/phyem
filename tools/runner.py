@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-"""Parallel runners.
+r"""Parallel runners.
 """
 from src.config import COMM, RANK, MASTER_RANK, SIZE
 from tools.legacy.serialRunners.INSTANCES.matrix3d_input_runner import Matrix3dInputRunner

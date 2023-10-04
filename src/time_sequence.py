@@ -243,6 +243,12 @@ class ConstantTimeSequence(TimeSequence):
 
     def pr(self, obj=None):
         """print this constant interval time sequence together with an object."""
+        from src.config import RANK, MASTER_RANK
+        if RANK != MASTER_RANK:
+            return
+        else:
+            pass
+
         import numpy as np
         import matplotlib.pyplot as plt
         import matplotlib

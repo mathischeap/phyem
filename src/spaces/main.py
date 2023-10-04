@@ -223,6 +223,12 @@ def set_mesh(mesh):
 
 def _list_spaces():
     """"""
+    from src.config import RANK, MASTER_RANK
+    if RANK != MASTER_RANK:
+        return
+    else:
+        pass
+
     print('\n Implemented spaces:')
     print('{:>15} - {}'.format('abbreviation', 'description'))
     for abbr in _implemented_spaces:

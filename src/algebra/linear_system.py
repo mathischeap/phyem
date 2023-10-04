@@ -167,15 +167,19 @@ class BlockColVector(Frozen):
 
     def pr(self, figsize=(8, 6)):
         """"""
-        symbolic = r"$" + self._pr_text() + r"$"
-        fig = plt.figure(figsize=figsize)
-        plt.axis([0, 1, 0, 1])
-        plt.axis('off')
-        plt.text(0.05, 0.5, symbolic, ha='left', va='center', size=15)
-        plt.tight_layout()
-        from src.config import _setting
-        plt.show(block=_setting['block'])
-        return fig
+        from src.config import RANK, MASTER_RANK
+        if RANK != MASTER_RANK:
+            return
+        else:
+            symbolic = r"$" + self._pr_text() + r"$"
+            fig = plt.figure(figsize=figsize)
+            plt.axis([0, 1, 0, 1])
+            plt.axis('off')
+            plt.text(0.05, 0.5, symbolic, ha='left', va='center', size=15)
+            plt.tight_layout()
+            from src.config import _setting
+            plt.show(block=_setting['block'])
+            return fig
 
     def __iter__(self):
         """iter"""
@@ -285,15 +289,19 @@ class LinearSystem(Frozen):
 
     def pr(self, figsize=(12, 6)):
         """pr"""
-        symbolic = r"$" + self._pr_text() + r"$"
-        fig = plt.figure(figsize=figsize)
-        plt.axis([0, 1, 0, 1])
-        plt.axis('off')
-        plt.text(0.05, 0.5, symbolic, ha='left', va='center', size=15)
-        plt.tight_layout()
-        from src.config import _setting
-        plt.show(block=_setting['block'])
-        return fig
+        from src.config import RANK, MASTER_RANK
+        if RANK != MASTER_RANK:
+            return
+        else:
+            symbolic = r"$" + self._pr_text() + r"$"
+            fig = plt.figure(figsize=figsize)
+            plt.axis([0, 1, 0, 1])
+            plt.axis('off')
+            plt.text(0.05, 0.5, symbolic, ha='left', va='center', size=15)
+            plt.tight_layout()
+            from src.config import _setting
+            plt.show(block=_setting['block'])
+            return fig
 
     @property
     def A(self):

@@ -124,7 +124,8 @@ def div_grad_2d_periodic_manufactured_test(degree, K, c=0):
     ls0 = ls(0)
     ls0.customize.set_dof(-1, phi[0].cochain.of_dof(-1))
     als = ls0.assemble()
-    als.solve()
+    x = als.solve()[0]
+    ls0.x.update(x)
 
     phi_error = phi[0].error()
     u_error = u[0].error()

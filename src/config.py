@@ -69,18 +69,23 @@ def _pr_cache(fig, filename=None):
     -------
 
     """
-    from time import time
     from tools.os_ import mkdir, empty_dir, isdir
-    from tools.miscellaneous.random_ import string_digits
-    import matplotlib.pyplot as plt
-    import matplotlib
-    matplotlib.use('TkAgg')
-
     phcache_folder = _setting[r'cache_folder']
     if isdir(phcache_folder):
         pass
     else:
         mkdir(phcache_folder)
+
+    if RANK != MASTER_RANK:
+        return
+    else:
+        pass
+
+    from time import time
+    from tools.miscellaneous.random_ import string_digits
+    import matplotlib.pyplot as plt
+    import matplotlib
+    matplotlib.use('TkAgg')
 
     if filename is None:
         filename_personal = rf'/{_setting["pr_cache_counter"]}.png'
@@ -133,25 +138,29 @@ def _clear_pr_cache():
     else:
         mkdir(phcache_folder)
     all_ph_cache_files = listdir(phcache_folder)  # including folder names.
-    pr_prefix = _setting['pr_cache_folder_prefix']
-    current_file = _setting["pr_cache_folder_prefix"] + _setting["pr_cache_current_folder"]
-    len_prefix = len(pr_prefix)
-    number_pr_files = 0  # excluding the current file
-    pr_files = list()  # excluding the current file
-    for cache_file in all_ph_cache_files:
-        if cache_file[:len_prefix] == pr_prefix and cache_file != current_file:
-            number_pr_files += 1
-            pr_files.append(cache_file)
+
+    if RANK == MASTER_RANK:
+        pr_prefix = _setting['pr_cache_folder_prefix']
+        current_file = _setting["pr_cache_folder_prefix"] + _setting["pr_cache_current_folder"]
+        len_prefix = len(pr_prefix)
+        number_pr_files = 0  # excluding the current file
+        pr_files = list()  # excluding the current file
+        for cache_file in all_ph_cache_files:
+            if cache_file[:len_prefix] == pr_prefix and cache_file != current_file:
+                number_pr_files += 1
+                pr_files.append(cache_file)
+            else:
+                pass
+        pr_cache_maximum = _setting["pr_cache_maximum"]
+        assert pr_cache_maximum > 1 and pr_cache_maximum % 1 == 0, \
+            f"_setting['pr_cache_maximum'] = {pr_cache_maximum} is illegal, give me a positive integer (>1)."
+        if number_pr_files >= 2 * pr_cache_maximum:
+            files_2b_clean = pr_files[:pr_cache_maximum + 1]
+            for file in files_2b_clean:
+                empty_dir(phcache_folder + r"/" + file)
+                rmdir(phcache_folder + r"/" + file)
         else:
             pass
-    pr_cache_maximum = _setting["pr_cache_maximum"]
-    assert pr_cache_maximum > 1 and pr_cache_maximum % 1 == 0, \
-        f"_setting['pr_cache_maximum'] = {pr_cache_maximum} is illegal, give me a positive integer (>1)."
-    if number_pr_files >= 2 * pr_cache_maximum:
-        files_2b_clean = pr_files[:pr_cache_maximum + 1]
-        for file in files_2b_clean:
-            empty_dir(phcache_folder + r"/" + file)
-            rmdir(phcache_folder + r"/" + file)
     else:
         pass
 

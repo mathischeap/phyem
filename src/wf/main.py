@@ -357,6 +357,12 @@ class WeakFormulation(Frozen):
 
     def _pr_pattern(self, indexing=True):
         """"""
+        from src.config import RANK, MASTER_RANK
+        if RANK != MASTER_RANK:
+            return
+        else:
+            pass
+
         pattern_text = ''
 
         for i in self._term_dict:
@@ -586,6 +592,12 @@ class WeakFormulation(Frozen):
 
     def _pr_temporal_advancing(self, ts, time_instant_hierarchy):
         """This method should be called from somewhere else."""
+        from src.config import RANK, MASTER_RANK
+        if RANK != MASTER_RANK:
+            return
+        else:
+            pass
+
         elementary_forms = self.elementary_forms
         assert self.unknowns is not None, f"set unknowns before plotting temporal advancing."
         known_forms = list()

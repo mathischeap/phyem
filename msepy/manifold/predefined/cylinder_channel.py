@@ -5,7 +5,7 @@ r"""
     import __init__ as ph
     from msepy.manifold.predefined.cylinder_channel import _make_an_illustration
     _make_an_illustration(
-        './source/gallery/msepy_domains_and_meshes/msepy/cylinder_channel_2d.png'
+        './source/gallery/msepy_domains_and_meshes/msepy/_2d_cylinder_channel.png'
     )
 
 .. testcleanup::
@@ -15,7 +15,7 @@ r"""
 The cylinder channel is a mesh (or domain) in :math:`\mathbb{R}^n`, :math:`n\in\left\lbrace2,3\right\rbrace`.
 The 2d domain is illustrated in the following figure.
 
-.. figure:: cylinder_channel_2d.png
+.. figure:: _2d_cylinder_channel.png
     :height: 200
 
     The illustration of the 2d cylinder channel domain.

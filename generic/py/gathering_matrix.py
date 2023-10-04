@@ -21,8 +21,10 @@ class PyGM(Frozen):
 
             if gm.__class__ is PyGM:
                 gm = gm._gm
+                gms = gms
             else:
                 assert isinstance(gm, dict), f"put gm in dict."
+                gm = gm
                 gms = [self, ]
 
         else:
@@ -90,14 +92,15 @@ class PyGM(Frozen):
                 _global_cgm_cache['cgm'] = cgm
 
             gm = cgm
-
+            gms = gms
+        # ---------------------------------------------------------------------------------------
         assert isinstance(gm, dict), f"put raw gathering matrix in a dictionary. {gm.__class__}"
         for gmi in gms:
             assert gmi.__class__ is PyGM, f"must be"
         for i in gm:
             assert isinstance(gm[i], np.ndarray) and np.ndim(gm[i]) == 1, \
                 f"numbering of element #{i} must be a 1d ndarray."
-
+        # ---------------------------------------------------------------------------------------
         self._gm = gm
         self._gms = gms
         self._num_dofs = None

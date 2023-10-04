@@ -1,7 +1,5 @@
 # -*- coding: utf-8 -*-
-"""
-pH-lib@RAM-EEMCS-UT
-created at: 2/16/2023 12:16 PM
+r"""
 """
 
 from abc import ABC

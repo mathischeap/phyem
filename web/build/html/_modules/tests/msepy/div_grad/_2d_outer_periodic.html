@@ -486,7 +486,8 @@ document.write(`
     <span class="n">ls0</span> <span class="o">=</span> <span class="n">ls</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
     <span class="n">ls0</span><span class="o">.</span><span class="n">customize</span><span class="o">.</span><span class="n">set_dof</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="n">phi</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">cochain</span><span class="o">.</span><span class="n">of_dof</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">))</span>
     <span class="n">als</span> <span class="o">=</span> <span class="n">ls0</span><span class="o">.</span><span class="n">assemble</span><span class="p">()</span>
-    <span class="n">als</span><span class="o">.</span><span class="n">solve</span><span class="p">()</span>
+    <span class="n">x</span> <span class="o">=</span> <span class="n">als</span><span class="o">.</span><span class="n">solve</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="n">ls0</span><span class="o">.</span><span class="n">x</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
 
     <span class="n">phi_error</span> <span class="o">=</span> <span class="n">phi</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">error</span><span class="p">()</span>
     <span class="n">u_error</span> <span class="o">=</span> <span class="n">u</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">error</span><span class="p">()</span>
@@ -555,7 +556,7 @@ By Andrea Brugnoli, Ramy Rashad, Stefano Stramigioli, Yi Zhang
   <div class="footer-item">
     
 <div class="extra_footer">
-  <div>Last updated on October 04, 2023, 12:51:09, W. Europe Daylight Time</div>
+  <div>Last updated on October 04, 2023, 13:08:59, W. Europe Daylight Time</div>
 </div>
   </div>
   

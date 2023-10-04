@@ -72,30 +72,3 @@ class _Bmat(Frozen):
         return sp_bmat(
             data, format='csr'
         )
-
-    def cache_key(self, i):
-        """Do this in real time."""
-        row_shape, col_shape = self._shape
-        keys = list()
-        for r in range(row_shape):
-            for c in range(col_shape):
-                Arc = self._A[r][c]
-
-                if Arc is None:
-                    pass
-                else:
-                    if i in Arc.customize:  # important! do not use adjust!
-                        return 'unique'
-                    else:
-                        key = Arc._cache_key(i)
-                        if key == 'unique':
-                            return 'unique'
-                        else:
-                            keys.append(
-                                key
-                            )
-
-        if all([_ == 'constant' for _ in keys]):
-            return 'constant'
-        else:
-            return ''.join(keys)

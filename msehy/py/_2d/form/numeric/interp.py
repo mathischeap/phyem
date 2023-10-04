@@ -19,7 +19,7 @@ class MseHyPy2FormNumericInterp(Frozen):
         self._target = target
         self._freeze()
 
-    def __call__(self, method='linear', density=20):
+    def __call__(self, method='linear', density=50):
         """"""
         nodes = Quadrature(density, category='Gauss').quad_nodes
         if self._target == 'generic':
@@ -87,7 +87,7 @@ class MseHyPy2FormNumericInterp(Frozen):
                     list(zip(X[region], Y[region])), V[region][j]
                 )
 
-        r = s = np.linspace(0, 1, 2*density)
+        r = s = np.linspace(0, 1, density)
         r, s = np.meshgrid(r, s, indexing='ij')
         r = r.ravel('F')
         s = s.ravel('F')

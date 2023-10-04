@@ -28,8 +28,6 @@ def config(mesh, manifold, element_layout):
     assert mesh.elements._map is not None, \
         f"we should have set elements._map"
 
-    return 0
-
 
 class MsePyMesh(Frozen):
     """"""

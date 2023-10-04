@@ -204,7 +204,8 @@ def canonical_linear_pH_3d_periodic_manufactured_test(degree, K, num_steps):
         """
         static_ls = ls(k=k)
         als = static_ls.assemble()
-        als.solve()
+        x = als.solve()[0]
+        static_ls.x.update(x)
         a3_L2_error = a3.error(None)
         b2_L2_error = b2.error(None)
 

@@ -1,8 +1,5 @@
 # -*- coding: utf-8 -*-
-"""
-pH-lib@RAM-EEMCS-UT
-Yi Zhang
-Created at 5:17 PM on 7/30/2023
+r"""
 """
 from src.config import SIZE, RANK, MASTER_RANK, COMM
 import os
@@ -36,7 +33,6 @@ def isdir(filename):
             ToF = None
 
         return COMM.bcast(ToF, root=MASTER_RANK)
-
 
 
 def mkdir(folder_name):

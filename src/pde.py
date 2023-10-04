@@ -204,6 +204,13 @@ class PartialDifferentialEquations(Frozen):
 
     def _pr_vc(self, figsize=(8, 6), title=None):
         """We print the pde but change all exterior derivatives to corresponding vector calculus operators."""
+
+        from src.config import RANK, MASTER_RANK
+        if RANK != MASTER_RANK:
+            return
+        else:
+            pass
+
         from src.spaces.operators import _d_to_vc, _d_ast_to_vc
         from src.config import _global_operator_sym_repr_setting
         from src.config import _global_operator_lin_repr_setting

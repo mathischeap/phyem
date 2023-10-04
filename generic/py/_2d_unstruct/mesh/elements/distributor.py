@@ -12,4 +12,4 @@ def distributor(element_type, element_coordinates):
     elif element_type == 'regular quadrilateral':
         return RegularQuadrilateral(element_coordinates)
     else:
-        raise Exception()
+        raise Exception(f"element_type = {element_type} is not implemented.")

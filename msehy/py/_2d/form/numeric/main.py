@@ -14,7 +14,7 @@ class MseHyPy2RootFormNumeric(Frozen):
         self._f = f
         self._freeze()
 
-    def region_wise_reconstruct(self, t, r, s, target='generic', method='linear'):
+    def region_wise_reconstruct(self, t, r, s, target='generic', method='linear', density=50):
         """
 
         Parameters
@@ -26,12 +26,14 @@ class MseHyPy2RootFormNumeric(Frozen):
             2d array, all entries in [0, 1] since the interpolation is mesh-region-wise.
         target
         method
+        density
 
         Returns
         -------
 
         """
-        interp = MseHyPy2FormNumericInterp(self._f, t, target)(method)   # mesh-region-wise interp functions.
+        interp = MseHyPy2FormNumericInterp(self._f, t, target)(method, density=density)
+        # mesh-region-wise interp functions.
 
         if not isinstance(r, np.ndarray):
             r = np.array(r)
@@ -128,7 +130,7 @@ class MseHyPy2RootFormNumeric(Frozen):
         dds = dds1 - dds2   # 1 - 2
         dds.visualize(magnitude=True)
 
-    def quick_visualize(self, t=None, density=100, saveto=None, **kwargs):
+    def quick_visualize(self, t=None, density=50, saveto=None, **kwargs):
         """A quick visualization of generic cochain @ time t"""
         if t is None:
             t = self._f.generic.cochain.newest
@@ -138,5 +140,5 @@ class MseHyPy2RootFormNumeric(Frozen):
         r = np.linspace(0, 1, density)
         s = np.linspace(0, 1, density)
         r, s = np.meshgrid(r, s, indexing='ij')
-        dds1 = self.region_wise_reconstruct(t, r, s, target='generic')
+        dds1 = self.region_wise_reconstruct(t, r, s, target='generic', density=density)
         dds1.visualize(saveto=saveto, **kwargs)

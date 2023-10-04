@@ -70,8 +70,6 @@ def config(mf, arg, *args, **kwargs):
 
     assert mf.regions is not None, f"we need to set regions for the manifold by this `config` function."
 
-    return 0
-
 
 class MsePyManifold(Frozen):
     """"""
