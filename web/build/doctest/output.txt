@@ -1,4 +1,4 @@
-Results of doctest builder run on 2023-08-19 00:02:46
+Results of doctest builder run on 2023-10-04 13:04:31
 =====================================================
 
 Document: gallery/MHD/Orszag_Tang_vortex/index
@@ -7,19 +7,6 @@ Document: gallery/MHD/Orszag_Tang_vortex/index
    2 tests in default
 2 tests in 1 items.
 2 passed and 0 failed.
-Test passed.
-1 items passed all tests:
-   1 tests in default (cleanup code)
-1 tests in 1 items.
-1 passed and 0 failed.
-Test passed.
-
-Document: gallery/msepy_domains_and_meshes/msepy/crazy
-------------------------------------------------------
-1 items passed all tests:
-  18 tests in default
-18 tests in 1 items.
-18 passed and 0 failed.
 Test passed.
 1 items passed all tests:
    1 tests in default (cleanup code)
@@ -40,39 +27,42 @@ Test passed.
 1 passed and 0 failed.
 Test passed.
 
-Document: gallery/msepy_domains_and_meshes/msepy/backward_step
---------------------------------------------------------------
-1 items passed all tests:
-  18 tests in default
+Document: gallery/msepy_domains_and_meshes/msepy/crazy
+------------------------------------------------------
+**********************************************************************
+File "..\..\msepy\manifold\predefined\crazy.py", line ?, in default
+Failed example:
+    msepy.config(manifold)('crazy', c=0.15, periodic=False, bounds=[[-1, 1], [0, 2], [0, 2]])
+Expected nothing
+Got:
+    0
+**********************************************************************
+File "..\..\msepy\manifold\predefined\crazy.py", line ?, in default
+Failed example:
+    msepy.config(mesh)([5, 5, 5])
+Expected nothing
+Got:
+    0
+**********************************************************************
+File "..\..\msepy\manifold\predefined\crazy.py", line ?, in default
+Failed example:
+    msepy.config(manifold)('crazy', c=0.3, periodic=False, bounds=[[-1, 1], [0, 2]])
+Expected nothing
+Got:
+    0
+**********************************************************************
+File "..\..\msepy\manifold\predefined\crazy.py", line ?, in default
+Failed example:
+    msepy.config(mesh)([7, 7])
+Expected nothing
+Got:
+    0
+**********************************************************************
+1 items had failures:
+   4 of  18 in default
 18 tests in 1 items.
-18 passed and 0 failed.
-Test passed.
-1 items passed all tests:
-   1 tests in default (cleanup code)
-1 tests in 1 items.
-1 passed and 0 failed.
-Test passed.
-
-Document: gallery/canonical_linear_port_Hamiltonian/index
----------------------------------------------------------
-1 items passed all tests:
-   2 tests in default
-2 tests in 1 items.
-2 passed and 0 failed.
-Test passed.
-1 items passed all tests:
-   1 tests in default (cleanup code)
-1 tests in 1 items.
-1 passed and 0 failed.
-Test passed.
-
-Document: gallery/msepy_domains_and_meshes/msepy/crazy_multi
-------------------------------------------------------------
-1 items passed all tests:
-   9 tests in default
-9 tests in 1 items.
-9 passed and 0 failed.
-Test passed.
+14 passed and 4 failed.
+***Test Failed*** 4 failures.
 1 items passed all tests:
    1 tests in default (cleanup code)
 1 tests in 1 items.
@@ -81,11 +71,188 @@ Test passed.
 
 Document: gallery/div_grad/index
 --------------------------------
-1 items passed all tests:
-   6 tests in default
+**********************************************************************
+File "..\..\tests\msepy\div_grad\_2d_outer_periodic.py", line ?, in default
+Failed example:
+    errors4 = div_grad_2d_periodic_manufactured_test(2, 4)
+Exception raised:
+    Traceback (most recent call last):
+      File "C:\Programs\Python\Python311\Lib\doctest.py", line 1351, in __run
+        exec(compile(example.source, filename, "single",
+      File "<doctest default[0]>", line 1, in <module>
+        errors4 = div_grad_2d_periodic_manufactured_test(2, 4)
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+      File "C:\Users\zhangy6\OneDrive\Codes\phyem\tests\msepy\div_grad\_2d_outer_periodic.py", line 130, in div_grad_2d_periodic_manufactured_test
+        u_error = u[0].error()
+                  ^^^^^^^^^^^^
+      File "C:\Users\zhangy6\OneDrive\Codes\phyem\msepy\form\static.py", line 63, in error
+        return self._f.error(self._t, **kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+      File "C:\Users\zhangy6\OneDrive\Codes\phyem\msepy\form\main.py", line 332, in error
+        local_cochain = self.cochain[t].local
+                        ~~~~~~~~~~~~^^^
+      File "C:\Users\zhangy6\OneDrive\Codes\phyem\msepy\form\cochain\main.py", line 116, in __getitem__
+        assert t in self._tcd, f"t={t} is not in cochain of form {self._f}."
+               ^^^^^^^^^^^^^^
+    AssertionError: t=0 is not in cochain of form <MsePy Form u^1 at 0x000002368A39BBD0>.
+**********************************************************************
+File "..\..\tests\msepy\div_grad\_2d_outer_periodic.py", line ?, in default
+Failed example:
+    errors4[0]  # doctest: +ELLIPSIS
+Exception raised:
+    Traceback (most recent call last):
+      File "C:\Programs\Python\Python311\Lib\doctest.py", line 1351, in __run
+        exec(compile(example.source, filename, "single",
+      File "<doctest default[1]>", line 1, in <module>
+        errors4[0]  # doctest: +ELLIPSIS
+        ^^^^^^^
+    NameError: name 'errors4' is not defined
+**********************************************************************
+File "..\..\tests\msepy\div_grad\_2d_outer_periodic.py", line ?, in default
+Failed example:
+    errors8 = div_grad_2d_periodic_manufactured_test(2, 8)
+Exception raised:
+    Traceback (most recent call last):
+      File "C:\Programs\Python\Python311\Lib\doctest.py", line 1351, in __run
+        exec(compile(example.source, filename, "single",
+      File "<doctest default[0]>", line 1, in <module>
+        errors8 = div_grad_2d_periodic_manufactured_test(2, 8)
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+      File "C:\Users\zhangy6\OneDrive\Codes\phyem\tests\msepy\div_grad\_2d_outer_periodic.py", line 130, in div_grad_2d_periodic_manufactured_test
+        u_error = u[0].error()
+                  ^^^^^^^^^^^^
+      File "C:\Users\zhangy6\OneDrive\Codes\phyem\msepy\form\static.py", line 63, in error
+        return self._f.error(self._t, **kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+      File "C:\Users\zhangy6\OneDrive\Codes\phyem\msepy\form\main.py", line 332, in error
+        local_cochain = self.cochain[t].local
+                        ~~~~~~~~~~~~^^^
+      File "C:\Users\zhangy6\OneDrive\Codes\phyem\msepy\form\cochain\main.py", line 116, in __getitem__
+        assert t in self._tcd, f"t={t} is not in cochain of form {self._f}."
+               ^^^^^^^^^^^^^^
+    AssertionError: t=0 is not in cochain of form <MsePy Form u^1 at 0x000002368DBD0210>.
+**********************************************************************
+File "..\..\tests\msepy\div_grad\_2d_outer_periodic.py", line ?, in default
+Failed example:
+    rate = (np.log10(errors4[0]) - np.log10(errors8[0])) / (np.log10(1/4) - np.log10(1/8))
+Exception raised:
+    Traceback (most recent call last):
+      File "C:\Programs\Python\Python311\Lib\doctest.py", line 1351, in __run
+        exec(compile(example.source, filename, "single",
+      File "<doctest default[1]>", line 1, in <module>
+        rate = (np.log10(errors4[0]) - np.log10(errors8[0])) / (np.log10(1/4) - np.log10(1/8))
+                         ^^^^^^^
+    NameError: name 'errors4' is not defined
+**********************************************************************
+File "..\..\tests\msepy\div_grad\_2d_outer_periodic.py", line ?, in default
+Failed example:
+    round(rate, 1)
+Exception raised:
+    Traceback (most recent call last):
+      File "C:\Programs\Python\Python311\Lib\doctest.py", line 1351, in __run
+        exec(compile(example.source, filename, "single",
+      File "<doctest default[2]>", line 1, in <module>
+        round(rate, 1)
+              ^^^^
+    NameError: name 'rate' is not defined
+**********************************************************************
+1 items had failures:
+   5 of   6 in default
 6 tests in 1 items.
-6 passed and 0 failed.
+1 passed and 5 failed.
+***Test Failed*** 5 failures.
+1 items passed all tests:
+   1 tests in default (cleanup code)
+1 tests in 1 items.
+1 passed and 0 failed.
 Test passed.
+
+Document: gallery/canonical_linear_port_Hamiltonian/index
+---------------------------------------------------------
+**********************************************************************
+File "..\..\tests\msepy\canonical_linear_pH\_3d.py", line ?, in default
+Failed example:
+    errors1[0]  # doctest: +ELLIPSIS
+Expected:
+    5.2...
+Got:
+    6.346180091446033
+**********************************************************************
+1 items had failures:
+   1 of   2 in default
+2 tests in 1 items.
+1 passed and 1 failed.
+***Test Failed*** 1 failures.
+1 items passed all tests:
+   1 tests in default (cleanup code)
+1 tests in 1 items.
+1 passed and 0 failed.
+Test passed.
+
+Document: gallery/msepy_domains_and_meshes/msepy/backward_step
+--------------------------------------------------------------
+**********************************************************************
+File "..\..\msepy\manifold\predefined\backward_step.py", line ?, in default
+Failed example:
+    msepy.config(manifold)('backward_step')
+Expected nothing
+Got:
+    0
+**********************************************************************
+File "..\..\msepy\manifold\predefined\backward_step.py", line ?, in default
+Failed example:
+    msepy.config(mesh)([5, 5, 5])
+Expected nothing
+Got:
+    0
+**********************************************************************
+File "..\..\msepy\manifold\predefined\backward_step.py", line ?, in default
+Failed example:
+    msepy.config(manifold)('backward_step')
+Expected nothing
+Got:
+    0
+**********************************************************************
+File "..\..\msepy\manifold\predefined\backward_step.py", line ?, in default
+Failed example:
+    msepy.config(mesh)([24, 6])
+Expected nothing
+Got:
+    0
+**********************************************************************
+1 items had failures:
+   4 of  18 in default
+18 tests in 1 items.
+14 passed and 4 failed.
+***Test Failed*** 4 failures.
+1 items passed all tests:
+   1 tests in default (cleanup code)
+1 tests in 1 items.
+1 passed and 0 failed.
+Test passed.
+
+Document: gallery/msepy_domains_and_meshes/msepy/crazy_multi
+------------------------------------------------------------
+**********************************************************************
+File "..\..\msepy\manifold\predefined\crazy_multi.py", line ?, in default
+Failed example:
+    msepy.config(manifold)('crazy_multi', c=0.3, periodic=False, Ns=[2, 3], bounds=[[-1, 1], [0, 2]])
+Expected nothing
+Got:
+    0
+**********************************************************************
+File "..\..\msepy\manifold\predefined\crazy_multi.py", line ?, in default
+Failed example:
+    msepy.config(mesh)([5, 3])
+Expected nothing
+Got:
+    0
+**********************************************************************
+1 items had failures:
+   2 of   9 in default
+9 tests in 1 items.
+7 passed and 2 failed.
+***Test Failed*** 2 failures.
 1 items passed all tests:
    1 tests in default (cleanup code)
 1 tests in 1 items.
@@ -95,6 +262,6 @@ Test passed.
 Doctest summary
 ===============
    58 tests
-    0 failures in tests
+   16 failures in tests
     0 failures in setup code
     0 failures in cleanup code
