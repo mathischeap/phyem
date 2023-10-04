@@ -313,14 +313,16 @@ def TGV2(N, K, steps):
             i=0, j=0, k=2, value=Po[None].cochain.local[0, 0]
         )
         As_lso = s_lso.assemble()
-        As_lso.solve()
+        results = As_lso.solve()
+        s_lso.x.update(results[0])
 
         s_lsi = lsi(k=k)
         s_lsi.customize.set_local_dof_ij_of_unknown_k_to_value(
             i=0, j=0, k=2, value=Pi[None].cochain.local[0, 0]
         )
         As_lsi = s_lsi.assemble()
-        As_lsi.solve()
+        results = As_lsi.solve()
+        s_lsi.x.update(results[0])
 
         ui_L2_error = ui[None].error()
         uo_L2_error = uo[None].error()

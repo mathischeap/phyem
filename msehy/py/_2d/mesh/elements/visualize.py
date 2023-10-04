@@ -63,7 +63,7 @@ class MseHyPy2MeshElementsVisualize(Frozen):
         return data_dict
 
     def __call__(
-            self, title=None, density=20,
+            self, title=None, density=50,
             sampling_factor=1, saveto=None, dpi=200,
             color='gray',
             show_refining_strength_distribution=True, colormap='bwr',
@@ -154,10 +154,18 @@ class MseHyPy2MeshElementsVisualize(Frozen):
             lines = element._plot_lines(density)
             if element.type == 'q':
                 for line in lines:
-                    plt.plot(*line, linewidth=0.5, color='lightgray')
+                    plt.plot(*line, linewidth=0.35, color='lightgray')
+            else:
+                pass
+
+        for index in body:
+            element = body[index]
+            lines = element._plot_lines(density)
+            if element.type == 'q':
+                pass
             else:
                 for line in lines:
-                    plt.plot(*line, linewidth=0.25, color='k')
+                    plt.plot(*line, linewidth=0.35, color='k')
 
         if title is None:
             sym_repr = self._elements.background.abstract._sym_repr

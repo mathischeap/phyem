@@ -18,6 +18,8 @@ __all__ = [
     "ConditionsLidDrivenCavity2",
 
     "ManufacturedSolutionNS3Conservation1",
+
+    "ManufacturedSolutionLSingularity",
 ]
 
 from tests.samples.canonical_pH_pde import pde_canonical_pH
@@ -32,3 +34,5 @@ from tests.samples.manuSolution_MHD2 import ManufacturedSolutionMHD2Ideal1
 from tests.samples.manuSolution_NS2 import ManufacturedSolutionNS2TGV
 
 from tests.samples.manuSolution_NS3 import ManufacturedSolutionNS3Conservation1
+
+from tests.samples.manuSolution_L_singularity import ManufacturedSolutionLSingularity

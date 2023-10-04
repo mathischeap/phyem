@@ -2,9 +2,6 @@
 r"""
 .. testsetup:: *
 
-    None_or_custom_path_2 = './source/gallery/msepy_domains_and_meshes/msepy/backward_step2.png'
-    None_or_custom_path_3 = './source/gallery/msepy_domains_and_meshes/msepy/backward_step3.png'
-
     import __init__ as ph
     from msepy.manifold.predefined.cylinder_channel import _make_an_illustration
     _make_an_illustration(
@@ -15,13 +12,13 @@ r"""
 
     pass
 
-The backward step is a mesh (or domain) in :math:`\mathbb{R}^n`, :math:`n\in\left\lbrace2,3\right\rbrace`. The domain is
-illustrated in the following figure.
+The cylinder channel is a mesh (or domain) in :math:`\mathbb{R}^n`, :math:`n\in\left\lbrace2,3\right\rbrace`.
+The 2d domain is illustrated in the following figure.
 
 .. figure:: cylinder_channel.png
     :height: 180
 
-    The illustration of the cylinder channel domain.
+    The illustration of the 2d cylinder channel domain.
 
 
 .. autofunction:: msepy.manifold.predefined.cylinder_channel.cylinder_channel

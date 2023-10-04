@@ -69,7 +69,7 @@ class MseHyPy2RootFormNumeric(Frozen):
 
         return DDSRegionWiseStructured([Xd, Yd], results)
 
-    def region_wise_interp(self, t=None, density=30, saveto=None, method='linear'):
+    def region_wise_interp(self, t=None, density=50, saveto=None, method='linear'):
         """Reconstruct the form at time `time` and use the reconstruction results to make interpolation functions
         in each region.
 

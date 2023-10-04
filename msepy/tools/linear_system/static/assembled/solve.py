@@ -102,16 +102,12 @@ class MsePyStaticLinearSystemAssembledSolve(Frozen):
         """store the info of the last solver."""
         return self._info
 
-    def __call__(self, update_x=True, **kwargs):
+    def __call__(self, **kwargs):
         """"""
         assert hasattr(self, f"_package_{self.package}"), f"I have no solver package: {self.package}."
         _package = getattr(self, f"_package_{self.package}")
         assert hasattr(_package, self.scheme), f"package {self.package} has no scheme: {self.scheme}"
         results = getattr(_package, self.scheme)(self._A, self._b, **kwargs)
-        if update_x:
-            self._als._static.x.update(results[0])
-        else:
-            pass
         self._message = results[1]
         self._info = results[2]
         return results

@@ -65,7 +65,8 @@ als = ls0.assemble()
 
 # als.solve.package = 'mkl'
 # als.solve.scheme = 'qr'
-als.solve()
+results = als.solve()
+ls0.x.update(results[0])
 
 # phi[0].visualize()
 # u[0].visualize()

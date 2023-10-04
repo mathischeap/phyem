@@ -129,7 +129,8 @@ def codifferential_test(n, k, orientation):
 
     ls0 = ls(0)
     als = ls0.assemble()
-    als.solve()
+    results = als.solve()
+    ls0.x.update(results[0])
 
     ph.config.set_high_accuracy(True)
     return u[0].error()

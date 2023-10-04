@@ -8,6 +8,9 @@ import numpy as np
 from scipy.sparse import csr_matrix, bmat
 from generic.py.matrix.localize.static import Localize_Static_Matrix
 
+_global_cache_0_ = {}
+_global_cache_2_ = {}
+
 
 class MassMatrixLambda(Frozen):
     """"""
@@ -47,12 +50,11 @@ class MassMatrixLambda(Frozen):
         xi_et, BF = self._space.basis_functions(degree, *quad_nodes)
         detJM = self._space.mesh.ct.Jacobian(*xi_et)
         M = dict()
-        cache = {}
         for index in detJM:  # go through all reference elements
             element = self._mesh[index]
             metric_signature = element.metric_signature
-            if metric_signature in cache:
-                M[index] = cache[metric_signature]
+            if metric_signature in _global_cache_0_:
+                M[index] = _global_cache_0_[metric_signature]
             else:
                 det_jm = detJM[index]
                 bf = BF[index][0]
@@ -62,7 +64,7 @@ class MassMatrixLambda(Frozen):
                     optimize='optimal',
                             )
                 m = csr_matrix(M_re)
-                cache[metric_signature] = m
+                _global_cache_0_[metric_signature] = m
                 M[index] = m
         return M
 
@@ -75,12 +77,11 @@ class MassMatrixLambda(Frozen):
         xi_et, BF = self._space.basis_functions(degree, *quad_nodes)
         detJM = self._space.mesh.ct.Jacobian(*xi_et)
         M = dict()
-        cache = dict()
         for index in detJM:  # go through all reference elements
             element = self._mesh[index]
             metric_signature = element.metric_signature
-            if metric_signature in cache:
-                M[index] = cache[metric_signature]
+            if metric_signature in _global_cache_2_:
+                M[index] = _global_cache_2_[metric_signature]
             else:
                 det_jm = np.reciprocal(detJM[index])
                 bf = BF[index][0]
@@ -90,7 +91,7 @@ class MassMatrixLambda(Frozen):
                     optimize='optimal',
                 )
                 m = csr_matrix(M_re)
-                cache[metric_signature] = m
+                _global_cache_2_[metric_signature] = m
                 M[index] = m
 
         return M

@@ -1,5 +1,4 @@
 
-
 <!DOCTYPE html>
 
 
@@ -28,19 +27,19 @@
 <link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../_static/vendor/fontawesome/6.1.2/webfonts/fa-brands-400.woff2" />
 <link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../_static/vendor/fontawesome/6.1.2/webfonts/fa-regular-400.woff2" />
 
-    <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css?v=362ab14a" />
     <link rel="stylesheet" href="../../../../_static/styles/sphinx-book-theme.css?digest=14f4ca6b54d191a8c7657f6c759bf11a5fb86285" type="text/css" />
-    <link rel="stylesheet" type="text/css" href="../../../../_static/copybutton.css" />
+    <link rel="stylesheet" type="text/css" href="../../../../_static/copybutton.css?v=76b2166b" />
   
   <!-- Pre-loaded scripts that we'll load fully later -->
   <link rel="preload" as="script" href="../../../../_static/scripts/bootstrap.js?digest=e353d410970836974a52" />
 <link rel="preload" as="script" href="../../../../_static/scripts/pydata-sphinx-theme.js?digest=e353d410970836974a52" />
 
-    <script data-url_root="../../../../" id="documentation_options" src="../../../../_static/documentation_options.js"></script>
-    <script src="../../../../_static/doctools.js"></script>
-    <script src="../../../../_static/sphinx_highlight.js"></script>
-    <script src="../../../../_static/clipboard.min.js"></script>
-    <script src="../../../../_static/copybutton.js"></script>
+    <script data-url_root="../../../../" id="documentation_options" src="../../../../_static/documentation_options.js?v=dc820ae5"></script>
+    <script src="../../../../_static/doctools.js?v=888ff710"></script>
+    <script src="../../../../_static/sphinx_highlight.js?v=4825356b"></script>
+    <script src="../../../../_static/clipboard.min.js?v=a7894cd8"></script>
+    <script src="../../../../_static/copybutton.js?v=f281be69"></script>
     <script src="../../../../_static/scripts/sphinx-book-theme.js?digest=5a5c038af52cf7bc1a1ec88eea08e6366ee68824"></script>
     <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
     <script>DOCUMENTATION_OPTIONS.pagename = '_modules/msepy/manifold/predefined/backward_step';</script>
@@ -451,7 +450,7 @@ document.write(`
 
 
 <span class="k">def</span> <span class="nf">_make_an_illustration</span><span class="p">(</span><span class="n">saveto</span><span class="p">,</span> <span class="n">x1</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">x2</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">y1</span><span class="o">=</span><span class="mf">0.25</span><span class="p">,</span> <span class="n">y2</span><span class="o">=</span><span class="mf">0.25</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;&quot;&quot;&quot;</span>
     <span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">8</span><span class="p">,</span> <span class="mi">6</span><span class="p">))</span>
     <span class="n">ax</span><span class="o">.</span><span class="n">set_aspect</span><span class="p">(</span><span class="s1">&#39;equal&#39;</span><span class="p">)</span>
     <span class="n">ax</span><span class="o">.</span><span class="n">spines</span><span class="p">[</span><span class="s1">&#39;top&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">set_visible</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span>
@@ -482,7 +481,7 @@ document.write(`
 
 
 <div class="viewcode-block" id="backward_step"><a class="viewcode-back" href="../../../../gallery/msepy_domains_and_meshes/msepy/backward_step.html#msepy.manifold.predefined.backward_step.backward_step">[docs]</a><span class="k">def</span> <span class="nf">backward_step</span><span class="p">(</span><span class="n">x1</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">x2</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">y1</span><span class="o">=</span><span class="mf">0.25</span><span class="p">,</span> <span class="n">y2</span><span class="o">=</span><span class="mf">0.25</span><span class="p">,</span> <span class="n">z</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">periodic</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
@@ -504,8 +503,8 @@ document.write(`
     <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="n">x1</span><span class="p">,</span> <span class="n">x2</span><span class="p">,</span> <span class="n">y1</span><span class="p">,</span> <span class="n">y2</span><span class="p">,</span> <span class="n">z</span><span class="p">,</span> <span class="n">periodic</span><span class="p">)</span></div>
 
 
-<span class="k">def</span> <span class="nf">_backward_step</span><span class="p">(</span><span class="n">mf</span><span class="p">,</span> <span class="n">x1</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">x2</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">y1</span><span class="o">=</span><span class="mf">0.25</span><span class="p">,</span> <span class="n">y2</span><span class="o">=</span><span class="mf">0.25</span><span class="p">,</span> <span class="n">z</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">periodic</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
+<span class="k">def</span> <span class="nf">_backward_step</span><span class="p">(</span><span class="n">mf</span><span class="p">,</span> <span class="n">x1</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">x2</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">y1</span><span class="o">=</span><span class="mf">0.25</span><span class="p">,</span> <span class="n">y2</span><span class="o">=</span><span class="mf">0.25</span><span class="p">,</span> <span class="n">z</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">x0</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">y0</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">periodic</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    ^ y</span>
 <span class="sd">    |</span>
 <span class="sd">    |              x1                      x2</span>
@@ -519,7 +518,7 @@ document.write(`
 <span class="sd">    |                     |                           |</span>
 <span class="sd">    |                     |           r0              |    y1</span>
 <span class="sd">    |                     |                           |</span>
-<span class="sd">    | (0,0)               |___________________________|</span>
+<span class="sd">    | (x0,y0)             |___________________________|</span>
 <span class="sd">    .--------------------------------------------------------------&gt; x</span>
 <span class="sd">    z</span>
 
@@ -554,13 +553,13 @@ document.write(`
         <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">()</span>
 
     <span class="k">if</span> <span class="n">esd</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
-        <span class="n">rm0</span> <span class="o">=</span> <span class="n">_LinearTransformation</span><span class="p">(</span><span class="n">x1</span><span class="p">,</span> <span class="n">x1</span><span class="o">+</span><span class="n">x2</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span>  <span class="n">y1</span><span class="p">)</span>
-        <span class="n">rm1</span> <span class="o">=</span> <span class="n">_LinearTransformation</span><span class="p">(</span><span class="n">x1</span><span class="p">,</span> <span class="n">x1</span><span class="o">+</span><span class="n">x2</span><span class="p">,</span> <span class="n">y1</span><span class="p">,</span> <span class="n">y1</span><span class="o">+</span><span class="n">y2</span><span class="p">)</span>
-        <span class="n">rm2</span> <span class="o">=</span> <span class="n">_LinearTransformation</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span>  <span class="n">x1</span><span class="p">,</span>    <span class="n">y1</span><span class="p">,</span> <span class="n">y1</span><span class="o">+</span><span class="n">y2</span><span class="p">)</span>
+        <span class="n">rm0</span> <span class="o">=</span> <span class="n">_LinearTransformation</span><span class="p">(</span><span class="n">x0</span><span class="o">+</span><span class="n">x1</span><span class="p">,</span> <span class="n">x0</span><span class="o">+</span><span class="n">x1</span><span class="o">+</span><span class="n">x2</span><span class="p">,</span> <span class="n">y0</span><span class="o">+</span><span class="mi">0</span><span class="p">,</span>  <span class="n">y0</span><span class="o">+</span><span class="n">y1</span><span class="p">)</span>
+        <span class="n">rm1</span> <span class="o">=</span> <span class="n">_LinearTransformation</span><span class="p">(</span><span class="n">x0</span><span class="o">+</span><span class="n">x1</span><span class="p">,</span> <span class="n">x0</span><span class="o">+</span><span class="n">x1</span><span class="o">+</span><span class="n">x2</span><span class="p">,</span> <span class="n">y0</span><span class="o">+</span><span class="n">y1</span><span class="p">,</span> <span class="n">y0</span><span class="o">+</span><span class="n">y1</span><span class="o">+</span><span class="n">y2</span><span class="p">)</span>
+        <span class="n">rm2</span> <span class="o">=</span> <span class="n">_LinearTransformation</span><span class="p">(</span><span class="n">x0</span><span class="o">+</span><span class="mi">0</span><span class="p">,</span>  <span class="n">x0</span><span class="o">+</span><span class="n">x1</span><span class="p">,</span>    <span class="n">y0</span><span class="o">+</span><span class="n">y1</span><span class="p">,</span> <span class="n">y0</span><span class="o">+</span><span class="n">y1</span><span class="o">+</span><span class="n">y2</span><span class="p">)</span>
     <span class="k">elif</span> <span class="n">esd</span> <span class="o">==</span> <span class="mi">3</span><span class="p">:</span>
-        <span class="n">rm0</span> <span class="o">=</span> <span class="n">_LinearTransformation</span><span class="p">(</span><span class="n">x1</span><span class="p">,</span> <span class="n">x1</span><span class="o">+</span><span class="n">x2</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span>  <span class="n">y1</span><span class="p">,</span>    <span class="mi">0</span><span class="p">,</span> <span class="n">z</span><span class="p">)</span>
-        <span class="n">rm1</span> <span class="o">=</span> <span class="n">_LinearTransformation</span><span class="p">(</span><span class="n">x1</span><span class="p">,</span> <span class="n">x1</span><span class="o">+</span><span class="n">x2</span><span class="p">,</span> <span class="n">y1</span><span class="p">,</span> <span class="n">y1</span><span class="o">+</span><span class="n">y2</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">z</span><span class="p">)</span>
-        <span class="n">rm2</span> <span class="o">=</span> <span class="n">_LinearTransformation</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span>  <span class="n">x1</span><span class="p">,</span>    <span class="n">y1</span><span class="p">,</span> <span class="n">y1</span><span class="o">+</span><span class="n">y2</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">z</span><span class="p">)</span>
+        <span class="n">rm0</span> <span class="o">=</span> <span class="n">_LinearTransformation</span><span class="p">(</span><span class="n">x0</span><span class="o">+</span><span class="n">x1</span><span class="p">,</span> <span class="n">x0</span><span class="o">+</span><span class="n">x1</span><span class="o">+</span><span class="n">x2</span><span class="p">,</span> <span class="n">y0</span><span class="o">+</span><span class="mi">0</span><span class="p">,</span>  <span class="n">y0</span><span class="o">+</span><span class="n">y1</span><span class="p">,</span>    <span class="mi">0</span><span class="p">,</span> <span class="n">z</span><span class="p">)</span>
+        <span class="n">rm1</span> <span class="o">=</span> <span class="n">_LinearTransformation</span><span class="p">(</span><span class="n">x0</span><span class="o">+</span><span class="n">x1</span><span class="p">,</span> <span class="n">x0</span><span class="o">+</span><span class="n">x1</span><span class="o">+</span><span class="n">x2</span><span class="p">,</span> <span class="n">y0</span><span class="o">+</span><span class="n">y1</span><span class="p">,</span> <span class="n">y0</span><span class="o">+</span><span class="n">y1</span><span class="o">+</span><span class="n">y2</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">z</span><span class="p">)</span>
+        <span class="n">rm2</span> <span class="o">=</span> <span class="n">_LinearTransformation</span><span class="p">(</span><span class="n">x0</span><span class="o">+</span><span class="mi">0</span><span class="p">,</span>  <span class="n">x0</span><span class="o">+</span><span class="n">x1</span><span class="p">,</span>    <span class="n">y0</span><span class="o">+</span><span class="n">y1</span><span class="p">,</span> <span class="n">y0</span><span class="o">+</span><span class="n">y1</span><span class="o">+</span><span class="n">y2</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">z</span><span class="p">)</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="k">raise</span> <span class="ne">Exception</span><span class="p">()</span>
 
@@ -669,7 +668,7 @@ By Andrea Brugnoli, Ramy Rashad, Stefano Stramigioli, Yi Zhang
   <div class="footer-item">
     
 <div class="extra_footer">
-  <div>Last updated on August 18, 2023, 23:03:17, W. Europe Daylight Time</div>
+  <div>Last updated on October 04, 2023, 12:51:09, W. Europe Daylight Time</div>
 </div>
   </div>
   

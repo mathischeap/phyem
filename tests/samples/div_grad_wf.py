@@ -124,7 +124,7 @@ def _outer_Poisson(n, degree):
     pde = ph.pde(expression, locals())
     pde._indi_dict = None  # clear this local expression
     pde.unknowns = [u, phi]
-    # pde.pr(vc=True)
+    # pde.pr(vc=False)
 
     pde.bc.partition(r"\Gamma_\phi", r"\Gamma_u")
     pde.bc.define_bc(

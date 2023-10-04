@@ -74,7 +74,8 @@ ls0 = ls(0)
 # ls0.customize.set_dof(-1, phi[0].cochain.of_dof(-1))
 als = ls0.assemble()
 # als.solve.scheme = 'gmres'
-als.solve()
+results = als.solve()
+ls0.x.update(results[0])
 
 # phi[0].visualize()
 # u[0].visualize()

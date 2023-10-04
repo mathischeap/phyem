@@ -363,6 +363,5 @@ class Essential_BoundaryCondition(BoundaryCondition):
                     Aij.customize.set_zero(global_dofs)
 
             bi.customize.set_values(global_dofs, global_cochain)
-
         else:
             pass

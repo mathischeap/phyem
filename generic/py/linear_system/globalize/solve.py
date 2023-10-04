@@ -43,8 +43,8 @@ class Solve(Frozen):
         assert hasattr(self, f"_package_{self.package}"), f"I have no solver package: {self.package}."
         _package = getattr(self, f"_package_{self.package}")
         assert hasattr(_package, self.scheme), f"package {self.package} has no scheme: {self.scheme}"
-        results = getattr(_package, self.scheme)(self._A, self._b, **kwargs)
-        return results
+        x, message, info = getattr(_package, self.scheme)(self._A, self._b, **kwargs)
+        return x, message, info
 
 
 class _PackageScipy(Frozen):

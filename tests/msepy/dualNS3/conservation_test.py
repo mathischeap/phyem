@@ -312,12 +312,14 @@ def solver(k):
     s_lso = lso(k=k)
     s_lso.customize.set_dof(-1, 0)
     As_lso = s_lso.assemble()
-    As_lso.solve()
+    results = As_lso.solve()
+    s_lso.x.update(results[0])
 
     s_lsi = lsi(k=k)
     s_lsi.customize.set_dof(-1, 0)
     As_lsi = s_lsi.assemble()
-    As_lsi.solve()
+    results = As_lsi.solve()
+    s_lsi.x.update(results[0])
 
     t = uo.cochain.newest
 

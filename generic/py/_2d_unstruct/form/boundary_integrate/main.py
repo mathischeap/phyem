@@ -32,7 +32,6 @@ class Boundary_Integrate(Frozen):
         """
         assert boundary_section.__class__ is BoundarySection, f'need a boundary section'
         assert boundary_section.base is self._mesh, f'boundary section does not match the mesh.'
-        assert vc._is_time_space_func(), f"provided vc is not a vector calculus object."
 
         space = self._f.space
         if space.abstract.indicator == 'Lambda':

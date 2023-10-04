@@ -141,7 +141,7 @@ def backward_step(x1=1, x2=1, y1=0.25, y2=0.25, z=None, periodic=False):
     raise Exception(x1, x2, y1, y2, z, periodic)
 
 
-def _backward_step(mf, x1=1, x2=1, y1=0.25, y2=0.25, z=None, periodic=False):
+def _backward_step(mf, x1=1, x2=1, y1=0.25, y2=0.25, z=None, x0=0, y0=0, periodic=False):
     """
     ^ y
     |
@@ -156,7 +156,7 @@ def _backward_step(mf, x1=1, x2=1, y1=0.25, y2=0.25, z=None, periodic=False):
     |                     |                           |
     |                     |           r0              |    y1
     |                     |                           |
-    | (0,0)               |___________________________|
+    | (x0,y0)             |___________________________|
     .--------------------------------------------------------------> x
     z
 
@@ -191,13 +191,13 @@ def _backward_step(mf, x1=1, x2=1, y1=0.25, y2=0.25, z=None, periodic=False):
         raise NotImplementedError()
 
     if esd == 2:
-        rm0 = _LinearTransformation(x1, x1+x2, 0,  y1)
-        rm1 = _LinearTransformation(x1, x1+x2, y1, y1+y2)
-        rm2 = _LinearTransformation(0,  x1,    y1, y1+y2)
+        rm0 = _LinearTransformation(x0+x1, x0+x1+x2, y0+0,  y0+y1)
+        rm1 = _LinearTransformation(x0+x1, x0+x1+x2, y0+y1, y0+y1+y2)
+        rm2 = _LinearTransformation(x0+0,  x0+x1,    y0+y1, y0+y1+y2)
     elif esd == 3:
-        rm0 = _LinearTransformation(x1, x1+x2, 0,  y1,    0, z)
-        rm1 = _LinearTransformation(x1, x1+x2, y1, y1+y2, 0, z)
-        rm2 = _LinearTransformation(0,  x1,    y1, y1+y2, 0, z)
+        rm0 = _LinearTransformation(x0+x1, x0+x1+x2, y0+0,  y0+y1,    0, z)
+        rm1 = _LinearTransformation(x0+x1, x0+x1+x2, y0+y1, y0+y1+y2, 0, z)
+        rm2 = _LinearTransformation(x0+0,  x0+x1,    y0+y1, y0+y1+y2, 0, z)
     else:
         raise Exception()
 

@@ -318,18 +318,22 @@ lso = obj['lso'].apply()
 s_ls0 = ls0()
 s_ls0.customize.set_dof(-1, 0)
 As_ls0 = s_ls0.assemble()
-As_ls0.solve()
+results = As_ls0.solve()
+s_ls0.x.update(results[0])
+
 
 for k in range(1, steps+1):
 
     s_lso = lso(k=k)
     s_lso.customize.set_dof(-1, 0)
     As_lso = s_lso.assemble()
-    As_lso.solve()
+    results = As_lso.solve()
+    s_lso.x.update(results[0])
 
     s_lsi = lsi(k=k)
     s_lsi.customize.set_dof(-1, 0)
     As_lsi = s_lsi.assemble()
-    As_lsi.solve()
+    results = As_lsi.solve()
+    s_lsi.x.update(results[0])
 
     wi[None].visualize(wo[None], ui, uo[None], saveto=f'__phcache__/omega/_{int(k)}.vtk')
