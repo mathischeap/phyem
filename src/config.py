@@ -69,17 +69,17 @@ def _pr_cache(fig, filename=None):
     -------
 
     """
+    if RANK != MASTER_RANK:
+        return
+    else:
+        pass
+
     from tools.os_ import mkdir, empty_dir, isdir
     phcache_folder = _setting[r'cache_folder']
     if isdir(phcache_folder):
         pass
     else:
         mkdir(phcache_folder)
-
-    if RANK != MASTER_RANK:
-        return
-    else:
-        pass
 
     from time import time
     from tools.miscellaneous.random_ import string_digits
@@ -129,17 +129,19 @@ def _set_matplot_block(block):
 
 def _clear_pr_cache():
     """"""
-    from tools.os_ import listdir, isdir, mkdir, rmdir, empty_dir
     _setting["pr_cache_counter"] = 0  # reset cache counting
     _setting["pr_cache_subfolder"] = ''  # clean cache_subfolder
-    phcache_folder = _setting[r'cache_folder']
-    if isdir(phcache_folder):
-        pass
-    else:
-        mkdir(phcache_folder)
-    all_ph_cache_files = listdir(phcache_folder)  # including folder names.
 
     if RANK == MASTER_RANK:
+        from tools.os_ import listdir, isdir, mkdir, rmdir, empty_dir
+
+        phcache_folder = _setting[r'cache_folder']
+        if isdir(phcache_folder):
+            pass
+        else:
+            mkdir(phcache_folder)
+        all_ph_cache_files = listdir(phcache_folder)  # including folder names.
+
         pr_prefix = _setting['pr_cache_folder_prefix']
         current_file = _setting["pr_cache_folder_prefix"] + _setting["pr_cache_current_folder"]
         len_prefix = len(pr_prefix)

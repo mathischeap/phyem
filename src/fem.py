@@ -13,6 +13,7 @@ from src.spaces.main import _space_set  # [mesh_sym_repr][space_sym_repr] -> spa
 from src.form.main import _global_root_forms_lin_dict  # [root-form_lin_repr] -> root-form
 import msepy.main as msepy
 import msehy.py._2d.main as msehy_py2
+import _MPI.msehy.py._2d.main as mpi_meshy_py2
 
 from src.config import get_embedding_space_dim
 
@@ -20,6 +21,7 @@ from src.config import get_embedding_space_dim
 _implemented_finite_elements = {
     'msepy': msepy,   # mimetic spectral elements, python implementation
     'msehy-py2': msehy_py2,  # hybrid mimetic spectral elements , python implementation , 2-dimensions.
+    'mpi-msehy-py2': mpi_meshy_py2,  # mpi, hybrid mimetic spectral elements , python implementation , 2-dimensions.
 }
 
 

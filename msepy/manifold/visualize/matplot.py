@@ -6,6 +6,7 @@ from tools.frozen import Frozen
 import matplotlib.pyplot as plt
 import matplotlib
 matplotlib.use('TkAgg')
+from src.config import RANK, MASTER_RANK
 
 
 class MsePyManifoldVisualizeMatplot(Frozen):
@@ -31,6 +32,10 @@ class MsePyManifoldVisualizeMatplot(Frozen):
 
     ):
         """"""
+        if RANK != MASTER_RANK:
+            return
+        else:
+            pass
         manifold_data_lines = self._manifold.visualize._generate_manifold_grid_data(refining_factor=refining_factor)
         plt.rc('text', usetex=usetex)
 

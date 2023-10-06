@@ -150,7 +150,7 @@ class MseHyPy2Mesh(Frozen):
         self._generation += 1
         assert self.background.__class__ is MsePyMesh, \
             f"can only renew based on a msepy mesh background."
-        # - Now we make the elements -----------------------------------------------------------------
+        # - Now we make the elements ---------------------------------------------------------------
         new_elements = MseHyPy2MeshElements(
             self._generation,
             self.background,
@@ -160,7 +160,7 @@ class MseHyPy2Mesh(Frozen):
         self._previous_elements = self._current_elements
         self._current_elements = new_elements  # override the current elements.
 
-        # -- renew dependent boundary section faces. --------------------------------------------------
+        # -- renew dependent boundary section faces. ----------------------------------------------
         from msepy.mesh.boundary_section.main import MsePyBoundarySectionMesh
         for sym in all_meshes:
             mesh = all_meshes[sym]
@@ -178,22 +178,26 @@ class MseHyPy2Mesh(Frozen):
                 pass
         assert self.representative.generation == self.generation, 'must be!'
 
-        all_forms = base['forms']
-        for sym in all_forms:
-            form = all_forms[sym]
-            if form._is_base():
-                form._update()  # update all form automatically to the newest generation.
-                form.evolve(amount_of_cochain=evolve)
-            else:
-                pass
+        # ------------------------------------------------------------------------------------------
+        if evolve > 0:
+            all_forms = base['forms']
+            for sym in all_forms:
+                form = all_forms[sym]
+                if form._is_base():
+                    form._update()  # update all form automatically to the newest generation.
+                    form.evolve(amount_of_cochain=evolve)
+                else:
+                    pass
 
-        for sym in all_forms:
-            form = all_forms[sym]
-            if form._is_base():
-                pass
-            else:
-                form._update()  # update all form automatically to the newest generation.
-                _ = form.generic._base  # make sure base form is correctly linked.
+            for sym in all_forms:
+                form = all_forms[sym]
+                if form._is_base():
+                    pass
+                else:
+                    form._update()  # update all form automatically to the newest generation.
+                    _ = form.generic._base  # make sure base form is correctly linked.
+        else:
+            pass
 
     @property
     def link(self):

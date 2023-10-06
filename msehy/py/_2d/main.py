@@ -210,6 +210,7 @@ from tools.miscellaneous.timer import MyTimer
 
 def info(*others_2b_printed):
     """We print the info, as much as possible, of the current msepy implementation."""
+    from src.time_sequence import _global_abstract_time_sequence
     forms = base['forms']
     # -- first we print the newest time of the cochain (if there is) of each form.
     count = _info_cache['info_count']
@@ -239,7 +240,6 @@ def info(*others_2b_printed):
         else:
             pass
     print(f"\n~) Existing time sequences ------------------------------- ")
-    from src.time_sequence import _global_abstract_time_sequence
     for ats_lin in _global_abstract_time_sequence:
         ats = _global_abstract_time_sequence[ats_lin]
         ats.info()

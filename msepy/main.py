@@ -293,7 +293,6 @@ class _Config(Frozen):
                 if mnf.abstract is abstract_manifold:
                     break
             assert mnf is not None, f"cannot find a valid mse-py-manifold."
-
             return _mh_config(self._obj, mnf, *args, **kwargs)
 
         else:

@@ -50,10 +50,14 @@ def config(mf, arg, *args, **kwargs):
         assert mf.regions._map_type == 0, f"must be!"
         mf._default_element_layout_maker = default_element_layout
 
-    elif arg.__class__ is MsePyManifold or arg.__class__.__name__ == 'MseHyPy2Manifold':
+    elif (arg.__class__ is MsePyManifold or
+          arg.__class__.__name__ == 'MseHyPy2Manifold' or
+          arg.__class__.__name__ == 'MPI_MseHy_Py2_Manifold'):
         # this leads to region map type: 1
 
         if arg.__class__.__name__ == 'MseHyPy2Manifold':
+            base_manifold = arg.background
+        elif arg.__class__.__name__ == 'MPI_MseHy_Py2_Manifold':
             base_manifold = arg.background
         else:
             base_manifold = arg

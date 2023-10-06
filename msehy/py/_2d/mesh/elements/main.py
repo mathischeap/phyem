@@ -213,7 +213,7 @@ class MseHyPy2MeshElements(Frozen):
         """
         from msehy.py._2d.main import __msehy_py2_setting__
         degree = __msehy_py2_setting__['refining_examining_factor']
-        degree = [degree for _ in range(self.background.n)]  # must be 2
+        degree = [degree for _ in range(self.background.n)]  # self.background.n must be 2 in this case
         quad = Quadrature(degree, category='Gauss')
         nodes = quad.quad_ndim[:-1]
         weights = quad.quad_ndim[-1]

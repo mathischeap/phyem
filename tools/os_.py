@@ -1,38 +1,18 @@
 # -*- coding: utf-8 -*-
 r"""
 """
-from src.config import SIZE, RANK, MASTER_RANK, COMM
+from src.config import RANK, MASTER_RANK
 import os
 
 
 def isfile(filename):
     """"""
-    if SIZE == 1:
-
-        return os.path.isfile(filename)
-
-    else:
-        if RANK == MASTER_RANK:
-            ToF = os.path.isfile(filename)
-        else:
-            ToF = None
-
-        return COMM.bcast(ToF, root=MASTER_RANK)
+    return os.path.isfile(filename)
 
 
 def isdir(filename):
     """"""
-    if SIZE == 1:
-
-        return os.path.isdir(filename)
-
-    else:
-        if RANK == MASTER_RANK:
-            ToF = os.path.isdir(filename)
-        else:
-            ToF = None
-
-        return COMM.bcast(ToF, root=MASTER_RANK)
+    return os.path.isdir(filename)
 
 
 def mkdir(folder_name):

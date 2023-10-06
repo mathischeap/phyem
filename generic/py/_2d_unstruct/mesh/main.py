@@ -367,7 +367,7 @@ class GenericUnstructuredMesh2D(Frozen):
             from src.config import _setting, _pr_cache
 
             if _setting['pr_cache']:
-                _pr_cache(fig, filename='msehy_py2_mesh')
+                _pr_cache(fig, filename='mpi_msehy_py2_mesh')
             else:
                 matplotlib.use('TkAgg')
                 plt.tight_layout()

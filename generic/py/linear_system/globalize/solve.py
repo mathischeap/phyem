@@ -11,8 +11,8 @@ class Solve(Frozen):
     """"""
     def __init__(self, A, b):
         """"""
-        self._A = A
-        self._b = b
+        self._A = A   # Globalize_Static_Matrix
+        self._b = b   # Globalize_Static_Vector
         self._package = 'scipy'
         self._scheme = 'spsolve'
 
@@ -21,6 +21,14 @@ class Solve(Frozen):
 
         self._x0 = None
         self._freeze()
+
+    @property
+    def A(self):
+        return self._A
+
+    @property
+    def b(self):
+        return self._b
 
     @property
     def package(self):
@@ -43,7 +51,7 @@ class Solve(Frozen):
         assert hasattr(self, f"_package_{self.package}"), f"I have no solver package: {self.package}."
         _package = getattr(self, f"_package_{self.package}")
         assert hasattr(_package, self.scheme), f"package {self.package} has no scheme: {self.scheme}"
-        x, message, info = getattr(_package, self.scheme)(self._A, self._b, **kwargs)
+        x, message, info = getattr(_package, self.scheme)(self.A, self.b, **kwargs)
         return x, message, info
 
 
@@ -53,10 +61,12 @@ class _PackageScipy(Frozen):
         self._freeze()
 
     @staticmethod
-    def spsolve(A, b):
+    def spsolve(A, b):  # I receive shells of A and b in order to have the freedom to clean the original data.
         """direct solver."""
         t_start = time()
-        x = spspalinalg.spsolve(A, b)
+        # --- x ------------------------------
+        x = spspalinalg.spsolve(A.M, b.V)
+        # ====================================
         t_cost = time() - t_start
         t_cost = MyTimer.seconds2dhms(t_cost)
         message = f"Linear system of shape: {A.shape}" + \

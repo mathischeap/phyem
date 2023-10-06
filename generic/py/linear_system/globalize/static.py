@@ -17,7 +17,7 @@ class Globalize_Static_Linear_System(Frozen):
         assert b.__class__ is Globalize_Static_Vector, f"b needs to be a {Globalize_Static_Vector}"
         self._A = A
         self._b = b
-        self._solve = Solve(A.M, b.V)
+        self._solve = Solve(A, b)
         self._freeze()
 
     @property

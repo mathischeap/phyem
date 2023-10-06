@@ -28,6 +28,11 @@ class BoundarySection(Frozen):
         self._involved_elements = None
         self._freeze()
 
+    def __repr__(self):
+        """"""
+        super_repr = super().__repr__().split('object')[1]
+        return f"<{self.__class__.__name__} of {len(self)} faces" + super_repr
+
     @property
     def base(self):
         """the base mesh; I am representing a boundary section of this base mesh."""
