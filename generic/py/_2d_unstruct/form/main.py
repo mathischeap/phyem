@@ -6,6 +6,9 @@ from typing import Dict
 from tools.frozen import Frozen
 
 from generic.py._2d_unstruct.space.main import GenericUnstructuredSpace2D
+from _MPI.generic.py._2d_unstruct.space.main import MPI_Py_2D_Unstructured_Space
+
+
 from generic.py.cochain.main import Cochain
 from generic.py.static import StaticCopy
 from generic.py._2d_unstruct.form.cf import _2d_CF
@@ -23,7 +26,11 @@ class GenericUnstructuredForm2D(Frozen):
             base_form=None, ats=None, ati=None
     ):
         """"""
-        assert space.__class__ is GenericUnstructuredSpace2D, f'Must be'
+        assert space.__class__ in (
+            GenericUnstructuredSpace2D,
+            MPI_Py_2D_Unstructured_Space,
+        ), f'Must be!'
+
         self._space = space
         assert degree is not None, f'must give me a degree'
         self._degree = degree

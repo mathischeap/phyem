@@ -77,8 +77,8 @@ als = ls0.assemble()
 results = als.solve()
 ls0.x.update(results[0])
 
-# phi[0].visualize()
-# u[0].visualize()
+phi[0].visualize()
+u[0].visualize()
 
 print(phi[0].error())
 print(u[0].error())
