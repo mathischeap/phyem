@@ -38,13 +38,10 @@ class Base3Entries(Frozen):
             return Localize_Dynamic_Vector(_vector_data_caller), _vector_data_caller._time_caller
 
         elif dimensions == 2:
-
             row_form, col_form = args
-
             return _2d_matrix_representation(self._ABC, self._3d_data, row_form, col_form)
 
         elif dimensions == 3:
-
             # if (self._A is not self._B) and (self._B is not self._C):
             #     return MsePyDynamicLocalNonlinearOperator(
             #         self._3d_data,

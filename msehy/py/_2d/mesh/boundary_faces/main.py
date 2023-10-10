@@ -19,6 +19,8 @@ class MseHyPy2MeshFaces(Frozen):
              f"of current dependent elements.")
         self._generation = current_elements.generation
         including_element_faces = self._collect_element_faces(msepy_boundary_section, current_elements)
+        self._including_element_faces = including_element_faces
+        self._current_elements = current_elements
         self._generic = BoundarySection(current_elements.generic, including_element_faces)
 
         self._freeze()
@@ -70,7 +72,8 @@ class MseHyPy2MeshFaces(Frozen):
                         triangle = current_elements.levels[num_level].triangles[index]
                         local_map = triangle.local_map
                         if None in local_map:
-                            assert local_map.count(None) == 1, f"A triangle element can only have one edge on boundary."
+                            assert local_map.count(None) == 1, \
+                                f"A triangle element can only have one edge on boundary."
                             j = local_map.index(None)
                             if j == 0:
                                 edge_index = 1
@@ -80,19 +83,14 @@ class MseHyPy2MeshFaces(Frozen):
                                 edge_index = 2
                             else:
                                 raise Exception()
-
                             boundary_index_edge.append(
                                 (index, edge_index)
                             )
-
                         else:
                             pass
-
                     else:
                         pass
-
                 else:
-
                     boundary_index_edge.append(
                         (index, q_edge_index)
                     )

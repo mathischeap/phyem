@@ -15,6 +15,7 @@ class _2d_CF(Frozen):
         self._freeze()
 
     def _check_cf(self, cf):
+        """"""
         self._cf = cf
 
     def __call__(self, t, x, y):

@@ -3,9 +3,13 @@ r"""
 """
 from tools.frozen import Frozen
 from random import random
+from time import time
 
 from generic.py._2d_unstruct.mesh.main import GenericUnstructuredMesh2D
+from _MPI.generic.py._2d_unstruct.mesh.elements.main import MPI_Py_2D_Unstructured_MeshElements
+
 from generic.py._2d_unstruct.space.degree import Py2SpaceDegree
+
 from generic.py._2d_unstruct.space.reduce.main import Reduce
 from generic.py._2d_unstruct.space.reconstruct.main import Reconstruct
 from generic.py._2d_unstruct.space.num_local_dofs.main import NumLocalDofs
@@ -26,10 +30,14 @@ class GenericUnstructuredSpace2D(Frozen):
 
     def __init__(self, mesh, abstract_space):
         """"""
-        assert mesh.__class__ is GenericUnstructuredMesh2D, f"must be"
+        assert mesh.__class__ in (
+            GenericUnstructuredMesh2D,
+            MPI_Py_2D_Unstructured_MeshElements,
+        ), f"I must be built on a proper mesh class."
+
         self._mesh = mesh
         self._abstract = abstract_space
-        self._signature = str(random())
+        self._signature = str(random()+time())
         self._degree_cache = {}
 
         self._reduce = Reduce(self)

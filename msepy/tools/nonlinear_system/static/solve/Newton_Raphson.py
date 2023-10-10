@@ -258,7 +258,9 @@ class MsePyNonlinearSystemNewtonRaphsonSolve(Frozen):
             solve.x0 = 0
             A_shape = solve._A.shape
 
-            solve(update_x=True, **inner_solver_kwargs)
+            x = solve(**inner_solver_kwargs)[0]
+            ls.x.update(x)
+
             # results updated to the unknowns of the nonlinear system to make the 2d local cochain
             LSm = solve.message
 

@@ -342,6 +342,9 @@ class MseHyPy2MeshElements(Frozen):
 
         type_dict: Dict = dict()
         vertex_dict: Dict = dict()
+
+        type_0 = 'rt'
+        type_1 = 'rq'
         for index in indices:
             if isinstance(index, str):  # a triangle cell
                 level_num = index.count('-')
@@ -371,7 +374,7 @@ class MseHyPy2MeshElements(Frozen):
                 base_element = triangle._base_element
                 bms = base_element.metric_signature
                 if isinstance(bms, str) and bms[:6] == 'Linear':
-                    type_dict[index] = 'regular triangle'
+                    type_dict[index] = type_0   # regular triangle
                     vertex_dict[index] = _triangle_vertex
                 else:
                     raise NotImplementedError('distorted triangle type!')
@@ -402,7 +405,7 @@ class MseHyPy2MeshElements(Frozen):
 
                 bms = quadrilateral.metric_signature
                 if isinstance(bms, str) and bms[:6] == 'Linear':
-                    type_dict[index] = 'regular quadrilateral'
+                    type_dict[index] = type_1   # regular quadrilateral
                     vertex_dict[index] = _quadrilateral_vertex
 
                 else:

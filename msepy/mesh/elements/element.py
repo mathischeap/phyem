@@ -364,7 +364,7 @@ class _FaceCooTrans(Frozen):
                 raise Exception()
 
         else:
-            raise Exception
+            raise Exception()
 
     def Jacobian_matrix(self, *xi_et):
         """"""

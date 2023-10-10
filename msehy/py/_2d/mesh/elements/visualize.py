@@ -145,7 +145,7 @@ class MseHyPy2MeshElementsVisualize(Frozen):
 
             mappable = cm.ScalarMappable()
             mappable.set_array(np.array(levels))
-            cb = plt.colorbar(mappable, extend='both')
+            cb = plt.colorbar(mappable, ax=ax, extend='both')
             cb.ax.tick_params(labelsize=12)
 
         body = self._elements.generic

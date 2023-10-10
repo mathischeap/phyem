@@ -27,6 +27,7 @@ class MPI_MseHy_Py2_Mesh(Frozen):
 
     @property
     def abstract(self):
+        """"""
         return self._abstract
 
     @property
@@ -40,7 +41,7 @@ class MPI_MseHy_Py2_Mesh(Frozen):
     def __repr__(self):
         """repr"""
         super_repr = super().__repr__().split('object')[1]
-        return f"<{self.__class__.__name__} {self.abstract._sym_repr}" + super_repr
+        return f"<{self.__class__.__name__} {self.abstract._sym_repr} @ RANK {RANK}" + super_repr
 
     @property
     def manifold(self):
@@ -58,17 +59,15 @@ class MPI_MseHy_Py2_Mesh(Frozen):
                     else:
                         pass
                 assert the_manifold_sym is not None, f"must have found a manifold."
-
             else:
                 the_manifold_sym = None
-
             the_manifold_sym = COMM.bcast(the_manifold_sym, root=MASTER_RANK)
             self._manifold = all_manifolds[the_manifold_sym]
-
         return self._manifold
 
     @property
     def generation(self):
+        """"""
         if RANK == MASTER_RANK:
             generation = self.background.generation
         else:
@@ -102,7 +101,7 @@ class MPI_MseHy_Py2_Mesh(Frozen):
         else:
             if self._current_bd_faces is None:
                 if RANK == MASTER_RANK:
-                    maker = Generic_BoundarySection_Maker(self.background.representative.generic)
+                    maker = Generic_BoundarySection_Maker(self.background.representative)
                 else:
                     maker = Generic_BoundarySection_Maker(None)
                 self._current_bd_faces = maker()
@@ -114,24 +113,8 @@ class MPI_MseHy_Py2_Mesh(Frozen):
     def previous(self):
         """The previous generic mesh of mpi-msehy-py2 mesh."""
         if self._is_mesh():
-            if self._previous_elements is None:
-                if RANK == MASTER_RANK:
-                    maker = Generic_Elements_Maker(self.background.previous)
-                else:
-                    maker = Generic_Elements_Maker(None)
-                self._previous_elements = maker()
-            else:
-                pass
             return self._previous_elements
         else:
-            if self._previous_bd_faces is None:
-                if RANK == MASTER_RANK:
-                    maker = Generic_BoundarySection_Maker(self.background.previous.generic)
-                else:
-                    maker = Generic_BoundarySection_Maker(None)
-                self._previous_bd_faces = maker()
-            else:
-                pass
             return self._previous_bd_faces
 
     def renew(self, region_wise_refining_strength_function, refining_thresholds, evolve=1):
@@ -147,13 +130,19 @@ class MPI_MseHy_Py2_Mesh(Frozen):
         -------
 
         """
-        _ = self.generic  # make sure the current representative is made.
+        # -----------------------------------------------------------------------------------
+        from _MPI.msehy.py._2d.main import base
+        all_meshes = base['meshes']
+        for sym in all_meshes:
+            mesh = all_meshes[sym]
+            _ = mesh.generic
 
         if RANK == MASTER_RANK:
-            self.background.renew(  # this will make sure the background is a mesh rather than boundary section.
+            self.background.renew(
+                # this will make sure the background is a mesh rather than boundary section.
                 region_wise_refining_strength_function,
                 refining_thresholds,
-                evolve=0
+                evolve=0,  # turn off the `form-renew` there.
             )
         else:
             pass
@@ -166,12 +155,8 @@ class MPI_MseHy_Py2_Mesh(Frozen):
         self._current_elements = maker()
 
         # -----------------------------------------------------------------------------------
-        from _MPI.msehy.py._2d.main import base
-        all_meshes = base['meshes']
         for sym in all_meshes:
             mesh = all_meshes[sym]
-            _ = mesh.generic
-
             is_boundary_section = False
             if RANK == MASTER_RANK:
                 background = mesh.background
@@ -185,18 +170,17 @@ class MPI_MseHy_Py2_Mesh(Frozen):
                 is_boundary_section = None
 
             is_boundary_section = COMM.bcast(is_boundary_section, root=MASTER_RANK)
-
             if is_boundary_section:
                 mesh._previous_bd_faces = mesh._current_bd_faces
                 if RANK == MASTER_RANK:
-                    maker = Generic_BoundarySection_Maker(mesh.background.representative.generic)
+                    maker = Generic_BoundarySection_Maker(mesh.background.representative)
                 else:
                     maker = Generic_BoundarySection_Maker(None)
                 mesh._current_bd_faces = maker()
             else:
                 pass
-        # ======================================================================================
 
+        # ======================================================================================
         if evolve > 0:
             # renew forms
             pass
@@ -205,4 +189,5 @@ class MPI_MseHy_Py2_Mesh(Frozen):
 
     @property
     def visualize(self):
-        return self.generic.visualize
+        """"""
+        raise NotImplemented('visualize with refining function.')

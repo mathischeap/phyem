@@ -7,7 +7,7 @@ import numpy as np
 def ndarray_key_comparer(cache, arrays, check_str=''):
     """"""
     assert isinstance(cache, dict), f"cache must be a dict."
-    assert isinstance(arrays, (list, tuple)), f"pls put arrays in list a tuple"
+    assert isinstance(arrays, (list, tuple)), f"pls put arrays in list or tuple"
 
     if len(cache) != 0:
         assert len(cache) == 3 and 'keys' in cache and 'values' in cache and 'check strings' in cache, \
@@ -96,7 +96,7 @@ def ndarray_key_comparer(cache, arrays, check_str=''):
 def add_to_ndarray_cache(cache, arrays, results, check_str='', maximum=3):
     """"""
     assert isinstance(cache, dict), f"cache must be a dict."
-    assert isinstance(arrays, (list, tuple)), f"pls put arrays in list a tuple"
+    assert isinstance(arrays, (list, tuple)), f"pls put arrays in list or tuple"
     assert maximum > 0 and maximum % 1 == 0, f"maximum={maximum} wrong, it must be a positive integer."
 
     keys = cache['keys']

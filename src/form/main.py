@@ -28,7 +28,7 @@ from src.spaces.main import _degree_str_maker
 _global_forms = dict()   # cache keys are id
 _global_root_forms_lin_dict = dict()   # keys are root form lin_repr
 _global_form_variables = {
-    'update_cache': True   # the global switcher  ---------- (1)
+    'update_cache': True,   # the global switcher  ---------- (1)
 }
 
 

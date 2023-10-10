@@ -112,7 +112,7 @@ def _parse(obj):
 
 
 def _post_initialization_actions():
-    """We initialize the 0th generation of space.
+    """
 
     Returns
     -------

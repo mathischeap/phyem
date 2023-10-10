@@ -52,16 +52,16 @@ class GenericUnstructuredMesh2D(Frozen):
             for vertex in ele_vertices:
                 element_coordinates.append(vertex_coordinates[vertex])
 
-            if ele_typ == 'regular quadrilateral':
+            if ele_typ == 'rq':
                 pass
-            elif ele_typ == 'regular triangle':
+            elif ele_typ == 'rt':
                 sequence = (0, 1, 2)
                 vertex_dict[index] = tuple([ele_vertices[seq] for seq in sequence])
                 element_coordinates = [element_coordinates[seq] for seq in sequence]
             else:
                 raise NotImplementedError(f"cannot make a {ele_typ} element.")
 
-            element_dict[index] = distributor(ele_typ, element_coordinates)
+            element_dict[index] = distributor(ele_typ)(element_coordinates)
 
         return element_dict
 

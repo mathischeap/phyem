@@ -12,20 +12,24 @@ class NumLocalDofComponentsLambda(Frozen):
         self._space = space
         self._k = space.abstract.k
         self._orientation = space.abstract.orientation
+        self._cache = {}
         self._freeze()
 
     def __call__(self, degree):
         """Making the local numbering for degree."""
         p = self._space[degree].p
 
-        if self._k == 1:
-            method_name = f"_k{self._k}_{self._orientation}"
+        if p in self._cache:
+            return self._cache[p]
         else:
-            method_name = f"_k{self._k}"
+            if self._k == 1:
+                method_name = f"_k{self._k}_{self._orientation}"
+            else:
+                method_name = f"_k{self._k}"
 
-        LN = getattr(self, method_name)(p)
-
-        return LN
+            num_components = getattr(self, method_name)(p)
+            self._cache[p] = num_components
+            return num_components
 
     @staticmethod
     def _k0(p):

@@ -1,11 +1,13 @@
 # -*- coding: utf-8 -*-
 r"""
-pH-lib@RAM-EEMCS-UT
-Yi Zhang
 """
 from tools.frozen import Frozen
-from generic.py._2d_unstruct.mesh.elements.distributor import distributor
 from src.config import RANK, MASTER_RANK, COMM, SIZE
+
+from generic.py._2d_unstruct.mesh.elements.distributor import distributor
+
+from _MPI.generic.py._2d_unstruct.mesh.elements.coordinate_transformation import CT
+from _MPI.generic.py._2d_unstruct.mesh.boundary_section.face import _2d_Face
 
 
 class MPI_Py_2D_Unstructured_MeshElements(Frozen):
@@ -52,9 +54,10 @@ class MPI_Py_2D_Unstructured_MeshElements(Frozen):
             element_map = self._make_element_map(vertex_dict, same_vertices_dict)
             element_distribution = self._distribute_elements_to_ranks(element_map)
 
-            # ---- these two global properties only stored in the master core -------------
+            # ---- these global properties only stored in the master core -------------
             self._total_map = element_map
             self._element_distribution = element_distribution
+            self._total_type = type_dict
             # ---- below, we distribute data for initializing elements in each core -------
             TYPE_DICT = list()
             VERTEX_DICT = list()
@@ -78,6 +81,7 @@ class MPI_Py_2D_Unstructured_MeshElements(Frozen):
         else:
             self._total_map = None
             self._element_distribution = None
+            self._total_type = None
             TYPE_DICT = None
             VERTEX_DICT = None
             COORDINATES_DICT = None
@@ -88,12 +92,20 @@ class MPI_Py_2D_Unstructured_MeshElements(Frozen):
         vertex_coordinates = COMM.scatter(COORDINATES_DICT, root=MASTER_RANK)
         self._elements_dict = self._make_elements(type_dict, vertex_dict, vertex_coordinates)
         self._map = COMM.scatter(MAP, root=MASTER_RANK)
+
+        # =====================================================================================
+        self._domain_area = None
+        self._all_edges = None
+        self._opposite_outer_orientation_pairs = None
+        self._opposite_inner_orientation_pairs = None
+        self._ct = CT(self)
+        self._boundary_face_cache = {}
         self._freeze()
 
     def __repr__(self):
         """repr"""
         super_repr = super().__repr__().split('object')[1]
-        return rf"<MPI-generic-py-unstructured-2d-mesh @ RANK {RANK}" + super_repr
+        return rf"<MPI-generic-py-un-struct-2d-mesh @ RANK {RANK}" + super_repr
 
     @staticmethod
     def _make_elements(type_dict, vertex_dict, vertex_coordinates):
@@ -106,16 +118,14 @@ class MPI_Py_2D_Unstructured_MeshElements(Frozen):
             for vertex in ele_vertices:
                 element_coordinates.append(vertex_coordinates[vertex])
 
-            if ele_typ == 'regular quadrilateral':
+            if ele_typ == 'rq':   # regular quadrilateral
                 pass
-            elif ele_typ == 'regular triangle':
-                sequence = (0, 1, 2)
-                vertex_dict[index] = tuple([ele_vertices[seq] for seq in sequence])
-                element_coordinates = [element_coordinates[seq] for seq in sequence]
+            elif ele_typ == 'rt':   # regular triangle
+                pass  # cannot change the sequence as we have made the map before.
             else:
                 raise NotImplementedError(f"cannot make a {ele_typ} element.")
 
-            element_dict[index] = distributor(ele_typ, element_coordinates)
+            element_dict[index] = distributor(ele_typ)(element_coordinates)
 
         return element_dict
 
@@ -134,7 +144,7 @@ class MPI_Py_2D_Unstructured_MeshElements(Frozen):
         real_vertex_dict :
             {
                 index: (i, j, k, ....),  # the vertices of element #`index` are `i, j, k, ...`.
-                ...
+                ...,
             }
 
         """
@@ -165,12 +175,13 @@ class MPI_Py_2D_Unstructured_MeshElements(Frozen):
                     element_indices[current:current+num]
                 )
                 current += num
+            assert current == total_num_elements, f"must have distributed all elements."
             return indices_distribution
         else:
             raise NotImplementedError()
 
     @staticmethod
-    def _element_amount_in_ranks(total_num_elements, master_loading_factor=0.8):
+    def _element_amount_in_ranks(total_num_elements, master_loading_factor=0.75):
         """
 
         Parameters
@@ -225,6 +236,28 @@ class MPI_Py_2D_Unstructured_MeshElements(Frozen):
     def n(self):
         """the dimensions of the mesh"""
         return 2
+
+    @property
+    def ct(self):
+        """coordinate transformation."""
+        return self._ct
+
+    @property
+    def domain_area(self):
+        """the total area of the domain."""
+        if self._domain_area is None:
+            domain_area = 0
+            for index in self._elements_dict:
+                domain_area += self._elements_dict[index].area
+            domain_area = COMM.gather(domain_area, root=MASTER_RANK)
+            if RANK == MASTER_RANK:
+                domain_area = sum(domain_area)
+            else:
+                pass
+            domain_area = COMM.bcast(domain_area, root=MASTER_RANK)
+            self._domain_area = domain_area
+        return self._domain_area
+
     # ==================================================================================================
 
     def __iter__(self):
@@ -243,6 +276,17 @@ class MPI_Py_2D_Unstructured_MeshElements(Frozen):
     def __contains__(self, index):
         """In element #index is a valid local element?"""
         return index in self._elements_dict
+
+    def _make_boundary_face(self, element_face_index):
+        """"""
+        if element_face_index in self._boundary_face_cache:
+            return self._boundary_face_cache[element_face_index]
+        else:
+            element_index, face_index = element_face_index
+            assert element_index in self, f"element #{element_index} is illegal (or not local)."
+            face = _2d_Face(self, element_index, face_index)
+            self._boundary_face_cache[element_face_index] = face
+            return face
 
     # ------------- methods ----------------------------------------------------------------------------
     def visualize(
@@ -310,3 +354,250 @@ class MPI_Py_2D_Unstructured_MeshElements(Frozen):
 
         plt.close()
         return fig
+
+    def find_rank_of_element(self, index):
+        """Return None if the element #index is nowhere."""
+        if RANK == MASTER_RANK:
+            found_rank = None
+            for rank, indices in enumerate(self._element_distribution):
+                if index in indices:
+                    found_rank = rank
+                    break
+                else:
+                    pass
+        else:
+            found_rank = None
+        found_rank = COMM.bcast(found_rank, root=MASTER_RANK)
+        if found_rank == RANK:
+            assert index in self, f'must be, a double check!'
+        else:
+            assert index not in self, f"double check, an element is only at one place."
+        return found_rank
+
+    # ------------------------------------------------------------------------------------------------
+    @property
+    def all_edges(self):
+        """
+
+        Returns
+        -------
+        _all_edges = {
+            (0, 1): ([index, j], [...]),
+                # the edge from `vertex 0` to `vertex 1` is the `j`th edge of element #`index` and  ...
+            ....,
+        }
+
+        """
+        if RANK != MASTER_RANK:
+            return None
+        else:
+            if self._all_edges is None:
+                self._all_edges = dict()
+                for index in self._total_map:
+                    vertices = self._total_map[index]
+                    num_edges = len(vertices)
+                    sequence = list(vertices) + [vertices[0]]
+                    for j in range(num_edges):
+                        edge_position = [index, j]
+                        edge_indicator = (sequence[j], sequence[j+1])
+                        if edge_indicator not in self._all_edges:
+                            self._all_edges[edge_indicator] = tuple()
+                        else:
+                            pass
+                        self._all_edges[edge_indicator] += (edge_position, )
+            return self._all_edges
+
+    @property
+    def opposite_outer_orientation_pairs(self):
+        """"""
+        if self._opposite_outer_orientation_pairs is None:
+            if RANK == MASTER_RANK:
+                pairs = {}
+
+                all_edges = self.all_edges
+                for edge in all_edges:
+
+                    pos_positions = all_edges[edge]
+
+                    vertex0, vertex1 = edge
+                    if (vertex1, vertex0) in all_edges:
+                        neg_positions = all_edges[(vertex1, vertex0)]
+                    else:
+                        neg_positions = list()
+
+                    num_found_positions = len(pos_positions) + len(neg_positions)
+                    if num_found_positions == 1:   # must be on boundary
+                        assert len(neg_positions) == 0   # must have no neg_position
+                    elif num_found_positions == 2:
+                        positions = list()
+                        signs = list()
+                        for position in pos_positions:
+                            index, edge_index = position
+                            sign = distributor(self._total_type[index]).outer_orientations(edge_index)
+                            positions.append(position)
+                            signs.append(sign)
+                        for position in neg_positions:
+                            index, edge_index = position
+                            sign = distributor(self._total_type[index]).outer_orientations(edge_index)
+                            positions.append(position)
+                            signs.append(sign)
+
+                        sign0, sign1 = signs
+                        pos0, pos1 = positions
+                        if sign0 != sign1:
+                            pass
+                        else:
+                            pos0 = tuple(pos0)
+                            pos1 = tuple(pos1)
+
+                            if pos0 in pairs:
+                                assert pos1 not in pairs and pairs[pos0] == pos1
+                            elif pos1 in pairs:
+                                assert pos0 not in pairs and pairs[pos1] == pos0
+                            else:
+                                pos0 = tuple(pos0)
+                                pos1 = tuple(pos1)
+
+                                if pos0 in pairs:
+                                    assert pos1 not in pairs and pairs[pos0] == pos1
+                                elif pos1 in pairs:
+                                    assert pos0 not in pairs and pairs[pos1] == pos0
+                                else:
+                                    index0 = pos0[0]
+                                    index1 = pos1[0]
+                                    if isinstance(index0, str) and not isinstance(index1, str):
+                                        pairs[pos0] = pos1
+                                    elif isinstance(index1, str) and not isinstance(index0, str):
+                                        pairs[pos1] = pos0
+                                    elif isinstance(index0, str) and isinstance(index1, str):
+                                        if len(index0) >= len(index1):
+                                            pairs[pos0] = pos1
+                                        else:
+                                            pairs[pos1] = pos0
+                                    else:
+                                        pairs[pos0] = pos1
+
+                    else:
+                        raise Exception()
+            else:
+                pairs = None
+
+            if RANK == MASTER_RANK:
+                pairs_distribution = list()
+                for rank in range(SIZE):
+                    pairs_distribution.append(dict())
+
+                for location in pairs:
+                    element_index = location[0]
+                    for rank, indices in enumerate(self._element_distribution):
+                        if element_index in indices:
+                            pairs_distribution[rank][location] = pairs[location]
+                            break
+                        else:
+                            pass
+            else:
+                pairs_distribution = None
+
+            pairs = COMM.scatter(pairs_distribution, root=MASTER_RANK)
+
+            self._opposite_outer_orientation_pairs = pairs
+
+        return self._opposite_outer_orientation_pairs
+
+    @property
+    def opposite_inner_orientation_pairs(self):
+        """"""
+        if self._opposite_inner_orientation_pairs is None:
+
+            if RANK == MASTER_RANK:
+                pairs = {}
+
+                all_edges = self.all_edges
+                for edge in all_edges:
+
+                    pos_positions = all_edges[edge]
+
+                    vertex0, vertex1 = edge
+                    if (vertex1, vertex0) in all_edges:
+                        neg_positions = all_edges[(vertex1, vertex0)]
+                    else:
+                        neg_positions = list()
+
+                    num_found_positions = len(pos_positions) + len(neg_positions)
+                    if num_found_positions == 1:   # must be on boundary
+                        assert len(neg_positions) == 0   # must have no neg_position
+                    elif num_found_positions == 2:
+                        positions = list()
+                        signs = list()
+
+                        for position in pos_positions:
+                            index, edge_index = position
+                            sign = distributor(self._total_type[index]).inner_orientations(edge_index)
+                            positions.append(position)
+                            signs.append(sign)
+
+                        for position in neg_positions:
+                            index, edge_index = position
+                            sign = distributor(self._total_type[index]).inner_orientations(edge_index)
+                            if sign == '+':
+                                sign = '-'
+                            elif sign == '-':
+                                sign = '+'
+                            else:
+                                raise Exception()
+                            positions.append(position)
+                            signs.append(sign)
+
+                        sign0, sign1 = signs
+                        pos0, pos1 = positions
+                        if sign0 == sign1:
+                            pass
+                        else:
+                            pos0 = tuple(pos0)
+                            pos1 = tuple(pos1)
+
+                            if pos0 in pairs:
+                                assert pos1 not in pairs and pairs[pos0] == pos1
+                            elif pos1 in pairs:
+                                assert pos0 not in pairs and pairs[pos1] == pos0
+                            else:
+                                index0 = pos0[0]
+                                index1 = pos1[0]
+                                if isinstance(index0, str) and not isinstance(index1, str):
+                                    pairs[pos0] = pos1
+                                elif isinstance(index1, str) and not isinstance(index0, str):
+                                    pairs[pos1] = pos0
+                                elif isinstance(index0, str) and isinstance(index1, str):
+                                    if len(index0) >= len(index1):
+                                        pairs[pos0] = pos1
+                                    else:
+                                        pairs[pos1] = pos0
+                                else:
+                                    pairs[pos0] = pos1
+
+                    else:
+                        raise Exception()
+            else:
+                pairs = None
+
+            if RANK == MASTER_RANK:
+                pairs_distribution = list()
+                for rank in range(SIZE):
+                    pairs_distribution.append(dict())
+
+                for location in pairs:
+                    element_index = location[0]
+                    for rank, indices in enumerate(self._element_distribution):
+                        if element_index in indices:
+                            pairs_distribution[rank][location] = pairs[location]
+                            break
+                        else:
+                            pass
+            else:
+                pairs_distribution = None
+
+            pairs = COMM.scatter(pairs_distribution, root=MASTER_RANK)
+
+            self._opposite_inner_orientation_pairs = pairs
+
+        return self._opposite_inner_orientation_pairs

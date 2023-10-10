@@ -4,13 +4,13 @@ r"""
 from typing import Dict
 
 from tools.frozen import Frozen
-# from tools.miscellaneous.ndarray_cache import add_to_ndarray_cache, ndarray_key_comparer
 
 from generic.py._2d_unstruct.space.main import GenericUnstructuredSpace2D
 from generic.py.cochain.main import Cochain
 from generic.py.static import StaticCopy
 from generic.py._2d_unstruct.form.cf import _2d_CF
 from generic.py._2d_unstruct.form.boundary_integrate.main import Boundary_Integrate
+from generic.py._2d_unstruct.form.visualize import GenericUnstructuredForm2D_Visualize
 
 
 class GenericUnstructuredForm2D(Frozen):
@@ -35,16 +35,19 @@ class GenericUnstructuredForm2D(Frozen):
             'ats': ats,   # abstract time sequence
             'ati': ati,   # abstract time instant
         }
-        self._parse_base = True
+        self._parse_base = True   # parse the base form for the first time.
         self.___base___ = None
 
         self._cochain = None
         self._cf = None
         self._bi = None
+        self._vis = None
+
+        self._name = rf'form@${self.space.abstract._sym_repr}$'
         self._freeze()
 
     def is_dual_representation(self):
-        """"""
+        """When it is a dual representation, we should process the dofs."""
         return self._dual_representation
 
     def __repr__(self):
@@ -61,6 +64,11 @@ class GenericUnstructuredForm2D(Frozen):
     def mesh(self):
         """"""
         return self.space.mesh
+
+    @property
+    def name(self):
+        """"""
+        return self._name
 
     @property
     def degree(self):
@@ -90,16 +98,19 @@ class GenericUnstructuredForm2D(Frozen):
 
     @property
     def cochain(self):
+        """"""
         if self._cochain is None:
             self._cochain = Cochain(self)
         return self._cochain
 
     @property
     def cf(self):
+        """"""
         return self._cf
 
     @cf.setter
     def cf(self, _cf):
+        """"""
         self._cf = _2d_CF(self, _cf)
 
     def __getitem__(self, t):
@@ -153,6 +164,14 @@ class GenericUnstructuredForm2D(Frozen):
 
     @property
     def boundary_integrate(self):
+        """"""
         if self._bi is None:
             self._bi = Boundary_Integrate(self)
         return self._bi
+
+    @property
+    def visualize(self):
+        """visualize"""
+        if self._vis is None:
+            self._vis = GenericUnstructuredForm2D_Visualize(self)
+        return self._vis

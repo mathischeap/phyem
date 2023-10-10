@@ -73,7 +73,9 @@ class RegularTriangle(Element):
     @property
     def ct(self):
         if self._ct is None:
-            self._ct = _RegularTriangleCoordinateTransformation(self._coo)
+            self._ct = _RegularTriangleCoordinateTransformation(
+                self._coo, self.metric_signature
+            )
         return self._ct
 
     @property
@@ -155,8 +157,9 @@ from tools.functions.space._2d.transfinite import TransfiniteMapping
 
 class _RegularTriangleCoordinateTransformation(CoordinateTransformation):
     """"""
-    def __init__(self, coo):
+    def __init__(self, coo, metric_signature):
         """"""
+        super().__init__(metric_signature)
         self._xt, self._yt = coo[0]
         self._x0, self._y0 = coo[1]
         self._x1, self._y1 = coo[2]
@@ -221,7 +224,7 @@ class _RegularTriangleCoordinateTransformation(CoordinateTransformation):
         s = (et + 1) / 2
         return self._tf.mapping(r, s)
 
-    def Jacobian_matrix(self, xi, et):
+    def ___Jacobian_matrix___(self, xi, et):
         """ r, s be in [-1, 1]. """
         r = (xi + 1) / 2
         s = (et + 1) / 2

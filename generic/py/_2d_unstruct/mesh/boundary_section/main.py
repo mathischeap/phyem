@@ -71,7 +71,7 @@ class BoundarySection(Frozen):
                     self._involved_elements.append(element_index)
         return self._involved_elements
 
-        # -------- methods ----------------------------------------------------------------------
+    # -------- methods ----------------------------------------------------------------------
     def visualize(
             self,
             density=10,

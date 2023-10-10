@@ -16,6 +16,7 @@ class GatheringMatrixLambda(Frozen):
         self._k = space.abstract.k
         self._orientation = space.abstract.orientation
         self._cache = {}
+        self._cache_000 = {}
         self._freeze()
 
     def __call__(self, degree):
@@ -34,6 +35,12 @@ class GatheringMatrixLambda(Frozen):
 
     def _k0(self, p):
         """"""
+        if p in self._cache_000:
+            # another level of cache for 0-form as it is used for visualization particularly.
+            return self._cache_000[p]
+        else:
+            pass
+
         element_map = self._mesh.map
         numbered_edges = dict()
         numbered_corner = dict()
@@ -131,7 +138,9 @@ class GatheringMatrixLambda(Frozen):
             else:
                 raise Exception()
 
-        return PyGM(NUMBERING)
+        gm = PyGM(NUMBERING)
+        self._cache_000[p] = gm
+        return gm
 
     @staticmethod
     def _find_numering_corner(vertex, current, numbered_corner):

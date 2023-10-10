@@ -49,9 +49,9 @@ class RegularQuadrilateral(Element):
         vec1 = np.array([x1-x0, y1-y0])
         vec2 = np.array([x2-x0, y2-y0])
         vec3 = np.array([x3-x0, y3-y0])
-        vec1 = list(np.round(vec1, 6))
-        vec2 = list(np.round(vec2, 6))
-        vec3 = list(np.round(vec3, 6))
+        vec1 = tuple(np.round(vec1, 6))
+        vec2 = tuple(np.round(vec2, 6))
+        vec3 = tuple(np.round(vec3, 6))
         self._metric_signature = f"{vec1}{vec2}{vec3}"
         self._edges_ct = {
             0: Quadrilateral_Edge_CT(self, 0),
@@ -76,7 +76,9 @@ class RegularQuadrilateral(Element):
     @property
     def ct(self):
         if self._ct is None:
-            self._ct = _RegularQuadrilateralCoordinateTransformation(self._coo)
+            self._ct = _RegularQuadrilateralCoordinateTransformation(
+                self._coo, self.metric_signature
+            )
         return self._ct
 
     @classmethod
@@ -152,8 +154,9 @@ from tools.functions.space._2d.geometrical_functions.parser import GeoFunc2Parse
 
 class _RegularQuadrilateralCoordinateTransformation(CoordinateTransformation):
     """"""
-    def __init__(self, coo):
+    def __init__(self, coo, metric_signature):
         """"""
+        super().__init__(metric_signature)
         geo_y0 = ['straight line', [coo[0], coo[1]]]
         geo_x1 = ['straight line', [coo[1], coo[2]]]
         geo_y1 = ['straight line', [coo[3], coo[2]]]
@@ -182,7 +185,7 @@ class _RegularQuadrilateralCoordinateTransformation(CoordinateTransformation):
         s = (et + 1) / 2
         return self._tf.mapping(r, s)
 
-    def Jacobian_matrix(self, xi, et):
+    def ___Jacobian_matrix___(self, xi, et):
         """ r, s be in [-1, 1]. """
         r = (xi + 1) / 2
         s = (et + 1) / 2

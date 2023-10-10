@@ -34,10 +34,12 @@ class ReconstructLambda(Frozen):
     def _k0(self, cochain, xi, et, ravel, element_range=None, degree=None):
         """"""
         if element_range is None:
+            # reconstructing over all elements
             degree = cochain._f.degree
             local_cochain = cochain.local
         else:
-            local_cochain = cochain
+            # reconstructing over all particular elements, must provide degree.
+            local_cochain = cochain  # receive a dict of local cochains
             assert degree is not None
 
         shape: list = [len(xi), len(et)]
@@ -74,7 +76,8 @@ class ReconstructLambda(Frozen):
             degree = cochain._f.degree
             local_cochain = cochain.local
         else:
-            local_cochain = cochain
+            # reconstructing over all particular elements, must provide degree.
+            local_cochain = cochain   # receive a dict of local cochains
             assert degree is not None
 
         shape: list = [len(xi), len(et)]
@@ -133,7 +136,8 @@ class ReconstructLambda(Frozen):
             degree = cochain._f.degree
             local_cochain = cochain.local
         else:
-            local_cochain = cochain
+            # reconstructing over all particular elements, must provide degree.
+            local_cochain = cochain   # receive a dict of local cochains
             assert degree is not None
 
         shape: list = [len(xi), len(et)]
@@ -192,7 +196,8 @@ class ReconstructLambda(Frozen):
             degree = cochain._f.degree
             local_cochain = cochain.local
         else:
-            local_cochain = cochain
+            # reconstructing over all particular elements, must provide degree.
+            local_cochain = cochain   # receive a dict of local cochains
             assert degree is not None
 
         shape: list = [len(xi), len(et)]

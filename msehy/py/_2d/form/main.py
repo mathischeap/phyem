@@ -59,6 +59,11 @@ class MseHyPy2RootForm(Frozen):
         return self._space
 
     @property
+    def name(self):
+        """name of this form is the pure linguistic representation."""
+        return self._abstract._pure_lin_repr
+
+    @property
     def degree(self):
         """The degree of my space."""
         return self._degree
@@ -177,6 +182,7 @@ class MseHyPy2RootForm(Frozen):
                 dual_representation=self.is_dual_representation(),
                 **self._pAti_form
             )
+            self._generic._name = self.name
 
             self._generation = self.space.generation
             if self.space.previous is None:
@@ -187,6 +193,7 @@ class MseHyPy2RootForm(Frozen):
                     dual_representation=self.is_dual_representation(),
                     **self._pAti_form
                 )
+                self._previous._name = self.name
 
             self._do_initialize = False
             assert self.mesh.generation == self.generation == self.space.generation, 'must be'
@@ -212,6 +219,8 @@ class MseHyPy2RootForm(Frozen):
                     dual_representation=self.is_dual_representation(),
                     **self._pAti_form
                 )
+                self._generic._name = self.name
+
                 assert self._previous is not self._generic, 'must be'
                 self._generation = self.space.generation
                 assert self._generation == old_generation + 1, f'must be!'
@@ -221,9 +230,9 @@ class MseHyPy2RootForm(Frozen):
 
                 # --- send constant properties to generic form ----
                 self._generic.cf = self._cf_cache
-                # ==================================================
+                # =================================================
 
-    # ============================================================================
+    # ============================================================================================
 
     @property
     def cochain(self):
@@ -238,3 +247,8 @@ class MseHyPy2RootForm(Frozen):
     @property
     def numeric(self):
         return self._numeric
+
+    @property
+    def visualize(self):
+        """visualize of current representative: generic."""
+        return self.generic.visualize

@@ -5,11 +5,11 @@ from generic.py._2d_unstruct.mesh.elements.regular_triangle import RegularTriang
 from generic.py._2d_unstruct.mesh.elements.regular_quadrilateral import RegularQuadrilateral
 
 
-def distributor(element_type, element_coordinates):
+def distributor(element_type):
     """"""
-    if element_type == 'regular triangle':
-        return RegularTriangle(element_coordinates)
-    elif element_type == 'regular quadrilateral':
-        return RegularQuadrilateral(element_coordinates)
+    if element_type == 'rt':
+        return RegularTriangle
+    elif element_type == 'rq':
+        return RegularQuadrilateral
     else:
         raise Exception(f"element_type = {element_type} is not implemented.")

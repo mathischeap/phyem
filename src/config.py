@@ -5,7 +5,7 @@ A very important file. Do not change it easily.
 """
 
 _global_variables = {
-    'embedding_space_dim': 3,  # default embedding_space_dim is 3.
+    'embedding_space_dim': 2,  # default embedding_space_dim is 2.
 }
 
 

@@ -11,12 +11,18 @@ class NumLocalDofsLambda(Frozen):
         """Store required info."""
         self._space = space
         self._k = space.abstract.k
+        self._cache = {}
         self._freeze()
 
     def __call__(self, degree):
         """Making the local numbering for degree."""
         p = self._space[degree].p
-        return getattr(self, f"_k{self._k}")(p)
+        if p in self._cache:
+            return self._cache[p]
+        else:
+            num_dofs = getattr(self, f"_k{self._k}")(p)
+            self._cache[p] = num_dofs
+            return num_dofs
 
     @staticmethod
     def _k0(p):

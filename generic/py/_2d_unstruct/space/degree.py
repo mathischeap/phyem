@@ -40,7 +40,7 @@ class Py2SpaceDegree(Frozen):
 
     @property
     def p(self):
-        """(px, py, ...) of all elements."""
+        """p (an integer) of all elements."""
         return self._p
 
     @property

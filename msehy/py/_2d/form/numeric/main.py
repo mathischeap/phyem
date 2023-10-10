@@ -107,10 +107,10 @@ class MseHyPy2RootFormNumeric(Frozen):
         if saveto is None:
             pass
         else:
-            import pickle
-            from src.config import SIZE
-            if SIZE == 1:
+            from src.config import RANK, MASTER_RANK
+            if RANK == MASTER_RANK:
                 # we are only calling one thread, so just go ahead with it.
+                import pickle
                 with open(saveto, 'wb') as output:
                     pickle.dump(final_interp, output, pickle.HIGHEST_PROTOCOL)
                 output.close()
@@ -120,8 +120,13 @@ class MseHyPy2RootFormNumeric(Frozen):
 
         return final_interp
 
-    def quick_difference(self, t, density=50):
+    def quick_difference(self, t=None, density=50):
         """visualize the difference of form between previous and generic at time t."""
+        if t is None:
+            t = self._f.generic.cochain.newest
+        else:
+            pass
+
         r = np.linspace(0, 1, density)
         s = np.linspace(0, 1, density)
         r, s = np.meshgrid(r, s, indexing='ij')

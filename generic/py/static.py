@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 r"""
 """
-import numpy as np
 from tools.frozen import Frozen
 
 
@@ -60,18 +59,7 @@ class StaticCopy(Frozen):
 
     def visualize(self, **kwargs):
         """visualize."""
-        from tools.matplot.contour import contourf
-        xi = np.linspace(-0.99, 0.99,  20)
-        et = np.linspace(-0.99, 0.99,  20)
-        xy, v = self.reconstruct(xi, et)
-        x, y = xy
-        if len(v) == 2:
-            vx, vy = v
-            contourf(x, y, vx, title='$x$')
-            contourf(x, y, vy, title='$y$')
-        else:
-            v = v[0]
-            contourf(x, y, v, **kwargs)
+        raise NotImplementedError()
 
     def error(self, d=2):
         return self._f.space.error(self._f.cf, self.cochain, d=d)
