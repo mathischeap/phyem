@@ -117,7 +117,7 @@ class MPI_MseHy_Py2_Mesh(Frozen):
         else:
             return self._previous_bd_faces
 
-    def renew(self, region_wise_refining_strength_function, refining_thresholds, evolve=1):
+    def renew(self, region_wise_refining_strength_function, refining_thresholds, evolve=0):
         """
 
         Parameters
@@ -181,13 +181,28 @@ class MPI_MseHy_Py2_Mesh(Frozen):
                 pass
 
         # ======================================================================================
-        if evolve > 0:
-            # renew forms
-            pass
+        all_forms = base['forms']
+        for sym in all_forms:
+            form = all_forms[sym]
+            if form._is_base():
+                form._update()  # update all form automatically to the newest generation.
+                if evolve > 0:
+                    form.evolve(amount_of_cochain=evolve)
+            else:
+                pass
+
+        for sym in all_forms:
+            form = all_forms[sym]
+            if form._is_base():
+                pass
+            else:
+                form._update()  # update all form automatically to the newest generation.
+                _ = form.generic._base  # make sure base form is correctly linked.
+
+    def visualize(self, title=None, **kwargs):
+        """"""
+        if title is None:
+            title = rf"${self.abstract._sym_repr}$"
         else:
             pass
-
-    @property
-    def visualize(self):
-        """"""
-        raise NotImplemented('visualize with refining function.')
+        return self.generic.visualize(title=title, **kwargs)

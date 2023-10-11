@@ -37,7 +37,7 @@ class GenericUnstructuredSpace2D(Frozen):
 
         self._mesh = mesh
         self._abstract = abstract_space
-        self._signature = str(random()+time())
+        self._signature = str(random()+time())[-10:]
         self._degree_cache = {}
 
         self._reduce = Reduce(self)

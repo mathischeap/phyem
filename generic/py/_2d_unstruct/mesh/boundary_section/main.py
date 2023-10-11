@@ -1,10 +1,9 @@
 # -*- coding: utf-8 -*-
 r"""
 """
+import numpy as np
 import matplotlib.pyplot as plt
 import matplotlib
-import numpy as np
-
 plt.rcParams.update({
     "text.usetex": True,
     "font.family": "DejaVu Sans",

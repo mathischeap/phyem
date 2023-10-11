@@ -73,7 +73,6 @@ class ReduceLambda(Frozen):
             else:
                 raise Exception()
             local_cochain[index] = value
-
         return local_cochain
 
     def _k0_local(self, func, degree, element_range):

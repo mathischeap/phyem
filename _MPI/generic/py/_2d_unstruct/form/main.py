@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 r"""
 """
-from src.config import RANK
 from generic.py._2d_unstruct.form.main import GenericUnstructuredForm2D
 
 from _MPI.generic.py.cochain.main import MPI_PY_Form_Cochain
@@ -13,8 +12,7 @@ class MPI_Py_2D_Unstructured_Form(GenericUnstructuredForm2D):
 
     def __repr__(self):
         """repr"""
-        super_repr = super().__repr__().split('object')[1]
-        return f"<form @RANK{RANK} in {self._space}" + super_repr
+        return f"<form in {self._space}"
 
     @property
     def cochain(self):

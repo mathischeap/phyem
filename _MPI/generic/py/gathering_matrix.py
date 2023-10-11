@@ -69,6 +69,10 @@ class MPI_PyGM(Frozen):
         """The global numbering of dos in element #index."""
         return self._gm[index]
 
+    def __len__(self):
+        """How many local elements I am representing?"""
+        return len(self._gm)
+
     def num_local_dofs(self, index):
         """Num of local dofs in element #index."""
         if index not in self._num_local_dofs:

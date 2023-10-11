@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 r"""
 """
-
+from src.config import RANK, MASTER_RANK, COMM, SIZE
 import numpy as np
 from tools.frozen import Frozen
 from tools.quadrature import Quadrature
@@ -55,7 +55,18 @@ class ErrorLambda(Frozen):
                 np.einsum('ij, ij, i, j -> ', diff, metric, *quad_weights, optimize='optimal')
             )
 
-        return np.sum(integral) ** (1/d)
+        rank_error = np.sum(integral)
+
+        if SIZE == 1:
+            return rank_error ** (1/d)
+
+        else:
+            rank_error = COMM.gather(rank_error, root=MASTER_RANK)
+            if RANK == MASTER_RANK:
+                rank_error = sum(rank_error) ** (1/d)
+            else:
+                pass
+            return COMM.bcast(rank_error, root=MASTER_RANK)
 
     def _k0(self, d, cf, cochain, quad_degree):
         """"""
@@ -78,4 +89,15 @@ class ErrorLambda(Frozen):
                 np.einsum('ij, ij, i, j -> ', diff, metric, *quad_weights, optimize='optimal')
             )
 
-        return np.sum(integral) ** (1/d)
+        rank_error = np.sum(integral)
+
+        if SIZE == 1:
+            return rank_error ** (1/d)
+
+        else:
+            rank_error = COMM.gather(rank_error, root=MASTER_RANK)
+            if RANK == MASTER_RANK:
+                rank_error = sum(rank_error) ** (1/d)
+            else:
+                pass
+            return COMM.bcast(rank_error, root=MASTER_RANK)

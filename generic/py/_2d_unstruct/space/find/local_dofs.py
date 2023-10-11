@@ -15,12 +15,12 @@ class FindLocalDofs(Frozen):
         self._cache1_inner = {}
         self._freeze()
 
-    def __call__(self, element, edge_index, degree):
+    def __call__(self, element_index, edge_index, degree):
         """Find the local dofs on edge #edge_index of element.
 
         Parameters
         ----------
-        element
+        element_index
         edge_index
         degree
 
@@ -31,7 +31,7 @@ class FindLocalDofs(Frozen):
         if self._indicator == 'Lambda':
             k = self._space.abstract.k
             orientation = self._space.abstract.orientation
-            ele_type = self._space.mesh[element].type
+            ele_type = self._space.mesh[element_index].type
 
             if k == 1:
                 return getattr(self, f'_Lambda_k{k}_{orientation}')(ele_type, edge_index, degree)

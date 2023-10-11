@@ -179,25 +179,23 @@ class MseHyPy2Mesh(Frozen):
         assert self.representative.generation == self.generation, 'must be!'
 
         # ------------------------------------------------------------------------------------------
-        if evolve > 0:
-            all_forms = base['forms']
-            for sym in all_forms:
-                form = all_forms[sym]
-                if form._is_base():
-                    form._update()  # update all form automatically to the newest generation.
+        all_forms = base['forms']
+        for sym in all_forms:
+            form = all_forms[sym]
+            if form._is_base():
+                form._update()  # update all form automatically to the newest generation.
+                if evolve > 0:
                     form.evolve(amount_of_cochain=evolve)
-                else:
-                    pass
+            else:
+                pass
 
-            for sym in all_forms:
-                form = all_forms[sym]
-                if form._is_base():
-                    pass
-                else:
-                    form._update()  # update all form automatically to the newest generation.
-                    _ = form.generic._base  # make sure base form is correctly linked.
-        else:
-            pass
+        for sym in all_forms:
+            form = all_forms[sym]
+            if form._is_base():
+                pass
+            else:
+                form._update()  # update all form automatically to the newest generation.
+                _ = form.generic._base  # make sure base form is correctly linked.
 
     @property
     def link(self):

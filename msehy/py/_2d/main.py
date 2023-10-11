@@ -239,6 +239,7 @@ def info(*others_2b_printed):
                 ))
         else:
             pass
+
     print(f"\n~) Existing time sequences ------------------------------- ")
     for ats_lin in _global_abstract_time_sequence:
         ats = _global_abstract_time_sequence[ats_lin]

@@ -7,13 +7,13 @@ from src.config import RANK, MASTER_RANK, COMM, SIZE
 from generic.py._2d_unstruct.mesh.elements.distributor import distributor
 
 from _MPI.generic.py._2d_unstruct.mesh.elements.coordinate_transformation import CT
-from _MPI.generic.py._2d_unstruct.mesh.boundary_section.face import _2d_Face
+from _MPI.generic.py._2d_unstruct.mesh.boundary_section.face import _MPI_PY_2d_Face
 
 
 class MPI_Py_2D_Unstructured_MeshElements(Frozen):
     """"""
 
-    def __init__(self, type_dict, vertex_dict, vertex_coordinates, same_vertices_dict):
+    def __init__(self, type_dict, vertex_dict, vertex_coordinates, same_vertices_dict, element_distribution=None):
         """
 
         Parameters
@@ -22,6 +22,10 @@ class MPI_Py_2D_Unstructured_MeshElements(Frozen):
         vertex_dict
         vertex_coordinates
         same_vertices_dict
+        element_distribution :
+            When provide `element_distribution` (in the master core only), we will use this distribution, otherwise,
+            the program distributes the elements automatically.
+
         """
         assert isinstance(type_dict, dict), f"type_dict must be a dict."
         assert isinstance(vertex_dict, dict), f"vertex_dict must be a dict."
@@ -52,7 +56,10 @@ class MPI_Py_2D_Unstructured_MeshElements(Frozen):
             same_vertices_dict = _
 
             element_map = self._make_element_map(vertex_dict, same_vertices_dict)
-            element_distribution = self._distribute_elements_to_ranks(element_map)
+            if element_distribution is None:
+                element_distribution = self._distribute_elements_to_ranks(element_map)
+            else:
+                pass
 
             # ---- these global properties only stored in the master core -------------
             self._total_map = element_map
@@ -284,7 +291,7 @@ class MPI_Py_2D_Unstructured_MeshElements(Frozen):
         else:
             element_index, face_index = element_face_index
             assert element_index in self, f"element #{element_index} is illegal (or not local)."
-            face = _2d_Face(self, element_index, face_index)
+            face = _MPI_PY_2d_Face(self, element_index, face_index)
             self._boundary_face_cache[element_face_index] = face
             return face
 
@@ -295,6 +302,7 @@ class MPI_Py_2D_Unstructured_MeshElements(Frozen):
             top_right_bounds=False,
             saveto=None,
             dpi=200,
+            title=None,
     ):
         if density < 10:
             density = 10
@@ -339,6 +347,11 @@ class MPI_Py_2D_Unstructured_MeshElements(Frozen):
             for element_lines in rank_lines:
                 for line in element_lines:
                     plt.plot(*line, linewidth=0.5, color='gray')
+
+        if title is None:
+            pass
+        else:
+            plt.title(title)
 
         if saveto is not None and saveto != '':
             plt.savefig(saveto, bbox_inches='tight', dpi=dpi)

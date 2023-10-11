@@ -142,8 +142,13 @@ class MseHyPy2RootFormNumeric(Frozen):
         else:
             pass
 
+        if density < 20:
+            density = 20
+        else:
+            density = int(density)
+
         r = np.linspace(0, 1, density)
         s = np.linspace(0, 1, density)
         r, s = np.meshgrid(r, s, indexing='ij')
-        dds1 = self.region_wise_reconstruct(t, r, s, target='generic', density=density)
+        dds1 = self.region_wise_reconstruct(t, r, s, target='generic', density=int(density/2))
         dds1.visualize(saveto=saveto, **kwargs)

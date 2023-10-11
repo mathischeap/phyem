@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 r"""
 """
-
+from src.config import RANK, MASTER_RANK, SIZE, COMM
 import numpy as np
 from tools.frozen import Frozen
 from tools.quadrature import Quadrature
@@ -53,7 +53,17 @@ class NormLambda(Frozen):
             integral.append(
                 np.einsum('ij, i, j -> ', dis * metric, *quad_weights, optimize='optimal')
             )
-        return np.sum(integral) ** (1/d)
+        local_norm = np.sum(integral)
+
+        if SIZE == 1:
+            return local_norm ** (1/d)
+        else:
+            local_norm = COMM.gather(local_norm, root=MASTER_RANK)
+            if RANK == MASTER_RANK:
+                local_norm = sum(local_norm) ** (1/d)
+            else:
+                pass
+            return COMM.bcast(local_norm, root=MASTER_RANK)
 
     def _L_norm_k0(self, d, quad_degree, cochain):
         """"""
@@ -69,4 +79,14 @@ class NormLambda(Frozen):
             integral.append(
                 np.einsum('ij, i, j -> ', dis_v * metric, *quad_weights, optimize='optimal')
             )
-        return np.sum(integral) ** (1/d)
+        local_norm = np.sum(integral)
+
+        if SIZE == 1:
+            return local_norm ** (1/d)
+        else:
+            local_norm = COMM.gather(local_norm, root=MASTER_RANK)
+            if RANK == MASTER_RANK:
+                local_norm = sum(local_norm) ** (1/d)
+            else:
+                pass
+            return COMM.bcast(local_norm, root=MASTER_RANK)

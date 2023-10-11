@@ -29,7 +29,8 @@ class ParticularCochainAtTimeInstant(Frozen):
         # check what we kind of cochain we receive, and convert it to `local` type any way.
         if isinstance(cochain, dict):
             gm = self._f.cochain.gathering_matrix
-            assert len(cochain) == len(gm), f'cochain length does not match that of the gathering matrix.'
+            assert len(cochain) == len(gm), \
+                f'cochain length {len(cochain)} does not match that of the gathering matrix.'
             for index in gm:
                 assert index in cochain, f"cochain for element #{index} is missing"
                 assert isinstance(cochain[index], np.ndarray), f"local cochain in element #{index} is not a ndarray."
