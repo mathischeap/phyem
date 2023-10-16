@@ -268,12 +268,12 @@ class MPI_Py_2D_Unstructured_MeshElements(Frozen):
     # ==================================================================================================
 
     def __iter__(self):
-        """iteration over local elements by indices"""
+        """iteration over local elements by indices."""
         for index in self._elements_dict:
             yield index
 
     def __getitem__(self, index):
-        """get a local element by index"""
+        """get a local element by index."""
         return self._elements_dict[index]
 
     def __len__(self):

@@ -275,7 +275,7 @@ class MsePyNonlinearSystemNewtonRaphsonSolve(Frozen):
             )
 
             BETA.append(beta)
-            JUDGE, stop_iteration, convergence_info, JUDGE_explanation = _nLS_stop_criterion(
+            JUDGE, stop_iteration, convergence_info, JUDGE_explanation = _check_stop_criterion_(
                 BETA, atol, ITER, maxiter
             )
 
@@ -320,7 +320,7 @@ class MsePyNonlinearSystemNewtonRaphsonSolve(Frozen):
         return results, message, info
 
 
-def _nLS_stop_criterion(BETA, atol, ITER, maxiter):
+def _check_stop_criterion_(BETA, atol, ITER, maxiter):
     """
 
     Parameters
@@ -400,9 +400,9 @@ def _nLS_stop_criterion(BETA, atol, ITER, maxiter):
             raise Exception()
 
     else:  # do not stop iterations.
+        JUDGE = 0
         stop_iteration = False
         info = None
-        JUDGE = 0
         JUDGE_explanation = ''
 
     assert stop_iteration in (True, False), "stop_iteration has to be set."

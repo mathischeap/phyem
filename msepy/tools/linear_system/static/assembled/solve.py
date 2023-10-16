@@ -120,6 +120,7 @@ class _PackageMKL(Frozen):
         self._system_info = system_info
         self._freeze()
 
+    # noinspection PyUnresolvedReferences
     def qr(self, A, b, **kwargs):
         """"""
         from sparse_dot_mkl import sparse_qr_solve_mkl

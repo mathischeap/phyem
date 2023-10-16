@@ -3,7 +3,7 @@ r"""
 """
 import numpy as np
 from tools.frozen import Frozen
-from src.config import RANK, MASTER_RANK, COMM
+from src.config import RANK, MASTER_RANK, COMM, MPI
 from _MPI.generic.py._2d_unstruct.mesh.elements.main import MPI_Py_2D_Unstructured_MeshElements
 from _MPI.generic.py._2d_unstruct.mesh.boundary_section.coordinate_transformation import _MPI_PY_2d_BS_CT
 
@@ -32,6 +32,7 @@ class MPI_Py_2D_Unstructured_BoundarySection(Frozen):
         self._base = base_elements
         self._indices = local_element_faces  # the element-face-indices that involved in this rank.
         self._ct = _MPI_PY_2d_BS_CT(self)
+        self._num_total_covered_faces = None
         self._freeze()
 
     def __repr__(self):
@@ -59,8 +60,16 @@ class MPI_Py_2D_Unstructured_BoundarySection(Frozen):
         return index in self._indices
 
     def __len__(self):
-        """How many local faces?"""
+        """How many local faces is boundary-section covers?"""
         return len(self._indices)
+
+    @property
+    def num_total_covered_faces(self):
+        """The total amount of faces across all ranks this boundary section is covering."""
+        if self._num_total_covered_faces is None:
+            num_local_faces = len(self)
+            self._num_total_covered_faces = COMM.allreduce(num_local_faces, op=MPI.SUM)
+        return self._num_total_covered_faces
 
     def __getitem__(self, index):
         """"""

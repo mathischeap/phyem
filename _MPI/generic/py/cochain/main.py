@@ -3,6 +3,8 @@ r"""
 """
 from generic.py.cochain.main import Cochain, CochainLockedError
 from _MPI.generic.py.cochain.time_instant_cochain import MPI_PY_Particular_Cochain_At_TimeInstant
+from _MPI.generic.py.vector.localize.static import MPI_PY_Localize_Static_Vector_Cochain
+from _MPI.generic.py.vector.localize.dynamic import MPI_PY_Localize_Dynamic_Vector_Cochain
 
 
 class MPI_PY_Form_Cochain(Cochain):
@@ -30,17 +32,17 @@ class MPI_PY_Form_Cochain(Cochain):
         else:
             rf._base.cochain._set(t, cochain)
 
-    # def static_vec(self, t):
-    #     """"""
-    #     assert isinstance(t, (int, float)), f"t={t} is wrong."
-    #     if t in self:
-    #         return MPI_PY_Localize_Static_Vector_Cochain(self._f, t, self[t].local, self.gathering_matrix)
-    #     else:
-    #         # this one is usually used to receive a cochain.
-    #         return MPI_PY_Localize_Static_Vector_Cochain(self._f, t, None, self.gathering_matrix)
-    #         # the data is None (empty)
-    #
-    # @property
-    # def dynamic_vec(self):
-    #     """"""
-    #     return MPI_PY_Localize_Dynamic_Vector_Cochain(self._dynamic_cochain_caller)
+    def static_vec(self, t):
+        """"""
+        assert isinstance(t, (int, float)), f"t={t} is wrong."
+        if t in self:
+            return MPI_PY_Localize_Static_Vector_Cochain(self._f, t, self[t].local, self.gathering_matrix)
+        else:
+            # this one is usually used to receive a cochain.
+            return MPI_PY_Localize_Static_Vector_Cochain(self._f, t, None, self.gathering_matrix)
+            # the data is None (empty)
+
+    @property
+    def dynamic_vec(self):
+        """"""
+        return MPI_PY_Localize_Dynamic_Vector_Cochain(self._dynamic_cochain_caller)

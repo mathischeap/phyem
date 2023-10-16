@@ -135,7 +135,7 @@ class MseHyPy2RootFormNumeric(Frozen):
         dds = dds1 - dds2   # 1 - 2
         dds.visualize(magnitude=True)
 
-    def quick_visualize(self, t=None, density=50, saveto=None, **kwargs):
+    def quick_visualize(self, t=None, target='generic', density=50, saveto=None, **kwargs):
         """A quick visualization of generic cochain @ time t"""
         if t is None:
             t = self._f.generic.cochain.newest
@@ -150,5 +150,5 @@ class MseHyPy2RootFormNumeric(Frozen):
         r = np.linspace(0, 1, density)
         s = np.linspace(0, 1, density)
         r, s = np.meshgrid(r, s, indexing='ij')
-        dds1 = self.region_wise_reconstruct(t, r, s, target='generic', density=int(density/2))
+        dds1 = self.region_wise_reconstruct(t, r, s, target=target, density=int(density/2))
         dds1.visualize(saveto=saveto, **kwargs)

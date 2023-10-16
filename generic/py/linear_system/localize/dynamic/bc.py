@@ -158,7 +158,7 @@ class BoundaryCondition(Frozen):
 
     def __repr__(self):
         """repr"""
-        return '<generic-mse-py DLS ' + self._raw_ls_bc.__repr__()[1:]
+        return '<generic-msepy DLS ' + self._raw_ls_bc.__repr__()[1:]
 
 
 class Natural_BoundaryCondition(BoundaryCondition):

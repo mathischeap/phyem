@@ -38,21 +38,21 @@ class ReconstructMatrixLambda(Frozen):
         """"""
         assert np.ndim(xi) == np.ndim(et) == 1, f"I need 1d xi and et"
         _, BF = self._space.basis_functions(degree, xi, et)
-        rm_cache = dict()
         rm_dict = dict()
+        _global_cache_rm0_ = dict()
         for e in element_range:
 
-            cache_index = self._mesh[e].metric_signature
+            metric_signature = self._mesh[e].metric_signature
 
-            if cache_index in rm_cache:
+            if metric_signature in _global_cache_rm0_:
                 pass
 
             else:
                 bf = BF[e]
                 x0 = bf[0].T
-                rm_cache[cache_index] = (x0, )
+                _global_cache_rm0_[metric_signature] = (x0, )
 
-            rm_dict[e] = rm_cache[cache_index]
+            rm_dict[e] = _global_cache_rm0_[metric_signature]
 
         return rm_dict
 
@@ -90,7 +90,9 @@ class ReconstructMatrixLambda(Frozen):
                 y1 = + v * iJ00
                 rm_e_y = np.vstack((y0, y1)).T
 
-                rm_cache[cache_index] = (rm_e_x, rm_e_y)
+                rm = (rm_e_x, rm_e_y)
+
+                rm_cache[cache_index] = rm
 
             rm_dict[e] = rm_cache[cache_index]
 
@@ -129,7 +131,9 @@ class ReconstructMatrixLambda(Frozen):
                 y1 = v * iJ11
                 rm_e_y = np.vstack((y0, y1)).T
 
-                rm_cache[cache_index] = (rm_e_x, rm_e_y)
+                rm = (rm_e_x, rm_e_y)
+
+                rm_cache[cache_index] = rm
 
             rm_dict[e] = rm_cache[cache_index]
 
@@ -140,21 +144,21 @@ class ReconstructMatrixLambda(Frozen):
         assert np.ndim(xi) == np.ndim(et) == 1, f"I need 1d xi and et"
         xi_et, BF = self._space.basis_functions(degree, xi, et)
         iJ = self._mesh.ct.inverse_Jacobian(*xi_et, element_range=element_range)
-        rm_cache = dict()
         rm_dict = dict()
+        _global_cache_rm2_ = dict()
         for e in element_range:
 
-            cache_index = self._mesh[e].metric_signature
+            metric_signature = self._mesh[e].metric_signature
 
-            if cache_index in rm_cache:
+            if metric_signature in _global_cache_rm2_:
                 pass
 
             else:
                 bf = BF[e]
                 ij = iJ[e]
                 x0 = bf[0] * ij
-                rm_cache[cache_index] = (x0.T, )
+                _global_cache_rm2_[metric_signature] = (x0.T, )
 
-            rm_dict[e] = rm_cache[cache_index]
+            rm_dict[e] = _global_cache_rm2_[metric_signature]
 
         return rm_dict

@@ -41,6 +41,7 @@ class MPI_PY2_GatheringMatrixLambda(Frozen):
             return self._cache_000[p]
         else:
             pass
+
         if RANK == MASTER_RANK:
             element_map = self._mesh._total_map
             numbered_edges = dict()

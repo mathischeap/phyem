@@ -100,7 +100,7 @@ class MPI_MseHy_Py2_Form_Numeric(Frozen):
         else:
             pass
 
-    def quick_visualize(self, t=None, density=50, saveto=None, **kwargs):
+    def quick_visualize(self, t=None, target='generic', density=50, saveto=None, **kwargs):
         """A quick visualization of generic cochain @ time t"""
         if t is None:
             t = self._f.generic.cochain.newest
@@ -115,7 +115,7 @@ class MPI_MseHy_Py2_Form_Numeric(Frozen):
         r = np.linspace(0, 1, density)
         s = np.linspace(0, 1, density)
         r, s = np.meshgrid(r, s, indexing='ij')
-        dds1 = self.region_wise_reconstruct(t, r, s, target='generic', density=int(density/2))
+        dds1 = self.region_wise_reconstruct(t, r, s, target=target, density=int(density/2))
         if RANK == MASTER_RANK:
             dds1.visualize(saveto=saveto, **kwargs)
         else:  # dds1 is None in non-master ranks.

@@ -9,6 +9,8 @@ from scipy.sparse import csr_matrix, bmat
 from generic.py.matrix.localize.static import Localize_Static_Matrix
 
 _global_cache_0_ = {}
+_global_cache_1_inner_ = {}
+_global_cache_1_outer_ = {}
 _global_cache_2_ = {}
 
 
@@ -117,28 +119,39 @@ class MassMatrixLambda(Frozen):
         for index in detJM:
             if index in csm:
                 metric_signature = index
+                use_global_cache = False
             else:
                 element = self._mesh[index]
                 metric_signature = element.metric_signature
+                use_global_cache = True
 
             if metric_signature in cache:
                 M[index] = cache[metric_signature]
             else:
-                det_jm = detJM[index]
-                g = G[index]
-                bf = BF[index]
-                M00 = self._einsum_helper(quad_weights * det_jm * g[1][1], bf[0], bf[0])
-                M11 = self._einsum_helper(quad_weights * det_jm * g[0][0], bf[1], bf[1])
+                if use_global_cache and metric_signature in _global_cache_1_outer_:
+                    m = _global_cache_1_outer_[metric_signature]
+                else:
+                    det_jm = detJM[index]
+                    g = G[index]
+                    bf = BF[index]
+                    M00 = self._einsum_helper(quad_weights * det_jm * g[1][1], bf[0], bf[0])
+                    M11 = self._einsum_helper(quad_weights * det_jm * g[0][0], bf[1], bf[1])
 
-                M01 = - self._einsum_helper(quad_weights * det_jm * g[1][0], bf[0], bf[1])
-                M10 = M01.T
+                    M01 = - self._einsum_helper(quad_weights * det_jm * g[1][0], bf[0], bf[1])
+                    M10 = M01.T
 
-                m = bmat(
-                    [
-                        (M00, M01),
-                        (M10, M11)
-                    ], format='csr'
-                )
+                    m = bmat(
+                        [
+                            (M00, M01),
+                            (M10, M11)
+                        ], format='csr'
+                    )
+
+                    if use_global_cache:
+                        _global_cache_1_outer_[metric_signature] = m
+                    else:
+                        pass
+
                 cache[metric_signature] = m
                 M[index] = m
 
@@ -159,27 +172,38 @@ class MassMatrixLambda(Frozen):
         for index in detJM:
             if index in csm:
                 metric_signature = index
+                use_global_cache = False
             else:
                 element = self._mesh[index]
                 metric_signature = element.metric_signature
+                use_global_cache = True
 
             if metric_signature in cache:
                 M[index] = cache[metric_signature]
             else:
-                det_jm = detJM[index]
-                g = G[index]
-                bf = BF[index]
-                M00 = self._einsum_helper(quad_weights * det_jm * g[0][0], bf[0], bf[0])
-                M11 = self._einsum_helper(quad_weights * det_jm * g[1][1], bf[1], bf[1])
-                M01 = self._einsum_helper(quad_weights * det_jm * g[0][1], bf[0], bf[1])
-                M10 = M01.T
+                if use_global_cache and metric_signature in _global_cache_1_inner_:
+                    m = _global_cache_1_inner_[metric_signature]
+                else:
+                    det_jm = detJM[index]
+                    g = G[index]
+                    bf = BF[index]
+                    M00 = self._einsum_helper(quad_weights * det_jm * g[0][0], bf[0], bf[0])
+                    M11 = self._einsum_helper(quad_weights * det_jm * g[1][1], bf[1], bf[1])
+                    M01 = self._einsum_helper(quad_weights * det_jm * g[0][1], bf[0], bf[1])
+                    M10 = M01.T
 
-                m = bmat(
-                    [
-                        (M00, M01),
-                        (M10, M11)
-                    ], format='csr'
-                )
+                    m = bmat(
+                        [
+                            (M00, M01),
+                            (M10, M11)
+                        ], format='csr'
+                    )
+
+                    if use_global_cache:
+                        _global_cache_1_inner_[metric_signature] = m
+                    else:
+                        pass
+
                 cache[metric_signature] = m
                 M[index] = m
 

@@ -23,6 +23,10 @@ class MPI_MseHy_Py2_Mesh(Frozen):
 
         self._manifold = None
         self.___is_mesh___ = None
+        self._link_cache = {
+            'g': -1,
+            'link': None
+        }
         self._freeze()
 
     @property
@@ -117,7 +121,7 @@ class MPI_MseHy_Py2_Mesh(Frozen):
         else:
             return self._previous_bd_faces
 
-    def renew(self, region_wise_refining_strength_function, refining_thresholds, evolve=0):
+    def renew(self, region_wise_refining_strength_function, refining_thresholds, evolve=1):
         """
 
         Parameters
@@ -199,10 +203,81 @@ class MPI_MseHy_Py2_Mesh(Frozen):
                 form._update()  # update all form automatically to the newest generation.
                 _ = form.generic._base  # make sure base form is correctly linked.
 
-    def visualize(self, title=None, **kwargs):
+    def visualize(self, title=None, show_refining_strength_distribution=True, **kwargs):
         """"""
         if title is None:
             title = rf"${self.abstract._sym_repr}$"
         else:
             pass
-        return self.generic.visualize(title=title, **kwargs)
+        if self._is_mesh() and show_refining_strength_distribution:
+            if RANK == MASTER_RANK:
+                self.background.visualize(
+                    title=title,
+                    show_refining_strength_distribution=show_refining_strength_distribution,
+                    **kwargs
+                )
+            else:
+                pass
+        else:
+            return self.generic.visualize(title=title, **kwargs)
+
+    @property
+    def link(self):
+        """We link all elements of previous elements and current elements.
+
+        {
+            dest_element_index: None,                           # two fc be same (so they have same indices)
+            dest_element_index: [source_element_index_0, ...],  # dest fc is consist of multiple source cells.
+            dest_element_index: source_element_index,           # dest fc is a part of the source cell.
+            ...,
+        }
+        `dest_element_index` involves all local element indices. `source_element_index` refers to local
+        element indices in the local rank. So, we cannot break triangles based on the same msepy elements into
+        two ranks. This is not ideal because, when the mesh refinement is happening in for example one rank,
+        the loading of that one rank may be much higher than others, which makes the parallel efficiency low.
+
+        Parameters
+        ----------
+
+        Returns
+        -------
+
+        """
+        g = self.generation
+
+        if g == self._link_cache['g']:
+            return self._link_cache['link']
+        else:
+            pass
+
+        if RANK == MASTER_RANK:
+            link = self.background.link
+            # print(self.previous._element_distribution)
+            LINK = list()
+            for element_indices in self.generic._element_distribution:
+                local_link = dict()
+                for index in element_indices:
+                    local_link[index] = link[index]
+                LINK.append(local_link)
+
+        else:
+            LINK = None
+        LINK = COMM.scatter(LINK, root=MASTER_RANK)
+        for index in LINK:
+            assert index in self.generic, f"element #{index} is not a local element in RANK #{RANK}."
+            linked_to = LINK[index]
+            if linked_to is None:
+                assert index in self.previous, \
+                    f"element #{index} is not a local element in previous elements of RANK #{RANK}."
+            elif isinstance(linked_to, list):
+                for i in linked_to:
+                    assert i in self.previous, \
+                        f"element #{i} is not a local element in previous elements of RANK #{RANK}."
+            else:
+                assert linked_to in self.previous, \
+                    f"element #{linked_to} is not a local element in previous elements of RANK #{RANK}."
+
+        self._link_cache['g'] = g
+        self._link_cache['link'] = LINK
+
+        return LINK

@@ -73,9 +73,10 @@ class ParticularCochainAtTimeInstant(Frozen):
         i = list(elements_local_indices.keys())[0]
         elements, local_rows = elements_local_indices[i]
         values = list()
+        local = self.local
         for e, i in zip(elements, local_rows):
             values.append(
-                self.local[e][i]
+                local[e][i]
             )
 
         if average:

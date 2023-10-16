@@ -175,6 +175,65 @@ class MPI_MseHy_Py2_Form(Frozen):
                 self._generic.cf = self._cf_cache
                 # =================================================
 
+    # ------- key method ----------------------------------------------------------------------
+    def evolve(self, amount_of_cochain=1):
+        """take the cochain of `previous` and project them into `generic`."""
+        link = self.mesh.link
+
+        pre_f = self.previous
+        cur_f = self.generic
+
+        if pre_f is None:
+            return
+        else:
+            pass
+
+        old_csm = pre_f.space.basis_functions.csm(self.degree)
+        new_csm = cur_f.space.basis_functions.csm(self.degree)
+
+        pre_cochain = pre_f.cochain
+        pre_cochain_times = list(pre_cochain._tcd.keys())
+        cochain_times_2b_evolved = pre_cochain_times[-amount_of_cochain:]
+
+        for t in cochain_times_2b_evolved:
+            sour_cochain = pre_cochain[t].local
+            dest_cochain: Dict = dict()
+
+            for dest_index in link:
+                source_indices = link[dest_index]
+                if source_indices is None:
+                    # cell is the same, cannot just pass it to the destination.
+                    raw_cochain = sour_cochain[dest_index]
+                    if dest_index in old_csm:
+                        dest_cochain[dest_index] = old_csm[dest_index] @ raw_cochain
+                    else:
+                        dest_cochain[dest_index] = raw_cochain
+
+                else:
+                    if isinstance(source_indices, list):
+                        # dest cell is coarser: get cochain from multiple smaller cell.
+                        assert len(source_indices) > 1, f'Must be!'
+                        local_source_cochains = dict()
+                        for si in source_indices:
+                            local_source_cochains[si] = sour_cochain[si]
+
+                        cochain = self.space.coarsen(
+                            self.degree, dest_index, source_indices, local_source_cochains
+                        )
+                    else:  # dest cell is more refined: get cochain from a bigger cell.
+                        local_source_cochain = sour_cochain[source_indices]
+                        cochain = self.space.refine(
+                            self.degree, dest_index, source_indices, local_source_cochain
+                        )
+                    dest_cochain[dest_index] = cochain
+
+            for index in dest_cochain:
+                if index in new_csm:
+                    dest_cochain[index] = new_csm[index] @ dest_cochain[index]
+                else:
+                    pass
+            cur_f.cochain._set(t, dest_cochain)
+
     # ============================================================================================
 
     @property

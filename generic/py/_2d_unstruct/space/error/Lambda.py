@@ -52,7 +52,10 @@ class ErrorLambda(Frozen):
             metric = J[e]
             diff = (dis_u - ext_u) ** d + (dis_v - ext_v) ** d
             integral.append(
-                np.einsum('ij, ij, i, j -> ', diff, metric, *quad_weights, optimize='optimal')
+                np.einsum(
+                    'ij, ij, i, j -> ',
+                    diff, metric, *quad_weights,
+                    optimize='optimal')
             )
 
         rank_error = np.sum(integral)
@@ -86,7 +89,10 @@ class ErrorLambda(Frozen):
 
             diff = (dis_v - ext_v) ** d
             integral.append(
-                np.einsum('ij, ij, i, j -> ', diff, metric, *quad_weights, optimize='optimal')
+                np.einsum(
+                    'ij, ij, i, j -> ',
+                    diff, metric, *quad_weights,
+                    optimize='optimal')
             )
 
         rank_error = np.sum(integral)

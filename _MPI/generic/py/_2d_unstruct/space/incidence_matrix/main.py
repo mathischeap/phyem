@@ -2,10 +2,10 @@
 r"""
 """
 from tools.frozen import Frozen
-from _MPI.generic.py._2d_unstruct.space.incidence_matrix.Lambda import MPI_PY2_IncidenceMatrixLambda
+from _MPI.generic.py._2d_unstruct.space.incidence_matrix.Lambda import MPI_PY_IncidenceMatrixLambda
 
 
-class MPI_PY2_IncidenceMatrix(Frozen):
+class MPI_PY_IncidenceMatrix(Frozen):
     """"""
 
     def __init__(self, space):
@@ -26,5 +26,5 @@ class MPI_PY2_IncidenceMatrix(Frozen):
     def Lambda(self):
         """"""
         if self._Lambda is None:
-            self._Lambda = MPI_PY2_IncidenceMatrixLambda(self._space)
+            self._Lambda = MPI_PY_IncidenceMatrixLambda(self._space)
         return self._Lambda

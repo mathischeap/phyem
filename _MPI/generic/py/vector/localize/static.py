@@ -4,16 +4,16 @@ r"""
 from typing import Dict
 import numpy as np
 from tools.frozen import Frozen
-from generic.py.gathering_matrix import PyGM
-from generic.py.vector.globalize.static import Globalize_Static_Vector
+from _MPI.generic.py.gathering_matrix import MPI_PyGM
+from _MPI.generic.py.vector.globalize.static import MPI_PY_Globalize_Static_Vector
 
 
-class Localize_Static_Vector(Frozen):
+class MPI_PY_Localize_Static_Vector(Frozen):
     """"""
 
     def __init__(self, localized_vector, gm):
         """"""
-        assert gm.__class__ is PyGM, f'gm is not a {PyGM}'
+        assert gm.__class__ is MPI_PyGM, f'gm is not a {MPI_PyGM}'
 
         # ------------- initialize a empty vector --------------------------------------------
         if isinstance(localized_vector, (int, float)) and localized_vector == 0:
@@ -32,18 +32,20 @@ class Localize_Static_Vector(Frozen):
 
         self._meta_data = None
         self._gm = gm
+
         self._set_data(localized_vector)
-        self._adjust = _Adjust(self)
-        self._customize = _Customize(self)
+
+        self._adjust = _MPI_PY2_VEC_Adjust(self)
+        self._customize = _MPI_PY2_VEC_Customize(self)
         self._freeze()
 
     def __repr__(self):
         """repr"""
         super_repr = super().__repr__().split('object')[1]
-        return f"<Localize_Static_Vector over {len(self)} elements{super_repr}>"
+        return f"<MPI-PY2-Localize_Static_Vector over {len(self)} elements{super_repr}>"
 
     def _set_data(self, localized_vector):
-        """"""
+        """Put this in a separate method since we may want to change the data later on."""
         if localized_vector is None:
             self._meta_data = None
             self._dtype = 'None'
@@ -88,6 +90,8 @@ class Localize_Static_Vector(Frozen):
             return self._meta_data[index]
         elif self._dtype == 'realtime':
             return self._meta_data(index)
+        elif self._dtype == "None":
+            raise Exception('None dtype has no data.')
         else:
             raise NotImplementedError(self._dtype)
 
@@ -119,7 +123,7 @@ class Localize_Static_Vector(Frozen):
             yield index
 
     def __contains__(self, index):
-        """If `index` is a valid index of the gathering matrix."""
+        """If `index` is a valid local element index of self / the gathering matrix."""
         return index in self._gm
 
     def assemble(self):
@@ -131,7 +135,7 @@ class Localize_Static_Vector(Frozen):
             Vi = self[i]  # all adjustments and customizations take effect.
             v[gm[i]] += Vi  # must do this to be consistent with the matrix assembling.
 
-        return Globalize_Static_Vector(v, gm)
+        return MPI_PY_Globalize_Static_Vector(v)
 
     def __rmul__(self, other):
         """other * self"""
@@ -141,7 +145,7 @@ class Localize_Static_Vector(Frozen):
                 A = self.___get_adjust_data___(index)
                 return other * A
 
-            return Localize_Static_Vector(___rmul_float_caller___, self._gm)
+            return self.__class__(___rmul_float_caller___, self._gm)
 
         else:
             raise NotImplementedError()
@@ -158,7 +162,7 @@ class Localize_Static_Vector(Frozen):
                 B = other.___get_adjust_data___(index)
                 return A + B
 
-            return Localize_Static_Vector(___add_caller___, self._gm)
+            return self.__class__(___add_caller___, self._gm)
 
         else:
             raise NotImplementedError()
@@ -175,7 +179,7 @@ class Localize_Static_Vector(Frozen):
                 B = other.___get_adjust_data___(index)
                 return A - B
 
-            return Localize_Static_Vector(___sub_caller___, self._gm)
+            return self.__class__(___sub_caller___, self._gm)
 
         else:
             raise NotImplementedError()
@@ -184,10 +188,10 @@ class Localize_Static_Vector(Frozen):
         """"""
         def ___neg_caller___(index):
             return - self.___get_adjust_data___(index)
-        return Localize_Static_Vector(___neg_caller___, self._gm)
+        return self.__class__(___neg_caller___, self._gm)
 
 
-class _Adjust(Frozen):
+class _MPI_PY2_VEC_Adjust(Frozen):
     """"""
 
     def __init__(self, V):
@@ -208,7 +212,7 @@ class _Adjust(Frozen):
         return self._adjustments[i]
 
 
-class _Customize(Frozen):
+class _MPI_PY2_VEC_Customize(Frozen):
     """"""
 
     def __init__(self, V):
@@ -244,16 +248,27 @@ class _Customize(Frozen):
         dof = list(elements_local_rows.keys())[0]
         elements, local_rows = elements_local_rows[dof]
         element, local_row = elements[0], local_rows[0]
-        data = self._V[element]
-        data[local_row] = value
-        self._customizations[element] = data
-        for element, local_row in zip(elements[1:], local_rows[1:]):
+
+        if element in self._V:
             data = self._V[element]
-            data[local_row] = 0
+            data[local_row] = value
             self._customizations[element] = data
 
+        for element, local_row in zip(elements[1:], local_rows[1:]):
+            if element in self._V:
+                data = self._V[element]
+                data[local_row] = 0
+                self._customizations[element] = data
+            else:
+                pass
+
     def set_values(self, global_dofs, cochain):
-        """set `v[global_dofs]` to be `cochain`."""
+        """set `v[global_dofs]` to be `cochain`.
+
+        We need have the same inputs for all ranks since we will use method
+        `_find_elements_and_local_indices_of_dofs` of the MPI-version-GM.
+
+        """
         # first we build up one-2-one relation between dofs and cochain
         if isinstance(cochain, (int, float)):
             cochain = np.ones(len(global_dofs)) * cochain
@@ -279,7 +294,10 @@ class _Customize(Frozen):
 
         involved_data = dict()
         for element in involved_elements:
-            involved_data[element] = self._V[element]
+            if element in self._V:
+                involved_data[element] = self._V[element]
+            else:
+                pass
 
         for dof in dof_cochain_dict:
             cochain = dof_cochain_dict[dof]
@@ -287,20 +305,27 @@ class _Customize(Frozen):
 
             element, row = elements[0], rows[0]
 
-            involved_data[element][row] = cochain
+            if element in self._V:
+                involved_data[element][row] = cochain
+            else:
+                pass
 
             if len(elements) == 1:  # this dof only appear in a single place.
                 pass
             else:
                 elements, rows = elements[1:], rows[1:]
                 for element, row in zip(elements, rows):
-                    involved_data[element][row] = 0  # set other places to be 0.
+
+                    if element in self._V:
+                        involved_data[element][row] = 0  # set other places to be 0.
+                    else:
+                        pass
 
         for element in involved_data:  # update customization
             self._customizations[element] = involved_data[element]
 
 
-class Localize_Static_Vector_Cochain(Localize_Static_Vector):
+class MPI_PY_Localize_Static_Vector_Cochain(MPI_PY_Localize_Static_Vector):
     """"""
 
     def __init__(self, rf, t, localized_vector, gm):
@@ -309,7 +334,7 @@ class Localize_Static_Vector_Cochain(Localize_Static_Vector):
             pass
         else:
             assert isinstance(localized_vector, dict), \
-                f"{Localize_Static_Vector_Cochain} only accepts dict array"
+                f"{MPI_PY_Localize_Static_Vector_Cochain} only accepts dict array"
         self._f = rf
         self._t = t
         super().__init__(localized_vector, gm)

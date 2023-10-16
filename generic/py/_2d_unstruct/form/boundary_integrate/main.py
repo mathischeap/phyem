@@ -3,6 +3,7 @@ r"""
 """
 from tools.frozen import Frozen
 from generic.py._2d_unstruct.mesh.boundary_section.main import BoundarySection
+from _MPI.generic.py._2d_unstruct.mesh.boundary_section.main import MPI_Py_2D_Unstructured_BoundarySection
 
 from generic.py._2d_unstruct.form.boundary_integrate.with_vc_over_boundary_section.Lambda import (
     Boundary_Integrate_VC_BS_Lambda)
@@ -30,7 +31,10 @@ class Boundary_Integrate(Frozen):
         -------
 
         """
-        assert boundary_section.__class__ is BoundarySection, f'need a boundary section'
+        assert boundary_section.__class__ in (
+            BoundarySection,
+            MPI_Py_2D_Unstructured_BoundarySection
+        ), f'need a boundary section, now it is {boundary_section}'
         assert boundary_section.base is self._mesh, f'boundary section does not match the mesh.'
 
         space = self._f.space

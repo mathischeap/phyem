@@ -139,12 +139,21 @@ def _parse_root_forms(abstract_rfs):
     base['forms'] = rf_dict
 
 
+from src.wf.mp.linear_system import MatrixProxyLinearSystem
+
+
 def _parse(obj):
     """The objects other than manifolds, meshes, spaces, root-forms that should be parsed for this
     particular fem setting.
     """
-    return None  # do not raise Error (like below)!
-    # raise NotImplementedError(f"cannot parse msepy implementation for {obj}.")
+    if obj.__class__ is MatrixProxyLinearSystem:
+        from _MPI.generic.py.linear_system.localize.dynamic.main import MPI_PY_Dynamic_Linear_System
+        dynamic_linear_system = MPI_PY_Dynamic_Linear_System(obj, base)
+        return dynamic_linear_system
+
+    else:
+        return None  # do not raise Error (like below)!
+        # raise NotImplementedError(f"cannot parse msepy implementation for {obj}.")
 
 
 def _post_initialization_actions():
@@ -205,32 +214,32 @@ def info(*others_2b_printed):
     new_time = time()
     total_cost = new_time - start_time
     if RANK == MASTER_RANK:
-        from src.time_sequence import _global_abstract_time_sequence
         print(f'=== [{count}] {MyTimer.current_time()} -after- %.2f(s),'
               f' total: {MyTimer.seconds2dhms(total_cost)} <----' % (new_time - old_time))
         print(f"~) Form with newest cochain @ ---------------------------- ")
-        for form_sym in forms:
-            form = forms[form_sym]
-            if form._is_base():
-                newest_time = form.cochain.newest
-                if newest_time is not None:
-                    print('{:>20} @ {:<15}'.format(
-                        form.abstract._pure_lin_repr, newest_time
-                    ))
-            else:
-                pass
+    for form_sym in forms:
+        form = forms[form_sym]
+        if form._is_base():
+            newest_time = form.cochain.newest
+            if newest_time is not None:
+                _ = form.abstract._pure_lin_repr, newest_time
+                if RANK == MASTER_RANK:
+                    print('{:>20} @ {:<15}'.format(*_))
+        else:
+            pass
+    if RANK == MASTER_RANK:
         print(f"\n~) Existing time sequences ------------------------------- ")
-        for ats_lin in _global_abstract_time_sequence:
-            ats = _global_abstract_time_sequence[ats_lin]
-            ats.info()
+    from src.time_sequence import _global_abstract_time_sequence
+    for ats_lin in _global_abstract_time_sequence:
+        ats = _global_abstract_time_sequence[ats_lin]
+        ats.info()
 
+    if RANK == MASTER_RANK:
         print(f"\n~) Others: ~~~~")
         for i, other in enumerate(others_2b_printed):
             print(f"  {i}) -> {other}\n")
 
         print()
-    else:
-        pass
 
     _info_cache['info_count'] = count + 1
     _info_cache['info_time'] = new_time

@@ -38,13 +38,14 @@ class PyGM(Frozen):
                 if num_elements is None:
                     num_elements = len(gm)
                 else:
-                    assert num_elements == len(gm)
+                    assert num_elements == len(gm), f'gms element amount dis-match.'
 
             signatures = '-o-'.join(signatures)
             if signatures == _global_cgm_cache['signatures']:
                 # the chained gm is same to the previous one, return it from cache.
                 cgm = _global_cgm_cache['cgm']
             else:
+                # --------------------------------------------------------------
                 num_local_dofs = dict()
                 for i in gms[0]:
                     _ = 0
@@ -88,8 +89,10 @@ class PyGM(Frozen):
                 else:
                     self._check_chain_gm(cgm, gms)
                     _global_cgm_cache['checked'] = True
+
                 _global_cgm_cache['signatures'] = signatures
                 _global_cgm_cache['cgm'] = cgm
+                # ==============================================================
 
             gm = cgm
             gms = gms
@@ -120,11 +123,11 @@ class PyGM(Frozen):
                 max(cgm[index])
             )
         cgm_num_dofs = max(cgm_num_dofs) + 1
+        assert cgm_num_dofs == num_dofs, f'Total num dofs wrong'
 
         if cgm_num_dofs > 10000:
             return
 
-        assert cgm_num_dofs == num_dofs, f'Total num dofs wrong'
         # ---- carefully check it.
         checking_dict = dict()
         numbering_pool = list()

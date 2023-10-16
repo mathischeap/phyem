@@ -51,7 +51,10 @@ class NormLambda(Frozen):
             metric = J[e]
             dis = dis_u ** d + dis_v ** d
             integral.append(
-                np.einsum('ij, i, j -> ', dis * metric, *quad_weights, optimize='optimal')
+                np.einsum(
+                    'ij, i, j -> ',
+                    dis * metric, *quad_weights,
+                    optimize='optimal')
             )
         local_norm = np.sum(integral)
 
@@ -77,7 +80,10 @@ class NormLambda(Frozen):
             dis_v = v[e]
             metric = J[e]
             integral.append(
-                np.einsum('ij, i, j -> ', dis_v * metric, *quad_weights, optimize='optimal')
+                np.einsum(
+                    'ij, i, j -> ',
+                    dis_v * metric, *quad_weights,
+                    optimize='optimal')
             )
         local_norm = np.sum(integral)
 

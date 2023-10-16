@@ -18,8 +18,8 @@ class Localize_Static_Matrix(Frozen):
         """"""
         assert gm_row.__class__ is PyGM, f'row gm is not a {PyGM}'
         assert gm_col.__class__ is PyGM, f'col gm is not a {PyGM}'
-        assert len(gm_col) == len(gm_col), f'gathering matrices length wrong.'
-        for index in gm_col:
+        assert len(gm_row) == len(gm_col), f'gathering matrices length wrong.'
+        for index in gm_row:
             assert index in gm_col, f"#index {index} is missing!"
 
         # --------- when localized_data == 0, we initialize am empty matrix ----------------

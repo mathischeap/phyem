@@ -6,6 +6,9 @@ from src.config import RANK
 from _MPI.msehy.py._2d.mesh.main import MPI_MseHy_Py2_Mesh
 from _MPI.generic.py._2d_unstruct.space.main import MPI_Py_2D_Unstructured_Space
 
+from msehy.py._2d.space.refine import Refine
+from msehy.py._2d.space.coarsen import Coarsen
+
 
 class MPI_MseHy_Py2_Space(Frozen):
     """"""
@@ -25,8 +28,8 @@ class MPI_MseHy_Py2_Space(Frozen):
         self._generic = None
         self._do_initialize = True
 
-        self._coarsen = None
-        self._refine = None
+        self._coarsen = Coarsen(self)
+        self._refine = Refine(self)
         self._freeze()
 
     @property

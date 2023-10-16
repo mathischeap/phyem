@@ -8,6 +8,7 @@ if './' not in sys.path:
     sys.path.append('./')
 
 from tools.frozen import Frozen
+from src.config import RANK, MASTER_RANK
 import traceback
 from src.config import _parse_lin_repr
 from src.config import _abstract_time_sequence_default_sym_repr
@@ -79,7 +80,8 @@ class AbstractTimeSequence(Frozen):
     def info(self):
         """Info myself in the console."""
         if self._object is None:
-            print('abstract' + self._lin_repr)
+            if RANK == MASTER_RANK:
+                print('abstract' + self._lin_repr)
         else:
             self._object.info()
 
@@ -238,8 +240,9 @@ class ConstantTimeSequence(TimeSequence):
 
     def info(self):
         """info myself in the console."""
-        print(f" =constant= {self._t_0} -> ... -> {self._k_max} * " +
-              f"%.5f -> ... -> {self.t_max}." % self._dt)
+        if RANK == MASTER_RANK:
+            print(f" =constant= {self._t_0} -> ... -> {self._k_max} * " +
+                  f"%.5f -> ... -> {self.t_max}." % self._dt)
 
     def pr(self, obj=None):
         """print this constant interval time sequence together with an object."""

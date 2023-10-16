@@ -61,7 +61,7 @@ def _outer_periodic_Poisson(n, degree):
     ds_phi = phi.codifferential()
 
     expression = [
-        'u = ds_phi',
+        'u = - ds_phi',
         'f = - d_u',
     ]
     pde = ph.pde(expression, locals())

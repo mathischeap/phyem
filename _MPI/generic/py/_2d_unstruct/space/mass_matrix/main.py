@@ -2,10 +2,10 @@
 r"""
 """
 from tools.frozen import Frozen
-from _MPI.generic.py._2d_unstruct.space.mass_matrix.Lambda import MPI_PY2_MassMatrixLambda
+from _MPI.generic.py._2d_unstruct.space.mass_matrix.Lambda import MPI_PY_MassMatrixLambda
 
 
-class MPI_PY2_MassMatrix(Frozen):
+class MPI_PY_MassMatrix(Frozen):
     """"""
 
     def __init__(self, space):
@@ -25,5 +25,5 @@ class MPI_PY2_MassMatrix(Frozen):
     @property
     def Lambda(self):
         if self._Lambda is None:
-            self._Lambda = MPI_PY2_MassMatrixLambda(self._space)
+            self._Lambda = MPI_PY_MassMatrixLambda(self._space)
         return self._Lambda

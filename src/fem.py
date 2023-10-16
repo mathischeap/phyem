@@ -33,6 +33,12 @@ def apply(fe_name, obj_dict):
             fe_name = 'msehy-py2'
         else:
             raise NotImplementedError()
+    elif fe_name == 'mpi-msehy':
+        m = get_embedding_space_dim()
+        if m == 2:
+            fe_name = 'mpi-msehy-py2'
+        else:
+            raise NotImplementedError()
     else:
         pass
 

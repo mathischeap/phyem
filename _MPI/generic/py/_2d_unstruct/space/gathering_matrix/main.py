@@ -5,7 +5,7 @@ from tools.frozen import Frozen
 from _MPI.generic.py._2d_unstruct.space.gathering_matrix.Lambda import MPI_PY2_GatheringMatrixLambda
 
 
-class MPI_PY2_GatheringMatrix(Frozen):
+class MPI_PY_GatheringMatrix(Frozen):
     """"""
 
     def __init__(self, space):
