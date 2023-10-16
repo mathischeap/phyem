@@ -10,9 +10,7 @@ class RegularQuadrilateral(Element):
     """
     The local indices of regular quadrilateral vertices and edges.
 
-    ---------------> et
-
-    0____e3___3
+    0____e3___3  --------> et
     |         |
     | e0      |e2
     |         |
@@ -84,9 +82,7 @@ class RegularQuadrilateral(Element):
     @classmethod
     def inner_orientations(cls, j):
         """
-        ---------------> et
-
-        0____>____3
+        0____>____3  --------> et
         |         |
         |v        |v
         |         |
@@ -103,9 +99,7 @@ class RegularQuadrilateral(Element):
     @classmethod
     def outer_orientations(cls, j):
         """
-        ---------------> et
-
-        0____v____3
+        0____v____3  --------> et
         |         |
         |>        |>
         |         |

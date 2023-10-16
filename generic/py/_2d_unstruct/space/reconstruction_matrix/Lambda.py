@@ -2,7 +2,14 @@
 r"""
 """
 import numpy as np
+from src.spaces.main import _degree_str_maker
+
 from tools.frozen import Frozen
+from tools.miscellaneous.ndarray_cache import add_to_ndarray_cache, ndarray_key_comparer
+_global_cache_1_outer_ = {}
+_global_cache_1_inner_ = {}
+_global_cache_rm2_ = dict()
+_global_cache_rm0_ = dict()
 
 
 class ReconstructMatrixLambda(Frozen):
@@ -39,20 +46,23 @@ class ReconstructMatrixLambda(Frozen):
         assert np.ndim(xi) == np.ndim(et) == 1, f"I need 1d xi and et"
         _, BF = self._space.basis_functions(degree, xi, et)
         rm_dict = dict()
-        _global_cache_rm0_ = dict()
         for e in element_range:
 
             metric_signature = self._mesh[e].metric_signature
+            cached, rm = ndarray_key_comparer(
+                _global_cache_rm0_, [xi, et], check_str=metric_signature)
 
-            if metric_signature in _global_cache_rm0_:
+            if cached:
                 pass
 
             else:
-                bf = BF[e]
-                x0 = bf[0].T
-                _global_cache_rm0_[metric_signature] = (x0, )
+                rm = (BF[e][0].T, )
+                add_to_ndarray_cache(
+                    _global_cache_rm0_, [xi, et], rm, check_str=metric_signature,
+                    maximum=16,
+                )
 
-            rm_dict[e] = _global_cache_rm0_[metric_signature]
+            rm_dict[e] = rm
 
         return rm_dict
 
@@ -68,29 +78,53 @@ class ReconstructMatrixLambda(Frozen):
 
             if e in csm:
                 cache_index = e
+                use_global_cache = False
+                check_str = None
             else:
                 cache_index = self._mesh[e].metric_signature
+                use_global_cache = True
+                check_str = cache_index + _degree_str_maker(degree)
 
             if cache_index in rm_cache:
                 pass
 
             else:
-                bf = BF[e]
-                u, v = bf
-                assert e in iJ, f"element #{e} is out of range."
-                iJ0, iJ1 = iJ[e]
-                iJ00, iJ01 = iJ0
-                iJ10, iJ11 = iJ1
+                if use_global_cache:
+                    cached, rm = ndarray_key_comparer(
+                        _global_cache_1_outer_, [xi, et], check_str=check_str)
+                else:
+                    cached = False
+                    rm = None
 
-                x0 = + u * iJ11
-                x1 = - v * iJ01
-                rm_e_x = np.vstack((x0, x1)).T
+                if cached:
+                    pass
+                else:
 
-                y0 = - u * iJ10
-                y1 = + v * iJ00
-                rm_e_y = np.vstack((y0, y1)).T
+                    bf = BF[e]
+                    u, v = bf
+                    assert e in iJ, f"element #{e} is out of range."
 
-                rm = (rm_e_x, rm_e_y)
+                    iJ0, iJ1 = iJ[e]
+                    iJ00, iJ01 = iJ0
+                    iJ10, iJ11 = iJ1
+
+                    x0 = + u * iJ11
+                    x1 = - v * iJ01
+                    rm_e_x = np.vstack((x0, x1)).T
+
+                    y0 = - u * iJ10
+                    y1 = + v * iJ00
+                    rm_e_y = np.vstack((y0, y1)).T
+
+                    rm = (rm_e_x, rm_e_y)
+
+                    if use_global_cache:
+                        add_to_ndarray_cache(
+                            _global_cache_1_outer_, [xi, et], rm, check_str=check_str,
+                            maximum=16,
+                        )
+                    else:
+                        pass
 
                 rm_cache[cache_index] = rm
 
@@ -109,29 +143,52 @@ class ReconstructMatrixLambda(Frozen):
         for e in element_range:
             if e in csm:
                 cache_index = e
+                use_global_cache = False
+                check_str = None
             else:
                 cache_index = self._mesh[e].metric_signature
+                use_global_cache = True
+                check_str = cache_index + _degree_str_maker(degree)
 
             if cache_index in rm_cache:
                 pass
 
             else:
-                bf = BF[e]
-                u, v = bf
-                assert e in iJ, f"element #{e} is out of range."
-                iJ0, iJ1 = iJ[e]
-                iJ00, iJ01 = iJ0
-                iJ10, iJ11 = iJ1
+                if use_global_cache:
+                    cached, rm = ndarray_key_comparer(
+                        _global_cache_1_inner_, [xi, et], check_str=check_str)
+                else:
+                    cached = False
+                    rm = None
 
-                x0 = u * iJ00
-                x1 = v * iJ10
-                rm_e_x = np.vstack((x0, x1)).T
+                if cached:
+                    pass
+                else:
+                    bf = BF[e]
+                    u, v = bf
+                    assert e in iJ, f"element #{e} is out of range."
 
-                y0 = u * iJ01
-                y1 = v * iJ11
-                rm_e_y = np.vstack((y0, y1)).T
+                    iJ0, iJ1 = iJ[e]
+                    iJ00, iJ01 = iJ0
+                    iJ10, iJ11 = iJ1
 
-                rm = (rm_e_x, rm_e_y)
+                    x0 = u * iJ00
+                    x1 = v * iJ10
+                    rm_e_x = np.vstack((x0, x1)).T
+
+                    y0 = u * iJ01
+                    y1 = v * iJ11
+                    rm_e_y = np.vstack((y0, y1)).T
+
+                    rm = (rm_e_x, rm_e_y)
+
+                    if use_global_cache:
+                        add_to_ndarray_cache(
+                            _global_cache_1_inner_, [xi, et], rm, check_str=check_str,
+                            maximum=16,
+                        )
+                    else:
+                        pass
 
                 rm_cache[cache_index] = rm
 
@@ -145,20 +202,23 @@ class ReconstructMatrixLambda(Frozen):
         xi_et, BF = self._space.basis_functions(degree, xi, et)
         iJ = self._mesh.ct.inverse_Jacobian(*xi_et, element_range=element_range)
         rm_dict = dict()
-        _global_cache_rm2_ = dict()
         for e in element_range:
 
             metric_signature = self._mesh[e].metric_signature
+            cached, rm = ndarray_key_comparer(
+                _global_cache_rm2_, [xi, et], check_str=metric_signature)
 
-            if metric_signature in _global_cache_rm2_:
+            if cached:
                 pass
 
             else:
-                bf = BF[e]
-                ij = iJ[e]
-                x0 = bf[0] * ij
-                _global_cache_rm2_[metric_signature] = (x0.T, )
+                x0 = BF[e][0] * iJ[e]
+                rm = (x0.T, )
+                add_to_ndarray_cache(
+                    _global_cache_rm2_, [xi, et], rm, check_str=metric_signature,
+                    maximum=16,
+                )
 
-            rm_dict[e] = _global_cache_rm2_[metric_signature]
+            rm_dict[e] = rm
 
         return rm_dict

@@ -80,7 +80,7 @@ class Boundary_Integrate_VC_BS_Lambda(Frozen):
             elif edge_index == 3:
                 v = self._f.reconstruction_matrix(*_3_nodes, element_range=[element_index])
             else:
-                raise Exception
+                raise Exception()
 
             v = v[element_index]
             vx, vy = v
