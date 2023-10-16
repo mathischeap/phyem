@@ -34,6 +34,8 @@ class DDSRegionWiseStructured(Frozen):
         """"""
         space_dim = len(coo_dict_list)
         val_shape = _find_shape(val_dict_list)
+        assert len(val_shape) == 1, f"put all values in a 1d list or tuple."
+        val_shape = val_shape[0]
         data_shape = None
         for i, coo_dict in enumerate(coo_dict_list):
             for region in coo_dict:
@@ -54,10 +56,11 @@ class DDSRegionWiseStructured(Frozen):
 
     def visualize(self, magnitude=False, saveto=None, **kwargs):
         """"""
-        if self._space_dim == 2 and self._value_shape == [1]:
+        if self._space_dim == 2 and self._value_shape == 1:
             # plot a scalar field in 2d.
             return self._2d_scalar_field(magnitude=magnitude, saveto=saveto, **kwargs)
-        elif self._space_dim == 2 and self._value_shape == [2]:
+
+        elif self._space_dim == 2 and self._value_shape == 2:
             # plot a vector field in 2d.
             return self._2d_vector_field(magnitude=magnitude, saveto=saveto, **kwargs)
 
@@ -113,20 +116,12 @@ class DDSRegionWiseStructured(Frozen):
                 assert region in xyz_other, f"region does not match"
                 assert np.allclose(xyz_self[region], xyz_other[region]), f"coordinates does not match."
 
-        if len(self._value_shape) == 1:  # scalar or vector field.
-            vs = self._value_shape[0]
-            value_dict = [dict() for _ in range(vs)]
-
-            for _ in range(vs):
-
-                self_v, other_v = self._val_dict_list[_], other._val_dict_list[_]
-
-                for region in self_v:
-                    assert region in other_v, f"region in value does not match."
-
-                    value_dict[_][region] = self_v[region] - other_v[region]
-        else:
-            raise NotImplementedError()
+        value_dict = [dict() for _ in range(self._value_shape)]
+        for _ in range(self._value_shape):
+            self_v, other_v = self._val_dict_list[_], other._val_dict_list[_]
+            for region in self_v:
+                assert region in other_v, f"region in value does not match."
+                value_dict[_][region] = self_v[region] - other_v[region]
 
         return self.__class__(self._coo_dict_list, value_dict)
 
@@ -144,20 +139,12 @@ class DDSRegionWiseStructured(Frozen):
                 assert region in xyz_other, f"region does not match"
                 assert np.allclose(xyz_self[region], xyz_other[region]), f"coordinates does not match."
 
-        if len(self._value_shape) == 1:  # scalar or vector field.
-            vs = self._value_shape[0]
-            value_dict = [dict() for _ in range(vs)]
-
-            for _ in range(vs):
-
-                self_v, other_v = self._val_dict_list[_], other._val_dict_list[_]
-
-                for region in self_v:
-                    assert region in other_v, f"region in value does not match."
-
-                    value_dict[_][region] = self_v[region] + other_v[region]
-        else:
-            raise NotImplementedError()
+        value_dict = [dict() for _ in range(self._value_shape)]
+        for _ in range(self._value_shape):
+            self_v, other_v = self._val_dict_list[_], other._val_dict_list[_]
+            for region in self_v:
+                assert region in other_v, f"region in value does not match."
+                value_dict[_][region] = self_v[region] + other_v[region]
 
         return self.__class__(self._coo_dict_list, value_dict)
 

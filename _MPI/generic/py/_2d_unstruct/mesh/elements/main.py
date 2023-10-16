@@ -13,7 +13,14 @@ from _MPI.generic.py._2d_unstruct.mesh.boundary_section.face import _MPI_PY_2d_F
 class MPI_Py_2D_Unstructured_MeshElements(Frozen):
     """"""
 
-    def __init__(self, type_dict, vertex_dict, vertex_coordinates, same_vertices_dict, element_distribution=None):
+    def __init__(
+            self,
+            type_dict,
+            vertex_dict,
+            vertex_coordinates,
+            same_vertices_dict,
+            element_distribution=None
+    ):
         """
 
         Parameters

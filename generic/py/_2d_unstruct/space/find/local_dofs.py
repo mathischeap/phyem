@@ -35,7 +35,6 @@ class FindLocalDofs(Frozen):
 
             if k == 1:
                 return getattr(self, f'_Lambda_k{k}_{orientation}')(ele_type, edge_index, degree)
-
             else:
                 raise NotImplementedError()
 

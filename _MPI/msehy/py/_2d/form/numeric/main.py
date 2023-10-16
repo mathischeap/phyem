@@ -100,7 +100,7 @@ class MPI_MseHy_Py2_Form_Numeric(Frozen):
         else:
             pass
 
-    def quick_visualize(self, t=None, target='generic', density=50, saveto=None, **kwargs):
+    def quick_visualize(self, t=None, target='generic', density=100, saveto=None, **kwargs):
         """A quick visualization of generic cochain @ time t"""
         if t is None:
             t = self._f.generic.cochain.newest

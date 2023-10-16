@@ -1,9 +1,8 @@
 # -*- coding: utf-8 -*-
 r"""
 """
-from tools.frozen import Frozen
 import numpy as np
-
+from tools.frozen import Frozen
 from generic.py.gathering_matrix import PyGM
 
 

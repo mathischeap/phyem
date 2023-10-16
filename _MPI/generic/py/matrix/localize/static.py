@@ -35,10 +35,10 @@ class MPI_PY_Localize_Static_Matrix(Frozen):
                 localized_data[index] = csr_matrix(shape)
         else:
             pass
-        # =====================================================================================
+        # ===================================================================================
 
         if isinstance(localized_data, dict):
-            # -------- data check --------------------------------------------------------------
+            # -------- data check -----------------------------------------------------------
             assert len(localized_data) == len(gm_row) == len(gm_col), f"data length wrong."
             for index in localized_data:
                 data_for_index = localized_data[index]
@@ -50,13 +50,13 @@ class MPI_PY_Localize_Static_Matrix(Frozen):
                     gm_row.num_local_dofs(index),
                     gm_col.num_local_dofs(index),
                 ), f"data shape of element #{index} does not match the gathering matrices."
-            # ====================================================================================
+            # =================================================================================
             self._meta_data: Dict = localized_data
             self._dtype = 'dict'
 
         elif callable(localized_data):
             # -------- data check --------------------------------------------------------------
-            # ====================================================================================
+            # ==================================================================================
             self._meta_data = localized_data
             self._dtype = 'realtime'
 

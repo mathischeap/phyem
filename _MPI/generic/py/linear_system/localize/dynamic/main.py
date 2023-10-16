@@ -42,7 +42,7 @@ class MPI_PY_Dynamic_Linear_System(Frozen):
         self._A = None
         self._x = None
         self._b = None
-        # =======================================================================
+        # =====================================================================
         self._freeze()
 
     def _parse_bc(self, bc, base):

@@ -19,6 +19,7 @@ from generic.py.linear_system.localize.static.main import Localize_Static_Linear
 from generic.py.vector.localize.static import Localize_Static_Vector, Localize_Static_Vector_Cochain
 
 from generic.py.linear_system.localize.dynamic.bc import Dynamic_Linear_System_BC
+
 from src.wf.mp.linear_system import MatrixProxyLinearSystem
 
 _cs1 = constant_scalar(1)

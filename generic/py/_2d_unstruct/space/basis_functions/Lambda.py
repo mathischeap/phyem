@@ -37,7 +37,6 @@ class BasisFunctionsLambda(Frozen):
             else:
                 pass
 
-        print(111)
         if self._k == 1:
             return getattr(self, f"_k{self._k}_{self._orientation}")(*meshgrid_xi_et)
         else:

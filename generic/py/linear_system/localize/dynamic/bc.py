@@ -1,11 +1,8 @@
 # -*- coding: utf-8 -*-
 r"""
 """
-
 from tools.frozen import Frozen
-
 from src.manifold import Manifold
-
 from src.wf.mp.linear_system_bc import _EssentialBoundaryCondition
 from src.wf.mp.linear_system_bc import _NaturalBoundaryCondition
 

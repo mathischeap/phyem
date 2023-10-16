@@ -5,7 +5,6 @@ from typing import Dict
 from tools.frozen import Frozen
 from _MPI.generic.py._2d_unstruct.form.main import MPI_Py_2D_Unstructured_Form
 from _MPI.msehy.py._2d.space.main import MPI_MseHy_Py2_Space
-
 from _MPI.msehy.py._2d.form.numeric.main import MPI_MseHy_Py2_Form_Numeric
 
 
@@ -216,7 +215,6 @@ class MPI_MseHy_Py2_Form(Frozen):
                         local_source_cochains = dict()
                         for si in source_indices:
                             local_source_cochains[si] = sour_cochain[si]
-
                         cochain = self.space.coarsen(
                             self.degree, dest_index, source_indices, local_source_cochains
                         )

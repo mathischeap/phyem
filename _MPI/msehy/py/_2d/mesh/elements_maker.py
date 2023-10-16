@@ -6,18 +6,22 @@ from tools.frozen import Frozen
 from msehy.py._2d.mesh.elements.main import MseHyPy2MeshElements
 from _MPI.generic.py._2d_unstruct.mesh.elements.main import MPI_Py_2D_Unstructured_MeshElements
 
+_global_element_distribution_cache = {
+    'number base elements': -1,
+    'master loading factor': -1.,
+    'distribution': []
+}
+
 
 class Generic_Elements_Maker(Frozen):
     """"""
 
-    def __init__(self, serial_generic_mesh, master_loading_factor=0.5):
+    def __init__(self, serial_generic_mesh):
         """
 
         Parameters
         ----------
         serial_generic_mesh
-        master_loading_factor:
-            It must be in (0, 1], when it is lower, the master core loading is lower.
         """
         if RANK == MASTER_RANK:
             assert serial_generic_mesh.__class__ is MseHyPy2MeshElements, \
@@ -36,20 +40,7 @@ class Generic_Elements_Maker(Frozen):
             # the loading the that single core will be huge.
             indices_in_base_element = sgm.indices_in_base_element
             num_base_elements = len(indices_in_base_element)
-            if SIZE == 1:
-                base_elements_distribution = [num_base_elements, ]
-            else:
-                assert 0 < master_loading_factor <= 1, \
-                    f"master_loading_factor={master_loading_factor} wrong, it must be in (0, 1]."
-                master_num = int((num_base_elements / SIZE) * master_loading_factor)
-                base_elements_distribution = [master_num, ]
-                r_num_elements = num_base_elements - master_num
-                size = SIZE - 1
-                remaining_numbers = [
-                    r_num_elements // size + (1 if x < r_num_elements % size else 0) for x in range(size)
-                ][::-1]
-                base_elements_distribution += remaining_numbers
-
+            base_elements_distribution = self._make_base_element_distribution(num_base_elements)
             current = 0
             b_e_d = list()
             for dis in base_elements_distribution:
@@ -89,3 +80,41 @@ class Generic_Elements_Maker(Frozen):
             *self._inputs,
             element_distribution=self._element_distribution,
         )
+
+    @staticmethod
+    def _make_base_element_distribution(num_base_elements, master_loading_factor=0.5):
+        """
+
+        Parameters
+        ----------
+        num_base_elements :
+        master_loading_factor :
+            It must be in [0, 1], when it is lower, the master core loading is lower.
+
+        Returns
+        -------
+
+        """
+        if (_global_element_distribution_cache['number base elements'] == num_base_elements and
+            _global_element_distribution_cache['master loading factor'] == master_loading_factor):
+            return _global_element_distribution_cache['distribution']
+        else:
+            if SIZE == 1:
+                base_elements_distribution = [num_base_elements, ]
+            else:
+                assert 0 <= master_loading_factor <= 1, \
+                    f"master_loading_factor={master_loading_factor} wrong, it must be in (0, 1]."
+                master_num = int((num_base_elements / SIZE) * master_loading_factor)
+                base_elements_distribution = [master_num, ]
+                r_num_elements = num_base_elements - master_num
+                size = SIZE - 1
+                remaining_numbers = [
+                    r_num_elements // size + (1 if x < r_num_elements % size else 0) for x in range(size)
+                ][::-1]
+                base_elements_distribution += remaining_numbers
+
+            _global_element_distribution_cache['number base elements'] = num_base_elements
+            _global_element_distribution_cache['master loading factor'] = master_loading_factor
+            _global_element_distribution_cache['distribution'] = base_elements_distribution
+
+            return base_elements_distribution

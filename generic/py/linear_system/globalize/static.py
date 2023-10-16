@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 r"""
 """
-
 from tools.frozen import Frozen
 from generic.py.linear_system.globalize.solve import Solve
 from generic.py.matrix.globalize.static import Globalize_Static_Matrix

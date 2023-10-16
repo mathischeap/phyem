@@ -61,7 +61,7 @@ class _PackageScipy(Frozen):
         self._freeze()
 
     @staticmethod
-    def spsolve(A, b):  # I receive shells of A and b in order to have the freedom to clean the original data.
+    def spsolve(A, b):
         """direct solver."""
         t_start = time()
         # --- x ------------------------------

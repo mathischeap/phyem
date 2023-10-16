@@ -8,13 +8,6 @@ the mapping.
 They will be deprecated when the 2D transfinite interpolation and the edge functions
 are officially coded. But it looks like this will never be happening.
 
-Now used:
-    1). 3D `bridge_arch_cracked` interpolation.
-    2). 3D `bridge_arch` interpolation.
-    3). 2D `transfinite` interpolation.
-
-<unittests> <2D> <unittests_Interpolations> <test_No1_2D_TransfiniteMapping>.
-    
 Yi Zhang (C)
 Created on Mon Feb 25 15:56:49 2019
 Aerodynamics, AE
