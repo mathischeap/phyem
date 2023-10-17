@@ -42,6 +42,7 @@ class TimeIteration:
         if total_cost_list == list():
             self.already_cost = 0
         else:
+            # noinspection PyUnresolvedReferences
             self.already_cost = total_cost_list[-1]
             # noinspection PyUnresolvedReferences
             if self.already_cost[0] == '[' and self.already_cost[-1] == ']':
@@ -248,7 +249,6 @@ class ThreeInputsRunner(Runner):
                                                      ,TIcontextmanager.ERT)
                         self.drw.write_iteration(m)
         self.___deal_with_saveto___(writeto, saveto)
-        self.___send_an_completion_reminder_email_to_me___(writeto, saveto)
         print("_______________________ > TIR IterationsDone < _______________________\n\n")
     
     def ___init_results___(self):

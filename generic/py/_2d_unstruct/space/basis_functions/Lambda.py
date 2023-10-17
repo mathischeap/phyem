@@ -183,10 +183,10 @@ class BasisFunctionsLambda(Frozen):
         |
         |
             /|
-          ./ |
-          /. |
-        0/  .|
-         \ 4 |.
+           / |.
+          / .|
+        0/ . |
+         \ 4 |
          1\ 5|
            \ |6
           2 \|

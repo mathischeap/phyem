@@ -198,6 +198,8 @@ class PyGM(Frozen):
         else:
             if other.__class__ is not self.__class__:
                 return False
+            elif other._gm is self._gm:
+                return True
             else:
                 if len(self) != len(other):
                     return False

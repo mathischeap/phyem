@@ -9,16 +9,11 @@ TU Delft
 """
 import pickle
 import types
-import socket
-import smtplib
 import pandas as pd
-from cryptography.fernet import Fernet
 from tools.frozen import Frozen
 from tools.miscellaneous.timer import MyTimer
 from tools.miscellaneous.numpy_styple import NumpyStyleDocstringReader
 from tools.legacy.serialRunners.COMPONENTS.data.body import RunnerData
-from email.mime.multipart import MIMEMultipart
-from email.mime.text import MIMEText
 
 
 class Runner(Frozen):
@@ -337,7 +332,11 @@ class Runner(Frozen):
             print(':::: Index >>> {} <<< added to ResultDataFrame ::::\n'.format(index))
         ndf = pd.DataFrame([[*inputs, *outputs, ITC, TTC, ERT],], index=[index,],
                            columns=[*self._input_names_, *self._output_names_, 'ITC', 'TTC', 'ERT'])
-        self._rdf_ = pd.concat([self._rdf_, ndf])
+
+        if len(self._rdf_) == 0:
+            self._rdf_ = ndf
+        else:
+            self._rdf_ = pd.concat([self._rdf_, ndf])
         # self._rdf_ = self._rdf_.append(ndf)
         self._computed_pool_ += ([*inputs],)
         
@@ -367,7 +366,10 @@ class Runner(Frozen):
         ndf = pd.DataFrame([data + Di[-3:],], index=[int(Di[0]),], 
                             columns=[*self._input_names_, *self._output_names_, 
                                      'ITC', 'TTC', 'ERT'])
-        self._rdf_ = pd.concat([self._rdf_, ndf])
+        if len(self._rdf_) == 0:
+            self._rdf_ = ndf
+        else:
+            self._rdf_ = pd.concat([self._rdf_, ndf])
         # self._rdf_ = self._rdf_.append(ndf)
         return [data[0:len(self._input_names_)], ]
     
@@ -477,7 +479,7 @@ class Runner(Frozen):
         assert '.' in filename, " <SaveRead> : please add extension in filename."
 
         extension = '.' + filename.split('.')[1]  # we get the extension of the file to be read
-        # we check that the starting part of the extension need to fit the class's requirment
+        # we check that the starting part of the extension need to fit the class's requirement
         # noinspection PyUnresolvedReferences
         assert extension[:len(cls.___file_name_extension___())] == cls.___file_name_extension___(), \
             " <SaveRead> : file named `{}` is can not read by this class.".format(filename)
@@ -492,62 +494,3 @@ class Runner(Frozen):
         with open(filename, 'rb') as inputs:
             obj = pickle.load(inputs)
         return obj
-    
-    def ___send_an_completion_reminder_email_to_me___(self, writeto, saveto):
-        """ """
-        TTC = self.rdf.TTC[self.rdf.index[-1]]
-        TTC = MyTimer.hms2seconds(TTC)
-        #_____ do the emailing ________________________________________________________
-        if TTC >= 600 :
-            #~~~~~~~~~~~~~~~~~~~~ get the encrypted password ~~~~~~~~~~~~~~~~~~~~~~~~~~
-            print("\n--------------------------- > REPORTING < ----------------------------\n")
-            key = b'H0foy9dGGn6w9WcVMzrpLkvA0KPSncWtlrtI-8gWiqI='
-            cipher_suite = Fernet(key)
-            ciphered_text = b'gAAAAABdRYXBk1Yaq8EeET_LprqfwgUiSmIefCa3HABNQsyQYu5Z' + \
-                            b'VFoqegggZ0VS-5Qx2WooICqaG8drdB26c0zgoje7IZGSvg=='
-            password = (cipher_suite.decrypt(ciphered_text)).decode("utf-8") 
-            #~~~~~~~~~~~ email info ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-            names = ('Yi Zhang',)
-            emails = ('zhangyi_aero@hotmail.com',)
-            s = smtplib.SMTP('smtp.gmail.com', 587)
-            s.starttls()
-            s.login('mimeticFEM@gmail.com', password)
-            #~~~~~~~~~~~~~ message ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-            message = self.___default_massage_completion_reminder___(writeto, saveto)
-            for name, email in zip(names, emails):
-                msg = MIMEMultipart() # create a message
-                msg['From']='mimeticFEM@gmail.com'
-                msg['To']=email
-                msg['Subject']="{} completed. (please do not reply)".format(self.__class__.__name__)
-                msg.attach(MIMEText(message, 'plain'))
-                s.send_message(msg)
-                print('~~~~ REPORT SENT to <{}> : {}'.format(name, email))
-                del msg
-            s.quit()
-            print()
-            #==========================================================================
-        #____ ELSE: no email __________________________________________________________
-        else:
-            pass
-        #------------------------------------------------------------------------------
-        
-    def ___default_massage_completion_reminder___(self, writeto, saveto):
-        """ """
-        rdf = self.rdf
-        last_index = rdf.index[-1]
-        local_IP = socket.gethostbyname(socket.gethostname())
-        local_machine_name = socket.gethostname()
-        TTC = rdf.TTC[last_index]
-        message = 'Dear Yi,\n\n{} task named <{}> has completed at [{}: {}]'.format(
-                self.__class__.__name__, self.task_name, local_machine_name, local_IP)
-        message += ' and costs {}(wall time) in total.\n\n'.format(TTC)
-        message += 'Results:\n'
-        rdf_string = rdf.to_string()
-        message +=  rdf_string #str(rdf)
-        message += '\n\nResults have been written to <{}>.\n'.format(writeto)
-        message += 'Results have been saved to <{}>.\n\n'.format(saveto)
-        message += 'Best regards,\n'
-        message += 'mifem\n'
-        message += 'https://gitlab.com/zhangyi_aero/mifem\n'
-        message += 'zhangyi_aero@hotmail.com or y.zhang-14@tudelft.nl'
-        return message

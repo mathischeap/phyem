@@ -116,8 +116,8 @@ def div_grad_2d_periodic_manufactured_test(degree, K, c=0):
 
     phi_scalar = ph.vc.scalar(phi_func)
     phi.cf = phi_scalar
-    u.cf = phi.cf.codifferential()
-    f.cf = -u.cf.exterior_derivative()
+    u.cf = - phi.cf.codifferential()
+    f.cf = - u.cf.exterior_derivative()
     f[0].reduce()
     phi[0].reduce()
 

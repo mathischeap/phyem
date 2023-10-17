@@ -31,14 +31,16 @@ def bmat(A_2d_list):
                 if row_gms[i] is None:
                     row_gms[i] = row_gm_i
                 else:
-                    assert row_gms[i] == row_gm_i, f"by construction, this must be the case as we only construct" \
-                                                   f"gathering matrix once and store only once copy somewhere!"
+                    assert row_gms[i] == row_gm_i, \
+                        f"by construction, this must be the case as we only construct" \
+                        f"gathering matrix once and store only once copy somewhere!"
 
                 if col_gms[j] is None:
                     col_gms[j] = col_gm_j
                 else:
-                    assert col_gms[j] == col_gm_j, f"by construction, this must be the case as we only construct" \
-                                                   f"gathering matrix once and store only once copy somewhere!"
+                    assert col_gms[j] == col_gm_j, \
+                        f"by construction, this must be the case as we only construct" \
+                        f"gathering matrix once and store only once copy somewhere!"
 
     chain_row_gm = PyGM(*row_gms)
     chain_col_gm = PyGM(*col_gms)

@@ -246,7 +246,7 @@ class PartialDifferentialEquations(Frozen):
                                 _ec_operator_type = 'cd'
                                 form_lin_repr = form_lin_repr.split(cd_lin_repr)[1]
                             else:
-                                raise Exception
+                                raise Exception()
 
                             if form_lin_repr[-len(end):] == end:
                                 form_lin_repr = form_lin_repr[:-len(end)]
@@ -278,7 +278,7 @@ class PartialDifferentialEquations(Frozen):
                                 vc_operator = r"\widetilde{" + vc_operator + r"}"
                                 form_sym_repr = form_sym_repr.replace(cd_sym_repr, vc_operator)
                             else:
-                                raise Exception
+                                raise Exception()
 
                             if vc_sign == '+':
                                 pass
