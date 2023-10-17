@@ -17,6 +17,7 @@ class MPI_MseHy_Py2_Manifold(Frozen):
 
     @property
     def abstract(self):
+        """The abstract manifold I am representing."""
         return self._abstract
 
     @property

@@ -25,12 +25,9 @@ class NormLambda(Frozen):
         abs_sp = self._space.abstract
         k = abs_sp.k
         assert isinstance(d, int) and d > 0, f"d={d} is wrong."
-
         degree = cochain._f.degree
         p = self._space[degree].p
-
         quad_degree = [p + 2, p + 2]
-
         return getattr(self, f'_L_norm_k{k}')(d, quad_degree, cochain)
 
     def _L_norm_k2(self, d, quad_degree, cochain):

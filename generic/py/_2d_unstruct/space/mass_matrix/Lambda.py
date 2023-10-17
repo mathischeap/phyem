@@ -1,11 +1,14 @@
 # -*- coding: utf-8 -*-
 r"""
 """
-from tools.frozen import Frozen
-from tools.quadrature import Quadrature
-from src.spaces.main import _degree_str_maker
 import numpy as np
 from scipy.sparse import csr_matrix, bmat
+
+from tools.frozen import Frozen
+from tools.quadrature import Quadrature
+
+from src.spaces.main import _degree_str_maker
+
 from generic.py.matrix.localize.static import Localize_Static_Matrix
 
 _global_cache_0_ = {}

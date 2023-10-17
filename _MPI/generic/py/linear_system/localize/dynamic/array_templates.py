@@ -3,12 +3,13 @@ r"""
 """
 from tools.frozen import Frozen
 from src.spaces.main import _sep
-from src.spaces.main import _str_degree_parser
 from src.spaces.main import *
 from src.form.main import _global_root_forms_lin_dict
 
 from _MPI.generic.py._2d_unstruct.form.main import MPI_Py_2D_Unstructured_Form
 from _MPI.generic.py.vector.localize.static import MPI_PY_Localize_Static_Vector
+
+from _MPI.generic.py.tools.nolinear_operation.AxB_ip_C import MPI_PY_AxBipC
 
 from src.config import _form_evaluate_at_repr_setting
 _rf_evaluate_at_lin_repr = _form_evaluate_at_repr_setting['lin']
@@ -26,6 +27,9 @@ __all__ = [
 
     'Parse__MPI_PY_trStar_rf0_dp_tr_s1_vector',
 
+    'Parse__astA_x_astB_ip_tC',
+    'Parse__astA_x_B_ip_tC',
+    'Parse__A_x_astB_ip_tC',
 ]
 
 _locals = locals()
@@ -60,20 +64,7 @@ def _find_indicator(default_setting):
     return _indicator_cache[key]
 
 
-def _find_py_space_through_pure_lin_repr(base, _target_space_lin_repr):
-    """"""
-    spaces = base['spaces']
-    the_space = None
-    for space_lin_repr in spaces:
-        msepy_space = spaces[space_lin_repr]
-        abs_space_pure_lin_repr = msepy_space.abstract._pure_lin_repr
-        if abs_space_pure_lin_repr == _target_space_lin_repr:
-            the_space = msepy_space
-            break
-        else:
-            pass
-    assert the_space is not None, f"Find no msepy space."
-    return the_space
+from generic.py.linear_system.localize.dynamic.array_templates import _find_py_space_through_pure_lin_repr
 
 
 def _find_from_bracket_ABC(base, default_repr, *ABC, key_words=("{A}", "{B}", "{C}")):
@@ -121,52 +112,9 @@ def _find_from_bracket_ABC(base, default_repr, *ABC, key_words=("{A}", "{B}", "{
 
 
 # ====================================================================================================
-
-def _parse_root_form(base, root_form_vec_lin_repr):
-    """"""
-    forms = base['forms']
-    rf = None
-    for rf_pure_lin_repr in forms:
-        if rf_pure_lin_repr == root_form_vec_lin_repr:
-            rf = forms[rf_pure_lin_repr]
-        else:
-            pass
-
-    assert rf is not None, f"DO NOT find a msepy root-form, something is wrong."
-
-    if _rf_evaluate_at_lin_repr in rf.abstract._pure_lin_repr:
-        assert rf._pAti_form['base_form'] is not None, f"must be a particular root-form!"
-        dynamic_cochain_vec = rf.cochain.dynamic_vec
-        return dynamic_cochain_vec, rf.abstract.ap()._sym_repr, rf.cochain._ati_time_caller
-
-    else:  # it is a general (not for a specific time step for example) vector of the root-form.
-        assert rf._pAti_form['base_form'] is None, f"must be a general root-form!"
-        dynamic_cochain_vec = rf.cochain.dynamic_vec
-        return dynamic_cochain_vec, rf.abstract.ap()._sym_repr, rf.cochain._ati_time_caller
-
-
-def Parse__M_matrix(base, space, degree0, degree1):
-    """"""
-    degree0 = _str_degree_parser(degree0)
-    degree1 = _str_degree_parser(degree1)
-
-    the_space = _find_py_space_through_pure_lin_repr(base, space)
-
-    if degree0 == degree1:
-        M = the_space.mass_matrix(degree0)
-        return M, None  # time_indicator is None, mean M is same at all time.
-
-    else:
-        raise NotImplementedError()
-
-
-def Parse__E_matrix(base, space, degree):
-    """"""
-    degree = _str_degree_parser(degree)
-    the_space = _find_py_space_through_pure_lin_repr(base, space)
-    E = the_space.incidence_matrix(degree)
-
-    return E, None  # time_indicator is None, mean E is same at all time.
+from generic.py.linear_system.localize.dynamic.array_templates import _parse_root_form
+from generic.py.linear_system.localize.dynamic.array_templates import Parse__M_matrix
+from generic.py.linear_system.localize.dynamic.array_templates import Parse__E_matrix
 
 
 # --------- natural bc -----------------------------------------------------------------------------
@@ -339,3 +287,28 @@ class _MPI_PY_TrStarRf0DualPairingTrS1(Frozen):
 
 
 # ------- (w x u, v) -------------------------------------------------------------------------------
+def Parse__astA_x_astB_ip_tC(base, gA, gB, tC):
+    """(A X B, C), A and B are given, C is the test form, so it gives a dynamic vector."""
+    ABC_forms = _find_from_bracket_ABC(base, _VarSetting_astA_x_astB_ip_tC, gA, gB, tC)
+    _, _, msepy_C = ABC_forms
+    nonlinear_operation = MPI_PY_AxBipC(*ABC_forms)
+    c, time_caller = nonlinear_operation(1, msepy_C)
+    return c, time_caller  # since A is given, its ati determine the time of C.
+
+
+def Parse__astA_x_B_ip_tC(base, gA, B, tC):
+    """Remember, for this term, gA, b, tC must be root-forms."""
+    ABC_forms = _find_from_bracket_ABC(base, _VarSetting_astA_x_B_ip_tC, gA, B, tC)
+    msepy_A, msepy_B, msepy_C = ABC_forms  # A is given
+    nonlinear_operation = MPI_PY_AxBipC(*ABC_forms)
+    C = nonlinear_operation(2, msepy_C, msepy_B)
+    return C, msepy_A.cochain._ati_time_caller  # since A is given, its ati determine the time of C.
+
+
+def Parse__A_x_astB_ip_tC(base, A, gB, tC):
+    """"""
+    ABC_forms = _find_from_bracket_ABC(base, _VarSetting_A_x_astB_ip_tC, A, gB, tC)
+    msepy_A, msepy_B, msepy_C = ABC_forms  # B is given
+    nonlinear_operation = MPI_PY_AxBipC(*ABC_forms)
+    C = nonlinear_operation(2, msepy_C, msepy_A)
+    return C, msepy_B.cochain._ati_time_caller  # since B is given, its ati determine the time of C.

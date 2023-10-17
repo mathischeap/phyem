@@ -21,11 +21,8 @@ class MPI_PY_Form_Cochain(Cochain):
 
         if rf._is_base():
             t = self._parse_t(t)
-
             _cochain_at_time = MPI_PY_Particular_Cochain_At_TimeInstant(self._f, t)
-
             _cochain_at_time._receive(cochain)
-
             self._tcd[t] = _cochain_at_time
             self._newest_t = t
 

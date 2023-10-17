@@ -13,7 +13,16 @@ class Boundary_Section_CT(Frozen):
         self._freeze()
 
     def _parse_face_range(self, face_range):
-        """"""
+        """
+
+        Parameters
+        ----------
+        face_range
+
+        Returns
+        -------
+
+        """
         if face_range is None:
             face_range = self._bs._indices
         else:
@@ -21,7 +30,17 @@ class Boundary_Section_CT(Frozen):
         return face_range
 
     def outward_unit_normal_vector(self, r, face_range=None):
-        """"""
+        """
+
+        Parameters
+        ----------
+        r
+        face_range
+
+        Returns
+        -------
+
+        """
         face_range = self._parse_face_range(face_range)
         o_u_n_v = dict()
         cache = {}

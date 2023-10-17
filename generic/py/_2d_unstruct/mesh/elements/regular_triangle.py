@@ -7,10 +7,10 @@ from tools.quadrature import Quadrature
 
 
 class RegularTriangle(Element):
-    """
+    r"""
     The local indices of regular quadrilateral vertices and edges.
 
-    ---------------> et
+    r---------------> et
 
          0
         / \
@@ -91,7 +91,7 @@ class RegularTriangle(Element):
 
     @classmethod
     def inner_orientations(cls, j):
-        """
+        r"""
         ---------------> et
 
              0
@@ -112,7 +112,7 @@ class RegularTriangle(Element):
 
     @classmethod
     def outer_orientations(cls, j):
-        """
+        r"""
         ---------------> et
 
              0
@@ -175,7 +175,6 @@ class _RegularTriangleCoordinateTransformation(CoordinateTransformation):
             [self._mapping_edge0, self._mapping_bottom, self._mapping_edge1, self._mapping_top],
             [self._Jacobian_edge0, self._Jacobian_bottom, self._Jacobian_edge1, self._Jacobian_top]
         )
-        self._freeze()
 
     def _mapping_top(self, o):
         """'x-' side into the top vertex. """

@@ -7,7 +7,7 @@ import numpy as np
 
 
 class RegularQuadrilateral(Element):
-    """
+    r"""
     The local indices of regular quadrilateral vertices and edges.
 
     0____e3___3  --------> et
@@ -81,7 +81,7 @@ class RegularQuadrilateral(Element):
 
     @classmethod
     def inner_orientations(cls, j):
-        """
+        r"""
         0____>____3  --------> et
         |         |
         |v        |v
@@ -98,7 +98,7 @@ class RegularQuadrilateral(Element):
 
     @classmethod
     def outer_orientations(cls, j):
-        """
+        r"""
         0____v____3  --------> et
         |         |
         |>        |>

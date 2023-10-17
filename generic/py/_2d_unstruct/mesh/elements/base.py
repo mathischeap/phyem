@@ -41,7 +41,7 @@ _global_iMM_cache_CT = {}
 from tools.miscellaneous.ndarray_cache import add_to_ndarray_cache, ndarray_key_comparer
 
 
-class CoordinateTransformation(Frozen):
+class CoordinateTransformation:
     """"""
     def __init__(self, metric_signature):
         self._metric_signature = metric_signature
@@ -76,7 +76,10 @@ class CoordinateTransformation(Frozen):
     def Jacobian(self, xi, et):
         """Determinant of the Jacobian matrix."""
         cached, data = ndarray_key_comparer(
-            _global_J_cache_CT, [xi, et], check_str=self._metric_signature)
+            _global_J_cache_CT,
+            [xi, et],
+            check_str=self._metric_signature
+        )
         if cached:
             pass
         else:
@@ -96,7 +99,10 @@ class CoordinateTransformation(Frozen):
         as ``g:= det(G)`` where ``G`` is the metric matrix, or metric tensor.
         """
         cached, m = ndarray_key_comparer(
-            _global_m_cache_CT, evaluationPoints, check_str=self._metric_signature)
+            _global_m_cache_CT,
+            evaluationPoints,
+            check_str=self._metric_signature
+        )
         if cached:
             pass
         else:

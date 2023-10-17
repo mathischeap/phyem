@@ -252,7 +252,6 @@ class MPI_MseHy_Py2_Mesh(Frozen):
 
         if RANK == MASTER_RANK:
             link = self.background.link
-            # print(self.previous._element_distribution)
             LINK = list()
             for element_indices in self.generic._element_distribution:
                 local_link = dict()
@@ -262,7 +261,9 @@ class MPI_MseHy_Py2_Mesh(Frozen):
 
         else:
             LINK = None
+
         LINK = COMM.scatter(LINK, root=MASTER_RANK)
+
         for index in LINK:
             assert index in self.generic, f"element #{index} is not a local element in RANK #{RANK}."
             linked_to = LINK[index]

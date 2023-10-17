@@ -16,11 +16,12 @@ class Face(Frozen):
 
     @property
     def metric_signature(self):
-        """"""
+        """Metric signature."""
         return self._mesh[self._element_index].metric_signature + f'->{self._edge_index}'
 
     @property
     def ct(self):
+        """Coordinate transformation."""
         return self._mesh[self._element_index].edge_ct(self._edge_index)
 
     def find_local_dofs_of(self, f):

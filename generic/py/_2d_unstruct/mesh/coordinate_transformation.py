@@ -21,13 +21,10 @@ class Py2CoordinateTransformation(Frozen):
                 element_range = [element_range, ]
             else:
                 pass
-
             assert isinstance(element_range, (list, tuple)), \
                 f'put element indices in a list or tuple.'
-
             for index in element_range:
                 assert index in self._mesh, f"element #{index} is not valid."
-
         return element_range
 
     def mapping(self, xi, et, element_range=None):

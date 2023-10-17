@@ -446,8 +446,3 @@ def _lgmres(
               f"stop_judge={JUDGE}: {JUDGE_explanation}]" % (beta, COST_total)
 
     return x0, message, info
-
-
-if __name__ == '__main__':
-    # python -m 4 _MPI/generic/py/linear_system/globalize/solvers/_py_mpi.py
-    pass

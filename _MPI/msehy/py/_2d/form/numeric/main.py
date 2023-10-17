@@ -77,8 +77,62 @@ class MPI_MseHy_Py2_Form_Numeric(Frozen):
         else:
             return None
 
+    def region_wise_interp(self, t=None, density=50, saveto=None, method='linear'):
+        """Reconstruct the form at time `time` and use the reconstruction results to make interpolation functions
+        in each region.
+
+        These functions take (x, y, ...) (physical domain coordinates) are inputs.
+
+        Parameters
+        ----------
+        t
+        density
+        saveto
+        method
+
+        Returns
+        -------
+
+        """
+        if t is None:
+            t = self._f.generic.cochain.newest
+        else:
+            pass
+
+        interp = MPI_PY2_Form_Numeric_Interp(self._f, t, 'generic')(
+            method=method, density=density
+        )   # mesh-region-wise interp functions.
+
+        if RANK == MASTER_RANK:
+            final_interp = dict()
+            for region in interp:
+                if len(interp[region]) == 1:
+                    final_interp[region] = interp[region][0]
+                else:
+                    final_interp[region] = interp[region]
+
+            if saveto is None:
+                pass
+            else:
+                # we are only calling one thread, so just go ahead with it.
+                import pickle
+                with open(saveto, 'wb') as output:
+                    pickle.dump(final_interp, output, pickle.HIGHEST_PROTOCOL)
+                output.close()
+        else:
+            final_interp = None
+
+        return final_interp
+
     def quick_difference(self, t=None, density=50):
-        """visualize the difference of form between previous and generic at time t."""
+        """visualize the difference of form between previous and generic at time t.
+
+        Parameters
+        ----------
+        t
+        density : int
+            For the interpolation.
+        """
         if t is None:
             t = self._f.generic.cochain.newest
         else:
@@ -101,7 +155,18 @@ class MPI_MseHy_Py2_Form_Numeric(Frozen):
             pass
 
     def quick_visualize(self, t=None, target='generic', density=100, saveto=None, **kwargs):
-        """A quick visualization of generic cochain @ time t"""
+        """A quick visualization of generic cochain @ time t
+
+        Parameters
+        ----------
+        t :
+        target :
+        density : int
+            For the interpolation.
+        saveto :
+        kwargs:
+
+        """
         if t is None:
             t = self._f.generic.cochain.newest
         else:

@@ -115,7 +115,6 @@ class GenericUnstructuredForm2D_Visualize(Frozen):
             numbering = self._f.space.gathering_matrix.Lambda._k0(p)
             vtk_builder = BuildVtkUnStruct(numbering, xy, cell_layout=p)
             vtk_builder(saveto, point_data={self._f.name: v})
-
             return 0
 
     def _Lambda_k1(
@@ -141,7 +140,6 @@ class GenericUnstructuredForm2D_Visualize(Frozen):
             numbering = self._f.space.gathering_matrix.Lambda._k0(p)
             vtk_builder = BuildVtkUnStruct(numbering, xy, cell_layout=p)
             vtk_builder(saveto, point_data={self._f.name: v})
-
             return 0
 
     def _Lambda_k2(
@@ -168,5 +166,4 @@ class GenericUnstructuredForm2D_Visualize(Frozen):
             numbering = self._f.space.gathering_matrix.Lambda._k0(p)
             vtk_builder = BuildVtkUnStruct(numbering, xy, cell_layout=p)
             vtk_builder(saveto, point_data={self._f.name: v})
-
             return 0

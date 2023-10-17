@@ -22,7 +22,7 @@ class BoundarySection(Frozen):
         assert base_mesh.__class__ is GenericUnstructuredMesh2D, \
             f"the base must be a {GenericUnstructuredMesh2D}."
         self._base = base_mesh
-        self._indices = element_edge_index  # the indices of faces of this boundary section.
+        self._indices = element_edge_index    # the indices of faces of this boundary section.
         self._ct = Boundary_Section_CT(self)
         self._involved_elements = None
         self._freeze()
@@ -79,7 +79,20 @@ class BoundarySection(Frozen):
             dpi=200,
             title=None,
     ):
-        """"""
+        """
+
+        Parameters
+        ----------
+        density
+        top_right_bounds
+        saveto
+        dpi
+        title
+
+        Returns
+        -------
+
+        """
         if density < 10:
             density = 10
         else:

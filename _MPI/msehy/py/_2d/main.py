@@ -239,7 +239,7 @@ def info(*others_2b_printed):
         for i, other in enumerate(others_2b_printed):
             print(f"  {i}) -> {other}\n")
 
-        print()
+        print(flush=True)
 
     _info_cache['info_count'] = count + 1
     _info_cache['info_time'] = new_time

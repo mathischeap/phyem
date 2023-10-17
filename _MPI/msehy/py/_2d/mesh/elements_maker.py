@@ -96,7 +96,7 @@ class Generic_Elements_Maker(Frozen):
 
         """
         if (_global_element_distribution_cache['number base elements'] == num_base_elements and
-            _global_element_distribution_cache['master loading factor'] == master_loading_factor):
+                _global_element_distribution_cache['master loading factor'] == master_loading_factor):
             return _global_element_distribution_cache['distribution']
         else:
             if SIZE == 1:

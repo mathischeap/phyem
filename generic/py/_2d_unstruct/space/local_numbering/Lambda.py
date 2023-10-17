@@ -22,17 +22,14 @@ class LocalNumberingLambda(Frozen):
 
         if p in self._cache:
             return self._cache[p]
-        else:
 
+        else:
             if self._k == 1:
                 method_name = f"_k{self._k}_{self._orientation}"
             else:
                 method_name = f"_k{self._k}"
-
             LN = getattr(self, method_name)(p)
-
             self._cache[p] = LN
-
             return LN
 
     @staticmethod

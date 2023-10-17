@@ -74,6 +74,17 @@ def MPI_py_array_parser(dls, array_lin_repr):
             A, _ti = Parse__MPI_PY_trStar_rf0_dp_tr_s1_vector(dls, *info_indicators)
 
         # (w x u, v) ========================================================
+        elif type_indicator == _find_indicator(
+                _VarSetting_astA_x_astB_ip_tC):
+            A, _ti = Parse__astA_x_astB_ip_tC(dls._base, *info_indicators)
+
+        elif type_indicator == _find_indicator(
+                _VarSetting_astA_x_B_ip_tC):
+            A, _ti = Parse__astA_x_B_ip_tC(dls._base, *info_indicators)
+
+        elif type_indicator == _find_indicator(
+                _VarSetting_A_x_astB_ip_tC):
+            A, _ti = Parse__A_x_astB_ip_tC(dls._base, *info_indicators)
 
         # --------------------------------------------------------------------
         else:

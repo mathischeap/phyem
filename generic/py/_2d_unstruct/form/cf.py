@@ -53,7 +53,7 @@ class _2d_CF(Frozen):
         return getattr(self._cf, vc_operator)
 
     def codifferential(self):
-        """"""
+        """codifferential"""
         sign, cd_operator = self._codifferential_vc_operators
         new_cf = getattr(self._cf, cd_operator)
         if sign == '+':

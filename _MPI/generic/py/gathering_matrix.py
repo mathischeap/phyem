@@ -269,7 +269,21 @@ class MPI_PyGM(Frozen):
         return COMM.allreduce(local_tof, op=MPI.LAND)
 
     def assemble(self, data_dict, mode='replace', globalize=True):
-        """Assemble a 2d-array into a 1d array using self._gm."""
+        """Assemble a 2d-array into a 1d array using self._gm.
+
+        Parameters
+        ----------
+        data_dict :
+            The data to be assembled
+        mode :
+            {'replace',}
+            if `mode` == 'replace`, then when multiple data appear at the same place, we use one of the data
+            (instead of sum them up).
+
+        globalize : bool
+            If `globalize` is True, we return the same global 1d array in all cores.
+
+        """
         assert isinstance(data_dict, dict) and len(data_dict) == len(self)
         _ = self.num_dofs
 

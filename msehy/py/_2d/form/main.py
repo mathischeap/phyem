@@ -224,8 +224,6 @@ class MseHyPy2RootForm(Frozen):
                 assert self._previous is not self._generic, 'must be'
                 self._generation = self.space.generation
                 assert self._generation == old_generation + 1, f'must be!'
-                assert self.mesh.generation == self._generation, 'must be'
-
                 assert self.mesh.generation == self.generation == self.space.generation, 'must be'
 
                 # --- send constant properties to generic form ----

@@ -135,10 +135,10 @@ class BasisFunctionsLambda(Frozen):
         ^ y
         |
         |
-                      11
+                     11
                   10
                9
-               6  7   8
+               6  7  8
         top <
                3  4  5
                0
@@ -183,7 +183,7 @@ class BasisFunctionsLambda(Frozen):
         |
         |
             /|
-           / |
+          ./ |
           /. |
         0/  .|
          \ 4 |.

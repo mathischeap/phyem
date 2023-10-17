@@ -130,7 +130,7 @@ class Iterator(Frozen):
             self._monitor_ = None
             self._RDF = None
 
-        # --------
+        # -------------------------------------------------------------------------------
         num_iterations = None
         for i, rg in enumerate(ranges):
             assert hasattr(rg, '__iter__'), f"{i}th range={rg} is not iterable."
@@ -151,7 +151,10 @@ class Iterator(Frozen):
                 total=num_iterations,
                 desc='<' + desc + '>',
             )
+        else:
+            pass
 
+        # -------- do the iterations ---------------------------------------------------------------
         for inputs in zip(*ranges):
 
             if RANK == MASTER_RANK:
@@ -168,7 +171,10 @@ class Iterator(Frozen):
                 self.monitor._measure_end()
                 # noinspection PyUnboundLocalVariable
                 pbar.update(1)
+            else:
+                pass
 
+        # --- after iteration ------------------------------------------------------------------------
         if RANK == MASTER_RANK:
             pbar.close()
             print(flush=True)

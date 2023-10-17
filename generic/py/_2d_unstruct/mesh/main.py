@@ -37,7 +37,7 @@ class GenericUnstructuredMesh2D(Frozen):
         self._freeze()
 
     def __repr__(self):
-        """repr"""
+        """repr."""
         super_repr = super().__repr__().split('object')[1]
         return f"<Py2-mesh of {len(self)}-elements" + super_repr + '>'
 
@@ -80,7 +80,7 @@ class GenericUnstructuredMesh2D(Frozen):
         real_vertex_dict :
             {
                 index: (i, j, k, ....),  # the vertices of element #`index` are `i, j, k, ...`.
-                ...
+                ...,
             }
 
         """
@@ -98,24 +98,29 @@ class GenericUnstructuredMesh2D(Frozen):
 
     @property
     def map(self):
+        """"""
         return self._map
 
     def __iter__(self):
+        """"""
         for index in self._elements_dict:
             yield index
 
     def __getitem__(self, index):
+        """"""
         return self._elements_dict[index]
 
     def __len__(self):
+        """"""
         return len(self._elements_dict)
 
     def __contains__(self, index):
+        """"""
         return index in self._elements_dict
 
     @property
     def n(self):
-        """the dimensions of the mesh"""
+        """the dimensions of the mesh."""
         return 2
 
     def _boundary_faces(self, index):
@@ -148,7 +153,7 @@ class GenericUnstructuredMesh2D(Frozen):
         _all_edges = {
             (0, 1): ([index, j], [...]),
                 # the edge from `vertex 0` to `vertex 1` is the `j`th edge of element #`index` and  ...
-            ....
+            ...,
         }
 
         """
@@ -291,10 +296,10 @@ class GenericUnstructuredMesh2D(Frozen):
                     pos0, pos1 = positions
                     if sign0 == sign1:
                         pass
+
                     else:
                         pos0 = tuple(pos0)
                         pos1 = tuple(pos1)
-
                         if pos0 in pairs:
                             assert pos1 not in pairs and pairs[pos0] == pos1
                         elif pos1 in pairs:
@@ -322,6 +327,7 @@ class GenericUnstructuredMesh2D(Frozen):
 
     @property
     def num_elements(self):
+        """"""
         return len(self)
 
     @property
@@ -337,7 +343,19 @@ class GenericUnstructuredMesh2D(Frozen):
             saveto=None,
             dpi=200,
     ):
-        """"""
+        """Visualize.
+
+        Parameters
+        ----------
+        density
+        top_right_bounds
+        saveto
+        dpi
+
+        Returns
+        -------
+
+        """
         if density < 10:
             density = 10
         else:
@@ -372,5 +390,6 @@ class GenericUnstructuredMesh2D(Frozen):
                 matplotlib.use('TkAgg')
                 plt.tight_layout()
                 plt.show(block=_setting['block'])
+
         plt.close()
         return fig

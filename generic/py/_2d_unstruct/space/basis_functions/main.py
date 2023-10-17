@@ -69,7 +69,6 @@ class BasisFunctions(Frozen):
                     self._csm_cache[key] = self._csm_Lambda_k1_inner(degree)
                 else:
                     self._csm_cache[key] = self._csm_Lambda_k1_outer(degree)
-
         else:
             raise NotImplementedError()
 

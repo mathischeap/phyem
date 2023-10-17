@@ -157,28 +157,28 @@ class GenericUnstructuredForm2D(Frozen):
 
     @property
     def incidence_matrix(self):
-        """"""
+        """Incidence matrix."""
         return self._space.incidence_matrix(self.degree)
 
     @property
     def mass_matrix(self):
-        """"""
+        """Mass matrix."""
         return self._space.mass_matrix(self.degree)
 
     def reconstruction_matrix(self, xi, et, element_range=None):
-        """"""
+        """Reconstruction matrix."""
         return self._space.reconstruction_matrix(self.degree, xi, et, element_range=element_range)
 
     @property
     def boundary_integrate(self):
-        """"""
+        """Boundary integrate."""
         if self._bi is None:
             self._bi = Boundary_Integrate(self)
         return self._bi
 
     @property
     def visualize(self):
-        """visualize"""
+        """Visualize."""
         if self._vis is None:
             self._vis = GenericUnstructuredForm2D_Visualize(self)
         return self._vis

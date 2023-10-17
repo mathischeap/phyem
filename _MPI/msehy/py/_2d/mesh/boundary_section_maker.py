@@ -23,9 +23,7 @@ class Generic_BoundarySection_Maker(Frozen):
                 mesh = all_meshes[sym]
                 if mesh.background.representative is serial_generic_faces._current_elements:
                     break
-
             assert mesh is not None, f"must have found a mesh"
-
             self._including_element_faces = serial_generic_faces._including_element_faces
         else:
             assert serial_generic_faces is None, f"we must receive None in non-master cores."
