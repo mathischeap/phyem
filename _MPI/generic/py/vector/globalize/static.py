@@ -17,7 +17,7 @@ class MPI_PY_Globalize_Static_Vector(Frozen):
     def __repr__(self):
         """repr"""
         super_repr = super().__repr__().split('object')[1]
-        return f"<MPI-PY-Globalize-Static-Vector of shape {self.shape}{super_repr}>"
+        return f"<MPI-PY-Globalize-Static-Vector of shape {self.shape}{super_repr}>."
 
     @property
     def shape(self):

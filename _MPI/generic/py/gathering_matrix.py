@@ -152,6 +152,8 @@ class MPI_PyGM(Frozen):
 
         if cgm_num_dofs > 50000:
             return
+        else:
+            pass
 
         # ---- carefully check it.
         numbering_pool = None

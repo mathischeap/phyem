@@ -59,6 +59,7 @@ _notes/
 _app/
 _images/
 __phcache__/
+_local_tests/
 conf.py
 
 # Translations

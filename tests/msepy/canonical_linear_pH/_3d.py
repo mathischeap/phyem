@@ -204,12 +204,12 @@ def canonical_linear_pH_3d_periodic_manufactured_test(degree, K, num_steps):
         """
         static_ls = ls(k=k)
         als = static_ls.assemble()
-        x = als.solve()[0]
+        x, message, info = als.solve()
         static_ls.x.update(x)
         a3_L2_error = a3.error(None)
         b2_L2_error = b2.error(None)
 
-        return 0, als.solve.message, a3.cochain.newest, a3_L2_error, b2_L2_error
+        return 0, message, a3.cochain.newest, a3_L2_error, b2_L2_error
 
     iterator = ph.iterator(solver, [0, a3.error(0), a3.error(0)], name='gallery_pH_test')
 

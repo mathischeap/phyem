@@ -196,20 +196,6 @@ class MPI_PY_Localize_Static_Matrix(Frozen):
             COL.extend(col)
             DAT.extend(data)
 
-            # if len(DAT) > 1e7:  # every 10 million data, we make it into a sparse matrix.
-            #     _ = SPA_MATRIX((DAT, (ROW, COL)), shape=(dep, wid))  # we make it into sparse
-            #
-            #     del ROW, COL, DAT
-            #     A += _
-            #     del _
-            #     ROW = list()
-            #     COL = list()
-            #     DAT = list()
-
-        # _ = SPA_MATRIX((DAT, (ROW, COL)), shape=(dep, wid))  # we make it into sparse
-        # del ROW, COL, DAT
-        # A += _
-
         A = SPA_MATRIX((DAT, (ROW, COL)), shape=(dep, wid))
 
         from _MPI.generic.py.matrix.globalize.static import MPI_PY_Globalize_Static_Matrix
