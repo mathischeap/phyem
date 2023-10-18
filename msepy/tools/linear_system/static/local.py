@@ -165,7 +165,7 @@ class MsePyStaticLocalLinearSystem(Frozen):
         """
         A = self.A._mA.assemble(cache=cache)
         b = self.b._vb.assemble()
-        ALS = MsePyStaticLinearSystemAssembled(self, A, b, cache=cache)
+        ALS = MsePyStaticLinearSystemAssembled(A, b)
         return ALS
 
     @property

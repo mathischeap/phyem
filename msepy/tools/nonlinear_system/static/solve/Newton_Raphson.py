@@ -255,15 +255,16 @@ class MsePyNonlinearSystemNewtonRaphsonSolve(Frozen):
             solve = als.solve
             solve.package = inner_solver_package
             solve.scheme = inner_solver_scheme
-            solve.x0 = 0
-            A_shape = solve._A.shape
-
-            x = solve(**inner_solver_kwargs)[0]
+            if inner_solver_scheme in ('spsolve',):
+                pass
+            else:
+                solve.x0 = 0
+            results = solve(**inner_solver_kwargs)
+            x, LSm = results[:2]
             ls.x.update(x)
-
             # results updated to the unknowns of the nonlinear system to make the 2d local cochain
-            LSm = solve.message
 
+            A_shape = solve._A.shape
             dx = list()
             for f in self._nls.unknowns:
                 dx.append(f.cochain.local)

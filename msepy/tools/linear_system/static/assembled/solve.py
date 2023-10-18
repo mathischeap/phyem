@@ -7,30 +7,34 @@ from tools.frozen import Frozen
 from time import time
 from tools.miscellaneous.timer import MyTimer
 from msepy.form.main import MsePyRootForm
+from msepy.tools.matrix.static.assembled import MsePyStaticAssembledMatrix
+from msepy.tools.vector.static.assembled import MsePyStaticAssembledVector
 
 
 class MsePyStaticLinearSystemAssembledSolve(Frozen):
     """"""
-    def __init__(self, als):
+    def __init__(self, A, b):
         """"""
-        self._als = als
-        self._A = als.A._M
-        self._b = als.b._v
-        self._system_info = {
-            'shape': self._A.shape
-        }
-        self._message = ''
-        self._info = None
+        assert A.__class__ is MsePyStaticAssembledMatrix, f"A needs to be a {MsePyStaticAssembledMatrix}"
+        assert b.__class__ is MsePyStaticAssembledVector, f"b needs to be a {MsePyStaticAssembledVector}"
+        self._A = A
+        self._b = b
 
         self._package = 'scipy'
         self._scheme = 'spsolve'
 
-        # implemented packages
-        self._package_scipy = _PackageScipy(self, self._system_info)
-        self._package_mkl = _PackageMKL(self, self._system_info)
+        self._package_scipy = _PackageScipy()
 
         self._x0 = None
         self._freeze()
+
+    @property
+    def A(self):
+        return self._A
+
+    @property
+    def b(self):
+        return self._b
 
     @property
     def package(self):
@@ -53,8 +57,6 @@ class MsePyStaticLinearSystemAssembledSolve(Frozen):
         """the initial guess for iterative solvers. A good initial guess is very important for solving
         large systems.
         """
-        if self._x0 is None:
-            raise Exception(f"x0 is None, first set it.")
         return self._x0
 
     @x0.setter
@@ -62,7 +64,7 @@ class MsePyStaticLinearSystemAssembledSolve(Frozen):
         """Set the x0. Setting a x0 is very important for large system!"""
         if _x0 == 0:  # make a full zero initial guess
 
-            self._x0 = np.zeros(self._als.b._gm.num_dofs)
+            self._x0 = np.zeros(self.b._gm.num_dofs)
 
         elif all([_.__class__ is MsePyRootForm for _ in _x0]):   # providing all MsePyRootForm
             # use the newest cochains.
@@ -71,6 +73,7 @@ class MsePyStaticLinearSystemAssembledSolve(Frozen):
             for f in _x0:
                 newest_time = f.cochain.newest
                 gm = f.cochain.gathering_matrix
+
                 if newest_time is None:  # no newest cochain at all.
                     # then use 0-cochain
                     local_cochain = np.zeros_like(gm._gm)
@@ -81,70 +84,39 @@ class MsePyStaticLinearSystemAssembledSolve(Frozen):
                 cochain.append(local_cochain)
 
             cochain = np.hstack(cochain)
-            assert cochain.shape == self._als.b._gm.shape, f"provided cochain shape wrong!"
+            assert cochain.shape == self.b._gm.shape, f"provided cochain shape wrong!"
 
-            self._x0 = self._als.b._gm.assemble(cochain, mode='replace')
+            self._x0 = self.b._gm.assemble(cochain, mode='replace')
 
         else:
             raise NotImplementedError()
 
         assert isinstance(self._x0, np.ndarray), f"x0 must be a ndarray."
-        assert self._x0.shape == (self._als.b._gm.num_dofs, ), f"x0 shape wrong!"
-        assert self._x0.shape == (self._A.shape[1], ), f"x0 shape wrong!"
-
-    @property
-    def message(self):
-        """return the message of the last solver."""
-        return self._message
-
-    @property
-    def info(self):
-        """store the info of the last solver."""
-        return self._info
+        assert self._x0.shape == (self.b._gm.num_dofs, ), f"x0 shape wrong!"
+        assert self._x0.shape == (self.A.shape[1], ), f"x0 shape wrong!"
 
     def __call__(self, **kwargs):
         """"""
         assert hasattr(self, f"_package_{self.package}"), f"I have no solver package: {self.package}."
         _package = getattr(self, f"_package_{self.package}")
         assert hasattr(_package, self.scheme), f"package {self.package} has no scheme: {self.scheme}"
-        results = getattr(_package, self.scheme)(self._A, self._b, **kwargs)
-        self._message = results[1]
-        self._info = results[2]
+        scheme = getattr(_package, self.scheme)
+
+        if self.x0 is None:
+            results = scheme(self.A, self.b, **kwargs)
+        else:
+            results = scheme(self.A, self.b, self.x0, **kwargs)
+
         return results
-
-
-class _PackageMKL(Frozen):
-    """"""
-    def __init__(self, solve, system_info):
-        self._solve = solve
-        self._system_info = system_info
-        self._freeze()
-
-    # noinspection PyUnresolvedReferences
-    def qr(self, A, b, **kwargs):
-        """"""
-        from sparse_dot_mkl import sparse_qr_solve_mkl
-
-        t_start = time()
-        x = sparse_qr_solve_mkl(A, b, **kwargs)
-        t_cost = time() - t_start
-        t_cost = MyTimer.seconds2dhms(t_cost)
-        message = f"Linear system of shape: {self._system_info['shape']}" + \
-                  f" <sparse_qr_solve_mkl costs: {t_cost}> "
-        info = {
-            'total cost': t_cost,
-        }
-        return x, message, info
 
 
 class _PackageScipy(Frozen):
     """"""
-    def __init__(self, solve, system_info):
-        self._solve = solve
-        self._system_info = system_info
+    def __init__(self):
         self._freeze()
 
-    def spsolve(self, A, b, **kwargs):
+    @staticmethod
+    def spsolve(A, b, **kwargs):
         """direct solver."""
         if len(kwargs) > 0:
             print(f'warning: kwargs={kwargs} have no affects on scipy spsolve.')
@@ -152,10 +124,12 @@ class _PackageScipy(Frozen):
             pass
 
         t_start = time()
-        x = spspalinalg.spsolve(A, b)
+        # -----------------------------------------------------------------
+        x = spspalinalg.spsolve(A._M, b._v)
+        # ==================================================================
         t_cost = time() - t_start
         t_cost = MyTimer.seconds2dhms(t_cost)
-        message = f"Linear system of shape: {self._system_info['shape']}" + \
+        message = f"Linear system of shape: {A.shape}" + \
                   f" <direct solver costs: {t_cost}> "
         info = {
             'total cost': t_cost,
@@ -215,13 +189,14 @@ class _PackageScipy(Frozen):
             else:
                 raise NotImplementedError(f"cannot make preconditioner {preconditioner_name}.")
 
-    def gmres(self, A, b, preconditioner=True, **kwargs):
+    def gmres(self, A, b, x0, preconditioner=True, **kwargs):
         """
 
         Parameters
         ----------
         A
         b
+        x0
         preconditioner :
             None, True, or use a particular preconditioner by, for example,
                 preconditioner = {
@@ -229,6 +204,7 @@ class _PackageScipy(Frozen):
                     'para1_name': p1,
                     ...,
                 }
+            When it is None, no preconditioner; when it is True, use the default preconditioner.
         kwargs
 
         Returns
@@ -237,16 +213,16 @@ class _PackageScipy(Frozen):
         """
         t_start = time()
 
+        # ----------------------------------------------------------------------------
+        A = A._M
+        b = b._v
+        # ============================================================================
+
         preconditioner = self._parse_preconditioner(A, preconditioner)
 
-        if self._solve._x0 is None:  # bad for large system. Better providing x0
-            x, info = spspalinalg.gmres(
-                A, b, M=preconditioner, **kwargs  # by default, x0=None. spspalinalg.gmres will make a x0 then.
-            )
-        else:
-            x, info = spspalinalg.gmres(
-                A, b, x0=self._solve.x0, M=preconditioner, **kwargs
-            )
+        x, info = spspalinalg.gmres(
+            A, b, x0=x0, M=preconditioner, **kwargs
+        )
 
         t_cost = time() - t_start
         t_cost = MyTimer.seconds2dhms(t_cost)
@@ -257,7 +233,7 @@ class _PackageScipy(Frozen):
         for key in kwargs:
             if key not in info_kwargs_exclusive:
                 info_kwargs[key] = kwargs[key]
-        message = f"Linear system of shape: {self._system_info['shape']} " + \
+        message = f"Linear system of shape: {A.shape} " + \
                   f"<gmres costs: {t_cost}> <info: {info}> <inputs: {info_kwargs}>"
         info = {
             'total cost': t_cost,
@@ -265,20 +241,20 @@ class _PackageScipy(Frozen):
         }
         return x, message, info
 
-    def lgmres(self, A, b, preconditioner=True, **kwargs):
+    def lgmres(self, A, b, x0, preconditioner=True, **kwargs):
         """"""
         t_start = time()
 
+        # ----------------------------------------------------------------------------
+        A = A._M
+        b = b._v
+        # ============================================================================
+
         preconditioner = self._parse_preconditioner(A, preconditioner)
 
-        if self._solve._x0 is None:  # bad for large system. Better providing x0
-            x, info = spspalinalg.lgmres(
-                A, b, M=preconditioner, **kwargs
-            )
-        else:
-            x, info = spspalinalg.lgmres(
-                A, b, x0=self._solve.x0, M=preconditioner, **kwargs
-            )
+        x, info = spspalinalg.lgmres(
+            A, b, x0=x0, M=preconditioner, **kwargs
+        )
         t_cost = time() - t_start
         t_cost = MyTimer.seconds2dhms(t_cost)
         info_kwargs_exclusive = ['x0', 'M', 'callback']
@@ -288,7 +264,7 @@ class _PackageScipy(Frozen):
         for key in kwargs:
             if key not in info_kwargs_exclusive:
                 info_kwargs[key] = kwargs[key]
-        message = f"Linear system of shape: {self._system_info['shape']} " + \
+        message = f"Linear system of shape: {A.shape} " + \
                   f"<lgmres costs: {t_cost}> <info: {info}> <inputs: {info_kwargs}>"
         info = {
             'total cost': t_cost,
