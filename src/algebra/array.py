@@ -80,6 +80,7 @@ class AbstractArray(Frozen):
 
     @property
     def _sym_repr(self):
+        """"""
         if self.___sym_repr___ is None:
             if self._factor == _cs1:
                 sym = ''
@@ -104,6 +105,7 @@ class AbstractArray(Frozen):
 
     @property
     def _lin_repr(self):
+        """"""
         if self.___lin_repr___ is None:
             if self._factor == _cs1:
                 lin = ''
@@ -133,6 +135,7 @@ class AbstractArray(Frozen):
 
     @property
     def shape(self):
+        """"""
         if self.___shape___ is None:
 
             s = None
@@ -158,6 +161,7 @@ class AbstractArray(Frozen):
         return self.___shape___
 
     def _shape_text(self):
+        """"""
         if self.ndim == 2 and self.shape[1] == 1:
             return r'\mathbb{R}^{\#_{dof}' + self.shape[0] + r"}"
         else:
@@ -185,6 +189,7 @@ class AbstractArray(Frozen):
 
     @property
     def ndim(self):
+        """"""
         return len(self.shape)
 
     def __len__(self):
@@ -258,7 +263,6 @@ class AbstractArray(Frozen):
 
     def __rmul__(self, other):
         """other * self."""
-
         if other.__class__.__name__ == "ConstantScalar0Form":
 
             if self._factor == _cs1:
