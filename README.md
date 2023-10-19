@@ -2,4 +2,4 @@
 
 *phyem* is an open-source finite element library that enables `LEGO` like simulations.
 
-Find everything about *phyem* at phyem.org
+Find everything about *phyem* at https://phyem.org/
