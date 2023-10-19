@@ -15,7 +15,7 @@ import sys
 if absolute_path not in sys.path:
     sys.path.append(absolute_path)
 
-__version__ = '0.0.0'
+__version__ = '0.0.1-alpha'
 
 __all__ = [
     'config',

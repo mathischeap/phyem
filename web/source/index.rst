@@ -9,9 +9,27 @@
 
 .. _PHYEM:
 
-=====
-PHYEM
-=====
+=======
+Welcome
+=======
+
+*phyem* is an open-source finite element library that bridges port-based thinking to numerics and enables
+**LEGO**-like simulations. The name, *phyem*, stands for
+
+- python
+- port-Hamiltonian
+- fem
+- physics
+
+It was initiated as a part of the
+ERC advanced project `PortWings <http://www.portwings.eu/>`_.
+It is developed under a joint force of
+`Andrea Brugnoli <https://www.researchgate.net/profile/Andrea-Brugnoli-3>`_,
+`Ramy Rashad <https://ramyrashad.com/>`_,
+`Stefano Stramigioli <https://people.utwente.nl/s.stramigioli>`_,
+`Yi Zhang <https://mathischeap.com/>`_, and more.
+
+.. The main maintainer is `Yi Zhang <https://mathischeap.com/>`_.
 
 .. _Tutorial:
 
