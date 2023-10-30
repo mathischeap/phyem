@@ -11,7 +11,7 @@ from typing import Dict
 
 
 class TemporalDiscretization(Frozen):
-    """TemporalDiscretization"""
+    """A wrapper of the temporal discretization setting of a weak formulation."""
 
     def __init__(self, wf):
         """"""
@@ -69,19 +69,22 @@ class TemporalDiscretization(Frozen):
 
     @property
     def ts(self):
-        """shortcut of `time_sequence`."""
         return self._ats
 
     @property
     def time_sequence(self):
-        """The time sequence this discretization is working on."""
+        """The time sequence this temporal discretization is working on."""
         return self._ats
 
     def set_time_sequence(self, ts=None):
         """The method of setting time sequence.
 
-        Note that each wf only use one time sequence. If your time sequence is complex, you should carefully design
-        it instead of trying to make multi time sequences.
+        .. note::
+
+            Note that each wf only use one time sequence.
+            If your time sequence is complex, you should carefully design
+            it instead of using multiple time sequences.
+
         """
         if ts is None:  # make a new one
             ts = AbstractTimeSequence()
@@ -94,41 +97,19 @@ class TemporalDiscretization(Frozen):
             self[i].set_time_sequence(self._ats)
 
     def define_abstract_time_instants(self, *atis):
-        """Define abstract time instants for all valid odes."""
+        """Define abstract time instants for the temporal discretization."""
         for i in self:
             self[i].define_abstract_time_instants(*atis)
 
     def differentiate(self, index, *args):
-        """
-
-        Parameters
-        ----------
-        index :
-            The index of the weak formulation. So we parse it to locate the ode and the local index.
-        args
-
-        Returns
-        -------
-
-        """
+        """Differentiate the term indexed ``index`` at abstract time instances."""
         assert index in self._wf, f"index={index} is illegal, print representations to check the indices."
         i, j = index.split('-')
         ode_d = self[int(i)]
         ode_d.differentiate(j, *args)
 
     def average(self, index, *args):
-        """
-
-        Parameters
-        ----------
-        index :
-            The index of the weak formulation. So we parse it to locate the ode and the local index.
-        args :
-
-        Returns
-        -------
-
-        """
+        """Average the term indexed ``index`` at abstract time instances."""
         assert index in self._wf, f"index={index} is illegal, print representations to check the indices."
         i, j = index.split('-')
         ode_d = self[int(i)]

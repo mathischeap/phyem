@@ -1,8 +1,5 @@
 # -*- coding: utf-8 -*-
-"""
-@author: Yi Zhang
-@contact: zhangyi_aero@hotmail.com
-@time: 2022/08/16 6:03 PM
+r"""
 """
 from tools.frozen import Frozen
 from tools.matplot.plot import plot, semilogy, loglog

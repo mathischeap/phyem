@@ -1,9 +1,6 @@
 # -*- coding: utf-8 -*-
 r"""
-pH-lib@RAM-EEMCS-UT
-Yi Zhang
-
-# python tests/msepy/codifferential_test.py
+python tests/msepy/codifferential_test.py
 """
 import sys
 import numpy as np

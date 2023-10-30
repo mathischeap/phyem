@@ -1,5 +1,159 @@
 # -*- coding: utf-8 -*-
+# noinspection PyUnresolvedReferences
 r"""
+
+.. _PDE-initialization:
+
+==============
+Initialization
+==============
+
+To initialize/construct a PDE instance, call the method ``ph.pde``,
+
+    .. autofunction:: src.pde.pde
+
+For instance, if we want to solve the 2-dimensional linear port Hamitolian problem, i.e.,
+
+.. math::
+
+    \left\lbrace
+        \begin{aligned}
+            & \partial_t \tilde{\alpha} = \mathrm{d}\tilde{\beta} ,\\
+            & \partial_t \tilde{\beta} = - \mathrm{d}^\ast\tilde{\alpha},
+        \end{aligned}
+    \right.
+
+for the outer 2-form :math:`\tilde{\alpha}` and the outer 1-form :math:`\tilde{\beta}`
+in the domain :math:`\mathcal{M}`,
+we make the following expression,
+
+>>> expression = [
+...     'da_dt = + d_b',
+...     'db_dt = - cd_a'
+... ]
+
+where we have string terms like ``'da_dt'``, ``'d_b'`` and so on connected by ``'+'``, ``'-'`` and ``'='``.
+Since these terms are just strings, the code needs to know
+what forms they are representing. Thus, we need an interpreter,
+
+>>> interpreter = {
+...     'da_dt': da_dt,
+...     'd_b'  : d_b,
+...     'db_dt': db_dt,
+...     'cd_a' : cd_a
+... }
+
+which links the strings, i.e. the keys of ``interpreter``, to the forms, ``da_dt``, ``d_b`` and so on.
+Note that because here strings that are same to the variable names are used,
+this interpreter is a subset of the local variable dictionary
+which can be returned by the built-in function ``locals``.
+Therefore, alternatively we can use
+
+>>> interpreter = locals()
+
+Sending ``expression`` and ``interpreter`` to ``ph.pde`` initializes a PDE instance,
+
+>>> pde = ph.pde(expression, interpreter)
+
+which is an instance of :class:`PartialDifferentialEquations`,
+
+    .. autoclass:: src.pde.PartialDifferentialEquations
+        :members: pr, test_with, unknowns, bc, derive
+
+We need to set the unknowns of the pde, which is done through setting the property ``unknowns``,
+i.e. :attr:`PartialDifferentialEquations.unknowns`,
+
+>>> pde.unknowns = [a, b]
+
+To visualize the PDE instnace just constructed, call the *print representation* method, see
+:meth:`PartialDifferentialEquations.pr`,
+
+>>> pde.pr()
+<Figure size ...
+
+It gives a figure of the PDE in differential forms. We can visualize the vector calculus version
+if we pass the requirement to ``pr`` through keyword argument ``vc=True`` like
+
+>>> pde.pr(vc=True)
+<Figure size ...
+
+This is very handy, for example, when your reference PDE is given in vector calculus, and you want to check if
+you have input the correct differential form version of it, especially in 2-dimensions where the transformation
+between vector calculus and differential form suffers from extra minus signs here and there.
+
+
+.. _PDE-bc:
+
+===================
+Boundary conditions
+===================
+
+The boundary condition setting of a PDE can be accessed through property :attr:`PartialDifferentialEquations.bc`.
+To define boundary conditions for a PDE, we first need to identify boundary sections. We can define boundary
+sections by calling the ``partition`` method, for example,
+
+>>> pde.bc.partition(r"\Gamma_{\alpha}", r"\Gamma_{\beta}")
+
+This command defines two boundary sections whose symbolic representations are ``'\Gamma_{\alpha}'`` and
+``'\Gamma_{\beta}'``.
+Here they are in fact two 1-dimensional sub-manifolds (recall that in this case the computational domain is
+a 2-dimensional manifold).
+They are a partition of the boundary, i.e.,
+
+.. math::
+
+    \Gamma_{\alpha} \cup \Gamma_{\beta} = \partial \mathcal{M}\quad\text{and}\quad
+    \Gamma_{\alpha} \cap \Gamma_{\beta} = \emptyset,
+
+where :math:`\partial \mathcal{M}` is the complete boundary of the computational domain (``manifold``).
+Change the amount (:math:`\geq 1`) of arguments for the ``partition`` method to define a partition of
+different amount of boundary sections. Since the ``manifold`` itself is abstract, the boundary sections
+are abstract as well; thus we can specify, for example,
+
+.. math::
+
+    \Gamma_{\alpha} = \partial \mathcal{M} \quad \text{and} \quad \Gamma_{\beta} = \emptyset,
+
+when we invoke a particular implementation for the simulation in the future.
+
+After we have defined boundary sections, we can specify boundary conditions on them by calling ``define_bc`` method
+of :attr:`PartialDifferentialEquations.bc` property. For example,
+
+>>> pde.bc.define_bc(
+...    {
+...        r"\Gamma_{\alpha}": ph.trace(ph.Hodge(a)),   # natural boundary condition
+...        r"\Gamma_{\beta}": ph.trace(b),              # essential boundary condition
+...    }
+... )
+
+specifies
+
+- a natural boundary condition for the outer-oriented 2-form ``a`` on ``'\Gamma_{\alpha}'``,
+- an essential boundary condition for the outer-oriented 1-form ``b`` on ``'\Gamma_{\beta}'``.
+
+.. caution::
+
+    So far, only two types, **essential** and **natural**, of boundary conditions are implemented.
+
+Now, the ``pr`` method will also list the imposed boundary conditions,
+
+>>> pde.pr()
+<Figure size ...
+
+
+.. _PDE-derivations:
+
+===========
+Derivations
+===========
+
+We can make changes to (for example, delete, replace or split a term in) the initialized PDE through property
+``pde.derive`` which gives an instance of :class:`PDEDerive`, a wrapper of all possible derivations
+to a PDE instance.
+
+    .. autoclass:: PDEDerive
+
+
 """
 from tools.frozen import Frozen
 from src.config import _global_lin_repr_setting, _non_root_lin_sep
@@ -21,13 +175,46 @@ from src.wf.main import WeakFormulation
 from src.bc import BoundaryCondition
 
 
-def pde(*args, **kwargs):
-    """A wrapper of the PDE class."""
-    return PartialDifferentialEquations(*args, **kwargs)
+def pde(expression=None, interpreter=None, terms_and_signs_dict=None):
+    """A wrapper of the ``__init__`` method of :class:`PartialDifferentialEquations`.
+
+    To make a PDE instance, you can either input
+
+    - ``expression`` and ``interpreter``
+
+    or input
+
+    - ``terms_and_signs_dict``
+
+    If you input ``expression`` and ``interpreter`` (recommended), the class will call a
+    private method to parse ``expression`` according to ``interpreter`` and generates
+    dictionaries of terms and signs.
+
+    Parameters
+    ----------
+    expression : List[str]
+        The list of strings that represent a set of equations.
+    interpreter : dict
+        The dictionary of interpreters that explain the terms in the ``expression``.
+    terms_and_signs_dict : dict
+        The dictionary that represents the terms and signs of each equation directly
+        (instead of through ``expression`` and ``interpreter``).
+
+    Returns
+    -------
+    pde : :class:`PartialDifferentialEquations`
+        The output partial differential equations instance.
+    """
+    pde = PartialDifferentialEquations(
+        expression=expression,
+        interpreter=interpreter,
+        terms_and_signs_dict=terms_and_signs_dict
+    )
+    return pde
 
 
 class PartialDifferentialEquations(Frozen):
-    """partial differential equations."""
+    """The Partial Differential Equations class."""
 
     def __init__(self, expression=None, interpreter=None, terms_and_signs_dict=None):
         if terms_and_signs_dict is None:  # provided terms and signs
@@ -41,6 +228,7 @@ class PartialDifferentialEquations(Frozen):
         self._unknowns = None
         self._meshes, self._mesh = WeakFormulation._parse_meshes(self._term_dict)
         self._bc = None
+        self._derive = PDEDerive(self)
         self._freeze()
 
     @staticmethod
@@ -356,7 +544,7 @@ class PartialDifferentialEquations(Frozen):
             bc_text = self.bc._bc_text()
 
         fig = plt.figure(figsize=figsize)
-        plt.axis([0, 1, 0, 1])
+        plt.axis((0, 1, 0, 1))
         plt.axis('off')
         text = ef_text + '\n' + symbolic + bc_text
         plt.text(0.05, 0.5, text, ha='left', va='center', size=15)
@@ -374,7 +562,26 @@ class PartialDifferentialEquations(Frozen):
         return fig
 
     def pr(self, indexing=True, figsize=(8, 6), vc=False, title=None):
-        """Print representations"""
+        """Print the representation of the PDE.
+
+        Parameters
+        ----------
+        indexing : bool, optional
+            Whether to show indices of my terms. The default value is ``True``.
+        figsize : Tuple[float, int], optional
+            The figure size. It has no effect when the figure is over-sized. A tight configuration will be
+            applied when it is the case. The default value is ``(8, 6)``.
+        vc : bool, optional
+            Whether to show the vector calculus version of me. The default value is ``False``.
+        title : {None, str}, optional
+            The title of the figure. No title if it is ``None``. The default value is ``None``.
+
+
+        See Also
+        --------
+        :func:`src.config.set_pr_cache`
+
+        """
         from src.config import RANK, MASTER_RANK
         if RANK != MASTER_RANK:
             return
@@ -510,7 +717,7 @@ class PartialDifferentialEquations(Frozen):
             bc_text = self.bc._bc_text()
 
         fig = plt.figure(figsize=figsize)
-        plt.axis([0, 1, 0, 1])
+        plt.axis((0, 1, 0, 1))
         plt.axis('off')
         if indicator == '':
             text = ef_text + '\n' + symbolic + bc_text
@@ -555,7 +762,7 @@ class PartialDifferentialEquations(Frozen):
 
     @property
     def unknowns(self):
-        """Unknowns"""
+        """Unknowns of the PDE."""
         return self._unknowns
 
     @unknowns.setter
@@ -578,8 +785,26 @@ class PartialDifferentialEquations(Frozen):
 
         self._unknowns = unknowns
 
-    def test_with(self, test_spaces, test_method='L2', sym_repr=None):
-        """return a weak formulation."""
+    def test_with(self, test_spaces, test_method='L2', sym_repr: list = None):
+        """Test the PDE with a set of spaces to obtain a weak formulation.
+
+        Parameters
+        ----------
+        test_spaces : list
+            The list of the test spaces.
+        test_method : {``'L2'``, }, optional
+            The test method. Currently, it can only be ``'L2'`` representing the :math:`L^2`-inner product.
+            The default value is ``'L2'``.
+        sym_repr : {List[str], None}, optional
+            The symbolic representations for the test variables. When it is ``None``, pre-set ones will be applied.
+            The default value is ``None``.
+
+        Returns
+        -------
+        wf : :class:`src.wf.main.WeakFormulation`
+            The weak formulation instance.
+
+        """
         if not isinstance(test_spaces, (list, tuple)):
             test_spaces = [test_spaces, ]
         else:
@@ -619,7 +844,7 @@ class PartialDifferentialEquations(Frozen):
                     _base = sr.split('^')[0].split('_')[0]
                     sr = sr.replace(_base, r'\underline{' + _base + '}')
             else:
-                assert len(sym_repr) == len(test_spaces), \
+                assert isinstance(sym_repr, (list, tuple)) and len(sym_repr) == len(test_spaces), \
                     f"We have {len(test_spaces)} test forms, so we need {len(test_spaces)} syb_repr. " \
                     f"Now we receive {len(sym_repr)}."
 
@@ -704,7 +929,29 @@ class PartialDifferentialEquations(Frozen):
 
     @property
     def bc(self):
-        """The boundary condition of pde class."""
+        """The boundary condition of the PDE."""
         if self._bc is None:
             self._bc = BoundaryCondition(self._mesh)
         return self._bc
+
+    @property
+    def derive(self):
+        """A wrapper all possible derivations to the PDE."""
+        return self._derive
+
+
+class PDEDerive(Frozen):
+    """A wrapper all possible derivations to a PDE instance.
+
+    .. todo::
+
+        To be implemented.
+
+        So far, we recommend users to completely construct the
+        PDE through initialization such that any further modification is avoided.
+
+    """
+    def __init__(self, pde):
+        """"""
+        self._pde = pde
+        self._freeze()

@@ -1,5 +1,12 @@
 # -*- coding: utf-8 -*-
+# noinspection PyUnresolvedReferences
 r"""
+Each space is an instance of a particular space class which inherits :class:`SpaceBase`.
+
+    .. autoclass:: src.spaces.base.SpaceBase
+        :members: mesh, manifold, m, n, make_form
+
+
 """
 from tools.frozen import Frozen
 from src.config import get_embedding_space_dim
@@ -37,15 +44,17 @@ class SpaceBase(Frozen):
 
     @property
     def mesh(self):
-        """"""
+        """The mesh I am built on."""
         return self._mesh
 
     @property
     def manifold(self):
+        """The manifold I am built on."""
         return self.mesh.manifold
 
     @property
     def orientation(self):
+        """My orientation."""
         return self._orientation
 
     @property
@@ -59,26 +68,40 @@ class SpaceBase(Frozen):
 
     @property
     def n(self):
-        """the dimensions this manifold (or mesh) this space is on."""
         return self.mesh.ndim
 
     @property
     def m(self):
-        """the dimensions of the embedding space."""
         return get_embedding_space_dim()
 
     def make_form(self, sym_repr, lin_repr, dual_representation=False):
-        """"""
+        """Define a form which is an element of this space.
+
+        Parameters
+        ----------
+        sym_repr : str
+            The symbolic representation of the form.
+        lin_repr : str
+            The linguistic representation of the form.
+        dual_representation : bool, optional
+            Whether the output form uses dual representation? The default value is ``False``.
+
+        Returns
+        -------
+        form : :class:`src.form.main.Form`
+            The output form.
+
+        """
         assert isinstance(sym_repr, str), f"symbolic representation must be a str."
-        f = Form(
+        form = Form(
             self, sym_repr, lin_repr,
             True,  # is_root
         )
         if dual_representation:
-            f.set_dual_representation(True)
+            form.set_dual_representation(True)
         else:
             pass
-        return f
+        return form
 
     def __eq__(self, other):
         """"""

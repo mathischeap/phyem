@@ -48,7 +48,8 @@ class AbstractArray(Frozen):
     ):
         """"""
         if is_root:
-            assert sym_repr is not None and lin_repr is not None, f"give `sym_repr` and `lin_repr` for root array."
+            assert sym_repr is not None and lin_repr is not None, \
+                f"give sym_repr and lin_repr for root array."
             assert factor is None and components is None and transposes is None
             self.___sym_repr___ = sym_repr
             self.___lin_repr___ = lin_repr

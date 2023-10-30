@@ -30,8 +30,8 @@ class _CochainAtOneTime(Frozen):
         # check what we kind of cochain we receive, and convert it to `local` type any way.
         if cochain.__class__.__name__ == 'ndarray' and np.ndim(cochain) == 2:
             gm = self._f.cochain.gathering_matrix
-            assert np.shape(cochain) == gm.shape, f"local cochain shape = {np.shape(cochain)} wrong, " \
-                                                  f"should be {gm.shape}."
+            assert np.shape(cochain) == gm.shape, \
+                f"local cochain shape = {np.shape(cochain)} wrong, should be {gm.shape}."
             self._local_cochain = cochain
             self._type = 'ndarray'
         elif callable(cochain):

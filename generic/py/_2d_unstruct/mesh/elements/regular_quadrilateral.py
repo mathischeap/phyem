@@ -61,6 +61,7 @@ class RegularQuadrilateral(Element):
 
     @property
     def type(self):
+        """The generic category of the element."""
         return 'q'
 
     @property
@@ -69,7 +70,12 @@ class RegularQuadrilateral(Element):
 
     @property
     def orthogonal(self):
+        """The quadrilateral element is not distorted."""
         return True
+
+    @property
+    def element_type(self):
+        return 'rq'
 
     @property
     def ct(self):

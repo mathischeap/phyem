@@ -1,6 +1,287 @@
 # -*- coding: utf-8 -*-
+# noinspection PyUnresolvedReferences
 r"""
+
+.. _docs-wf:
+
+================
+Weak formulation
+================
+
+Once the PDE is complete, as well as its boundary conditions are correctly imposed, it shall be
+tested with test function spaces through :meth:`src.pde.PartialDifferentialEquations.test_with`,
+
+>>> wf = pde.test_with([Out2, Out1], sym_repr=['p', 'q'])
+
+which will give an instance of :class:`WeakFormulation`.
+
+    .. autoclass:: WeakFormulation
+        :members: unknowns, pr, bc, td, mp, derive
+
+To have a glance at this raw weak formulation, just do
+
+>>> wf.pr()
+<Figure size ...
+
+The following figure should pop up.
+
+.. _docs-wf-fig-wf:
+
+.. figure:: images/docs_raw_wf.png
+    :align: center
+    :width: 100%
+
+    *pr* of the weak formulation
+
+In Fig. :any:`docs-wf-fig-wf`, we can see that boundary conditions, unknowns of the PDE are correctly inherited,
+and indices of terms, ``'0-0'``, ``'0-1'`` and so on, are shown by default.
+
+
+.. _docs-wf-derivations:
+
+===========
+Derivations
+===========
+
+Derivations usually should be applied to the raw weak formulation such that it could be discretized properly
+later on. All possible derivations are wrapped into a class, :class:`WfDerive`,
+
+    .. autoclass:: WfDerive
+        :members:
+
+For example, we performe integration by parts to term of index ``'1-1'``, i.e., the second term of the
+second equation; :math:`\left(\mathrm{d}^\ast\tilde{\alpha}, q\right)_{\mathcal{M}}`, see Fig. :any:`docs-wf-fig-wf`,
+
+>>> wf = wf.derive.integration_by_parts('1-1')  # integrate the term '1-1' by parts
+>>> wf.pr()
+<Figure size ...
+
+We can see this replaces the original term by two new terms indexed ``'1-1'`` and ``'1-2'``. Then we do
+
+>>> wf = wf.derive.rearrange(
+...     {
+...         0: '0, 1 = ',    # do nothing to the first equations; can be removed
+...         1: '0, 1 = 2',   # rearrange the second equations
+...     }
+... )
+
+This ``rearrange`` method does not touch the first equation, and moves the third term of the second
+equation (i.e. the term indexed ``'1-2'``; the boundary integral term) to the right hand side of the equation.
+To check it,
+
+>>> wf.pr()
+<Figure size ...
+
+Please play with ``rearrange`` (together with ``pr``) untill you fully understand how it works.
+How to use :meth:`WfDerive.delete` and :meth:`WfDerive.switch_sign` is obvious,
+
+>>> _wf1 = wf.derive.delete('0-0')      # delete the first term of the first equation
+>>> _wf1.pr()
+<Figure size ...
+>>> _wf1 = _wf1.derive.switch_sign(1)   # switch signs in the second equation
+>>> _wf1.pr()
+<Figure size ...
+
+Note that these four lines of commands did not make changs to ``wf`` with which we will keep working.
+And usage of :meth:`WfDerive.replace` and :meth:`WfDerive.split` will be demonstrated in
+:ref:`docs-temporal-discretization`.
+
+
+.. _docs-discretization:
+
+==============
+Discretization
+==============
+
+.. _docs-temporal-discretization:
+
+Temporal discretization
+=======================
+
+Before the temporal discretization, we shall first set up an abstract time sequence,
+
+>>> ts = ph.time_sequence()
+
+Then we can define a time interval by
+
+>>> dt = ts.make_time_interval('k-1', 'k', sym_repr=r'\Delta t')
+
+This gives a time interval ``dt`` which symbolically is
+
+.. math::
+
+    \Delta t = t^{k} - t^{k-1}.
+
+The temporal discretization is wrapped into property :attr:`WeakFormulation.td`
+which is an instance of the wrapper class,
+:class:`TemporalDiscretization`,
+
+    .. autoclass:: TemporalDiscretization
+        :members:
+
+Pick up the temporal discrezation, ``td``, of the weak formulation ``wf`` by
+
+>>> td = wf.td
+
+We can set the time sequence of the temporal discretization to be the time sequence we have
+defined, ``ts``,
+
+>>> td.set_time_sequence(ts)
+
+The varilbes will be discretized to particular abstract time instants.
+For example, we do
+
+>>> td.define_abstract_time_instants('k-1', 'k-1/2', 'k')
+
+This command defines three abstract time instants, i.e.,
+
+.. math::
+
+    t^{k-1},\quad t^{k-\frac{1}{2}}, \quad t^{k}.
+
+Now, we can do the temporal discretization. For example, we apply an implicit midpoint discretization to
+the weak formulation, we shall do
+
+>>> td.differentiate('0-0', 'k-1', 'k')
+>>> td.average('0-1', b, ['k-1', 'k'])
+>>> td.differentiate('1-0', 'k-1', 'k')
+>>> td.average('1-1', a, ['k-1', 'k'])
+>>> td.average('1-2', a, ['k-1/2'])
+
+where, at time step from :math:`t^{k-1}` to :math:`t^{k}`,
+i) ``differentiate`` method is applied to terms indexed ``'0-0'`` and ``'1-0'``,
+i.e. the time derivative terms,
+
+.. math::
+
+    \left(\partial_t \tilde{\alpha}, p\right)_\mathcal{M}
+    \quad\text{and}\quad
+    \left(\partial_t \tilde{\beta}, q\right)_\mathcal{M},
+
+and ii) ``average`` method is applied to terms indexed ``'0-1'``, ``'1-1'`` and ``'1-2'``,
+i.e.,
+
+.. math::
+
+    - \left(\mathrm{d} \tilde{\beta}, p\right)_\mathcal{M}
+    \quad\text{and}\quad
+    \left(\tilde{\alpha}, \mathrm{d} q\right)_\mathcal{M}
+    \quad\text{and}\quad
+    \left< \left.\mathrm{tr} \left(\star\tilde{\alpha}\right)\right| \mathrm{tr} q\right>_{\partial\mathcal{M}}.
+
+To let all these temporal discretization take effects, we just need to call the ``td`` property, i.e.,
+
+>>> wf = td()
+>>> wf.pr()
+<Figure size ...
+
+The returned object is a new weak formulation instance which has received the desired temporal discretization.
+We shall set the unknowns of this new weak formulation by
+
+>>> wf.unknowns = [
+...     a @ ts['k'],
+...     b @ ts['k']
+... ]
+
+which means the unknowns will be
+
+.. math::
+
+    \left.\tilde{\alpha}\right|^{k} \quad \text{and}\quad \left.\tilde{\beta}\right|^{k},
+
+i.e. :math:`\tilde{\alpha}(\Omega, t^k)` and :math:`\tilde{\beta}(\Omega, t^k)`.
+
+We now need to split the composite terms into separate ones. This can be done through ``split`` method
+of ``derive`` property,
+
+>>> wf = wf.derive.split(
+...     '0-0', 'f0',
+...     [a @ ts['k'], a @ ts['k-1']],
+...     ['+', '-'],
+...     factors=[1/dt, 1/dt],
+... )
+>>> wf.pr()
+<Figure size ...
+
+This will split the first entry
+(indicated by ``'f0'`` considering the inner product term is
+:math:`\left(\text{f0},\text{f1}\right)_{\mathcal{M}}`)
+of the tern indexed by ``'0-0'`` into two new terms, as explained by the remaining inputs,
+
+.. math::
+
+    + \dfrac{1}{\Delta t}\left.\tilde{\alpha}\right|^k
+    \quad \text{and} \quad
+    - \dfrac{1}{\Delta t} \left.\tilde{\alpha}\right|^{k-1}.
+
+The ``pr`` output should have also explained everything clearly.
+
+.. note::
+
+    Note that after each particular method call of
+    ``derive``, a new weak formulation is returned;
+    the indexing system is renewed. Thus, carefully check out the
+    indexing system befoew any further derivations.
+
+Keep splitting the remian composite terms,
+
+>>> wf = wf.derive.split(
+...     '1-0', 'f0',
+...     [b @ ts['k'], b @ ts['k-1']],
+...     ['+', '-'],
+...     factors=[1/dt, 1/dt],
+... )
+
+>>> wf = wf.derive.split(
+...     '0-2', 'f0',
+...     [(b @ ts['k']).exterior_derivative(), (b @ ts['k-1']).exterior_derivative()],
+...     ['+', '+'],
+...     factors=[1/2, 1/2],
+... )
+
+>>> wf = wf.derive.split(
+...     '1-2', 'f0',
+...     [(a @ ts['k']), (a @ ts['k-1'])],
+...     ['+', '+'],
+...     factors=[1/2, 1/2],
+... )
+
+Then we should rearrange the terms,
+
+>>> wf = wf.derive.rearrange(
+...     {
+...         0: '0, 2 = 1, 3',
+...         1: '2, 0 = 3, 1, 4',
+...      }
+... )
+>>> wf.pr()
+<Figure size ...
+
+We now obtain the final (semi-)discrete system for the linear port-Hamiltonian system.
+
+.. _docs-spacial-discretization:
+
+Spacial discretization
+=======================
+
+Since we are already working with an abstract mesh, the spacial discretization can be accomplished
+simply by specifying finite degrees to finite dimensional forms we have made.
+This can be done globally by using
+
+>>> ph.space.finite(3)
+
+which specifies degrees of all finite dimensonal forms to 3. You can also set the degree of
+an individual form through its ``degree`` property, see :attr:`src.form.main.Form.degree`. Now if you
+check the ``pr`` output, you will see the degrees of the forms are correctly reflected by the spaces
+they are in. For example,
+
+>>> wf.pr()
+<Figure size ...
+
+We are ready to bring this weak formulation into its algebraic proxy (linear algebraic form) now.
+
 """
+
 import sys
 
 if './' not in sys.path:
@@ -16,7 +297,7 @@ plt.rcParams.update({
 matplotlib.use('TkAgg')
 from src.wf.td import TemporalDiscretization
 from src.bc import BoundaryCondition
-from src.wf.derive import _Derive
+from src.wf.derive import WfDerive
 from src.wf.ap.main import AlgebraicProxy
 from src.wf.mp.main import MatrixProxy
 from src.config import _pde_test_form_lin_repr
@@ -24,7 +305,7 @@ from src.config import _form_evaluate_at_repr_setting
 
 
 class WeakFormulation(Frozen):
-    """Weak Formulation."""
+    """The Weak Formulation class."""
 
     def __init__(self, test_forms, term_sign_dict=None, expression=None, interpreter=None, merge=None):
         """
@@ -278,7 +559,7 @@ class WeakFormulation(Frozen):
     def __getitem__(self, item):
         """"""
         assert item in self._indexing, \
-            f"index: '{item}' is illegal, do `print_representations(indexing=True)` " \
+            f"index: '{item}' is illegal, do 'print_representations(indexing=True)' " \
             f"to check indices of all terms."
         return self._indexing[item]
 
@@ -432,7 +713,7 @@ class WeakFormulation(Frozen):
             pattern_text += text_i
 
         fig = plt.figure(figsize=(10, 5))
-        plt.axis([0, 1, 0, 1])
+        plt.axis((0, 1, 0, 1))
         plt.axis('off')
         plt.text(0.05, 0.5, pattern_text, ha='left', va='center', size=15)
         from src.config import _setting, _pr_cache
@@ -444,8 +725,18 @@ class WeakFormulation(Frozen):
             plt.close()
         return fig
 
-    def pr(self, indexing=True, patterns=False):
-        """Print the representations"""
+    def pr(self, indexing=True, patterns=False, saveto=None):
+        """Print the representation of this weak formulation.
+
+        Parameters
+        ----------
+        indexing : bool, optional
+            Whether to show indices of the weak formulation terms. The default value is ``True``.
+        patterns : bool, optional
+            Whether to print the patterns of terms instead. The default value is ``False``.
+        saveto : {None, str}, optional
+
+        """
         from src.config import RANK, MASTER_RANK
         if RANK != MASTER_RANK:
             return
@@ -548,46 +839,52 @@ class WeakFormulation(Frozen):
         figsize = (10, height)
 
         fig = plt.figure(figsize=figsize)
-        plt.axis([0, 1, 0, 1])
+        plt.axis((0, 1, 0, 1))
         plt.axis('off')
         plt.text(0.05, 0.5, seek_text + symbolic + bc_text, ha='left', va='center', size=15)
-        from src.config import _setting, _pr_cache
-        if _setting['pr_cache']:
-            _pr_cache(fig, filename='weakFormulation')
+
+        if saveto is not None:
+            plt.savefig(saveto, bbox_inches='tight', dpi=200)
         else:
-            plt.tight_layout()
-            plt.show(block=_setting['block'])
-            plt.close()
-        return fig
+            from src.config import _setting, _pr_cache
+            if _setting['pr_cache']:
+                _pr_cache(fig, filename='weakFormulation')
+            else:
+                plt.tight_layout()
+                plt.show(block=_setting['block'])
+                plt.close()
+            return fig
 
     @property
     def derive(self):
-        """The derivations that to be applied to this current weak formulation."""
+        """A wrapper all possible derivations to the weak formulation."""
         if self._derive is None:
-            self._derive = _Derive(self)
+            self._derive = WfDerive(self)
         return self._derive
 
     @property
     def bc(self):
-        """The boundary condition of pde class."""
+        """The boundary condition of the weak formulation."""
         if self._bc is None:
             self._bc = BoundaryCondition(self._mesh)
         return self._bc
 
     @property
     def td(self):
-        """temporal discretization.
-
-        It returns a new temporal discretization instance.
-        """
+        """Temporal discretization of the weak formulation."""
         return TemporalDiscretization(self)
 
     def ap(self):
-        """Do not cache it. Make it in real time"""
+        """"""
         return AlgebraicProxy(self)
 
     def mp(self):
-        """Do not cache it. Make it in real time"""
+        """Generate a matrix proxy for the weak formulation.
+
+        Returns
+        -------
+        mp : :class:`src.wf.mp.main.MatrixProxy`
+        """
         return MatrixProxy(self)
 
     def _pr_temporal_advancing(self, ts, time_instant_hierarchy):
@@ -843,7 +1140,7 @@ class WeakFormulation(Frozen):
                         plt.show(block=_setting['block'])
             else:
                 raise NotImplementedError(
-                    f"`_pr_temporal_advancing` not implemented for multiple ati keys: {ati_keys}"
+                    f"'_pr_temporal_advancing' not implemented for multiple ati keys: {ati_keys}"
                 )
         else:
             raise NotImplementedError(f"cannot plot temporal advancing for wf of time sequence {ts.__class__}")

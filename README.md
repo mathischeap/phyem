@@ -5,7 +5,7 @@ Visit https://phyem.org/ for complete documentations.
 *phyem* is an open-source finite element library that bridges port-based thinking to numerics and 
 enables `LEGO`-like simulations. The name, *phyem*, stands for
 
-- python
+- Python
 - port-Hamiltonian
 - fem
 - physics

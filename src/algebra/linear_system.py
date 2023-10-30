@@ -21,7 +21,7 @@ class BlockMatrix(Frozen):
         for i in range(shape[0]):
             self._entries[i] = list()
             self._signs[i] = list()
-            for j in range(shape[1]):
+            for _ in range(shape[1]):
                 self._entries[i].append(list())
                 self._signs[i].append(list())
         self._freeze()
@@ -201,7 +201,7 @@ class LinearSystem(Frozen):
             # make sure x is not empty and only have one entry on each row.
             entry = xi[0][0]
             assert entry.is_root() and entry.ndim == 2 and entry.shape[1] == 1, \
-                f"x[{i}] is illegal, it must be  a root col vector (abstract array of shape (x,1))."
+                f"x[{i}] is illegal, it must be  a root col vector (abstract array of shape (x, 1))."
 
         A_shape = A._shape
         x_shape = x._shape

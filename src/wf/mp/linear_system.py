@@ -33,7 +33,7 @@ class MatrixProxyLinearSystem(Frozen):
 
     @property
     def bc(self):
-        """boundary condition."""
+        """"""
         return self._bc
 
     def pr(self, figsize=(12, 6)):
@@ -51,7 +51,7 @@ class MatrixProxyLinearSystem(Frozen):
         else:
             bc_text = self.bc._bc_text()
         fig = plt.figure(figsize=figsize)
-        plt.axis([0, 1, 0, 1])
+        plt.axis((0, 1, 0, 1))
         plt.axis('off')
         plt.text(0.05, 0.5, seek_text + symbolic + bc_text, ha='left', va='center', size=15)
 

@@ -1,6 +1,53 @@
 # -*- coding: utf-8 -*-
+# noinspection PyUnresolvedReferences
 r"""
+
+.. _docs-space:
+
+Space
+=====
+
+Having abstract meshes, you can define abstract finite dimensional function spaces on them.
+To do so, we first need to set the target mesh by calling
+
+>>> ph.space.set_mesh(mesh)
+
+Note that if there is only one mesh defined, above command can be omitted.
+
+Then, to define a finite dimensional function space on this mesh, call function ``ph.space.new``,
+
+    .. autofunction:: src.spaces.main.new
+
+So far, we have implemented the following spaces.
+
+.. admonition:: Implemented spaces
+
+    +-------------------------+-----------------+------------------------------+-------------------------------------+
+    | **description**         |**abbr.**        |    **arg**                   |    **kwarg**                        |
+    +-------------------------+-----------------+------------------------------+-------------------------------------+
+    | scalar-valued form      | ``'Lambda'``    | ``k`` : int.                 |   ``orientation``:                  |
+    | space                   |                 | It is a :math:`k`-form       |   {``'inner'``, ``'outer'``}.       |
+    |                         |                 | space.                       |   The orientation of the form space.|
+    |                         |                 |                              |   The default orientation is        |
+    |                         |                 |                              |   ``'outer'``.                      |
+    |                         |                 |                              |                                     |
+    +-------------------------+-----------------+------------------------------+-------------------------------------+
+
+For example, to make spaces of outer orientated 1-forms and 2-forms, do
+
+>>> Out1 = ph.space.new('Lambda', 1, orientation='outer')
+>>> Out2 = ph.space.new('Lambda', 2, orientation='outer')
+
+And we can list all existing spaces by calling ``ph.list_spaces`` method,
+
+>>> ph.list_spaces()  # doctest: +ELLIPSIS
+Implemented spaces:...
+
+    .. automodule:: src.spaces.base
+        :undoc-members:
+
 """
+
 import sys
 
 if './' not in sys.path:
@@ -15,6 +62,7 @@ _space_set = dict()
 
 _sep = ' ->- '
 
+
 # whenever new space is implemented, add it below.
 _implemented_spaces = {
     # indicator: (class path                    ,  class name            , description                 , parameters),
@@ -27,6 +75,74 @@ _implemented_spaces = {
         ['k', ]
     ),
 }
+
+
+def new(abbr, *args, mesh=None, **kwargs):
+    """Generate a spaces on the mesh.
+
+    Parameters
+    ----------
+    abbr : str
+        The abbr. of the space.
+    args :
+        The arguments to be sent to the space.
+    mesh : {:class:`Mesh`, None}, optional
+        We want to generate space on this mesh. If it is ``None``, we use the current target mesh.
+        The default value is ``None``.
+    kwargs :
+        The keyword arguments to be sent to the space.
+
+    Returns
+    -------
+    space :
+        The finite dimensional space.
+
+    """
+    if _config['current_mesh'] == '' and mesh is None:
+        raise Exception(f"pls set a mesh firstly by using 'space.set_mesh' or specify 'mesh'.")
+    else:
+        pass
+
+    if isinstance(abbr, str):  # make only 1 space
+        pass
+    else:
+        raise NotImplementedError()
+
+    mesh_sr = _config['current_mesh']
+
+    if mesh is None:
+        mesh = _mesh_set[mesh_sr]
+    else:
+        # noinspection PyUnresolvedReferences
+        mesh_sr = mesh._sym_repr
+        if mesh_sr in _mesh_set:
+            pass
+        else:
+            _mesh_set[mesh_sr] = mesh
+            _space_set[mesh_sr] = dict()
+
+    current_spaces = _space_set[mesh_sr]
+
+    assert abbr in _implemented_spaces, \
+        f"space abbr.={abbr} not implemented. do 'ph.space.list_()' to see all implemented spaces."
+
+    space_class_path, space_class_name = _implemented_spaces[abbr][0:2]
+
+    space_class = getattr(import_module(space_class_path), space_class_name)
+
+    space = space_class(mesh, *args, **kwargs)
+
+    srp = space._sym_repr  # do not use __repr__()
+
+    if srp in current_spaces:
+        pass
+    else:
+        current_spaces[srp] = space
+
+    space = current_spaces[srp]
+
+    return space
+
 
 __all__ = [
     '_VarSetting_mass_matrix',                     #
@@ -229,7 +345,7 @@ def _list_spaces():
     else:
         pass
 
-    print('\n Implemented spaces:')
+    print('Implemented spaces:')
     print('{:>15} - {}'.format('abbreviation', 'description'))
     for abbr in _implemented_spaces:
         description = _implemented_spaces[abbr][2]
@@ -281,70 +397,3 @@ def finite(degree, mesh=None, spaces=None):
 
     for space in spaces:
         space.finite.specify_all(degree)
-
-
-def new(abbrs, *args, mesh=None, **kwargs):
-    """generate a space (named `abbr`) with args `kwargs` use current mesh.
-
-    Parameters
-    ----------
-    abbrs
-    mesh :
-        We specify a mesh here. And this does not change the global mesh setting.
-    kwargs
-
-    Returns
-    -------
-
-    """
-    if _config['current_mesh'] == '' and mesh is None:
-        raise Exception(f"pls set a mesh firstly by using `space.set_mesh` or specify `mesh`.")
-    else:
-        pass
-
-    if isinstance(abbrs, str):  # make only 1 space
-        abbrs = [abbrs, ]
-    else:
-        isinstance(abbrs, (list, tuple)), f"pls put space abbreviations into a list or tuple."
-
-    mesh_sr = _config['current_mesh']
-
-    if mesh is None:
-        mesh = _mesh_set[mesh_sr]
-    else:
-        mesh_sr = mesh._sym_repr
-        if mesh_sr in _mesh_set:
-            pass
-        else:
-            _mesh_set[mesh_sr] = mesh
-            _space_set[mesh_sr] = dict()
-
-    current_spaces = _space_set[mesh_sr]
-
-    spaces = tuple()
-
-    for abbr in abbrs:
-
-        assert abbr in _implemented_spaces, \
-            f"space abbr.={abbr} not implemented. do `ph.space.list_()` to see all implemented spaces."
-
-        space_class_path, space_class_name = _implemented_spaces[abbr][0:2]
-
-        space_class = getattr(import_module(space_class_path), space_class_name)
-
-        space = space_class(mesh, *args, **kwargs)
-
-        srp = space._sym_repr  # do not use __repr__()
-
-        if srp in current_spaces:
-            pass
-        else:
-            current_spaces[srp] = space
-
-        spaces += (current_spaces[srp],)
-
-    if len(spaces) == 1:
-        return spaces[0]
-
-    else:
-        return spaces

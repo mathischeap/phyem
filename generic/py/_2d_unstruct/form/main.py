@@ -153,7 +153,7 @@ class GenericUnstructuredForm2D(Frozen):
     def reconstruct(self, t, xi, et, ravel=False, element_range=None):
         """"""
         cochain = self.cochain[t]
-        return self._space.reconstruct(cochain, xi, et, ravel,  element_range=element_range)
+        return self._space.reconstruct(cochain, xi, et, ravel, element_range=element_range, degree=self._degree)
 
     @property
     def incidence_matrix(self):

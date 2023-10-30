@@ -179,7 +179,7 @@ class ConstantTimeSequence(TimeSequence):
         t0, t_max, n = t0_max_n
         # n is equal to the number of time intervals between t0 and t_max.
         assert t_max > t0 and n % 1 == 0 and n > 0
-        assert factor % 1 == 0 and factor > 0, f"`factor` needs to be a positive integer."
+        assert factor % 1 == 0 and factor > 0, f"'factor' needs to be a positive integer."
 
         self._t_0 = t0
         self._t_max = t_max
@@ -222,10 +222,10 @@ class ConstantTimeSequence(TimeSequence):
         remainder = round(k % 1, 8)
         if time < self.t_0 - self._dt:  # leave a dt as lower margin
             raise TimeInstantError(
-                f"t[{k}] = {time} is lower than t0:{self.t_0} - dt:{self._dt}.")
+                f"t[{k}] = {time} is lower than t0: {self.t_0} - dt: {self._dt}.")
         elif time > self.t_max + self._dt:  # leave a dt as upper margin
             raise TimeInstantError(
-                f"t[{k}] = {time} is higher than t_max: {self.t_max} + dt:{self._dt}.")
+                f"t[{k}] = {time} is higher than t_max: {self.t_max} + dt: {self._dt}.")
         elif remainder not in self._allowed_reminder:
             raise TimeInstantError(
                 f"t[{k}] = {time} is not a valid time instance of the sequence.")
@@ -235,7 +235,7 @@ class ConstantTimeSequence(TimeSequence):
     def __repr__(self):
         super_repr = super().__repr__().split('object')[1]
         return f"<ConstantTimeSequence ({self.t_0}, {self.t_max}, {self._n}) " \
-               f"@ k_max={self._k_max}, dt={self._dt}, factor={self._factor}" + \
+            f"@ k_max={self._k_max}, dt={self._dt}, factor={self._factor}" + \
             super_repr
 
     def info(self):
@@ -382,7 +382,7 @@ class ConstantTimeSequence(TimeSequence):
 
         else:
             assert hasattr(obj, "_pr_temporal_advancing"), \
-                f"{obj} has no method `_pr_temporal_advancing`, implement it first!"
+                f"{obj} has no method '_pr_temporal_advancing', implement it first!"
             obj._pr_temporal_advancing(
                 self,
                 time_instant_hierarchy
@@ -463,10 +463,10 @@ class AbstractTimeInstant(Frozen):
         """call, return a TimeInstant object."""
         time_instance_str = self._k
         for key in kwargs:
-            assert key in self._kwarg_keys, f"key={key} is not found for ati:{self}."
+            assert key in self._kwarg_keys, f"key={key} is not found for ati: {self}."
             time_instance_str = time_instance_str.replace(key, str(kwargs[key]))
         time = eval(time_instance_str)
-        assert isinstance(time, (int, float)), f"format wrong, `eval` does not return a number."
+        assert isinstance(time, (int, float)), f"format wrong, 'eval' does not return a number."
         assert self.time_sequence._object is not None, \
             f"The abstract time sequence has no object (particular time sequence). Specify it firstly."
         try:
@@ -498,7 +498,7 @@ class TimeInterval(Frozen):
             The end time.
         """
         assert t_start.__class__.__name__ == 'TimeInstant' and t_end.__class__.__name__ == 'TimeInstant', \
-            f"t_start and t_end must be `TimeInstant` instances."
+            f"t_start and t_end must be 'TimeInstant' instances."
         self._t_start = t_start
         self._t_end = t_end
         self._dt = t_end() - t_start()
@@ -545,7 +545,7 @@ class AbstractTimeInterval(Frozen):
         """
         assert t_start.__class__.__name__ == 'AbstractTimeInstant' and \
             t_end.__class__.__name__ == 'AbstractTimeInstant', \
-            f"t_start and t_end must be `AbstractTimeInstant` instances."
+            f"t_start and t_end must be 'AbstractTimeInstant' instances."
         ts0 = t_start.time_sequence
         ts1 = t_end.time_sequence
         assert ts0 is ts1, f"time sequences of t_start, t_end does not match."
@@ -593,7 +593,7 @@ class AbstractTimeInterval(Frozen):
     def __repr__(self):
         """"""
         super_repr = super().__repr__().split('object')[1]
-        return f"<AbstractTimeInterval from t['{self.start.k}]' to t['{self.end.k}'], {self._sym_repr}," + \
+        return f"<AbstractTimeInterval from t['{self.start.k}]' to t['{self.end.k}'], {self._sym_repr}" + \
             super_repr[:-1] + f' of {self.time_sequence}>'
 
     def _as_scalar(self):

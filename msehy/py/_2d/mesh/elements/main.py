@@ -75,7 +75,7 @@ class MseHyPy2MeshElements(Frozen):
         if len(refining_thresholds) == 0:
             return
 
-        assert refining_thresholds.ndim == 1 and np.alltrue(np.diff(refining_thresholds) >= 0), \
+        assert refining_thresholds.ndim == 1 and all(np.diff(refining_thresholds) >= 0), \
             f"refining_thresholds={refining_thresholds} is wrong, it must be a increasing 1d array."
         assert refining_thresholds[0] >= 0, \
             f"refining_thresholds={refining_thresholds} wrong, thresholds must > 0."
@@ -84,8 +84,6 @@ class MseHyPy2MeshElements(Frozen):
         if isinstance(region_wise_refining_strength_function, str):
             # it must represent a file, we read from it.
             import pickle
-            from src.config import SIZE
-            assert SIZE == 1, f"`ph.read` works for COMM.SIZE == 1. Now it is {SIZE}."
             with open(region_wise_refining_strength_function, 'rb') as inputs:
                 func = pickle.load(inputs)
             inputs.close()

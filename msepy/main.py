@@ -1,5 +1,63 @@
 # -*- coding: utf-8 -*-
 r"""
+
+.. note::
+
+    *msepy* stands for **mimetic spectral elements in Python**. It is an implementation of
+    the mimetic spectral element methods using pure Python. In other words, the most
+    computationally intensive part of the simulation, the linear system solving, is also
+    done within Python.
+
+    **Advantages** of this are clear. No external packages (or APIs to other kernels)
+    are needed to use *msepy* implementation; only common Python packages like scipy, numpy,
+    matplotlib, etc., are required. Users can quickly settle their machines no mather they are
+    Windows, Linux or Mac.
+
+    The most obvious **disadvantage** of this implementation is that, since Python suffers from
+    its relatively lower speed, this implementation is not proper for large problems. It is
+    hard to say what problems are large. And it is also dependent on the machine. Normally,
+    *msepy* is very handy for 1- or 2-dimentional and small 3-dimensional problems. User could
+    explore the edge by trial.
+
+To invoke the msepy implementation, use indicator ``'msepy'`` as the
+first argument for ``apply`` of ``fem`` module, i.e.,
+
+>>> implementation, objects = ph.fem.apply('msepy', locals())
+
+To pick up the implemented counterpart of an abstract instance, we can just use its variable name, for example,
+
+>>> manifold = objects['manifold']
+>>> mesh = objects['mesh']
+
+If some instances have no explicit varialbes, you could possiblly
+pick them up using their symbolic representations.
+For example, the boundary manifolds for defineing the boundary conditions have no explicit varibles,
+we can pick them using theire symbolic representations through the dictionary ``implementation.base``,
+
+>>> Gamma_alpha = implementation.base['manifolds'][r"\Gamma_{\alpha}"]
+>>> Gamma_beta = implementation.base['manifolds'][r"\Gamma_{\beta}"]
+
+For these instances that can be accessed throug ``implementation.base``,
+there are just four types, manifolds, meshes, spaces and forms. They can be accessed
+with keys ``'manifolds'``, ``'meshes'``, ``'spaces'`` and ``'forms'``,
+respectively. For example
+
+>>> mesh is implementation.base['meshes'][r'\mathfrak{M}']
+True
+
+
+.. _Implementations-msepy-config:
+
+Configuration
+*************
+
+>>> implementation.config(manifold)(
+...     'crazy', c=0., bounds=([0, 1], [0, 1]), periodic=False,
+... )
+
+
+
+
 """
 from tools.frozen import Frozen
 from msepy.manifold.main import MsePyManifold
@@ -175,8 +233,8 @@ def info(*others_2b_printed):
         pass
     new_time = time()
     total_cost = new_time - start_time
-    print(f'=== [{count}] {MyTimer.current_time()} -after- %.2f(s),'
-          f' total: {MyTimer.seconds2dhms(total_cost)} <----' % (new_time - old_time))
+    print(f'=== [{count}] {MyTimer.current_time()} -after- %.2f(s)'
+          f', total: {MyTimer.seconds2dhms(total_cost)} <----' % (new_time - old_time))
     print(f"~) Form with newest cochain @ --------- ")
     for form_sym in forms:
         form = forms[form_sym]

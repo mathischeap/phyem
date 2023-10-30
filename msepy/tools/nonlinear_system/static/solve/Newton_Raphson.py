@@ -152,7 +152,7 @@ class MsePyNonlinearSystemNewtonRaphsonSolve(Frozen):
                     linear_term = self._nls._A[i][j]
                     if linear_term is not None:
                         assert linear_term.__class__ is MsePyStaticLocalMatrix, \
-                            f"A linear term [{i}][{j}] must be a {MsePyStaticLocalMatrix},"
+                            f"A linear term [{i}][{j}] must be a {MsePyStaticLocalMatrix}."
 
                         assert LHS[i][j] is None, f"LHS[i][j] must be untouched yet!"
                         LHS[i][j] = linear_term
@@ -198,7 +198,7 @@ class MsePyNonlinearSystemNewtonRaphsonSolve(Frozen):
 
                                 assert contribution_2_Aij.__class__ is MsePyStaticLocalMatrix, \
                                     (f"contribution of nonlinear term to linear system must be a "
-                                     f"{MsePyStaticLocalMatrix},")
+                                     f"{MsePyStaticLocalMatrix}.")
 
                                 if sign == '+':
                                     pass
@@ -301,15 +301,15 @@ class MsePyNonlinearSystemNewtonRaphsonSolve(Frozen):
         TiT = t_iteration_end-t_iteration_start
 
         message += f"<nonlinear_solver>" \
-                   f" = [RegularNewtonRaphson: {A_shape}]" \
-                   f" of {self._nls._num_nonlinear_terms} nonlinear terms" \
-                   f" : atol={atol}, maxiter={maxiter} + Linear solver: {inner_solver_package} {inner_solver_scheme}" \
-                   f" args: {inner_solver_kwargs}" \
-                   f" -> [ITER: {ITER}]" \
-                   f" = [beta: %.4e]" \
-                   f" = [{convergence_info}-{JUDGE_explanation}]" \
-                   f" -> nLS solving costs %.2f, each ITER cost %.2f" % (BETA[-1], Ta, TiT/ITER) \
-                   + '\n(-*-) Last Linear Solver Message:(-*-)\n' + LSm + '\n'
+            f" = [RegularNewtonRaphson: {A_shape}]" \
+            f" of {self._nls._num_nonlinear_terms} nonlinear terms: " \
+            f"atol={atol}, maxiter={maxiter} + Linear solver: {inner_solver_package} {inner_solver_scheme} " \
+            f"args: {inner_solver_kwargs}" \
+            f" -> [ITER: {ITER}]" \
+            f" = [beta: %.4e]" \
+            f" = [{convergence_info}-{JUDGE_explanation}]" \
+            f" -> nLS solving costs %.2f, each ITER cost %.2f" % (BETA[-1], Ta, TiT/ITER) \
+            + '\n(-*-) Last Linear Solver Message:(-*-)\n' + LSm + '\n'
 
         info = {
             'total cost': Ta,

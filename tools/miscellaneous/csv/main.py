@@ -1,8 +1,5 @@
 # -*- coding: utf-8 -*-
-"""
-@author: Yi Zhang
-@contact: zhangyi_aero@hotmail.com
-@time: 8/16/2022 1:26 AM
+r"""
 """
 import sys
 

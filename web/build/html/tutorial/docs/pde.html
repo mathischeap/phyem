@@ -1,0 +1,846 @@
+
+
+<!DOCTYPE html>
+
+
+<html lang="en" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
+
+    <title>4. PDE &#8212; A finite element library powering Lego like simulation for (multi-)physics.</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "light";
+  </script>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../../_static/styles/theme.css?digest=ac02cc09edc035673794" rel="stylesheet" />
+<link href="../../_static/styles/bootstrap.css?digest=ac02cc09edc035673794" rel="stylesheet" />
+<link href="../../_static/styles/pydata-sphinx-theme.css?digest=ac02cc09edc035673794" rel="stylesheet" />
+
+  
+  <link href="../../_static/vendor/fontawesome/6.1.2/css/all.min.css?digest=ac02cc09edc035673794" rel="stylesheet" />
+  <link rel="preload" as="font" type="font/woff2" crossorigin href="../../_static/vendor/fontawesome/6.1.2/webfonts/fa-solid-900.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../../_static/vendor/fontawesome/6.1.2/webfonts/fa-brands-400.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../../_static/vendor/fontawesome/6.1.2/webfonts/fa-regular-400.woff2" />
+
+    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css" />
+    <link rel="stylesheet" href="../../_static/styles/sphinx-book-theme.css?digest=14f4ca6b54d191a8c7657f6c759bf11a5fb86285" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css" />
+  
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../../_static/scripts/bootstrap.js?digest=ac02cc09edc035673794" />
+<link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=ac02cc09edc035673794" />
+  <script src="../../_static/vendor/fontawesome/6.1.2/js/all.min.js?digest=ac02cc09edc035673794"></script>
+
+    <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
+    <script src="../../_static/doctools.js"></script>
+    <script src="../../_static/sphinx_highlight.js"></script>
+    <script src="../../_static/clipboard.min.js"></script>
+    <script src="../../_static/copybutton.js"></script>
+    <script src="../../_static/scripts/sphinx-book-theme.js?digest=5a5c038af52cf7bc1a1ec88eea08e6366ee68824"></script>
+    <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script>window.MathJax = {"tex": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true}, "options": {"ignoreHtmlClass": "tex2jax_ignore|mathjax_ignore|document", "processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+    <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'tutorial/docs/pde';</script>
+    <link rel="icon" href="../../_static/favicon.png"/>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="5. Weak formulation &amp; discretization" href="wf.html" />
+    <link rel="prev" title="3. Space &amp; form" href="space_form.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="">
+
+  
+  
+  <a class="skip-link" href="#main-content">Skip to main content</a>
+  
+  <div id="pst-scroll-pixel-helper"></div>
+
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>
+    Back to top
+  </button>
+
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          name="__primary"
+          id="__primary"/>
+  <label class="overlay overlay-primary" for="__primary"></label>
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          name="__secondary"
+          id="__secondary"/>
+  <label class="overlay overlay-secondary" for="__secondary"></label>
+  
+  <div class="search-button__wrapper">
+    <div class="search-button__overlay"></div>
+    <div class="search-button__search-container">
+<form class="bd-search d-flex align-items-center"
+      action="../../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         id="search-input"
+         placeholder="Search..."
+         aria-label="Search..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form></div>
+  </div>
+
+
+  <div class="bd-header-announcement container-fluid bd-header-announcement">
+    <div class="bd-header-announcement__content">
+        <p style='color:white;'> &#127867 PHYEM is coming</p>
+    </div>
+  </div>
+
+  
+    <nav class="bd-header navbar navbar-expand-lg bd-navbar">
+    </nav>
+  
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      <div class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+    
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item">
+  
+
+<a class="navbar-brand logo" href="../../index.html">
+  
+  
+  
+  
+    
+    
+      
+    
+    
+    <img src="../../_static/logo-light.png" class="logo__image only-light" alt="Logo image"/>
+    <script>document.write(`<img src="../../_static/logo-dark.png" class="logo__image only-dark" alt="Logo image"/>`);</script>
+  
+  
+</a></div>
+        <div class="sidebar-primary-item"><ul class="navbar-icon-links navbar-nav"
+    aria-label="Quick Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://www.mathischeap.com/" title="mathischeap" class="nav-link" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><img src="../../_static/favicon-mic.png" class="icon-link-image" alt="mathischeap"/></a>
+        </li>
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/mathischeap/phyem" title="GitHub" class="nav-link" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><span><i class="fa-brands fa-square-github fa-lg" aria-hidden="true"></i></span>
+            <span class="sr-only">GitHub</span></a>
+        </li>
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://app.netlify.com/sites/phyem/deploys" title="Netlify Status" class="nav-link" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><img src="https://api.netlify.com/api/v1/badges/6a559326-c54e-4a8f-a79a-a715648c73c2/deploy-status" class="icon-link-image" alt="Netlify Status"/></a>
+        </li>
+</ul></div>
+        <div class="sidebar-primary-item"><nav class="bd-links" id="bd-docs-nav" aria-label="Main">
+    <div class="bd-toc-item navbar-nav active">
+        
+        <ul class="nav bd-sidenav bd-sidenav__home-link">
+            <li class="toctree-l1">
+                <a class="reference internal" href="../../index.html">
+                    Welcome
+                </a>
+            </li>
+        </ul>
+        <ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../../introduction.html">Features and structure</a></li>
+</ul>
+<ul class="current nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../install.html">Install</a></li>
+<li class="toctree-l1 current active has-children"><a class="reference internal" href="../documentations.html">Documentations</a><input checked="" class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-1"><i class="fa-solid fa-chevron-down"></i></label><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="presetting.html">1. Presetting</a></li>
+<li class="toctree-l2"><a class="reference internal" href="manifold_mesh.html">2. Manifold &amp; mesh</a></li>
+<li class="toctree-l2"><a class="reference internal" href="space_form.html">3. Space &amp; form</a></li>
+<li class="toctree-l2 current active"><a class="current reference internal" href="#">4. PDE</a></li>
+<li class="toctree-l2"><a class="reference internal" href="wf.html">5. Weak formulation &amp; discretization</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ap.html">6. Algebraic proxy</a></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="implementations.html">7. Implementations</a><input class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-2"><i class="fa-solid fa-chevron-down"></i></label><ul>
+<li class="toctree-l3"><a class="reference internal" href="implementations/msepy.html">7.1. msepy</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../summary.html">Summary</a></li>
+</ul>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../jupyter/index.html">Jupyter notebooks</a><input class="toctree-checkbox" id="toctree-checkbox-3" name="toctree-checkbox-3" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-3"><i class="fa-solid fa-chevron-down"></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../jupyter/general/first_equation.html">Set up your first equation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../jupyter/general/discretize_linear_pH_system.html">Discretization</a></li>
+</ul>
+</li>
+</ul>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../gallery/index.html">Gallery</a><input class="toctree-checkbox" id="toctree-checkbox-4" name="toctree-checkbox-4" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-4"><i class="fa-solid fa-chevron-down"></i></label><ul>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../../gallery/msepy_domains_and_meshes/index.html"><code class="docutils literal notranslate"><span class="pre">msepy</span></code> domains and meshes</a><input class="toctree-checkbox" id="toctree-checkbox-5" name="toctree-checkbox-5" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-5"><i class="fa-solid fa-chevron-down"></i></label><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../gallery/msepy_domains_and_meshes/msepy/crazy.html">Crazy domain and mesh</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../gallery/msepy_domains_and_meshes/msepy/crazy_multi.html">Multi-crazy domain and mesh</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../gallery/msepy_domains_and_meshes/msepy/backward_step.html">Backward step</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../gallery/div_grad/index.html">div-grad</a></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../../gallery/Navier_Stokes/index.html">Navier-Stokes equations</a><input class="toctree-checkbox" id="toctree-checkbox-6" name="toctree-checkbox-6" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-6"><i class="fa-solid fa-chevron-down"></i></label><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../gallery/Navier_Stokes/shear_layer_rollup/index.html">Shear layer rollup</a></li>
+</ul>
+</li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../../gallery/MHD/index.html">MHD (magnetohydrodynamics)</a><input class="toctree-checkbox" id="toctree-checkbox-7" name="toctree-checkbox-7" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-7"><i class="fa-solid fa-chevron-down"></i></label><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../gallery/MHD/Orszag_Tang_vortex/index.html">Orszag-Tang Vortex</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+    </div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+  </div>
+  
+  <div id="rtd-footer-container"></div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main">
+        
+        
+
+<div class="sbt-scroll-pixel-helper"></div>
+
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item"><label class="sidebar-toggle primary-toggle btn btn-sm" for="__primary" title="Toggle primary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <span class="fa-solid fa-bars"></span>
+</label></div>
+      
+    </div>
+  
+  
+    <div class="header-article-items__end">
+      
+        <div class="header-article-item">
+
+<div class="article-header-buttons">
+
+
+
+
+
+<div class="dropdown dropdown-source-buttons">
+  <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Source repositories">
+    <i class="fab fa-github"></i>
+  </button>
+  <ul class="dropdown-menu">
+      
+      
+      
+      <li><a href="https://github.com/mathischeap/phyem" target="_blank"
+   class="btn btn-sm btn-source-repository-button dropdown-item"
+   title="Source repository"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fab fa-github"></i>
+  </span>
+<span class="btn__text-container">Repository</span>
+</a>
+</li>
+      
+      
+      
+      
+      <li><a href="https://github.com/mathischeap/phyem/issues/new?title=Issue%20on%20page%20%2Ftutorial/docs/pde.html&body=Your%20issue%20content%20here." target="_blank"
+   class="btn btn-sm btn-source-issues-button dropdown-item"
+   title="Open an issue"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-lightbulb"></i>
+  </span>
+<span class="btn__text-container">Open issue</span>
+</a>
+</li>
+      
+  </ul>
+</div>
+
+
+
+
+
+
+<div class="dropdown dropdown-download-buttons">
+  <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Download this page">
+    <i class="fas fa-download"></i>
+  </button>
+  <ul class="dropdown-menu">
+      
+      
+      
+      <li><a href="../../_sources/tutorial/docs/pde.rst" target="_blank"
+   class="btn btn-sm btn-download-source-button dropdown-item"
+   title="Download source file"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file"></i>
+  </span>
+<span class="btn__text-container">.rst</span>
+</a>
+</li>
+      
+      
+      
+      
+      <li>
+<button onclick="window.print()"
+  class="btn btn-sm btn-download-pdf-button dropdown-item"
+  title="Print to PDF"
+  data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file-pdf"></i>
+  </span>
+<span class="btn__text-container">.pdf</span>
+</button>
+</li>
+      
+  </ul>
+</div>
+
+
+
+
+<button onclick="toggleFullScreen()"
+  class="btn btn-sm btn-fullscreen-button"
+  title="Fullscreen mode"
+  data-bs-placement="bottom" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-expand"></i>
+  </span>
+
+</button>
+
+
+<script>
+document.write(`
+  <button class="btn btn-sm navbar-btn theme-switch-button" title="light/dark" aria-label="light/dark" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="theme-switch nav-link" data-mode="light"><i class="fa-solid fa-sun fa-lg"></i></span>
+    <span class="theme-switch nav-link" data-mode="dark"><i class="fa-solid fa-moon fa-lg"></i></span>
+    <span class="theme-switch nav-link" data-mode="auto"><i class="fa-solid fa-circle-half-stroke fa-lg"></i></span>
+  </button>
+`);
+</script>
+
+<script>
+document.write(`
+  <button class="btn btn-sm navbar-btn search-button search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass fa-lg"></i>
+  </button>
+`);
+</script>
+<label class="sidebar-toggle secondary-toggle btn btn-sm" for="__secondary"title="Toggle secondary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="fa-solid fa-list"></span>
+</label>
+</div></div>
+      
+    </div>
+  
+</div>
+</div>
+              
+              
+
+<div id="jb-print-docs-body" class="onlyprint">
+    <h1>PDE</h1>
+    <!-- Table of contents -->
+    <div id="print-main-content">
+        <div id="jb-print-toc">
+            
+            <div>
+                <h2> On this page </h2>
+            </div>
+            <nav aria-label="Page">
+                <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#initialization">4.1. Initialization</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#src.pde.pde"><code class="docutils literal notranslate"><span class="pre">pde()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#src.pde.PartialDifferentialEquations"><code class="docutils literal notranslate"><span class="pre">PartialDifferentialEquations</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#src.pde.PartialDifferentialEquations.bc"><code class="docutils literal notranslate"><span class="pre">PartialDifferentialEquations.bc</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#src.pde.PartialDifferentialEquations.derive"><code class="docutils literal notranslate"><span class="pre">PartialDifferentialEquations.derive</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#src.pde.PartialDifferentialEquations.pr"><code class="docutils literal notranslate"><span class="pre">PartialDifferentialEquations.pr()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#src.pde.PartialDifferentialEquations.test_with"><code class="docutils literal notranslate"><span class="pre">PartialDifferentialEquations.test_with()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#src.pde.PartialDifferentialEquations.unknowns"><code class="docutils literal notranslate"><span class="pre">PartialDifferentialEquations.unknowns</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#boundary-conditions">4.2. Boundary conditions</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#derivations">4.3. Derivations</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#src.pde.PDEDerive"><code class="docutils literal notranslate"><span class="pre">PDEDerive</span></code></a></li>
+</ul>
+</li>
+</ul>
+            </nav>
+        </div>
+    </div>
+</div>
+
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article" role="main">
+                  
+  <section id="pde">
+<span id="docs-pde"></span><h1><span class="section-number">4. </span>PDE<a class="headerlink" href="#pde" title="Permalink to this heading">#</a></h1>
+<aside class="topic">
+<p class="topic-title">Estimated reading time</p>
+<p>⏱️ 15 minutes</p>
+</aside>
+<span class="target" id="module-src.pde"></span><section id="initialization">
+<span id="pde-initialization"></span><h2><span class="section-number">4.1. </span>Initialization<a class="headerlink" href="#initialization" title="Permalink to this heading">#</a></h2>
+<p>To initialize/construct a PDE instance, call the method <code class="docutils literal notranslate"><span class="pre">ph.pde</span></code>,</p>
+<blockquote>
+<div><dl class="py function">
+<dt class="sig sig-object py" id="src.pde.pde">
+<span class="sig-name descname"><span class="pre">pde</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">expression</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">interpreter</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">terms_and_signs_dict</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/src/pde.html#pde"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#src.pde.pde" title="Permalink to this definition">#</a></dt>
+<dd><p>A wrapper of the <code class="docutils literal notranslate"><span class="pre">__init__</span></code> method of <a class="reference internal" href="#src.pde.PartialDifferentialEquations" title="src.pde.PartialDifferentialEquations"><code class="xref py py-class docutils literal notranslate"><span class="pre">PartialDifferentialEquations</span></code></a>.</p>
+<p>To make a PDE instance, you can either input</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">expression</span></code> and <code class="docutils literal notranslate"><span class="pre">interpreter</span></code></p></li>
+</ul>
+<p>or input</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">terms_and_signs_dict</span></code></p></li>
+</ul>
+<p>If you input <code class="docutils literal notranslate"><span class="pre">expression</span></code> and <code class="docutils literal notranslate"><span class="pre">interpreter</span></code> (recommended), the class will call a
+private method to parse <code class="docutils literal notranslate"><span class="pre">expression</span></code> according to <code class="docutils literal notranslate"><span class="pre">interpreter</span></code> and generates
+dictionaries of terms and signs.</p>
+<dl class="field-list">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>expression</strong><span class="classifier">List[str]</span></dt><dd><p>The list of strings that represent a set of equations.</p>
+</dd>
+<dt><strong>interpreter</strong><span class="classifier">dict</span></dt><dd><p>The dictionary of interpreters that explain the terms in the <code class="docutils literal notranslate"><span class="pre">expression</span></code>.</p>
+</dd>
+<dt><strong>terms_and_signs_dict</strong><span class="classifier">dict</span></dt><dd><p>The dictionary that represents the terms and signs of each equation directly
+(instead of through <code class="docutils literal notranslate"><span class="pre">expression</span></code> and <code class="docutils literal notranslate"><span class="pre">interpreter</span></code>).</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><dl>
+<dt><strong>pde</strong><span class="classifier"><a class="reference internal" href="#src.pde.PartialDifferentialEquations" title="src.pde.PartialDifferentialEquations"><code class="xref py py-class docutils literal notranslate"><span class="pre">PartialDifferentialEquations</span></code></a></span></dt><dd><p>The output partial differential equations instance.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+</div></blockquote>
+<p>For instance, if we want to solve the 2-dimensional linear port Hamitolian problem, i.e.,</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}\left\lbrace
+    \begin{aligned}
+        &amp; \partial_t \tilde{\alpha} = \mathrm{d}\tilde{\beta} ,\\
+        &amp; \partial_t \tilde{\beta} = - \mathrm{d}^\ast\tilde{\alpha},
+    \end{aligned}
+\right.\end{split}\]</div>
+<p>for the outer 2-form <span class="math notranslate nohighlight">\(\tilde{\alpha}\)</span> and the outer 1-form <span class="math notranslate nohighlight">\(\tilde{\beta}\)</span>
+in the domain <span class="math notranslate nohighlight">\(\mathcal{M}\)</span>,
+we make the following expression,</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">expression</span> <span class="o">=</span> <span class="p">[</span>
+<span class="gp">... </span>    <span class="s1">&#39;da_dt = + d_b&#39;</span><span class="p">,</span>
+<span class="gp">... </span>    <span class="s1">&#39;db_dt = - cd_a&#39;</span>
+<span class="gp">... </span><span class="p">]</span>
+</pre></div>
+</div>
+<p>where we have string terms like <code class="docutils literal notranslate"><span class="pre">'da_dt'</span></code>, <code class="docutils literal notranslate"><span class="pre">'d_b'</span></code> and so on connected by <code class="docutils literal notranslate"><span class="pre">'+'</span></code>, <code class="docutils literal notranslate"><span class="pre">'-'</span></code> and <code class="docutils literal notranslate"><span class="pre">'='</span></code>.
+Since these terms are just strings, the code needs to know
+what forms they are representing. Thus, we need an interpreter,</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">interpreter</span> <span class="o">=</span> <span class="p">{</span>
+<span class="gp">... </span>    <span class="s1">&#39;da_dt&#39;</span><span class="p">:</span> <span class="n">da_dt</span><span class="p">,</span>
+<span class="gp">... </span>    <span class="s1">&#39;d_b&#39;</span>  <span class="p">:</span> <span class="n">d_b</span><span class="p">,</span>
+<span class="gp">... </span>    <span class="s1">&#39;db_dt&#39;</span><span class="p">:</span> <span class="n">db_dt</span><span class="p">,</span>
+<span class="gp">... </span>    <span class="s1">&#39;cd_a&#39;</span> <span class="p">:</span> <span class="n">cd_a</span>
+<span class="gp">... </span><span class="p">}</span>
+</pre></div>
+</div>
+<p>which links the strings, i.e. the keys of <code class="docutils literal notranslate"><span class="pre">interpreter</span></code>, to the forms, <code class="docutils literal notranslate"><span class="pre">da_dt</span></code>, <code class="docutils literal notranslate"><span class="pre">d_b</span></code> and so on.
+Note that because here strings that are same to the variable names are used,
+this interpreter is a subset of the local variable dictionary
+which can be returned by the built-in function <code class="docutils literal notranslate"><span class="pre">locals</span></code>.
+Therefore, alternatively we can use</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">interpreter</span> <span class="o">=</span> <span class="nb">locals</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>Sending <code class="docutils literal notranslate"><span class="pre">expression</span></code> and <code class="docutils literal notranslate"><span class="pre">interpreter</span></code> to <code class="docutils literal notranslate"><span class="pre">ph.pde</span></code> initializes a PDE instance,</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">pde</span> <span class="o">=</span> <span class="n">ph</span><span class="o">.</span><span class="n">pde</span><span class="p">(</span><span class="n">expression</span><span class="p">,</span> <span class="n">interpreter</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>which is an instance of <a class="reference internal" href="#src.pde.PartialDifferentialEquations" title="src.pde.PartialDifferentialEquations"><code class="xref py py-class docutils literal notranslate"><span class="pre">PartialDifferentialEquations</span></code></a>,</p>
+<blockquote>
+<div><dl class="py class">
+<dt class="sig sig-object py" id="src.pde.PartialDifferentialEquations">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">PartialDifferentialEquations</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">expression</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">interpreter</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">terms_and_signs_dict</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/src/pde.html#PartialDifferentialEquations"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#src.pde.PartialDifferentialEquations" title="Permalink to this definition">#</a></dt>
+<dd><p>The Partial Differential Equations class.</p>
+<dl class="py property">
+<dt class="sig sig-object py" id="src.pde.PartialDifferentialEquations.bc">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">bc</span></span><a class="headerlink" href="#src.pde.PartialDifferentialEquations.bc" title="Permalink to this definition">#</a></dt>
+<dd><p>The boundary condition of the PDE.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="src.pde.PartialDifferentialEquations.derive">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">derive</span></span><a class="headerlink" href="#src.pde.PartialDifferentialEquations.derive" title="Permalink to this definition">#</a></dt>
+<dd><p>A wrapper all possible derivations to the PDE.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="src.pde.PartialDifferentialEquations.pr">
+<span class="sig-name descname"><span class="pre">pr</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">indexing</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">figsize</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">(8,</span> <span class="pre">6)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">vc</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">title</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/src/pde.html#PartialDifferentialEquations.pr"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#src.pde.PartialDifferentialEquations.pr" title="Permalink to this definition">#</a></dt>
+<dd><p>Print the representation of the PDE.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>indexing</strong><span class="classifier">bool, optional</span></dt><dd><p>Whether to show indices of my terms. The default value is <code class="docutils literal notranslate"><span class="pre">True</span></code>.</p>
+</dd>
+<dt><strong>figsize</strong><span class="classifier">Tuple[float, int], optional</span></dt><dd><p>The figure size. It has no effect when the figure is over-sized. A tight configuration will be
+applied when it is the case. The default value is <code class="docutils literal notranslate"><span class="pre">(8,</span> <span class="pre">6)</span></code>.</p>
+</dd>
+<dt><strong>vc</strong><span class="classifier">bool, optional</span></dt><dd><p>Whether to show the vector calculus version of me. The default value is <code class="docutils literal notranslate"><span class="pre">False</span></code>.</p>
+</dd>
+<dt><strong>title</strong><span class="classifier">{None, str}, optional</span></dt><dd><p>The title of the figure. No title if it is <code class="docutils literal notranslate"><span class="pre">None</span></code>. The default value is <code class="docutils literal notranslate"><span class="pre">None</span></code>.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<dl class="simple">
+<dt><a class="reference internal" href="presetting.html#src.config.set_pr_cache" title="src.config.set_pr_cache"><code class="xref py py-func docutils literal notranslate"><span class="pre">src.config.set_pr_cache()</span></code></a></dt><dd></dd>
+</dl>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="src.pde.PartialDifferentialEquations.test_with">
+<span class="sig-name descname"><span class="pre">test_with</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">test_spaces</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">test_method</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'L2'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sym_repr</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/src/pde.html#PartialDifferentialEquations.test_with"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#src.pde.PartialDifferentialEquations.test_with" title="Permalink to this definition">#</a></dt>
+<dd><p>Test the PDE with a set of spaces to obtain a weak formulation.</p>
+<dl class="field-list">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl>
+<dt><strong>test_spaces</strong><span class="classifier">list</span></dt><dd><p>The list of the test spaces.</p>
+</dd>
+<dt><strong>test_method</strong><span class="classifier">{<code class="docutils literal notranslate"><span class="pre">'L2'</span></code>, }, optional</span></dt><dd><p>The test method. Currently, it can only be <code class="docutils literal notranslate"><span class="pre">'L2'</span></code> representing the <span class="math notranslate nohighlight">\(L^2\)</span>-inner product.
+The default value is <code class="docutils literal notranslate"><span class="pre">'L2'</span></code>.</p>
+</dd>
+<dt><strong>sym_repr</strong><span class="classifier">{List[str], None}, optional</span></dt><dd><p>The symbolic representations for the test variables. When it is <code class="docutils literal notranslate"><span class="pre">None</span></code>, pre-set ones will be applied.
+The default value is <code class="docutils literal notranslate"><span class="pre">None</span></code>.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><dl>
+<dt><strong>wf</strong><span class="classifier"><a class="reference internal" href="wf.html#src.wf.main.WeakFormulation" title="src.wf.main.WeakFormulation"><code class="xref py py-class docutils literal notranslate"><span class="pre">src.wf.main.WeakFormulation</span></code></a></span></dt><dd><p>The weak formulation instance.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="src.pde.PartialDifferentialEquations.unknowns">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">unknowns</span></span><a class="headerlink" href="#src.pde.PartialDifferentialEquations.unknowns" title="Permalink to this definition">#</a></dt>
+<dd><p>Unknowns of the PDE.</p>
+</dd></dl>
+
+</dd></dl>
+
+</div></blockquote>
+<p>We need to set the unknowns of the pde, which is done through setting the property <code class="docutils literal notranslate"><span class="pre">unknowns</span></code>,
+i.e. <a class="reference internal" href="#src.pde.PartialDifferentialEquations.unknowns" title="src.pde.PartialDifferentialEquations.unknowns"><code class="xref py py-attr docutils literal notranslate"><span class="pre">PartialDifferentialEquations.unknowns</span></code></a>,</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">pde</span><span class="o">.</span><span class="n">unknowns</span> <span class="o">=</span> <span class="p">[</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">]</span>
+</pre></div>
+</div>
+<p>To visualize the PDE instnace just constructed, call the <em>print representation</em> method, see
+<a class="reference internal" href="#src.pde.PartialDifferentialEquations.pr" title="src.pde.PartialDifferentialEquations.pr"><code class="xref py py-meth docutils literal notranslate"><span class="pre">PartialDifferentialEquations.pr()</span></code></a>,</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">pde</span><span class="o">.</span><span class="n">pr</span><span class="p">()</span>
+<span class="go">&lt;Figure size ...</span>
+</pre></div>
+</div>
+<p>It gives a figure of the PDE in differential forms. We can visualize the vector calculus version
+if we pass the requirement to <code class="docutils literal notranslate"><span class="pre">pr</span></code> through keyword argument <code class="docutils literal notranslate"><span class="pre">vc=True</span></code> like</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">pde</span><span class="o">.</span><span class="n">pr</span><span class="p">(</span><span class="n">vc</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="go">&lt;Figure size ...</span>
+</pre></div>
+</div>
+<p>This is very handy, for example, when your reference PDE is given in vector calculus, and you want to check if
+you have input the correct differential form version of it, especially in 2-dimensions where the transformation
+between vector calculus and differential form suffers from extra minus signs here and there.</p>
+</section>
+<section id="boundary-conditions">
+<span id="pde-bc"></span><h2><span class="section-number">4.2. </span>Boundary conditions<a class="headerlink" href="#boundary-conditions" title="Permalink to this heading">#</a></h2>
+<p>The boundary condition setting of a PDE can be accessed through property <a class="reference internal" href="#src.pde.PartialDifferentialEquations.bc" title="src.pde.PartialDifferentialEquations.bc"><code class="xref py py-attr docutils literal notranslate"><span class="pre">PartialDifferentialEquations.bc</span></code></a>.
+To define boundary conditions for a PDE, we first need to identify boundary sections. We can define boundary
+sections by calling the <code class="docutils literal notranslate"><span class="pre">partition</span></code> method, for example,</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">pde</span><span class="o">.</span><span class="n">bc</span><span class="o">.</span><span class="n">partition</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;\Gamma_{\alpha}&quot;</span><span class="p">,</span> <span class="sa">r</span><span class="s2">&quot;\Gamma_{\beta}&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>This command defines two boundary sections whose symbolic representations are <code class="docutils literal notranslate"><span class="pre">'\Gamma_{\alpha}'</span></code> and
+<code class="docutils literal notranslate"><span class="pre">'\Gamma_{\beta}'</span></code>.
+Here they are in fact two 1-dimensional sub-manifolds (recall that in this case the computational domain is
+a 2-dimensional manifold).
+They are a partition of the boundary, i.e.,</p>
+<div class="math notranslate nohighlight">
+\[\Gamma_{\alpha} \cup \Gamma_{\beta} = \partial \mathcal{M}\quad\text{and}\quad
+\Gamma_{\alpha} \cap \Gamma_{\beta} = \emptyset,\]</div>
+<p>where <span class="math notranslate nohighlight">\(\partial \mathcal{M}\)</span> is the complete boundary of the computational domain (<code class="docutils literal notranslate"><span class="pre">manifold</span></code>).
+Change the amount (<span class="math notranslate nohighlight">\(\geq 1\)</span>) of arguments for the <code class="docutils literal notranslate"><span class="pre">partition</span></code> method to define a partition of
+different amount of boundary sections. Since the <code class="docutils literal notranslate"><span class="pre">manifold</span></code> itself is abstract, the boundary sections
+are abstract as well; thus we can specify, for example,</p>
+<div class="math notranslate nohighlight">
+\[\Gamma_{\alpha} = \partial \mathcal{M} \quad \text{and} \quad \Gamma_{\beta} = \emptyset,\]</div>
+<p>when we invoke a particular implementation for the simulation in the future.</p>
+<p>After we have defined boundary sections, we can specify boundary conditions on them by calling <code class="docutils literal notranslate"><span class="pre">define_bc</span></code> method
+of <a class="reference internal" href="#src.pde.PartialDifferentialEquations.bc" title="src.pde.PartialDifferentialEquations.bc"><code class="xref py py-attr docutils literal notranslate"><span class="pre">PartialDifferentialEquations.bc</span></code></a> property. For example,</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">pde</span><span class="o">.</span><span class="n">bc</span><span class="o">.</span><span class="n">define_bc</span><span class="p">(</span>
+<span class="gp">... </span>   <span class="p">{</span>
+<span class="gp">... </span>       <span class="sa">r</span><span class="s2">&quot;\Gamma_{\alpha}&quot;</span><span class="p">:</span> <span class="n">ph</span><span class="o">.</span><span class="n">trace</span><span class="p">(</span><span class="n">ph</span><span class="o">.</span><span class="n">Hodge</span><span class="p">(</span><span class="n">a</span><span class="p">)),</span>   <span class="c1"># natural boundary condition</span>
+<span class="gp">... </span>       <span class="sa">r</span><span class="s2">&quot;\Gamma_{\beta}&quot;</span><span class="p">:</span> <span class="n">ph</span><span class="o">.</span><span class="n">trace</span><span class="p">(</span><span class="n">b</span><span class="p">),</span>              <span class="c1"># essential boundary condition</span>
+<span class="gp">... </span>   <span class="p">}</span>
+<span class="gp">... </span><span class="p">)</span>
+</pre></div>
+</div>
+<p>specifies</p>
+<ul class="simple">
+<li><p>a natural boundary condition for the outer-oriented 2-form <code class="docutils literal notranslate"><span class="pre">a</span></code> on <code class="docutils literal notranslate"><span class="pre">'\Gamma_{\alpha}'</span></code>,</p></li>
+<li><p>an essential boundary condition for the outer-oriented 1-form <code class="docutils literal notranslate"><span class="pre">b</span></code> on <code class="docutils literal notranslate"><span class="pre">'\Gamma_{\beta}'</span></code>.</p></li>
+</ul>
+<div class="admonition caution">
+<p class="admonition-title">Caution</p>
+<p>So far, only two types, <strong>essential</strong> and <strong>natural</strong>, of boundary conditions are implemented.</p>
+</div>
+<p>Now, the <code class="docutils literal notranslate"><span class="pre">pr</span></code> method will also list the imposed boundary conditions,</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">pde</span><span class="o">.</span><span class="n">pr</span><span class="p">()</span>
+<span class="go">&lt;Figure size ...</span>
+</pre></div>
+</div>
+</section>
+<section id="derivations">
+<span id="pde-derivations"></span><h2><span class="section-number">4.3. </span>Derivations<a class="headerlink" href="#derivations" title="Permalink to this heading">#</a></h2>
+<p>We can make changes to (for example, delete, replace or split a term in) the initialized PDE through property
+<code class="docutils literal notranslate"><span class="pre">pde.derive</span></code> which gives an instance of <a class="reference internal" href="#src.pde.PDEDerive" title="src.pde.PDEDerive"><code class="xref py py-class docutils literal notranslate"><span class="pre">PDEDerive</span></code></a>, a wrapper of all possible derivations
+to a PDE instance.</p>
+<blockquote>
+<div><dl class="py class">
+<dt class="sig sig-object py" id="src.pde.PDEDerive">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">PDEDerive</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pde</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/src/pde.html#PDEDerive"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#src.pde.PDEDerive" title="Permalink to this definition">#</a></dt>
+<dd><p>A wrapper all possible derivations to a PDE instance.</p>
+<div class="admonition-todo admonition" id="id1">
+<p class="admonition-title">Todo</p>
+<p>To be implemented.</p>
+<p>So far, we recommend users to completely construct the
+PDE through initialization such that any further modification is avoided.</p>
+</div>
+</dd></dl>
+
+</div></blockquote>
+</section>
+<div class="line-block">
+<div class="line"><br /></div>
+</div>
+<p>↩️  Back to <a class="reference internal" href="../documentations.html#documentation"><span class="std std-ref">Documentations</span></a>.</p>
+</section>
+
+
+                </article>
+              
+
+              
+              
+              
+              
+                <footer class="prev-next-footer">
+                  <!-- Previous / next buttons -->
+<div class="prev-next-area">
+    <a class="left-prev"
+       href="space_form.html"
+       title="previous page">
+      <i class="fa-solid fa-angle-left"></i>
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">previous</p>
+        <p class="prev-next-title"><span class="section-number">3. </span>Space &amp; form</p>
+      </div>
+    </a>
+    <a class="right-next"
+       href="wf.html"
+       title="next page">
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">next</p>
+        <p class="prev-next-title"><span class="section-number">5. </span>Weak formulation &amp; discretization</p>
+      </div>
+      <i class="fa-solid fa-angle-right"></i>
+    </a>
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+                <div class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+  <div class="sidebar-secondary-item">
+  <div class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> On this page
+  </div>
+  <nav class="bd-toc-nav page-toc">
+    <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#initialization">4.1. Initialization</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#src.pde.pde"><code class="docutils literal notranslate"><span class="pre">pde()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#src.pde.PartialDifferentialEquations"><code class="docutils literal notranslate"><span class="pre">PartialDifferentialEquations</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#src.pde.PartialDifferentialEquations.bc"><code class="docutils literal notranslate"><span class="pre">PartialDifferentialEquations.bc</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#src.pde.PartialDifferentialEquations.derive"><code class="docutils literal notranslate"><span class="pre">PartialDifferentialEquations.derive</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#src.pde.PartialDifferentialEquations.pr"><code class="docutils literal notranslate"><span class="pre">PartialDifferentialEquations.pr()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#src.pde.PartialDifferentialEquations.test_with"><code class="docutils literal notranslate"><span class="pre">PartialDifferentialEquations.test_with()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#src.pde.PartialDifferentialEquations.unknowns"><code class="docutils literal notranslate"><span class="pre">PartialDifferentialEquations.unknowns</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#boundary-conditions">4.2. Boundary conditions</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#derivations">4.3. Derivations</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#src.pde.PDEDerive"><code class="docutils literal notranslate"><span class="pre">PDEDerive</span></code></a></li>
+</ul>
+</li>
+</ul>
+  </nav></div>
+
+</div></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+<div class="bd-footer-content__inner container">
+  
+  <div class="footer-item">
+    
+<p class="component-author">
+By Andrea Brugnoli, Ramy Rashad, Stefano Stramigioli, Yi Zhang
+</p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+  <p class="copyright">
+    
+      © Copyright reserved under Apache-2.0 license.
+      <br/>
+    
+  </p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+  <div class="footer-item">
+    
+<div class="extra_footer">
+  <div>Last updated on October 30, 2023, 11:52:53, W. Europe Standard Time</div>
+</div>
+  </div>
+  
+</div>
+          </footer>
+        
+
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script src="../../_static/scripts/bootstrap.js?digest=ac02cc09edc035673794"></script>
+<script src="../../_static/scripts/pydata-sphinx-theme.js?digest=ac02cc09edc035673794"></script>
+
+  <footer class="bd-footer">
+  </footer>
+  </body>
+</html>

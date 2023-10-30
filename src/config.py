@@ -1,7 +1,23 @@
 # -*- coding: utf-8 -*-
-r"""The configuration file.
+r"""
+You can set global parameters through the following functions:
 
-A very important file. Do not change it easily.
+    .. autofunction:: set_embedding_space_dim
+
+    .. autofunction:: set_high_accuracy
+
+    .. autofunction:: set_pr_cache
+
+For example,
+
+>>> ph.config.set_embedding_space_dim(2)
+>>> ph.config.set_high_accuracy(True)
+>>> ph.config.set_pr_cache(False)
+
+These commands set the embedding space to be 2-dimensional, ask *phyem* to have a high accuracy and not
+to use *pr* cache (or to present *pr* outputs in real time). These parameters are same to the default values; they have
+no effects (thus we preferably omit them).
+
 """
 
 _global_variables = {
@@ -37,7 +53,15 @@ _setting = {
 
 
 def set_embedding_space_dim(ndim):
-    """"""
+    """To set the dimensions of the space where our simulation problem is defined, i.e., the embedding space.
+    The default dimensions are 2.
+
+    Parameters
+    ----------
+    ndim : {1, 2, 3}
+        *phyem* can only simulate problems in 1-, 2- or 3-d space.
+
+    """
     assert ndim % 1 == 0 and ndim > 0, f"ndim={ndim} is wrong, it must be a positive integer."
     _global_variables['embedding_space_dim'] = ndim
     _clear_all()   # whenever we change or reset the space dim, we clear all abstract objects.
@@ -45,13 +69,39 @@ def set_embedding_space_dim(ndim):
 
 
 def set_high_accuracy(_bool):
-    """"""
+    """*phyem* may trade for higher accuracy in the cost of losing a little performance. Turn this feature
+    on or off through this function. The default value is ``True``.
+
+    For example, *phyem* can use numerical quadrature of a higher degree (thus of higher accuracy)
+    to compute the mass matrices, which could
+    decrease the sparsity and sequentially slow down the assembling and solving processes slightly.
+
+    Parameters
+    ----------
+    _bool : bool
+        If ``_bool`` is ``True``, *phyem* occasionally has a higher accuracy.
+        The real effect depends on the problem you are solving.
+    """
     assert isinstance(_bool, bool), f"give me True or False"
     _setting['high_accuracy'] = _bool
 
 
 def set_pr_cache(_bool):
-    """"""
+    """ The abbreviation `pr` stands for `print representation`.
+    Many classes in *phyem* have the ``pr`` method. Calling it of an instance by ``.pr()`` will usually invoke
+    the ``matplotlib`` and ``LaTeX`` pakages to render a picture which proper illustrates the instance.
+    By turning the *pr* cache on, all outputs resulting from ``pr`` methods will be saved to
+    ``./__phcache__/Pr_current/`` instead of being shown in real time.
+
+    The default value is ``False``.
+
+    Parameters
+    ----------
+    _bool : bool
+        If ``_bool`` is ``True``, all outputs resulting from ``pr`` methods will be saved
+        to ``./__phcache__/Pr_current/``.
+
+    """
     assert isinstance(_bool, bool), f"give me True or False"
     _setting['pr_cache'] = _bool
 

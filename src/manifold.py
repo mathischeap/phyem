@@ -1,5 +1,26 @@
 # -*- coding: utf-8 -*-
 r"""
+.. _docs-manifold:
+
+Manifold
+========
+
+We define an abstract bounded, connected and contractible
+computational domain (manifold) by calling ``ph.manifold`` method,
+
+    .. autofunction:: src.manifold.manifold
+
+A common call is
+
+>>> manifold = ph.manifold(2)
+
+The output, ``manifold``, is an instance of :class:`Manifold`. It is abstract at this stage because we do not
+specify any exact parameters, for example size and shape, of it.
+
+    .. autoclass:: src.manifold.Manifold
+        :members: m, n
+
+
 """
 import sys
 
@@ -23,12 +44,32 @@ def manifold(
         lin_repr=None,
         is_periodic=False
 ):
-    """A function wrapper of the Manifold class."""
+    """Generate an abstract manifold. It is actually a wrapper of the ``__init__`` method of :class:`Manifold`.
+
+    Parameters
+    ----------
+    ndim : int
+        The dimensions of the manifold. It must be lower than or equal to dimensions of the embedding space.
+    sym_repr : {None, str}, optional
+        The symbolic representation of the manifold. If it is ``None``, we will use a pre-set symbolic
+        representation. The default is ``None``.
+    lin_repr : {None, str}, optional
+        The linguistic representation of the manifold. If it is ``None``, we will use a pre-set linguistic
+        representation. The default is ``None``.
+    is_periodic : bool, optional
+        If this is set to ``True``, the manifold is a periodic. Otherwise, it is not periodic.
+        The default is ``True``.
+
+    Returns
+    -------
+    manifold : :class:`Manifold`
+        The abstract manifold instance.
+
+    """
     return Manifold(ndim, sym_repr=sym_repr, lin_repr=lin_repr, is_periodic=is_periodic)
 
 
 class Manifold(Frozen):
-    """"""
 
     def __init__(
         self, ndim,
@@ -42,7 +83,7 @@ class Manifold(Frozen):
         embedding_space_ndim = get_embedding_space_dim()
         assert ndim % 1 == 0 and 0 <= ndim <= embedding_space_ndim, \
             f"manifold ndim={ndim} is wrong. Is should be an integer and be in range [0, {embedding_space_ndim}]. " \
-            f"You change change the dimensions of the embedding space using function `config.set_embedding_space_dim`."
+            f"You change change the dimensions of the embedding space using function 'config.set_embedding_space_dim'."
         self._ndim = ndim
         if sym_repr is None:
             base_repr = _manifold_default_sym_repr
@@ -96,25 +137,24 @@ class Manifold(Frozen):
 
     @property
     def esd(self):
-        """embedding space dimensions"""
         return get_embedding_space_dim()
 
     @property
     def m(self):
+        """The dimensions of the embedding space."""
         return self.esd
 
     @property
     def ndim(self):
-        """The dimensions of this manifold."""
         return self._ndim
 
     @property
     def n(self):
+        """The dimensions of the manifold."""
         return self.ndim
 
     @property
     def udg(self):
-        """the undirected graph representation of this manifold."""
         return self._udg
 
     def is_periodic(self):
@@ -126,9 +166,7 @@ class Manifold(Frozen):
         super_repr = super().__repr__().split('object')[-1]
         return f'<Manifold {self._sym_repr}' + super_repr  # this must be unique.
 
-    # it is regarded as an operator, do not @property.
     def boundary(self, sym_repr=None):
-        """Give a manifold of dimensions (n-1)"""
         if self._boundary is None:
             if self.ndim == 0:
                 return NullManifold('Null')
@@ -151,15 +189,13 @@ class Manifold(Frozen):
         return self._inclusion
 
     def cap(self, other, sym_repr=None):
-        """return the intersection of two manifolds, i.e., return manifold := self cap other."""
         raise NotImplementedError()
 
     def interface(self, other, sym_repr=None):
-        """return the cap of boundaries of two manifolds."""
         raise NotImplementedError()
 
     def partition(self, *submanifolds_sym_repr, config_name=None):
-        """M = M1 U M2 U M3 U .... and Mi cap Mj = empty."""
+        """partition of the manifold."""
         for sym_repr in submanifolds_sym_repr:
             assert isinstance(sym_repr, str), f"please put sym_repr of partitions in str."
         num_of_partitions = len(submanifolds_sym_repr)

@@ -48,7 +48,7 @@ class BoundaryIntegrateVCBSLambda(Frozen):
         else:
 
             raise NotImplementedError(
-                f"BoundaryIntegrateVCBSLambda: not implemented for `form (<vc | tr form>)` in : "
+                f"BoundaryIntegrateVCBSLambda: not implemented for form (<vc | tr form>) in: "
                 f"m{m} n{n}, k{k}, orientation: {orientation}"
             )
 

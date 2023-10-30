@@ -1,5 +1,59 @@
 # -*- coding: utf-8 -*-
+# noinspection PyUnresolvedReferences
 r"""
+
+.. _ap-mp:
+
+============
+Matrix proxy
+============
+
+With the fully discrete weak formulation ``wf``, we can bring it into its algebraic proxy by calling its method
+``mp``, standing for *matrix proxy*,
+
+>>> mp = wf.mp()
+
+which is an instance of :class:`MatrixProxy`,
+
+    .. autoclass:: MatrixProxy
+        :members:
+
+Similarly, its ``pr`` method can illustrate it properly,
+
+>>> mp.pr()
+<Figure size ...
+
+
+.. _ap-ap:
+
+========================
+Algebraic representation
+========================
+
+Depend on ``mp`` is linear or nonlinear, an algebraic system can be produced
+through either method ``ls`` or ``nls`` of ``mp``,
+see :meth:`MatrixProxy.ls` and :meth:`MatrixProxy.nls`.
+
+Method ``ls`` gives an instance of :class:`MatrixProxyLinearSystem`, i.e.,
+
+    .. autoclass:: MatrixProxyLinearSystem
+        :members:
+
+And method ``nls`` leads to an instance of :class:`MatrixProxyNoneLinearSystem`, namely,
+
+    .. autoclass:: MatrixProxyNoneLinearSystem
+        :members:
+
+In this case, ``mp`` is a linear system. Thus, we should call ``ls`` method of it,
+
+>>> ls = mp.ls()
+>>> ls.pr()
+<Figure size ...
+
+Eventually, a fully discrete abstract linear system is obtained. We can send it a particular implementation
+which will *objectivize* it, for example by making matrices 2-dimensional arrays and making the vectors
+1-dimensional arrays. These implementations will be introduced in the following section.
+
 """
 import matplotlib.pyplot as plt
 import matplotlib
@@ -32,8 +86,8 @@ class MatrixProxy(Frozen):
                 f"ap linearity must be linear or nonlinear when it is fully resolved."
         else:
             raise Exception(
-                f"there is(are) term(s) in the wf not-resolved as 'algebraic proxy', check ``ap`` of "
-                f"the ``wf`` to see which term(s) is(are) not resolved!."
+                f"there is(are) term(s) in the wf not-resolved as 'algebraic proxy', check 'ap' of "
+                f"the 'wf' to see which term(s) is(are) not resolved!."
             )
         self._wf = wf
         self._ap = ap
@@ -413,7 +467,15 @@ class MatrixProxy(Frozen):
         return seek_text
 
     def pr(self, figsize=(12, 8)):
-        """pr"""
+        """Print the representation, a figure, of this weak formulation.
+
+        Parameters
+        ----------
+        figsize : tuple, optional
+            The figure size. It has no effect when the figure is over-sized. A tight configuration will be
+            applied when it is the case. The default value is ``(12, 8)``.
+
+        """
         from src.config import RANK, MASTER_RANK
         if RANK != MASTER_RANK:
             return
@@ -426,7 +488,7 @@ class MatrixProxy(Frozen):
         else:
             bc_text = self._bc._bc_text()
         fig = plt.figure(figsize=figsize)
-        plt.axis([0, 1, 0, 1])
+        plt.axis((0, 1, 0, 1))
         plt.axis('off')
         plt.text(0.05, 0.5, seek_text + symbolic + bc_text, ha='left', va='center', size=15)
 
@@ -440,8 +502,8 @@ class MatrixProxy(Frozen):
 
     def _parse_ls(self):
         """"""
-        assert self._lbv._is_empty(), f"Format is illegal, must be like Ax=b, do `.pr()` to check!"
-        assert len(self._l_mvs) == 1, f"Format is illegal, must be like Ax=b, do `.pr()` to check!"
+        assert self._lbv._is_empty(), f"Format is illegal, must be like Ax=b, do '.pr()' to check!"
+        assert len(self._l_mvs) == 1, f"Format is illegal, must be like Ax=b, do '.pr()' to check!"
         A, x = self._l_mvs[0]
         b = BlockColVector(self._rbv._shape)
         for Mv in self._r_mvs:
@@ -476,14 +538,28 @@ class MatrixProxy(Frozen):
         return ls
 
     def ls(self):
-        """convert self to an abstract linear system."""
-        assert self.linearity == 'linear', f"``mp`` is not linear, try to use ``.nls``."
+        """Convert self to an abstract linear system.
+
+        Returns
+        -------
+        ls : :class:`MatrixProxyLinearSystem`
+            The linear system instance.
+
+        """
+        assert self.linearity == 'linear', f"'mp' is not linear, try to use '.nls'."
         ls = self._parse_ls()
         return MatrixProxyLinearSystem(self, ls, self.bc)
 
     def nls(self):
-        """convert self to an abstract nonlinear system."""
-        assert self.linearity == 'nonlinear', f"``mp`` is linear, just use ``.ls``."
+        """Convert self to an abstract nonlinear system.
+
+        Returns
+        -------
+        nls : :class:`MatrixProxyNoneLinearSystem`
+            The nonlinear system instance.
+
+        """
+        assert self.linearity == 'nonlinear', f"'mp' is linear, just use '.ls'."
         ls = self._parse_ls()
         mp_ls = MatrixProxyLinearSystem(self, ls, self.bc)
         len_right_nonlinear_terms = 0

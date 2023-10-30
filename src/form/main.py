@@ -1,6 +1,91 @@
 # -*- coding: utf-8 -*-
+# noinspection PyUnresolvedReferences
 r"""
+
+.. _docs-form:
+
+Form
+====
+
+A form is simply an element of a space. Thus, it is logical to define a form through a space. To do that,
+just call the ``make_form`` method of the space instance (see :meth:`src.spaces.base.SpaceBase.make_form`).
+The following code makes an outer oriented 2-form, ``a``, in space ``Out2`` and
+an outer-oriented 1-form, ``b``, in space ``Out1``.
+
+>>> a = Out2.make_form(r'\tilde{\alpha}', 'variable1')
+>>> b = Out1.make_form(r'\tilde{\beta}', 'variable12')
+
+The arguments are their symbolic representations (``r'\tilde{\alpha}'``, ``r'\tilde{\beta}'``) and
+linguistic representations (``'variable1'``, ``'variable2'``), represectively. To list all defined forms, do
+
+>>> ph.list_forms()
+<Figure size ...
+
+If you have turned off the *py cache* , see :ref:`docs-presetting-set`, a figure should have popped out. Otherwise,
+it is saved to ``./__phcache__/Pr_current/``. A form is an instance of :class:`Form`.
+
+    .. autoclass:: src.form.main.Form
+        :members: mesh, manifold, orientation, space, wedge, codifferential, exterior_derivative, cross_product,
+            time_derivative, degree
+
+The forms ``a`` and ``b`` are root forms since they are directly defined through ``make_form`` method.
+With these elementary forms, it is possible to build more complicated non-root forms through operators.
+Implemented operators are
+
+.. admonition:: Implemented operators for forms
+
+    +----------------------+--------------------------------------+--------------------------------------+
+    | **operator**         |**symbolic representation**           |    **usage**                         |
+    +----------------------+--------------------------------------+--------------------------------------+
+    | exterior derivative  | :math:`\mathrm{d}`                   | ``a.exterior_derivative()``          |
+    +----------------------+--------------------------------------+--------------------------------------+
+    | codifferential       | :math:`\mathrm{d}^\ast`              | ``a.codifferential()``               |
+    +----------------------+--------------------------------------+--------------------------------------+
+    | time derivative      | :math:`\frac{\partial}{\partial t}`  | ``a.time_derivative()``              |
+    +----------------------+--------------------------------------+--------------------------------------+
+    | wedge product        | :math:`\wedge`                       | Given two forms,                     |
+    |                      |                                      | ``a``: :math:`\alpha` and            |
+    |                      |                                      | ``b``: :math:`\beta`,                |
+    |                      |                                      | The wedge product between            |
+    |                      |                                      | them, i.e.                           |
+    |                      |                                      | :math:`\alpha\wedge \beta`,          |
+    |                      |                                      | is ``a.wedge(b)``.                   |
+    |                      |                                      |                                      |
+    +----------------------+--------------------------------------+--------------------------------------+
+    | cross product        | :math:`\times`                       | Given two forms,                     |
+    |                      |                                      | ``a``: :math:`\alpha` and            |
+    |                      |                                      | ``b``: :math:`\beta`,                |
+    |                      |                                      | The cross product between            |
+    |                      |                                      | them, i.e.                           |
+    |                      |                                      | :math:`\alpha\times \beta`,          |
+    |                      |                                      | is ``a.cross_product(b)``.           |
+    |                      |                                      |                                      |
+    +----------------------+--------------------------------------+--------------------------------------+
+
+For example,
+
+>>> da_dt = a.time_derivative()
+>>> db_dt = b.time_derivative()
+>>> cd_a = a.codifferential()
+>>> d_b = b.exterior_derivative()
+
+This generates four more forms, ``da_dt``, ``db_dt``, ``cd_a`` and ``d_b``, which are
+
+- time derivative of ``a``
+- time derivative of ``b``
+- codifferential of ``a``
+- exterior derivative of ``b``
+
+respectively. These non-root forms will appear in the form list if you do
+
+>>> ph.list_forms()
+<Figure size ...
+
+All these forms, both root and non-root ones, are the ingredients for making partial differential equaitons (DPE)
+which is introduced in the next section.
+
 """
+
 from tools.frozen import Frozen
 from typing import Dict
 import matplotlib.pyplot as plt
@@ -150,13 +235,13 @@ class Form(Frozen):
             space_text = f'spaces: ${self.space._sym_repr}$'
             space_text += rf"\ \ \ \ on ({self.mesh._lin_repr})"
             fig = plt.figure(figsize=figsize)
-            plt.axis([0, 1, 0, 5])
+            plt.axis((0, 1, 0, 5))
             plt.text(0, 4.5, f'form id: {my_id}', ha='left', va='center', size=15)
             plt.text(0, 3.5, space_text, ha='left', va='center', size=15)
             plt.text(0, 2.5,
-                     rf'\noindent symbolic : ' + f"${self._sym_repr}$" + pti_text,
+                     rf'\noindent symbolic: ' + f"${self._sym_repr}$" + pti_text,
                      ha='left', va='center', size=15)
-            plt.text(0, 1.5, 'linguistic : ' + self._lin_repr, ha='left', va='center', size=15)
+            plt.text(0, 1.5, 'linguistic: ' + self._lin_repr, ha='left', va='center', size=15)
             root_text = rf'is_root: {self.is_root()}'
             plt.text(0, 0.5, root_text, ha='left', va='center', size=15)
             plt.axis('off')
@@ -182,13 +267,13 @@ class Form(Frozen):
 
     @property
     def degree(self):
-        """"""
+        """This form is in the space of particular finite dimensional ``degree``."""
         assert self._degree is not None, f"degree of form {self} is empty, set it firstly."
         return self._degree
 
     @degree.setter
     def degree(self, _degree):
-        """Limit this form to a particular finite dimensional space of degree `degree`."""
+        """Limit this form to a particular finite dimensional space of degree ``_degree``."""
         assert isinstance(_degree, (int, float, list, tuple)), f"Can only use int, float, list or tuple for the degree."
 
         for _lin_repr in _global_root_forms_lin_dict:
@@ -216,7 +301,7 @@ class Form(Frozen):
 
     @property
     def orientation(self):
-        """The orientation of this form."""
+        """My orientation."""
         return self._orientation
 
     def is_root(self):
@@ -239,23 +324,23 @@ class Form(Frozen):
         return self.mesh.manifold
 
     def wedge(self, other):
-        """Return a form representing `self` wedge `other`."""
+        r"""The wedge, :math:`\wedge`, between this form and another form."""
         return wedge(self, other)
 
     def time_derivative(self, degree=1):
-        """"""
+        r"""The time derivative, :math:`\dfrac{\partial}{\partial t}`, of this form."""
         return time_derivative(self, degree=degree)
 
     def exterior_derivative(self):
-        """exterior derivative"""
+        r"""The exterior derivative, :math:`\mathrm{d}`, of this form."""
         return d(self)
 
     def codifferential(self):
-        """codifferential"""
+        r"""The codifferential, :math:`\mathrm{d}^\ast`, of this form."""
         return codifferential(self)
 
     def cross_product(self, other):
-        """"""
+        r"""The cross product, :math:`\times`, between this form and another form."""
         return cross_product(self, other)
 
     def tensor_product(self, other):

@@ -1,5 +1,29 @@
 # -*- coding: utf-8 -*-
+# noinspection PyUnresolvedReferences
 r"""
+.. _docs-mesh:
+
+Mesh
+====
+
+We define an abstract mesh based on an abstract manifold by calling ``ph.mesh`` method,
+
+    .. autofunction:: src.mesh.mesh
+
+As an example,
+
+>>> mesh = ph.mesh(manifold)
+
+The output, ``mesh``, is an instance of :class:`Mesh`. And similarly, it is abstract at this stage.
+
+    .. autoclass:: src.mesh.Mesh
+        :members: m, n, manifold
+
+You can print a list of defined meshes by
+
+>>> ph.list_meshes()  # doctest: +ELLIPSIS
+Existing meshes:...
+
 """
 from tools.frozen import Frozen
 from src.config import _mesh_default_sym_repr
@@ -14,7 +38,26 @@ _global_meshes = dict()    # all meshes are cached, and all sym_repr and lin_rep
 
 
 def mesh(manifold, sym_repr=None, lin_repr=None):
-    """A wrapper of the Mesh class."""
+    """Generate an abstract mesh over an abstract manifold.
+    It is actually a wrapper of the ``__init__`` method of :class:`Mesh`.
+
+    Parameters
+    ----------
+    manifold : :class:`Manifold`
+        The abstract manifold this mesh is built on.
+    sym_repr : {None, str}, optional
+        The symbolic representation of the mesh. If it is ``None``, we will use a pre-set symbolic
+        representation. The default is ``None``.
+    lin_repr : {None, str}, optional
+        The linguistic representation of the mesh. If it is ``None``, we will use a pre-set linguistic
+        representation. The default is ``None``.
+
+    Returns
+    -------
+    mesh : :class:`Mesh`
+        The abstract mesh instance.
+
+    """
     return Mesh(
         manifold,
         sym_repr=sym_repr,
@@ -30,24 +73,15 @@ def _list_meshes():
     else:
         pass
 
-    print('\n Existing meshes:')
+    print('Existing meshes:')
     print('{:>25} - {}'.format('---------------- symbolic', '<manifold> -------------------------'))
     for rp in _global_meshes:
         print('{:>25} | {}'.format(rp, _global_meshes[rp].manifold))
 
 
 class Mesh(Frozen):   # Mesh -
-    """"""
 
     def __init__(self, manifold, sym_repr=None, lin_repr=None):
-        """
-
-        Parameters
-        ----------
-        manifold
-        sym_repr :
-            We can customize the sym_repr of the mesh.
-        """
         self._objective = None
         # when initializing, it has no objective instance. And when we generate an objective of this
         # abstract mesh, we store the last objective one with this attribute.
@@ -105,11 +139,12 @@ class Mesh(Frozen):   # Mesh -
 
     @property
     def n(self):
+        """The dimensions of the manifold."""
         return self.ndim
 
     @property
     def m(self):
-        """esd: embedded space dimensions."""
+        """The dimensions of the embedding space."""
         return self._manifold.m
 
     def __repr__(self):
@@ -119,7 +154,7 @@ class Mesh(Frozen):   # Mesh -
 
     @property
     def manifold(self):
-        """The manifold this mesh is based on."""
+        """The manifold this mesh is built on."""
         return self._manifold
 
     # it is regarded as an operator, so do not use @property

@@ -1,11 +1,5 @@
 # -*- coding: utf-8 -*-
-"""
-
-@author: Yi Zhang.
-         Department of Aerodynamics
-         Faculty of Aerospace Engineering
-         TU Delft, Delft, the Netherlands
-
+r"""
 """
 from abc import ABC
 from time import localtime, strftime

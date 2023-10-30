@@ -5,7 +5,7 @@ from tools.frozen import Frozen
 from copy import deepcopy
 
 
-class _Derive(Frozen):
+class WfDerive(Frozen):
     """"""
 
     def __init__(self, wf):
@@ -13,7 +13,9 @@ class _Derive(Frozen):
         self._freeze()
 
     def replace(self, index, terms, signs):
-        """_replace the term indicated by `index` by `terms` of `signs`"""
+        """Replace the term indicated by ``index`` by ``terms`` of ``signs``.
+
+        """
         if isinstance(terms, (list, tuple)):
             pass
         else:
@@ -51,7 +53,7 @@ class _Derive(Frozen):
         return new_wf
 
     def _parse_new_weak_formulation_dict(self, new_term_dict, new_sign_dict):
-        """parse new weak formulation dict."""
+        """"""
         term_dict = dict()
         sign_dict = dict()
 
@@ -79,8 +81,8 @@ class _Derive(Frozen):
                     else:
                         assert isinstance(new_term, list) and \
                                isinstance(new_sign, list) and \
-                               len(new_sign) == len(new_term), f"Whenever we have a " \
-                                                               f"modification to a term, pls put it in a list."
+                               len(new_sign) == len(new_term), (f"Whenever we have a "
+                                                                f"modification to a term, pls put it in a list.")
 
                         for term, sign in zip(new_term, new_sign):
 
@@ -94,7 +96,7 @@ class _Derive(Frozen):
         return term_dict, sign_dict
 
     def rearrange(self, rearrangement):
-        """rearrange the terms."""
+        """Rearrange the terms."""
         if isinstance(rearrangement, dict):
             pass
         elif isinstance(rearrangement, (list, tuple)):
@@ -115,7 +117,7 @@ class _Derive(Frozen):
             sign_dict[i] = ([], [])
 
         for i in rearrangement:
-            assert isinstance(i, int), f"key:{i} is not integer, pls make sure use integer as dict keys."
+            assert isinstance(i, int), f"key: {i} is not integer, pls make sure use integer as dict keys."
             assert 0 <= i < len(self._wf), f"I cannot find {i}th equation."
 
             ri = rearrangement[i]
@@ -218,7 +220,7 @@ class _Derive(Frozen):
             raise Exception()
 
     def switch_sign(self, rows):
-        """Switch the signs of all terms of equations #rows"""
+        """Switch the signs of all terms of equations ``rows``"""
         if isinstance(rows, int):
             rows = [rows, ]
         else:
@@ -256,18 +258,18 @@ class _Derive(Frozen):
         return new_wf
 
     def integration_by_parts(self, index):
-        """integration by parts."""
+        """Do integration by parts for the term indicated by ``index``."""
         term = self._wf[index][1]
         terms, signs = term._integration_by_parts()
         return self.replace(index, terms, signs)
 
     def split(self, index, *args, **kwargs):
-        """Split a term into multiple terms."""
+        """Split the term indicated by ``index`` into multiple terms."""
         term = self._wf[index][1]
         terms, signs = term.split(*args, **kwargs)
         return self.replace(index, terms, signs)
 
     def delete(self, index):
-        """Delete the term of ``index``."""
+        """Delete the term indicated by ``index``."""
         wf = self.replace(index, [], [])
         return wf

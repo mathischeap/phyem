@@ -1,0 +1,1683 @@
+
+
+<!DOCTYPE html>
+
+
+<html lang="en" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>src.wf.main &#8212; A finite element library powering Lego like simulation for (multi-)physics.</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "light";
+  </script>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../../../_static/styles/theme.css?digest=ac02cc09edc035673794" rel="stylesheet" />
+<link href="../../../_static/styles/bootstrap.css?digest=ac02cc09edc035673794" rel="stylesheet" />
+<link href="../../../_static/styles/pydata-sphinx-theme.css?digest=ac02cc09edc035673794" rel="stylesheet" />
+
+  
+  <link href="../../../_static/vendor/fontawesome/6.1.2/css/all.min.css?digest=ac02cc09edc035673794" rel="stylesheet" />
+  <link rel="preload" as="font" type="font/woff2" crossorigin href="../../../_static/vendor/fontawesome/6.1.2/webfonts/fa-solid-900.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../../../_static/vendor/fontawesome/6.1.2/webfonts/fa-brands-400.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../../../_static/vendor/fontawesome/6.1.2/webfonts/fa-regular-400.woff2" />
+
+    <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css" />
+    <link rel="stylesheet" href="../../../_static/styles/sphinx-book-theme.css?digest=14f4ca6b54d191a8c7657f6c759bf11a5fb86285" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/copybutton.css" />
+  
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../../../_static/scripts/bootstrap.js?digest=ac02cc09edc035673794" />
+<link rel="preload" as="script" href="../../../_static/scripts/pydata-sphinx-theme.js?digest=ac02cc09edc035673794" />
+  <script src="../../../_static/vendor/fontawesome/6.1.2/js/all.min.js?digest=ac02cc09edc035673794"></script>
+
+    <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js"></script>
+    <script src="../../../_static/doctools.js"></script>
+    <script src="../../../_static/sphinx_highlight.js"></script>
+    <script src="../../../_static/clipboard.min.js"></script>
+    <script src="../../../_static/copybutton.js"></script>
+    <script src="../../../_static/scripts/sphinx-book-theme.js?digest=5a5c038af52cf7bc1a1ec88eea08e6366ee68824"></script>
+    <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = '_modules/src/wf/main';</script>
+    <link rel="icon" href="../../../_static/favicon.png"/>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="">
+
+  
+  
+  <a class="skip-link" href="#main-content">Skip to main content</a>
+  
+  <div id="pst-scroll-pixel-helper"></div>
+
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>
+    Back to top
+  </button>
+
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          name="__primary"
+          id="__primary"/>
+  <label class="overlay overlay-primary" for="__primary"></label>
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          name="__secondary"
+          id="__secondary"/>
+  <label class="overlay overlay-secondary" for="__secondary"></label>
+  
+  <div class="search-button__wrapper">
+    <div class="search-button__overlay"></div>
+    <div class="search-button__search-container">
+<form class="bd-search d-flex align-items-center"
+      action="../../../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         id="search-input"
+         placeholder="Search..."
+         aria-label="Search..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form></div>
+  </div>
+
+
+  <div class="bd-header-announcement container-fluid bd-header-announcement">
+    <div class="bd-header-announcement__content">
+        <p style='color:white;'> &#127867 PHYEM is coming</p>
+    </div>
+  </div>
+
+  
+    <nav class="bd-header navbar navbar-expand-lg bd-navbar">
+    </nav>
+  
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      <div class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+    
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item">
+  
+
+<a class="navbar-brand logo" href="../../../index.html">
+  
+  
+  
+  
+    
+    
+      
+    
+    
+    <img src="../../../_static/logo-light.png" class="logo__image only-light" alt="Logo image"/>
+    <script>document.write(`<img src="../../../_static/logo-dark.png" class="logo__image only-dark" alt="Logo image"/>`);</script>
+  
+  
+</a></div>
+        <div class="sidebar-primary-item"><ul class="navbar-icon-links navbar-nav"
+    aria-label="Quick Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://www.mathischeap.com/" title="mathischeap" class="nav-link" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><img src="../../../_static/favicon-mic.png" class="icon-link-image" alt="mathischeap"/></a>
+        </li>
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/mathischeap/phyem" title="GitHub" class="nav-link" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><span><i class="fa-brands fa-square-github fa-lg" aria-hidden="true"></i></span>
+            <span class="sr-only">GitHub</span></a>
+        </li>
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://app.netlify.com/sites/phyem/deploys" title="Netlify Status" class="nav-link" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><img src="https://api.netlify.com/api/v1/badges/6a559326-c54e-4a8f-a79a-a715648c73c2/deploy-status" class="icon-link-image" alt="Netlify Status"/></a>
+        </li>
+</ul></div>
+        <div class="sidebar-primary-item"><nav class="bd-links" id="bd-docs-nav" aria-label="Main">
+    <div class="bd-toc-item navbar-nav active">
+        
+        <ul class="nav bd-sidenav bd-sidenav__home-link">
+            <li class="toctree-l1">
+                <a class="reference internal" href="../../../index.html">
+                    Welcome
+                </a>
+            </li>
+        </ul>
+        <ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../../../introduction.html">Features and structure</a></li>
+</ul>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../../../tutorial/install.html">Install</a></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../../tutorial/documentations.html">Documentations</a><input class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-1"><i class="fa-solid fa-chevron-down"></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../tutorial/docs/presetting.html">1. Presetting</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../tutorial/docs/manifold_mesh.html">2. Manifold &amp; mesh</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../tutorial/docs/space_form.html">3. Space &amp; form</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../tutorial/docs/pde.html">4. PDE</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../tutorial/docs/wf.html">5. Weak formulation &amp; discretization</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../tutorial/docs/ap.html">6. Algebraic proxy</a></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../../../tutorial/docs/implementations.html">7. Implementations</a><input class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-2"><i class="fa-solid fa-chevron-down"></i></label><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../tutorial/docs/implementations/msepy.html">7.1. msepy</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../../tutorial/summary.html">Summary</a></li>
+</ul>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../../jupyter/index.html">Jupyter notebooks</a><input class="toctree-checkbox" id="toctree-checkbox-3" name="toctree-checkbox-3" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-3"><i class="fa-solid fa-chevron-down"></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../jupyter/general/first_equation.html">Set up your first equation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../jupyter/general/discretize_linear_pH_system.html">Discretization</a></li>
+</ul>
+</li>
+</ul>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../../gallery/index.html">Gallery</a><input class="toctree-checkbox" id="toctree-checkbox-4" name="toctree-checkbox-4" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-4"><i class="fa-solid fa-chevron-down"></i></label><ul>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../../../gallery/msepy_domains_and_meshes/index.html"><code class="docutils literal notranslate"><span class="pre">msepy</span></code> domains and meshes</a><input class="toctree-checkbox" id="toctree-checkbox-5" name="toctree-checkbox-5" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-5"><i class="fa-solid fa-chevron-down"></i></label><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../gallery/msepy_domains_and_meshes/msepy/crazy.html">Crazy domain and mesh</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../gallery/msepy_domains_and_meshes/msepy/crazy_multi.html">Multi-crazy domain and mesh</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../gallery/msepy_domains_and_meshes/msepy/backward_step.html">Backward step</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../../gallery/div_grad/index.html">div-grad</a></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../../../gallery/Navier_Stokes/index.html">Navier-Stokes equations</a><input class="toctree-checkbox" id="toctree-checkbox-6" name="toctree-checkbox-6" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-6"><i class="fa-solid fa-chevron-down"></i></label><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../gallery/Navier_Stokes/shear_layer_rollup/index.html">Shear layer rollup</a></li>
+</ul>
+</li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../../../gallery/MHD/index.html">MHD (magnetohydrodynamics)</a><input class="toctree-checkbox" id="toctree-checkbox-7" name="toctree-checkbox-7" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-7"><i class="fa-solid fa-chevron-down"></i></label><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../gallery/MHD/Orszag_Tang_vortex/index.html">Orszag-Tang Vortex</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+    </div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+  </div>
+  
+  <div id="rtd-footer-container"></div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main">
+        
+        
+
+<div class="sbt-scroll-pixel-helper"></div>
+
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item"><label class="sidebar-toggle primary-toggle btn btn-sm" for="__primary" title="Toggle primary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <span class="fa-solid fa-bars"></span>
+</label></div>
+      
+    </div>
+  
+  
+    <div class="header-article-items__end">
+      
+        <div class="header-article-item">
+
+<div class="article-header-buttons">
+
+
+
+
+
+<div class="dropdown dropdown-source-buttons">
+  <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Source repositories">
+    <i class="fab fa-github"></i>
+  </button>
+  <ul class="dropdown-menu">
+      
+      
+      
+      <li><a href="https://github.com/mathischeap/phyem" target="_blank"
+   class="btn btn-sm btn-source-repository-button dropdown-item"
+   title="Source repository"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fab fa-github"></i>
+  </span>
+<span class="btn__text-container">Repository</span>
+</a>
+</li>
+      
+      
+      
+      
+      <li><a href="https://github.com/mathischeap/phyem/issues/new?title=Issue%20on%20page%20%2F_modules/src/wf/main.html&body=Your%20issue%20content%20here." target="_blank"
+   class="btn btn-sm btn-source-issues-button dropdown-item"
+   title="Open an issue"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-lightbulb"></i>
+  </span>
+<span class="btn__text-container">Open issue</span>
+</a>
+</li>
+      
+  </ul>
+</div>
+
+
+
+
+<button onclick="toggleFullScreen()"
+  class="btn btn-sm btn-fullscreen-button"
+  title="Fullscreen mode"
+  data-bs-placement="bottom" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-expand"></i>
+  </span>
+
+</button>
+
+
+<script>
+document.write(`
+  <button class="btn btn-sm navbar-btn theme-switch-button" title="light/dark" aria-label="light/dark" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="theme-switch nav-link" data-mode="light"><i class="fa-solid fa-sun fa-lg"></i></span>
+    <span class="theme-switch nav-link" data-mode="dark"><i class="fa-solid fa-moon fa-lg"></i></span>
+    <span class="theme-switch nav-link" data-mode="auto"><i class="fa-solid fa-circle-half-stroke fa-lg"></i></span>
+  </button>
+`);
+</script>
+
+<script>
+document.write(`
+  <button class="btn btn-sm navbar-btn search-button search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass fa-lg"></i>
+  </button>
+`);
+</script>
+
+</div></div>
+      
+    </div>
+  
+</div>
+</div>
+              
+              
+
+<div id="jb-print-docs-body" class="onlyprint">
+    <h1></h1>
+    <!-- Table of contents -->
+    <div id="print-main-content">
+        <div id="jb-print-toc">
+            
+        </div>
+    </div>
+</div>
+
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article" role="main">
+                  
+  <h1>Source code for src.wf.main</h1><div class="highlight"><pre>
+<span></span><span class="c1"># -*- coding: utf-8 -*-</span>
+<span class="c1"># noinspection PyUnresolvedReferences</span>
+<span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
+
+<span class="sd">.. _docs-wf:</span>
+
+<span class="sd">================</span>
+<span class="sd">Weak formulation</span>
+<span class="sd">================</span>
+
+<span class="sd">Once the PDE is complete, as well as its boundary conditions are correctly imposed, it shall be</span>
+<span class="sd">tested with test function spaces through :meth:`src.pde.PartialDifferentialEquations.test_with`,</span>
+
+<span class="sd">&gt;&gt;&gt; wf = pde.test_with([Out2, Out1], sym_repr=[&#39;p&#39;, &#39;q&#39;])</span>
+
+<span class="sd">which will give an instance of :class:`WeakFormulation`.</span>
+
+<span class="sd">    .. autoclass:: WeakFormulation</span>
+<span class="sd">        :members: unknowns, pr, bc, td, mp, derive</span>
+
+<span class="sd">To have a glance at this raw weak formulation, just do</span>
+
+<span class="sd">&gt;&gt;&gt; wf.pr()</span>
+<span class="sd">&lt;Figure size ...</span>
+
+<span class="sd">The following figure should pop up.</span>
+
+<span class="sd">.. _docs-wf-fig-wf:</span>
+
+<span class="sd">.. figure:: images/docs_raw_wf.png</span>
+<span class="sd">    :align: center</span>
+<span class="sd">    :width: 100%</span>
+
+<span class="sd">    *pr* of the weak formulation</span>
+
+<span class="sd">In Fig. :any:`docs-wf-fig-wf`, we can see that boundary conditions, unknowns of the PDE are correctly inherited,</span>
+<span class="sd">and indices of terms, ``&#39;0-0&#39;``, ``&#39;0-1&#39;`` and so on, are shown by default.</span>
+
+
+<span class="sd">.. _docs-wf-derivations:</span>
+
+<span class="sd">===========</span>
+<span class="sd">Derivations</span>
+<span class="sd">===========</span>
+
+<span class="sd">Derivations usually should be applied to the raw weak formulation such that it could be discretized properly</span>
+<span class="sd">later on. All possible derivations are wrapped into a class, :class:`WfDerive`,</span>
+
+<span class="sd">    .. autoclass:: WfDerive</span>
+<span class="sd">        :members:</span>
+
+<span class="sd">For example, we performe integration by parts to term of index ``&#39;1-1&#39;``, i.e., the second term of the</span>
+<span class="sd">second equation; :math:`\left(\mathrm{d}^\ast\tilde{\alpha}, q\right)_{\mathcal{M}}`, see Fig. :any:`docs-wf-fig-wf`,</span>
+
+<span class="sd">&gt;&gt;&gt; wf = wf.derive.integration_by_parts(&#39;1-1&#39;)  # integrate the term &#39;1-1&#39; by parts</span>
+<span class="sd">&gt;&gt;&gt; wf.pr()</span>
+<span class="sd">&lt;Figure size ...</span>
+
+<span class="sd">We can see this replaces the original term by two new terms indexed ``&#39;1-1&#39;`` and ``&#39;1-2&#39;``. Then we do</span>
+
+<span class="sd">&gt;&gt;&gt; wf = wf.derive.rearrange(</span>
+<span class="sd">...     {</span>
+<span class="sd">...         0: &#39;0, 1 = &#39;,    # do nothing to the first equations; can be removed</span>
+<span class="sd">...         1: &#39;0, 1 = 2&#39;,   # rearrange the second equations</span>
+<span class="sd">...     }</span>
+<span class="sd">... )</span>
+
+<span class="sd">This ``rearrange`` method does not touch the first equation, and moves the third term of the second</span>
+<span class="sd">equation (i.e. the term indexed ``&#39;1-2&#39;``; the boundary integral term) to the right hand side of the equation.</span>
+<span class="sd">To check it,</span>
+
+<span class="sd">&gt;&gt;&gt; wf.pr()</span>
+<span class="sd">&lt;Figure size ...</span>
+
+<span class="sd">Please play with ``rearrange`` (together with ``pr``) untill you fully understand how it works.</span>
+<span class="sd">How to use :meth:`WfDerive.delete` and :meth:`WfDerive.switch_sign` is obvious,</span>
+
+<span class="sd">&gt;&gt;&gt; _wf1 = wf.derive.delete(&#39;0-0&#39;)      # delete the first term of the first equation</span>
+<span class="sd">&gt;&gt;&gt; _wf1.pr()</span>
+<span class="sd">&lt;Figure size ...</span>
+<span class="sd">&gt;&gt;&gt; _wf1 = _wf1.derive.switch_sign(1)   # switch signs in the second equation</span>
+<span class="sd">&gt;&gt;&gt; _wf1.pr()</span>
+<span class="sd">&lt;Figure size ...</span>
+
+<span class="sd">Note that these four lines of commands did not make changs to ``wf`` with which we will keep working.</span>
+<span class="sd">And usage of :meth:`WfDerive.replace` and :meth:`WfDerive.split` will be demonstrated in</span>
+<span class="sd">:ref:`docs-temporal-discretization`.</span>
+
+
+<span class="sd">.. _docs-discretization:</span>
+
+<span class="sd">==============</span>
+<span class="sd">Discretization</span>
+<span class="sd">==============</span>
+
+<span class="sd">.. _docs-temporal-discretization:</span>
+
+<span class="sd">Temporal discretization</span>
+<span class="sd">=======================</span>
+
+<span class="sd">Before the temporal discretization, we shall first set up an abstract time sequence,</span>
+
+<span class="sd">&gt;&gt;&gt; ts = ph.time_sequence()</span>
+
+<span class="sd">Then we can define a time interval by</span>
+
+<span class="sd">&gt;&gt;&gt; dt = ts.make_time_interval(&#39;k-1&#39;, &#39;k&#39;, sym_repr=r&#39;\Delta t&#39;)</span>
+
+<span class="sd">This gives a time interval ``dt`` which symbolically is</span>
+
+<span class="sd">.. math::</span>
+
+<span class="sd">    \Delta t = t^{k} - t^{k-1}.</span>
+
+<span class="sd">The temporal discretization is wrapped into property :attr:`WeakFormulation.td`</span>
+<span class="sd">which is an instance of the wrapper class,</span>
+<span class="sd">:class:`TemporalDiscretization`,</span>
+
+<span class="sd">    .. autoclass:: TemporalDiscretization</span>
+<span class="sd">        :members:</span>
+
+<span class="sd">Pick up the temporal discrezation, ``td``, of the weak formulation ``wf`` by</span>
+
+<span class="sd">&gt;&gt;&gt; td = wf.td</span>
+
+<span class="sd">We can set the time sequence of the temporal discretization to be the time sequence we have</span>
+<span class="sd">defined, ``ts``,</span>
+
+<span class="sd">&gt;&gt;&gt; td.set_time_sequence(ts)</span>
+
+<span class="sd">The varilbes will be discretized to particular abstract time instants.</span>
+<span class="sd">For example, we do</span>
+
+<span class="sd">&gt;&gt;&gt; td.define_abstract_time_instants(&#39;k-1&#39;, &#39;k-1/2&#39;, &#39;k&#39;)</span>
+
+<span class="sd">This command defines three abstract time instants, i.e.,</span>
+
+<span class="sd">.. math::</span>
+
+<span class="sd">    t^{k-1},\quad t^{k-\frac{1}{2}}, \quad t^{k}.</span>
+
+<span class="sd">Now, we can do the temporal discretization. For example, we apply an implicit midpoint discretization to</span>
+<span class="sd">the weak formulation, we shall do</span>
+
+<span class="sd">&gt;&gt;&gt; td.differentiate(&#39;0-0&#39;, &#39;k-1&#39;, &#39;k&#39;)</span>
+<span class="sd">&gt;&gt;&gt; td.average(&#39;0-1&#39;, b, [&#39;k-1&#39;, &#39;k&#39;])</span>
+<span class="sd">&gt;&gt;&gt; td.differentiate(&#39;1-0&#39;, &#39;k-1&#39;, &#39;k&#39;)</span>
+<span class="sd">&gt;&gt;&gt; td.average(&#39;1-1&#39;, a, [&#39;k-1&#39;, &#39;k&#39;])</span>
+<span class="sd">&gt;&gt;&gt; td.average(&#39;1-2&#39;, a, [&#39;k-1/2&#39;])</span>
+
+<span class="sd">where, at time step from :math:`t^{k-1}` to :math:`t^{k}`,</span>
+<span class="sd">i) ``differentiate`` method is applied to terms indexed ``&#39;0-0&#39;`` and ``&#39;1-0&#39;``,</span>
+<span class="sd">i.e. the time derivative terms,</span>
+
+<span class="sd">.. math::</span>
+
+<span class="sd">    \left(\partial_t \tilde{\alpha}, p\right)_\mathcal{M}</span>
+<span class="sd">    \quad\text{and}\quad</span>
+<span class="sd">    \left(\partial_t \tilde{\beta}, q\right)_\mathcal{M},</span>
+
+<span class="sd">and ii) ``average`` method is applied to terms indexed ``&#39;0-1&#39;``, ``&#39;1-1&#39;`` and ``&#39;1-2&#39;``,</span>
+<span class="sd">i.e.,</span>
+
+<span class="sd">.. math::</span>
+
+<span class="sd">    - \left(\mathrm{d} \tilde{\beta}, p\right)_\mathcal{M}</span>
+<span class="sd">    \quad\text{and}\quad</span>
+<span class="sd">    \left(\tilde{\alpha}, \mathrm{d} q\right)_\mathcal{M}</span>
+<span class="sd">    \quad\text{and}\quad</span>
+<span class="sd">    \left&lt; \left.\mathrm{tr} \left(\star\tilde{\alpha}\right)\right| \mathrm{tr} q\right&gt;_{\partial\mathcal{M}}.</span>
+
+<span class="sd">To let all these temporal discretization take effects, we just need to call the ``td`` property, i.e.,</span>
+
+<span class="sd">&gt;&gt;&gt; wf = td()</span>
+<span class="sd">&gt;&gt;&gt; wf.pr()</span>
+<span class="sd">&lt;Figure size ...</span>
+
+<span class="sd">The returned object is a new weak formulation instance which has received the desired temporal discretization.</span>
+<span class="sd">We shall set the unknowns of this new weak formulation by</span>
+
+<span class="sd">&gt;&gt;&gt; wf.unknowns = [</span>
+<span class="sd">...     a @ ts[&#39;k&#39;],</span>
+<span class="sd">...     b @ ts[&#39;k&#39;]</span>
+<span class="sd">... ]</span>
+
+<span class="sd">which means the unknowns will be</span>
+
+<span class="sd">.. math::</span>
+
+<span class="sd">    \left.\tilde{\alpha}\right|^{k} \quad \text{and}\quad \left.\tilde{\beta}\right|^{k},</span>
+
+<span class="sd">i.e. :math:`\tilde{\alpha}(\Omega, t^k)` and :math:`\tilde{\beta}(\Omega, t^k)`.</span>
+
+<span class="sd">We now need to split the composite terms into separate ones. This can be done through ``split`` method</span>
+<span class="sd">of ``derive`` property,</span>
+
+<span class="sd">&gt;&gt;&gt; wf = wf.derive.split(</span>
+<span class="sd">...     &#39;0-0&#39;, &#39;f0&#39;,</span>
+<span class="sd">...     [a @ ts[&#39;k&#39;], a @ ts[&#39;k-1&#39;]],</span>
+<span class="sd">...     [&#39;+&#39;, &#39;-&#39;],</span>
+<span class="sd">...     factors=[1/dt, 1/dt],</span>
+<span class="sd">... )</span>
+<span class="sd">&gt;&gt;&gt; wf.pr()</span>
+<span class="sd">&lt;Figure size ...</span>
+
+<span class="sd">This will split the first entry</span>
+<span class="sd">(indicated by ``&#39;f0&#39;`` considering the inner product term is</span>
+<span class="sd">:math:`\left(\text{f0},\text{f1}\right)_{\mathcal{M}}`)</span>
+<span class="sd">of the tern indexed by ``&#39;0-0&#39;`` into two new terms, as explained by the remaining inputs,</span>
+
+<span class="sd">.. math::</span>
+
+<span class="sd">    + \dfrac{1}{\Delta t}\left.\tilde{\alpha}\right|^k</span>
+<span class="sd">    \quad \text{and} \quad</span>
+<span class="sd">    - \dfrac{1}{\Delta t} \left.\tilde{\alpha}\right|^{k-1}.</span>
+
+<span class="sd">The ``pr`` output should have also explained everything clearly.</span>
+
+<span class="sd">.. note::</span>
+
+<span class="sd">    Note that after each particular method call of</span>
+<span class="sd">    ``derive``, a new weak formulation is returned;</span>
+<span class="sd">    the indexing system is renewed. Thus, carefully check out the</span>
+<span class="sd">    indexing system befoew any further derivations.</span>
+
+<span class="sd">Keep splitting the remian composite terms,</span>
+
+<span class="sd">&gt;&gt;&gt; wf = wf.derive.split(</span>
+<span class="sd">...     &#39;1-0&#39;, &#39;f0&#39;,</span>
+<span class="sd">...     [b @ ts[&#39;k&#39;], b @ ts[&#39;k-1&#39;]],</span>
+<span class="sd">...     [&#39;+&#39;, &#39;-&#39;],</span>
+<span class="sd">...     factors=[1/dt, 1/dt],</span>
+<span class="sd">... )</span>
+
+<span class="sd">&gt;&gt;&gt; wf = wf.derive.split(</span>
+<span class="sd">...     &#39;0-2&#39;, &#39;f0&#39;,</span>
+<span class="sd">...     [(b @ ts[&#39;k&#39;]).exterior_derivative(), (b @ ts[&#39;k-1&#39;]).exterior_derivative()],</span>
+<span class="sd">...     [&#39;+&#39;, &#39;+&#39;],</span>
+<span class="sd">...     factors=[1/2, 1/2],</span>
+<span class="sd">... )</span>
+
+<span class="sd">&gt;&gt;&gt; wf = wf.derive.split(</span>
+<span class="sd">...     &#39;1-2&#39;, &#39;f0&#39;,</span>
+<span class="sd">...     [(a @ ts[&#39;k&#39;]), (a @ ts[&#39;k-1&#39;])],</span>
+<span class="sd">...     [&#39;+&#39;, &#39;+&#39;],</span>
+<span class="sd">...     factors=[1/2, 1/2],</span>
+<span class="sd">... )</span>
+
+<span class="sd">Then we should rearrange the terms,</span>
+
+<span class="sd">&gt;&gt;&gt; wf = wf.derive.rearrange(</span>
+<span class="sd">...     {</span>
+<span class="sd">...         0: &#39;0, 2 = 1, 3&#39;,</span>
+<span class="sd">...         1: &#39;2, 0 = 3, 1, 4&#39;,</span>
+<span class="sd">...      }</span>
+<span class="sd">... )</span>
+<span class="sd">&gt;&gt;&gt; wf.pr()</span>
+<span class="sd">&lt;Figure size ...</span>
+
+<span class="sd">We now obtain the final (semi-)discrete system for the linear port-Hamiltonian system.</span>
+
+<span class="sd">.. _docs-spacial-discretization:</span>
+
+<span class="sd">Spacial discretization</span>
+<span class="sd">=======================</span>
+
+<span class="sd">Since we are already working with an abstract mesh, the spacial discretization can be accomplished</span>
+<span class="sd">simply by specifying finite degrees to finite dimensional forms we have made.</span>
+<span class="sd">This can be done globally by using</span>
+
+<span class="sd">&gt;&gt;&gt; ph.space.finite(3)</span>
+
+<span class="sd">which specifies degrees of all finite dimensonal forms to 3. You can also set the degree of</span>
+<span class="sd">an individual form through its ``degree`` property, see :attr:`src.form.main.Form.degree`. Now if you</span>
+<span class="sd">check the ``pr`` output, you will see the degrees of the forms are correctly reflected by the spaces</span>
+<span class="sd">they are in. For example,</span>
+
+<span class="sd">&gt;&gt;&gt; wf.pr()</span>
+<span class="sd">&lt;Figure size ...</span>
+
+<span class="sd">We are ready to bring this weak formulation into its algebraic proxy (linear algebraic form) now.</span>
+
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">import</span> <span class="nn">sys</span>
+
+<span class="k">if</span> <span class="s1">&#39;./&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">sys</span><span class="o">.</span><span class="n">path</span><span class="p">:</span>
+    <span class="n">sys</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">&#39;./&#39;</span><span class="p">)</span>
+<span class="kn">from</span> <span class="nn">tools.frozen</span> <span class="kn">import</span> <span class="n">Frozen</span>
+<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
+<span class="kn">import</span> <span class="nn">matplotlib</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">rcParams</span><span class="o">.</span><span class="n">update</span><span class="p">({</span>
+    <span class="s2">&quot;text.usetex&quot;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
+    <span class="s2">&quot;font.family&quot;</span><span class="p">:</span> <span class="s2">&quot;DejaVu Sans&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;text.latex.preamble&quot;</span><span class="p">:</span> <span class="sa">r</span><span class="s2">&quot;\usepackage{amsmath, amssymb}&quot;</span><span class="p">,</span>
+<span class="p">})</span>
+<span class="n">matplotlib</span><span class="o">.</span><span class="n">use</span><span class="p">(</span><span class="s1">&#39;TkAgg&#39;</span><span class="p">)</span>
+<span class="kn">from</span> <span class="nn">src.wf.td</span> <span class="kn">import</span> <span class="n">TemporalDiscretization</span>
+<span class="kn">from</span> <span class="nn">src.bc</span> <span class="kn">import</span> <span class="n">BoundaryCondition</span>
+<span class="kn">from</span> <span class="nn">src.wf.derive</span> <span class="kn">import</span> <span class="n">WfDerive</span>
+<span class="kn">from</span> <span class="nn">src.wf.ap.main</span> <span class="kn">import</span> <span class="n">AlgebraicProxy</span>
+<span class="kn">from</span> <span class="nn">src.wf.mp.main</span> <span class="kn">import</span> <span class="n">MatrixProxy</span>
+<span class="kn">from</span> <span class="nn">src.config</span> <span class="kn">import</span> <span class="n">_pde_test_form_lin_repr</span>
+<span class="kn">from</span> <span class="nn">src.config</span> <span class="kn">import</span> <span class="n">_form_evaluate_at_repr_setting</span>
+
+
+<div class="viewcode-block" id="WeakFormulation"><a class="viewcode-back" href="../../../tutorial/docs/wf.html#src.wf.main.WeakFormulation">[docs]</a><span class="k">class</span> <span class="nc">WeakFormulation</span><span class="p">(</span><span class="n">Frozen</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;The Weak Formulation class.&quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">test_forms</span><span class="p">,</span> <span class="n">term_sign_dict</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">expression</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">interpreter</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">merge</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        term_sign_dict</span>
+<span class="sd">        test_forms</span>
+<span class="sd">        expression</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">term_sign_dict</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">assert</span> <span class="n">expression</span> <span class="ow">is</span> <span class="kc">None</span>
+            <span class="k">assert</span> <span class="n">merge</span> <span class="ow">is</span> <span class="kc">None</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_parse_term_sign_dict</span><span class="p">(</span><span class="n">term_sign_dict</span><span class="p">,</span> <span class="n">test_forms</span><span class="p">)</span>
+
+        <span class="k">elif</span> <span class="n">expression</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">assert</span> <span class="n">term_sign_dict</span> <span class="ow">is</span> <span class="kc">None</span>
+            <span class="k">assert</span> <span class="n">merge</span> <span class="ow">is</span> <span class="kc">None</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_parse_expression</span><span class="p">(</span><span class="n">expression</span><span class="p">,</span> <span class="n">interpreter</span><span class="p">,</span> <span class="n">test_forms</span><span class="p">)</span>
+
+        <span class="k">elif</span> <span class="n">merge</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>  <span class="c1"># merge multiple weak formulations</span>
+            <span class="k">assert</span> <span class="n">term_sign_dict</span> <span class="ow">is</span> <span class="kc">None</span>
+            <span class="k">assert</span> <span class="n">expression</span> <span class="ow">is</span> <span class="kc">None</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_initialize_through_merging</span><span class="p">(</span><span class="n">merge</span><span class="p">,</span> <span class="n">test_forms</span><span class="p">)</span>
+
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">Exception</span><span class="p">()</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_meshes</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_mesh</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_parse_meshes</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_term_dict</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_consistence_checker</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_unknowns</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_derive</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_bc</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_terms</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_freeze</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">_parse_term_sign_dict</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">term_sign_dict</span><span class="p">,</span> <span class="n">test_forms</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;&quot;&quot;&quot;</span>
+        <span class="n">term_dict</span><span class="p">,</span> <span class="n">sign_dict</span> <span class="o">=</span> <span class="n">term_sign_dict</span>
+        <span class="n">ind_dict</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>
+        <span class="n">indexing</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>
+        <span class="n">num_eq</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">term_dict</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">num_eq</span><span class="p">):</span>   <span class="c1"># ith equation</span>
+            <span class="k">assert</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">term_dict</span> <span class="ow">and</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">sign_dict</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;numbering of equations must be 0, 1, 2, ...&quot;</span>
+            <span class="n">ind_dict</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="p">([],</span> <span class="p">[])</span>
+            <span class="n">k</span> <span class="o">=</span> <span class="mi">0</span>
+            <span class="k">for</span> <span class="n">j</span><span class="p">,</span> <span class="n">terms</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">term_dict</span><span class="p">[</span><span class="n">i</span><span class="p">]):</span>
+                <span class="k">for</span> <span class="n">m</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">terms</span><span class="p">)):</span>
+                    <span class="n">index</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">i</span><span class="p">)</span> <span class="o">+</span> <span class="s1">&#39;-&#39;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">k</span><span class="p">)</span>
+                    <span class="n">k</span> <span class="o">+=</span> <span class="mi">1</span>
+                    <span class="n">indexing</span><span class="p">[</span><span class="n">index</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="n">sign_dict</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="n">j</span><span class="p">][</span><span class="n">m</span><span class="p">],</span> <span class="n">term_dict</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="n">j</span><span class="p">][</span><span class="n">m</span><span class="p">])</span>
+                    <span class="n">ind_dict</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="n">j</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">index</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_test_forms</span> <span class="o">=</span> <span class="n">test_forms</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_term_dict</span> <span class="o">=</span> <span class="n">term_dict</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_sign_dict</span> <span class="o">=</span> <span class="n">sign_dict</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_ind_dict</span> <span class="o">=</span> <span class="n">ind_dict</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_indexing</span> <span class="o">=</span> <span class="n">indexing</span>
+
+    <span class="k">def</span> <span class="nf">_parse_expression</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">expression</span><span class="p">,</span> <span class="n">interpreter</span><span class="p">,</span> <span class="n">test_forms</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;&quot;&quot;&quot;</span>
+        <span class="n">term_dict</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>
+        <span class="n">sign_dict</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>
+        <span class="n">ind_dict</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>
+        <span class="n">indexing</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>
+        <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">equation</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">expression</span><span class="p">):</span>
+
+            <span class="n">equation</span> <span class="o">=</span> <span class="n">equation</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39; &#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">)</span>  <span class="c1"># remove all spaces</span>
+            <span class="n">equation</span> <span class="o">=</span> <span class="n">equation</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;-&#39;</span><span class="p">,</span> <span class="s1">&#39;+-&#39;</span><span class="p">)</span>  <span class="c1"># let all terms be connected by +</span>
+
+            <span class="n">term_dict</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="p">([],</span> <span class="p">[])</span>  <span class="c1"># for left terms and right terms of ith equation</span>
+            <span class="n">sign_dict</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="p">([],</span> <span class="p">[])</span>  <span class="c1"># for left terms and right terms of ith equation</span>
+            <span class="n">ind_dict</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="p">([],</span> <span class="p">[])</span>  <span class="c1"># for left terms and right terms of ith equation</span>
+
+            <span class="n">k</span> <span class="o">=</span> <span class="mi">0</span>
+            <span class="k">for</span> <span class="n">j</span><span class="p">,</span> <span class="n">lor</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">equation</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;=&#39;</span><span class="p">)):</span>
+                <span class="n">local_terms</span> <span class="o">=</span> <span class="n">lor</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;+&#39;</span><span class="p">)</span>
+
+                <span class="k">for</span> <span class="n">loc_term</span> <span class="ow">in</span> <span class="n">local_terms</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="n">loc_term</span> <span class="o">==</span> <span class="s1">&#39;&#39;</span> <span class="ow">or</span> <span class="n">loc_term</span> <span class="o">==</span> <span class="s1">&#39;-&#39;</span><span class="p">:</span>  <span class="c1"># found empty terms, just ignore.</span>
+                        <span class="k">pass</span>
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="k">if</span> <span class="n">loc_term</span> <span class="o">==</span> <span class="s1">&#39;0&#39;</span><span class="p">:</span>
+                            <span class="k">pass</span>
+                        <span class="k">else</span><span class="p">:</span>
+                            <span class="k">if</span> <span class="n">loc_term</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;-&#39;</span><span class="p">:</span>
+                                <span class="k">assert</span> <span class="n">loc_term</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span> <span class="ow">in</span> <span class="n">interpreter</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;found term </span><span class="si">{</span><span class="n">loc_term</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span><span class="si">}</span><span class="s2"> not interpreted.&quot;</span>
+                                <span class="n">sign</span> <span class="o">=</span> <span class="s1">&#39;-&#39;</span>
+                                <span class="n">term</span> <span class="o">=</span> <span class="n">interpreter</span><span class="p">[</span><span class="n">loc_term</span><span class="p">[</span><span class="mi">1</span><span class="p">:]]</span>
+                            <span class="k">else</span><span class="p">:</span>
+                                <span class="k">assert</span> <span class="n">loc_term</span> <span class="ow">in</span> <span class="n">interpreter</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;found term </span><span class="si">{</span><span class="n">loc_term</span><span class="si">}</span><span class="s2"> not interpreted&quot;</span>
+                                <span class="n">sign</span> <span class="o">=</span> <span class="s1">&#39;+&#39;</span>
+                                <span class="n">term</span> <span class="o">=</span> <span class="n">interpreter</span><span class="p">[</span><span class="n">loc_term</span><span class="p">]</span>
+
+                            <span class="n">sign_dict</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="n">j</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">sign</span><span class="p">)</span>
+                            <span class="n">term_dict</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="n">j</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">term</span><span class="p">)</span>
+                            <span class="n">index</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">i</span><span class="p">)</span> <span class="o">+</span> <span class="s1">&#39;-&#39;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">k</span><span class="p">)</span>
+                            <span class="n">k</span> <span class="o">+=</span> <span class="mi">1</span>
+                            <span class="n">indexing</span><span class="p">[</span><span class="n">index</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="n">sign</span><span class="p">,</span> <span class="n">term</span><span class="p">)</span>
+                            <span class="n">ind_dict</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="n">j</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">index</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_test_forms</span> <span class="o">=</span> <span class="n">test_forms</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_term_dict</span> <span class="o">=</span> <span class="n">term_dict</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_sign_dict</span> <span class="o">=</span> <span class="n">sign_dict</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_ind_dict</span> <span class="o">=</span> <span class="n">ind_dict</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_indexing</span> <span class="o">=</span> <span class="n">indexing</span>
+
+    <span class="k">def</span> <span class="nf">_initialize_through_merging</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">merge</span><span class="p">,</span> <span class="n">test_forms</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;&quot;&quot;&quot;</span>
+        <span class="n">term_dict</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>
+        <span class="n">sign_dict</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>
+        <span class="n">no</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">merge</span><span class="p">:</span>
+            <span class="n">eqi</span> <span class="o">=</span> <span class="n">merge</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+            <span class="k">if</span> <span class="n">eqi</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span> <span class="o">==</span> <span class="s1">&#39;PartialDifferentialEquations&#39;</span><span class="p">:</span>
+                <span class="n">tdi</span><span class="p">,</span> <span class="n">sdi</span> <span class="o">=</span> <span class="n">eqi</span><span class="o">.</span><span class="n">_term_dict</span><span class="p">,</span> <span class="n">eqi</span><span class="o">.</span><span class="n">_sign_dict</span>
+                <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="n">tdi</span><span class="p">:</span>
+                    <span class="n">term_dict</span><span class="p">[</span><span class="n">no</span><span class="p">]</span> <span class="o">=</span> <span class="n">tdi</span><span class="p">[</span><span class="n">j</span><span class="p">]</span>
+                    <span class="n">sign_dict</span><span class="p">[</span><span class="n">no</span><span class="p">]</span> <span class="o">=</span> <span class="n">sdi</span><span class="p">[</span><span class="n">j</span><span class="p">]</span>
+                    <span class="n">no</span> <span class="o">+=</span> <span class="mi">1</span>
+
+            <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">eqi</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
+                <span class="n">tdi</span><span class="p">,</span> <span class="n">sdi</span> <span class="o">=</span> <span class="n">eqi</span><span class="p">[</span><span class="s1">&#39;_term_dict&#39;</span><span class="p">],</span> <span class="n">eqi</span><span class="p">[</span><span class="s1">&#39;_sign_dict&#39;</span><span class="p">]</span>
+                <span class="n">term_dict</span><span class="p">[</span><span class="n">no</span><span class="p">]</span> <span class="o">=</span> <span class="n">tdi</span>
+                <span class="n">sign_dict</span><span class="p">[</span><span class="n">no</span><span class="p">]</span> <span class="o">=</span> <span class="n">sdi</span>
+                <span class="n">no</span> <span class="o">+=</span> <span class="mi">1</span>
+
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">()</span>
+
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">term_dict</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">j</span><span class="p">,</span> <span class="n">terms</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">term_dict</span><span class="p">[</span><span class="n">i</span><span class="p">]):</span>
+                <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">term</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">terms</span><span class="p">):</span>
+                    <span class="k">assert</span> <span class="n">term</span><span class="o">.</span><span class="n">_is_able_to_be_a_weak_term</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;term[</span><span class="si">{</span><span class="n">i</span><span class="si">}</span><span class="s2">][</span><span class="si">{</span><span class="n">j</span><span class="si">}</span><span class="s2">][</span><span class="si">{</span><span class="n">k</span><span class="si">}</span><span class="s2">] = </span><span class="si">{</span><span class="n">term</span><span class="si">}</span><span class="s2"> &quot;</span> \
+                                                            <span class="sa">f</span><span class="s2">&quot;is not suitable for a weak formulation.&quot;</span>
+                    <span class="n">sign</span> <span class="o">=</span> <span class="n">sign_dict</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="n">j</span><span class="p">][</span><span class="n">k</span><span class="p">]</span>
+                    <span class="k">assert</span> <span class="n">sign</span> <span class="ow">in</span> <span class="p">(</span><span class="s1">&#39;+&#39;</span><span class="p">,</span> <span class="s1">&#39;-&#39;</span><span class="p">),</span> <span class="sa">f</span><span class="s2">&quot;sign[</span><span class="si">{</span><span class="n">i</span><span class="si">}</span><span class="s2">][</span><span class="si">{</span><span class="n">j</span><span class="si">}</span><span class="s2">][</span><span class="si">{</span><span class="n">k</span><span class="si">}</span><span class="s2">] = </span><span class="si">{</span><span class="n">sign</span><span class="si">}</span><span class="s2"> illegal.&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_parse_term_sign_dict</span><span class="p">([</span><span class="n">term_dict</span><span class="p">,</span> <span class="n">sign_dict</span><span class="p">],</span> <span class="n">test_forms</span><span class="p">)</span>
+
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">_parse_meshes</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">term_dict</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;&quot;&quot;&quot;</span>
+        <span class="n">meshes</span> <span class="o">=</span> <span class="nb">list</span><span class="p">()</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">term_dict</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">terms</span> <span class="ow">in</span> <span class="n">term_dict</span><span class="p">[</span><span class="n">i</span><span class="p">]:</span>
+                <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="n">terms</span><span class="p">:</span>
+                    <span class="n">mesh</span> <span class="o">=</span> <span class="n">t</span><span class="o">.</span><span class="n">mesh</span>
+                    <span class="k">if</span> <span class="n">mesh</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">meshes</span><span class="p">:</span>
+                        <span class="n">meshes</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">mesh</span><span class="p">)</span>
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="k">pass</span>
+
+        <span class="n">num_meshes</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">meshes</span><span class="p">)</span>
+        <span class="k">assert</span> <span class="n">num_meshes</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;we need at least one mesh.&quot;</span>
+
+        <span class="k">if</span> <span class="n">num_meshes</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="n">mesh</span> <span class="o">=</span> <span class="n">meshes</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>  <span class="c1"># config #1: one mesh found, then we are probably dealing with periodic manifold.</span>
+            <span class="k">return</span> <span class="n">meshes</span><span class="p">,</span> <span class="n">mesh</span>  <span class="c1"># RETURN config #1</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">mesh_dim_dict</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>
+            <span class="k">for</span> <span class="n">m</span> <span class="ow">in</span> <span class="n">meshes</span><span class="p">:</span>
+                <span class="n">ndim</span> <span class="o">=</span> <span class="n">m</span><span class="o">.</span><span class="n">ndim</span>
+                <span class="k">if</span> <span class="n">ndim</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">mesh_dim_dict</span><span class="p">:</span>
+                    <span class="n">mesh_dim_dict</span><span class="p">[</span><span class="n">ndim</span><span class="p">]</span> <span class="o">=</span> <span class="nb">list</span><span class="p">()</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="k">pass</span>
+                <span class="n">mesh_dim_dict</span><span class="p">[</span><span class="n">ndim</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">m</span><span class="p">)</span>
+
+            <span class="c1"># below we analyze more than one mesh ---------------</span>
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">mesh_dim_dict</span><span class="p">)</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>   <span class="c1"># meshes are of two dimensions.</span>
+                <span class="n">larger_ndim</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">mesh_dim_dict</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
+                <span class="n">lower_ndim</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">mesh_dim_dict</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
+                <span class="k">if</span> <span class="n">lower_ndim</span> <span class="o">==</span> <span class="n">larger_ndim</span> <span class="o">-</span> <span class="mi">1</span> <span class="ow">and</span> \
+                        <span class="nb">len</span><span class="p">(</span><span class="n">mesh_dim_dict</span><span class="p">[</span><span class="n">larger_ndim</span><span class="p">])</span> <span class="o">==</span> <span class="mi">1</span> <span class="ow">and</span> \
+                        <span class="nb">len</span><span class="p">(</span><span class="n">mesh_dim_dict</span><span class="p">[</span><span class="n">lower_ndim</span><span class="p">])</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+                    <span class="n">mesh</span> <span class="o">=</span> <span class="n">mesh_dim_dict</span><span class="p">[</span><span class="n">larger_ndim</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>   <span class="c1"># config #2: found one mesh, and its boundary mesh.</span>
+                    <span class="c1"># This is the most common case.</span>
+                    <span class="n">boundary_mesh</span> <span class="o">=</span> <span class="n">mesh_dim_dict</span><span class="p">[</span><span class="n">lower_ndim</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
+                    <span class="k">assert</span> <span class="n">mesh</span><span class="o">.</span><span class="n">manifold</span><span class="o">.</span><span class="n">boundary</span><span class="p">()</span> <span class="o">==</span> <span class="n">boundary_mesh</span><span class="o">.</span><span class="n">manifold</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;must be the case. Safety check.&quot;</span>
+                    <span class="k">return</span> <span class="n">meshes</span><span class="p">,</span> <span class="n">mesh</span>  <span class="c1"># RETURN config #2</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">()</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">_consistence_checker</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;We do consistence check here and parse properties like mesh and so on.&quot;&quot;&quot;</span>
+        <span class="n">ts</span> <span class="o">=</span> <span class="nb">list</span><span class="p">()</span>
+        <span class="k">for</span> <span class="n">tf</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_test_forms</span><span class="p">:</span>
+            <span class="n">ts</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">tf</span><span class="o">.</span><span class="n">space</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_test_spaces</span> <span class="o">=</span> <span class="n">ts</span>
+
+        <span class="n">efs</span> <span class="o">=</span> <span class="nb">set</span><span class="p">()</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_term_dict</span><span class="p">:</span>   <span class="c1"># ith equation</span>
+            <span class="k">for</span> <span class="n">terms</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_term_dict</span><span class="p">[</span><span class="n">i</span><span class="p">]:</span>
+                <span class="k">for</span> <span class="n">term</span> <span class="ow">in</span> <span class="n">terms</span><span class="p">:</span>
+                    <span class="n">efs</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">term</span><span class="o">.</span><span class="n">elementary_forms</span><span class="p">)</span>
+
+        <span class="c1"># below, lets sort the set according to the pure_lin_repr of the elementary forms and put it into a tuple.</span>
+        <span class="n">efs_dict</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>
+        <span class="n">efs_plr_list</span> <span class="o">=</span> <span class="nb">list</span><span class="p">()</span>
+        <span class="k">for</span> <span class="n">ef</span> <span class="ow">in</span> <span class="n">efs</span><span class="p">:</span>
+            <span class="n">pure_lin_repr</span> <span class="o">=</span> <span class="n">ef</span><span class="o">.</span><span class="n">_pure_lin_repr</span>
+            <span class="n">efs_dict</span><span class="p">[</span><span class="n">pure_lin_repr</span><span class="p">]</span> <span class="o">=</span> <span class="n">ef</span>
+            <span class="n">efs_plr_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">pure_lin_repr</span><span class="p">)</span>
+        <span class="n">efs_plr_list</span><span class="o">.</span><span class="n">sort</span><span class="p">()</span>
+        <span class="n">efs</span> <span class="o">=</span> <span class="p">[</span><span class="n">efs_dict</span><span class="p">[</span><span class="n">_</span><span class="p">]</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="n">efs_plr_list</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_efs</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">efs</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_find_elementary_bc_forms</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;find all elementary forms in bc terms; these forms will not be given as themselves.&quot;&quot;&quot;</span>
+        <span class="n">e_bc_fs</span> <span class="o">=</span> <span class="nb">set</span><span class="p">()</span>
+        <span class="n">e_bc_fs</span><span class="o">.</span><span class="n">update</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_find_elementary_forms_for_natural_bc</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="p">)</span>
+        <span class="k">return</span> <span class="n">e_bc_fs</span>
+
+    <span class="k">def</span> <span class="nf">_find_elementary_forms_for_natural_bc</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Even when bc is not defined. We can check it from the simple pattern of terms.&quot;&quot;&quot;</span>
+        <span class="n">nbc_efs</span> <span class="o">=</span> <span class="nb">set</span><span class="p">()</span>
+        <span class="n">other_efs</span> <span class="o">=</span> <span class="nb">set</span><span class="p">()</span>
+        <span class="kn">from</span> <span class="nn">src.config</span> <span class="kn">import</span> <span class="n">_wf_term_default_simple_patterns</span> <span class="k">as</span> <span class="n">_simple_patterns</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_term_dict</span><span class="p">:</span>   <span class="c1"># ith equation</span>
+            <span class="k">for</span> <span class="n">terms</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_term_dict</span><span class="p">[</span><span class="n">i</span><span class="p">]:</span>
+                <span class="k">for</span> <span class="n">term</span> <span class="ow">in</span> <span class="n">terms</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="n">term</span><span class="o">.</span><span class="n">_simple_pattern</span> <span class="o">==</span> <span class="n">_simple_patterns</span><span class="p">[</span><span class="s1">&#39;&lt;tr star | tr &gt;&#39;</span><span class="p">]:</span>
+                        <span class="n">two_element_forms</span> <span class="o">=</span> <span class="n">term</span><span class="o">.</span><span class="n">elementary_forms</span>
+                        <span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="n">two_element_forms</span><span class="p">)</span> <span class="o">==</span> <span class="mi">2</span><span class="p">,</span> \
+                            <span class="p">(</span><span class="sa">f</span><span class="s2">&quot;term of pattern=</span><span class="si">{</span><span class="n">_simple_patterns</span><span class="p">[</span><span class="s1">&#39;&lt;tr star | tr &gt;&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2"> &quot;</span>
+                             <span class="sa">f</span><span class="s2">&quot;must only have two elementary forms.&quot;</span><span class="p">)</span>
+                        <span class="k">for</span> <span class="n">ef</span> <span class="ow">in</span> <span class="n">two_element_forms</span><span class="p">:</span>
+                            <span class="k">if</span> <span class="n">ef</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">test_forms</span><span class="p">:</span>
+                                <span class="k">pass</span>
+                            <span class="k">else</span><span class="p">:</span>
+                                <span class="n">nbc_efs</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">ef</span><span class="p">)</span>
+
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="n">other_efs</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">term</span><span class="o">.</span><span class="n">elementary_forms</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">nbc_efs</span><span class="p">,</span> <span class="n">other_efs</span>
+
+    <span class="k">def</span> <span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Customize the __repr__.&quot;&quot;&quot;</span>
+        <span class="n">super_repr</span> <span class="o">=</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__repr__</span><span class="p">()</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;object&#39;</span><span class="p">)[</span><span class="mi">1</span><span class="p">]</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">unknowns</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">unknown_sym_repr</span> <span class="o">=</span> <span class="s1">&#39;[...]&#39;</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">unknown_sym_repr</span> <span class="o">=</span> <span class="p">[</span><span class="n">f</span><span class="o">.</span><span class="n">_sym_repr</span> <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">unknowns</span><span class="p">]</span>
+        <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;&lt;WeakFormulation of </span><span class="si">{</span><span class="n">unknown_sym_repr</span><span class="si">}</span><span class="s2">&quot;</span> <span class="o">+</span> <span class="n">super_repr</span>
+
+    <span class="k">def</span> <span class="fm">__getitem__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">item</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;&quot;&quot;&quot;</span>
+        <span class="k">assert</span> <span class="n">item</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_indexing</span><span class="p">,</span> \
+            <span class="sa">f</span><span class="s2">&quot;index: &#39;</span><span class="si">{</span><span class="n">item</span><span class="si">}</span><span class="s2">&#39; is illegal, do &#39;print_representations(indexing=True)&#39; &quot;</span> \
+            <span class="sa">f</span><span class="s2">&quot;to check indices of all terms.&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_indexing</span><span class="p">[</span><span class="n">item</span><span class="p">]</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">terms</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_terms</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_terms</span> <span class="o">=</span> <span class="n">_TermsOnly</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_terms</span>
+
+    <span class="k">def</span> <span class="fm">__iter__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;&quot;&quot;&quot;</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ind_dict</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">lri</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ind_dict</span><span class="p">[</span><span class="n">i</span><span class="p">]:</span>
+                <span class="k">for</span> <span class="n">index</span> <span class="ow">in</span> <span class="n">lri</span><span class="p">:</span>
+                    <span class="k">yield</span> <span class="n">index</span>
+
+    <span class="k">def</span> <span class="fm">__len__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_term_dict</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="fm">__contains__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">item</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">item</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_indexing</span>
+
+    <span class="k">def</span> <span class="nf">_parse_index</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">index</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;&quot;&quot;&quot;</span>
+        <span class="n">ith_equation</span><span class="p">,</span> <span class="n">k</span> <span class="o">=</span> <span class="n">index</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;-&#39;</span><span class="p">)</span>
+        <span class="n">ith_equation</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">ith_equation</span><span class="p">)</span>
+        <span class="n">k</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">k</span><span class="p">)</span>
+        <span class="n">left_terms</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_term_dict</span><span class="p">[</span><span class="n">ith_equation</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">number_left_terms</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">left_terms</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">k</span> <span class="o">&lt;</span> <span class="n">number_left_terms</span><span class="p">:</span>
+            <span class="n">l_o_r</span> <span class="o">=</span> <span class="mi">0</span>  <span class="c1"># left</span>
+            <span class="n">ith_term</span> <span class="o">=</span> <span class="n">k</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">l_o_r</span> <span class="o">=</span> <span class="mi">1</span>
+            <span class="n">ith_term</span> <span class="o">=</span> <span class="n">k</span> <span class="o">-</span> <span class="n">number_left_terms</span>
+        <span class="k">return</span> <span class="n">ith_equation</span><span class="p">,</span> <span class="n">l_o_r</span><span class="p">,</span> <span class="n">ith_term</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">elementary_forms</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return a set of root forms that this equation involves.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_efs</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">unknowns</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;The unknowns of this weak formulation&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_unknowns</span>
+
+    <span class="nd">@unknowns</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">unknowns</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">unknowns</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;The unknowns of this weak formulation&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_unknowns</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;unknowns exists; not allowed to change them.&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">unknowns</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_unknowns</span> <span class="o">=</span> <span class="kc">None</span>
+            <span class="k">return</span>
+
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span> <span class="ow">and</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">unknowns</span><span class="p">,</span> <span class="p">(</span><span class="nb">list</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">)):</span>
+            <span class="n">unknowns</span> <span class="o">=</span> <span class="p">[</span><span class="n">unknowns</span><span class="p">,</span> <span class="p">]</span>
+        <span class="k">assert</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">unknowns</span><span class="p">,</span> <span class="p">(</span><span class="nb">list</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">)),</span> \
+            <span class="sa">f</span><span class="s2">&quot;please put unknowns in a list or tuple if there are more than 1 equations.&quot;</span>
+        <span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="n">unknowns</span><span class="p">)</span> <span class="o">==</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="p">),</span> \
+            <span class="sa">f</span><span class="s2">&quot;I have </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span><span class="si">}</span><span class="s2"> equations but receive </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">unknowns</span><span class="p">)</span><span class="si">}</span><span class="s2"> unknowns.&quot;</span>
+
+        <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">unknown</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">unknowns</span><span class="p">):</span>
+            <span class="k">assert</span> <span class="n">unknown</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span> <span class="o">==</span> <span class="s1">&#39;Form&#39;</span> <span class="ow">and</span> <span class="n">unknown</span><span class="o">.</span><span class="n">is_root</span><span class="p">(),</span> \
+                <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">i</span><span class="si">}</span><span class="s2">th variable is not a root form.&quot;</span>
+            <span class="k">assert</span> <span class="n">unknown</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_efs</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">i</span><span class="si">}</span><span class="s2">th variable is not an elementary form.&quot;</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_unknowns</span> <span class="o">=</span> <span class="n">unknowns</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">test_forms</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_test_forms</span>
+
+    <span class="k">def</span> <span class="nf">_pr_pattern</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">indexing</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;&quot;&quot;&quot;</span>
+        <span class="kn">from</span> <span class="nn">src.config</span> <span class="kn">import</span> <span class="n">RANK</span><span class="p">,</span> <span class="n">MASTER_RANK</span>
+        <span class="k">if</span> <span class="n">RANK</span> <span class="o">!=</span> <span class="n">MASTER_RANK</span><span class="p">:</span>
+            <span class="k">return</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">pass</span>
+
+        <span class="n">pattern_text</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
+
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_term_dict</span><span class="p">:</span>
+            <span class="n">terms</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_term_dict</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+            <span class="n">signs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_sign_dict</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+
+            <span class="n">left_terms</span><span class="p">,</span> <span class="n">right_terms</span> <span class="o">=</span> <span class="n">terms</span>
+            <span class="n">left_signs</span><span class="p">,</span> <span class="n">right_signs</span> <span class="o">=</span> <span class="n">signs</span>
+
+            <span class="n">left_text</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
+            <span class="n">right_text</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
+
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">left_terms</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="n">left_text</span> <span class="o">=</span> <span class="s1">&#39;0&#39;</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">for</span> <span class="n">j</span><span class="p">,</span> <span class="n">term</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">left_terms</span><span class="p">):</span>
+                    <span class="n">sign</span> <span class="o">=</span> <span class="n">left_signs</span><span class="p">[</span><span class="n">j</span><span class="p">]</span>
+                    <span class="k">if</span> <span class="n">j</span> <span class="o">==</span> <span class="mi">0</span> <span class="ow">and</span> <span class="n">sign</span> <span class="o">==</span> <span class="s1">&#39;+&#39;</span><span class="p">:</span>
+                        <span class="n">sign</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
+                    <span class="k">elif</span> <span class="n">sign</span> <span class="o">==</span> <span class="s1">&#39;-&#39;</span><span class="p">:</span>
+                        <span class="n">sign</span> <span class="o">=</span> <span class="sa">r</span><span class="s1">&#39;$-$&#39;</span>
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="k">pass</span>
+
+                    <span class="n">pattern_str</span> <span class="o">=</span> <span class="n">term</span><span class="o">.</span><span class="n">_simple_pattern</span>
+                    <span class="k">if</span> <span class="n">pattern_str</span> <span class="o">==</span> <span class="s1">&#39;&#39;</span><span class="p">:</span>
+                        <span class="n">pattern_str</span> <span class="o">=</span> <span class="s1">&#39;tbd.&#39;</span>
+
+                    <span class="k">if</span> <span class="n">indexing</span><span class="p">:</span>
+                        <span class="n">index</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ind_dict</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="mi">0</span><span class="p">][</span><span class="n">j</span><span class="p">]</span>
+                        <span class="n">pattern_str</span> <span class="o">=</span> <span class="sa">r</span><span class="s1">&#39;$\underbrace{\text{&#39;</span> <span class="o">+</span> <span class="n">pattern_str</span> <span class="o">+</span> <span class="sa">r</span><span class="s1">&#39;}}_{&#39;</span> <span class="o">+</span> \
+                                      <span class="sa">rf</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">index</span><span class="si">}</span><span class="s2">&quot;</span> <span class="o">+</span> <span class="s1">&#39;}$&#39;</span>
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="k">pass</span>
+
+                    <span class="n">left_text</span> <span class="o">+=</span> <span class="n">sign</span> <span class="o">+</span> <span class="n">pattern_str</span>
+
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">right_terms</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="n">right_text</span> <span class="o">=</span> <span class="s1">&#39;0&#39;</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">for</span> <span class="n">j</span><span class="p">,</span> <span class="n">term</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">right_terms</span><span class="p">):</span>
+                    <span class="n">sign</span> <span class="o">=</span> <span class="n">right_signs</span><span class="p">[</span><span class="n">j</span><span class="p">]</span>
+                    <span class="k">if</span> <span class="n">j</span> <span class="o">==</span> <span class="mi">0</span> <span class="ow">and</span> <span class="n">sign</span> <span class="o">==</span> <span class="s1">&#39;+&#39;</span><span class="p">:</span>
+                        <span class="n">sign</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
+                    <span class="k">elif</span> <span class="n">sign</span> <span class="o">==</span> <span class="s1">&#39;-&#39;</span><span class="p">:</span>
+                        <span class="n">sign</span> <span class="o">=</span> <span class="sa">r</span><span class="s1">&#39;$-$&#39;</span>
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="k">pass</span>
+
+                    <span class="n">pattern_str</span> <span class="o">=</span> <span class="n">term</span><span class="o">.</span><span class="n">_simple_pattern</span>
+                    <span class="k">if</span> <span class="n">pattern_str</span> <span class="o">==</span> <span class="s1">&#39;&#39;</span><span class="p">:</span>
+                        <span class="n">pattern_str</span> <span class="o">=</span> <span class="s1">&#39;tbd.&#39;</span>
+                    <span class="k">if</span> <span class="n">indexing</span><span class="p">:</span>
+                        <span class="n">index</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ind_dict</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="mi">1</span><span class="p">][</span><span class="n">j</span><span class="p">]</span>
+                        <span class="n">pattern_str</span> <span class="o">=</span> <span class="sa">r</span><span class="s1">&#39;$\underbrace{\text{&#39;</span> <span class="o">+</span> <span class="n">pattern_str</span> <span class="o">+</span> <span class="sa">r</span><span class="s1">&#39;}}_{&#39;</span> <span class="o">+</span> \
+                                      <span class="sa">rf</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">index</span><span class="si">}</span><span class="s2">&quot;</span> <span class="o">+</span> <span class="s1">&#39;}$&#39;</span>
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="k">pass</span>
+
+                    <span class="n">right_text</span> <span class="o">+=</span> <span class="n">sign</span> <span class="o">+</span> <span class="n">pattern_str</span>
+
+            <span class="n">text_i</span> <span class="o">=</span> <span class="n">left_text</span> <span class="o">+</span> <span class="s1">&#39;=&#39;</span> <span class="o">+</span> <span class="n">right_text</span>
+
+            <span class="k">if</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_term_dict</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">:</span>
+                <span class="n">text_i</span> <span class="o">+=</span> <span class="s1">&#39;</span><span class="se">\n\n</span><span class="s1">&#39;</span>
+
+            <span class="n">pattern_text</span> <span class="o">+=</span> <span class="n">text_i</span>
+
+        <span class="n">fig</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">5</span><span class="p">))</span>
+        <span class="n">plt</span><span class="o">.</span><span class="n">axis</span><span class="p">((</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span>
+        <span class="n">plt</span><span class="o">.</span><span class="n">axis</span><span class="p">(</span><span class="s1">&#39;off&#39;</span><span class="p">)</span>
+        <span class="n">plt</span><span class="o">.</span><span class="n">text</span><span class="p">(</span><span class="mf">0.05</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">,</span> <span class="n">pattern_text</span><span class="p">,</span> <span class="n">ha</span><span class="o">=</span><span class="s1">&#39;left&#39;</span><span class="p">,</span> <span class="n">va</span><span class="o">=</span><span class="s1">&#39;center&#39;</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="mi">15</span><span class="p">)</span>
+        <span class="kn">from</span> <span class="nn">src.config</span> <span class="kn">import</span> <span class="n">_setting</span><span class="p">,</span> <span class="n">_pr_cache</span>
+        <span class="k">if</span> <span class="n">_setting</span><span class="p">[</span><span class="s1">&#39;pr_cache&#39;</span><span class="p">]:</span>
+            <span class="n">_pr_cache</span><span class="p">(</span><span class="n">fig</span><span class="p">,</span> <span class="n">filename</span><span class="o">=</span><span class="s1">&#39;weakFormulation_patterns&#39;</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">plt</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">()</span>
+            <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">(</span><span class="n">block</span><span class="o">=</span><span class="n">_setting</span><span class="p">[</span><span class="s1">&#39;block&#39;</span><span class="p">])</span>
+            <span class="n">plt</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+        <span class="k">return</span> <span class="n">fig</span>
+
+<div class="viewcode-block" id="WeakFormulation.pr"><a class="viewcode-back" href="../../../tutorial/docs/wf.html#src.wf.main.WeakFormulation.pr">[docs]</a>    <span class="k">def</span> <span class="nf">pr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">indexing</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">patterns</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">saveto</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Print the representation of this weak formulation.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        indexing : bool, optional</span>
+<span class="sd">            Whether to show indices of the weak formulation terms. The default value is ``True``.</span>
+<span class="sd">        patterns : bool, optional</span>
+<span class="sd">            Whether to print the patterns of terms instead. The default value is ``False``.</span>
+<span class="sd">        saveto : {None, str}, optional</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="kn">from</span> <span class="nn">src.config</span> <span class="kn">import</span> <span class="n">RANK</span><span class="p">,</span> <span class="n">MASTER_RANK</span>
+        <span class="k">if</span> <span class="n">RANK</span> <span class="o">!=</span> <span class="n">MASTER_RANK</span><span class="p">:</span>
+            <span class="k">return</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">pass</span>
+
+        <span class="k">if</span> <span class="n">patterns</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_pr_pattern</span><span class="p">(</span><span class="n">indexing</span><span class="o">=</span><span class="n">indexing</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">pass</span>
+
+        <span class="n">seek_text</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_mesh</span><span class="o">.</span><span class="n">manifold</span><span class="o">.</span><span class="n">_manifold_text</span><span class="p">()</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">unknowns</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">seek_text</span> <span class="o">+=</span> <span class="sa">r</span><span class="s1">&#39;for $\left(&#39;</span>
+            <span class="n">form_sr_list</span> <span class="o">=</span> <span class="nb">list</span><span class="p">()</span>
+            <span class="n">space_sr_list</span> <span class="o">=</span> <span class="nb">list</span><span class="p">()</span>
+            <span class="k">for</span> <span class="n">ef</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_efs</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">ef</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_test_forms</span><span class="p">:</span>
+                    <span class="n">form_sr_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="sa">rf</span><span class="s1">&#39; </span><span class="si">{</span><span class="n">ef</span><span class="o">.</span><span class="n">_sym_repr</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+                    <span class="n">space_sr_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="sa">rf</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">ef</span><span class="o">.</span><span class="n">space</span><span class="o">.</span><span class="n">_sym_repr</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="k">pass</span>
+            <span class="n">seek_text</span> <span class="o">+=</span> <span class="s1">&#39;,&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">form_sr_list</span><span class="p">)</span>
+            <span class="n">seek_text</span> <span class="o">+=</span> <span class="sa">r</span><span class="s1">&#39;\right) \in &#39;</span>
+            <span class="n">seek_text</span> <span class="o">+=</span> <span class="sa">r</span><span class="s1">&#39;\times &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">space_sr_list</span><span class="p">)</span>
+            <span class="n">seek_text</span> <span class="o">+=</span> <span class="s1">&#39;$, </span><span class="se">\n</span><span class="s1">&#39;</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">given_text</span> <span class="o">=</span> <span class="sa">r</span><span class="s1">&#39;for&#39;</span>
+            <span class="k">for</span> <span class="n">ef</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_efs</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">ef</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">unknowns</span> <span class="ow">and</span> <span class="n">ef</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_test_forms</span><span class="p">:</span>
+                    <span class="n">given_text</span> <span class="o">+=</span> <span class="sa">rf</span><span class="s1">&#39; $</span><span class="si">{</span><span class="n">ef</span><span class="o">.</span><span class="n">_sym_repr</span><span class="si">}</span><span class="s1"> \in </span><span class="si">{</span><span class="n">ef</span><span class="o">.</span><span class="n">space</span><span class="o">.</span><span class="n">_sym_repr</span><span class="si">}</span><span class="s1">$, &#39;</span>
+            <span class="k">if</span> <span class="n">given_text</span> <span class="o">==</span> <span class="sa">r</span><span class="s1">&#39;for&#39;</span><span class="p">:</span>
+                <span class="n">seek_text</span> <span class="o">+=</span> <span class="sa">r</span><span class="s1">&#39;seek $\left(&#39;</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">seek_text</span> <span class="o">+=</span> <span class="n">given_text</span> <span class="o">+</span> <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span>
+                <span class="n">seek_text</span> <span class="o">+=</span> <span class="sa">r</span><span class="s1">&#39;seek $\left(&#39;</span>
+            <span class="n">form_sr_list</span> <span class="o">=</span> <span class="nb">list</span><span class="p">()</span>
+            <span class="n">space_sr_list</span> <span class="o">=</span> <span class="nb">list</span><span class="p">()</span>
+            <span class="k">for</span> <span class="n">un</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">unknowns</span><span class="p">:</span>
+                <span class="n">form_sr_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="sa">rf</span><span class="s1">&#39; </span><span class="si">{</span><span class="n">un</span><span class="o">.</span><span class="n">_sym_repr</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+                <span class="n">space_sr_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="sa">rf</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">un</span><span class="o">.</span><span class="n">space</span><span class="o">.</span><span class="n">_sym_repr</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="n">seek_text</span> <span class="o">+=</span> <span class="s1">&#39;,&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">form_sr_list</span><span class="p">)</span>
+            <span class="n">seek_text</span> <span class="o">+=</span> <span class="sa">r</span><span class="s1">&#39;\right) \in &#39;</span>
+            <span class="n">seek_text</span> <span class="o">+=</span> <span class="sa">r</span><span class="s1">&#39;\times &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">space_sr_list</span><span class="p">)</span>
+            <span class="n">seek_text</span> <span class="o">+=</span> <span class="s1">&#39;$, such that</span><span class="se">\n</span><span class="s1">&#39;</span>
+        <span class="n">symbolic</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
+        <span class="n">number_equations</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_term_dict</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_term_dict</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">t</span><span class="p">,</span> <span class="n">terms</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_term_dict</span><span class="p">[</span><span class="n">i</span><span class="p">]):</span>
+                <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">terms</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                    <span class="n">symbolic</span> <span class="o">+=</span> <span class="s1">&#39;0&#39;</span>
+                <span class="k">else</span><span class="p">:</span>
+
+                    <span class="k">for</span> <span class="n">j</span><span class="p">,</span> <span class="n">term</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">terms</span><span class="p">):</span>
+                        <span class="n">sign</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_sign_dict</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="n">t</span><span class="p">][</span><span class="n">j</span><span class="p">]</span>
+                        <span class="n">term</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_term_dict</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="n">t</span><span class="p">][</span><span class="n">j</span><span class="p">]</span>
+
+                        <span class="n">term_sym_repr</span> <span class="o">=</span> <span class="n">term</span><span class="o">.</span><span class="n">_sym_repr</span>
+
+                        <span class="k">if</span> <span class="n">indexing</span><span class="p">:</span>
+                            <span class="n">index</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ind_dict</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="n">t</span><span class="p">][</span><span class="n">j</span><span class="p">]</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;-&#39;</span><span class="p">,</span> <span class="sa">r</span><span class="s1">&#39;\text{-}&#39;</span><span class="p">)</span>
+                            <span class="n">term_sym_repr</span> <span class="o">=</span> <span class="sa">r</span><span class="s1">&#39;\underbrace{&#39;</span> <span class="o">+</span> <span class="n">term_sym_repr</span> <span class="o">+</span> <span class="sa">r</span><span class="s1">&#39;}_{&#39;</span> <span class="o">+</span> \
+                                <span class="sa">rf</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">index</span><span class="si">}</span><span class="s2">&quot;</span> <span class="o">+</span> <span class="s1">&#39;}&#39;</span>
+                        <span class="k">else</span><span class="p">:</span>
+                            <span class="k">pass</span>
+
+                        <span class="k">if</span> <span class="n">j</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                            <span class="k">if</span> <span class="n">sign</span> <span class="o">==</span> <span class="s1">&#39;+&#39;</span><span class="p">:</span>
+                                <span class="n">symbolic</span> <span class="o">+=</span> <span class="n">term_sym_repr</span>
+                            <span class="k">elif</span> <span class="n">sign</span> <span class="o">==</span> <span class="s1">&#39;-&#39;</span><span class="p">:</span>
+                                <span class="n">symbolic</span> <span class="o">+=</span> <span class="s1">&#39;-&#39;</span> <span class="o">+</span> <span class="n">term_sym_repr</span>
+                            <span class="k">else</span><span class="p">:</span>
+                                <span class="k">raise</span> <span class="ne">Exception</span><span class="p">()</span>
+                        <span class="k">else</span><span class="p">:</span>
+                            <span class="n">symbolic</span> <span class="o">+=</span> <span class="s1">&#39; &#39;</span> <span class="o">+</span> <span class="n">sign</span> <span class="o">+</span> <span class="s1">&#39; &#39;</span> <span class="o">+</span> <span class="n">term_sym_repr</span>
+
+                <span class="k">if</span> <span class="n">t</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                    <span class="n">symbolic</span> <span class="o">+=</span> <span class="s1">&#39; &amp;= &#39;</span>
+
+            <span class="n">symbolic</span> <span class="o">+=</span> <span class="sa">r</span><span class="s1">&#39;\quad &amp;&amp;\forall &#39;</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">_test_forms</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">_sym_repr</span> <span class="o">+</span> <span class="sa">r</span><span class="s1">&#39;\in &#39;</span> <span class="o">+</span> \
+                <span class="bp">self</span><span class="o">.</span><span class="n">_test_spaces</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">_sym_repr</span>
+
+            <span class="k">if</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">number_equations</span> <span class="o">-</span> <span class="mi">1</span><span class="p">:</span>
+                <span class="n">symbolic</span> <span class="o">+=</span> <span class="sa">r</span><span class="s1">&#39;,</span><span class="se">\\</span><span class="s1">&#39;</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">symbolic</span> <span class="o">+=</span> <span class="s1">&#39;.&#39;</span>
+
+        <span class="n">symbolic</span> <span class="o">=</span> <span class="sa">r</span><span class="s2">&quot;$\left\lbrace\begin</span><span class="si">{aligned}</span><span class="s2">&quot;</span> <span class="o">+</span> <span class="n">symbolic</span> <span class="o">+</span> <span class="sa">r</span><span class="s2">&quot;\end</span><span class="si">{aligned}</span><span class="s2">\right.$&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_bc</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">bc</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">bc_text</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">bc_text</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">bc</span><span class="o">.</span><span class="n">_bc_text</span><span class="p">()</span>
+
+        <span class="k">if</span> <span class="n">indexing</span><span class="p">:</span>
+            <span class="n">height</span> <span class="o">=</span> <span class="mi">2</span> <span class="o">*</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_term_dict</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">height</span> <span class="o">=</span> <span class="mf">1.5</span> <span class="o">*</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_term_dict</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">height</span> <span class="o">&gt;</span> <span class="mi">6</span><span class="p">:</span>
+            <span class="n">height</span> <span class="o">=</span> <span class="mi">6</span>
+        <span class="n">figsize</span> <span class="o">=</span> <span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="n">height</span><span class="p">)</span>
+
+        <span class="n">fig</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="n">figsize</span><span class="p">)</span>
+        <span class="n">plt</span><span class="o">.</span><span class="n">axis</span><span class="p">((</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span>
+        <span class="n">plt</span><span class="o">.</span><span class="n">axis</span><span class="p">(</span><span class="s1">&#39;off&#39;</span><span class="p">)</span>
+        <span class="n">plt</span><span class="o">.</span><span class="n">text</span><span class="p">(</span><span class="mf">0.05</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">,</span> <span class="n">seek_text</span> <span class="o">+</span> <span class="n">symbolic</span> <span class="o">+</span> <span class="n">bc_text</span><span class="p">,</span> <span class="n">ha</span><span class="o">=</span><span class="s1">&#39;left&#39;</span><span class="p">,</span> <span class="n">va</span><span class="o">=</span><span class="s1">&#39;center&#39;</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="mi">15</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">saveto</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">plt</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span><span class="n">saveto</span><span class="p">,</span> <span class="n">bbox_inches</span><span class="o">=</span><span class="s1">&#39;tight&#39;</span><span class="p">,</span> <span class="n">dpi</span><span class="o">=</span><span class="mi">200</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="kn">from</span> <span class="nn">src.config</span> <span class="kn">import</span> <span class="n">_setting</span><span class="p">,</span> <span class="n">_pr_cache</span>
+            <span class="k">if</span> <span class="n">_setting</span><span class="p">[</span><span class="s1">&#39;pr_cache&#39;</span><span class="p">]:</span>
+                <span class="n">_pr_cache</span><span class="p">(</span><span class="n">fig</span><span class="p">,</span> <span class="n">filename</span><span class="o">=</span><span class="s1">&#39;weakFormulation&#39;</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">plt</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">()</span>
+                <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">(</span><span class="n">block</span><span class="o">=</span><span class="n">_setting</span><span class="p">[</span><span class="s1">&#39;block&#39;</span><span class="p">])</span>
+                <span class="n">plt</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+            <span class="k">return</span> <span class="n">fig</span></div>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">derive</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;A wrapper all possible derivations to the weak formulation.&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_derive</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_derive</span> <span class="o">=</span> <span class="n">WfDerive</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_derive</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">bc</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;The boundary condition of the weak formulation.&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_bc</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_bc</span> <span class="o">=</span> <span class="n">BoundaryCondition</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_mesh</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_bc</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">td</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Temporal discretization of the weak formulation.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">TemporalDiscretization</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">ap</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">AlgebraicProxy</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+
+<div class="viewcode-block" id="WeakFormulation.mp"><a class="viewcode-back" href="../../../tutorial/docs/wf.html#src.wf.main.WeakFormulation.mp">[docs]</a>    <span class="k">def</span> <span class="nf">mp</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Generate a matrix proxy for the weak formulation.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        mp : :class:`src.wf.mp.main.MatrixProxy`</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">MatrixProxy</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span></div>
+
+    <span class="k">def</span> <span class="nf">_pr_temporal_advancing</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ts</span><span class="p">,</span> <span class="n">time_instant_hierarchy</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;This method should be called from somewhere else.&quot;&quot;&quot;</span>
+        <span class="kn">from</span> <span class="nn">src.config</span> <span class="kn">import</span> <span class="n">RANK</span><span class="p">,</span> <span class="n">MASTER_RANK</span>
+        <span class="k">if</span> <span class="n">RANK</span> <span class="o">!=</span> <span class="n">MASTER_RANK</span><span class="p">:</span>
+            <span class="k">return</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">pass</span>
+
+        <span class="n">elementary_forms</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">elementary_forms</span>
+        <span class="k">assert</span> <span class="bp">self</span><span class="o">.</span><span class="n">unknowns</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;set unknowns before plotting temporal advancing.&quot;</span>
+        <span class="n">known_forms</span> <span class="o">=</span> <span class="nb">list</span><span class="p">()</span>
+        <span class="n">ati_collection</span> <span class="o">=</span> <span class="nb">list</span><span class="p">()</span>
+        <span class="n">ati_keys</span> <span class="o">=</span> <span class="nb">list</span><span class="p">()</span>
+        <span class="n">non_test_forms</span> <span class="o">=</span> <span class="nb">list</span><span class="p">()</span>
+
+        <span class="k">for</span> <span class="n">ef</span> <span class="ow">in</span> <span class="n">elementary_forms</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">ef</span><span class="o">.</span><span class="n">_pAti_form</span><span class="p">[</span><span class="s1">&#39;base_form&#39;</span><span class="p">]</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="k">assert</span> <span class="n">ef</span><span class="o">.</span><span class="n">_pure_lin_repr</span><span class="p">[</span><span class="o">-</span><span class="nb">len</span><span class="p">(</span><span class="n">_pde_test_form_lin_repr</span><span class="p">):]</span> <span class="o">==</span> <span class="n">_pde_test_form_lin_repr</span><span class="p">,</span> \
+                    <span class="sa">f</span><span class="s2">&quot;form </span><span class="si">{</span><span class="n">ef</span><span class="si">}</span><span class="s2"> is not specified at an (abstract) time instant&quot;</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="c1"># first we classify them into known and unknowns.</span>
+                <span class="k">if</span> <span class="n">ef</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">unknowns</span><span class="p">:</span>
+                    <span class="k">pass</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">known_forms</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">ef</span><span class="p">)</span>
+                <span class="n">non_test_forms</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">ef</span><span class="p">)</span>
+                <span class="c1"># check ts</span>
+                <span class="n">ats</span> <span class="o">=</span> <span class="n">ef</span><span class="o">.</span><span class="n">_pAti_form</span><span class="p">[</span><span class="s1">&#39;ats&#39;</span><span class="p">]</span>
+                <span class="k">assert</span> <span class="n">ats</span><span class="o">.</span><span class="n">_object</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;elementary form </span><span class="si">{</span><span class="n">ef</span><span class="si">}</span><span class="s2"> only has an abstract time sequence.&quot;</span>
+                <span class="k">assert</span> <span class="n">ats</span><span class="o">.</span><span class="n">_object</span> <span class="ow">is</span> <span class="n">ts</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;time sequence of elementary form </span><span class="si">{</span><span class="n">ef</span><span class="si">}</span><span class="s2"> does not match the input ts.&quot;</span>
+                <span class="c1"># then lets collect all abstract time instants.</span>
+                <span class="n">ati</span> <span class="o">=</span> <span class="n">ef</span><span class="o">.</span><span class="n">_pAti_form</span><span class="p">[</span><span class="s1">&#39;ati&#39;</span><span class="p">]</span>
+                <span class="n">ati_collection</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">ati</span><span class="p">)</span>
+                <span class="n">ati_keys</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">ati</span><span class="o">.</span><span class="n">_kwarg_keys</span><span class="p">)</span>
+
+        <span class="n">ati_keys</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">ati_keys</span><span class="p">))</span>  <span class="c1"># remove repeated akt keys</span>
+        <span class="n">ati_keys</span><span class="o">.</span><span class="n">sort</span><span class="p">()</span>
+
+        <span class="c1"># ---- found special elementary forms ------------------</span>
+        <span class="n">nbc_efs</span><span class="p">,</span> <span class="n">nbc_other_efs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_find_elementary_forms_for_natural_bc</span><span class="p">()</span>  <span class="c1"># 1</span>
+
+        <span class="c1"># group forms according to their base form ------------</span>
+        <span class="n">ntf_group</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>
+        <span class="k">for</span> <span class="n">ntf</span> <span class="ow">in</span> <span class="n">non_test_forms</span><span class="p">:</span>
+            <span class="n">bf</span> <span class="o">=</span> <span class="n">ntf</span><span class="o">.</span><span class="n">_pAti_form</span><span class="p">[</span><span class="s1">&#39;base_form&#39;</span><span class="p">]</span>
+            <span class="n">bf_plr</span> <span class="o">=</span> <span class="n">bf</span><span class="o">.</span><span class="n">_pure_lin_repr</span>
+            <span class="k">if</span> <span class="n">bf_plr</span> <span class="ow">in</span> <span class="n">ntf_group</span><span class="p">:</span>
+                <span class="k">pass</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">ntf_group</span><span class="p">[</span><span class="n">bf_plr</span><span class="p">]</span> <span class="o">=</span> <span class="nb">list</span><span class="p">()</span>
+            <span class="n">ntf_group</span><span class="p">[</span><span class="n">bf_plr</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">ntf</span><span class="p">)</span>
+
+        <span class="kn">from</span> <span class="nn">src.time_sequence</span> <span class="kn">import</span> <span class="n">ConstantTimeSequence</span>
+        <span class="n">evaluate_sym</span> <span class="o">=</span> <span class="n">_form_evaluate_at_repr_setting</span><span class="p">[</span><span class="s1">&#39;sym&#39;</span><span class="p">]</span>
+        <span class="k">if</span> <span class="n">ts</span><span class="o">.</span><span class="vm">__class__</span> <span class="ow">is</span> <span class="n">ConstantTimeSequence</span><span class="p">:</span>
+            <span class="n">vertical_length</span> <span class="o">=</span> <span class="p">(</span><span class="n">ts</span><span class="o">.</span><span class="n">_t_max</span> <span class="o">-</span> <span class="n">ts</span><span class="o">.</span><span class="n">_t_0</span><span class="p">)</span> <span class="o">*</span> <span class="mf">0.02</span>
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">ati_keys</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+                <span class="n">key</span> <span class="o">=</span> <span class="n">ati_keys</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+                <span class="n">major_nodes</span> <span class="o">=</span> <span class="n">time_instant_hierarchy</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+                <span class="n">num_plots</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">major_nodes</span><span class="p">[</span><span class="mi">1</span><span class="p">:])</span>
+                <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">num_plots</span><span class="o">+</span><span class="mi">1</span><span class="p">):</span>
+                    <span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">12</span><span class="p">,</span> <span class="mi">6</span><span class="p">))</span>
+                    <span class="n">i</span> <span class="o">=</span> <span class="mi">3</span>
+                    <span class="n">j</span> <span class="o">=</span> <span class="o">-</span> <span class="mf">5.5</span>
+                    <span class="k">for</span> <span class="n">bf_plr</span> <span class="ow">in</span> <span class="n">ntf_group</span><span class="p">:</span>
+                        <span class="n">tfs</span> <span class="o">=</span> <span class="n">ntf_group</span><span class="p">[</span><span class="n">bf_plr</span><span class="p">]</span>
+                        <span class="n">bf</span> <span class="o">=</span> <span class="n">tfs</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">_pAti_form</span><span class="p">[</span><span class="s1">&#39;base_form&#39;</span><span class="p">]</span>
+
+                        <span class="n">abstract_forms</span> <span class="o">=</span> <span class="nb">list</span><span class="p">()</span>
+                        <span class="n">else_forms</span> <span class="o">=</span> <span class="nb">list</span><span class="p">()</span>
+                        <span class="k">for</span> <span class="n">tf</span> <span class="ow">in</span> <span class="n">tfs</span><span class="p">:</span>
+                            <span class="n">ati</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">_pAti_form</span><span class="p">[</span><span class="s1">&#39;ati&#39;</span><span class="p">]</span>
+                            <span class="k">if</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">ati</span><span class="o">.</span><span class="n">_kwarg_keys</span><span class="p">:</span>
+                                <span class="n">abstract_forms</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">tf</span><span class="p">)</span>
+                            <span class="k">else</span><span class="p">:</span>
+                                <span class="k">assert</span> <span class="n">ati</span><span class="o">.</span><span class="n">ati</span><span class="o">.</span><span class="n">_kwarg_keys</span> <span class="o">==</span> <span class="p">[],</span> <span class="sa">f</span><span class="s2">&quot;must be since len(ati_keys) == 1&quot;</span>
+                                <span class="n">else_forms</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">tf</span><span class="p">)</span>
+
+                        <span class="n">bf_sym_repr</span> <span class="o">=</span> <span class="n">bf</span><span class="o">.</span><span class="n">_sym_repr</span>
+                        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">abstract_forms</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+                            <span class="n">y_location</span> <span class="o">=</span> <span class="n">i</span> <span class="o">*</span> <span class="n">vertical_length</span>
+                            <span class="n">i</span> <span class="o">+=</span> <span class="mf">2.75</span>
+                            <span class="n">plt</span><span class="o">.</span><span class="n">text</span><span class="p">(</span>  <span class="c1"># plot its base form at the most left place</span>
+                                <span class="o">-</span><span class="n">ts</span><span class="o">.</span><span class="n">_dt</span><span class="p">,</span> <span class="n">y_location</span><span class="p">,</span>
+                                <span class="sa">f</span><span class="s1">&#39;$</span><span class="si">{</span><span class="n">bf_sym_repr</span><span class="si">}</span><span class="s1">$&#39;</span><span class="p">,</span>
+                                <span class="n">va</span><span class="o">=</span><span class="s1">&#39;center&#39;</span><span class="p">,</span> <span class="n">ha</span><span class="o">=</span><span class="s1">&#39;right&#39;</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span><span class="mi">15</span><span class="p">)</span>
+
+                            <span class="k">for</span> <span class="n">af</span> <span class="ow">in</span> <span class="n">abstract_forms</span><span class="p">:</span>
+                                <span class="n">ati</span> <span class="o">=</span> <span class="n">af</span><span class="o">.</span><span class="n">_pAti_form</span><span class="p">[</span><span class="s1">&#39;ati&#39;</span><span class="p">]</span>
+                                <span class="n">time</span> <span class="o">=</span> <span class="n">ati</span><span class="p">(</span><span class="o">**</span><span class="p">{</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">key</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">:</span> <span class="n">k</span><span class="p">})()</span>
+                                <span class="n">time_instance_str</span> <span class="o">=</span> <span class="n">ati</span><span class="o">.</span><span class="n">_k</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">k</span><span class="p">))</span>
+                                <span class="n">time_instance</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="nb">eval</span><span class="p">(</span><span class="n">time_instance_str</span><span class="p">))</span>
+                                <span class="n">sym_repr</span> <span class="o">=</span> <span class="p">(</span>
+                                        <span class="n">evaluate_sym</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span>
+                                        <span class="n">bf_sym_repr</span> <span class="o">+</span>
+                                        <span class="n">evaluate_sym</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span>
+                                        <span class="n">time_instance</span> <span class="o">+</span>
+                                        <span class="n">evaluate_sym</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span>
+                                <span class="p">)</span>
+                                <span class="k">if</span> <span class="n">af</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">unknowns</span><span class="p">:</span>
+                                    <span class="n">color</span> <span class="o">=</span> <span class="s1">&#39;red&#39;</span>
+                                    <span class="n">text</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;$</span><span class="si">{</span><span class="n">sym_repr</span><span class="si">}</span><span class="s2">$&quot;</span>
+                                <span class="k">else</span><span class="p">:</span>
+                                    <span class="k">assert</span> <span class="n">af</span> <span class="ow">in</span> <span class="n">known_forms</span><span class="p">,</span> <span class="sa">f</span><span class="s1">&#39;A safety check, must be!&#39;</span>
+                                    <span class="k">if</span> <span class="n">af</span> <span class="ow">in</span> <span class="n">nbc_other_efs</span><span class="p">:</span>
+                                        <span class="n">text</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;$</span><span class="si">{</span><span class="n">sym_repr</span><span class="si">}</span><span class="s2">$&quot;</span>
+                                        <span class="n">color</span> <span class="o">=</span> <span class="s1">&#39;blue&#39;</span>
+                                    <span class="k">else</span><span class="p">:</span>
+                                        <span class="n">color</span> <span class="o">=</span> <span class="kc">None</span>
+                                        <span class="n">text</span> <span class="o">=</span> <span class="kc">None</span>
+
+                                <span class="k">if</span> <span class="n">color</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                                    <span class="k">pass</span>
+                                <span class="k">else</span><span class="p">:</span>
+                                    <span class="n">plt</span><span class="o">.</span><span class="n">text</span><span class="p">(</span>
+                                        <span class="n">time</span><span class="p">,</span> <span class="n">y_location</span><span class="p">,</span> <span class="n">text</span><span class="p">,</span>
+                                        <span class="n">c</span><span class="o">=</span><span class="n">color</span><span class="p">,</span>
+                                        <span class="n">va</span><span class="o">=</span><span class="s1">&#39;center&#39;</span><span class="p">,</span> <span class="n">ha</span><span class="o">=</span><span class="s1">&#39;center&#39;</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span><span class="mi">15</span><span class="p">,</span>
+                                    <span class="p">)</span>
+
+                                <span class="k">if</span> <span class="n">af</span> <span class="ow">in</span> <span class="n">nbc_efs</span><span class="p">:</span>  <span class="c1"># if we found a natural bc, we plot it additionally.</span>
+                                    <span class="n">plt</span><span class="o">.</span><span class="n">text</span><span class="p">(</span>
+                                        <span class="n">time</span><span class="p">,</span> <span class="n">y_location</span><span class="p">,</span>
+                                        <span class="sa">r</span><span class="s2">&quot;$\underbrace{\mathrm</span><span class="si">{tr}</span><span class="s2">\star &quot;</span> <span class="o">+</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">sym_repr</span><span class="si">}</span><span class="s2">&quot;</span> <span class="o">+</span> <span class="sa">r</span><span class="s2">&quot;}_{\partial}$&quot;</span><span class="p">,</span>
+                                        <span class="n">c</span><span class="o">=</span><span class="s1">&#39;gray&#39;</span><span class="p">,</span>
+                                        <span class="n">va</span><span class="o">=</span><span class="s1">&#39;center&#39;</span><span class="p">,</span> <span class="n">ha</span><span class="o">=</span><span class="s1">&#39;center&#39;</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span><span class="mi">15</span><span class="p">,</span>
+                                    <span class="p">)</span>
+                                <span class="k">else</span><span class="p">:</span>
+                                    <span class="k">pass</span>
+
+                        <span class="k">else</span><span class="p">:</span>
+                            <span class="k">pass</span>
+
+                        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">else_forms</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+                            <span class="c1"># these forms will be plotted at the lower part.</span>
+                            <span class="n">ng_y_location</span> <span class="o">=</span> <span class="n">j</span> <span class="o">*</span> <span class="n">vertical_length</span>
+                            <span class="n">j</span> <span class="o">-=</span> <span class="mf">2.5</span>
+                            <span class="k">for</span> <span class="n">pf</span> <span class="ow">in</span> <span class="n">else_forms</span><span class="p">:</span>  <span class="c1"># pf stands for particular form whose time is not abstract.</span>
+                                <span class="n">ati</span> <span class="o">=</span> <span class="n">pf</span><span class="o">.</span><span class="n">_pAti_form</span><span class="p">[</span><span class="s1">&#39;ati&#39;</span><span class="p">]</span>
+                                <span class="n">time</span> <span class="o">=</span> <span class="n">ati</span><span class="p">()()</span>
+                                <span class="n">color</span> <span class="o">=</span> <span class="s1">&#39;k&#39;</span>
+                                <span class="n">plt</span><span class="o">.</span><span class="n">text</span><span class="p">(</span>
+                                    <span class="n">time</span><span class="p">,</span> <span class="n">ng_y_location</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;$</span><span class="si">{</span><span class="n">pf</span><span class="o">.</span><span class="n">_sym_repr</span><span class="si">}</span><span class="s2">$&quot;</span><span class="p">,</span>
+                                    <span class="n">c</span><span class="o">=</span><span class="n">color</span><span class="p">,</span>
+                                    <span class="n">va</span><span class="o">=</span><span class="s1">&#39;center&#39;</span><span class="p">,</span> <span class="n">ha</span><span class="o">=</span><span class="s1">&#39;center&#39;</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span><span class="mi">15</span><span class="p">,</span>
+                                <span class="p">)</span>
+                        <span class="k">else</span><span class="p">:</span>
+                            <span class="k">pass</span>
+
+                    <span class="n">i</span> <span class="o">+=</span> <span class="mf">2.75</span>
+                    <span class="n">y_location</span> <span class="o">=</span> <span class="n">i</span> <span class="o">*</span> <span class="n">vertical_length</span>
+                    <span class="n">plt</span><span class="o">.</span><span class="n">text</span><span class="p">(</span>
+                        <span class="n">ts</span><span class="o">.</span><span class="n">_dt</span> <span class="o">*</span> <span class="n">k</span><span class="p">,</span> <span class="n">y_location</span><span class="p">,</span>
+                        <span class="sa">f</span><span class="s1">&#39;$</span><span class="si">{</span><span class="n">key</span><span class="si">}</span><span class="s1">=</span><span class="si">{</span><span class="n">k</span><span class="si">}</span><span class="s1">$&#39;</span><span class="p">,</span>
+                        <span class="n">c</span><span class="o">=</span><span class="s1">&#39;k&#39;</span><span class="p">,</span>
+                        <span class="n">va</span><span class="o">=</span><span class="s1">&#39;center&#39;</span><span class="p">,</span> <span class="n">ha</span><span class="o">=</span><span class="s1">&#39;center&#39;</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span><span class="mi">15</span><span class="p">,</span>
+                    <span class="p">)</span>
+                    <span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span>   <span class="c1"># ending vertical line</span>
+                        <span class="p">[</span><span class="n">ts</span><span class="o">.</span><span class="n">_dt</span> <span class="o">*</span> <span class="n">k</span><span class="p">,</span> <span class="n">ts</span><span class="o">.</span><span class="n">_dt</span> <span class="o">*</span> <span class="n">k</span><span class="p">],</span> <span class="p">[</span><span class="n">j</span> <span class="o">*</span> <span class="n">vertical_length</span><span class="p">,</span> <span class="n">y_location</span><span class="p">],</span>
+                        <span class="s1">&#39;--&#39;</span><span class="p">,</span>
+                        <span class="n">color</span><span class="o">=</span><span class="s1">&#39;pink&#39;</span><span class="p">,</span>
+                        <span class="n">linewidth</span><span class="o">=</span><span class="mf">0.8</span><span class="p">,</span>
+                    <span class="p">)</span>
+
+                    <span class="n">ax</span><span class="o">.</span><span class="n">set_aspect</span><span class="p">(</span><span class="s1">&#39;equal&#39;</span><span class="p">)</span>
+                    <span class="n">ax</span><span class="o">.</span><span class="n">spines</span><span class="p">[</span><span class="s1">&#39;top&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">set_visible</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span>
+                    <span class="n">ax</span><span class="o">.</span><span class="n">spines</span><span class="p">[</span><span class="s1">&#39;right&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">set_visible</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span>
+                    <span class="n">ax</span><span class="o">.</span><span class="n">spines</span><span class="p">[</span><span class="s1">&#39;left&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">set_visible</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span>
+                    <span class="n">ax</span><span class="o">.</span><span class="n">spines</span><span class="p">[</span><span class="s1">&#39;bottom&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">set_visible</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span>
+                    <span class="n">plt</span><span class="o">.</span><span class="n">tick_params</span><span class="p">(</span><span class="n">left</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+                                    <span class="n">right</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+                                    <span class="n">labelleft</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+                                    <span class="n">labelbottom</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+                                    <span class="n">bottom</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+                    <span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span>  <span class="c1"># intermediate major time instants</span>
+                        <span class="n">major_nodes</span><span class="p">[</span><span class="mi">1</span><span class="p">:],</span> <span class="mi">0</span><span class="o">*</span><span class="n">major_nodes</span><span class="p">[</span><span class="mi">1</span><span class="p">:],</span>
+                        <span class="s1">&#39;-s&#39;</span><span class="p">,</span>
+                        <span class="n">color</span><span class="o">=</span><span class="s1">&#39;k&#39;</span><span class="p">,</span>
+                        <span class="n">linewidth</span><span class="o">=</span><span class="mf">1.2</span><span class="p">,</span>
+                                         <span class="p">)</span>
+                    <span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span>
+                        <span class="p">[</span><span class="n">ts</span><span class="o">.</span><span class="n">_t_0</span><span class="o">-</span><span class="n">ts</span><span class="o">.</span><span class="n">_dt</span><span class="p">,</span> <span class="n">ts</span><span class="o">.</span><span class="n">_t_max</span><span class="o">+</span><span class="n">ts</span><span class="o">.</span><span class="n">_dt</span><span class="p">],</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span>
+                        <span class="s1">&#39;-&#39;</span><span class="p">,</span>
+                        <span class="n">color</span><span class="o">=</span><span class="s1">&#39;k&#39;</span><span class="p">,</span>
+                        <span class="n">linewidth</span><span class="o">=</span><span class="mf">1.2</span><span class="p">,</span>
+                    <span class="p">)</span>
+                    <span class="n">right_end</span> <span class="o">=</span> <span class="n">ts</span><span class="o">.</span><span class="n">_t_max</span><span class="o">+</span><span class="n">ts</span><span class="o">.</span><span class="n">_dt</span>
+                    <span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span>   <span class="c1"># start vertical line</span>
+                        <span class="p">[</span><span class="n">ts</span><span class="o">.</span><span class="n">_t_0</span><span class="p">,</span> <span class="n">ts</span><span class="o">.</span><span class="n">_t_0</span><span class="p">],</span> <span class="p">[</span><span class="n">j</span> <span class="o">*</span> <span class="n">vertical_length</span><span class="p">,</span> <span class="n">y_location</span><span class="p">],</span>
+                        <span class="s1">&#39;--&#39;</span><span class="p">,</span>
+                        <span class="n">color</span><span class="o">=</span><span class="s1">&#39;lightgreen&#39;</span><span class="p">,</span>
+                        <span class="n">linewidth</span><span class="o">=</span><span class="mf">0.8</span><span class="p">,</span>
+                    <span class="p">)</span>
+                    <span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span>   <span class="c1"># start point</span>
+                        <span class="p">[</span><span class="n">ts</span><span class="o">.</span><span class="n">_t_0</span><span class="p">,</span> <span class="n">ts</span><span class="o">.</span><span class="n">_t_0</span><span class="p">],</span> <span class="p">[</span><span class="o">-</span><span class="n">vertical_length</span><span class="p">,</span> <span class="n">vertical_length</span><span class="p">],</span>
+                        <span class="n">color</span><span class="o">=</span><span class="s1">&#39;darkgreen&#39;</span><span class="p">,</span>
+                        <span class="n">linewidth</span><span class="o">=</span><span class="mf">1.8</span><span class="p">,</span>
+                    <span class="p">)</span>
+                    <span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span>   <span class="c1"># ending vertical line</span>
+                        <span class="p">[</span><span class="n">ts</span><span class="o">.</span><span class="n">_t_max</span><span class="p">,</span> <span class="n">ts</span><span class="o">.</span><span class="n">_t_max</span><span class="p">],</span> <span class="p">[</span><span class="n">j</span> <span class="o">*</span> <span class="n">vertical_length</span><span class="p">,</span> <span class="n">y_location</span><span class="p">],</span>
+                        <span class="s1">&#39;--&#39;</span><span class="p">,</span>
+                        <span class="n">color</span><span class="o">=</span><span class="s1">&#39;peru&#39;</span><span class="p">,</span>
+                        <span class="n">linewidth</span><span class="o">=</span><span class="mf">0.8</span><span class="p">,</span>
+                    <span class="p">)</span>
+                    <span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span>  <span class="c1"># ending triangle</span>
+                        <span class="p">[</span><span class="n">right_end</span><span class="o">-</span><span class="n">vertical_length</span><span class="p">,</span> <span class="n">right_end</span><span class="p">,</span> <span class="n">right_end</span><span class="o">-</span><span class="n">vertical_length</span><span class="p">],</span>
+                        <span class="p">[</span><span class="n">vertical_length</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="o">-</span><span class="n">vertical_length</span><span class="p">],</span>
+                        <span class="n">color</span><span class="o">=</span><span class="s1">&#39;k&#39;</span><span class="p">,</span>
+                        <span class="n">linewidth</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+                    <span class="p">)</span>
+                    <span class="k">for</span> <span class="n">_k_</span><span class="p">,</span> <span class="n">major_node</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">major_nodes</span><span class="p">):</span>
+                        <span class="k">if</span> <span class="n">_k_</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                            <span class="n">plt</span><span class="o">.</span><span class="n">text</span><span class="p">(</span>
+                                <span class="n">major_node</span><span class="p">,</span>
+                                <span class="o">-</span><span class="mi">3</span><span class="o">*</span><span class="n">vertical_length</span><span class="p">,</span>
+                                <span class="sa">f</span><span class="s1">&#39;$t_</span><span class="si">{</span><span class="n">_k_</span><span class="si">}</span><span class="s1">=%.1f$&#39;</span> <span class="o">%</span> <span class="n">ts</span><span class="o">.</span><span class="n">_t_0</span><span class="p">,</span>
+                                <span class="n">c</span><span class="o">=</span><span class="s1">&#39;darkgreen&#39;</span><span class="p">,</span>
+                                <span class="n">ha</span><span class="o">=</span><span class="s1">&#39;center&#39;</span><span class="p">,</span> <span class="n">va</span><span class="o">=</span><span class="s1">&#39;center&#39;</span><span class="p">,</span>
+                                <span class="n">fontsize</span><span class="o">=</span><span class="mi">15</span>
+                            <span class="p">)</span>
+                        <span class="k">elif</span> <span class="n">_k_</span> <span class="o">==</span> <span class="nb">len</span><span class="p">(</span><span class="n">major_nodes</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">:</span>
+                            <span class="n">plt</span><span class="o">.</span><span class="n">text</span><span class="p">(</span>
+                                <span class="n">major_node</span><span class="p">,</span>
+                                <span class="o">-</span><span class="mi">3</span><span class="o">*</span><span class="n">vertical_length</span><span class="p">,</span>
+                                <span class="sa">f</span><span class="s1">&#39;$t_</span><span class="si">{</span><span class="n">_k_</span><span class="si">}</span><span class="s1">=%.1f$&#39;</span> <span class="o">%</span> <span class="n">ts</span><span class="o">.</span><span class="n">_t_max</span><span class="p">,</span>
+                                <span class="n">c</span><span class="o">=</span><span class="s1">&#39;brown&#39;</span><span class="p">,</span>
+                                <span class="n">ha</span><span class="o">=</span><span class="s1">&#39;center&#39;</span><span class="p">,</span> <span class="n">va</span><span class="o">=</span><span class="s1">&#39;center&#39;</span><span class="p">,</span>
+                                <span class="n">fontsize</span><span class="o">=</span><span class="mi">15</span>
+                            <span class="p">)</span>
+                        <span class="k">else</span><span class="p">:</span>
+                            <span class="n">plt</span><span class="o">.</span><span class="n">text</span><span class="p">(</span>
+                                <span class="n">major_node</span><span class="p">,</span>
+                                <span class="o">-</span><span class="mi">3</span><span class="o">*</span><span class="n">vertical_length</span><span class="p">,</span>
+                                <span class="sa">f</span><span class="s1">&#39;$t_</span><span class="si">{</span><span class="n">_k_</span><span class="si">}</span><span class="s1">$&#39;</span><span class="p">,</span>
+                                <span class="n">ha</span><span class="o">=</span><span class="s1">&#39;center&#39;</span><span class="p">,</span> <span class="n">va</span><span class="o">=</span><span class="s1">&#39;center&#39;</span><span class="p">,</span>
+                                <span class="n">fontsize</span><span class="o">=</span><span class="mi">15</span>
+                            <span class="p">)</span>
+
+                    <span class="k">if</span> <span class="mi">1</span> <span class="ow">in</span> <span class="n">time_instant_hierarchy</span><span class="p">:</span>
+                        <span class="n">minor_nodes</span> <span class="o">=</span> <span class="n">time_instant_hierarchy</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+                        <span class="n">plt</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span>
+                            <span class="n">minor_nodes</span><span class="p">,</span> <span class="mi">0</span><span class="o">*</span><span class="n">minor_nodes</span><span class="p">,</span> <span class="n">marker</span><span class="o">=</span><span class="s1">&#39;x&#39;</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;gray&#39;</span>
+                        <span class="p">)</span>
+
+                    <span class="c1"># ----- save -----------------------------------------------------</span>
+                    <span class="n">plt</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">()</span>
+                    <span class="kn">from</span> <span class="nn">src.config</span> <span class="kn">import</span> <span class="n">_setting</span><span class="p">,</span> <span class="n">_pr_cache</span>
+                    <span class="k">if</span> <span class="n">_setting</span><span class="p">[</span><span class="s1">&#39;pr_cache&#39;</span><span class="p">]:</span>
+                        <span class="n">_pr_cache</span><span class="p">(</span><span class="n">fig</span><span class="p">,</span> <span class="n">filename</span><span class="o">=</span><span class="s1">&#39;weakFormulationTimeAdvancing&#39;</span><span class="p">)</span>
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">(</span><span class="n">block</span><span class="o">=</span><span class="n">_setting</span><span class="p">[</span><span class="s1">&#39;block&#39;</span><span class="p">])</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span>
+                    <span class="sa">f</span><span class="s2">&quot;&#39;_pr_temporal_advancing&#39; not implemented for multiple ati keys: </span><span class="si">{</span><span class="n">ati_keys</span><span class="si">}</span><span class="s2">&quot;</span>
+                <span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;cannot plot temporal advancing for wf of time sequence </span><span class="si">{</span><span class="n">ts</span><span class="o">.</span><span class="vm">__class__</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span></div>
+
+
+<span class="k">class</span> <span class="nc">_TermsOnly</span><span class="p">(</span><span class="n">Frozen</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;The collection of wf terms only.&quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">wf</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_wf</span> <span class="o">=</span> <span class="n">wf</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_freeze</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="fm">__getitem__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">item</span><span class="p">):</span>
+        <span class="n">sign</span><span class="p">,</span> <span class="n">term</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_wf</span><span class="p">[</span><span class="n">item</span><span class="p">]</span>
+        <span class="k">return</span> <span class="n">term</span>
+
+
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s1">&#39;__main__&#39;</span><span class="p">:</span>
+    <span class="c1"># python src/wf/matplot.py</span>
+
+    <span class="kn">import</span> <span class="nn">__init__</span> <span class="k">as</span> <span class="nn">ph</span>
+    <span class="c1"># import phlib as ph</span>
+    <span class="c1"># ph.config.set_embedding_space_dim(3)</span>
+    <span class="n">manifold</span> <span class="o">=</span> <span class="n">ph</span><span class="o">.</span><span class="n">manifold</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
+    <span class="n">mesh</span> <span class="o">=</span> <span class="n">ph</span><span class="o">.</span><span class="n">mesh</span><span class="p">(</span><span class="n">manifold</span><span class="p">)</span>
+
+    <span class="n">ph</span><span class="o">.</span><span class="n">space</span><span class="o">.</span><span class="n">set_mesh</span><span class="p">(</span><span class="n">mesh</span><span class="p">)</span>
+    <span class="n">O0</span> <span class="o">=</span> <span class="n">ph</span><span class="o">.</span><span class="n">space</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="s1">&#39;Lambda&#39;</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+    <span class="n">O1</span> <span class="o">=</span> <span class="n">ph</span><span class="o">.</span><span class="n">space</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="s1">&#39;Lambda&#39;</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+    <span class="n">O2</span> <span class="o">=</span> <span class="n">ph</span><span class="o">.</span><span class="n">space</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="s1">&#39;Lambda&#39;</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+    <span class="n">O3</span> <span class="o">=</span> <span class="n">ph</span><span class="o">.</span><span class="n">space</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="s1">&#39;Lambda&#39;</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span>
+
+    <span class="c1"># ph.list_spaces()</span>
+    <span class="c1"># ph.list_meshes()</span>
+
+    <span class="n">w</span> <span class="o">=</span> <span class="n">O1</span><span class="o">.</span><span class="n">make_form</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;\omega^1&#39;</span><span class="p">,</span> <span class="s2">&quot;vorticity1&quot;</span><span class="p">)</span>
+    <span class="n">u</span> <span class="o">=</span> <span class="n">O2</span><span class="o">.</span><span class="n">make_form</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;u^2&#39;</span><span class="p">,</span> <span class="s2">&quot;velocity2&quot;</span><span class="p">)</span>
+    <span class="n">f</span> <span class="o">=</span> <span class="n">O2</span><span class="o">.</span><span class="n">make_form</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;f^2&#39;</span><span class="p">,</span> <span class="s2">&quot;body-force&quot;</span><span class="p">)</span>
+    <span class="n">P</span> <span class="o">=</span> <span class="n">O3</span><span class="o">.</span><span class="n">make_form</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;P^3&#39;</span><span class="p">,</span> <span class="s2">&quot;total-pressure3&quot;</span><span class="p">)</span>
+
+    <span class="n">wXu</span> <span class="o">=</span> <span class="n">w</span><span class="o">.</span><span class="n">wedge</span><span class="p">(</span><span class="n">ph</span><span class="o">.</span><span class="n">Hodge</span><span class="p">(</span><span class="n">u</span><span class="p">))</span>
+    <span class="n">dsP</span> <span class="o">=</span> <span class="n">ph</span><span class="o">.</span><span class="n">codifferential</span><span class="p">(</span><span class="n">P</span><span class="p">)</span>
+    <span class="n">dsu</span> <span class="o">=</span> <span class="n">ph</span><span class="o">.</span><span class="n">codifferential</span><span class="p">(</span><span class="n">u</span><span class="p">)</span>
+    <span class="n">du</span> <span class="o">=</span> <span class="n">ph</span><span class="o">.</span><span class="n">d</span><span class="p">(</span><span class="n">u</span><span class="p">)</span>
+    <span class="n">du_dt</span> <span class="o">=</span> <span class="n">ph</span><span class="o">.</span><span class="n">time_derivative</span><span class="p">(</span><span class="n">u</span><span class="p">)</span>
+
+    <span class="c1"># ph.list_forms(globals())</span>
+
+    <span class="n">exp</span> <span class="o">=</span> <span class="p">[</span>
+        <span class="s1">&#39;du_dt + wXu - dsP = f&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;w = dsu&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;du = 0&#39;</span><span class="p">,</span>
+    <span class="p">]</span>
+    <span class="n">pde</span> <span class="o">=</span> <span class="n">ph</span><span class="o">.</span><span class="n">pde</span><span class="p">(</span><span class="n">exp</span><span class="p">,</span> <span class="nb">globals</span><span class="p">())</span>
+    <span class="n">pde</span><span class="o">.</span><span class="n">unknowns</span> <span class="o">=</span> <span class="p">[</span><span class="n">u</span><span class="p">,</span> <span class="n">w</span><span class="p">,</span> <span class="n">P</span><span class="p">]</span>
+    <span class="c1"># pde.pr(indexing=True)</span>
+
+    <span class="n">wf</span> <span class="o">=</span> <span class="n">pde</span><span class="o">.</span><span class="n">test_with</span><span class="p">([</span><span class="n">O2</span><span class="p">,</span> <span class="n">O1</span><span class="p">,</span> <span class="n">O3</span><span class="p">],</span> <span class="n">sym_repr</span><span class="o">=</span><span class="p">[</span><span class="sa">r</span><span class="s1">&#39;v^2&#39;</span><span class="p">,</span> <span class="sa">r</span><span class="s1">&#39;w^1&#39;</span><span class="p">,</span> <span class="sa">r</span><span class="s1">&#39;q^3&#39;</span><span class="p">])</span>
+
+    <span class="n">wf</span> <span class="o">=</span> <span class="n">wf</span><span class="o">.</span><span class="n">derive</span><span class="o">.</span><span class="n">integration_by_parts</span><span class="p">(</span><span class="s1">&#39;0-2&#39;</span><span class="p">)</span>
+    <span class="n">wf</span> <span class="o">=</span> <span class="n">wf</span><span class="o">.</span><span class="n">derive</span><span class="o">.</span><span class="n">integration_by_parts</span><span class="p">(</span><span class="s1">&#39;1-1&#39;</span><span class="p">)</span>
+
+    <span class="n">wf</span> <span class="o">=</span> <span class="n">wf</span><span class="o">.</span><span class="n">derive</span><span class="o">.</span><span class="n">rearrange</span><span class="p">(</span>
+        <span class="p">{</span>
+            <span class="mi">0</span><span class="p">:</span> <span class="s1">&#39;0, 1, 2 = 4, 3&#39;</span><span class="p">,</span>
+            <span class="mi">1</span><span class="p">:</span> <span class="s1">&#39;1, 0 = 2&#39;</span><span class="p">,</span>
+            <span class="mi">2</span><span class="p">:</span> <span class="s1">&#39; = 0&#39;</span><span class="p">,</span>
+        <span class="p">}</span>
+    <span class="p">)</span>
+
+    <span class="n">wf</span><span class="o">.</span><span class="n">pr</span><span class="p">()</span>
+
+    <span class="c1"># i = 0</span>
+    <span class="c1"># terms = wf._term_dict[i]</span>
+    <span class="c1"># signs = wf._sign_dict[i]</span>
+    <span class="c1">#</span>
+    <span class="c1"># ode_i = ph.ode(terms_and_signs=[terms, signs])</span>
+    <span class="c1"># ode_i.print_representations()</span>
+    <span class="c1"># ph.list_forms()</span>
+
+    <span class="c1"># td = wf.td</span>
+    <span class="c1"># ap = wf.ap</span>
+</pre></div>
+
+                </article>
+              
+
+              
+              
+              
+              
+                <footer class="prev-next-footer">
+                  <!-- Previous / next buttons -->
+<div class="prev-next-area">
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+<div class="bd-footer-content__inner container">
+  
+  <div class="footer-item">
+    
+<p class="component-author">
+By Andrea Brugnoli, Ramy Rashad, Stefano Stramigioli, Yi Zhang
+</p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+  <p class="copyright">
+    
+      © Copyright reserved under Apache-2.0 license.
+      <br/>
+    
+  </p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+  <div class="footer-item">
+    
+<div class="extra_footer">
+  <div>Last updated on October 29, 2023, 21:18:27, W. Europe Standard Time</div>
+</div>
+  </div>
+  
+</div>
+          </footer>
+        
+
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script src="../../../_static/scripts/bootstrap.js?digest=ac02cc09edc035673794"></script>
+<script src="../../../_static/scripts/pydata-sphinx-theme.js?digest=ac02cc09edc035673794"></script>
+
+  <footer class="bd-footer">
+  </footer>
+  </body>
+</html>

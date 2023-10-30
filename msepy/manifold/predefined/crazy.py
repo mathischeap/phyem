@@ -321,6 +321,7 @@ class _MesPyRegionCrazyMapping(Frozen):
                     (yr, ys, yt),
                     (zr, zs, zt)]
 
+
 if __name__ == '__main__':
     # python msepy/manifold/predefined/crazy.py
     import doctest

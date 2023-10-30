@@ -61,7 +61,6 @@ class BuildVtkUnStruct(Frozen):
         self._cell_types = cell_types
 
         x, y = xy
-        isinstance(numbering, dict), 'safety check!'
         self._numbering = numbering
         self._x = self._flat_data_according_to_numbering(x)
         self._y = self._flat_data_according_to_numbering(y)
@@ -116,7 +115,7 @@ class BuildVtkUnStruct(Frozen):
                 if isinstance(data, dict) == 1:  # a scalar
                     point_data[data_name] = self._flat_data_according_to_numbering(data)
                 elif len(data) == 2:  # vector data
-                    vec_data = list()
+                    vec_data: list = list()
                     for di in data:
                         vec_data.append(
                             self._flat_data_according_to_numbering(di)

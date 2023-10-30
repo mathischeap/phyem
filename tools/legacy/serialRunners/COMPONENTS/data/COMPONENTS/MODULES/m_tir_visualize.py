@@ -303,7 +303,7 @@ class MITRVisualize:
     
     def ___plot_MTIR_plot_order_triangle___(self, plot_type, x_range, potn, xd, yd):
         """ 
-        We plot a triangle along the the line indicated by `xd`, `yd`.
+        We plot a triangle along the line indicated by `xd`, `yd`.
         
         Parameters
         ----------
@@ -350,8 +350,8 @@ class MITRVisualize:
             potn["order"] = (np.log10(yd[-1]) - np.log10(yd[-2])) / (np.log10(xd[-1]) - np.log10(xd[-2]))
         # ___ loglog____________________________________________________________________
         if plot_type == 'loglog':
-            x_max, xmin = x_range
-            x_range = np.log10(x_max) - np.log10(xmin)
+            x_max, x_min = x_range
+            x_range = np.log10(x_max) - np.log10(x_min)
             origin = (xd[-1], yd[-1])
             otc0x = np.log10(origin[0]) + x_range*potn["p"][0] 
             otc0x = 10**otc0x 

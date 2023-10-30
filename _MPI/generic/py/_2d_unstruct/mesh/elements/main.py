@@ -114,6 +114,7 @@ class MPI_Py_2D_Unstructured_MeshElements(Frozen):
         self._opposite_inner_orientation_pairs = None
         self._ct = CT(self)
         self._boundary_face_cache = {}
+        self._element_type_indices = None
         self._freeze()
 
     def __repr__(self):
@@ -271,6 +272,25 @@ class MPI_Py_2D_Unstructured_MeshElements(Frozen):
             domain_area = COMM.bcast(domain_area, root=MASTER_RANK)
             self._domain_area = domain_area
         return self._domain_area
+
+    @property
+    def element_type_indices(self):
+        """classify elements into a dict whose keys are the element types."""
+        if self._element_type_indices is None:
+
+            eti = dict()
+            for index in self:
+                element = self[index]
+                element_type = element.element_type
+                if element_type in eti:
+                    pass
+                else:
+                    eti[element_type] = list()
+                eti[element_type].append(index)
+
+                self._element_type_indices = eti
+
+        return self._element_type_indices
 
     # ==================================================================================================
 

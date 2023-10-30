@@ -103,6 +103,7 @@ class Matplot(Frozen):
         elif title is None or title is False:
             pass
         else:
+            assert isinstance(title, str), f'title must be str'
             plt.title(title)
 
         # ------- config the output --------------------------------

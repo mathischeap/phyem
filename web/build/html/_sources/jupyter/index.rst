@@ -1,6 +1,6 @@
 
 
-.. Jupyter-notebooks:
+.. _Jupyter-notebooks:
 
 Jupyter notebooks
 =================

@@ -7,6 +7,7 @@
       :alt: Requirements Status
       :target: https://requires.io/github/giocaizzi/mplStrater/requirements/?branch=main
 
+
 .. _PHYEM:
 
 =======
@@ -16,7 +17,7 @@ Welcome
 *phyem* is an open-source finite element library that bridges port-based thinking to numerics and enables
 **LEGO**-like simulations. The name, *phyem*, stands for
 
-- python
+- Python
 - port-Hamiltonian
 - fem
 - physics
@@ -31,16 +32,44 @@ It is developed under a joint force of
 
 .. The main maintainer is `Yi Zhang <https://mathischeap.com/>`_.
 
+
+.. _Introduction:
+
+Introduction
+============
+
+*phyem* is Python-shelled; users interact with it through Python scripts or in Python console (Python3 only). The library is made user-friendly such
+that only a basic level of Python programming skills is required.
+
+It has two major modules:
+
+1) ``the mathematical kernel``: It is for setting up the problem and the discretization theoretically.
+2) ``implementations``: The discretization is sent to one of the implementations. It uses a particular finite element setting, generates algebraic systems to be solved, and eventually gives results to be post-processed.
+
+.. figure:: _static/simple_structure.png
+    :width: 90 %
+
+In other words, they represent
+the theoretical and numerical aspects of the library, respectively. And the former is pure Python; while the later
+has Python shells and APIs to back-ends of different kernels to make fully use of resources in the open-access community. Read more at
+
+.. toctree::
+   :maxdepth: 1
+
+   introduction
+
+
 .. _Tutorial:
 
 Tutorial
 ========
 
-
 .. toctree::
    :maxdepth: 1
 
-   tutorial/index
+   tutorial/install
+   tutorial/documentations
+   tutorial/summary
 
 
 .. _Jupyter:
@@ -48,7 +77,7 @@ Tutorial
 Jupyter notebooks
 =================
 
-Below, we sort out jupyter notebooks that demonstrate the using of PHYEM.
+We sort out jupyter notebooks that demonstrate the using of *phyem* at
 
 .. toctree::
    :maxdepth: 1
@@ -62,7 +91,7 @@ Gallery
 =======
 
 Here, we categorize *predefined objects* (for example, computational domains and meshes) and representative demos,
-examples and applications using PHYEM into showcases at
+examples and applications using *phyem* into showcases at
 
 .. toctree::
    :maxdepth: 1
@@ -78,4 +107,4 @@ examples and applications using PHYEM into showcases at
 
    Site traffic is measured only for statistic.
    Absolutely no data which may lead to minimal leak of your privacy is ever recorded.
-   Thank you very much for visiting PHYEM.
+   Thank you very much for visiting *phyem*.

@@ -1,8 +1,5 @@
 # -*- coding: utf-8 -*-
-"""
-pH-lib@RAM-EEMCS-UT
-Yi Zhang
-Created at 5:41 PM on 7/30/2023
+r"""
 """
 import random
 import string

@@ -9,10 +9,17 @@ class Element(Frozen):
 
     @property
     def type(self):
+        """The generic category of the element."""
         raise NotImplementedError()
 
     @property
     def orthogonal(self):
+        """If the element is distorted."""
+        raise NotImplementedError()
+
+    @property
+    def element_type(self):
+        """'type' + 'orthogonal' means 'element_type'."""
         raise NotImplementedError()
 
     @property

@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-"""
+r"""
 """
 
 import sys
@@ -34,8 +34,9 @@ class BoundaryCondition(Frozen):
 
     def define_bc(self, bcs_dict):
         """"""
-        assert isinstance(bcs_dict, dict), f"pls put boundary conditions in a dict whose keys are the boundary " \
-                                           f"sections, and values are the B.C.s on the corresponding sections."
+        assert isinstance(bcs_dict, dict), \
+            f"pls put boundary conditions in a dict whose keys are the boundary " \
+            f"sections, and values are the B.C.s on the corresponding sections."
         from src.form.main import Form
         for key in bcs_dict:
             assert key in self._boundary._sub_manifolds, \
@@ -81,7 +82,7 @@ class BoundaryCondition(Frozen):
             _ = list()
             for bc in self._valid_bcs[boundary_sym_repr]:
                 _.append(rf"${bc._sym_repr}$")
-            bc_text += ', '.join(_) + rf' on ${boundary_sym_repr}$;'
+            bc_text += ', '.join(_) + rf' on ${boundary_sym_repr}$; '
 
         all_partitions = self._boundary._partitions
         involved_partitions = list()

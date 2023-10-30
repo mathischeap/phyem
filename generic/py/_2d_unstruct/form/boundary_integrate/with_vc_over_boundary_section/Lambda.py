@@ -37,8 +37,7 @@ class Boundary_Integrate_VC_BS_Lambda(Frozen):
 
         else:
             raise NotImplementedError(
-                f"BoundaryIntegrateVCBSLambda: not implemented for `form (<vc | tr form>)` in : "
-                f"k{k}, orientation: {orientation}"
+                rf"Not implemented for <vc | tr form> in k{k}, orientation: {orientation}"
             )
 
     def _k1_outer(self, t, vc, boundary_section):

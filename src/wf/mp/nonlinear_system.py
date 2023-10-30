@@ -37,7 +37,7 @@ class MatrixProxyNoneLinearSystem(Frozen):
         else:
             bc_text = self._mp_ls._bc._bc_text()
         fig = plt.figure(figsize=figsize)
-        plt.axis([0, 1, 0, 1])
+        plt.axis((0, 1, 0, 1))
         plt.axis('off')
         plt.text(0.05, 0.5, seek_text + symbolic + bc_text, ha='left', va='center', size=15)
 
