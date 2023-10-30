@@ -38,36 +38,35 @@ It is developed under a joint force of
 Introduction
 ============
 
-*phyem* is Python-shelled; users interact with it through Python scripts or in Python console (Python3 only). The library is made user-friendly such
+*phyem* is Python-shelled; users interact with it through Python scripts or in Python console (Python3 only).
+The library is made user-friendly such
 that only a basic level of Python programming skills is required.
 
-It has two major modules:
 
-+-----------------------------+--------------------------------------------------------+-----------------------------+
-| **module**                  | **description**                                        | **Environment**             |
-+-----------------------------+--------------------------------------------------------+-----------------------------+
-| ``the mathematical kernel`` | It is for setting up the problem and the               | natural Python; it works    |
-|                             | discretization theoretically.                          | with Windows, Linux or Mac  |
-+-----------------------------+--------------------------------------------------------+-----------------------------+
-| ``implementations``         | The discretization is sent to one of the               | depends on the particular   |
-|                             | implementations. It uses a particular finite element   | implementation; the         |
-|                             | setting, generates algebraic systems to be solved,     | :ref:`Implementations-msepy`|
-|                             | and eventually gives results to be post-processed      | implementation              |
-|                             |                                                        | is in natural Python.       |
-+-----------------------------+--------------------------------------------------------+-----------------------------+
+.. important::
 
+    It has two major modules:
+
+    +---------------------------+--------------------------------------------------------+-----------------------------+
+    | **module**                | **description**                                        | **Environment**             |
+    +---------------------------+--------------------------------------------------------+-----------------------------+
+    | *the mathematical kernel* | It is for setting up the problem and the               | natural Python; it works    |
+    |                           | discretization theoretically.                          | with Windows, Linux or Mac. |
+    +---------------------------+--------------------------------------------------------+-----------------------------+
+    | *implementations*         | The discretization is sent to one of the               | depends on particular       |
+    |                           | implementations. It uses a particular finite element   | implementations; the        |
+    |                           | setting, generates algebraic systems to be solved,     | :ref:`Implementations-msepy`|
+    |                           | and eventually gives results to be post-processed.     | implementation              |
+    |                           |                                                        | is in natural Python.       |
+    +---------------------------+--------------------------------------------------------+-----------------------------+
 
 .. figure:: _static/simple_structure.png
-    :width: 90 %
+    :width: 100 %
 
 In other words, they represent
 the theoretical and numerical aspects of the library, respectively. And the former is pure Python; while the later
 has Python shells and APIs to back-ends of different kernels to make fully use of resources
-in the open-access community.
-
-
-
-Read more at
+in the open-access community. Read more at
 
 .. toctree::
    :maxdepth: 1

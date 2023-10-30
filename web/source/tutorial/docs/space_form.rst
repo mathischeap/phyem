@@ -34,4 +34,8 @@ Space & form
 
 |
 
+.. topic:: Python script of this section
+
+    :download:`space_form.py <py/space_form.py>`
+
 ↩️  Back to :ref:`Documentation`.

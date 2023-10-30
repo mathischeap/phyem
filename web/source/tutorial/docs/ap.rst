@@ -105,4 +105,8 @@ Algebraic proxy
 
 |
 
+.. topic:: Python script of this section
+
+    :download:`ap.py <py/ap.py>`
+
 ↩️  Back to :ref:`Documentation`.

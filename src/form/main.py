@@ -13,7 +13,7 @@ The following code makes an outer oriented 2-form, ``a``, in space ``Out2`` and
 an outer-oriented 1-form, ``b``, in space ``Out1``.
 
 >>> a = Out2.make_form(r'\tilde{\alpha}', 'variable1')
->>> b = Out1.make_form(r'\tilde{\beta}', 'variable12')
+>>> b = Out1.make_form(r'\tilde{\beta}', 'variable2')
 
 The arguments are their symbolic representations (``r'\tilde{\alpha}'``, ``r'\tilde{\beta}'``) and
 linguistic representations (``'variable1'``, ``'variable2'``), represectively. To list all defined forms, do
@@ -48,19 +48,22 @@ Implemented operators are
     |                      |                                      | ``b``: :math:`\beta`,                |
     |                      |                                      | The wedge product between            |
     |                      |                                      | them, i.e.                           |
-    |                      |                                      | :math:`\alpha\wedge \beta`,          |
+    |                      |                                      | :math:`\alpha\wedge\beta`,           |
     |                      |                                      | is ``a.wedge(b)``.                   |
     |                      |                                      |                                      |
     +----------------------+--------------------------------------+--------------------------------------+
-    | cross product        | :math:`\times`                       | Given two forms,                     |
-    |                      |                                      | ``a``: :math:`\alpha` and            |
-    |                      |                                      | ``b``: :math:`\beta`,                |
-    |                      |                                      | The cross product between            |
-    |                      |                                      | them, i.e.                           |
-    |                      |                                      | :math:`\alpha\times \beta`,          |
-    |                      |                                      | is ``a.cross_product(b)``.           |
-    |                      |                                      |                                      |
-    +----------------------+--------------------------------------+--------------------------------------+
+
+    ..
+        | cross product        | :math:`\times`                       | Given two forms,                     |
+        |                      |                                      | ``a``: :math:`\alpha` and            |
+        |                      |                                      | ``b``: :math:`\beta`,                |
+        |                      |                                      | The cross product between            |
+        |                      |                                      | them, i.e.                           |
+        |                      |                                      | :math:`\alpha\times\beta`,           |
+        |                      |                                      | is ``a.cross_product(b)``.           |
+        |                      |                                      |                                      |
+        +----------------------+--------------------------------------+--------------------------------------+
+
 
 For example,
 

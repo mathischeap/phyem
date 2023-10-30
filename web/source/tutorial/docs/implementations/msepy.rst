@@ -105,4 +105,8 @@ msepy
 
 |
 
+.. topic:: Python script of this section
+
+    :download:`implementation_msepy.py <../py/implementation_msepy.py>`
+
 ↩️  Back to :ref:`Implementations`.

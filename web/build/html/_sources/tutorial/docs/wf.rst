@@ -49,4 +49,8 @@ Weak formulation & discretization
 
 |
 
+.. topic:: Python script of this section
+
+    :download:`wf.py <py/wf.py>`
+
 ↩️  Back to :ref:`Documentation`.

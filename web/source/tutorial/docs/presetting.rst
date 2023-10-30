@@ -47,4 +47,8 @@ Set
 
 |
 
+.. topic:: Python script of this section
+
+    :download:`presetting.py <py/presetting.py>`
+
 ↩️  Back to :ref:`Documentation`.

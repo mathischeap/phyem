@@ -552,8 +552,7 @@ The default orientation is
 <span class="go">Implemented spaces:...</span>
 </pre></div>
 </div>
-<blockquote>
-<div><span class="target" id="module-src.spaces.base"></span><p>Each space is an instance of a particular space class which inherits <a class="reference internal" href="#src.spaces.base.SpaceBase" title="src.spaces.base.SpaceBase"><code class="xref py py-class docutils literal notranslate"><span class="pre">SpaceBase</span></code></a>.</p>
+<span class="target" id="module-src.spaces.base"></span><p>Each space is an instance of a particular space class which inherits <a class="reference internal" href="#src.spaces.base.SpaceBase" title="src.spaces.base.SpaceBase"><code class="xref py py-class docutils literal notranslate"><span class="pre">SpaceBase</span></code></a>.</p>
 <blockquote>
 <div><dl class="py class">
 <dt class="sig sig-object py" id="src.spaces.base.SpaceBase">
@@ -597,7 +596,6 @@ The default orientation is
 </dd></dl>
 
 </div></blockquote>
-</div></blockquote>
 </section>
 <span class="target" id="module-src.form.main"></span><section id="form">
 <span id="docs-form"></span><h2><span class="section-number">3.2. </span>Form<a class="headerlink" href="#form" title="Permalink to this heading">#</a></h2>
@@ -606,7 +604,7 @@ just call the <code class="docutils literal notranslate"><span class="pre">make_
 The following code makes an outer oriented 2-form, <code class="docutils literal notranslate"><span class="pre">a</span></code>, in space <code class="docutils literal notranslate"><span class="pre">Out2</span></code> and
 an outer-oriented 1-form, <code class="docutils literal notranslate"><span class="pre">b</span></code>, in space <code class="docutils literal notranslate"><span class="pre">Out1</span></code>.</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">a</span> <span class="o">=</span> <span class="n">Out2</span><span class="o">.</span><span class="n">make_form</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;\tilde{\alpha}&#39;</span><span class="p">,</span> <span class="s1">&#39;variable1&#39;</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">b</span> <span class="o">=</span> <span class="n">Out1</span><span class="o">.</span><span class="n">make_form</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;\tilde{\beta}&#39;</span><span class="p">,</span> <span class="s1">&#39;variable12&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">b</span> <span class="o">=</span> <span class="n">Out1</span><span class="o">.</span><span class="n">make_form</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;\tilde{\beta}&#39;</span><span class="p">,</span> <span class="s1">&#39;variable2&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>The arguments are their symbolic representations (<code class="docutils literal notranslate"><span class="pre">r'\tilde{\alpha}'</span></code>, <code class="docutils literal notranslate"><span class="pre">r'\tilde{\beta}'</span></code>) and
@@ -715,18 +713,8 @@ Implemented operators are</p>
 <code class="docutils literal notranslate"><span class="pre">b</span></code>: <span class="math notranslate nohighlight">\(\beta\)</span>,
 The wedge product between
 them, i.e.
-<span class="math notranslate nohighlight">\(\alpha\wedge \beta\)</span>,
+<span class="math notranslate nohighlight">\(\alpha\wedge\beta\)</span>,
 is <code class="docutils literal notranslate"><span class="pre">a.wedge(b)</span></code>.</p></td>
-</tr>
-<tr class="row-even"><td><p>cross product</p></td>
-<td><p><span class="math notranslate nohighlight">\(\times\)</span></p></td>
-<td><p>Given two forms,
-<code class="docutils literal notranslate"><span class="pre">a</span></code>: <span class="math notranslate nohighlight">\(\alpha\)</span> and
-<code class="docutils literal notranslate"><span class="pre">b</span></code>: <span class="math notranslate nohighlight">\(\beta\)</span>,
-The cross product between
-them, i.e.
-<span class="math notranslate nohighlight">\(\alpha\times \beta\)</span>,
-is <code class="docutils literal notranslate"><span class="pre">a.cross_product(b)</span></code>.</p></td>
 </tr>
 </tbody>
 </table>
@@ -756,6 +744,10 @@ which is introduced in the next section.</p>
 <div class="line-block">
 <div class="line"><br /></div>
 </div>
+<aside class="topic">
+<p class="topic-title">Python script of this section</p>
+<p><a class="reference download internal" download="" href="../../_downloads/396de265be93b843396fbea296a175b3/space_form.py"><code class="xref download docutils literal notranslate"><span class="pre">space_form.py</span></code></a></p>
+</aside>
 <p>↩️  Back to <a class="reference internal" href="../documentations.html#documentation"><span class="std std-ref">Documentations</span></a>.</p>
 </section>
 
@@ -866,7 +858,7 @@ By Andrea Brugnoli, Ramy Rashad, Stefano Stramigioli, Yi Zhang
   <div class="footer-item">
     
 <div class="extra_footer">
-  <div>Last updated on October 30, 2023, 18:39:26, W. Europe Standard Time</div>
+  <div>Last updated on October 30, 2023, 20:31:31, W. Europe Standard Time</div>
 </div>
   </div>
   

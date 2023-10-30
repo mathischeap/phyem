@@ -17,19 +17,30 @@ The documentations are presented in a manner reflecting the flow of a *phyem* si
     PDE class are key for the **LEGO**-like feature of *phyem*. Since they are missing, this feature is not
     realized for the time being.
 
-A Python script that carries out a *phyem* simulation usually consists of commands for the following functionalities:
+Below we present documentations pf *phyem*.
+They demonstrate a *phyem* simulation for a linear port-Hamiltonian problem.
+It services as a good clue to understand the overall skeleton of a *phyem* simulation.
+Examples for other problems can be
+found in :ref:`Jupyter-notebooks` and :ref:`GALLERY-Gallery`. Nevertheless, we recommend users to start with
+below documentations no matter which type of problem you are targeting at.
 
-.. toctree::
-    :maxdepth: 2
-    :numbered:
 
-    docs/presetting
-    docs/manifold_mesh
-    docs/space_form
-    docs/pde
-    docs/wf
-    docs/ap
-    docs/implementations
+.. admonition:: Documentations
+
+    A Python script that carries out a *phyem* simulation usually consists of commands for the
+    following functionalities:
+
+    .. toctree::
+        :maxdepth: 2
+        :numbered:
+
+        docs/presetting
+        docs/manifold_mesh
+        docs/space_form
+        docs/pde
+        docs/wf
+        docs/ap
+        docs/implementations
 
 More examples can be found at :ref:`Jupyter-notebooks` and :ref:`GALLERY-Gallery`.
 

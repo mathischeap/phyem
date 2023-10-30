@@ -40,4 +40,8 @@ Manifold & mesh
 
 |
 
+.. topic:: Python script of this section
+
+    :download:`mm.py <py/mm.py>`
+
 ↩️  Back to :ref:`Documentation`.

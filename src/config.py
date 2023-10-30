@@ -1,6 +1,12 @@
 # -*- coding: utf-8 -*-
 r"""
-You can set global parameters through the following functions:
+
+.. note::
+
+    *phyem* is ready by itself with default global parameters. You can direct initialize a simulation with these
+    default global parameters.
+
+If you want to customize global parameters, you can do use following functions:
 
     .. autofunction:: set_embedding_space_dim
 

@@ -43,8 +43,8 @@ And we can list all existing spaces by calling ``ph.list_spaces`` method,
 >>> ph.list_spaces()  # doctest: +ELLIPSIS
 Implemented spaces:...
 
-    .. automodule:: src.spaces.base
-        :undoc-members:
+.. automodule:: src.spaces.base
+    :undoc-members:
 
 """
 

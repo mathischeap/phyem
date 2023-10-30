@@ -38,4 +38,8 @@ PDE
 
 |
 
+.. topic:: Python script of this section
+
+    :download:`pde.py <py/pde.py>`
+
 ↩️  Back to :ref:`Documentation`.
