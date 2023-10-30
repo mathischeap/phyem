@@ -43,15 +43,31 @@ that only a basic level of Python programming skills is required.
 
 It has two major modules:
 
-1) ``the mathematical kernel``: It is for setting up the problem and the discretization theoretically.
-2) ``implementations``: The discretization is sent to one of the implementations. It uses a particular finite element setting, generates algebraic systems to be solved, and eventually gives results to be post-processed.
++-----------------------------+--------------------------------------------------------+-----------------------------+
+| **module**                  | **description**                                        | **Environment**             |
++-----------------------------+--------------------------------------------------------+-----------------------------+
+| ``the mathematical kernel`` | It is for setting up the problem and the               | natural Python; it works    |
+|                             | discretization theoretically.                          | with Windows, Linux or Mac  |
++-----------------------------+--------------------------------------------------------+-----------------------------+
+| ``implementations``         | The discretization is sent to one of the               | depends on the particular   |
+|                             | implementations. It uses a particular finite element   | implementation; the         |
+|                             | setting, generates algebraic systems to be solved,     | :ref:`Implementations-msepy`|
+|                             | and eventually gives results to be post-processed      | implementation              |
+|                             |                                                        | is in natural Python.       |
++-----------------------------+--------------------------------------------------------+-----------------------------+
+
 
 .. figure:: _static/simple_structure.png
     :width: 90 %
 
 In other words, they represent
 the theoretical and numerical aspects of the library, respectively. And the former is pure Python; while the later
-has Python shells and APIs to back-ends of different kernels to make fully use of resources in the open-access community. Read more at
+has Python shells and APIs to back-ends of different kernels to make fully use of resources
+in the open-access community.
+
+
+
+Read more at
 
 .. toctree::
    :maxdepth: 1
