@@ -59,7 +59,6 @@ coverage.xml
 .ipynb_checkpoints/
 _notes/
 _app/
-_images/
 __phcache__/
 _local_tests/
 conf.py
