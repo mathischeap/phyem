@@ -231,11 +231,13 @@
 <li class="toctree-l3"><a class="reference internal" href="../../gallery/msepy_domains_and_meshes/msepy/crazy.html">Crazy domain and mesh</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../gallery/msepy_domains_and_meshes/msepy/crazy_multi.html">Multi-crazy domain and mesh</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../gallery/msepy_domains_and_meshes/msepy/backward_step.html">Backward step</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../gallery/msepy_domains_and_meshes/msepy/cylinder_channel.html">Cylinder_channel</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="../../gallery/div_grad/index.html">div-grad</a></li>
 <li class="toctree-l2 has-children"><a class="reference internal" href="../../gallery/Navier_Stokes/index.html">Navier-Stokes equations</a><input class="toctree-checkbox" id="toctree-checkbox-6" name="toctree-checkbox-6" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-6"><i class="fa-solid fa-chevron-down"></i></label><ul>
 <li class="toctree-l3"><a class="reference internal" href="../../gallery/Navier_Stokes/shear_layer_rollup/index.html">Shear layer rollup</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../gallery/Navier_Stokes/normal_dipole_collision/index.html">Normal dipole collision</a></li>
 </ul>
 </li>
 <li class="toctree-l2 has-children"><a class="reference internal" href="../../gallery/MHD/index.html">MHD (magnetohydrodynamics)</a><input class="toctree-checkbox" id="toctree-checkbox-7" name="toctree-checkbox-7" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-7"><i class="fa-solid fa-chevron-down"></i></label><ul>
@@ -244,6 +246,9 @@
 </li>
 </ul>
 </li>
+</ul>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../../contact.html">Contact</a></li>
 </ul>
 
     </div>
@@ -496,10 +501,9 @@ document.write(`
 </div>
 <div class="output_area docutils container">
 <div class="highlight"><pre>
-
- Existing meshes:
+Existing meshes:
 ---------------- symbolic - &lt;manifold&gt; -------------------------
-             \mathfrak{M} | &lt;Manifold \mathcal{M} at 0x0000018ABD6A3C90&gt;
+             \mathfrak{M} | &lt;Manifold \mathcal{M} at 0x000001FB8AF27A70&gt;
 </pre></div></div>
 </div>
 <p>where we can see the symbolic representation of the mesh and the manifold on which it is built. If we render the symbolic representation of the mesh with an equation environment, we see <span class="math notranslate nohighlight">\(\mathfrak{M}\)</span>.</p>
@@ -522,18 +526,18 @@ document.write(`
 </div>
 <div class="output_area docutils container">
 <div class="highlight"><pre>
-
- Implemented spaces:
+Implemented spaces:
    abbreviation - description
          Lambda | scalar valued k-form space
          bundle | bundle valued k-form space
+bundle-diagonal | diagonal bundle valued k-form space
 
  Existing spaces:
         On mesh \mathfrak{M}
-              0: \widetilde{\Lambda}^{(0)}(\mathcal{M})
-              1: \widetilde{\Lambda}^{(1)}(\mathcal{M})
-              2: \widetilde{\Lambda}^{(2)}(\mathcal{M})
-              3: \widetilde{\Lambda}^{(3)}(\mathcal{M})
+              0: \widetilde\Lambda^{(0)}(\mathcal{M})
+              1: \widetilde\Lambda^{(1)}(\mathcal{M})
+              2: \widetilde\Lambda^{(2)}(\mathcal{M})
+              3: \widetilde\Lambda^{(3)}(\mathcal{M})
 </pre></div></div>
 </div>
 <p>where we see first a list of all implemented spaces and then the existing spaces till this moment.</p>
@@ -546,7 +550,7 @@ document.write(`
 <span class="n">u</span> <span class="o">=</span> <span class="n">O2</span><span class="o">.</span><span class="n">make_form</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;u^2&#39;</span><span class="p">,</span> <span class="sa">r</span><span class="s2">&quot;velocity2&quot;</span><span class="p">)</span>
 <span class="n">f</span> <span class="o">=</span> <span class="n">O2</span><span class="o">.</span><span class="n">make_form</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;f^2&#39;</span><span class="p">,</span> <span class="sa">r</span><span class="s2">&quot;body-force&quot;</span><span class="p">)</span>
 <span class="n">P</span> <span class="o">=</span> <span class="n">O3</span><span class="o">.</span><span class="n">make_form</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;P^3&#39;</span><span class="p">,</span> <span class="sa">r</span><span class="s2">&quot;total-pressure3&quot;</span><span class="p">)</span>
-<span class="n">ph</span><span class="o">.</span><span class="n">list_forms</span><span class="p">(</span><span class="nb">locals</span><span class="p">())</span>  <span class="c1"># this will generate a table in a separete figure showing.</span>
+<span class="n">ph</span><span class="o">.</span><span class="n">list_forms</span><span class="p">()</span>  <span class="c1"># this will generate a table in a separete figure showing.</span>
 </pre></div>
 </div>
 </div>
@@ -556,13 +560,10 @@ document.write(`
 </div>
 <div class="output_area docutils container">
 <div class="highlight"><pre>
-&lt;Figure size 1600x500 with 1 Axes&gt;
+&lt;Figure size 1000x500 with 1 Axes&gt;
 </pre></div></div>
 </div>
-<p>where we have used function <code class="docutils literal notranslate"><span class="pre">list_forms</span></code> to visualize/list the exsiting forms. Note that, when forms are not many, a separete plot will be generated where the forms are visualized in a table. As this process invokes <em>matplotlib</em> and <em>latex</em>, make sure they are installed. When the forms are many, instead of plotting, a text list will appear in the default console.</p>
-<blockquote>
-<div><p>The argument <code class="docutils literal notranslate"><span class="pre">locals()</span></code> restricts <code class="docutils literal notranslate"><span class="pre">list_forms</span></code> function to only the local variables. Since intermediate forms may be generated during some processes, if we do not restrict the range of <code class="docutils literal notranslate"><span class="pre">list_forms</span></code>, they may also be shown. But at this moment, <code class="docutils literal notranslate"><span class="pre">ph.list_forms(locals())</span></code> and <code class="docutils literal notranslate"><span class="pre">ph.list_forms()</span></code> make no differences.</p>
-</div></blockquote>
+<p>where we have used function <code class="docutils literal notranslate"><span class="pre">list_forms</span></code> to visualize/list the exsiting forms.</p>
 <blockquote>
 <div><p>When it is the first time to invoke <em>matplotlib</em> and <em>latex</em>, it may be very slow since there are large amount of interplays among the packages. Be patient. Things become much better later on.</p>
 </div></blockquote>
@@ -607,18 +608,12 @@ document.write(`
 </div>
 </div>
 <div class="nboutput nblast docutils container">
-<div class="prompt empty docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[10]:
+</pre></div>
 </div>
 <div class="output_area docutils container">
 <div class="highlight"><pre>
----&gt; 1695395061328 | \omega^1 = \textsf{vorticity1}
----&gt; 1695386341776 | u^2 = \textsf{velocity2}
----&gt; 1695394970960 | f^2 = \textsf{body-force}
----&gt; 1695395061840 | P^3 = \textsf{total-pressure3}
----&gt; 1695446941264 | \mathrm{d}^{\ast}P^3 = $\mathrm{d}^{\ast}$ \textsf{total-pressure3}
----&gt; 1695446539088 | \mathrm{d}^{\ast}u^2 = $\mathrm{d}^{\ast}$ \textsf{velocity2}
----&gt; 1695395059664 | \mathrm{d}u^2 = $\mathrm{d}$ \textsf{velocity2}
----&gt; 1695447032592 | \partial_{t}u^2 = $\partial_{t}$ \textsf{velocity2}
+&lt;Figure size 1000x500 with 1 Axes&gt;
 </pre></div></div>
 </div>
 <p>Basically, we see the <code class="docutils literal notranslate"><span class="pre">id</span></code> and then <em>symbolic representation</em> = <em>linguistic representation</em> of all forms.</p>
@@ -750,7 +745,7 @@ By Andrea Brugnoli, Ramy Rashad, Stefano Stramigioli, Yi Zhang and more
   <div class="footer-item">
     
 <div class="extra_footer">
-  <div>Last updated on October 31, 2023, 13:52:33, W. Europe Standard Time</div>
+  <div>Last updated on October 31, 2023, 21:23:01, W. Europe Standard Time</div>
 </div>
   </div>
   

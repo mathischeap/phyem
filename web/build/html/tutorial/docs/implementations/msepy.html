@@ -45,6 +45,8 @@
     <script src="../../../_static/copybutton.js"></script>
     <script src="../../../_static/scripts/sphinx-book-theme.js?digest=5a5c038af52cf7bc1a1ec88eea08e6366ee68824"></script>
     <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script>window.MathJax = {"tex": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true}, "options": {"ignoreHtmlClass": "tex2jax_ignore|mathjax_ignore|document", "processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+    <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
     <script>DOCUMENTATION_OPTIONS.pagename = 'tutorial/docs/implementations/msepy';</script>
     <link rel="icon" href="../../../_static/favicon.png"/>
     <link rel="index" title="Index" href="../../../genindex.html" />
@@ -228,11 +230,13 @@
 <li class="toctree-l3"><a class="reference internal" href="../../../gallery/msepy_domains_and_meshes/msepy/crazy.html">Crazy domain and mesh</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../gallery/msepy_domains_and_meshes/msepy/crazy_multi.html">Multi-crazy domain and mesh</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../gallery/msepy_domains_and_meshes/msepy/backward_step.html">Backward step</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../gallery/msepy_domains_and_meshes/msepy/cylinder_channel.html">Cylinder_channel</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="../../../gallery/div_grad/index.html">div-grad</a></li>
 <li class="toctree-l2 has-children"><a class="reference internal" href="../../../gallery/Navier_Stokes/index.html">Navier-Stokes equations</a><input class="toctree-checkbox" id="toctree-checkbox-6" name="toctree-checkbox-6" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-6"><i class="fa-solid fa-chevron-down"></i></label><ul>
 <li class="toctree-l3"><a class="reference internal" href="../../../gallery/Navier_Stokes/shear_layer_rollup/index.html">Shear layer rollup</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../gallery/Navier_Stokes/normal_dipole_collision/index.html">Normal dipole collision</a></li>
 </ul>
 </li>
 <li class="toctree-l2 has-children"><a class="reference internal" href="../../../gallery/MHD/index.html">MHD (magnetohydrodynamics)</a><input class="toctree-checkbox" id="toctree-checkbox-7" name="toctree-checkbox-7" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-7"><i class="fa-solid fa-chevron-down"></i></label><ul>
@@ -241,6 +245,9 @@
 </li>
 </ul>
 </li>
+</ul>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../../../contact.html">Contact</a></li>
 </ul>
 
     </div>
@@ -436,6 +443,8 @@ document.write(`
                 <ul class="visible nav section-nav flex-column">
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#implemented-counterparts">7.1.1. Implemented counterparts</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#configuration">7.1.2. Configuration</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#solving">7.1.3. Solving</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#post-processing">7.1.4. Post-processing</a></li>
 </ul>
             </nav>
         </div>
@@ -468,6 +477,10 @@ its relatively lower speed, this implementation is not proper for large problems
 hard to say what problems are large. And it is also dependent on the machine. Normally,
 <em>msepy</em> is very handy for 1- or 2-dimentional and small 3-dimensional problems. User could
 explore the edge by trial.</p>
+</div>
+<div class="admonition caution">
+<p class="admonition-title">Caution</p>
+<p><em>msepy</em> is not parallelizable, do not execuate with for example <code class="docutils literal notranslate"><span class="pre">mpiexec</span></code>.</p>
 </div>
 <p>To invoke the msepy implementation, use indicator <code class="docutils literal notranslate"><span class="pre">'msepy'</span></code> as the
 first argument for <code class="docutils literal notranslate"><span class="pre">apply</span></code> of <code class="docutils literal notranslate"><span class="pre">fem</span></code> module, i.e.,</p>
@@ -538,7 +551,207 @@ parameters of the predefined manifold.</p>
 </tbody>
 </table>
 </div>
-<p>For all</p>
+<p>All predefined <em>msepy</em> manifolds are available at Gallery, see <a class="reference internal" href="../../../gallery/msepy_domains_and_meshes/index.html#gallery-msepy-domains-and-meshes"><span class="std std-ref">msepy domains and meshes</span></a>.</p>
+<p>Once we have specified the manifold, we should also configure its boundary sections, for example,</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">implementation</span><span class="o">.</span><span class="n">config</span><span class="p">(</span><span class="n">Gamma_alpha</span><span class="p">)(</span>
+<span class="gp">... </span>    <span class="n">manifold</span><span class="p">,</span> <span class="p">{</span><span class="mi">0</span><span class="p">:</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">]}</span>   <span class="c1"># the natural condition.</span>
+<span class="gp">... </span><span class="p">)</span>
+</pre></div>
+</div>
+<p>This specifies the boundary section <code class="docutils literal notranslate"><span class="pre">Gamma_alpha</span></code>, <span class="math notranslate nohighlight">\(\Gamma_{\alpha}\)</span>, to be two faces of the <em>msepy</em>
+manifold <code class="docutils literal notranslate"><span class="pre">manifold</span></code>. These faces are indicated by dictionary <code class="docutils literal notranslate"><span class="pre">{0:</span> <span class="pre">[1,</span> <span class="pre">1,</span> <span class="pre">0,</span> <span class="pre">0]}</span></code>. For what does this
+dictionary exactly mean, we refer to the introduction page of the <code class="docutils literal notranslate"><span class="pre">'crazy'</span></code> domain,
+<a class="reference internal" href="../../../gallery/msepy_domains_and_meshes/msepy/crazy.html#gallery-msepy-domains-and-meshes-crazy"><span class="std std-ref">Crazy domain and mesh</span></a>. In short, the manifold is one region
+(or divided into multiple regions) with a local coordinate system <span class="math notranslate nohighlight">\((r, s)\)</span>, and
+<code class="docutils literal notranslate"><span class="pre">{0:</span> <span class="pre">[1,</span> <span class="pre">1,</span> <span class="pre">0,</span> <span class="pre">0]}</span></code> indicates the topological faces
+facing <span class="math notranslate nohighlight">\(r-\)</span> and <span class="math notranslate nohighlight">\(r+\)</span> directions of region no. <code class="docutils literal notranslate"><span class="pre">0</span></code>.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Since <code class="docutils literal notranslate"><span class="pre">Gamma_alpha</span></code> and <code class="docutils literal notranslate"><span class="pre">Gamma_beta</span></code> are a partition of the boundary of <code class="docutils literal notranslate"><span class="pre">manifold</span></code>,
+see <a class="reference internal" href="../pde.html#pde-bc"><span class="std std-ref">Boundary conditions</span></a>, once <code class="docutils literal notranslate"><span class="pre">Gamma_alpha</span></code> is configured, <code class="docutils literal notranslate"><span class="pre">Gamma_beta</span></code> is definite; no need
+to configure it.</p>
+</div>
+<p>Once the manifold and its boundary sections are configured, we can configure the mesh on it by, for example,</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">implementation</span><span class="o">.</span><span class="n">config</span><span class="p">(</span><span class="n">mesh</span><span class="p">)([</span><span class="mi">12</span><span class="p">,</span> <span class="mi">12</span><span class="p">])</span>
+</pre></div>
+</div>
+<p>This will generate a mesh of <span class="math notranslate nohighlight">\(12 \times 12\)</span> elements in the manifold. Both <code class="docutils literal notranslate"><span class="pre">manifold</span></code> and <code class="docutils literal notranslate"><span class="pre">mesh</span></code>
+can be visualized by calling their <code class="docutils literal notranslate"><span class="pre">visualize</span></code> property.
+See examples at <a class="reference internal" href="../../../gallery/msepy_domains_and_meshes/index.html#gallery-msepy-domains-and-meshes"><span class="std std-ref">msepy domains and meshes</span></a>.</p>
+<p><em>2) User-customized meshes</em>:</p>
+<div class="admonition-todo admonition" id="id1">
+<p class="admonition-title">Todo</p>
+<p>Users shall also could input their own meshes (thus maniolds are definite) generated in common
+mesh generators, for instance,
+<a class="reference external" href="https://gmsh.info/">Gmsh</a>.
+To this end, an interface from the
+generic mesh format, for example, the
+<a class="reference external" href="https://vtk.org/">VTK</a>
+format, to <em>msepy</em> mesh and manifold modules should
+be implemented.</p>
+<p>So far, this interface is missing. And if your domain is not covered by the predefined manifolds, please
+send us a message through <a class="reference internal" href="../../../contact.html#message-form"><span class="std std-ref">Message form</span></a> with your domain details. We will implement it as a
+predefined manifold as soon as possible.</p>
+</div>
+<div class="line-block">
+<div class="line"><br /></div>
+</div>
+<p>❇️ <strong>Time sequence</strong></p>
+<p>We also need to specify the abstract time sequence to an exact one. Since the time sequence instance, <code class="docutils literal notranslate"><span class="pre">ts</span></code>,
+is not generic regardless of particular implementations, we do not need to pick it up from the implementation.</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">ts</span><span class="o">.</span><span class="n">specify</span><span class="p">(</span><span class="s1">&#39;constant&#39;</span><span class="p">,</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">100</span><span class="p">],</span> <span class="mi">2</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>This command specifies the time sequence <code class="docutils literal notranslate"><span class="pre">ts</span></code> to be one of constant
+(indicated by <code class="docutils literal notranslate"><span class="pre">'constant'</span></code>) time intervals, i.e.,</p>
+<div class="math notranslate nohighlight">
+\[\Delta t = t^{k} - t^{k-1} = C\quad \forall k\in\left\lbrace 1, 2, 3,\cdots\right\rbrace.\]</div>
+<p>The time sequence starts with <span class="math notranslate nohighlight">\(t=0\)</span>, ends with <span class="math notranslate nohighlight">\(t=1\)</span>, and places 100 equal smallest intervals
+in between, and each time step covers two smallest intervals.
+Thus, for example, the time step from <span class="math notranslate nohighlight">\(t^{k-1}\)</span> to <span class="math notranslate nohighlight">\(t^{k}\)</span> is splitted into two equal smallest
+intervals, i.e., one from <span class="math notranslate nohighlight">\(t^{k-1}\)</span> to <span class="math notranslate nohighlight">\(t^{k-\frac{1}{2}}\)</span> and
+one from <span class="math notranslate nohighlight">\(t^{k-1}\)</span> to <span class="math notranslate nohighlight">\(t^{k}\)</span>. In other words, valid time instances of this time sequence are</p>
+<div class="math notranslate nohighlight">
+\[t^0,\ t^{\frac{1}{2}},\ t^1,\ t^{1+\frac{1}{2}},\ \cdots,\ t^{49+\frac{1}{2}},\ t^{50}.\]</div>
+<p>And in total, we have 50 time steps, <span class="math notranslate nohighlight">\(k\in\left\lbrace1,2,3,\cdots,50\right\rbrace\)</span>.</p>
+<div class="line-block">
+<div class="line"><br /></div>
+</div>
+<p>❇️ <strong>Initial condition</strong></p>
+<p>Suppose the linear port Hamiltonian problem we try to solve has an analytical solution,</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}\left\lbrace
+\begin{aligned}
+    &amp; \tilde{\alpha}_{\mathrm{analytical}}(x, y, t) = - g(x,y)\dfrac{\mathrm{d}f(t)}{\mathrm{d}t} \\
+    &amp; \tilde{\beta}_{\mathrm{analytical}}(x, y, t) = \begin{bmatrix}
+        \dfrac{\partial g}{\partial x}(x, y) f(t) \\
+        \dfrac{\partial g}{\partial y}(x, y) f(t)
+    \end{bmatrix}
+\end{aligned}
+\right.,\end{split}\]</div>
+<p>where</p>
+<div class="math notranslate nohighlight">
+\[g(x, y) = \cos(2\pi x)\cos(2\pi y),\]</div>
+<p>and</p>
+<div class="math notranslate nohighlight">
+\[f(t) = 2\sin(2\sqrt{2}\pi) + 3\cos(2\sqrt{2}\pi).\]</div>
+<p>This is a so-called 2-dimensional eigen solution. And it is pre-coded in <em>phyem</em>. We can call it by</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">eigen2</span> <span class="o">=</span> <span class="n">ph</span><span class="o">.</span><span class="n">samples</span><span class="o">.</span><span class="n">Eigen2</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>And the analytic solutions, <span class="math notranslate nohighlight">\(\tilde{\alpha}_{\mathrm{analytic}}\)</span>
+and <span class="math notranslate nohighlight">\(\tilde{\beta}_{\mathrm{analytic}}\)</span>, are attributes, <code class="docutils literal notranslate"><span class="pre">scalar</span></code> and <code class="docutils literal notranslate"><span class="pre">vector</span></code>, of <code class="docutils literal notranslate"><span class="pre">eigen2</span></code>.
+We can set the continuous form of <code class="docutils literal notranslate"><span class="pre">a</span></code> and <code class="docutils literal notranslate"><span class="pre">b</span></code> to be <span class="math notranslate nohighlight">\(\tilde{\alpha}_{\mathrm{analytic}}\)</span>
+and <span class="math notranslate nohighlight">\(\tilde{\beta}_{\mathrm{analytic}}\)</span> by</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">a</span> <span class="o">=</span> <span class="n">objects</span><span class="p">[</span><span class="s1">&#39;a&#39;</span><span class="p">]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">b</span> <span class="o">=</span> <span class="n">objects</span><span class="p">[</span><span class="s1">&#39;b&#39;</span><span class="p">]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">a</span><span class="o">.</span><span class="n">cf</span> <span class="o">=</span> <span class="n">eigen2</span><span class="o">.</span><span class="n">scalar</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">b</span><span class="o">.</span><span class="n">cf</span> <span class="o">=</span> <span class="n">eigen2</span><span class="o">.</span><span class="n">vector</span>
+</pre></div>
+</div>
+<p>where the first two lines pick up the implemented counterparts of forms <code class="docutils literal notranslate"><span class="pre">a</span></code> and <code class="docutils literal notranslate"><span class="pre">b</span></code> and the last two
+lines set their continuous forms, <code class="docutils literal notranslate"><span class="pre">cf</span></code>, to be the analytic solutions. If a form has its continuous form,
+we can measure the error between its numerical solution to its continuous form (analytic solution)
+which indicates the accuaracy of
+the simulation. For example,</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">a</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">reduce</span><span class="p">()</span>                      <span class="c1"># reduce the analytic solution at t=0 to discrete space</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">b</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">reduce</span><span class="p">()</span>                      <span class="c1"># reduce the analytic solution at t=0 to discrete space</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">a_L2_error_t0</span> <span class="o">=</span> <span class="n">a</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">error</span><span class="p">()</span>       <span class="c1"># compute the L2 error at t=0</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">b_L2_error_t0</span> <span class="o">=</span> <span class="n">b</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">error</span><span class="p">()</span>       <span class="c1"># compute the L2 error at t=0</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">a_L2_error_t0</span>
+<span class="go">0.0056...</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">b_L2_error_t0</span>
+<span class="go">0.0060...</span>
+</pre></div>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>The brackets,``[]``, return a staic copy of the form at a particular time instant. For example, <code class="docutils literal notranslate"><span class="pre">a[0]</span></code> gives
+the static copy of <code class="docutils literal notranslate"><span class="pre">a</span></code> at <span class="math notranslate nohighlight">\(t=0\)</span>.</p>
+</div>
+<p>So, the first two lines of above code discretize the analytic solution at <span class="math notranslate nohighlight">\(t=0\)</span> to the discrete forms
+<code class="docutils literal notranslate"><span class="pre">a</span></code> and <code class="docutils literal notranslate"><span class="pre">b</span></code>, which
+configures the initial condition of the simulation. The next two lines then compute the error between the discrete
+initial condition and the analytic initial condition. It is seen that the error is very low implying that
+the finite dimensional spaces in this mesh (of <span class="math notranslate nohighlight">\(12\times12\)</span> elements) are fine.</p>
+<p>Note that a generic simulation usually does not possess an analytical solution for all time, but only have the initial
+condition. In that case, you can use the same way to initialize the discrete forms to possess the initial condition.</p>
+<div class="line-block">
+<div class="line"><br /></div>
+</div>
+<p>❇️ <strong>Boundary conditions</strong></p>
+<p>To impose specified boundary conditions, we need to touch the counterpart of the linear system. Thus, we first
+need to pick up the implemented linear system by its local variable name, i.e.,</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">ls</span> <span class="o">=</span> <span class="n">objects</span><span class="p">[</span><span class="s1">&#39;ls&#39;</span><span class="p">]</span>
+</pre></div>
+</div>
+<p>And to let it take effect, we need to call its <code class="docutils literal notranslate"><span class="pre">apply</span></code> method,</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">ls</span> <span class="o">=</span> <span class="n">ls</span><span class="o">.</span><span class="n">apply</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>Then we can configure the boundary conditions of this particular linear system by using <code class="docutils literal notranslate"><span class="pre">config</span></code> of its property
+<code class="docutils literal notranslate"><span class="pre">bc</span></code>,</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">ls</span><span class="o">.</span><span class="n">bc</span><span class="o">.</span><span class="n">config</span><span class="p">(</span><span class="n">Gamma_alpha</span><span class="p">)(</span><span class="n">eigen2</span><span class="o">.</span><span class="n">scalar</span><span class="p">)</span>   <span class="c1"># natural boundary condition</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">ls</span><span class="o">.</span><span class="n">bc</span><span class="o">.</span><span class="n">config</span><span class="p">(</span><span class="n">Gamma_beta</span><span class="p">)(</span><span class="n">b</span><span class="o">.</span><span class="n">cf</span><span class="p">)</span>             <span class="c1"># essential boundary condition</span>
+</pre></div>
+</div>
+</section>
+<section id="solving">
+<span id="implementations-msepy-solving"></span><h2><span class="section-number">7.1.3. </span>Solving<a class="headerlink" href="#solving" title="Permalink to this heading">#</a></h2>
+<p>We first define two lists to store the errors,</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">a_errors</span> <span class="o">=</span> <span class="p">[</span><span class="n">a_L2_error_t0</span><span class="p">,</span> <span class="p">]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">b_errors</span> <span class="o">=</span> <span class="p">[</span><span class="n">b_L2_error_t0</span><span class="p">,</span> <span class="p">]</span>
+</pre></div>
+</div>
+<p>We then can go through all time steps by iterating over all <span class="math notranslate nohighlight">\(k\in\left\lbrace1,2,3,\cdots,100\right\rbrace\)</span>,</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">51</span><span class="p">):</span>
+<span class="gp">... </span>    <span class="n">static_ls</span> <span class="o">=</span> <span class="n">ls</span><span class="p">(</span><span class="n">k</span><span class="o">=</span><span class="n">k</span><span class="p">)</span>                      <span class="c1"># get the static linear system for k=...</span>
+<span class="gp">... </span>    <span class="n">assembled_ls</span> <span class="o">=</span> <span class="n">static_ls</span><span class="o">.</span><span class="n">assemble</span><span class="p">()</span>      <span class="c1"># assemble the static linear system into a global system</span>
+<span class="gp">... </span>    <span class="n">x</span><span class="p">,</span> <span class="n">message</span><span class="p">,</span> <span class="n">info</span> <span class="o">=</span> <span class="n">assembled_ls</span><span class="o">.</span><span class="n">solve</span><span class="p">()</span>  <span class="c1"># solve the global system</span>
+<span class="gp">... </span>    <span class="n">static_ls</span><span class="o">.</span><span class="n">x</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>                    <span class="c1"># use the solution to update the discrete forms</span>
+<span class="gp">... </span>    <span class="n">a_L2_error</span> <span class="o">=</span> <span class="n">a</span><span class="p">[</span><span class="kc">None</span><span class="p">]</span><span class="o">.</span><span class="n">error</span><span class="p">()</span>             <span class="c1"># compute the error of the discrete forms at the most recent time</span>
+<span class="gp">... </span>    <span class="n">b_L2_error</span> <span class="o">=</span> <span class="n">b</span><span class="p">[</span><span class="kc">None</span><span class="p">]</span><span class="o">.</span><span class="n">error</span><span class="p">()</span>             <span class="c1"># compute the error of the discrete forms at the most recent time</span>
+<span class="gp">... </span>    <span class="n">a_errors</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">a_L2_error</span><span class="p">)</span>              <span class="c1"># append the error to the list</span>
+<span class="gp">... </span>    <span class="n">b_errors</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">b_L2_error</span><span class="p">)</span>              <span class="c1"># append the error to the list</span>
+</pre></div>
+</div>
+<p>Note that <code class="docutils literal notranslate"><span class="pre">a[None]</span></code> automatically gives a static copy of <code class="docutils literal notranslate"><span class="pre">a</span></code> at its most recent time. For example, when
+<code class="docutils literal notranslate"><span class="pre">k=10</span></code>, i.e., <span class="math notranslate nohighlight">\(t=t^{10}=0.2\)</span> (recall that the overall computation time is 1 and it is divided into
+50 time steps), <code class="docutils literal notranslate"><span class="pre">a[None]</span></code> is equivalent to <code class="docutils literal notranslate"><span class="pre">a[0.2]</span></code>. And then method <code class="docutils literal notranslate"><span class="pre">error</span></code> computes the <span class="math notranslate nohighlight">\(L^2\)</span>-error of
+it. To check it, do</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">a</span><span class="p">[</span><span class="mf">0.2</span><span class="p">]</span><span class="o">.</span><span class="n">error</span><span class="p">()</span> <span class="o">==</span> <span class="n">a_errors</span><span class="p">[</span><span class="mi">10</span><span class="p">]</span>
+<span class="go">True</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">len</span><span class="p">(</span><span class="n">a_errors</span><span class="p">)</span>
+<span class="go">51</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">len</span><span class="p">(</span><span class="n">b_errors</span><span class="p">)</span>
+<span class="go">51</span>
+</pre></div>
+</div>
+</section>
+<section id="post-processing">
+<span id="implementations-msepy-pp"></span><h2><span class="section-number">7.1.4. </span>Post-processing<a class="headerlink" href="#post-processing" title="Permalink to this heading">#</a></h2>
+<p>You can save the solution to VTK file by calling</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">a</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">visualize</span><span class="o">.</span><span class="n">vtk</span><span class="p">(</span><span class="n">saveto</span><span class="o">=</span><span class="s1">&#39;a1&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">b</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">visualize</span><span class="o">.</span><span class="n">vtk</span><span class="p">(</span><span class="n">saveto</span><span class="o">=</span><span class="s1">&#39;b1&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>The first line saves the static copy of <code class="docutils literal notranslate"><span class="pre">a</span></code> at <span class="math notranslate nohighlight">\(t=1`\)</span> to <code class="docutils literal notranslate"><span class="pre">./a1.vtu</span></code> and the second line
+saves the static copy of <code class="docutils literal notranslate"><span class="pre">b</span></code> at <span class="math notranslate nohighlight">\(t=1`\)</span> to <code class="docutils literal notranslate"><span class="pre">./b1.vtu</span></code>.</p>
+<p>You can also save them into one file by</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">a</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">visualize</span><span class="o">.</span><span class="n">vtk</span><span class="p">(</span><span class="n">b</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">saveto</span><span class="o">=</span><span class="s1">&#39;a1_b1&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Static copies of <code class="docutils literal notranslate"><span class="pre">a</span></code> and <code class="docutils literal notranslate"><span class="pre">b</span></code> at <span class="math notranslate nohighlight">\(t=1`\)</span> are saved to <code class="docutils literal notranslate"><span class="pre">./a1_b1.vtu</span></code>.</p>
+<p>Then visualization tools can be used to visualize and analyze the solutions. And we recommend,
+for example, the open-source
+visualization software <a class="reference external" href="http://paraview.org">Paraview</a>.</p>
+<p>You can also try</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">a</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">visualize</span><span class="o">.</span><span class="n">matplot</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>This will give a 2-dimensioan plot of <code class="docutils literal notranslate"><span class="pre">a[1]</span></code> using the matplotlib package.
+But since matplotlib is not handy for 3-dimensional plots,
+the <code class="docutils literal notranslate"><span class="pre">matplot</span></code> method is only implemented for 2-dimensional forms.</p>
 </section>
 <div class="line-block">
 <div class="line"><br /></div>
@@ -596,6 +809,8 @@ parameters of the predefined manifold.</p>
     <ul class="visible nav section-nav flex-column">
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#implemented-counterparts">7.1.1. Implemented counterparts</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#configuration">7.1.2. Configuration</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#solving">7.1.3. Solving</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#post-processing">7.1.4. Post-processing</a></li>
 </ul>
   </nav></div>
 
@@ -633,7 +848,7 @@ By Andrea Brugnoli, Ramy Rashad, Stefano Stramigioli, Yi Zhang and more
   <div class="footer-item">
     
 <div class="extra_footer">
-  <div>Last updated on October 31, 2023, 13:52:33, W. Europe Standard Time</div>
+  <div>Last updated on October 31, 2023, 21:23:01, W. Europe Standard Time</div>
 </div>
   </div>
   

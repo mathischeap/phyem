@@ -30,15 +30,7 @@ Below, different kinds of problems are solved as demonstrations. They are, from 
    :maxdepth: 1
 
    div_grad/index
-
-.. toctree::
-   :maxdepth: 1
-
    Navier_Stokes/index
-
-.. toctree::
-   :maxdepth: 1
-
    MHD/index
 
 

@@ -419,6 +419,7 @@ class MsePyManifold(Frozen):
 
     @property
     def visualize(self):
+        """Visualize the manifold."""
         if self._visualize is None:
             self._visualize = MsePyManifoldVisualize(self)
         return self._visualize

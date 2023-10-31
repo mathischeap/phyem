@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 r"""
-The shear layer rollup is a 2d non-dimensional ideal incompressible NS flow (Euler flow).
+The shear layer rollup is a 2-dimensional ideal incompressible NS flow (Euler flow).
 """
 import sys
 if './' not in sys.path:

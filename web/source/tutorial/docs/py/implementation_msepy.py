@@ -129,3 +129,54 @@ mp.pr()
 
 ls = mp.ls()
 ls.pr()
+
+implementation, objects = ph.fem.apply('msepy', locals())
+
+manifold = objects['manifold']
+mesh = objects['mesh']
+Gamma_alpha = implementation.base['manifolds'][r"\Gamma_{\alpha}"]
+Gamma_beta = implementation.base['manifolds'][r"\Gamma_{\beta}"]
+
+implementation.config(manifold)(
+    'crazy', c=0., bounds=([0, 1], [0, 1]), periodic=False,
+)
+implementation.config(Gamma_alpha)(
+    manifold, {0: [1, 1, 0, 0]}   # the natural condition.
+)
+implementation.config(mesh)([12, 12])
+
+ts.specify('constant', [0, 1, 100], 2)
+
+eigen2 = ph.samples.Eigen2()
+a = objects['a']
+b = objects['b']
+a.cf = eigen2.scalar
+b.cf = eigen2.vector
+
+a[0].reduce()                      # reduce the analytic solution at t=0 to discrete space
+b[0].reduce()                      # reduce the analytic solution at t=0 to discrete space
+a_L2_error_t0 = a[0].error()       # compute the L2 error at t=0
+b_L2_error_t0 = b[0].error()       # compute the L2 error at t=0
+
+ls = objects['ls']
+ls = ls.apply()
+ls.bc.config(Gamma_alpha)(eigen2.scalar)   # natural boundary condition
+ls.bc.config(Gamma_beta)(b.cf)             # essential boundary condition
+a_errors = [a_L2_error_t0, ]
+b_errors = [b_L2_error_t0, ]
+
+for k in range(1, 51):
+    static_ls = ls(k=k)                      # get the static linear system for k=...
+    assembled_ls = static_ls.assemble()      # assemble the static linear system into a global system
+    x, message, info = assembled_ls.solve()  # solve the global system
+    static_ls.x.update(x)                    # use the solution to update the discrete forms
+    a_L2_error = a[None].error()             # compute the error of the discrete forms at the most recent time
+    b_L2_error = b[None].error()             # compute the error of the discrete forms at the most recent time
+    a_errors.append(a_L2_error)              # append the error to the list
+    b_errors.append(b_L2_error)              # append the error to the list
+
+a[1].visualize.vtk(saveto='a1')
+b[1].visualize.vtk(saveto='b1')
+a[1].visualize.vtk(b[1], saveto='a1_b1')
+
+a[1].visualize.matplot()

@@ -87,7 +87,10 @@
 
 .. testcleanup::
 
-    pass
+    import os
+    os.remove('a1.vtu')
+    os.remove('b1.vtu')
+    os.remove('a1_b1.vtu')
 
 
 .. _Implementations-msepy:

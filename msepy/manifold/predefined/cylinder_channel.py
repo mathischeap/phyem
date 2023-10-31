@@ -5,8 +5,10 @@ r"""
     import __init__ as ph
     from msepy.manifold.predefined.cylinder_channel import _make_an_illustration
     _make_an_illustration(
-        './source/gallery/msepy_domains_and_meshes/msepy/_2d_cylinder_channel.png'
+        './source/gallery/msepy_domains_and_meshes/msepy/cylinder_channel_2d.png'
     )
+    None_or_custom_path = './source/gallery/msepy_domains_and_meshes/msepy/cylinder_channel_example.png'
+
 
 .. testcleanup::
 
@@ -15,7 +17,7 @@ r"""
 The cylinder channel is a mesh (or domain) in :math:`\mathbb{R}^n`, :math:`n\in\left\lbrace2,3\right\rbrace`.
 The 2d domain is illustrated in the following figure.
 
-.. figure:: _2d_cylinder_channel.png
+.. figure:: cylinder_channel_2d.png
     :height: 200
 
     The illustration of the 2d cylinder channel domain.
@@ -33,6 +35,18 @@ Examples
 >>> ph.config.set_embedding_space_dim(2)
 >>> manifold = ph.manifold(2)
 >>> mesh = ph.mesh(manifold)
+>>> msepy, obj = ph.fem.apply('msepy', locals())
+>>> manifold = obj['manifold']
+>>> mesh = obj['mesh']
+>>> msepy.config(manifold)('cylinder_channel')
+>>> msepy.config(mesh)(3)
+>>> mesh.visualize(saveto=None_or_custom_path)  # doctest: +ELLIPSIS
+<Figure size ...
+
+.. figure:: cylinder_channel_example.png
+    :width: 100%
+
+    The cylinder_channel mesh of element factor 3.
 
 """
 
@@ -118,7 +132,7 @@ def cylinder_channel(r=1, dl=8, dr=25, h=6, w=0, periodic=True):
 
 # noinspection PyPep8Naming
 class _CylinderChannel(object):
-    """           ^  y
+    r"""          ^  y
                   |
     ______________|______________________________________
     |                                                   |

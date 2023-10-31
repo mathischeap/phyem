@@ -1,31 +1,5 @@
-Results of doctest builder run on 2023-10-30 12:41:35
+Results of doctest builder run on 2023-10-31 20:46:25
 =====================================================
-
-Document: gallery/msepy_domains_and_meshes/msepy/crazy
-------------------------------------------------------
-1 items passed all tests:
-  18 tests in default
-18 tests in 1 items.
-18 passed and 0 failed.
-Test passed.
-1 items passed all tests:
-   1 tests in default (cleanup code)
-1 tests in 1 items.
-1 passed and 0 failed.
-Test passed.
-
-Document: tutorial/docs/wf
---------------------------
-1 items passed all tests:
-  32 tests in default
-32 tests in 1 items.
-32 passed and 0 failed.
-Test passed.
-1 items passed all tests:
-   1 tests in default (cleanup code)
-1 tests in 1 items.
-1 passed and 0 failed.
-Test passed.
 
 Document: gallery/div_grad/index
 --------------------------------
@@ -40,47 +14,8 @@ Test passed.
 1 passed and 0 failed.
 Test passed.
 
-Document: tutorial/docs/presetting
-----------------------------------
-1 items passed all tests:
-   3 tests in default
-3 tests in 1 items.
-3 passed and 0 failed.
-Test passed.
-1 items passed all tests:
-   1 tests in default (cleanup code)
-1 tests in 1 items.
-1 passed and 0 failed.
-Test passed.
-
-Document: tutorial/docs/implementations/msepy
----------------------------------------------
-1 items passed all tests:
-   7 tests in default
-7 tests in 1 items.
-7 passed and 0 failed.
-Test passed.
-1 items passed all tests:
-   1 tests in default (cleanup code)
-1 tests in 1 items.
-1 passed and 0 failed.
-Test passed.
-
-Document: gallery/MHD/Orszag_Tang_vortex/index
-----------------------------------------------
-1 items passed all tests:
-   2 tests in default
-2 tests in 1 items.
-2 passed and 0 failed.
-Test passed.
-1 items passed all tests:
-   1 tests in default (cleanup code)
-1 tests in 1 items.
-1 passed and 0 failed.
-Test passed.
-
-Document: gallery/msepy_domains_and_meshes/msepy/backward_step
---------------------------------------------------------------
+Document: gallery/msepy_domains_and_meshes/msepy/crazy
+------------------------------------------------------
 1 items passed all tests:
   18 tests in default
 18 tests in 1 items.
@@ -92,21 +27,8 @@ Test passed.
 1 passed and 0 failed.
 Test passed.
 
-Document: tutorial/docs/space_form
-----------------------------------
-1 items passed all tests:
-  12 tests in default
-12 tests in 1 items.
-12 passed and 0 failed.
-Test passed.
-1 items passed all tests:
-   1 tests in default (cleanup code)
-1 tests in 1 items.
-1 passed and 0 failed.
-Test passed.
-
-Document: gallery/msepy_domains_and_meshes/msepy/crazy_multi
-------------------------------------------------------------
+Document: gallery/msepy_domains_and_meshes/msepy/cylinder_channel
+-----------------------------------------------------------------
 1 items passed all tests:
    9 tests in default
 9 tests in 1 items.
@@ -131,12 +53,64 @@ Test passed.
 1 passed and 0 failed.
 Test passed.
 
+Document: gallery/msepy_domains_and_meshes/msepy/crazy_multi
+------------------------------------------------------------
+1 items passed all tests:
+   9 tests in default
+9 tests in 1 items.
+9 passed and 0 failed.
+Test passed.
+1 items passed all tests:
+   1 tests in default (cleanup code)
+1 tests in 1 items.
+1 passed and 0 failed.
+Test passed.
+
+Document: tutorial/docs/space_form
+----------------------------------
+1 items passed all tests:
+  12 tests in default
+12 tests in 1 items.
+12 passed and 0 failed.
+Test passed.
+1 items passed all tests:
+   1 tests in default (cleanup code)
+1 tests in 1 items.
+1 passed and 0 failed.
+Test passed.
+
 Document: tutorial/docs/manifold_mesh
 -------------------------------------
 1 items passed all tests:
    3 tests in default
 3 tests in 1 items.
 3 passed and 0 failed.
+Test passed.
+1 items passed all tests:
+   1 tests in default (cleanup code)
+1 tests in 1 items.
+1 passed and 0 failed.
+Test passed.
+
+Document: tutorial/docs/wf
+--------------------------
+1 items passed all tests:
+  32 tests in default
+32 tests in 1 items.
+32 passed and 0 failed.
+Test passed.
+1 items passed all tests:
+   1 tests in default (cleanup code)
+1 tests in 1 items.
+1 passed and 0 failed.
+Test passed.
+
+Document: tutorial/docs/implementations/msepy
+---------------------------------------------
+1 items passed all tests:
+  34 tests in default
+34 tests in 1 items.
+34 passed and 0 failed.
 Test passed.
 1 items passed all tests:
    1 tests in default (cleanup code)
@@ -157,9 +131,48 @@ Test passed.
 1 passed and 0 failed.
 Test passed.
 
+Document: gallery/msepy_domains_and_meshes/msepy/backward_step
+--------------------------------------------------------------
+1 items passed all tests:
+  18 tests in default
+18 tests in 1 items.
+18 passed and 0 failed.
+Test passed.
+1 items passed all tests:
+   1 tests in default (cleanup code)
+1 tests in 1 items.
+1 passed and 0 failed.
+Test passed.
+
+Document: gallery/MHD/Orszag_Tang_vortex/index
+----------------------------------------------
+1 items passed all tests:
+   2 tests in default
+2 tests in 1 items.
+2 passed and 0 failed.
+Test passed.
+1 items passed all tests:
+   1 tests in default (cleanup code)
+1 tests in 1 items.
+1 passed and 0 failed.
+Test passed.
+
+Document: tutorial/docs/presetting
+----------------------------------
+1 items passed all tests:
+   3 tests in default
+3 tests in 1 items.
+3 passed and 0 failed.
+Test passed.
+1 items passed all tests:
+   1 tests in default (cleanup code)
+1 tests in 1 items.
+1 passed and 0 failed.
+Test passed.
+
 Doctest summary
 ===============
-  124 tests
+  160 tests
     0 failures in tests
     0 failures in setup code
     0 failures in cleanup code

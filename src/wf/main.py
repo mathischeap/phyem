@@ -137,7 +137,7 @@ This command defines three abstract time instants, i.e.,
 
 .. math::
 
-    t^{k-1},\quad t^{k-\frac{1}{2}}, \quad t^{k}.
+    t^{k-1},\quad t^{k-\frac{1}{2}}, \quad t^{k}, \quad k\in\left\lbrace 1,2,3,\cdots\right\rbrace.
 
 Now, we can do the temporal discretization. For example, we apply an implicit midpoint discretization to
 the weak formulation, we shall do

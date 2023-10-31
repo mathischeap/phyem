@@ -17,11 +17,11 @@ This function takes two arguments,
 
     The implemented implementations are
 
-    +-------------------------+--------------------------------------------------------------------------------+
-    | **indicator**           |  **description**                                                               |
-    +-------------------------+--------------------------------------------------------------------------------+
-    | ``'msepy'``             | mimetic spectral elements in Python                                            |
-    +-------------------------+--------------------------------------------------------------------------------+
+    +-------------------------+-----------------------------------------------------------------+--------------------+
+    | **indicator**           |  **description**                                                | **parallelizable** |
+    +-------------------------+-----------------------------------------------------------------+--------------------+
+    | ``'msepy'``             | mimetic spectral elements in Python                             | No                 |
+    +-------------------------+-----------------------------------------------------------------+--------------------+
 
 The outputs are the implementation body, i.e. ``implementation``, and a dictionary of all instances that have
 their counterparts in this implementation, i.e. ``objects``, whose keys are the abstract variable names and

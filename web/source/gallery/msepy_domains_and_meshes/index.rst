@@ -12,18 +12,10 @@ showcased below
    :maxdepth: 1
 
    msepy/crazy
-
-
-.. toctree::
-   :maxdepth: 1
-
    msepy/crazy_multi
-
-
-.. toctree::
-   :maxdepth: 1
-
    msepy/backward_step
+   msepy/cylinder_channel
+
 
 
 |

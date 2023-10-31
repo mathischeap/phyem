@@ -23,8 +23,10 @@ Welcome
 - physics
 
 It was initiated as a part of the
-ERC advanced project `PortWings <http://www.portwings.eu/>`_.
-It is developed under a joint force of
+ERC advanced project `PortWings <http://www.portwings.eu/>`_ awarded to
+`prof.dr.ir. Stefano Stramigioli <https://people.utwente.nl/s.stramigioli>`_.
+
+*phyem* is developed under a joint force of
 `Andrea Brugnoli <https://www.researchgate.net/profile/Andrea-Brugnoli-3>`_,
 `Ramy Rashad <https://ramyrashad.com/>`_,
 `Stefano Stramigioli <https://people.utwente.nl/s.stramigioli>`_,
@@ -114,6 +116,18 @@ examples and applications using *phyem* into showcases at
    gallery/index
 
 
+
+Contact
+=======
+
+Getting in touch is important. See how at
+
+.. toctree::
+   :maxdepth: 1
+
+   contact
+
+
 |
 
 .. ↩️  Back to :ref:`PHYEM`.
@@ -123,8 +137,3 @@ examples and applications using *phyem* into showcases at
    Site traffic is measured only for statistic.
    Absolutely no data which may lead to minimal leak of your privacy is ever recorded.
    Thank you very much for visiting *phyem*.
-
-.. admonition:: Contact
-
-    - You can send us a message using :ref:`SEC-MESSAGE-FORM`.
-

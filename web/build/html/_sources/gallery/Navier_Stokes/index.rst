@@ -45,6 +45,7 @@ For numerical examples of Navier-Stokes flows, see
    :maxdepth: 1
 
    shear_layer_rollup/index
+   normal_dipole_collision/index
 
 
 |

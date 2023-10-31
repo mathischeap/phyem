@@ -42,6 +42,7 @@ below documentations no matter which type of problem you are targeting at.
         docs/ap
         docs/implementations
 
+
 More examples can be found at :ref:`Jupyter-notebooks` and :ref:`GALLERY-Gallery`.
 
 |

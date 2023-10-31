@@ -20,12 +20,12 @@ class MsePyRootFormVisualizeVTK(Frozen):
     def __call__(
             self,
             *other_forms,
-            file_path=None, sampling_factor=1,
+            saveto=None, sampling_factor=1,
             data_only=False, builder=True,   # cannot add **kwargs
     ):
         if len(other_forms) == 0:  # save only this one form.
-            if file_path is None:
-                file_path = self._f.name
+            if saveto is None:
+                saveto = self._f.name
             else:
                 pass
             abs_sp = self._f.space.abstract
@@ -37,20 +37,20 @@ class MsePyRootFormVisualizeVTK(Frozen):
 
             if indicator in ('Lambda', ):
                 return getattr(self, f'_Lambda_m{m}_n{n}_k{k}')(
-                    file_path, sampling_factor,
+                    saveto, sampling_factor,
                     data_only=data_only, builder=builder
                 )
             else:
                 raise NotImplementedError()
 
         else:   # we save a couple of forms together with this form.
-            if file_path is None:
-                file_path = 'msepy_forms_vtk'
+            if saveto is None:
+                saveto = 'msepy_forms_vtk'
             else:
                 pass
 
             vtk_builder, v = self.__call__(
-                file_path=None, sampling_factor=sampling_factor,
+                saveto=None, sampling_factor=sampling_factor,
                 data_only=True, builder=True,
             )
 
@@ -60,25 +60,23 @@ class MsePyRootFormVisualizeVTK(Frozen):
             for of in other_forms:
                 if of.__class__ is MsePyRootFormStaticCopy:
                     v_of = of.visualize.vtk(
-                        file_path=None, sampling_factor=sampling_factor,
+                        saveto=None, sampling_factor=sampling_factor,
                         data_only=True, builder=False,
                     )
                     v.update(v_of)
                 elif of.__class__ is MsePyRootForm:
                     v_of = of[self._f.visualize._t].visualize.vtk(
-                        file_path=None, sampling_factor=sampling_factor,
+                        saveto=None, sampling_factor=sampling_factor,
                         data_only=True, builder=False,
                     )
                     v.update(v_of)
                 else:
                     raise NotImplementedError()
 
-            vtk_builder(file_path, point_data=v)
-
-            return 0
+            vtk_builder(saveto, point_data=v)
 
     def _Lambda_m3_n3_k0(
-            self, file_path, sampling_factor,
+            self, saveto, sampling_factor,
             data_only=False, builder=True
     ):
         """"""
@@ -105,12 +103,10 @@ class MsePyRootFormVisualizeVTK(Frozen):
 
         else:
             vtk_builder = BuildVtkHexahedron(x, y, z, cell_layout=p)
-            vtk_builder(file_path, point_data={self._f.name: v})
-
-            return 0
+            vtk_builder(saveto, point_data={self._f.name: v})
 
     def _Lambda_m3_n3_k1(
-            self, file_path, sampling_factor,
+            self, saveto, sampling_factor,
             data_only=False, builder=True
     ):
         """"""
@@ -136,9 +132,7 @@ class MsePyRootFormVisualizeVTK(Frozen):
 
         else:
             vtk_builder = BuildVtkHexahedron(x, y, z, cell_layout=p)
-            vtk_builder(file_path, point_data={self._f.name: v, })
-
-            return 0
+            vtk_builder(saveto, point_data={self._f.name: v, })
 
     def _Lambda_m3_n3_k2(self, *args, **kwargs):
         """"""
@@ -149,7 +143,7 @@ class MsePyRootFormVisualizeVTK(Frozen):
         return self._Lambda_m3_n3_k0(*args, **kwargs)
 
     def _Lambda_m2_n2_k0(
-              self, file_path, sampling_factor,
+              self, saveto, sampling_factor,
               data_only=False, builder=True
     ):
         """"""
@@ -176,12 +170,10 @@ class MsePyRootFormVisualizeVTK(Frozen):
 
         else:
             vtk_builder = BuildVtkQuad(x, y, cell_layout=p)
-            vtk_builder(file_path, point_data={self._f.name: v})
-
-            return 0
+            vtk_builder(saveto, point_data={self._f.name: v})
 
     def _Lambda_m2_n2_k1(
-            self, file_path, sampling_factor,
+            self, saveto, sampling_factor,
             data_only=False, builder=True
     ):
         """"""
@@ -207,9 +199,7 @@ class MsePyRootFormVisualizeVTK(Frozen):
 
         else:
             vtk_builder = BuildVtkQuad(x, y, cell_layout=p)
-            vtk_builder(file_path, point_data={self._f.name: v, })
-
-            return 0
+            vtk_builder(saveto, point_data={self._f.name: v, })
 
     def _Lambda_m2_n2_k2(self, *args, **kwargs):
         """"""
