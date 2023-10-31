@@ -10,8 +10,8 @@ r"""
 
     **Advantages** of this are clear. No external packages (or APIs to other kernels)
     are needed to use *msepy* implementation; only common Python packages like scipy, numpy,
-    matplotlib, etc., are required. Users can quickly settle their machines no mather they are
-    Windows, Linux or Mac.
+    matplotlib, etc., are required. Users can quickly settle *phyem* in their machines
+    no mather they are Windows, Linux or Mac.
 
     The most obvious **disadvantage** of this implementation is that, since Python suffers from
     its relatively lower speed, this implementation is not proper for large problems. It is
@@ -24,15 +24,23 @@ first argument for ``apply`` of ``fem`` module, i.e.,
 
 >>> implementation, objects = ph.fem.apply('msepy', locals())
 
-To pick up the implemented counterpart of an abstract instance, we can just use its variable name, for example,
+We get the implementation body, ``implementation``, and the dictionary of all
+implemented counterparts, ``objects``.
+
+.. _Implementations-msepy-counterparts:
+
+Implemented counterparts
+************************
+
+To pick up the implemented counterparts of abstract instances, we can just use their variable names, for example,
 
 >>> manifold = objects['manifold']
 >>> mesh = objects['mesh']
 
 If some instances have no explicit varialbes, you could possiblly
 pick them up using their symbolic representations.
-For example, the boundary manifolds for defineing the boundary conditions have no explicit varibles,
-we can pick them using theire symbolic representations through the dictionary ``implementation.base``,
+For example, the boundary manifolds for defineing the boundary conditions have no explicit varibles.
+We can pick them using theire symbolic representations through the dictionary ``implementation.base``,
 
 >>> Gamma_alpha = implementation.base['manifolds'][r"\Gamma_{\alpha}"]
 >>> Gamma_beta = implementation.base['manifolds'][r"\Gamma_{\beta}"]
@@ -45,18 +53,48 @@ respectively. For example
 >>> mesh is implementation.base['meshes'][r'\mathfrak{M}']
 True
 
+We see that the mesh accessed from ``implementation.base['meshes']`` is the same mesh we obtained
+from ``objects``.
+
 
 .. _Implementations-msepy-config:
 
 Configuration
 *************
 
+❇️ **Manifold & Mesh**
+
+There are two ways to configure the abstract manifold and mesh to be exact ones:
+
+*1) Use predefined setting*:
+
+*msepy* has predefined maniolds (domains). To let a manifold to be a predefined one,
+we can call ``config`` of the implementation body, ``implementation``, for example,
+
 >>> implementation.config(manifold)(
 ...     'crazy', c=0., bounds=([0, 1], [0, 1]), periodic=False,
 ... )
 
+where the first argument, ``'crazy'``, is the indicator and the remaining arguments are
+parameters of the predefined manifold.
 
+.. admonition:: Predefined *msepy* manifolds
 
+    +----------------------+-------------------------------------------------------------+
+    | **indicator**        | **description**                                             |
+    +----------------------+-------------------------------------------------------------+
+    | ``'crazy'``          | See :ref:`GALLERY-msepy-domains-and-meshes=crazy`.          |
+    +----------------------+-------------------------------------------------------------+
+    | ``'crazy_multi'``    | See :ref:`GALLERY-msepy-domains-and-meshes=multi-crazy`.    |
+    +----------------------+-------------------------------------------------------------+
+    | ``'backward_step'``  | See :ref:`GALLERY-msepy-domains-and-meshes=backward-step`.  |
+    +----------------------+-------------------------------------------------------------+
+    | ...                  |                                                             |
+    |                      |                                                             |
+    |                      |                                                             |
+    +----------------------+-------------------------------------------------------------+
+
+For all
 
 """
 from tools.frozen import Frozen

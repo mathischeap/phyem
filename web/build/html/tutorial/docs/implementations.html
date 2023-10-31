@@ -9,7 +9,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
 
-    <title>7. Implementations &#8212; A finite element library powering Lego like simulation for (multi-)physics.</title>
+    <title>7. Implementations &#8212; phyem, a finite element library powering LEGO-like simulations for (multi-)physics.</title>
   
   
   
@@ -449,8 +449,8 @@ for example,</p>
 </div>
 <p>This function takes two arguments,</p>
 <ul class="simple">
-<li><p>the first argument is an indicator implying which implementation we want to use,</p></li>
-<li><p>the second argument is a dictionary of target objects; if we use <code class="docutils literal notranslate"><span class="pre">local()</span></code>, we target at all local variables.</p></li>
+<li><p>the first argument, <code class="docutils literal notranslate"><span class="pre">arg0</span></code>, is an indicator implying which implementation we want to use,</p></li>
+<li><p>the second argument. <code class="docutils literal notranslate"><span class="pre">arg1</span></code>, is a dictionary of target objects; if we use <code class="docutils literal notranslate"><span class="pre">local()</span></code>, we target at all local variables.</p></li>
 </ul>
 <div class="admonition important">
 <p class="admonition-title">Important</p>
@@ -466,23 +466,22 @@ for example,</p>
 </tbody>
 </table>
 </div>
-<p>The outputs are the implementation body, i.e. <code class="docutils literal notranslate"><span class="pre">implementation</span></code> and a dictionary of all instances that have
+<p>The outputs are the implementation body, i.e. <code class="docutils literal notranslate"><span class="pre">implementation</span></code>, and a dictionary of all instances that have
 their counterparts in this implementation, i.e. <code class="docutils literal notranslate"><span class="pre">objects</span></code>, whose keys are the abstract variable names and
 whose values are the counterparts.</p>
-<div class="admonition note">
-<p class="admonition-title">Note</p>
-<p>Note that if an abstract instance has no counterpart in the specified implementation, but it is still
+<p>If an abstract instance has no counterpart in the specified implementation, but it is still
 sent to <code class="docutils literal notranslate"><span class="pre">apply</span></code> (for example, through global variable dictionary <code class="docutils literal notranslate"><span class="pre">local()</span></code>), it returns
 no error (will just be ignored).</p>
-</div>
 <div class="line-block">
 <div class="line"><br /></div>
 </div>
-<p>Documentations of particular implementations are</p>
+<div class="admonition-particular-implementations admonition">
+<p class="admonition-title">Particular implementations</p>
 <div class="toctree-wrapper compound">
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="implementations/msepy.html">7.1. msepy</a></li>
 </ul>
+</div>
 </div>
 <div class="line-block">
 <div class="line"><br /></div>
@@ -535,7 +534,7 @@ no error (will just be ignored).</p>
   <div class="footer-item">
     
 <p class="component-author">
-By Andrea Brugnoli, Ramy Rashad, Stefano Stramigioli, Yi Zhang
+By Andrea Brugnoli, Ramy Rashad, Stefano Stramigioli, Yi Zhang and more
 </p>
 
   </div>
@@ -558,7 +557,7 @@ By Andrea Brugnoli, Ramy Rashad, Stefano Stramigioli, Yi Zhang
   <div class="footer-item">
     
 <div class="extra_footer">
-  <div>Last updated on October 30, 2023, 20:31:31, W. Europe Standard Time</div>
+  <div>Last updated on October 31, 2023, 13:52:33, W. Europe Standard Time</div>
 </div>
   </div>
   

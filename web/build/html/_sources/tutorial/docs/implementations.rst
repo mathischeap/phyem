@@ -15,12 +15,12 @@ Implementations
 
 |
 
-Documentations of particular implementations are
+.. admonition:: Particular implementations
 
-.. toctree::
-    :maxdepth: 1
+    .. toctree::
+        :maxdepth: 1
 
-    implementations/msepy
+        implementations/msepy
 
 |
 

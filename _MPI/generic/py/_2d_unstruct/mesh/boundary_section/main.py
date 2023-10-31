@@ -75,7 +75,7 @@ class MPI_Py_2D_Unstructured_BoundarySection(Frozen):
         """"""
         return self._base._make_boundary_face(index)
 
-    # -------- methods ----------------------------------------------------------------------
+    # -------- methods -------------------------------------------------
     def visualize(
             self,
             density=10,

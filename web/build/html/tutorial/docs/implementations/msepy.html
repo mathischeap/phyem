@@ -9,7 +9,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
 
-    <title>7.1. msepy &#8212; A finite element library powering Lego like simulation for (multi-)physics.</title>
+    <title>7.1. msepy &#8212; phyem, a finite element library powering LEGO-like simulations for (multi-)physics.</title>
   
   
   
@@ -434,7 +434,8 @@ document.write(`
             </div>
             <nav aria-label="Page">
                 <ul class="visible nav section-nav flex-column">
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#configuration">7.1.1. Configuration</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#implemented-counterparts">7.1.1. Implemented counterparts</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#configuration">7.1.2. Configuration</a></li>
 </ul>
             </nav>
         </div>
@@ -460,8 +461,8 @@ computationally intensive part of the simulation, the linear system solving, is 
 done within Python.</p>
 <p><strong>Advantages</strong> of this are clear. No external packages (or APIs to other kernels)
 are needed to use <em>msepy</em> implementation; only common Python packages like scipy, numpy,
-matplotlib, etc., are required. Users can quickly settle their machines no mather they are
-Windows, Linux or Mac.</p>
+matplotlib, etc., are required. Users can quickly settle <em>phyem</em> in their machines
+no mather they are Windows, Linux or Mac.</p>
 <p>The most obvious <strong>disadvantage</strong> of this implementation is that, since Python suffers from
 its relatively lower speed, this implementation is not proper for large problems. It is
 hard to say what problems are large. And it is also dependent on the machine. Normally,
@@ -473,15 +474,19 @@ first argument for <code class="docutils literal notranslate"><span class="pre">
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">implementation</span><span class="p">,</span> <span class="n">objects</span> <span class="o">=</span> <span class="n">ph</span><span class="o">.</span><span class="n">fem</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="s1">&#39;msepy&#39;</span><span class="p">,</span> <span class="nb">locals</span><span class="p">())</span>
 </pre></div>
 </div>
-<p>To pick up the implemented counterpart of an abstract instance, we can just use its variable name, for example,</p>
+<p>We get the implementation body, <code class="docutils literal notranslate"><span class="pre">implementation</span></code>, and the dictionary of all
+implemented counterparts, <code class="docutils literal notranslate"><span class="pre">objects</span></code>.</p>
+<section id="implemented-counterparts">
+<span id="implementations-msepy-counterparts"></span><h2><span class="section-number">7.1.1. </span>Implemented counterparts<a class="headerlink" href="#implemented-counterparts" title="Permalink to this heading">#</a></h2>
+<p>To pick up the implemented counterparts of abstract instances, we can just use their variable names, for example,</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">manifold</span> <span class="o">=</span> <span class="n">objects</span><span class="p">[</span><span class="s1">&#39;manifold&#39;</span><span class="p">]</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">mesh</span> <span class="o">=</span> <span class="n">objects</span><span class="p">[</span><span class="s1">&#39;mesh&#39;</span><span class="p">]</span>
 </pre></div>
 </div>
 <p>If some instances have no explicit varialbes, you could possiblly
 pick them up using their symbolic representations.
-For example, the boundary manifolds for defineing the boundary conditions have no explicit varibles,
-we can pick them using theire symbolic representations through the dictionary <code class="docutils literal notranslate"><span class="pre">implementation.base</span></code>,</p>
+For example, the boundary manifolds for defineing the boundary conditions have no explicit varibles.
+We can pick them using theire symbolic representations through the dictionary <code class="docutils literal notranslate"><span class="pre">implementation.base</span></code>,</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">Gamma_alpha</span> <span class="o">=</span> <span class="n">implementation</span><span class="o">.</span><span class="n">base</span><span class="p">[</span><span class="s1">&#39;manifolds&#39;</span><span class="p">][</span><span class="sa">r</span><span class="s2">&quot;\Gamma_{\alpha}&quot;</span><span class="p">]</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">Gamma_beta</span> <span class="o">=</span> <span class="n">implementation</span><span class="o">.</span><span class="n">base</span><span class="p">[</span><span class="s1">&#39;manifolds&#39;</span><span class="p">][</span><span class="sa">r</span><span class="s2">&quot;\Gamma_{\beta}&quot;</span><span class="p">]</span>
 </pre></div>
@@ -494,13 +499,46 @@ respectively. For example</p>
 <span class="go">True</span>
 </pre></div>
 </div>
+<p>We see that the mesh accessed from <code class="docutils literal notranslate"><span class="pre">implementation.base['meshes']</span></code> is the same mesh we obtained
+from <code class="docutils literal notranslate"><span class="pre">objects</span></code>.</p>
+</section>
 <section id="configuration">
-<span id="implementations-msepy-config"></span><h2><span class="section-number">7.1.1. </span>Configuration<a class="headerlink" href="#configuration" title="Permalink to this heading">#</a></h2>
+<span id="implementations-msepy-config"></span><h2><span class="section-number">7.1.2. </span>Configuration<a class="headerlink" href="#configuration" title="Permalink to this heading">#</a></h2>
+<p>❇️ <strong>Manifold &amp; Mesh</strong></p>
+<p>There are two ways to configure the abstract manifold and mesh to be exact ones:</p>
+<p><em>1) Use predefined setting</em>:</p>
+<p><em>msepy</em> has predefined maniolds (domains). To let a manifold to be a predefined one,
+we can call <code class="docutils literal notranslate"><span class="pre">config</span></code> of the implementation body, <code class="docutils literal notranslate"><span class="pre">implementation</span></code>, for example,</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">implementation</span><span class="o">.</span><span class="n">config</span><span class="p">(</span><span class="n">manifold</span><span class="p">)(</span>
 <span class="gp">... </span>    <span class="s1">&#39;crazy&#39;</span><span class="p">,</span> <span class="n">c</span><span class="o">=</span><span class="mf">0.</span><span class="p">,</span> <span class="n">bounds</span><span class="o">=</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">]),</span> <span class="n">periodic</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
 <span class="gp">... </span><span class="p">)</span>
 </pre></div>
 </div>
+<p>where the first argument, <code class="docutils literal notranslate"><span class="pre">'crazy'</span></code>, is the indicator and the remaining arguments are
+parameters of the predefined manifold.</p>
+<div class="admonition-predefined-msepy-manifolds admonition">
+<p class="admonition-title">Predefined <em>msepy</em> manifolds</p>
+<table class="table">
+<tbody>
+<tr class="row-odd"><td><p><strong>indicator</strong></p></td>
+<td><p><strong>description</strong></p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">'crazy'</span></code></p></td>
+<td><p>See <a class="reference internal" href="../../../gallery/msepy_domains_and_meshes/msepy/crazy.html#gallery-msepy-domains-and-meshes-crazy"><span class="std std-ref">Crazy domain and mesh</span></a>.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">'crazy_multi'</span></code></p></td>
+<td><p>See <a class="reference internal" href="../../../gallery/msepy_domains_and_meshes/msepy/crazy_multi.html#gallery-msepy-domains-and-meshes-multi-crazy"><span class="std std-ref">Multi-crazy domain and mesh</span></a>.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">'backward_step'</span></code></p></td>
+<td><p>See <a class="reference internal" href="../../../gallery/msepy_domains_and_meshes/msepy/backward_step.html#gallery-msepy-domains-and-meshes-backward-step"><span class="std std-ref">Backward step</span></a>.</p></td>
+</tr>
+<tr class="row-odd"><td><p>…</p></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>For all</p>
 </section>
 <div class="line-block">
 <div class="line"><br /></div>
@@ -556,7 +594,8 @@ respectively. For example</p>
   </div>
   <nav class="bd-toc-nav page-toc">
     <ul class="visible nav section-nav flex-column">
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#configuration">7.1.1. Configuration</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#implemented-counterparts">7.1.1. Implemented counterparts</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#configuration">7.1.2. Configuration</a></li>
 </ul>
   </nav></div>
 
@@ -571,7 +610,7 @@ respectively. For example</p>
   <div class="footer-item">
     
 <p class="component-author">
-By Andrea Brugnoli, Ramy Rashad, Stefano Stramigioli, Yi Zhang
+By Andrea Brugnoli, Ramy Rashad, Stefano Stramigioli, Yi Zhang and more
 </p>
 
   </div>
@@ -594,7 +633,7 @@ By Andrea Brugnoli, Ramy Rashad, Stefano Stramigioli, Yi Zhang
   <div class="footer-item">
     
 <div class="extra_footer">
-  <div>Last updated on October 30, 2023, 20:31:31, W. Europe Standard Time</div>
+  <div>Last updated on October 31, 2023, 13:52:33, W. Europe Standard Time</div>
 </div>
   </div>
   

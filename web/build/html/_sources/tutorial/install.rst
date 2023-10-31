@@ -13,9 +13,11 @@ Download
 .. important::
 
     We commend you to visit the release page of *phyem* git repository,
-    `Releases <https://github.com/mathischeap/phyem/releases>`_, to download the most recent stable version.
+    `Releases <https://github.com/mathischeap/phyem/releases>`_, to download the most recent stable version,
+    `v0.0.1-beta <https://github.com/mathischeap/phyem/releases/tag/v0.0.1-beta>`_.
 
-You can also download the source code on the fly from the GitHub page,
+
+You can also download the most recent (maybe not thoroughly tested) source code from the GitHub page,
 `git-phyem <https://github.com/mathischeap/phyem>`_, by, for example, running the following
 `git <https://git-scm.com/>`_
 command

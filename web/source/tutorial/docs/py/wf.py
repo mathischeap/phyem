@@ -34,12 +34,12 @@ expression = [
     'da_dt = + d_b',
     'db_dt = - cd_a'
 ]
-interpreter = {
-    'da_dt': da_dt,
-    'd_b': d_b,
-    'db_dt': db_dt,
-    'cd_a': cd_a
-}
+# interpreter = {
+#     'da_dt': da_dt,
+#     'd_b': d_b,
+#     'db_dt': db_dt,
+#     'cd_a': cd_a
+# }
 interpreter = locals()
 pde = ph.pde(expression, interpreter)
 pde.unknowns = [a, b]

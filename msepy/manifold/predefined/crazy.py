@@ -1,5 +1,16 @@
 # -*- coding: utf-8 -*-
 r"""
+.. testsetup:: *
+
+    None_or_custom_path_3 = './source/gallery/msepy_domains_and_meshes/msepy/crazy_3d_c.png'
+    None_or_custom_path_2 = './source/gallery/msepy_domains_and_meshes/msepy/crazy_2d_c.png'
+    import __init__ as ph
+
+.. testcleanup::
+
+    pass
+
+
 In :math:`\mathbb{R}^n` :math:`(n\in\left\lbrace1,2,3\right\rbrace)`, the crazy domain is
 (for ``msepy`` implementation only) defined in
 :math:`\underbrace{[a, b]\times[e, f]\times\cdots}_{n}`,
@@ -36,16 +47,6 @@ domain. The mapping :math:`\Phi` that transforms :math:`\mathring{\Omega}` into 
 
 Examples
 --------
-
-.. testsetup:: *
-
-    None_or_custom_path_3 = './source/gallery/msepy_domains_and_meshes/msepy/crazy_3d_c.png'
-    None_or_custom_path_2 = './source/gallery/msepy_domains_and_meshes/msepy/crazy_2d_c.png'
-    import __init__ as ph
-
-.. testcleanup::
-
-    pass
 
 Below codes generate a crazy domain in :math:`\Omega:=(x,y,z)\in[-1,1]\times[0,2]\times[0,2]\subset\mathbb{R}^3` of
 :math:`c=0.15`. A mesh

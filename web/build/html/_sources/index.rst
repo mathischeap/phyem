@@ -123,3 +123,8 @@ examples and applications using *phyem* into showcases at
    Site traffic is measured only for statistic.
    Absolutely no data which may lead to minimal leak of your privacy is ever recorded.
    Thank you very much for visiting *phyem*.
+
+.. admonition:: Contact
+
+    - You can send us a message using :ref:`SEC-MESSAGE-FORM`.
+

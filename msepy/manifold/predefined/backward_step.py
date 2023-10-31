@@ -15,6 +15,7 @@ r"""
 
     pass
 
+
 The backward step is a mesh (or domain) in :math:`\mathbb{R}^n`, :math:`n\in\left\lbrace2,3\right\rbrace`. The domain is
 illustrated in the following figure.
 

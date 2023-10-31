@@ -10,8 +10,8 @@ for example,
 
 This function takes two arguments,
 
-- the first argument is an indicator implying which implementation we want to use,
-- the second argument is a dictionary of target objects; if we use ``local()``, we target at all local variables.
+- the first argument, ``arg0``, is an indicator implying which implementation we want to use,
+- the second argument. ``arg1``, is a dictionary of target objects; if we use ``local()``, we target at all local variables.
 
 .. important::
 
@@ -23,15 +23,13 @@ This function takes two arguments,
     | ``'msepy'``             | mimetic spectral elements in Python                                            |
     +-------------------------+--------------------------------------------------------------------------------+
 
-The outputs are the implementation body, i.e. ``implementation`` and a dictionary of all instances that have
+The outputs are the implementation body, i.e. ``implementation``, and a dictionary of all instances that have
 their counterparts in this implementation, i.e. ``objects``, whose keys are the abstract variable names and
 whose values are the counterparts.
 
-.. note::
-
-    Note that if an abstract instance has no counterpart in the specified implementation, but it is still
-    sent to ``apply`` (for example, through global variable dictionary ``local()``), it returns
-    no error (will just be ignored).
+If an abstract instance has no counterpart in the specified implementation, but it is still
+sent to ``apply`` (for example, through global variable dictionary ``local()``), it returns
+no error (will just be ignored).
 
 """
 from src.manifold import Manifold

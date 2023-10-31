@@ -1,5 +1,14 @@
 # -*- coding: utf-8 -*-
 r"""
+.. testsetup:: *
+
+    None_or_custom_path = './source/gallery/msepy_domains_and_meshes/msepy/crazy_multi.png'
+    import __init__ as ph
+
+.. testcleanup::
+
+    pass
+
 
 The multi-crazy ones are like stacking multiple :ref:`GALLERY-msepy-domains-and-meshes=crazy`
 (blocks) together. The parameters are same to those of the crazy
@@ -17,16 +26,6 @@ mesh except there is one additional, ``Ns``, see:
 
 Examples
 --------
-
-.. testsetup:: *
-
-    None_or_custom_path = './source/gallery/msepy_domains_and_meshes/msepy/crazy_multi.png'
-    import __init__ as ph
-
-.. testcleanup::
-
-    pass
-
 
 We now generate a multi-crazy mesh in domain :math:`\Omega:=(x,y,z)\in[-1,1]\times[0,2]\subset\mathbb{R}^2` of
 :math:`2 * 3` crazy blocks at :math:`c=0.3`. In each crazy block, we make :math:`5 * 3` elements. The codes are
