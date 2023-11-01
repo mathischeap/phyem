@@ -9,7 +9,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
 
-    <title>Discretization &#8212; phyem, a finite element library powering LEGO-like simulations for (multi-)physics.</title>
+    <title>How to discretize equations &#8212; phyem, a finite element library powering LEGO-like simulations for (multi-)physics.</title>
   
   
   
@@ -221,13 +221,13 @@
 <ul class="current nav bd-sidenav">
 <li class="toctree-l1 current active has-children"><a class="reference internal" href="../index.html">Jupyter notebooks</a><input checked="" class="toctree-checkbox" id="toctree-checkbox-3" name="toctree-checkbox-3" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-3"><i class="fa-solid fa-chevron-down"></i></label><ul class="current">
 <li class="toctree-l2"><a class="reference internal" href="first_equation.html">Set up your first equation</a></li>
-<li class="toctree-l2 current active"><a class="current reference internal" href="#">Discretization</a></li>
+<li class="toctree-l2 current active"><a class="current reference internal" href="#">How to discretize equations</a></li>
 </ul>
 </li>
 </ul>
 <ul class="nav bd-sidenav">
 <li class="toctree-l1 has-children"><a class="reference internal" href="../../gallery/index.html">Gallery</a><input class="toctree-checkbox" id="toctree-checkbox-4" name="toctree-checkbox-4" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-4"><i class="fa-solid fa-chevron-down"></i></label><ul>
-<li class="toctree-l2 has-children"><a class="reference internal" href="../../gallery/msepy_domains_and_meshes/index.html"><code class="docutils literal notranslate"><span class="pre">msepy</span></code> domains and meshes</a><input class="toctree-checkbox" id="toctree-checkbox-5" name="toctree-checkbox-5" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-5"><i class="fa-solid fa-chevron-down"></i></label><ul>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../../gallery/msepy_domains_and_meshes/index.html"><em>msepy</em> domains and meshes</a><input class="toctree-checkbox" id="toctree-checkbox-5" name="toctree-checkbox-5" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-5"><i class="fa-solid fa-chevron-down"></i></label><ul>
 <li class="toctree-l3"><a class="reference internal" href="../../gallery/msepy_domains_and_meshes/msepy/crazy.html">Crazy domain and mesh</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../gallery/msepy_domains_and_meshes/msepy/crazy_multi.html">Multi-crazy domain and mesh</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../gallery/msepy_domains_and_meshes/msepy/backward_step.html">Backward step</a></li>
@@ -430,7 +430,7 @@ document.write(`
               
 
 <div id="jb-print-docs-body" class="onlyprint">
-    <h1>Discretization</h1>
+    <h1>How to discretize equations</h1>
     <!-- Table of contents -->
     <div id="print-main-content">
         <div id="jb-print-toc">
@@ -444,17 +444,17 @@ document.write(`
 <div id="searchbox"></div>
                 <article class="bd-article" role="main">
                   
-  <section id="Discretization">
-<h1>Discretization<a class="headerlink" href="#Discretization" title="Permalink to this heading">#</a></h1>
-<p>Now we demonstrate how to discretize an equation object.</p>
-<p>Pre-coded sample objects are stored in <code class="docutils literal notranslate"><span class="pre">sample</span></code> attribute of <code class="docutils literal notranslate"><span class="pre">phyem</span></code> packages. Invoke these samples by</p>
+  <section id="How-to-discretize-equations">
+<h1>How to discretize equations<a class="headerlink" href="#How-to-discretize-equations" title="Permalink to this heading">#</a></h1>
+<p>Now we demonstrate how to discretize a PDE object.</p>
+<p>Pre-coded sample objects are stored in <code class="docutils literal notranslate"><span class="pre">sample</span></code> attribute of <em>phyem</em>. Invoke these samples by</p>
 <div class="nbinput nblast docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[1]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">sys</span>
-<span class="n">path_to_phyem</span> <span class="o">=</span> <span class="s1">&#39;../../../../../&#39;</span>   <span class="c1"># the path to dir that containing the phyem package.</span>
-<span class="n">sys</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">path_to_phyem</span><span class="p">)</span>
+<span class="n">ph_dir</span> <span class="o">=</span> <span class="s1">&#39;../../../../../&#39;</span>   <span class="c1"># the path to dir that containing the phyem package.</span>
+<span class="n">sys</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">ph_dir</span><span class="p">)</span>
 <span class="kn">import</span> <span class="nn">phyem</span> <span class="k">as</span> <span class="nn">ph</span>  <span class="c1"># import the phyem package</span>
 <span class="n">ph</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">_set_matplot_block</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span>
 <span class="n">samples</span> <span class="o">=</span> <span class="n">ph</span><span class="o">.</span><span class="n">samples</span>
@@ -584,7 +584,7 @@ document.write(`
 </pre></div>
 </div>
 </div>
-<p>The matrix format of the weak formulation lead to a linear system,</p>
+<p>The matrix format of the weak formulation leads to a linear system,</p>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[9]:
 </pre></div>
@@ -674,7 +674,7 @@ By Andrea Brugnoli, Ramy Rashad, Stefano Stramigioli, Yi Zhang and more
   <div class="footer-item">
     
 <div class="extra_footer">
-  <div>Last updated on October 31, 2023, 21:23:01, W. Europe Standard Time</div>
+  <div>Last updated on November 01, 2023, 14:06:55, W. Europe Standard Time</div>
 </div>
   </div>
   

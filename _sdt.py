@@ -5,9 +5,11 @@ A collection sphinx doctests functions.
 
 __all__ = [
     "div_grad_2d_periodic_manufactured_test",
+    "div_grad_2d_general_bc_manufactured_test",
 ]
 
 from tests.msepy.div_grad._2d_outer_periodic import div_grad_2d_periodic_manufactured_test
+from tests.msepy.div_grad._2d_outer import div_grad_2d_general_bc_manufactured_test
 
 
 if __name__ == '__main__':

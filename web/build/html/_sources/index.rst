@@ -52,10 +52,10 @@ that only a basic level of Python programming skills is required.
     +---------------------------+--------------------------------------------------------+-----------------------------+
     | **module**                | **description**                                        | **Environment**             |
     +---------------------------+--------------------------------------------------------+-----------------------------+
-    | *the mathematical kernel* | It is for setting up the problem and the               | natural Python; it works    |
+    | *the mathematical kernel* | It is for setting up the problem and the               | Natural Python; it works    |
     |                           | discretization theoretically.                          | with Windows, Linux or Mac. |
     +---------------------------+--------------------------------------------------------+-----------------------------+
-    | *implementations*         | The discretization is sent to one of the               | depends on particular       |
+    | *implementations*         | The discretization is sent to one of the               | Depends on particular       |
     |                           | implementations. It uses a particular finite element   | implementations; the        |
     |                           | setting, generates algebraic systems to be solved,     | :ref:`Implementations-msepy`|
     |                           | and eventually gives results to be post-processed.     | implementation              |

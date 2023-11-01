@@ -9,21 +9,15 @@ Contact
 Main contributors
 -----------------
 
-You can find contact of contributors by click at their names.
+You can find contact of contributors by clicking at their names:
 
 +--------------------------------------------------------------------------------------------------+
 |`Andrea Brugnoli <https://www.researchgate.net/profile/Andrea-Brugnoli-3>`_                       |
-|                                                                                                  |
 +--------------------------------------------------------------------------------------------------+
-|                                                                                                  |
 |`Ramy Rashad <https://ramyrashad.com/>`_                                                          |
-|                                                                                                  |
 +--------------------------------------------------------------------------------------------------+
-|                                                                                                  |
 |`Stefano Stramigioli <https://people.utwente.nl/s.stramigioli>`_                                  |
-|                                                                                                  |
 +--------------------------------------------------------------------------------------------------+
-|                                                                                                  |
 |`Yi Zhang <https://mathischeap.com/>`_                                                            |
 |                                                                                                  |
 +--------------------------------------------------------------------------------------------------+

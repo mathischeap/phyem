@@ -218,13 +218,13 @@
 <ul class="nav bd-sidenav">
 <li class="toctree-l1 has-children"><a class="reference internal" href="../jupyter/index.html">Jupyter notebooks</a><input class="toctree-checkbox" id="toctree-checkbox-3" name="toctree-checkbox-3" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-3"><i class="fa-solid fa-chevron-down"></i></label><ul>
 <li class="toctree-l2"><a class="reference internal" href="../jupyter/general/first_equation.html">Set up your first equation</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../jupyter/general/discretize_linear_pH_system.html">Discretization</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../jupyter/general/discretize_linear_pH_system.html">How to discretize equations</a></li>
 </ul>
 </li>
 </ul>
 <ul class="nav bd-sidenav">
 <li class="toctree-l1 has-children"><a class="reference internal" href="../gallery/index.html">Gallery</a><input class="toctree-checkbox" id="toctree-checkbox-4" name="toctree-checkbox-4" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-4"><i class="fa-solid fa-chevron-down"></i></label><ul>
-<li class="toctree-l2 has-children"><a class="reference internal" href="../gallery/msepy_domains_and_meshes/index.html"><code class="docutils literal notranslate"><span class="pre">msepy</span></code> domains and meshes</a><input class="toctree-checkbox" id="toctree-checkbox-5" name="toctree-checkbox-5" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-5"><i class="fa-solid fa-chevron-down"></i></label><ul>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../gallery/msepy_domains_and_meshes/index.html"><em>msepy</em> domains and meshes</a><input class="toctree-checkbox" id="toctree-checkbox-5" name="toctree-checkbox-5" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-5"><i class="fa-solid fa-chevron-down"></i></label><ul>
 <li class="toctree-l3"><a class="reference internal" href="../gallery/msepy_domains_and_meshes/msepy/crazy.html">Crazy domain and mesh</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../gallery/msepy_domains_and_meshes/msepy/crazy_multi.html">Multi-crazy domain and mesh</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../gallery/msepy_domains_and_meshes/msepy/backward_step.html">Backward step</a></li>
@@ -460,7 +460,7 @@ document.write(`
 <p class="admonition-title">Important</p>
 <p>We commend you to visit the release page of <em>phyem</em> git repository,
 <a class="reference external" href="https://github.com/mathischeap/phyem/releases">Releases</a>, to download the most recent stable version,
-<a class="reference external" href="https://github.com/mathischeap/phyem/releases/tag/v0.0.1-beta">v0.0.1-beta</a>.</p>
+<a class="reference external" href="https://github.com/mathischeap/phyem/releases/tag/v0.0.1-release">v0.0.1</a>.</p>
 </div>
 <p>You can also download the most recent (maybe not thoroughly tested) source code from the GitHub page,
 <a class="reference external" href="https://github.com/mathischeap/phyem">git-phyem</a>, by, for example, running the following
@@ -487,8 +487,8 @@ command</p>
 For example, if the <em>package</em> is put in dir <code class="code docutils literal notranslate"><span class="pre">~/my_packages/</span></code>, in a Python
 script or console, you can do</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">sys</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">ph_path</span> <span class="o">=</span> <span class="s1">&#39;~/my_packages/&#39;</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">sys</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">ph_path</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">ph_dir</span> <span class="o">=</span> <span class="s1">&#39;~/my_packages/&#39;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">sys</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">ph_dir</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>When this script is executed, the path <code class="code docutils literal notranslate"><span class="pre">~/my_packages/</span></code> will be added to system path temporally.
@@ -502,7 +502,8 @@ Then the <em>phyem</em> library can be imported by</p>
 <div class="admonition caution">
 <p class="admonition-title">Caution</p>
 <p><em>phyem</em> is dependent of other Python packages such as numpy, scipy, matplotlib and so on. Check
-<code class="code docutils literal notranslate"><span class="pre">phyem/requirements.text</span></code> for the list of dependencies.</p>
+<code class="code docutils literal notranslate"><span class="pre">phyem/requirements.text</span></code> for the list of dependencies and install whatever you miss through
+for example <a class="reference external" href="https://pypi.org/">pip</a>.</p>
 </div>
 <div class="line-block">
 <div class="line"><br /></div>
@@ -594,7 +595,7 @@ By Andrea Brugnoli, Ramy Rashad, Stefano Stramigioli, Yi Zhang and more
   <div class="footer-item">
     
 <div class="extra_footer">
-  <div>Last updated on October 31, 2023, 21:23:01, W. Europe Standard Time</div>
+  <div>Last updated on November 01, 2023, 14:06:55, W. Europe Standard Time</div>
 </div>
   </div>
   

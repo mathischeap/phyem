@@ -17,7 +17,7 @@ Incompressibility
 =================
 
 In a connected, bounded domain :math:`\Omega \subset \mathbb{R}^{d}`, :math:`d\in\left\lbrace2,3\right\rbrace` with
-Lipschitz boundary :math:`\partial \Omega`, the incompressible (more strictly speaking, constant density)
+a Lipschitz boundary :math:`\partial \Omega`, the incompressible (more strictly speaking, constant density)
 Navier-Stokes equations are of the generic dimensionless form,
 
 .. math::
@@ -31,7 +31,8 @@ Navier-Stokes equations are of the generic dimensionless form,
     \end{aligned}
     \end{equation}
 
-where :math:`\boldsymbol{u}` is velocity, :math:`p` is pressure, :math:`\boldsymbol{f}` is the body force,
+where :math:`\boldsymbol{u}` is the velocity field, :math:`p` is the static pressure,
+:math:`\boldsymbol{f}` is the body force,
 :math:`\mathrm{Re}` is the Reynolds number, :math:`\mathcal{C}(\boldsymbol{u})` and
 :math:`\mathcal{D}(\boldsymbol{u})` represent the nonlinear convective term and the linear dissipative term,
 respectively.
@@ -39,7 +40,7 @@ respectively.
 
 Numerical Examples
 ==================
-For numerical examples of Navier-Stokes flows, see
+For numerical simulations of Navier-Stokes flows with *phyem*, see
 
 .. toctree::
    :maxdepth: 1

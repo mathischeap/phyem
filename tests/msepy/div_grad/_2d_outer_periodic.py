@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 r"""
-Here we demonstrate how to use PHYEM, the ``msepy`` implementation, to solve the two-dimensional div-grad problem.
+Here we demonstrate how to use *phyem*, the *msepy* implementation, to solve the two-dimensional div-grad problem.
 
 In two-dimensions, the mixed formulation of the div-grad problem is
 
@@ -28,16 +28,7 @@ We use the :ref:`GALLERY-msepy-domains-and-meshes=multi-crazy` for this test. Th
 Examples
 ========
 
-.. testsetup:: *
-
-    from _sdt import div_grad_2d_periodic_manufactured_test
-
-.. testcleanup::
-
-    pass
-
 Below, we use mimetic spectral elements of degree 2 on a uniform mesh of :math:`4 * 4 * 4` :math:`(K=4)` elements.
-
 
 >>> errors4 = div_grad_2d_periodic_manufactured_test(2, 4)
 >>> errors4[0]  # doctest: +ELLIPSIS
@@ -66,10 +57,12 @@ def phi_func(t, x, y):
 
 import sys
 
-if './' not in sys.path:
-    sys.path.append('./')
+ph_dir = '../'  # customize it to your dir containing phyem
+if ph_dir not in sys.path:
+    sys.path.append(ph_dir)
+
 import numpy as np
-import __init__ as ph
+import phyem as ph
 
 
 def div_grad_2d_periodic_manufactured_test(degree, K, c=0):

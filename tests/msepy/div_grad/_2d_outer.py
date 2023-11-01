@@ -1,84 +1,140 @@
 # -*- coding: utf-8 -*-
-"""
-python tests/msepy/div_grad/_2d_outer.py
+r"""
+Here we repeat the test, but with essential boundary :math:`\mathrm{tr}\ u^1`
+on faces :math:`y=0` and :math:`y=1`, and natural boundary condition
+:math:`\mathrm{tr}\left(\star \varphi^2\right)` on faces :math:`x=0` and :math:`x=1`.
+
+The implementation is
+
+.. autofunction:: tests.msepy.div_grad._2d_outer.div_grad_2d_general_bc_manufactured_test
+
+Examples
+--------
+
+If we solve it with :math:`4\times4` elements
+(note that here we use a different mesh compared to the periodic test)
+at polynomial degree 2,
+
+>>> errors4 = div_grad_2d_general_bc_manufactured_test(2, 4)
+>>> errors4[0]  # doctest: +ELLIPSIS
+0.06...
+
+We increase :math:`K` to :math:`K=8`, we do
+
+>>> errors8 = div_grad_2d_general_bc_manufactured_test(2, 8)
+
+We can compute the convergence rate of the :math:`L^2`-error of solution :math:`\varphi_h^2` by
+
+>>> import numpy as np
+>>> rate = (np.log10(errors4[0]) - np.log10(errors8[0])) / (np.log10(1/4) - np.log10(1/8))
+>>> round(rate, 1)
+2.0
+
+Again, the optimal convergence rate is obtained.
+
 """
 
 import sys
 
-if './' not in sys.path:
-    sys.path.append('./')
+ph_dir = '../'  # customize it to your dir containing phyem
+if ph_dir not in sys.path:
+    sys.path.append(ph_dir)
 
+import phyem as ph
 import numpy as np
 
-import __init__ as ph
-n = 2
-ls, mp = ph.samples.wf_div_grad(n=n, degree=3, orientation='outer', periodic=False)
-# ls.pr()
 
-msepy, obj = ph.fem.apply('msepy', locals())
+def div_grad_2d_general_bc_manufactured_test(degree, K, c=0.):
+    r"""
 
-manifold = msepy.base['manifolds'][r"\mathcal{M}"]
-boundary_manifold = msepy.base['manifolds'][r"\partial\mathcal{M}"]
-Gamma_phi = msepy.base['manifolds'][r"\Gamma_\phi"]
-Gamma_u = msepy.base['manifolds'][r"\Gamma_u"]
+    Parameters
+    ----------
+    degree : int
+        The degree of the mimetic spectral elements.
+    K : int
+        In total we will use :math:`4 * K * K` elements.
+    c : float, default=0
+        The deformation factor of the :ref:`GALLERY-msepy-domains-and-meshes=crazy`.
 
-msepy.config(manifold)(
-    'crazy', c=0., bounds=[[0., 1.] for _ in range(n)], periodic=False,
-)
-# msepy.config(manifold)('backward_step')
-msepy.config(Gamma_u)(
-    manifold, {0: [1, 1, 0, 0]}
-)
+    Returns
+    -------
+    phi_error: float
+        The :math:`L^2`-error of solution :math:`\varphi_h^2`.
+    u_error: float
+        The :math:`L^2`-error of solution :math:`u_h^1`.
 
-# manifold.visualize()
-# boundary_manifold.visualize()
-# Gamma_phi.visualize()
-# Gamma_u.visualize()
+    """
 
-mesh = msepy.base['meshes'][r'\mathfrak{M}']
-msepy.config(mesh)([8, 8])
+    n = 2
+    ls, mp = ph.samples.wf_div_grad(n=n, degree=degree, orientation='outer', periodic=False)
 
-# for mesh_repr in msepy.base['meshes']:
-#     mesh = msepy.base['meshes'][mesh_repr]
-#     mesh.visualize()
+    msepy, obj = ph.fem.apply('msepy', locals())
 
-phi = msepy.base['forms']['potential']
-u = msepy.base['forms']['velocity']
-f = msepy.base['forms']['source']
+    manifold = msepy.base['manifolds'][r"\mathcal{M}"]
+    boundary_manifold = msepy.base['manifolds'][r"\partial\mathcal{M}"]
+    Gamma_phi = msepy.base['manifolds'][r"\Gamma_\phi"]
+    Gamma_u = msepy.base['manifolds'][r"\Gamma_u"]
 
-ls = obj['ls'].apply()
+    msepy.config(manifold)(
+        'crazy', c=c, bounds=[[0., 1.] for _ in range(n)], periodic=False,
+    )
+
+    msepy.config(Gamma_u)(
+        manifold, {0: [1, 1, 0, 0]}
+    )
+
+    # manifold.visualize()
+    # boundary_manifold.visualize()
+    # Gamma_phi.visualize()
+    # Gamma_u.visualize()
+
+    mesh = msepy.base['meshes'][r'\mathfrak{M}']
+    msepy.config(mesh)([K, K])
+
+    # for mesh_repr in msepy.base['meshes']:
+    #     mesh = msepy.base['meshes'][mesh_repr]
+    #     mesh.visualize()
+
+    phi = msepy.base['forms']['potential']
+    u = msepy.base['forms']['velocity']
+    f = msepy.base['forms']['source']
+
+    ls = obj['ls'].apply()
+
+    def phi_func(t, x, y):
+        """"""
+        return - np.cos(2 * np.pi * x) * np.cos(2 * np.pi * y) + t * 0
+
+    phi_scalar = ph.vc.scalar(phi_func)
+
+    phi.cf = phi_scalar
+    u.cf = - phi.cf.codifferential()
+    f.cf = - u.cf.exterior_derivative()
+    # u.cf = phi_scalar.gradient
+    # f.cf = - phi_scalar.gradient.divergence
+
+    ls.bc.config(Gamma_phi)(phi_scalar)
+    ls.bc.config(Gamma_u)(phi_scalar.gradient)
+
+    f[0].reduce()
+    # phi[0].reduce()
+    # f[0].visualize()
+
+    ls0 = ls(0)
+    als = ls0.assemble()
+    results = als.solve()
+    ls0.x.update(results[0])
+
+    # phi[0].visualize()
+    # u[0].visualize()
+
+    return phi[0].error(), u[0].error()
 
 
-def phi_func(t, x, y):
-    """"""
-    return - np.cos(2 * np.pi * x) * np.cos(2 * np.pi * y) + t * 0
+if __name__ == '__main__':
+    # python tests/msepy/div_grad/_2d_outer.py
+    import doctest
+    doctest.testmod()
 
-
-phi_scalar = ph.vc.scalar(phi_func)
-
-phi.cf = phi_scalar
-# u.cf = - phi.cf.codifferential()
-# f.cf = - u.cf.exterior_derivative()
-u.cf = phi_scalar.gradient
-f.cf = - phi_scalar.gradient.divergence
-
-ls.bc.config(Gamma_phi)(phi_scalar)
-ls.bc.config(Gamma_u)(phi_scalar.gradient)
-
-f[0].reduce()
-# phi[0].reduce()
-# f[0].visualize()
-
-ls0 = ls(0)
-
-# ls0.customize.set_dof(-1, phi[0].cochain.of_dof(-1))
-als = ls0.assemble()
-# als.solve.scheme = 'gmres'
-results = als.solve()
-ls0.x.update(results[0])
-
-phi[0].visualize()
-u[0].visualize()
-
-print(phi[0].error())
-print(u[0].error())
+    errors = div_grad_2d_general_bc_manufactured_test(2, 4)
+    print(errors)

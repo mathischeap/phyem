@@ -22,7 +22,7 @@ r"""
 
 .. caution::
 
-    *msepy* is not parallelizable, do not execuate with for example ``mpiexec``.
+    *msepy* is not parallelizable; do not execuate with for example ``mpiexec``.
 
 To invoke the msepy implementation, use indicator ``'msepy'`` as the
 first argument for ``apply`` of ``fem`` module, i.e.,
@@ -176,13 +176,13 @@ And in total, we have 50 time steps, :math:`k\in\left\lbrace1,2,3,\cdots,50\righ
 
 ❇️ **Initial condition**
 
-Suppose the linear port Hamiltonian problem we try to solve has an analytical solution,
+Suppose the linear port Hamiltonian problem we try to solve has an analytic solution,
 
 .. math::
     \left\lbrace
     \begin{aligned}
-        & \tilde{\alpha}_{\mathrm{analytical}}(x, y, t) = - g(x,y)\dfrac{\mathrm{d}f(t)}{\mathrm{d}t} \\
-        & \tilde{\beta}_{\mathrm{analytical}}(x, y, t) = \begin{bmatrix}
+        & \tilde{\alpha}_{\mathrm{analytic}}(x, y, t) = - g(x,y)\dfrac{\mathrm{d}f(t)}{\mathrm{d}t} \\
+        & \tilde{\beta}_{\mathrm{analytic}}(x, y, t) = \begin{bmatrix}
             \dfrac{\partial g}{\partial x}(x, y) f(t) \\
             \dfrac{\partial g}{\partial y}(x, y) f(t)
         \end{bmatrix}
@@ -230,7 +230,8 @@ the simulation. For example,
 
 .. note::
 
-    The brackets,``[]``, return a staic copy of the form at a particular time instant. For example, ``a[0]`` gives
+    The brackets, ``[]``, of a form return a staic copy of the form at a particular time instant.
+    For example, ``a[0]`` gives
     the static copy of ``a`` at :math:`t=0`.
 
 So, the first two lines of above code discretize the analytic solution at :math:`t=0` to the discrete forms
@@ -272,7 +273,7 @@ We first define two lists to store the errors,
 >>> a_errors = [a_L2_error_t0, ]
 >>> b_errors = [b_L2_error_t0, ]
 
-We then can go through all time steps by iterating over all :math:`k\in\left\lbrace1,2,3,\cdots,100\right\rbrace`,
+We then go through all time steps by iterating over all :math:`k\in\left\lbrace1,2,3,\cdots,50\right\rbrace`,
 
 >>> for k in range(1, 51):
 ...     static_ls = ls(k=k)                      # get the static linear system for k=...
@@ -307,18 +308,18 @@ You can save the solution to VTK file by calling
 >>> a[1].visualize.vtk(saveto='a1')
 >>> b[1].visualize.vtk(saveto='b1')
 
-The first line saves the static copy of ``a`` at :math:`t=1`` to ``./a1.vtu`` and the second line
-saves the static copy of ``b`` at :math:`t=1`` to ``./b1.vtu``.
+The first line saves the static copy of ``a`` at :math:`t=1` to ``./a1.vtu`` and the second line
+saves the static copy of ``b`` at :math:`t=1` to ``./b1.vtu``.
 
 You can also save them into one file by
 
 >>> a[1].visualize.vtk(b[1], saveto='a1_b1')
 
-Static copies of ``a`` and ``b`` at :math:`t=1`` are saved to ``./a1_b1.vtu``.
+Static copies of ``a`` and ``b`` at :math:`t=1` are saved to ``./a1_b1.vtu``.
 
 Then visualization tools can be used to visualize and analyze the solutions. And we recommend,
 for example, the open-source
-visualization software `Paraview <http://paraview.org>`_.
+visualization software `Paraview <https://www.paraview.org/>`_.
 
 You can also try
 

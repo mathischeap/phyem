@@ -12,7 +12,7 @@ r"""
 
 
 In :math:`\mathbb{R}^n` :math:`(n\in\left\lbrace1,2,3\right\rbrace)`, the crazy domain is
-(for ``msepy`` implementation only) defined in
+(for *msepy* implementation only) defined in
 :math:`\underbrace{[a, b]\times[e, f]\times\cdots}_{n}`,
 and :math:`[a, b]`, :math:`[e, f]`, :math:`\cdots` :math:`(a, b, e, f, \cdots \in \mathbb{R})` are the bounds.
 The parameters of a crazy domain are

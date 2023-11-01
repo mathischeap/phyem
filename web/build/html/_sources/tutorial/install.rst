@@ -14,7 +14,7 @@ Download
 
     We commend you to visit the release page of *phyem* git repository,
     `Releases <https://github.com/mathischeap/phyem/releases>`_, to download the most recent stable version,
-    `v0.0.1-beta <https://github.com/mathischeap/phyem/releases/tag/v0.0.1-beta>`_.
+    `v0.0.1 <https://github.com/mathischeap/phyem/releases/tag/v0.0.1-release>`_.
 
 
 You can also download the most recent (maybe not thoroughly tested) source code from the GitHub page,
@@ -51,8 +51,8 @@ script or console, you can do
 .. code-block::
 
     >>> import sys
-    >>> ph_path = '~/my_packages/'
-    >>> sys.path.append(ph_path)
+    >>> ph_dir = '~/my_packages/'
+    >>> sys.path.append(ph_dir)
 
 When this script is executed, the path :code:`~/my_packages/` will be added to system path temporally.
 Of course, if :code:`~/my_packages/` is a default system path, you can omit above three lines of code.
@@ -68,7 +68,8 @@ If above commands work, *phyem* is ready in your machine.
 .. caution::
 
     *phyem* is dependent of other Python packages such as numpy, scipy, matplotlib and so on. Check
-    :code:`phyem/requirements.text` for the list of dependencies.
+    :code:`phyem/requirements.text` for the list of dependencies and install whatever you miss through
+    for example `pip <https://pypi.org/>`_.
 
 |
 

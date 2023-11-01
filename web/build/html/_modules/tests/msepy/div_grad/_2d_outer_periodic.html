@@ -8,7 +8,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>tests.msepy.div_grad._2d_outer_periodic &#8212; A finite element library powering Lego like simulation for (multi-)physics.</title>
+    <title>tests.msepy.div_grad._2d_outer_periodic &#8212; phyem, a finite element library powering LEGO-like simulations for (multi-)physics.</title>
   
   
   
@@ -221,15 +221,17 @@
 </ul>
 <ul class="nav bd-sidenav">
 <li class="toctree-l1 has-children"><a class="reference internal" href="../../../../gallery/index.html">Gallery</a><input class="toctree-checkbox" id="toctree-checkbox-4" name="toctree-checkbox-4" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-4"><i class="fa-solid fa-chevron-down"></i></label><ul>
-<li class="toctree-l2 has-children"><a class="reference internal" href="../../../../gallery/msepy_domains_and_meshes/index.html"><code class="docutils literal notranslate"><span class="pre">msepy</span></code> domains and meshes</a><input class="toctree-checkbox" id="toctree-checkbox-5" name="toctree-checkbox-5" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-5"><i class="fa-solid fa-chevron-down"></i></label><ul>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../../../../gallery/msepy_domains_and_meshes/index.html"><em>msepy</em> domains and meshes</a><input class="toctree-checkbox" id="toctree-checkbox-5" name="toctree-checkbox-5" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-5"><i class="fa-solid fa-chevron-down"></i></label><ul>
 <li class="toctree-l3"><a class="reference internal" href="../../../../gallery/msepy_domains_and_meshes/msepy/crazy.html">Crazy domain and mesh</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../../gallery/msepy_domains_and_meshes/msepy/crazy_multi.html">Multi-crazy domain and mesh</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../../gallery/msepy_domains_and_meshes/msepy/backward_step.html">Backward step</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../gallery/msepy_domains_and_meshes/msepy/cylinder_channel.html">Cylinder_channel</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../gallery/div_grad/index.html">div-grad</a></li>
 <li class="toctree-l2 has-children"><a class="reference internal" href="../../../../gallery/Navier_Stokes/index.html">Navier-Stokes equations</a><input class="toctree-checkbox" id="toctree-checkbox-6" name="toctree-checkbox-6" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-6"><i class="fa-solid fa-chevron-down"></i></label><ul>
 <li class="toctree-l3"><a class="reference internal" href="../../../../gallery/Navier_Stokes/shear_layer_rollup/index.html">Shear layer rollup</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../gallery/Navier_Stokes/normal_dipole_collision/index.html">Normal dipole collision</a></li>
 </ul>
 </li>
 <li class="toctree-l2 has-children"><a class="reference internal" href="../../../../gallery/MHD/index.html">MHD (magnetohydrodynamics)</a><input class="toctree-checkbox" id="toctree-checkbox-7" name="toctree-checkbox-7" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-7"><i class="fa-solid fa-chevron-down"></i></label><ul>
@@ -238,6 +240,9 @@
 </li>
 </ul>
 </li>
+</ul>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../../../../contact.html">Contact</a></li>
 </ul>
 
     </div>
@@ -388,7 +393,7 @@ document.write(`
   <h1>Source code for tests.msepy.div_grad._2d_outer_periodic</h1><div class="highlight"><pre>
 <span></span><span class="c1"># -*- coding: utf-8 -*-</span>
 <span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">Here we demonstrate how to use PHYEM, the ``msepy`` implementation, to solve the two-dimensional div-grad problem.</span>
+<span class="sd">Here we demonstrate how to use *phyem*, the *msepy* implementation, to solve the two-dimensional div-grad problem.</span>
 
 <span class="sd">In two-dimensions, the mixed formulation of the div-grad problem is</span>
 
@@ -416,16 +421,7 @@ document.write(`
 <span class="sd">Examples</span>
 <span class="sd">========</span>
 
-<span class="sd">.. testsetup:: *</span>
-
-<span class="sd">    from _sdt import div_grad_2d_periodic_manufactured_test</span>
-
-<span class="sd">.. testcleanup::</span>
-
-<span class="sd">    pass</span>
-
 <span class="sd">Below, we use mimetic spectral elements of degree 2 on a uniform mesh of :math:`4 * 4 * 4` :math:`(K=4)` elements.</span>
-
 
 <span class="sd">&gt;&gt;&gt; errors4 = div_grad_2d_periodic_manufactured_test(2, 4)</span>
 <span class="sd">&gt;&gt;&gt; errors4[0]  # doctest: +ELLIPSIS</span>
@@ -454,10 +450,12 @@ document.write(`
 
 <span class="kn">import</span> <span class="nn">sys</span>
 
-<span class="k">if</span> <span class="s1">&#39;./&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">sys</span><span class="o">.</span><span class="n">path</span><span class="p">:</span>
-    <span class="n">sys</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">&#39;./&#39;</span><span class="p">)</span>
+<span class="n">ph_dir</span> <span class="o">=</span> <span class="s1">&#39;../&#39;</span>  <span class="c1"># customize it to your dir containing phyem</span>
+<span class="k">if</span> <span class="n">ph_dir</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">sys</span><span class="o">.</span><span class="n">path</span><span class="p">:</span>
+    <span class="n">sys</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">ph_dir</span><span class="p">)</span>
+
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
-<span class="kn">import</span> <span class="nn">__init__</span> <span class="k">as</span> <span class="nn">ph</span>
+<span class="kn">import</span> <span class="nn">phyem</span> <span class="k">as</span> <span class="nn">ph</span>
 
 
 <div class="viewcode-block" id="div_grad_2d_periodic_manufactured_test"><a class="viewcode-back" href="../../../../gallery/div_grad/index.html#tests.msepy.div_grad._2d_outer_periodic.div_grad_2d_periodic_manufactured_test">[docs]</a><span class="k">def</span> <span class="nf">div_grad_2d_periodic_manufactured_test</span><span class="p">(</span><span class="n">degree</span><span class="p">,</span> <span class="n">K</span><span class="p">,</span> <span class="n">c</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
@@ -555,7 +553,7 @@ document.write(`
   <div class="footer-item">
     
 <p class="component-author">
-By Andrea Brugnoli, Ramy Rashad, Stefano Stramigioli, Yi Zhang
+By Andrea Brugnoli, Ramy Rashad, Stefano Stramigioli, Yi Zhang and more
 </p>
 
   </div>
@@ -578,7 +576,7 @@ By Andrea Brugnoli, Ramy Rashad, Stefano Stramigioli, Yi Zhang
   <div class="footer-item">
     
 <div class="extra_footer">
-  <div>Last updated on October 30, 2023, 18:39:26, W. Europe Standard Time</div>
+  <div>Last updated on November 01, 2023, 12:03:56, W. Europe Standard Time</div>
 </div>
   </div>
   

@@ -215,13 +215,13 @@
 <ul class="nav bd-sidenav">
 <li class="toctree-l1 has-children"><a class="reference internal" href="jupyter/index.html">Jupyter notebooks</a><input class="toctree-checkbox" id="toctree-checkbox-3" name="toctree-checkbox-3" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-3"><i class="fa-solid fa-chevron-down"></i></label><ul>
 <li class="toctree-l2"><a class="reference internal" href="jupyter/general/first_equation.html">Set up your first equation</a></li>
-<li class="toctree-l2"><a class="reference internal" href="jupyter/general/discretize_linear_pH_system.html">Discretization</a></li>
+<li class="toctree-l2"><a class="reference internal" href="jupyter/general/discretize_linear_pH_system.html">How to discretize equations</a></li>
 </ul>
 </li>
 </ul>
 <ul class="nav bd-sidenav">
 <li class="toctree-l1 has-children"><a class="reference internal" href="gallery/index.html">Gallery</a><input class="toctree-checkbox" id="toctree-checkbox-4" name="toctree-checkbox-4" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-4"><i class="fa-solid fa-chevron-down"></i></label><ul>
-<li class="toctree-l2 has-children"><a class="reference internal" href="gallery/msepy_domains_and_meshes/index.html"><code class="docutils literal notranslate"><span class="pre">msepy</span></code> domains and meshes</a><input class="toctree-checkbox" id="toctree-checkbox-5" name="toctree-checkbox-5" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-5"><i class="fa-solid fa-chevron-down"></i></label><ul>
+<li class="toctree-l2 has-children"><a class="reference internal" href="gallery/msepy_domains_and_meshes/index.html"><em>msepy</em> domains and meshes</a><input class="toctree-checkbox" id="toctree-checkbox-5" name="toctree-checkbox-5" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-5"><i class="fa-solid fa-chevron-down"></i></label><ul>
 <li class="toctree-l3"><a class="reference internal" href="gallery/msepy_domains_and_meshes/msepy/crazy.html">Crazy domain and mesh</a></li>
 <li class="toctree-l3"><a class="reference internal" href="gallery/msepy_domains_and_meshes/msepy/crazy_multi.html">Multi-crazy domain and mesh</a></li>
 <li class="toctree-l3"><a class="reference internal" href="gallery/msepy_domains_and_meshes/msepy/backward_step.html">Backward step</a></li>
@@ -464,15 +464,17 @@ document.write(`
 </li>
       <li><a href="tutorial/docs/wf.html#src.wf.main.WfDerive.delete">delete() (WfDerive method)</a>
 </li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="tutorial/docs/pde.html#src.pde.PartialDifferentialEquations.derive">derive (PartialDifferentialEquations property)</a>
 
       <ul>
         <li><a href="tutorial/docs/wf.html#src.wf.main.WeakFormulation.derive">(WeakFormulation property)</a>
 </li>
       </ul></li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="tutorial/docs/wf.html#src.wf.main.TemporalDiscretization.differentiate">differentiate() (TemporalDiscretization method)</a>
+</li>
+      <li><a href="gallery/div_grad/index.html#tests.msepy.div_grad._2d_outer.div_grad_2d_general_bc_manufactured_test">div_grad_2d_general_bc_manufactured_test() (in module tests.msepy.div_grad._2d_outer)</a>
 </li>
       <li><a href="gallery/div_grad/index.html#tests.msepy.div_grad._2d_outer_periodic.div_grad_2d_periodic_manufactured_test">div_grad_2d_periodic_manufactured_test() (in module tests.msepy.div_grad._2d_outer_periodic)</a>
 </li>
@@ -583,6 +585,8 @@ document.write(`
         <li><a href="tutorial/docs/wf.html#module-src.wf.main">src.wf.main</a>
 </li>
         <li><a href="tutorial/docs/ap.html#module-src.wf.mp.main">src.wf.mp.main</a>
+</li>
+        <li><a href="gallery/div_grad/index.html#module-tests.msepy.div_grad._2d_outer">tests.msepy.div_grad._2d_outer</a>
 </li>
         <li><a href="gallery/div_grad/index.html#module-tests.msepy.div_grad._2d_outer_periodic">tests.msepy.div_grad._2d_outer_periodic</a>
 </li>
@@ -799,12 +803,21 @@ document.write(`
       <li><a href="tutorial/docs/pde.html#src.pde.PartialDifferentialEquations.test_with">test_with() (PartialDifferentialEquations method)</a>
 </li>
       <li>
+    tests.msepy.div_grad._2d_outer
+
+      <ul>
+        <li><a href="gallery/div_grad/index.html#module-tests.msepy.div_grad._2d_outer">module</a>
+</li>
+      </ul></li>
+      <li>
     tests.msepy.div_grad._2d_outer_periodic
 
       <ul>
         <li><a href="gallery/div_grad/index.html#module-tests.msepy.div_grad._2d_outer_periodic">module</a>
 </li>
       </ul></li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
       <li>
     tests.msepy.div_grad.div_grad
 
@@ -812,8 +825,6 @@ document.write(`
         <li><a href="gallery/div_grad/index.html#module-tests.msepy.div_grad.div_grad">module</a>
 </li>
       </ul></li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li>
     tests.samples.iniCond_Orszag_Tang_vortex
 
@@ -912,7 +923,7 @@ By Andrea Brugnoli, Ramy Rashad, Stefano Stramigioli, Yi Zhang and more
   <div class="footer-item">
     
 <div class="extra_footer">
-  <div>Last updated on October 31, 2023, 21:23:01, W. Europe Standard Time</div>
+  <div>Last updated on November 01, 2023, 14:06:55, W. Europe Standard Time</div>
 </div>
   </div>
   

@@ -1,10 +1,10 @@
 
 .. _GALLERY-msepy-domains-and-meshes:
 
-``msepy`` domains and meshes
-============================
+*msepy* domains and meshes
+==========================
 
-The ``msepy`` implementation has its own domain and mesh generator. The predefined domains and meshes are
+The *msepy* implementation has its own domain and mesh generator. The predefined domains and meshes are
 showcased below
 
 

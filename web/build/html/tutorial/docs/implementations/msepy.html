@@ -220,13 +220,13 @@
 <ul class="nav bd-sidenav">
 <li class="toctree-l1 has-children"><a class="reference internal" href="../../../jupyter/index.html">Jupyter notebooks</a><input class="toctree-checkbox" id="toctree-checkbox-3" name="toctree-checkbox-3" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-3"><i class="fa-solid fa-chevron-down"></i></label><ul>
 <li class="toctree-l2"><a class="reference internal" href="../../../jupyter/general/first_equation.html">Set up your first equation</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../../jupyter/general/discretize_linear_pH_system.html">Discretization</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../jupyter/general/discretize_linear_pH_system.html">How to discretize equations</a></li>
 </ul>
 </li>
 </ul>
 <ul class="nav bd-sidenav">
 <li class="toctree-l1 has-children"><a class="reference internal" href="../../../gallery/index.html">Gallery</a><input class="toctree-checkbox" id="toctree-checkbox-4" name="toctree-checkbox-4" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-4"><i class="fa-solid fa-chevron-down"></i></label><ul>
-<li class="toctree-l2 has-children"><a class="reference internal" href="../../../gallery/msepy_domains_and_meshes/index.html"><code class="docutils literal notranslate"><span class="pre">msepy</span></code> domains and meshes</a><input class="toctree-checkbox" id="toctree-checkbox-5" name="toctree-checkbox-5" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-5"><i class="fa-solid fa-chevron-down"></i></label><ul>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../../../gallery/msepy_domains_and_meshes/index.html"><em>msepy</em> domains and meshes</a><input class="toctree-checkbox" id="toctree-checkbox-5" name="toctree-checkbox-5" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-5"><i class="fa-solid fa-chevron-down"></i></label><ul>
 <li class="toctree-l3"><a class="reference internal" href="../../../gallery/msepy_domains_and_meshes/msepy/crazy.html">Crazy domain and mesh</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../gallery/msepy_domains_and_meshes/msepy/crazy_multi.html">Multi-crazy domain and mesh</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../gallery/msepy_domains_and_meshes/msepy/backward_step.html">Backward step</a></li>
@@ -480,7 +480,7 @@ explore the edge by trial.</p>
 </div>
 <div class="admonition caution">
 <p class="admonition-title">Caution</p>
-<p><em>msepy</em> is not parallelizable, do not execuate with for example <code class="docutils literal notranslate"><span class="pre">mpiexec</span></code>.</p>
+<p><em>msepy</em> is not parallelizable; do not execuate with for example <code class="docutils literal notranslate"><span class="pre">mpiexec</span></code>.</p>
 </div>
 <p>To invoke the msepy implementation, use indicator <code class="docutils literal notranslate"><span class="pre">'msepy'</span></code> as the
 first argument for <code class="docutils literal notranslate"><span class="pre">apply</span></code> of <code class="docutils literal notranslate"><span class="pre">fem</span></code> module, i.e.,</p>
@@ -618,12 +618,12 @@ one from <span class="math notranslate nohighlight">\(t^{k-1}\)</span> to <span 
 <div class="line"><br /></div>
 </div>
 <p>❇️ <strong>Initial condition</strong></p>
-<p>Suppose the linear port Hamiltonian problem we try to solve has an analytical solution,</p>
+<p>Suppose the linear port Hamiltonian problem we try to solve has an analytic solution,</p>
 <div class="math notranslate nohighlight">
 \[\begin{split}\left\lbrace
 \begin{aligned}
-    &amp; \tilde{\alpha}_{\mathrm{analytical}}(x, y, t) = - g(x,y)\dfrac{\mathrm{d}f(t)}{\mathrm{d}t} \\
-    &amp; \tilde{\beta}_{\mathrm{analytical}}(x, y, t) = \begin{bmatrix}
+    &amp; \tilde{\alpha}_{\mathrm{analytic}}(x, y, t) = - g(x,y)\dfrac{\mathrm{d}f(t)}{\mathrm{d}t} \\
+    &amp; \tilde{\beta}_{\mathrm{analytic}}(x, y, t) = \begin{bmatrix}
         \dfrac{\partial g}{\partial x}(x, y) f(t) \\
         \dfrac{\partial g}{\partial y}(x, y) f(t)
     \end{bmatrix}
@@ -666,7 +666,8 @@ the simulation. For example,</p>
 </div>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
-<p>The brackets,``[]``, return a staic copy of the form at a particular time instant. For example, <code class="docutils literal notranslate"><span class="pre">a[0]</span></code> gives
+<p>The brackets, <code class="docutils literal notranslate"><span class="pre">[]</span></code>, of a form return a staic copy of the form at a particular time instant.
+For example, <code class="docutils literal notranslate"><span class="pre">a[0]</span></code> gives
 the static copy of <code class="docutils literal notranslate"><span class="pre">a</span></code> at <span class="math notranslate nohighlight">\(t=0\)</span>.</p>
 </div>
 <p>So, the first two lines of above code discretize the analytic solution at <span class="math notranslate nohighlight">\(t=0\)</span> to the discrete forms
@@ -703,7 +704,7 @@ need to pick up the implemented linear system by its local variable name, i.e.,<
 <span class="gp">&gt;&gt;&gt; </span><span class="n">b_errors</span> <span class="o">=</span> <span class="p">[</span><span class="n">b_L2_error_t0</span><span class="p">,</span> <span class="p">]</span>
 </pre></div>
 </div>
-<p>We then can go through all time steps by iterating over all <span class="math notranslate nohighlight">\(k\in\left\lbrace1,2,3,\cdots,100\right\rbrace\)</span>,</p>
+<p>We then go through all time steps by iterating over all <span class="math notranslate nohighlight">\(k\in\left\lbrace1,2,3,\cdots,50\right\rbrace\)</span>,</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">51</span><span class="p">):</span>
 <span class="gp">... </span>    <span class="n">static_ls</span> <span class="o">=</span> <span class="n">ls</span><span class="p">(</span><span class="n">k</span><span class="o">=</span><span class="n">k</span><span class="p">)</span>                      <span class="c1"># get the static linear system for k=...</span>
 <span class="gp">... </span>    <span class="n">assembled_ls</span> <span class="o">=</span> <span class="n">static_ls</span><span class="o">.</span><span class="n">assemble</span><span class="p">()</span>      <span class="c1"># assemble the static linear system into a global system</span>
@@ -735,16 +736,16 @@ it. To check it, do</p>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">b</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">visualize</span><span class="o">.</span><span class="n">vtk</span><span class="p">(</span><span class="n">saveto</span><span class="o">=</span><span class="s1">&#39;b1&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
-<p>The first line saves the static copy of <code class="docutils literal notranslate"><span class="pre">a</span></code> at <span class="math notranslate nohighlight">\(t=1`\)</span> to <code class="docutils literal notranslate"><span class="pre">./a1.vtu</span></code> and the second line
-saves the static copy of <code class="docutils literal notranslate"><span class="pre">b</span></code> at <span class="math notranslate nohighlight">\(t=1`\)</span> to <code class="docutils literal notranslate"><span class="pre">./b1.vtu</span></code>.</p>
+<p>The first line saves the static copy of <code class="docutils literal notranslate"><span class="pre">a</span></code> at <span class="math notranslate nohighlight">\(t=1\)</span> to <code class="docutils literal notranslate"><span class="pre">./a1.vtu</span></code> and the second line
+saves the static copy of <code class="docutils literal notranslate"><span class="pre">b</span></code> at <span class="math notranslate nohighlight">\(t=1\)</span> to <code class="docutils literal notranslate"><span class="pre">./b1.vtu</span></code>.</p>
 <p>You can also save them into one file by</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">a</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">visualize</span><span class="o">.</span><span class="n">vtk</span><span class="p">(</span><span class="n">b</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">saveto</span><span class="o">=</span><span class="s1">&#39;a1_b1&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
-<p>Static copies of <code class="docutils literal notranslate"><span class="pre">a</span></code> and <code class="docutils literal notranslate"><span class="pre">b</span></code> at <span class="math notranslate nohighlight">\(t=1`\)</span> are saved to <code class="docutils literal notranslate"><span class="pre">./a1_b1.vtu</span></code>.</p>
+<p>Static copies of <code class="docutils literal notranslate"><span class="pre">a</span></code> and <code class="docutils literal notranslate"><span class="pre">b</span></code> at <span class="math notranslate nohighlight">\(t=1\)</span> are saved to <code class="docutils literal notranslate"><span class="pre">./a1_b1.vtu</span></code>.</p>
 <p>Then visualization tools can be used to visualize and analyze the solutions. And we recommend,
 for example, the open-source
-visualization software <a class="reference external" href="http://paraview.org">Paraview</a>.</p>
+visualization software <a class="reference external" href="https://www.paraview.org/">Paraview</a>.</p>
 <p>You can also try</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">a</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">visualize</span><span class="o">.</span><span class="n">matplot</span><span class="p">()</span>
 </pre></div>
@@ -848,7 +849,7 @@ By Andrea Brugnoli, Ramy Rashad, Stefano Stramigioli, Yi Zhang and more
   <div class="footer-item">
     
 <div class="extra_footer">
-  <div>Last updated on October 31, 2023, 21:23:01, W. Europe Standard Time</div>
+  <div>Last updated on November 01, 2023, 14:06:55, W. Europe Standard Time</div>
 </div>
   </div>
   
