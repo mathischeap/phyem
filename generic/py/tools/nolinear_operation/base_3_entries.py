@@ -4,6 +4,8 @@ r"""
 import numpy as np
 from scipy.sparse import csr_matrix
 from tools.frozen import Frozen
+from src.config import _global_variables
+threshold = _global_variables['zero_entry_threshold']
 
 from generic.py.matrix.localize.dynamic import Localize_Dynamic_Matrix
 from generic.py.matrix.localize.static import Localize_Static_Matrix
@@ -196,5 +198,6 @@ class _Matrix_Caller(Frozen):
             self._given_form_cochain_vector[index],
             optimize='optimal'
         )
+        M[np.abs(M) < threshold] = 0
         M = csr_matrix(M)
         return M

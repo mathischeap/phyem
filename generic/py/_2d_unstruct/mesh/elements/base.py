@@ -9,17 +9,10 @@ class Element(Frozen):
 
     @property
     def type(self):
-        """The generic category of the element."""
         raise NotImplementedError()
 
     @property
     def orthogonal(self):
-        """If the element is distorted."""
-        raise NotImplementedError()
-
-    @property
-    def element_type(self):
-        """'type' + 'orthogonal' means 'element_type'."""
         raise NotImplementedError()
 
     @property
@@ -58,7 +51,7 @@ class CoordinateTransformation:
         raise NotImplementedError
 
     def Jacobian_matrix(self, xi, et):
-        """ r, s be in [-1, 1]. """
+        """ r, s be in [-1, 1]."""
         cached, JM = ndarray_key_comparer(
             _global_JM_cache_CT,
             [xi, et],
@@ -104,6 +97,7 @@ class CoordinateTransformation:
         we know that the metric ``g`` is equal to square of ``det(J)``. ``g = (det(J))**2`` is due to the
         fact that the Jacobian matrix is square. The definition of ``g`` usually is given
         as ``g:= det(G)`` where ``G`` is the metric matrix, or metric tensor.
+
         """
         cached, m = ndarray_key_comparer(
             _global_m_cache_CT,
@@ -122,7 +116,7 @@ class CoordinateTransformation:
         return m
 
     def inverse_Jacobian_matrix(self, *evaluationPoints):
-        """The inverse Jacobian matrix. """
+        """The inverse Jacobian matrix."""
         cached, iJM = ndarray_key_comparer(
             _global_iJM_cache_CT, evaluationPoints, check_str=self._metric_signature
         )
@@ -146,7 +140,7 @@ class CoordinateTransformation:
         return iJM
 
     def inverse_Jacobian(self, *evaluationPoints):
-        """Determinant of the inverse Jacobian matrix. """
+        """Determinant of the inverse Jacobian matrix."""
         cached, J = ndarray_key_comparer(
             _global_iJ_cache_CT, evaluationPoints, check_str=self._metric_signature
         )
@@ -169,6 +163,7 @@ class CoordinateTransformation:
         determinant of the Jacobian matrix.
 
         The entries of G are normally denoted as g_{i,j}.
+
         """
         cached, G = ndarray_key_comparer(
             _global_mm_cache_CT, evaluationPoints, check_str=self._metric_signature
@@ -198,6 +193,7 @@ class CoordinateTransformation:
         or the metric of the inverse mapping. It is usually denoted as G^{-1}.
 
         The entries of G^{-1} are normally denoted as g^{i,j}.
+
         """
         cached, iG = ndarray_key_comparer(
             _global_iMM_cache_CT, evaluationPoints, check_str=self._metric_signature

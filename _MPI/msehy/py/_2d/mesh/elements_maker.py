@@ -50,7 +50,7 @@ class Generic_Elements_Maker(Frozen):
                 current += dis
 
             element_distribution = list()
-            for _ in range(SIZE):
+            for s in range(SIZE):
                 element_distribution.append(
                     list()
                 )

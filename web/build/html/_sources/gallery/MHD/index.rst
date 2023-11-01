@@ -1,11 +1,11 @@
 
 .. _GALLERY-MHD:
 
-==========================
-MHD (magnetohydrodynamics)
-==========================
+===
+MHD
+===
 
-    **Magnetohydrodynamics** (**MHD**; also called **magneto-fluid dynamics** or **hydromagnetics**) is a model of
+    **MHD (Magnetohydrodynamics)** (also called **magneto-fluid dynamics** or **hydromagnetics**) is a model of
     electrically conducting fluids that treats all interpenetrating particle species together as a single continuous
     medium. It is primarily concerned with the low-frequency, large-scale, magnetic behavior in plasmas and liquid
     metals and has applications in numerous fields including geophysics, astrophysics, and engineering.

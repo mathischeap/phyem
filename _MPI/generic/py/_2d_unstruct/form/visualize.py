@@ -144,26 +144,11 @@ class MPI_PY_2D_FORM_VISUALIZE(Frozen):
             data_only=False, builder=True
     ):
         """"""
-        p, nodes0 = self._parse_p_nodes(sampling_factor, anti_top_corner_singularity=0)
-        p, nodes2 = self._parse_p_nodes(sampling_factor, anti_top_corner_singularity=2)
+        p, nodes = self._parse_p_nodes(sampling_factor, anti_top_corner_singularity=2)
 
-        element_type_indices = self._f.mesh.element_type_indices
-
-        xy = self._f.space.reconstruct.Lambda._coordinates_only(*nodes0, ravel=False)
+        xy, v = self._f[t].reconstruct(*nodes, ravel=False)
         x, y = xy
-
-        v = dict()
-        for element_type in element_type_indices:
-            indices = element_type_indices[element_type]
-            if element_type == 'rq':
-                _, v_type = self._f[t].reconstruct(*nodes0, ravel=False, element_range=indices)
-            elif element_type == 'rt':
-                _, v_type = self._f[t].reconstruct(*nodes2, ravel=False, element_range=indices)
-            else:
-                raise NotImplementedError
-            v_type = v_type[0]
-            v.update(v_type)
-
+        v = v[0]
         x, y, v = merge_dict(x, y, v, root=MASTER_RANK)
 
         if RANK == MASTER_RANK:
@@ -199,28 +184,11 @@ class MPI_PY_2D_FORM_VISUALIZE(Frozen):
             data_only=False, builder=True
     ):
         """"""
-        p, nodes0 = self._parse_p_nodes(sampling_factor, anti_top_corner_singularity=0)
-        p, nodes1 = self._parse_p_nodes(sampling_factor, anti_top_corner_singularity=1)
+        p, nodes = self._parse_p_nodes(sampling_factor, anti_top_corner_singularity=1)
 
-        element_type_indices = self._f.mesh.element_type_indices
-
-        xy = self._f.space.reconstruct.Lambda._coordinates_only(*nodes0, ravel=False)
+        xy, v = self._f[t].reconstruct(*nodes, ravel=False)
         x, y = xy
-
-        u = dict()
-        v = dict()
-        for element_type in element_type_indices:
-            indices = element_type_indices[element_type]
-            if element_type == 'rq':
-                _, v_type = self._f[t].reconstruct(*nodes0, ravel=False, element_range=indices)
-            elif element_type == 'rt':
-                _, v_type = self._f[t].reconstruct(*nodes1, ravel=False, element_range=indices)
-            else:
-                raise NotImplementedError
-            u_type, v_type = v_type
-            u.update(u_type)
-            v.update(v_type)
-
+        u, v = v
         x, y, u, v = merge_dict(x, y, u, v, root=MASTER_RANK)
 
         if RANK == MASTER_RANK:

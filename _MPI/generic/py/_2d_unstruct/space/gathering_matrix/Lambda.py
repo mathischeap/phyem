@@ -18,6 +18,7 @@ class MPI_PY2_GatheringMatrixLambda(Frozen):
         self._orientation = space.abstract.orientation
         self._cache = {}
         self._cache_000 = {}
+        self._k0_master_cache = {}
         self._freeze()
 
     def __call__(self, degree):
@@ -35,103 +36,114 @@ class MPI_PY2_GatheringMatrixLambda(Frozen):
             return gm
 
     def _k0_master(self, p):
-        element_map = self._mesh._total_map
-        numbered_edges = dict()
-        numbered_corner = dict()
-        NUMBERING = dict()
-        current = 0
-        num_internal = (p-1) * (p-1)
-        num_edge = p-1  # corners are numbered independently.
-
-        for index in self._mesh._total_map:
-            vertices = element_map[index]
-            ele_type = self._mesh._total_type[index]
-            if ele_type in ('rq', ):
-
-                edge_dx_y0 = (vertices[0], vertices[1])
-                edge_dx_y1 = (vertices[3], vertices[2])
-
-                edge_dy_x0 = (vertices[0], vertices[3])
-                edge_dy_x1 = (vertices[1], vertices[2])
-
-                corner0 = vertices[0]
-                corner1 = vertices[1]
-                corner2 = vertices[2]
-                corner3 = vertices[3]
-
-            elif ele_type in ('rt', ):
-
-                edge_dx_y0 = vertices[0], vertices[1]
-                edge_dx_y1 = (vertices[0], vertices[2])
-
-                edge_dy_x0 = None
-                edge_dy_x1 = (vertices[1], vertices[2])
-
-                corner0 = vertices[0]
-                corner1 = vertices[1]
-                corner2 = vertices[2]
-                corner3 = None
-
+        """"""
+        if RANK == MASTER_RANK:
+            if p in self._k0_master_cache:
+                return self._k0_master_cache[p]
             else:
-                raise Exception(ele_type)
-
-            X = np.zeros([p+1, p+1], dtype=int)
-
-            # vertex 0 / corner 0
-            current, numbering = self._find_numering_corner(corner0, current, numbered_corner)
-            X[0, 0] = numbering
-
-            # edge 0, dx y0
-            current, numbering = self._find_numering_along(edge_dx_y0, num_edge, current, numbered_edges)
-            X[1:-1, 0] = numbering
-
-            # vertex 1/ corner 1
-            current, numbering = self._find_numering_corner(corner1, current, numbered_corner)
-            X[-1, 0] = numbering
-
-            # edge 3, dy x0
-            current, numbering = self._find_numering_along(edge_dy_x0, num_edge, current, numbered_edges)
-            if numbering is None:
                 pass
-            else:
-                X[0, 1:-1] = numbering
 
-            # internal
-            numbering = np.arange(current, current+num_internal).reshape((p-1, p-1), order='F')
-            current += num_internal
-            X[1:-1, 1:-1] = numbering
+            element_map = self._mesh._total_map
+            numbered_edges = dict()
+            numbered_corner = dict()
+            NUMBERING = dict()
+            current = 0
+            num_internal = (p-1) * (p-1)
+            num_edge = p-1  # corners are numbered independently.
 
-            # edge 1, dy x1
-            current, numbering = self._find_numering_along(edge_dy_x1, num_edge, current, numbered_edges)
-            X[-1, 1:-1] = numbering
+            for index in self._mesh._total_map:
+                vertices = element_map[index]
+                ele_type = self._mesh._total_type[index]
+                if ele_type in ('rq', ):
 
-            # vertex 3 / corner 3
-            current, numbering = self._find_numering_corner(corner3, current, numbered_corner)
-            if numbering is None:
-                pass
-            else:
-                X[0, -1] = numbering
+                    edge_dx_y0 = (vertices[0], vertices[1])
+                    edge_dx_y1 = (vertices[3], vertices[2])
 
-            # edge2, dx y1
-            current, numbering = self._find_numering_along(edge_dx_y1, num_edge, current, numbered_edges)
-            X[1:-1, -1] = numbering
+                    edge_dy_x0 = (vertices[0], vertices[3])
+                    edge_dy_x1 = (vertices[1], vertices[2])
 
-            # vertex 2 / corner 2
-            current, numbering = self._find_numering_corner(corner2, current, numbered_corner)
-            X[-1, -1] = numbering
+                    corner0 = vertices[0]
+                    corner1 = vertices[1]
+                    corner2 = vertices[2]
+                    corner3 = vertices[3]
 
-            if ele_type in ('rq', ):
-                NUMBERING[index] = X.ravel('F')
-            elif ele_type in ('rt', ):
-                x0 = np.array([X[0, 0], ])
-                NUMBERING[index] = np.concatenate(
-                    [x0, X[1:, :].ravel('F')]
-                )
+                elif ele_type in ('rt', ):
 
-            else:
-                raise Exception()
+                    edge_dx_y0 = vertices[0], vertices[1]
+                    edge_dx_y1 = (vertices[0], vertices[2])
 
-        return NUMBERING
+                    edge_dy_x0 = None
+                    edge_dy_x1 = (vertices[1], vertices[2])
+
+                    corner0 = vertices[0]
+                    corner1 = vertices[1]
+                    corner2 = vertices[2]
+                    corner3 = None
+
+                else:
+                    raise Exception(ele_type)
+
+                X = np.zeros([p+1, p+1], dtype=int)
+
+                # vertex 0 / corner 0
+                current, numbering = self._find_numering_corner(corner0, current, numbered_corner)
+                X[0, 0] = numbering
+
+                # edge 0, dx y0
+                current, numbering = self._find_numering_along(edge_dx_y0, num_edge, current, numbered_edges)
+                X[1:-1, 0] = numbering
+
+                # vertex 1/ corner 1
+                current, numbering = self._find_numering_corner(corner1, current, numbered_corner)
+                X[-1, 0] = numbering
+
+                # edge 3, dy x0
+                current, numbering = self._find_numering_along(edge_dy_x0, num_edge, current, numbered_edges)
+                if numbering is None:
+                    pass
+                else:
+                    X[0, 1:-1] = numbering
+
+                # internal
+                numbering = np.arange(current, current+num_internal).reshape((p-1, p-1), order='F')
+                current += num_internal
+                X[1:-1, 1:-1] = numbering
+
+                # edge 1, dy x1
+                current, numbering = self._find_numering_along(edge_dy_x1, num_edge, current, numbered_edges)
+                X[-1, 1:-1] = numbering
+
+                # vertex 3 / corner 3
+                current, numbering = self._find_numering_corner(corner3, current, numbered_corner)
+                if numbering is None:
+                    pass
+                else:
+                    X[0, -1] = numbering
+
+                # edge2, dx y1
+                current, numbering = self._find_numering_along(edge_dx_y1, num_edge, current, numbered_edges)
+                X[1:-1, -1] = numbering
+
+                # vertex 2 / corner 2
+                current, numbering = self._find_numering_corner(corner2, current, numbered_corner)
+                X[-1, -1] = numbering
+
+                if ele_type in ('rq', ):
+                    NUMBERING[index] = X.ravel('F')
+                elif ele_type in ('rt', ):
+                    x0 = np.array([X[0, 0], ])
+                    NUMBERING[index] = np.concatenate(
+                        [x0, X[1:, :].ravel('F')]
+                    )
+
+                else:
+                    raise Exception()
+
+            self._k0_master_cache[p] = NUMBERING
+            return NUMBERING
+
+        else:  # non-master-ranks
+            return None
 
     def _k0(self, p):
         """"""
@@ -143,6 +155,7 @@ class MPI_PY2_GatheringMatrixLambda(Frozen):
 
         if RANK == MASTER_RANK:
             NUMBERING = self._k0_master(p)
+
             element_distribution = self._mesh._element_distribution
             rank_numbering = list()
             for s in range(SIZE):

@@ -27,7 +27,8 @@ no effects (thus we preferably omit them).
 """
 
 _global_variables = {
-    'embedding_space_dim': 2,  # default embedding_space_dim is 2.
+    'embedding_space_dim': 2,      # default embedding_space_dim is 2.
+    'zero_entry_threshold': 1e-12  # set to be zero when it is lower than this
 }
 
 

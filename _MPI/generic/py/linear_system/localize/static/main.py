@@ -222,7 +222,7 @@ class MPI_PY_Localize_Static_Linear_System(Frozen):
         text = tA + tx + '=' + tb
         text = r"$" + text + r"$"
         fig = plt.figure(figsize=(10, 4))
-        plt.axis([0, 1, 0, 1])
+        plt.axis((0, 1, 0, 1))
         plt.axis('off')
         if self._time_indicating_text is None:
             plt.text(0.05, 0.5, text, ha='left', va='center', size=15)

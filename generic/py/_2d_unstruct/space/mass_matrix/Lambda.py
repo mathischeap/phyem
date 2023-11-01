@@ -16,6 +16,10 @@ _global_cache_1_inner_ = {}
 _global_cache_1_outer_ = {}
 _global_cache_2_ = {}
 
+from src.config import _global_variables
+
+threshold = _global_variables['zero_entry_threshold']
+
 
 class MassMatrixLambda(Frozen):
     """"""
@@ -68,6 +72,7 @@ class MassMatrixLambda(Frozen):
                     bf, bf, det_jm * quad_weights,
                     optimize='optimal',
                             )
+                M_re[np.abs(M_re) < threshold] = 0
                 m = csr_matrix(M_re)
                 _global_cache_0_[metric_signature] = m
                 M[index] = m
@@ -95,6 +100,7 @@ class MassMatrixLambda(Frozen):
                     bf, bf, det_jm * quad_weights,
                     optimize='optimal',
                 )
+                M_re[np.abs(M_re) < threshold] = 0
                 m = csr_matrix(M_re)
                 _global_cache_2_[metric_signature] = m
                 M[index] = m
@@ -105,6 +111,7 @@ class MassMatrixLambda(Frozen):
     def _einsum_helper(metric, bfO, bfS):
         """"""
         M = np.einsum('m, im, jm -> ij', metric, bfO, bfS, optimize='optimal')
+        M[np.abs(M) < threshold] = 0
         return csr_matrix(M)
 
     def _k1_outer(self, degree):

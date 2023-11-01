@@ -38,7 +38,7 @@ class MPI_Py_2D_Unstructured_BoundarySection(Frozen):
     def __repr__(self):
         """repr"""
         super_repr = super().__repr__().split('object')[1]
-        return rf"<MPI-py-2d-BoundarySection @RANK:{RANK}" + super_repr
+        return rf"<MPI-py-2d-BoundarySection@RANK{RANK}" + super_repr
 
     @property
     def ct(self):
@@ -75,7 +75,7 @@ class MPI_Py_2D_Unstructured_BoundarySection(Frozen):
         """"""
         return self._base._make_boundary_face(index)
 
-    # -------- methods -------------------------------------------------
+    # -------- methods ----------------------------------------------------------------------
     def visualize(
             self,
             density=10,
@@ -152,7 +152,7 @@ class MPI_Py_2D_Unstructured_BoundarySection(Frozen):
             from src.config import _setting, _pr_cache
 
             if _setting['pr_cache']:
-                _pr_cache(fig, filename='msehy_py2_boundary_section_mesh')
+                _pr_cache(fig, filename='mpi_msehy_py2_boundary_section_mesh')
             else:
                 matplotlib.use('TkAgg')
                 plt.tight_layout()

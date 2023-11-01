@@ -60,7 +60,6 @@ class RegularTriangle(Element):
 
     @property
     def type(self):
-        """The generic category of the element."""
         return 't'
 
     @property
@@ -69,12 +68,7 @@ class RegularTriangle(Element):
 
     @property
     def orthogonal(self):
-        """For triangle element, `orthogonal` means the triangle is not distorted."""
         return True
-
-    @property
-    def element_type(self):
-        return 'rt'
 
     @property
     def ct(self):

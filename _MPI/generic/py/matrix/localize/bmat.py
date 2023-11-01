@@ -17,6 +17,7 @@ def bmat(A_2d_list):
     row_gms = [None for _ in range(row_shape)]
     col_gms = [None for _ in range(col_shape)]
 
+    key_maps = list()
     for i in range(row_shape):
         for j in range(col_shape):
             A_ij = A_2d_list[i][j]
@@ -25,6 +26,9 @@ def bmat(A_2d_list):
                 pass
             else:
                 assert A_ij.__class__ is MPI_PY_Localize_Static_Matrix, f"A[{i}][{j}] is {A_ij.__class__}, wrong!"
+
+                key_maps.append(A_ij._key_map)
+
                 row_gm_i = A_ij._gm_row
                 col_gm_j = A_ij._gm_col
 
@@ -46,7 +50,7 @@ def bmat(A_2d_list):
     # only adjustments take effect. Customization will be skipped.
     M = _MPI_PY_Bmat(A_2d_list, (row_shape, col_shape))
 
-    return MPI_PY_Localize_Static_Matrix(M, chain_row_gm, chain_col_gm)
+    return MPI_PY_Localize_Static_Matrix(M, chain_row_gm, chain_col_gm, raw_key_map=key_maps)
 
 
 class _MPI_PY_Bmat(Frozen):

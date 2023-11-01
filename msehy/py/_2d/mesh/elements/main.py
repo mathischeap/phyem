@@ -84,6 +84,8 @@ class MseHyPy2MeshElements(Frozen):
         if isinstance(region_wise_refining_strength_function, str):
             # it must represent a file, we read from it.
             import pickle
+            from src.config import SIZE
+            assert SIZE == 1, f"ph.read works for COMM.SIZE == 1. Now it is {SIZE}."
             with open(region_wise_refining_strength_function, 'rb') as inputs:
                 func = pickle.load(inputs)
             inputs.close()
@@ -195,7 +197,7 @@ class MseHyPy2MeshElements(Frozen):
             threshold,
             scheme=0
     ):
-        """Determine which cells could be further refined.
+        r"""Determine which cells could be further refined.
 
         Parameters
         ----------
@@ -343,6 +345,7 @@ class MseHyPy2MeshElements(Frozen):
 
         type_0 = 'rt'
         type_1 = 'rq'
+
         for index in indices:
             if isinstance(index, str):  # a triangle cell
                 level_num = index.count('-')
@@ -351,8 +354,8 @@ class MseHyPy2MeshElements(Frozen):
                 x, y = vertices
                 x[np.isclose(x,  0)] = 0
                 y[np.isclose(y,  0)] = 0
-                x = np.round(x, 5)
-                y = np.round(y, 5)
+                x = np.round(x, 7)
+                y = np.round(y, 7)
 
                 _triangle_vertex = list()
                 for vx, vy in zip(x, y):
@@ -383,8 +386,8 @@ class MseHyPy2MeshElements(Frozen):
                 x, y = vertices
                 x[np.isclose(x,  0)] = 0
                 y[np.isclose(y,  0)] = 0
-                x = np.round(x, 5)
-                y = np.round(y, 5)
+                x = np.round(x, 7)
+                y = np.round(y, 7)
 
                 _quadrilateral_vertex = list()
                 for vx, vy in zip(x, y):
@@ -405,7 +408,6 @@ class MseHyPy2MeshElements(Frozen):
                 if isinstance(bms, str) and bms[:6] == 'Linear':
                     type_dict[index] = type_1   # regular quadrilateral
                     vertex_dict[index] = _quadrilateral_vertex
-
                 else:
                     raise NotImplementedError('distorted quadrilateral type!')
 
@@ -468,6 +470,7 @@ class MseHyPy2MeshElements(Frozen):
             np.array([-1, 1, 1, -1]),
             np.array([-1, -1, 1, 1]),
         )
+
         t_corners = (
             np.array([-1, 1, 1]),
             np.array([-1, -1, 1]),
@@ -482,12 +485,13 @@ class MseHyPy2MeshElements(Frozen):
 
             anchor0 = elements[ele0].ct.mapping(*edge_centers[edge_index0])
             ax0, ay0 = anchor0
-            ax0 = round(ax0[0], 5)
-            ay0 = round(ay0[0], 5)
+            ax0 = round(ax0[0], 7)
+            ay0 = round(ay0[0], 7)
+
             anchor1 = elements[ele1].ct.mapping(*edge_centers[edge_index1])
             ax1, ay1 = anchor1
-            ax1 = round(ax1[0], 5)
-            ay1 = round(ay1[0], 5)
+            ax1 = round(ax1[0], 7)
+            ay1 = round(ay1[0], 7)
 
             check_indices0 = element_indices[ele0]
             check_indices1 = element_indices[ele1]
@@ -499,10 +503,10 @@ class MseHyPy2MeshElements(Frozen):
                     triangle = self.levels[level_num].triangles[index]
                     vertices = triangle.ct.mapping(*t_corners)
                     x, y = vertices
-                    x[np.isclose(x,  0)] = 0
-                    y[np.isclose(y,  0)] = 0
-                    x = np.round(x, 5)
-                    y = np.round(y, 5)
+                    x[np.isclose(x, 0)] = 0
+                    y[np.isclose(y, 0)] = 0
+                    x = np.round(x, 7)
+                    y = np.round(y, 7)
                     x0, x1, x2 = x
                     y0, y1, y2 = y
 
@@ -533,10 +537,10 @@ class MseHyPy2MeshElements(Frozen):
                     quadrilateral = self.background.elements[index]
                     vertices = quadrilateral.ct.mapping(*q_corners)
                     x, y = vertices
-                    x[np.isclose(x,  0)] = 0
-                    y[np.isclose(y,  0)] = 0
-                    x = np.round(x, 5)
-                    y = np.round(y, 5)
+                    x[np.isclose(x, 0)] = 0
+                    y[np.isclose(y, 0)] = 0
+                    x = np.round(x, 7)
+                    y = np.round(y, 7)
 
                     x0, x1, x2, x3 = x
                     y0, y1, y2, y3 = y
@@ -578,10 +582,10 @@ class MseHyPy2MeshElements(Frozen):
                     triangle = self.levels[level_num].triangles[index]
                     vertices = triangle.ct.mapping(*t_corners)
                     x, y = vertices
-                    x[np.isclose(x,  0)] = 0
-                    y[np.isclose(y,  0)] = 0
-                    x = np.round(x, 5)
-                    y = np.round(y, 5)
+                    x[np.isclose(x, 0)] = 0
+                    y[np.isclose(y, 0)] = 0
+                    x = np.round(x, 7)
+                    y = np.round(y, 7)
                     x0, x1, x2 = x
                     y0, y1, y2 = y
 
@@ -612,10 +616,10 @@ class MseHyPy2MeshElements(Frozen):
                     quadrilateral = self.background.elements[index]
                     vertices = quadrilateral.ct.mapping(*q_corners)
                     x, y = vertices
-                    x[np.isclose(x,  0)] = 0
-                    y[np.isclose(y,  0)] = 0
-                    x = np.round(x, 5)
-                    y = np.round(y, 5)
+                    x[np.isclose(x, 0)] = 0
+                    y[np.isclose(y, 0)] = 0
+                    x = np.round(x, 7)
+                    y = np.round(y, 7)
 
                     x0, x1, x2, x3 = x
                     y0, y1, y2, y3 = y

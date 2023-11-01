@@ -124,11 +124,9 @@ class GenericUnstructuredForm2D_Visualize(Frozen):
             data_only=False, builder=True
     ):
         """"""
-        p, nodes = self._parse_p_nodes(sampling_factor, anti_top_corner_singularity=0)
-        xy = self._f.space.reconstruct.Lambda._coordinates_only(*nodes, ravel=False)
-
         p, nodes = self._parse_p_nodes(sampling_factor, anti_top_corner_singularity=1)
-        _, v = self._f[t].reconstruct(*nodes, ravel=False)
+
+        xy, v = self._f[t].reconstruct(*nodes, ravel=False)
 
         if data_only:
             if builder:
@@ -151,11 +149,9 @@ class GenericUnstructuredForm2D_Visualize(Frozen):
             data_only=False, builder=True
     ):
         """"""
-        p, nodes = self._parse_p_nodes(sampling_factor, anti_top_corner_singularity=0)
-        xy = self._f.space.reconstruct.Lambda._coordinates_only(*nodes, ravel=False)
-
         p, nodes = self._parse_p_nodes(sampling_factor, anti_top_corner_singularity=2)
-        _, v = self._f[t].reconstruct(*nodes, ravel=False)
+
+        xy, v = self._f[t].reconstruct(*nodes, ravel=False)
         v = v[0]
 
         if data_only:

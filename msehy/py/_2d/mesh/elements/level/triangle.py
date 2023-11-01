@@ -190,7 +190,7 @@ class MseHyPy2MeshElementsLevelTriangle(Frozen):
             x1 = round(x1, 3)
             y0 = round(y0, 3)
             y1 = round(y1, 3)
-            signature = f"={x0}:{x1}+{y0}:{y1}"
+            signature = f"={x0}-{x1}+{y0}-{y1}"
             if signature in _topology_signature_pool:
                 pass
             else:
@@ -327,6 +327,7 @@ class _TriangleCoordinateTransformation(Frozen):
         we know that the metric ``g`` is equal to square of ``det(J)``. ``g = (det(J))**2`` is due to the
         fact that the Jacobian matrix is square. The definition of ``g`` usually is given
         as ``g:= det(G)`` where ``G`` is the metric matrix, or metric tensor.
+
         """
         detJ = self.Jacobian(xi, et)
         return detJ ** 2
@@ -567,7 +568,7 @@ class _TopologyCoordinateTransformation(Frozen):
         self._freeze()
 
     def _mapping_top(self, o):
-        """'x-' side into the top vertex. """
+        """'x-' side into the top vertex."""
         return (self._xt * np.ones_like(o),
                 self._yt * np.ones_like(o))
 
@@ -577,12 +578,12 @@ class _TopologyCoordinateTransformation(Frozen):
                 self._y0 + o * self._y01)
 
     def _mapping_edge0(self, o):
-        """'y-' side into edge 0"""
+        """'y-' side into edge 0."""
         return (self._xt + o * self._xt0,
                 self._yt + o * self._yt0)
 
     def _mapping_edge1(self, o):
-        """'y-' side into edge 0"""
+        """'y-' side into edge 0."""
         return (self._xt + o * self._xt1,
                 self._yt + o * self._yt1)
 
@@ -608,7 +609,7 @@ class _TopologyCoordinateTransformation(Frozen):
                 self._yt1 * np.ones_like(o))
 
     def mapping(self, xi, et):
-        """ xi, et be in [-1, 1]. """
+        """xi, et be in [-1, 1]."""
         cached, cache_data = ndarray_key_comparer(self._cache_0_tp_mp, [xi, et])
         if cached:
             return cache_data
@@ -621,7 +622,7 @@ class _TopologyCoordinateTransformation(Frozen):
         return mp
 
     def Jacobian_matrix(self, xi, et):
-        """ xi, s be in [-1, 1]. """
+        """xi, s be in [-1, 1]."""
         cached, cache_data = ndarray_key_comparer(self._cache_1_tp_jm, [xi, et])
         if cached:
             return cache_data

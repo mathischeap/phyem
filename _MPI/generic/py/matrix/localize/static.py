@@ -3,12 +3,12 @@ r"""
 """
 from typing import Dict
 from tools.frozen import Frozen
-from numpy import diff
+import numpy as np
 from _MPI.generic.py.gathering_matrix import MPI_PyGM
 from _MPI.generic.py.vector.localize.static import MPI_PY_Localize_Static_Vector
 from _MPI.generic.py.vector.localize.static import MPI_PY_Localize_Static_Vector_Cochain
 
-from scipy.sparse import csc_matrix, csr_matrix, issparse, isspmatrix_csc, isspmatrix_csr
+from scipy.sparse import csc_matrix, csr_matrix, isspmatrix_csc, isspmatrix_csr
 
 _assembled_MPI_PY2_Static_Matrix_cache = {}
 
@@ -16,7 +16,7 @@ _assembled_MPI_PY2_Static_Matrix_cache = {}
 class MPI_PY_Localize_Static_Matrix(Frozen):
     """"""
 
-    def __init__(self, localized_data, gm_row, gm_col):
+    def __init__(self, localized_data, gm_row, gm_col, raw_key_map=None):
         """"""
         assert gm_row.__class__ is MPI_PyGM, f"row gm {gm_row} is not a {MPI_PyGM}."
         assert gm_col.__class__ is MPI_PyGM, f"col gm {gm_col} is not a {MPI_PyGM}."
@@ -27,15 +27,23 @@ class MPI_PY_Localize_Static_Matrix(Frozen):
         # --------- when localized_data == 0, we initialize am empty matrix ----------------
         if isinstance(localized_data, (int, float)) and localized_data == 0:
             localized_data = dict()
+            _0_pool_ = {}
             for index in gm_row:
                 shape = (
                     gm_row.num_local_dofs(index),
                     gm_col.num_local_dofs(index),
                 )
-                localized_data[index] = csr_matrix(shape)
+                if shape in _0_pool_:
+                    _0_ = _0_pool_[shape]
+                else:
+                    _0_ = csr_matrix(shape)
+                    _0_pool_[shape] = _0_
+                localized_data[index] = _0_
         else:
             pass
         # ===================================================================================
+
+        self._key_map = None
 
         if isinstance(localized_data, dict):
             # -------- data check -----------------------------------------------------------
@@ -44,25 +52,83 @@ class MPI_PY_Localize_Static_Matrix(Frozen):
                 data_for_index = localized_data[index]
                 assert index in gm_row, f"row gm misses index #{index}"
                 assert index in gm_col, f"col gm misses index #{index}"
-                assert issparse(data_for_index), \
-                    f"data for index #{index} must be csr or csc matrix, now it is {data_for_index.__class__}."
+                assert isspmatrix_csc(data_for_index) or isspmatrix_csr(data_for_index), \
+                    (f"data for index #{index} must be csr or csc matrix, "
+                     f"now it is {data_for_index.__class__}.")
                 assert data_for_index.shape == (
                     gm_row.num_local_dofs(index),
                     gm_col.num_local_dofs(index),
                 ), f"data shape of element #{index} does not match the gathering matrices."
-            # =================================================================================
+            # ===============================================================================
             self._meta_data: Dict = localized_data
             self._dtype = 'dict'
 
+            # --------- key map -------------------------------------------------------------
+            if raw_key_map is None:
+                key_map = dict()
+                key_pool = dict()
+                for index in localized_data:
+                    data_for_index = localized_data[index]
+                    existing_data = False
+                    key = -1
+                    for key in key_pool:
+                        key_data = key_pool[key]
+                        if key_data is data_for_index:
+                            existing_data = True
+                            break
+                        else:
+                            pass
+                    if existing_data:
+                        assert key != -1, f'Must found an existing key!'
+                        key_map[index] = key
+                    else:
+                        new_key = str(len(key_pool))
+                        key_pool[new_key] = data_for_index
+                        key_map[index] = new_key
+
+                self._key_map = key_map
+
+            elif raw_key_map == 'unique':
+                pass
+
+            else:
+                raise NotImplementedError(
+                    f"for dict local data, raw_key_map must be None or 'unique'."
+                )
+            # =============================================================================
+
         elif callable(localized_data):
-            # -------- data check --------------------------------------------------------------
-            # ==================================================================================
+            # -------- data check ---------------------------------------------------------
+            # =============================================================================
             self._meta_data = localized_data
             self._dtype = 'realtime'
+
+            # --------- key map -----------------------------------------------------------
+            if raw_key_map is None:
+                pass
+            elif isinstance(raw_key_map, dict):
+                self._key_map = raw_key_map
+            elif isinstance(raw_key_map, (list, tuple)):
+                if None in raw_key_map or len(raw_key_map) == 0:
+                    pass
+                elif all([isinstance(_, dict) for _ in raw_key_map]):
+                    key_map = dict()
+                    for index in zip(*raw_key_map):
+                        ind = index[0]
+                        key_map[ind] = '-'.join([km[ind] for km in raw_key_map])
+                    self._key_map = key_map
+                else:
+                    pass
+            else:
+                raise NotImplementedError(
+                    f"for realtime local data, raw_key_map must be None, dict or list."
+                )
+            # ============================================================================
 
         else:
             raise Exception(f"cannot accept data={localized_data}.")
 
+        self._my_cache: dict[str] = dict()
         self._gm_row = gm_row
         self._gm_col = gm_col
         self._adjust = _MPI_PY_Adjust(self)
@@ -84,8 +150,7 @@ class MPI_PY_Localize_Static_Matrix(Frozen):
         """"""
         return self._customize
 
-    def ___get_meta_data___(self, index):
-        """"""
+    def ___get_raw_meta_data___(self, index):
         if self._dtype == 'dict':
             # noinspection PyUnresolvedReferences
             return self._meta_data[index]
@@ -94,6 +159,19 @@ class MPI_PY_Localize_Static_Matrix(Frozen):
             return self._meta_data(index)
         else:
             raise NotImplementedError()
+
+    def ___get_meta_data___(self, index):
+        """"""
+        if self._key_map is None:
+            return self.___get_raw_meta_data___(index)
+        else:
+            cache_key = self._key_map[index]
+            if cache_key in self._my_cache:
+                return self._my_cache[cache_key]
+            else:
+                data = self.___get_raw_meta_data___(index)
+                self._my_cache[cache_key] = data
+                return data
 
     def ___get_adjust_data___(self, index):
         """"""
@@ -112,7 +190,7 @@ class MPI_PY_Localize_Static_Matrix(Frozen):
     def __getitem__(self, index):
         """"""
         data = self.___get_customize_data___(index)
-        assert issparse(data), f"local data must be csc or csr."
+        assert isspmatrix_csc(data) or isspmatrix_csr(data), f"local data must be csc or csr."
         return data
 
     def __len__(self):
@@ -141,7 +219,7 @@ class MPI_PY_Localize_Static_Matrix(Frozen):
         """
 
         if cache is not None:
-            assert isinstance(cache, str), f" ``cache`` must a string."
+            assert isinstance(cache, str), f" cache must a string."
             if cache in _assembled_MPI_PY2_Static_Matrix_cache:
                 return _assembled_MPI_PY2_Static_Matrix_cache[cache]
             else:
@@ -173,7 +251,7 @@ class MPI_PY_Localize_Static_Matrix(Frozen):
             indices = Mi.indices
             indptr = Mi.indptr
             data = Mi.data
-            nums = diff(indptr)
+            nums = np.diff(indptr)
             row = []
             col = []
 
@@ -217,14 +295,22 @@ class MPI_PY_Localize_Static_Matrix(Frozen):
         def ___transpose_caller___(index):
             data = self.___get_adjust_data___(index)
             return data.T
-        return self.__class__(___transpose_caller___, self._gm_col, self._gm_row)
+        return self.__class__(
+            ___transpose_caller___,
+            self._gm_col, self._gm_row,
+            raw_key_map=self._key_map
+        )
 
     def __neg__(self):
         """- self"""
         def ___neg_caller___(index):
             data = self.___get_adjust_data___(index)
             return - data
-        return self.__class__(___neg_caller___, self._gm_row, self._gm_col)
+        return self.__class__(
+            ___neg_caller___,
+            self._gm_row, self._gm_col,
+            raw_key_map=self._key_map
+        )
 
     def __matmul__(self, other):
         """ self @ other
@@ -246,7 +332,11 @@ class MPI_PY_Localize_Static_Matrix(Frozen):
                 B = other.___get_adjust_data___(index)
                 return A @ B
 
-            return self.__class__(___matmul_mat_caller___, self._gm_row, other._gm_col)
+            return self.__class__(
+                ___matmul_mat_caller___,
+                self._gm_row, other._gm_col,
+                raw_key_map=[self._key_map, other._key_map],
+            )
 
         elif (other.__class__ is MPI_PY_Localize_Static_Vector or
               other.__class__ is MPI_PY_Localize_Static_Vector_Cochain):
@@ -271,7 +361,11 @@ class MPI_PY_Localize_Static_Matrix(Frozen):
                 A = self.___get_adjust_data___(index)
                 return other * A
 
-            return self.__class__(___rmul_float_caller___, self._gm_row, self._gm_col)
+            return self.__class__(
+                ___rmul_float_caller___,
+                self._gm_row, self._gm_col,
+                raw_key_map=self._key_map
+            )
 
         else:
             raise NotImplementedError()
@@ -289,7 +383,11 @@ class MPI_PY_Localize_Static_Matrix(Frozen):
                 B = other.___get_adjust_data___(index)
                 return A + B
 
-            return self.__class__(___add_caller___, self._gm_row, self._gm_col)
+            return self.__class__(
+                ___add_caller___,
+                self._gm_row, self._gm_col,
+                raw_key_map=[self._key_map, other._key_map],
+            )
 
         else:
             raise NotImplementedError()
@@ -307,7 +405,11 @@ class MPI_PY_Localize_Static_Matrix(Frozen):
                 B = other.___get_adjust_data___(index)
                 return A - B
 
-            return self.__class__(___sub_caller___, self._gm_row, self._gm_col)
+            return self.__class__(
+                ___sub_caller___,
+                self._gm_row, self._gm_col,
+                raw_key_map=[self._key_map, other._key_map],
+            )
 
         else:
             raise NotImplementedError()

@@ -56,7 +56,7 @@ class MseHyPy2MeshLevel(Frozen):
 
     @property
     def num(self):
-        """I am (num+1)th level."""
+        r"""I am (num+1)th level."""
         return self._level_num
 
     def __repr__(self):
@@ -65,7 +65,7 @@ class MseHyPy2MeshLevel(Frozen):
     
     @property
     def triangles(self):
-        """All the elements on this level."""
+        r"""All the elements on this level."""
         return self._triangles
 
     @property

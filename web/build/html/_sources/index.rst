@@ -81,6 +81,8 @@ in the open-access community. Read more at
 Tutorial
 ========
 
+The tutorial of *phyem* has three parts,
+
 .. toctree::
    :maxdepth: 1
 
@@ -107,7 +109,7 @@ We sort out jupyter notebooks that demonstrate the using of *phyem* at
 Gallery
 =======
 
-Here, we categorize *predefined objects* (for example, computational domains and meshes) and representative demos,
+Here, we categorize predefined objects (for example, computational domains and meshes) and representative demos,
 examples and applications using *phyem* into showcases at
 
 .. toctree::

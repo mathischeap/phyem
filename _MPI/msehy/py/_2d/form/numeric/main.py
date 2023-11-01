@@ -45,8 +45,8 @@ class MPI_MseHy_Py2_Form_Numeric(Frozen):
                 s = np.array(s)
             assert np.ndim(r) == np.ndim(s) == 2, f"r, s must be 2d."
             assert np.shape(r) == np.shape(s), f"r, s shape do not match."
-            assert np.min(r) >= 0 and np.max(r) <= 1, f"all entries of r must be in [0, 1]."
-            assert np.min(s) >= 0 and np.max(s) <= 1, f"all entries of r must be in [0, 1]."
+            assert np.min(r) >= 0 and np.max(r) <= 1, f"all entries of r must be in [0,1]."
+            assert np.min(s) >= 0 and np.max(s) <= 1, f"all entries of r must be in [0,1]."
 
             background = self._f.mesh.background.representative.background
             regions = background.manifold.regions

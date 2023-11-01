@@ -31,42 +31,16 @@ class ReconstructLambda(Frozen):
             return getattr(self, f'_k{k}')(
                 cochain, meshgrid_xi, meshgrid_et, ravel, element_range=element_range, degree=degree)
 
-    def _coordinates_only(self, xi, et, ravel, element_range=None):
-        """"""
-        shape: list = [len(xi), len(et)]
-
-        xi, et = np.meshgrid(xi, et, indexing='ij')
-        xi, et = (xi.ravel('F'), et.ravel('F'))
-        xy = self._mesh.ct.mapping(xi, et, element_range=element_range)
-
-        x_dict: Dict = dict()
-        y_dict: Dict = dict()
-        for index in xy:  # go through all elements
-            x, y = xy[index]
-            x_dict[index] = x
-            y_dict[index] = y
-
-        if ravel:
-            pass
-        else:
-            for e in x_dict:
-                x_dict[e] = x_dict[e].reshape(shape, order='F')
-                y_dict[e] = y_dict[e].reshape(shape, order='F')
-
-        return x_dict, y_dict
-
     def _k0(self, cochain, xi, et, ravel, element_range=None, degree=None):
         """"""
-        if degree is None:
+        if element_range is None:
+            # reconstructing over all elements
             degree = cochain._f.degree
-        else:
-            pass
-        assert degree is not None, f"must have a degree"
-
-        if isinstance(cochain, dict):
-            local_cochain = cochain
-        else:
             local_cochain = cochain.local
+        else:
+            # reconstructing over all particular elements, must provide degree.
+            local_cochain = cochain  # receive a dict of local cochains
+            assert degree is not None
 
         shape: list = [len(xi), len(et)]
         xi_et, bf_qt = self._space.basis_functions(degree, xi, et)
@@ -98,16 +72,13 @@ class ReconstructLambda(Frozen):
 
     def _k1_inner(self, cochain, xi, et, ravel, element_range=None, degree=None):
         """"""
-        if degree is None:
+        if element_range is None:
             degree = cochain._f.degree
-        else:
-            pass
-        assert degree is not None, f"must have a degree"
-
-        if isinstance(cochain, dict):
-            local_cochain = cochain
-        else:
             local_cochain = cochain.local
+        else:
+            # reconstructing over all particular elements, must provide degree.
+            local_cochain = cochain   # receive a dict of local cochains
+            assert degree is not None
 
         shape: list = [len(xi), len(et)]
         xi_et, bf_qt = self._space.basis_functions(degree, xi, et)
@@ -161,16 +132,13 @@ class ReconstructLambda(Frozen):
 
     def _k1_outer(self, cochain, xi, et, ravel, element_range=None, degree=None):
         """"""
-        if degree is None:
+        if element_range is None:
             degree = cochain._f.degree
-        else:
-            pass
-        assert degree is not None, f"must have a degree"
-
-        if isinstance(cochain, dict):
-            local_cochain = cochain
-        else:
             local_cochain = cochain.local
+        else:
+            # reconstructing over all particular elements, must provide degree.
+            local_cochain = cochain   # receive a dict of local cochains
+            assert degree is not None
 
         shape: list = [len(xi), len(et)]
         xi_et, bf_qt = self._space.basis_functions(degree, xi, et)
@@ -224,16 +192,13 @@ class ReconstructLambda(Frozen):
 
     def _k2(self, cochain, xi, et, ravel, element_range=None, degree=None):
         """"""
-        if degree is None:
+        if element_range is None:
             degree = cochain._f.degree
-        else:
-            pass
-        assert degree is not None, f"must have a degree"
-
-        if isinstance(cochain, dict):
-            local_cochain = cochain
-        else:
             local_cochain = cochain.local
+        else:
+            # reconstructing over all particular elements, must provide degree.
+            local_cochain = cochain   # receive a dict of local cochains
+            assert degree is not None
 
         shape: list = [len(xi), len(et)]
         xi_et, bf_qt = self._space.basis_functions(degree, xi, et)

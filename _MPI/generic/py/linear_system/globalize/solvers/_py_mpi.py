@@ -200,10 +200,10 @@ def _gmres(
     Time_end = MPI.Wtime()
 
     COST_total = Time_end - Time_start
-    message = f" mpi_v2_gmres = [SYSTEM-SHAPE: {A.shape}] [ITER={ITER}] " \
-              f"[residual=%.2e] costs %.2f, " \
-              f"convergence info={info}, restart={restart}, maxiter={maxiter}, " \
-              f"stop_judge={JUDGE}: {JUDGE_explanation}]" % (beta, COST_total)
+    message = f" mpi_v2_gmres = [SYSTEM-SHAPE: {A.shape}] [ITER={ITER}]" \
+        f" [residual=%.2e] costs %.2f, " \
+        f"convergence info={info}, restart={restart}, maxiter={maxiter}, " \
+        f"stop_judge={JUDGE}: {JUDGE_explanation}]" % (beta, COST_total)
 
     return x0, message, info
 
@@ -441,8 +441,8 @@ def _lgmres(
 
     COST_total = Time_end - Time_start
     message = f" mpi_v0_LGMRES = [SYSTEM-SHAPE: {A.shape}] [ITER={ITER}] " \
-              f"[residual=%.2e] costs %.2f, " \
-              f"convergence info={info}, m={_m_}, k={_k_}, maxiter={maxiter}, " \
-              f"stop_judge={JUDGE}: {JUDGE_explanation}]" % (beta, COST_total)
+        f"[residual=%.2e] costs %.2f, " \
+        f"convergence info={info}, m={_m_}, k={_k_}, maxiter={maxiter}, " \
+        f"stop_judge={JUDGE}: {JUDGE_explanation}]" % (beta, COST_total)
 
     return x0, message, info

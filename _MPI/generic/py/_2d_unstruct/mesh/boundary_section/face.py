@@ -15,8 +15,8 @@ class _MPI_PY_2d_Face(Frozen):
         self._freeze()
 
     def __repr__(self):
-        """repr"""
-        return f"<Face {self._element_index}:{self._edge_index} on {self._mesh}>"
+        """repr."""
+        return f"<Face {self._element_index}: {self._edge_index} on {self._mesh}>"
 
     @property
     def metric_signature(self):
@@ -28,7 +28,7 @@ class _MPI_PY_2d_Face(Frozen):
         return self._mesh[self._element_index].edge_ct(self._edge_index)
 
     def find_local_dofs_of(self, f):
-        """find the local dofs of form f on this face"""
+        """find the local dofs of form f on this face."""
         space = f.space
         local_dofs = space.find.local_dofs(self._element_index, self._edge_index, f.degree)
         return local_dofs

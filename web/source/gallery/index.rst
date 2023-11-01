@@ -5,7 +5,7 @@
 Gallery
 =======
 
-Within this gallery, we categorize *predefined objects* (for example, computational domains and meshes) and
+Within this gallery, we categorize predefined objects (for example, computational domains and meshes) and
 representative demos, examples and applications into different showcases listed below.
 
 ------------------

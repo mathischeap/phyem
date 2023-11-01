@@ -128,4 +128,4 @@ class MPI_PY_D2_Matrix_Caller_Row_Col(_D2_Matrix_Caller_Row_Col):
         _2d_matrix_caller = _Matrix_Caller(
             self._given_index, given_form_cochain_vector, _3d_data, given_form.mesh, self._row, self._col
         )
-        return MPI_PY_Localize_Static_Matrix(_2d_matrix_caller, gm_row, gm_col)
+        return MPI_PY_Localize_Static_Matrix(_2d_matrix_caller, gm_row, gm_col, raw_key_map='unique')

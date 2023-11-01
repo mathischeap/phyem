@@ -29,8 +29,7 @@ class _PackageScipy(Frozen):
         # ====================================
         t_cost = time() - t_start
         t_cost = MyTimer.seconds2dhms(t_cost)
-        message = f"Linear system of shape: {A.shape}" + \
-                  f" <direct solver costs: {t_cost}> "
+        message = f"Linear system of shape: {A.shape} <direct solver costs: {t_cost}> "
         info = {
             'total cost': t_cost,
         }

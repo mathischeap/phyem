@@ -214,8 +214,8 @@ def info(*others_2b_printed):
     new_time = time()
     total_cost = new_time - start_time
     if RANK == MASTER_RANK:
-        print(f'=== [{count}] {MyTimer.current_time()} -after- %.2f(s)'
-              f', total: {MyTimer.seconds2dhms(total_cost)} <----' % (new_time - old_time))
+        print(f'=== [{count}] {MyTimer.current_time()} -after- %.2f(s),'
+              f' total: {MyTimer.seconds2dhms(total_cost)} <----' % (new_time - old_time))
         print(f"~) Form with newest cochain @ ---------------------------- ")
     for form_sym in forms:
         form = forms[form_sym]

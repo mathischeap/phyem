@@ -2,7 +2,7 @@
 r"""
 """
 import numpy as np
-from scipy.sparse import dia_array
+from scipy.sparse import dia_matrix
 from tools.frozen import Frozen
 from generic.py._2d_unstruct.space.basis_functions.Lambda import BasisFunctionsLambda
 from src.spaces.main import _degree_str_maker
@@ -97,7 +97,7 @@ class BasisFunctions(Frozen):
                 pass
             csm[element][local_dofs] = -1
         for element in csm:
-            csm[element] = dia_array(np.diag(csm[element])).tocsc()
+            csm[element] = dia_matrix(np.diag(csm[element])).tocsc()
         self._csm_1outer_cache[key] = csm
         return csm
 
@@ -124,7 +124,7 @@ class BasisFunctions(Frozen):
                 pass
             csm[element][local_dofs] = -1
         for element in csm:
-            csm[element] = dia_array(np.diag(csm[element])).tocsc()
+            csm[element] = dia_matrix(np.diag(csm[element])).tocsc()
         self._csm_1inner_cache = csm
         return csm
 

@@ -59,7 +59,7 @@ class StaticCopy(Frozen):
 
     def visualize(self, **kwargs):
         """visualize."""
-        return self._f.visualize(t=self._t, **kwargs)
+        raise NotImplementedError()
 
     def error(self, d=2):
         return self._f.space.error(self._f.cf, self.cochain, d=d)

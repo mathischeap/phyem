@@ -96,7 +96,7 @@ class MseHyPy2LevelTriangles(Frozen):
         return len(self._triangle_dict)
 
     def _find_characters_of_triangle(self, index):
-        """Find the base element and characters of a triangle indexed `index`.
+        r"""Find the base element and characters of a triangle indexed `index`.
 
         characters = [(xt, yt), (xb, yb)] where, for example,
 
@@ -189,7 +189,7 @@ class MseHyPy2LevelTriangles(Frozen):
         return self._local_map
 
     def _make_local_map(self):
-        """
+        r"""
         A dict. Keys are indices. Values are a list of three entries indicating the object at the bottom
         -> edge0 -> edge1 side.
 
@@ -541,6 +541,8 @@ class MseHyPy2LevelTriangles(Frozen):
         for t in all_base_triangles:
             if t not in refining_triangles:
                 not_refined_triangles.append(t)
+            else:
+                pass
 
         base_ct = self._level._base_level_elements.ct
 
@@ -564,8 +566,8 @@ class MseHyPy2LevelTriangles(Frozen):
                 x, y = _edge[index]
                 x[np.isclose(x, 0)] = 0
                 y[np.isclose(y, 0)] = 0
-                x = np.round(x, 5)
-                y = np.round(y, 5)
+                x = np.round(x, 7)
+                y = np.round(y, 7)
 
                 str0 = str(x) + str(y)
                 str1 = str(x[::-1]) + str(y[::-1])
@@ -601,8 +603,8 @@ class MseHyPy2LevelTriangles(Frozen):
                 x, y = _edge[index]
                 x[np.isclose(x, 0)] = 0
                 y[np.isclose(y, 0)] = 0
-                x = np.round(x, 5)
-                y = np.round(y, 5)
+                x = np.round(x, 7)
+                y = np.round(y, 7)
 
                 str0 = str(x) + str(y)
                 str1 = str(x[::-1]) + str(y[::-1])
@@ -653,9 +655,9 @@ class MseHyPy2LevelTriangles(Frozen):
                     sign = '+'
                 else:
                     sign = '-'
-
                 # noinspection PyTypeChecker
                 self._local_map[indicator[0]][0] = last_indicator[:2] + (sign, )
+
             else:   # must be on domain boundary
                 pass
 
@@ -685,5 +687,6 @@ class MseHyPy2LevelTriangles(Frozen):
 
                     elif isinstance(mp, list):
                         pass
+
                     else:
                         raise Exception()
