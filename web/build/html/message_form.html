@@ -439,30 +439,26 @@ document.write(`
   <section id="message-form">
 <span id="id1"></span><h1>Message form<a class="headerlink" href="#message-form" title="Permalink to this heading">#</a></h1>
 <p>📨 To send Yi a message, please use the form below.</p>
-<form name="Message Forms" enctype="multipart/form-data" data-netlify="true">
-  <input type="hidden" name="subject"
-  value="Message received by [phyem.org]" />
+<form name="contact" method="POST" data-netlify="true">
   <p>
-    <label>Your name: <input size="20" type="text" name="name" /></label>
+    <label>Your Name: <input type="text" name="name" /></label>
   </p>
   <p>
-    <label>Your email: <input size="20" type="email" name="email" /></label>
+    <label>Your Email: <input type="email" name="email" /></label>
   </p>
   <p>
-    <label>Title: <input size="45" type="title" name="title" /></label>
+    <label>Your Role: <select name="role[]" multiple>
+      <option value="leader">Leader</option>
+      <option value="follower">Follower</option>
+    </select></label>
   </p>
   <p>
-    <label>Message: <textarea rows="10" cols="90" name="message"></textarea></label>
+    <label>Message: <textarea name="message"></textarea></label>
   </p>
   <p>
-     <label>
-       <span>Attach file:</span>
-       <input name="file" type="file"/>
-     </label>
+    <button type="submit">Send</button>
   </p>
-  <button>Submit</button>
- </form>
- <p class="result"></p><div class="line-block">
+</form><div class="line-block">
 <div class="line">🚨 -You can upload only one file. Please merge your files. Sorry for the inconvenience.</div>
 <div class="line">🚨 -The file has a maximum size limit of ~8 MB.</div>
 <div class="line">🚨 -File uploading times out after 30 seconds.</div>
@@ -520,7 +516,7 @@ By Andrea Brugnoli, Ramy Rashad, Stefano Stramigioli, Yi Zhang and more
   <div class="footer-item">
     
 <div class="extra_footer">
-  <div>Last updated on November 02, 2023, 22:03:22, W. Europe Standard Time</div>
+  <div>Last updated on November 02, 2023, 22:07:21, W. Europe Standard Time</div>
 </div>
   </div>
   
