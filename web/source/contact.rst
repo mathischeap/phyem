@@ -80,6 +80,7 @@ Message form
     </form>
     <p class="result"></p>
 
+
 | 🚨 -You can upload only one file. Please merge your files. Sorry for the inconvenience.
 | 🚨 -The file has a maximum size limit of ~8 MB.
 | 🚨 -File uploading times out after 30 seconds.

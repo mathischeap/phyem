@@ -463,16 +463,17 @@ document.write(`
 <section id="message-form">
 <span id="id2"></span><h2>Message form<a class="headerlink" href="#message-form" title="Permalink to this heading">#</a></h2>
 <p>📨 To send us a message, please use the form below.</p>
-<form name="message" method="POST" data-netlify="true">
-  <input type="hidden" name="subject" value="Message received at [www.phyem.org]">
+<form name="Message" enctype="multipart/form-data" data-netlify="true">
+  <input type="hidden" name="subject"
+  value="Message received at [phyem.org]" />
   <p>
     <label>Your name: <input size="20" type="text" name="name" /></label>
   </p>
   <p>
-    <label>Your email: <input size="30" type="email" name="email" /></label>
+    <label>Your email: <input size="20" type="email" name="email" /></label>
   </p>
   <p>
-    <label>Message title: <input size="45" type="title" name="title" /></label>
+    <label>Title: <input size="45" type="title" name="title" /></label>
   </p>
   <p>
     <label>Message: <textarea rows="10" cols="90" name="message"></textarea></label>
@@ -581,7 +582,7 @@ By Andrea Brugnoli, Ramy Rashad, Stefano Stramigioli, Yi Zhang and more
   <div class="footer-item">
     
 <div class="extra_footer">
-  <div>Last updated on November 02, 2023, 21:51:23, W. Europe Standard Time</div>
+  <div>Last updated on November 02, 2023, 21:57:32, W. Europe Standard Time</div>
 </div>
   </div>
   
