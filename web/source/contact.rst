@@ -55,9 +55,8 @@ Message form
 
 .. raw:: html
 
-   <form name="Message Forms" enctype="multipart/form-data" data-netlify="true">
-     <input type="hidden" name="subject"
-     value="Message received at [www.phyem.org]" />
+   <form name="message" method="POST" data-netlify="true">
+     <input type="hidden" name="subject" value="Message received at [www.phyem.org]">
      <p>
        <label>Your name: <input size="20" type="text" name="name" /></label>
      </p>
@@ -65,10 +64,7 @@ Message form
        <label>Your email: <input size="30" type="email" name="email" /></label>
      </p>
      <p>
-       <label>Your role: <input size="15" type="text" name="role" /></label>
-     </p>
-     <p>
-       <label>Title: <input size="45" type="title" name="title" /></label>
+       <label>Message title: <input size="45" type="title" name="title" /></label>
      </p>
      <p>
        <label>Message: <textarea rows="10" cols="90" name="message"></textarea></label>
