@@ -7,9 +7,9 @@ Contact
 
 On this page, you can find contact of the maintainer or send us a message throught the :ref:`message-form`.
 
-----------
-Maintainer
-----------
+------------
+Maintainer🛠️
+------------
 
 The main maintainer of *phyem* is `Yi Zhang <https://mathischeap.com/>`_.
 
