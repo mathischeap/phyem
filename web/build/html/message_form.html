@@ -9,7 +9,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
 
-    <title>Welcome &#8212; phyem, a finite element library powering LEGO-like simulations for (multi-)physics.</title>
+    <title>Message form &#8212; phyem, a finite element library powering LEGO-like simulations for (multi-)physics.</title>
   
   
   
@@ -45,11 +45,10 @@
     <script src="_static/copybutton.js"></script>
     <script src="_static/scripts/sphinx-book-theme.js?digest=5a5c038af52cf7bc1a1ec88eea08e6366ee68824"></script>
     <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
-    <script>DOCUMENTATION_OPTIONS.pagename = 'index';</script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'message_form';</script>
     <link rel="icon" href="_static/favicon.png"/>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="About" href="tutorial/about.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
   </head>
@@ -132,7 +131,7 @@
         <div class="sidebar-primary-item">
   
 
-<a class="navbar-brand logo" href="#">
+<a class="navbar-brand logo" href="index.html">
   
   
   
@@ -188,8 +187,8 @@
     <div class="bd-toc-item navbar-nav active">
         
         <ul class="nav bd-sidenav bd-sidenav__home-link">
-            <li class="toctree-l1 current active">
-                <a class="reference internal" href="#">
+            <li class="toctree-l1">
+                <a class="reference internal" href="index.html">
                     Welcome
                 </a>
             </li>
@@ -313,7 +312,7 @@
       
       
       
-      <li><a href="https://github.com/mathischeap/phyem/issues/new?title=Issue%20on%20page%20%2Findex.html&body=Your%20issue%20content%20here." target="_blank"
+      <li><a href="https://github.com/mathischeap/phyem/issues/new?title=Issue%20on%20page%20%2Fmessage_form.html&body=Your%20issue%20content%20here." target="_blank"
    class="btn btn-sm btn-source-issues-button dropdown-item"
    title="Open an issue"
    data-bs-placement="left" data-bs-toggle="tooltip"
@@ -343,7 +342,7 @@
       
       
       
-      <li><a href="_sources/index.rst" target="_blank"
+      <li><a href="_sources/message_form.rst" target="_blank"
    class="btn btn-sm btn-download-source-button dropdown-item"
    title="Download source file"
    data-bs-placement="left" data-bs-toggle="tooltip"
@@ -412,9 +411,7 @@ document.write(`
   </button>
 `);
 </script>
-<label class="sidebar-toggle secondary-toggle btn btn-sm" for="__secondary"title="Toggle secondary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
-    <span class="fa-solid fa-list"></span>
-</label>
+
 </div></div>
       
     </div>
@@ -425,22 +422,11 @@ document.write(`
               
 
 <div id="jb-print-docs-body" class="onlyprint">
-    <h1>Welcome</h1>
+    <h1>Message form</h1>
     <!-- Table of contents -->
     <div id="print-main-content">
         <div id="jb-print-toc">
             
-            <div>
-                <h2> On this page </h2>
-            </div>
-            <nav aria-label="Page">
-                <ul class="visible nav section-nav flex-column">
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#introduction">Introduction</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#tutorial">Tutorial</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#more">More</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#contact-contributors">Contact &amp; contributors</a></li>
-</ul>
-            </nav>
         </div>
     </div>
 </div>
@@ -450,102 +436,38 @@ document.write(`
 <div id="searchbox"></div>
                 <article class="bd-article" role="main">
                   
-  <section id="welcome">
-<span id="phyem"></span><h1>Welcome<a class="headerlink" href="#welcome" title="Permalink to this heading">#</a></h1>
-<p><em>phyem</em> is an open-source finite element library that bridges port-based thinking to numerics and enables
-<strong>LEGO</strong>-like simulations. The name, <em>phyem</em>, stands for</p>
-<ul class="simple">
-<li><p>Python</p></li>
-<li><p>port-Hamiltonian</p></li>
-<li><p>fem</p></li>
-<li><p>physics</p></li>
-</ul>
-<p>It was initiated as a part of the
-ERC advanced project <a class="reference external" href="http://www.portwings.eu/">PortWings</a> awarded to
-<a class="reference external" href="https://people.utwente.nl/s.stramigioli">prof.dr.ir. Stefano Stramigioli</a>.</p>
-<section id="introduction">
-<h2>Introduction<a class="headerlink" href="#introduction" title="Permalink to this heading">#</a></h2>
-<p><em>phyem</em> is Python-shelled; users interact with it through Python scripts or in Python console (Python3 only).
-The library is made user-friendly such
-that only a basic level of Python programming skills is required.</p>
-<div class="admonition important">
-<p class="admonition-title">Important</p>
-<p>It has two major modules:</p>
-<table class="table">
-<tbody>
-<tr class="row-odd"><td><p><strong>module</strong></p></td>
-<td><p><strong>description</strong></p></td>
-<td><p><strong>Environment</strong></p></td>
-</tr>
-<tr class="row-even"><td><p><em>the mathematical kernel</em></p></td>
-<td><p>It is for setting up the problem and the
-discretization theoretically.</p></td>
-<td><p>Natural Python; it works
-with Windows, Linux or Mac.</p></td>
-</tr>
-<tr class="row-odd"><td><p><em>implementations</em></p></td>
-<td><p>The discretization is sent to one of the
-implementations. It uses a particular finite element
-setting, generates algebraic systems to be solved,
-and eventually gives results to be post-processed.</p></td>
-<td><p>Depends on particular
-implementations; the
-<a class="reference internal" href="tutorial/docs/implementations/msepy.html#implementations-msepy"><span class="std std-ref">msepy</span></a>
-implementation
-is in natural Python.</p></td>
-</tr>
-</tbody>
-</table>
+  <section id="message-form">
+<span id="id1"></span><h1>Message form<a class="headerlink" href="#message-form" title="Permalink to this heading">#</a></h1>
+<p>📨 To send Yi a message, please use the form below.</p>
+<form name="Message Forms" enctype="multipart/form-data" data-netlify="true">
+  <input type="hidden" name="subject"
+  value="Message received by [phyem.org]" />
+  <p>
+    <label>Your name: <input size="20" type="text" name="name" /></label>
+  </p>
+  <p>
+    <label>Your email: <input size="20" type="email" name="email" /></label>
+  </p>
+  <p>
+    <label>Title: <input size="45" type="title" name="title" /></label>
+  </p>
+  <p>
+    <label>Message: <textarea rows="10" cols="90" name="message"></textarea></label>
+  </p>
+  <p>
+     <label>
+       <span>Attach file:</span>
+       <input name="file" type="file"/>
+     </label>
+  </p>
+  <button>Submit</button>
+ </form>
+ <p class="result"></p><div class="line-block">
+<div class="line">🚨 -You can upload only one file. Please merge your files. Sorry for the inconvenience.</div>
+<div class="line">🚨 -The file has a maximum size limit of ~8 MB.</div>
+<div class="line">🚨 -File uploading times out after 30 seconds.</div>
 </div>
-<figure class="align-default">
-<a class="reference internal image-reference" href="_images/simple_structure.png"><img alt="_images/simple_structure.png" src="_images/simple_structure.png" style="width: 100%;" /></a>
-</figure>
-<p>In other words, they represent
-the theoretical and numerical aspects of the library, respectively. And the former is pure Python; while the later
-has Python shells and APIs to back-ends of different kernels to make fully use of resources
-in the open-access community.</p>
-</section>
-<section id="tutorial">
-<h2>Tutorial<a class="headerlink" href="#tutorial" title="Permalink to this heading">#</a></h2>
-<p>The tutorial of <em>phyem</em> has four parts,</p>
-<div class="toctree-wrapper compound">
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="tutorial/about.html">About</a></li>
-<li class="toctree-l1"><a class="reference internal" href="tutorial/install.html">Installation</a></li>
-<li class="toctree-l1"><a class="reference internal" href="tutorial/documentations.html">Documentations</a></li>
-<li class="toctree-l1"><a class="reference internal" href="tutorial/summary.html">Summary</a></li>
-</ul>
-</div>
-</section>
-<section id="more">
-<h2>More<a class="headerlink" href="#more" title="Permalink to this heading">#</a></h2>
-<p>More examples, demonstrations, explanations, etc., are available.</p>
-<div class="toctree-wrapper compound">
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="jupyter/index.html">Jupyter notebooks</a></li>
-<li class="toctree-l1"><a class="reference internal" href="gallery/index.html">Gallery</a></li>
-</ul>
-</div>
-</section>
-<section id="contact-contributors">
-<h2>Contact &amp; contributors<a class="headerlink" href="#contact-contributors" title="Permalink to this heading">#</a></h2>
-<p>📞 Getting in touch is important.</p>
-<div class="toctree-wrapper compound">
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="contact.html">Contact</a></li>
-<li class="toctree-l1"><a class="reference internal" href="contributors.html">Contributors</a></li>
-</ul>
-</div>
-<div class="line-block">
-<div class="line"><br /></div>
-</div>
-<div class="admonition-privacy-statement admonition">
-<p class="admonition-title">Privacy statement</p>
-<p>Site traffic is measured only for statistic.
-Absolutely no data which may lead to minimal leak of your privacy is ever recorded.
-Thank you very much for visiting <em>phyem</em>.</p>
-</div>
-</section>
+<p>🔗 Message submission service provided by <em>netlify</em>. All messages will be filtered for spam using Akismet.</p>
 </section>
 
 
@@ -559,38 +481,12 @@ Thank you very much for visiting <em>phyem</em>.</p>
                 <footer class="prev-next-footer">
                   <!-- Previous / next buttons -->
 <div class="prev-next-area">
-    <a class="right-next"
-       href="tutorial/about.html"
-       title="next page">
-      <div class="prev-next-info">
-        <p class="prev-next-subtitle">next</p>
-        <p class="prev-next-title">About</p>
-      </div>
-      <i class="fa-solid fa-angle-right"></i>
-    </a>
 </div>
                 </footer>
               
             </div>
             
             
-              
-                <div class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
-
-  <div class="sidebar-secondary-item">
-  <div class="page-toc tocsection onthispage">
-    <i class="fa-solid fa-list"></i> On this page
-  </div>
-  <nav class="bd-toc-nav page-toc">
-    <ul class="visible nav section-nav flex-column">
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#introduction">Introduction</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#tutorial">Tutorial</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#more">More</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#contact-contributors">Contact &amp; contributors</a></li>
-</ul>
-  </nav></div>
-
-</div></div>
               
             
           </div>
