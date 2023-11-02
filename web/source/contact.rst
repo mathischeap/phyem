@@ -5,20 +5,16 @@
 Contact
 =======
 
-On this page, you can find contact of the maintainer or send us a message through the :ref:`message-form`.
-
-------------
-Maintainer🛠️
-------------
-
-The main maintainer of *phyem* is `Yi Zhang <https://mathischeap.com/>`_.
+The main maintainer🛠️ of *phyem* is `Yi Zhang <https://mathischeap.com/>`_.
 
 📧 `zhangyi_aero@hotmail.com <mailto: zhangyi_aero@hotmail.com>`_
 
 You can also find Yi at |ImageLinkRG|_ |ImageLinkorcid|_ |ImageLinklinkedin|_
 |ImageLinkgithub|_ |ImageLinkfb|_ |ImageLinktwitter|_.
-
 Contact of all contributors are available at :ref:`Contributors`.
+
+You are also welcome to contact us or report any issue on
+`the Github issue page of phyem <https://github.com/mathischeap/phyem/issues>`_.
 
 .. |ImageLinkorcid| image:: _static/orcid-og-image.png
     :height: 1.5em
@@ -43,13 +39,6 @@ Contact of all contributors are available at :ref:`Contributors`.
 .. |ImageLinktwitter| image:: _static/Twitter-logo-2012.png
     :height: 1.5em
 .. _ImageLinktwitter: https://twitter.com/Zanni_Aero
-
-
-------------
-Message form
-------------
-
-📨 To send us a message, please use the form, :ref:`message-form`
 
 
 |

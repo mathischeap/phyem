@@ -101,7 +101,11 @@ Contact & contributors
 
 |
 
-.. ↩️  Back to :ref:`PHYEM`.
+.. error::
+
+    If you find any error in *phyem* or on this site, we appreciate it a lot if you could report it on
+    `the Github issue page of phyem <https://github.com/mathischeap/phyem/issues>`_ or let us know
+    through :ref:`contact`.
 
 .. admonition:: Privacy statement
 

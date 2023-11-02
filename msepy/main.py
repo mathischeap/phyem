@@ -145,7 +145,7 @@ See examples at :ref:`GALLERY-msepy-domains-and-meshes`.
     be implemented.
 
     So far, this interface is missing. And if your domain is not covered by the predefined manifolds, please
-    send us a message through :ref:`message-form` with your domain details. We will implement it as a
+    send us a message, see :ref:`contact`, with your domain details. We will implement it as a
     predefined manifold as soon as possible.
 
 |
