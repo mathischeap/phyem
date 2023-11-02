@@ -1,5 +1,5 @@
+# -*- coding: utf-8 -*-
 r"""
-
 """
 from src.config import RANK
 from generic.py._2d_unstruct.space.main import GenericUnstructuredSpace2D

@@ -17,21 +17,17 @@ if './' not in sys.path:
 
 from src.config import SIZE
 
-if SIZE == 1:
-
-    print(  # we use a container to do the test for safety reasons.
-        os.popen('python tests/msepy/main.py').read()
-    )
-
-else:
-
-    pass
-
-
 __all__ = [
     'jupyter',
     'web',
 ]
 
-import tests.jupyter_notebooks as jupyter
-import tests.web as web
+if SIZE == 1:
+    print(  # we use a container to do the test for safety reasons.
+        os.popen('python tests/msepy/main.py').read()
+    )
+    import tests.jupyter_notebooks as jupyter
+    import tests.web as web
+
+else:
+    pass

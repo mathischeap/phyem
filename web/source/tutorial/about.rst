@@ -1,7 +1,6 @@
-.. _Features-and-structure:
 
-Features and structure
-======================
+About
+=====
 
 Nowadays, if we want to simulate something, we usually have two options:
 
@@ -24,12 +23,12 @@ The most obvious features of *phyem* are
 
 This means we can work with *phyem* from the problem setting up stage.
 
-Structure
----------
+Skeleton
+--------
 
 The skeleton of a *phyem* simulation is illustrated in the figure below.
 
-.. figure:: _static/structure.jpg
+.. figure:: ../_static/structure.jpg
     :width: 90 %
 
 Currently, to startup a simulation, we ideally need to input a ``PDE``, which is made of ingredients ``forms``.

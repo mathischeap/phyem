@@ -17,7 +17,6 @@ showcased below
    msepy/cylinder_channel
 
 
-
 |
 
 ↩️  Back to :ref:`GALLERY-Gallery`.

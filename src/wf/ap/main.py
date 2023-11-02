@@ -51,7 +51,7 @@ class AlgebraicProxy(Frozen):
                         new_sign = self._parse_sign(new_sign, old_sign)
                         color = 'k'
                         assert linearity in ('linear', 'nonlinear'), \
-                            f"`linearity` must be among ('linear', 'nonlinear'), now it is {linearity}."
+                            f"'linearity' must be among ('linear', 'nonlinear'), now it is {linearity}."
                         if self.___all_linear___ and linearity == 'nonlinear':
                             self.___all_linear___ = False
                         else:
@@ -211,7 +211,7 @@ class AlgebraicProxy(Frozen):
             figsize = (12, 3 * len(self._term_dict))
 
         fig = plt.figure(figsize=figsize)
-        plt.axis([0, 1, 0, 1])
+        plt.axis((0, 1, 0, 1))
         plt.axis('off')
         plt.text(0.05, 0.5, seek_text + '\n' + symbolic + bc_text, ha='left', va='center', size=15)
 

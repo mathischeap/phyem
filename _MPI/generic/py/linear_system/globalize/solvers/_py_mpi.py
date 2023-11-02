@@ -66,7 +66,8 @@ def _gmres(
     BETA = None
 
     AVJ = np.empty((shape0,), dtype=float)
-    Hm = np.zeros((restart + 1, restart), dtype=float)  # In the future, we can change this to sparse matrix.
+    Hm = np.zeros((restart + 1, restart), dtype=float)
+    # In the future, we can change this to sparse matrix.
 
     if RANK == MASTER_RANK:
         VV = np.empty((shape0,), dtype=float)
@@ -250,7 +251,8 @@ def _lgmres(
     BETA = None
 
     AVJ = np.empty((shape0,), dtype=float)
-    Hm = np.zeros((restart + 1, restart), dtype=float)  # In the future, we can change this to sparse matrix.
+    Hm = np.zeros((restart + 1, restart), dtype=float)
+    # In the future, we can change this to sparse matrix.
     if RANK == MASTER_RANK:
         VV = np.empty((shape0,), dtype=float)
         Vm = np.empty((restart, shape0), dtype=float)

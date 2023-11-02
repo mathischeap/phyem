@@ -12,7 +12,7 @@ representative demos, examples and applications into different showcases listed 
 Domains and meshes
 ------------------
 
-The predefined domains and meshes includes below categories.
+The predefined domains and meshes includes below categories,
 
 .. toctree::
    :maxdepth: 1
@@ -24,7 +24,7 @@ The predefined domains and meshes includes below categories.
 Problem solving
 ---------------
 
-Below, different kinds of problems are solved as demonstrations. They are, from *simple* to *complicated* ones,
+Below, different kinds of problems are solved as demonstrations,
 
 .. toctree::
    :maxdepth: 1

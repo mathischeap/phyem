@@ -2,7 +2,7 @@
 .. _GALLERY-msepy-domains-and-meshes=cylinder-channel:
 
 ================
-Cylinder_channel
+Cylinder channel
 ================
 
 

@@ -49,7 +49,7 @@
     <link rel="icon" href="_static/favicon.png"/>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="Features and structure" href="introduction.html" />
+    <link rel="next" title="About" href="tutorial/about.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
   </head>
@@ -195,10 +195,8 @@
             </li>
         </ul>
         <ul class="nav bd-sidenav">
-<li class="toctree-l1"><a class="reference internal" href="introduction.html">Features and structure</a></li>
-</ul>
-<ul class="nav bd-sidenav">
-<li class="toctree-l1"><a class="reference internal" href="tutorial/install.html">Install</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tutorial/about.html">About</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tutorial/install.html">Installation</a></li>
 <li class="toctree-l1 has-children"><a class="reference internal" href="tutorial/documentations.html">Documentations</a><input class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-1"><i class="fa-solid fa-chevron-down"></i></label><ul>
 <li class="toctree-l2"><a class="reference internal" href="tutorial/docs/presetting.html">1. Presetting</a></li>
 <li class="toctree-l2"><a class="reference internal" href="tutorial/docs/manifold_mesh.html">2. Manifold &amp; mesh</a></li>
@@ -216,18 +214,16 @@
 </ul>
 <ul class="nav bd-sidenav">
 <li class="toctree-l1 has-children"><a class="reference internal" href="jupyter/index.html">Jupyter notebooks</a><input class="toctree-checkbox" id="toctree-checkbox-3" name="toctree-checkbox-3" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-3"><i class="fa-solid fa-chevron-down"></i></label><ul>
-<li class="toctree-l2"><a class="reference internal" href="jupyter/general/first_equation.html">Set up your first equation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="jupyter/general/first_equation.html">Set up your first equations</a></li>
 <li class="toctree-l2"><a class="reference internal" href="jupyter/general/discretize_linear_pH_system.html">How to discretize equations</a></li>
 </ul>
 </li>
-</ul>
-<ul class="nav bd-sidenav">
 <li class="toctree-l1 has-children"><a class="reference internal" href="gallery/index.html">Gallery</a><input class="toctree-checkbox" id="toctree-checkbox-4" name="toctree-checkbox-4" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-4"><i class="fa-solid fa-chevron-down"></i></label><ul>
 <li class="toctree-l2 has-children"><a class="reference internal" href="gallery/msepy_domains_and_meshes/index.html"><em>msepy</em> domains and meshes</a><input class="toctree-checkbox" id="toctree-checkbox-5" name="toctree-checkbox-5" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-5"><i class="fa-solid fa-chevron-down"></i></label><ul>
 <li class="toctree-l3"><a class="reference internal" href="gallery/msepy_domains_and_meshes/msepy/crazy.html">Crazy domain and mesh</a></li>
 <li class="toctree-l3"><a class="reference internal" href="gallery/msepy_domains_and_meshes/msepy/crazy_multi.html">Multi-crazy domain and mesh</a></li>
 <li class="toctree-l3"><a class="reference internal" href="gallery/msepy_domains_and_meshes/msepy/backward_step.html">Backward step</a></li>
-<li class="toctree-l3"><a class="reference internal" href="gallery/msepy_domains_and_meshes/msepy/cylinder_channel.html">Cylinder_channel</a></li>
+<li class="toctree-l3"><a class="reference internal" href="gallery/msepy_domains_and_meshes/msepy/cylinder_channel.html">Cylinder channel</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="gallery/div_grad/index.html">div-grad</a></li>
@@ -245,6 +241,7 @@
 </ul>
 <ul class="nav bd-sidenav">
 <li class="toctree-l1"><a class="reference internal" href="contact.html">Contact</a></li>
+<li class="toctree-l1"><a class="reference internal" href="contributors.html">Contributors</a></li>
 </ul>
 
     </div>
@@ -440,9 +437,8 @@ document.write(`
                 <ul class="visible nav section-nav flex-column">
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#introduction">Introduction</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#tutorial">Tutorial</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#jupyter-notebooks">Jupyter notebooks</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#gallery">Gallery</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#contact">Contact</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#more">More</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#contact-contributors">Contact &amp; contributors</a></li>
 </ul>
             </nav>
         </div>
@@ -467,13 +463,8 @@ document.write(`
 <p>It was initiated as a part of the
 ERC advanced project <a class="reference external" href="http://www.portwings.eu/">PortWings</a> awarded to
 <a class="reference external" href="https://people.utwente.nl/s.stramigioli">prof.dr.ir. Stefano Stramigioli</a>.</p>
-<p><em>phyem</em> is developed under a joint force of
-<a class="reference external" href="https://www.researchgate.net/profile/Andrea-Brugnoli-3">Andrea Brugnoli</a>,
-<a class="reference external" href="https://ramyrashad.com/">Ramy Rashad</a>,
-<a class="reference external" href="https://people.utwente.nl/s.stramigioli">Stefano Stramigioli</a>,
-<a class="reference external" href="https://mathischeap.com/">Yi Zhang</a>, and more.</p>
 <section id="introduction">
-<span id="id1"></span><h2>Introduction<a class="headerlink" href="#introduction" title="Permalink to this heading">#</a></h2>
+<h2>Introduction<a class="headerlink" href="#introduction" title="Permalink to this heading">#</a></h2>
 <p><em>phyem</em> is Python-shelled; users interact with it through Python scripts or in Python console (Python3 only).
 The library is made user-friendly such
 that only a basic level of Python programming skills is required.</p>
@@ -512,49 +503,37 @@ is in natural Python.</p></td>
 <p>In other words, they represent
 the theoretical and numerical aspects of the library, respectively. And the former is pure Python; while the later
 has Python shells and APIs to back-ends of different kernels to make fully use of resources
-in the open-access community. Read more at</p>
-<div class="toctree-wrapper compound">
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="introduction.html">Features and structure</a></li>
-</ul>
-</div>
+in the open-access community.</p>
 </section>
 <section id="tutorial">
-<span id="id2"></span><h2>Tutorial<a class="headerlink" href="#tutorial" title="Permalink to this heading">#</a></h2>
-<p>The tutorial of <em>phyem</em> has three parts,</p>
+<h2>Tutorial<a class="headerlink" href="#tutorial" title="Permalink to this heading">#</a></h2>
+<p>The tutorial of <em>phyem</em> has four parts,</p>
 <div class="toctree-wrapper compound">
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="tutorial/install.html">Install</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tutorial/about.html">About</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tutorial/install.html">Installation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="tutorial/documentations.html">Documentations</a></li>
 <li class="toctree-l1"><a class="reference internal" href="tutorial/summary.html">Summary</a></li>
 </ul>
 </div>
 </section>
-<section id="jupyter-notebooks">
-<span id="jupyter"></span><h2>Jupyter notebooks<a class="headerlink" href="#jupyter-notebooks" title="Permalink to this heading">#</a></h2>
-<p>We sort out jupyter notebooks that demonstrate the using of <em>phyem</em> at</p>
+<section id="more">
+<h2>More<a class="headerlink" href="#more" title="Permalink to this heading">#</a></h2>
+<p>More examples, demonstrations, explanations, etc., are available.</p>
 <div class="toctree-wrapper compound">
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="jupyter/index.html">Jupyter notebooks</a></li>
-</ul>
-</div>
-</section>
-<section id="gallery">
-<span id="id3"></span><h2>Gallery<a class="headerlink" href="#gallery" title="Permalink to this heading">#</a></h2>
-<p>Here, we categorize predefined objects (for example, computational domains and meshes) and representative demos,
-examples and applications using <em>phyem</em> into showcases at</p>
-<div class="toctree-wrapper compound">
-<ul>
 <li class="toctree-l1"><a class="reference internal" href="gallery/index.html">Gallery</a></li>
 </ul>
 </div>
 </section>
-<section id="contact">
-<h2>Contact<a class="headerlink" href="#contact" title="Permalink to this heading">#</a></h2>
-<p>Getting in touch is important. See how at</p>
+<section id="contact-contributors">
+<h2>Contact &amp; contributors<a class="headerlink" href="#contact-contributors" title="Permalink to this heading">#</a></h2>
+<p>📞 Getting in touch is important.</p>
 <div class="toctree-wrapper compound">
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="contact.html">Contact</a></li>
+<li class="toctree-l1"><a class="reference internal" href="contributors.html">Contributors</a></li>
 </ul>
 </div>
 <div class="line-block">
@@ -581,11 +560,11 @@ Thank you very much for visiting <em>phyem</em>.</p>
                   <!-- Previous / next buttons -->
 <div class="prev-next-area">
     <a class="right-next"
-       href="introduction.html"
+       href="tutorial/about.html"
        title="next page">
       <div class="prev-next-info">
         <p class="prev-next-subtitle">next</p>
-        <p class="prev-next-title">Features and structure</p>
+        <p class="prev-next-title">About</p>
       </div>
       <i class="fa-solid fa-angle-right"></i>
     </a>
@@ -606,9 +585,8 @@ Thank you very much for visiting <em>phyem</em>.</p>
     <ul class="visible nav section-nav flex-column">
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#introduction">Introduction</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#tutorial">Tutorial</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#jupyter-notebooks">Jupyter notebooks</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#gallery">Gallery</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#contact">Contact</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#more">More</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#contact-contributors">Contact &amp; contributors</a></li>
 </ul>
   </nav></div>
 
@@ -646,7 +624,7 @@ By Andrea Brugnoli, Ramy Rashad, Stefano Stramigioli, Yi Zhang and more
   <div class="footer-item">
     
 <div class="extra_footer">
-  <div>Last updated on November 01, 2023, 21:28:28, W. Europe Standard Time</div>
+  <div>Last updated on November 02, 2023, 21:29:26, W. Europe Standard Time</div>
 </div>
   </div>
   

@@ -38,10 +38,14 @@ Implemented operators are
     | **operator**         |**symbolic representation**           |    **usage**                         |
     +----------------------+--------------------------------------+--------------------------------------+
     | exterior derivative  | :math:`\mathrm{d}`                   | ``a.exterior_derivative()``          |
+    |                      |                                      | or ``ph.exteror_derivative(a)``      |
+    |                      |                                      | or ``ph.d(a)``                       |
     +----------------------+--------------------------------------+--------------------------------------+
     | codifferential       | :math:`\mathrm{d}^\ast`              | ``a.codifferential()``               |
+    |                      |                                      | or ``ph.codifferential(a)``          |
     +----------------------+--------------------------------------+--------------------------------------+
     | time derivative      | :math:`\frac{\partial}{\partial t}`  | ``a.time_derivative()``              |
+    |                      |                                      | or ``ph.time_derivative(a)``         |
     +----------------------+--------------------------------------+--------------------------------------+
     | wedge product        | :math:`\wedge`                       | Given two forms,                     |
     |                      |                                      | ``a``: :math:`\alpha` and            |
@@ -49,8 +53,23 @@ Implemented operators are
     |                      |                                      | The wedge product between            |
     |                      |                                      | them, i.e.                           |
     |                      |                                      | :math:`\alpha\wedge\beta`,           |
-    |                      |                                      | is ``a.wedge(b)``.                   |
+    |                      |                                      | is ``a.wedge(b)`` or                 |
+    |                      |                                      | ``ph.wedge(a, b)``.                  |
     |                      |                                      |                                      |
+    |                      |                                      |                                      |
+    +----------------------+--------------------------------------+--------------------------------------+
+    | inner product        | :math:`\left(\cdot,\cdot\right)`     | Given two forms,                     |
+    |                      |                                      | ``a``: :math:`\alpha` and            |
+    |                      |                                      | ``b``: :math:`\beta`,                |
+    |                      |                                      | The wedge product between            |
+    |                      |                                      | them, i.e.                           |
+    |                      |                                      | :math:`\left(\alpha,\beta\right)`,   |
+    |                      |                                      | is ``ph.inner(a,b)``.                |
+    |                      |                                      |                                      |
+    +----------------------+--------------------------------------+--------------------------------------+
+    | Hodge                | :math:`\star`                        | ``ph.Hodge(a)``                      |
+    +----------------------+--------------------------------------+--------------------------------------+
+    | trace                | :math:`\mathrm{tr}`                  | ``ph.trace(a)``                      |
     +----------------------+--------------------------------------+--------------------------------------+
 
     ..

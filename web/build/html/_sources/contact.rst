@@ -5,40 +5,20 @@
 Contact
 =======
 
------------------
-Main contributors
------------------
-
-You can find contact of contributors by clicking at their names:
-
-+--------------------------------------------------------------------------------------------------+
-|`Andrea Brugnoli <https://www.researchgate.net/profile/Andrea-Brugnoli-3>`_                       |
-+--------------------------------------------------------------------------------------------------+
-|`Ramy Rashad <https://ramyrashad.com/>`_                                                          |
-+--------------------------------------------------------------------------------------------------+
-|`Stefano Stramigioli <https://people.utwente.nl/s.stramigioli>`_                                  |
-+--------------------------------------------------------------------------------------------------+
-|`Yi Zhang <https://mathischeap.com/>`_                                                            |
-|                                                                                                  |
-+--------------------------------------------------------------------------------------------------+
-
-Those not listed contributors are greatly appreciated as well.
-
+On this page, you can find contact of the maintainer or send us a message throught the :ref:`message-form`.
 
 ----------
 Maintainer
 ----------
 
-The main maintainer of *phyem* is `Yi Zhang <https://mathischeap.com/>`_:
+The main maintainer of *phyem* is `Yi Zhang <https://mathischeap.com/>`_.
 
-+--------------------------------------+------------------------------------------------------------------------------------------+
-|  Permanent email:                    |   `zhangyi_aero@hotmail.com <mailto: zhangyi_aero@hotmail.com>`_                         |
-+--------------------------------------+------------------------------------------------------------------------------------------+
-| institute emails                     |   | `y.zhang-13@utwente.nl <mailto: y.zhang-13@utwente.nl>`_                             |
-|                                      |   | `y.zhang-14@tudelft.nl <mailto: y.zhang-14@tudelft.nl>`_                             |
-+--------------------------------------+------------------------------------------------------------------------------------------+
-|You can find Yi at |ImageLinkRG|_ |ImageLinkorcid|_ |ImageLinklinkedin|_ |ImageLinkgithub|_ |ImageLinkfb|_ |ImageLinktwitter|_   |
-+--------------------------------------+------------------------------------------------------------------------------------------+
+📧 `zhangyi_aero@hotmail.com <mailto: zhangyi_aero@hotmail.com>`_
+
+You can also find Yi at |ImageLinkRG|_ |ImageLinkorcid|_ |ImageLinklinkedin|_
+|ImageLinkgithub|_ |ImageLinkfb|_ |ImageLinktwitter|_.
+
+Contact of all contributors are available at :ref:`Contributors`.
 
 .. |ImageLinkorcid| image:: _static/orcid-og-image.png
     :height: 1.5em
@@ -63,7 +43,6 @@ The main maintainer of *phyem* is `Yi Zhang <https://mathischeap.com/>`_:
 .. |ImageLinktwitter| image:: _static/Twitter-logo-2012.png
     :height: 1.5em
 .. _ImageLinktwitter: https://twitter.com/Zanni_Aero
-
 
 
 .. _message-form:

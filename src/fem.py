@@ -11,7 +11,8 @@ for example,
 This function takes two arguments,
 
 - the first argument, ``arg0``, is an indicator implying which implementation we want to use,
-- the second argument. ``arg1``, is a dictionary of target objects; if we use ``local()``, we target at all local variables.
+- the second argument. ``arg1``, is a dictionary of target objects; if we use ``local()``,
+  we target at all local variables.
 
 .. important::
 

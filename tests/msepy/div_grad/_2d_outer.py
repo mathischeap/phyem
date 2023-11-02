@@ -6,7 +6,8 @@ on faces :math:`y=0` and :math:`y=1`, and natural boundary condition
 
 The implementation is
 
-.. autofunction:: tests.msepy.div_grad._2d_outer.div_grad_2d_general_bc_manufactured_test
+    .. autofunction:: tests.msepy.div_grad._2d_outer.div_grad_2d_general_bc_manufactured_test
+
 
 Examples
 --------
@@ -36,13 +37,6 @@ Again, the optimal convergence rate is obtained.
 
 import sys
 
-ph_dir = '../'  # customize it to your dir containing phyem
-if ph_dir not in sys.path:
-    sys.path.append(ph_dir)
-
-import phyem as ph
-import numpy as np
-
 
 def div_grad_2d_general_bc_manufactured_test(degree, K, c=0.):
     r"""
@@ -64,6 +58,12 @@ def div_grad_2d_general_bc_manufactured_test(degree, K, c=0.):
         The :math:`L^2`-error of solution :math:`u_h^1`.
 
     """
+    ph_dir = '../../'  # customize it to your own dir containing phyem
+    if ph_dir not in sys.path:
+        sys.path.append(ph_dir)
+
+    import phyem as ph
+    import numpy as np
 
     n = 2
     ls, mp = ph.samples.wf_div_grad(n=n, degree=degree, orientation='outer', periodic=False)
@@ -133,6 +133,10 @@ def div_grad_2d_general_bc_manufactured_test(degree, K, c=0.):
 
 if __name__ == '__main__':
     # python tests/msepy/div_grad/_2d_outer.py
+    ph_dir = '../'
+    if ph_dir not in sys.path:
+        sys.path.append(ph_dir)
+
     import doctest
     doctest.testmod()
 

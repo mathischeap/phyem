@@ -21,8 +21,8 @@ Exact solutions of :math:`u^1` and :math:`f^2` then follow.
 We consider the domain to be :math:`\Omega = (x,y) \in [0,1]^2` and it is fully periodic.
 We use the :ref:`GALLERY-msepy-domains-and-meshes=multi-crazy` for this test. The solver is given below.
 
+    .. autofunction:: tests.msepy.div_grad._2d_outer_periodic.div_grad_2d_periodic_manufactured_test
 
-.. autofunction:: tests.msepy.div_grad._2d_outer_periodic.div_grad_2d_periodic_manufactured_test
 
 ========
 Examples
@@ -49,20 +49,7 @@ The optimal convergence rate is obtained.
 
 """
 
-
-def phi_func(t, x, y):
-    """"""
-    return - np.sin(2 * np.pi * x) * np.sin(2 * np.pi * y) + t * 0
-
-
 import sys
-
-ph_dir = '../'  # customize it to your dir containing phyem
-if ph_dir not in sys.path:
-    sys.path.append(ph_dir)
-
-import numpy as np
-import phyem as ph
 
 
 def div_grad_2d_periodic_manufactured_test(degree, K, c=0):
@@ -85,6 +72,14 @@ def div_grad_2d_periodic_manufactured_test(degree, K, c=0):
         The :math:`L^2`-error of solution :math:`u_h^1`.
 
     """
+
+    ph_dir = '../../'  # customize it to your own dir containing phyem
+    if ph_dir not in sys.path:
+        sys.path.append(ph_dir)
+
+    import numpy as np
+    import phyem as ph
+
     ls = ph.samples.wf_div_grad(n=2, degree=degree, orientation='outer', periodic=True)[0]  # ls.pr()
     msepy, obj = ph.fem.apply('msepy', locals())
     manifold = msepy.base['manifolds'][r"\mathcal{M}"]
@@ -107,6 +102,10 @@ def div_grad_2d_periodic_manufactured_test(degree, K, c=0):
 
     ls = obj['ls'].apply()
 
+    def phi_func(t, x, y):
+        """"""
+        return - np.sin(2 * np.pi * x) * np.sin(2 * np.pi * y) + t * 0
+
     phi_scalar = ph.vc.scalar(phi_func)
     phi.cf = phi_scalar
     u.cf = - phi.cf.codifferential()
@@ -128,6 +127,10 @@ def div_grad_2d_periodic_manufactured_test(degree, K, c=0):
 
 if __name__ == '__main__':
     # python tests/msepy/div_grad/_2d_outer_periodic.py
+    ph_dir = '../'
+    if ph_dir not in sys.path:
+        sys.path.append(ph_dir)
+
     import doctest
     doctest.testmod()
     errors = div_grad_2d_periodic_manufactured_test(2, 8)

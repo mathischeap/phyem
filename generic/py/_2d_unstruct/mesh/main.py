@@ -9,7 +9,7 @@ plt.rcParams.update({
     "text.latex.preamble": r"\usepackage{amsmath, amssymb}",
 })
 from tools.frozen import Frozen
-from generic.py._2d_unstruct.mesh.elements.distributor import distributor
+from generic.py._2d_unstruct.mesh.elements.distributor import distributor_with_cache
 from generic.py._2d_unstruct.mesh.coordinate_transformation import Py2CoordinateTransformation
 from generic.py._2d_unstruct.mesh.boundary_section.face import Face
 
@@ -61,7 +61,7 @@ class GenericUnstructuredMesh2D(Frozen):
             else:
                 raise NotImplementedError(f"cannot make a {ele_typ} element.")
 
-            element_dict[index] = distributor(ele_typ)(element_coordinates)
+            element_dict[index] = distributor_with_cache(ele_typ, element_coordinates)
 
         return element_dict
 

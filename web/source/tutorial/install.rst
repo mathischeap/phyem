@@ -1,9 +1,8 @@
 
 .. _Install:
 
-Install
-=======
-
+Installation
+============
 
 .. _Download:
 
@@ -44,7 +43,8 @@ The downloaded (and maybe unzipped) library is a folder named ``phyem``. We now 
     - put the *package* in a dir that is a default system path.
     - put the *package* in a dir which is not a default system path and customize the path locally in Python scripts.
 
-And we recommend the section way to keep the default system path clean.
+    And we recommend the section way to keep the default system path clean.
+
 For example, if the *package* is put in dir :code:`~/my_packages/`, in a Python
 script or console, you can do
 

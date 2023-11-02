@@ -26,16 +26,6 @@ It was initiated as a part of the
 ERC advanced project `PortWings <http://www.portwings.eu/>`_ awarded to
 `prof.dr.ir. Stefano Stramigioli <https://people.utwente.nl/s.stramigioli>`_.
 
-*phyem* is developed under a joint force of
-`Andrea Brugnoli <https://www.researchgate.net/profile/Andrea-Brugnoli-3>`_,
-`Ramy Rashad <https://ramyrashad.com/>`_,
-`Stefano Stramigioli <https://people.utwente.nl/s.stramigioli>`_,
-`Yi Zhang <https://mathischeap.com/>`_, and more.
-
-.. The main maintainer is `Yi Zhang <https://mathischeap.com/>`_.
-
-
-.. _Introduction:
 
 Introduction
 ============
@@ -68,66 +58,45 @@ that only a basic level of Python programming skills is required.
 In other words, they represent
 the theoretical and numerical aspects of the library, respectively. And the former is pure Python; while the later
 has Python shells and APIs to back-ends of different kernels to make fully use of resources
-in the open-access community. Read more at
+in the open-access community.
 
-.. toctree::
-   :maxdepth: 1
-
-   introduction
-
-
-.. _Tutorial:
 
 Tutorial
 ========
 
-The tutorial of *phyem* has three parts,
+The tutorial of *phyem* has four parts,
 
 .. toctree::
    :maxdepth: 1
 
+   tutorial/about
    tutorial/install
    tutorial/documentations
    tutorial/summary
 
 
-.. _Jupyter:
+More
+====
 
-Jupyter notebooks
-=================
-
-We sort out jupyter notebooks that demonstrate the using of *phyem* at
+More examples, demonstrations, explanations, etc., are available.
 
 .. toctree::
    :maxdepth: 1
 
    jupyter/index
-
-
-.. _Gallery:
-
-Gallery
-=======
-
-Here, we categorize predefined objects (for example, computational domains and meshes) and representative demos,
-examples and applications using *phyem* into showcases at
-
-.. toctree::
-   :maxdepth: 1
-
    gallery/index
 
 
+Contact & contributors
+======================
 
-Contact
-=======
-
-Getting in touch is important. See how at
+📞 Getting in touch is important.
 
 .. toctree::
    :maxdepth: 1
 
    contact
+   contributors
 
 
 |

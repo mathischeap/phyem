@@ -149,7 +149,7 @@ class _WeakFormulationTerm(Frozen):
             return
         else:
             fig = plt.figure(figsize=(5 + len(self._lin_repr)/20, 2))
-            plt.axis([0, 1, 0, 1])
+            plt.axis((0, 1, 0, 1))
             plt.text(0, 0.75, 'linguistic : ' + f"{self._lin_repr}", ha='left', va='center', size=15)
             plt.text(0, 0.25, 'symbolic : ' + f"${self._sym_repr}$", ha='left', va='center', size=15)
             plt.axis('off')
@@ -218,7 +218,7 @@ class _WeakFormulationTerm(Frozen):
     def split(self, f, into, signs, factors=None, which=None):
         """Split `which` `f` `into` of `signs`."""
         if f in ('f0', 'f1'):
-            assert which is None, f"When specify f0 or f1, no need to set `which`."
+            assert which is None, f"When specify f0 or f1, no need to set which."
             term_class = self.__class__
 
             assert isinstance(into, (list, tuple)), f"put split objects into a list or tuple even there is only one."
@@ -430,7 +430,7 @@ class L2InnerProductTerm(_WeakFormulationTerm):
         lr2 = f1._lin_repr
 
         olr0, olr1, olr2 = _global_operator_lin_repr_setting['L2-inner-product']
-        sym_repr = rf'\left({sr1},{sr2}\right)_' + r"{" + over_ + "}"
+        sym_repr = rf'\left({sr1}, {sr2}\right)_' + r"{" + over_ + "}"
         lin_repr = olr0 + lr1 + olr1 + lr2 + olr2 + self.mesh.manifold._lin_repr
 
         self.___sym_repr___ = sym_repr
@@ -459,8 +459,8 @@ class L2InnerProductTerm(_WeakFormulationTerm):
         if _simple_patterns['(cd,)'] == self._simple_pattern:
             # we try to find the sf by testing all existing forms, this is bad. Update this in the future.
             bf = _find_form(self._f0._lin_repr, upon=codifferential)
-            assert bf is not None, f"something is wrong, we do not found the base form " \
-                                   f"(codifferential of base form = f0)."
+            assert bf is not None, \
+                f"something is wrong, we do not found the base form (codifferential of base form = f0)."
 
             # self factor must be a constant parameter.
             term_manifold = L2InnerProductTerm(bf, d(self._f1), factor=self._factor)

@@ -44,7 +44,7 @@ class MPI_MseHy_Py2_Space(Frozen):
     def __repr__(self):
         """repr"""
         ab_space_repr = self.abstract.__repr__().split(' at ')[0][1:]
-        return f'<MseHy-py2 @RANK:{RANK} ' + ab_space_repr + super().__repr__().split('object')[1]
+        return f'<MseHy-py2 @RANK{RANK} ' + ab_space_repr + super().__repr__().split('object')[1]
 
     @property
     def refine(self):

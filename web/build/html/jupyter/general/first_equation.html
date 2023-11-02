@@ -9,7 +9,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
 
-    <title>Set up your first equation &#8212; phyem, a finite element library powering LEGO-like simulations for (multi-)physics.</title>
+    <title>Set up your first equations &#8212; phyem, a finite element library powering LEGO-like simulations for (multi-)physics.</title>
   
   
   
@@ -199,10 +199,8 @@
             </li>
         </ul>
         <ul class="nav bd-sidenav">
-<li class="toctree-l1"><a class="reference internal" href="../../introduction.html">Features and structure</a></li>
-</ul>
-<ul class="nav bd-sidenav">
-<li class="toctree-l1"><a class="reference internal" href="../../tutorial/install.html">Install</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorial/about.html">About</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorial/install.html">Installation</a></li>
 <li class="toctree-l1 has-children"><a class="reference internal" href="../../tutorial/documentations.html">Documentations</a><input class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-1"><i class="fa-solid fa-chevron-down"></i></label><ul>
 <li class="toctree-l2"><a class="reference internal" href="../../tutorial/docs/presetting.html">1. Presetting</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../tutorial/docs/manifold_mesh.html">2. Manifold &amp; mesh</a></li>
@@ -220,18 +218,16 @@
 </ul>
 <ul class="current nav bd-sidenav">
 <li class="toctree-l1 current active has-children"><a class="reference internal" href="../index.html">Jupyter notebooks</a><input checked="" class="toctree-checkbox" id="toctree-checkbox-3" name="toctree-checkbox-3" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-3"><i class="fa-solid fa-chevron-down"></i></label><ul class="current">
-<li class="toctree-l2 current active"><a class="current reference internal" href="#">Set up your first equation</a></li>
+<li class="toctree-l2 current active"><a class="current reference internal" href="#">Set up your first equations</a></li>
 <li class="toctree-l2"><a class="reference internal" href="discretize_linear_pH_system.html">How to discretize equations</a></li>
 </ul>
 </li>
-</ul>
-<ul class="nav bd-sidenav">
 <li class="toctree-l1 has-children"><a class="reference internal" href="../../gallery/index.html">Gallery</a><input class="toctree-checkbox" id="toctree-checkbox-4" name="toctree-checkbox-4" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-4"><i class="fa-solid fa-chevron-down"></i></label><ul>
 <li class="toctree-l2 has-children"><a class="reference internal" href="../../gallery/msepy_domains_and_meshes/index.html"><em>msepy</em> domains and meshes</a><input class="toctree-checkbox" id="toctree-checkbox-5" name="toctree-checkbox-5" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-5"><i class="fa-solid fa-chevron-down"></i></label><ul>
 <li class="toctree-l3"><a class="reference internal" href="../../gallery/msepy_domains_and_meshes/msepy/crazy.html">Crazy domain and mesh</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../gallery/msepy_domains_and_meshes/msepy/crazy_multi.html">Multi-crazy domain and mesh</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../gallery/msepy_domains_and_meshes/msepy/backward_step.html">Backward step</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../../gallery/msepy_domains_and_meshes/msepy/cylinder_channel.html">Cylinder_channel</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../gallery/msepy_domains_and_meshes/msepy/cylinder_channel.html">Cylinder channel</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="../../gallery/div_grad/index.html">div-grad</a></li>
@@ -249,6 +245,7 @@
 </ul>
 <ul class="nav bd-sidenav">
 <li class="toctree-l1"><a class="reference internal" href="../../contact.html">Contact</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../contributors.html">Contributors</a></li>
 </ul>
 
     </div>
@@ -430,7 +427,7 @@ document.write(`
               
 
 <div id="jb-print-docs-body" class="onlyprint">
-    <h1>Set up your first equation</h1>
+    <h1>Set up your first equations</h1>
     <!-- Table of contents -->
     <div id="print-main-content">
         <div id="jb-print-toc">
@@ -444,8 +441,8 @@ document.write(`
 <div id="searchbox"></div>
                 <article class="bd-article" role="main">
                   
-  <section id="Set-up-your-first-equation">
-<h1>Set up your first equation<a class="headerlink" href="#Set-up-your-first-equation" title="Permalink to this heading">#</a></h1>
+  <section id="Set-up-your-first-equations">
+<h1>Set up your first equations<a class="headerlink" href="#Set-up-your-first-equations" title="Permalink to this heading">#</a></h1>
 <p>This is a jupyter notebook serving as a quick/first interactive tutorial for the usage of <em>phyem</em>.</p>
 <p>To let Python know where to find the <em>phyem</em> package, we need to add the dir that contains the package to the searching path of Python unless it is already in a system path.</p>
 <div class="nbinput nblast docutils container">
@@ -503,7 +500,7 @@ document.write(`
 <div class="highlight"><pre>
 Existing meshes:
 ---------------- symbolic - &lt;manifold&gt; -------------------------
-             \mathfrak{M} | &lt;Manifold \mathcal{M} at 0x000001FB8AF27A70&gt;
+             \mathfrak{M} | &lt;Manifold \mathcal{M} at 0x0000015D6154C1A0&gt;
 </pre></div></div>
 </div>
 <p>where we can see the symbolic representation of the mesh and the manifold on which it is built. If we render the symbolic representation of the mesh with an equation environment, we see <span class="math notranslate nohighlight">\(\mathfrak{M}\)</span>.</p>
@@ -745,7 +742,7 @@ By Andrea Brugnoli, Ramy Rashad, Stefano Stramigioli, Yi Zhang and more
   <div class="footer-item">
     
 <div class="extra_footer">
-  <div>Last updated on November 01, 2023, 21:28:28, W. Europe Standard Time</div>
+  <div>Last updated on November 02, 2023, 21:29:26, W. Europe Standard Time</div>
 </div>
   </div>
   

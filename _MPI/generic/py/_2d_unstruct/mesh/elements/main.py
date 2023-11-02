@@ -4,7 +4,7 @@ r"""
 from tools.frozen import Frozen
 from src.config import RANK, MASTER_RANK, COMM, SIZE
 
-from generic.py._2d_unstruct.mesh.elements.distributor import distributor
+from generic.py._2d_unstruct.mesh.elements.distributor import distributor, distributor_with_cache
 
 from _MPI.generic.py._2d_unstruct.mesh.elements.coordinate_transformation import CT
 from _MPI.generic.py._2d_unstruct.mesh.boundary_section.face import _MPI_PY_2d_Face
@@ -104,7 +104,8 @@ class MPI_Py_2D_Unstructured_MeshElements(Frozen):
         type_dict = COMM.scatter(TYPE_DICT, root=MASTER_RANK)
         vertex_dict = COMM.scatter(VERTEX_DICT, root=MASTER_RANK)
         vertex_coordinates = COMM.scatter(COORDINATES_DICT, root=MASTER_RANK)
-        self._elements_dict = self._make_elements(type_dict, vertex_dict, vertex_coordinates)
+        self._elements_dict, self._element_type_indices_dict = self._make_elements(
+            type_dict, vertex_dict, vertex_coordinates)
         self._map = COMM.scatter(MAP, root=MASTER_RANK)
 
         # =====================================================================================
@@ -123,25 +124,51 @@ class MPI_Py_2D_Unstructured_MeshElements(Frozen):
 
     @staticmethod
     def _make_elements(type_dict, vertex_dict, vertex_coordinates):
-        """"""
+        """
+
+        Parameters
+        ----------
+        type_dict
+        vertex_dict
+        vertex_coordinates
+
+        Returns
+        -------
+        element_dict : dict
+            {
+                element index: element body,
+                ...,
+            }
+        element_type_indices_dict : dict
+            {
+                'rq': list of element indices of this element type,
+                'rt': ...,
+                ...,
+            }
+
+        """
         element_dict = dict()
+        element_type_indices_dict = {
+            'rq': list(),
+            'rt': list(),
+        }
         for index in type_dict:
             ele_typ = type_dict[index]
             ele_vertices = vertex_dict[index]
             element_coordinates = list()
+
             for vertex in ele_vertices:
                 element_coordinates.append(vertex_coordinates[vertex])
 
             if ele_typ == 'rq':   # regular quadrilateral
-                pass
+                element_type_indices_dict['rq'].append(index)
             elif ele_typ == 'rt':   # regular triangle
-                pass  # cannot change the sequence as we have made the map before.
+                element_type_indices_dict['rt'].append(index)
             else:
                 raise NotImplementedError(f"cannot make a {ele_typ} element.")
 
-            element_dict[index] = distributor(ele_typ)(element_coordinates)
-
-        return element_dict
+            element_dict[index] = distributor_with_cache(ele_typ, element_coordinates)
+        return element_dict, element_type_indices_dict
 
     @staticmethod
     def _make_element_map(vertex_dict, same_vertices_dict):
