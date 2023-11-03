@@ -1,8 +1,5 @@
 # -*- coding: utf-8 -*-
-"""
-@author: Yi Zhang
-@contact: zhangyi_aero@hotmail.com
-@time: 11/13/2022 7:13 PM
+r"""
 """
 from tools.frozen import Frozen
 

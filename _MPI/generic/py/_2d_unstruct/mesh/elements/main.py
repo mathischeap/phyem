@@ -68,7 +68,7 @@ class MPI_Py_2D_Unstructured_MeshElements(Frozen):
             else:
                 pass
 
-            # ---- these global properties only stored in the master core -------------
+            # ---- these global properties only stored in the master core -----------------
             self._total_map = element_map
             self._element_distribution = element_distribution
             self._total_type = type_dict
@@ -108,7 +108,7 @@ class MPI_Py_2D_Unstructured_MeshElements(Frozen):
             type_dict, vertex_dict, vertex_coordinates)
         self._map = COMM.scatter(MAP, root=MASTER_RANK)
 
-        # =====================================================================================
+        # =================================================================================
         self._domain_area = None
         self._all_edges = None
         self._opposite_outer_orientation_pairs = None

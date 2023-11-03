@@ -1,13 +1,10 @@
 # -*- coding: utf-8 -*-
-"""
-pH-lib@RAM-EEMCS-UT
-Yi Zhang
-Created at 5:42 PM on 5/8/2023
+r"""
 """
 
 
 def derivative(f, x, method='central', h=0.00001):
-    """Compute the difference formula for f'(a) with step size h.
+    r"""Compute the difference formula for f'(a) with step size h.
 
     Parameters
     ----------
@@ -24,9 +21,9 @@ def derivative(f, x, method='central', h=0.00001):
     -------
     float
         Difference formula:
-            central: f(a+h) - f(a-h))/2h
-            forward: f(a+h) - f(a))/h
-            backward: f(a) - f(a-h))/h
+            central: (f(a+h) - f(a-h))/2h
+            forward: (f(a+h) - f(a))/h
+            backward: (f(a) - f(a-h))/h
     """
     if method == 'central':
         return (f(x + h) - f(x - h))/(2 * h)

@@ -10,8 +10,7 @@ from tools.numerical.derivative import derivative
 
 
 class NumericalPartialDerivativeTxyz(ABC):
-    """
-    Numerical partial derivative, we call it '4' because we compute a function or method of 4 inputs like
+    """Numerical partial derivative, we call it '4' because we compute a function or method of 4 inputs like
     ``A=f(t,x,y,z)``. And we will evaluate dA/dt, dA/dx, dA/dy, dA/dz at `(t, x, y, z)`. Note that `(x,y,z)`
     must be of the same shape; no matter the dimensions (we do not do mesh grid to them). And t must be 1-d.
     """

@@ -20,7 +20,7 @@ The backward step is a mesh (or domain) in :math:`\mathbb{R}^n`, :math:`n\in\lef
 illustrated in the following figure.
 
 .. figure:: backward_step_illustration.png
-    :height: 200
+    :width: 100%
 
     The illustration of the backward step domain.
 
@@ -51,7 +51,7 @@ is splited into 3 regions).
 <Figure size ...
 
 .. figure:: backward_step3.png
-    :height: 500
+    :width: 60%
 
     The three-dimensional backward step mesh of :math:`3*5*5*5` elements.
 
@@ -72,7 +72,7 @@ To make a two-dimensional backward step mesh of :math:`3*24*6` elements, just do
 <Figure size ...
 
 .. figure:: backward_step2.png
-    :height: 200
+    :width: 100%
 
     The two-dimensional backward step mesh of :math:`3*24*6` elements.
 

@@ -45,7 +45,7 @@ We now generate a multi-crazy mesh in domain :math:`\Omega:=(x,y,z)\in[-1,1]\tim
 The multi-crazy mesh is visualized as
 
 .. figure:: crazy_multi.png
-    :height: 400
+    :width: 50%
 
     The crazy mesh in :math:`\Omega=[-1,1]\times[0,2]\subset\mathbb{R}^2` of :math:`2 * 3` blocks
     at deformation factor :math:`c=0.3`. In each block, we have :math:`5 * 3` elements.

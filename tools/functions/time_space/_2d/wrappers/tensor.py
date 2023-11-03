@@ -1,8 +1,5 @@
 # -*- coding: utf-8 -*-
-"""
-@author: Yi Zhang
-@contact: zhangyi_aero@hotmail.com
-@time: 11/3/2022 6:33 PM
+r"""
 """
 from tools.functions.time_space.base import TimeSpaceFunctionBase
 from functools import partial

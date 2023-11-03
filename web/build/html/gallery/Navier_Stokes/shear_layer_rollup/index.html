@@ -443,8 +443,19 @@ document.write(`
   <section id="module-tests.samples.iniCond_shear_layer_rollup">
 <span id="shear-layer-rollup"></span><h1>Shear layer rollup<a class="headerlink" href="#module-tests.samples.iniCond_shear_layer_rollup" title="Permalink to this heading">#</a></h1>
 <p>The shear layer rollup is a 2-dimensional ideal incompressible NS flow (Euler flow).</p>
+<p>The flow is in a periodic domain <span class="math notranslate nohighlight">\(\Omega = [0, 2\pi]^2\)</span>, and components of the initial condition
+of the velocity field <span class="math notranslate nohighlight">\(\boldsymbol{u}^0 = \begin{bmatrix}u^0 &amp; v^0\end{bmatrix}^{\mathsf{T}}\)</span> are</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}u^0 = \left\lbrace\begin{aligned}
+&amp;\tanh\left(\dfrac{y-\frac{\pi}{2}}{\delta}\right)\quad \text{if }  y\leq\pi\\
+&amp;\tanh\left(\dfrac{\frac{3\pi}{2}-y}{\delta}\right)\quad \text{else}
+\end{aligned}\right.,\end{split}\]</div>
+<p>and</p>
+<div class="math notranslate nohighlight">
+\[v^0 = \epsilon\sin(x),\]</div>
+<p>where <span class="math notranslate nohighlight">\(\delta=\pi/15\)</span> and <span class="math notranslate nohighlight">\(\epsilon=0.05\)</span>.</p>
 <figure class="align-default" id="id1">
-<a class="reference internal image-reference" href="../../../_images/t048.png"><img alt="../../../_images/t048.png" src="../../../_images/t048.png" style="width: 95%;" /></a>
+<a class="reference internal image-reference" href="../../../_images/t048.png"><img alt="../../../_images/t048.png" src="../../../_images/t048.png" style="width: 100%;" /></a>
 <figcaption>
 <p><span class="caption-number">Fig. 9 </span><span class="caption-text">The vorticity field of the shear layer rollup flow at <span class="math notranslate nohighlight">\(t\in\left\lbrace0,4,8\right\rbrace\)</span> with contour
 lines for <span class="math notranslate nohighlight">\(\left\lbrace\pm 1,\pm 2, \cdots, \pm 6\right\rbrace\)</span>.</span><a class="headerlink" href="#id1" title="Permalink to this image">#</a></p>
@@ -527,7 +538,7 @@ By Andrea Brugnoli, Ramy Rashad, Stefano Stramigioli, Yi Zhang and more
   <div class="footer-item">
     
 <div class="extra_footer">
-  <div>Last updated on November 02, 2023, 22:33:14, W. Europe Standard Time</div>
+  <div>Last updated on November 03, 2023, 14:43:14, W. Europe Standard Time</div>
 </div>
   </div>
   

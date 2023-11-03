@@ -18,7 +18,7 @@ The cylinder channel is a mesh (or domain) in :math:`\mathbb{R}^n`, :math:`n\in\
 The 2d domain is illustrated in the following figure.
 
 .. figure:: cylinder_channel_2d.png
-    :height: 200
+    :width: 100%
 
     The illustration of the 2d cylinder channel domain.
 

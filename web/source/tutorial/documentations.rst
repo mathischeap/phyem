@@ -13,8 +13,8 @@ The documentations are presented in a manner reflecting the flow of a *phyem* si
     However, the bond graph class, as well as its interface to the PDE class, is not implemented yet.
     As a compromise, the current documentation illustrates a problem defining through the PDE class.
 
-    Since the bond graph class and its interface to the
-    PDE class are key for the **LEGO**-like feature of *phyem*. Since they are missing, this feature is not
+    The bond graph class and its interface to the
+    PDE class are key for the **LEGO**-like feature of *phyem*. Since they are missing now, this feature is not
     realized for the time being.
 
 Below we present documentations pf *phyem*.

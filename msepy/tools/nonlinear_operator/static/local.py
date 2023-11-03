@@ -23,6 +23,7 @@ class MsePyStaticLocalNonlinearOperator(Frozen):
         local_static_NOD
         particular_correspondence:
             the corresponding msepy forms at particular time instances.
+
         """
         if isinstance(local_static_NOD, dict) and \
            all([isinstance(local_static_NOD[_], np.ndarray) for _ in local_static_NOD]):

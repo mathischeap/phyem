@@ -3,7 +3,7 @@ r"""
 """
 import numpy as np
 from tools.frozen import Frozen
-from src.config import RANK, MASTER_RANK, COMM
+from src.config import RANK, MASTER_RANK, COMM, MPI
 
 
 class MPI_PY_Globalize_Static_Vector(Frozen):
@@ -29,9 +29,9 @@ class MPI_PY_Globalize_Static_Vector(Frozen):
 
     def _gather(self, root=MASTER_RANK):
         """"""
-        V = COMM.gather(self.V, root=root)
         if RANK == root:
-            V = sum(V)
+            _recv_buffer = np.zeros_like(self.V, dtype=float)
         else:
-            V = None
-        return V
+            _recv_buffer = None
+        COMM.Reduce(self.V, [_recv_buffer, MPI.FLOAT], op=MPI.SUM, root=root)
+        return _recv_buffer

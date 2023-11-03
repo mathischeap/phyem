@@ -64,7 +64,7 @@ of :math:`5 * 5 * 5` elements are then generated in the domain ans is shown the 
 <Figure size ...
 
 .. figure:: crazy_3d_c.png
-    :height: 400
+    :width: 50%
 
     The crazy mesh in :math:`\Omega=[-1,1]\times[0,2]\times[0,2]` of :math:`5 * 5 * 5` elements
     at deformation factor :math:`c=0.15`.
@@ -84,7 +84,7 @@ And, if we want to generate a crazy mesh in domain :math:`\Omega:=(x,y,z)\in[-1,
 <Figure size ...
 
 .. figure:: crazy_2d_c.png
-    :height: 400
+    :width: 50%
 
     The crazy mesh in :math:`\Omega=[-1,1]\times[0,2]\subset\mathbb{R}^2` of :math:`7 * 7` elements
     at deformation factor :math:`c=0.3`.

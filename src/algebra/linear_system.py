@@ -95,7 +95,7 @@ class BlockMatrix(Frozen):
 
         symbolic = r"$" + self._pr_text() + r"$"
         fig = plt.figure(figsize=figsize)
-        plt.axis([0, 1, 0, 1])
+        plt.axis((0, 1, 0, 1))
         plt.axis('off')
         plt.text(0.05, 0.5, symbolic, ha='left', va='center', size=15)
         plt.tight_layout()
@@ -173,7 +173,7 @@ class BlockColVector(Frozen):
         else:
             symbolic = r"$" + self._pr_text() + r"$"
             fig = plt.figure(figsize=figsize)
-            plt.axis([0, 1, 0, 1])
+            plt.axis((0, 1, 0, 1))
             plt.axis('off')
             plt.text(0.05, 0.5, symbolic, ha='left', va='center', size=15)
             plt.tight_layout()
@@ -295,7 +295,7 @@ class LinearSystem(Frozen):
         else:
             symbolic = r"$" + self._pr_text() + r"$"
             fig = plt.figure(figsize=figsize)
-            plt.axis([0, 1, 0, 1])
+            plt.axis((0, 1, 0, 1))
             plt.axis('off')
             plt.text(0.05, 0.5, symbolic, ha='left', va='center', size=15)
             plt.tight_layout()

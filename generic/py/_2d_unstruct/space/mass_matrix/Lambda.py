@@ -3,12 +3,9 @@ r"""
 """
 import numpy as np
 from scipy.sparse import csr_matrix, bmat
-
 from tools.frozen import Frozen
 from tools.quadrature import Quadrature
-
 from src.spaces.main import _degree_str_maker
-
 from generic.py.matrix.localize.static import Localize_Static_Matrix
 
 _global_cache_0_ = {}
@@ -17,7 +14,6 @@ _global_cache_1_outer_ = {}
 _global_cache_2_ = {}
 
 from src.config import _global_variables
-
 threshold = _global_variables['zero_entry_threshold']
 
 
@@ -71,7 +67,7 @@ class MassMatrixLambda(Frozen):
                     'im, jm, m -> ij',
                     bf, bf, det_jm * quad_weights,
                     optimize='optimal',
-                            )
+                )
                 M_re[np.abs(M_re) < threshold] = 0
                 m = csr_matrix(M_re)
                 _global_cache_0_[metric_signature] = m
@@ -146,17 +142,14 @@ class MassMatrixLambda(Frozen):
                     bf = BF[index]
                     M00 = self._einsum_helper(quad_weights * det_jm * g[1][1], bf[0], bf[0])
                     M11 = self._einsum_helper(quad_weights * det_jm * g[0][0], bf[1], bf[1])
-
                     M01 = - self._einsum_helper(quad_weights * det_jm * g[1][0], bf[0], bf[1])
                     M10 = M01.T
-
                     m = bmat(
                         [
                             (M00, M01),
                             (M10, M11)
                         ], format='csr'
                     )
-
                     if use_global_cache:
                         _global_cache_1_outer_[metric_signature] = m
                     else:
@@ -201,14 +194,12 @@ class MassMatrixLambda(Frozen):
                     M11 = self._einsum_helper(quad_weights * det_jm * g[1][1], bf[1], bf[1])
                     M01 = self._einsum_helper(quad_weights * det_jm * g[0][1], bf[0], bf[1])
                     M10 = M01.T
-
                     m = bmat(
                         [
                             (M00, M01),
                             (M10, M11)
                         ], format='csr'
                     )
-
                     if use_global_cache:
                         _global_cache_1_inner_[metric_signature] = m
                     else:

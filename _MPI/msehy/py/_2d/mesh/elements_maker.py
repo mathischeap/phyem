@@ -33,7 +33,7 @@ class Generic_Elements_Maker(Frozen):
             type_dict, vertex_dict, vertex_coordinates, same_vertices_dict \
                 = sgm._make_generic_element_input_dict(sgm._indices)
 
-            # -- distribute elements into ranks below: ---------------------------
+            # -- distribute elements into ranks below: -----------------------------------------------
             # scheme 1) A naive scheme
             # The elements are distributed according to the base elements.
             # This of course is not good because if the local refinement is happening in a single core,
@@ -67,6 +67,7 @@ class Generic_Elements_Maker(Frozen):
                     else:
                         pass
             # ====================================================================================
+
         else:
             type_dict, vertex_dict, vertex_coordinates, same_vertices_dict = {}, {}, {}, {}
             element_distribution = None

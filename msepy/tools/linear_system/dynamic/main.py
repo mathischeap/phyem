@@ -365,7 +365,7 @@ class MsePyDynamicLinearSystem(Frozen):
         text = A_text + x_text + '=' + b_text
         text = r"$" + text + r"$"
         fig = plt.figure(figsize=figsize)
-        plt.axis([0, 1, 0, 1])
+        plt.axis((0, 1, 0, 1))
         plt.axis('off')
         plt.text(0.05, 0.5, text + bc_text, ha='left', va='center', size=15)
         if _setting['pr_cache']:

@@ -11,8 +11,7 @@ from tools.numerical.time_space._2d.partial_derivative import NumericalPartialDe
 
 
 class NumericalPartialDerivativeTxyFunctions(Frozen):
-    """
-    Like the NumericalPartialDerivative_txy class but this will produce (through __call__ method) callable
+    """Like the NumericalPartialDerivative_txy class but this will produce (through __call__ method) callable
     functions (method).
     """
     def __init__(self, func):

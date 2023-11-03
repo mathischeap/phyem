@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
-r"""
-We use this wrapper to wrap a series of functions in a region (dict keys) -wise structure. We en-rich the
-dict class such that we can define more operations to the functions.
+r"""We use this wrapper to wrap a series of functions in a region (dict keys) -wise structure.
+We en-rich the dict class such that we can define more operations to the functions.
 """
 
 

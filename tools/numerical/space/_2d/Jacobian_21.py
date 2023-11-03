@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-"""2D numerical."""
+r"""2D numerical."""
 import numpy as np
 from abc import ABC
 from tools.numerical.derivative import derivative

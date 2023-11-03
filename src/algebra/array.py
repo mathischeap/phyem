@@ -176,7 +176,7 @@ class AbstractArray(Frozen):
             text = r"$" + self._sym_repr + r"$"
             text += "\n" + self._lin_repr
             plt.figure(figsize=figsize)
-            plt.axis([0, 1, 0, 1])
+            plt.axis((0, 1, 0, 1))
             plt.axis('off')
             plt.text(0.05, 0.5, text, ha='left', va='center', size=15)
             plt.tight_layout()

@@ -11,7 +11,7 @@ The main maintainer🛠️ of *phyem* is `Yi Zhang <https://mathischeap.com/>`_.
 
 You can also find Yi at |ImageLinkRG|_ |ImageLinkorcid|_ |ImageLinklinkedin|_
 |ImageLinkgithub|_ |ImageLinkfb|_ |ImageLinktwitter|_.
-Contact of all contributors are available at :ref:`Contributors`.
+List and contact of all contributors are available at :ref:`Contributors`.
 
 You are also welcome to contact us or report any issue on
 `the Github issue page of phyem <https://github.com/mathischeap/phyem/issues>`_.

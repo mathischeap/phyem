@@ -167,7 +167,7 @@ class IteratorMonitor(Frozen):
             if di == 'machine load':
                 mem_percent = psutil.virtual_memory().percent
                 cpu_load = self._iterator_._cpu_load
-                plt.axis([0, 10, 0, 10])
+                plt.axis((0, 10, 0, 10))
                 ax.axes.get_xaxis().set_visible(False)
                 ax.axes.get_yaxis().set_visible(False)
                 plt.text(0.1, 9.5, 'MACHINE LOAD:',
@@ -187,7 +187,7 @@ class IteratorMonitor(Frozen):
                          ha='left', va='top', wrap=True)
 
             elif di == 'solver message':
-                plt.axis([0, 10, 0, 10])
+                plt.axis((0, 10, 0, 10))
                 ax.axes.get_xaxis().set_visible(False)
                 ax.axes.get_yaxis().set_visible(False)
                 plt.text(0.1, 9.5, 'SOLVER MESSAGE:', color='deepskyblue', fontsize=18, style='normal',
@@ -216,7 +216,7 @@ class IteratorMonitor(Frozen):
 
             elif di == 'info0':
                 face_color = 'honeydew'
-                plt.axis([0, 10, 0, 10])
+                plt.axis((0, 10, 0, 10))
                 ax.axes.get_xaxis().set_visible(False)
                 ax.axes.get_yaxis().set_visible(False)
                 ax.spines['bottom'].set_visible(False)
@@ -253,7 +253,7 @@ class IteratorMonitor(Frozen):
 
             elif di == 'info1':
                 face_color = 'honeydew'
-                plt.axis([0, 10, 0, 10])
+                plt.axis((0, 10, 0, 10))
                 ax.axes.get_xaxis().set_visible(False)
                 ax.axes.get_yaxis().set_visible(False)
                 ax.spines['bottom'].set_visible(False)
@@ -357,7 +357,7 @@ class IteratorMonitor(Frozen):
                 if not over:
 
                     sERT = MyTimer.seconds2dhmsm(self._estimated_remaining_time_).split('.')[0] + ']'
-                    y_position = 0.9 * TIME[-1]
+                    y_position = float(0.9 * TIME[-1])
                     plt.text(0, y_position, 'ERT: ' + sERT, color='darkblue',
                              fontsize=22, style='normal', ha='left',
                              va='top', wrap=True)
@@ -366,7 +366,7 @@ class IteratorMonitor(Frozen):
                         # noinspection PyUnboundLocalVariable
                         v10_ERT_seconds = self._estimated_remaining_time_ * v10_ratio
                         vERT = MyTimer.seconds2dhmsm(v10_ERT_seconds).split('.')[0] + ']'
-                        y_position = 0.75 * TIME[-1]
+                        y_position = float(0.75 * TIME[-1])
                         plt.text(0, y_position, 'V10: ' + vERT, color='purple',
                                  fontsize=22, style='normal', ha='left',
                                  va='top', wrap=True)

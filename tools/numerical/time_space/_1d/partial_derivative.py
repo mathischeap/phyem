@@ -11,9 +11,7 @@ from types import FunctionType, MethodType
 
 
 class NumericalPartialDerivativeTx(ABC):
-    """
-    partial^n.
-    """
+    r""""""
     def __init__(self, func, t, x, step=None, n=1, order=2):
         self._check_func(func)
         self._check_tx(t, x)

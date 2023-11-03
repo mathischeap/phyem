@@ -1,7 +1,5 @@
 # -*- coding: utf-8 -*-
-"""
-@author: Yi Zhang
-@contact: zhangyi_aero@hotmail.com
+r"""
 """
 import matplotlib.pyplot as plt
 import matplotlib
@@ -24,7 +22,7 @@ def __matplot__(
         # labels
         xlabel=None, ylabel=None, label_size=16,
         # ticks
-        tick_style='sci', xticks=None, yticks=None, tick_direction='in',
+        tick_style: [] = "sci", xticks=None, yticks=None, tick_direction='in',
         tick_size=16, tick_pad=6, minor_tick_length=4, major_tick_length=8,
         # legend
         legend_size=18, legend_local='best', legend_frame=False,
@@ -72,8 +70,7 @@ def __matplot__(
     xlabel
     ylabel
     label_size
-    tick_style : str
-        {'sci', 'scientific', 'plain'}
+    tick_style : {'sci', 'scientific', 'plain'}
     xticks
     yticks
     tick_size : int

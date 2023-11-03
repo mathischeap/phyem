@@ -48,8 +48,3 @@ from tests.msepy.div_grad._2d_outer_periodic import div_grad_2d_periodic_manufac
 
 errors = div_grad_2d_periodic_manufactured_test(3, 4)
 assert all([_ < 0.01 for _ in errors]), f"div_grad_2d_periodic_manufactured_test!"
-
-
-if __name__ == '__main__':
-    # python tests/msepy/main.py
-    pass

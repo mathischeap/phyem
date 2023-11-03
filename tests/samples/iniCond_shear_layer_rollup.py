@@ -1,6 +1,24 @@
 # -*- coding: utf-8 -*-
 r"""
 The shear layer rollup is a 2-dimensional ideal incompressible NS flow (Euler flow).
+
+The flow is in a periodic domain :math:`\Omega = [0, 2\pi]^2`, and components of the initial condition
+of the velocity field :math:`\boldsymbol{u}^0 = \begin{bmatrix}u^0 & v^0\end{bmatrix}^{\mathsf{T}}` are
+
+.. math::
+
+    u^0 = \left\lbrace\begin{aligned}
+    &\tanh\left(\dfrac{y-\frac{\pi}{2}}{\delta}\right)\quad \text{if }  y\leq\pi\\
+    &\tanh\left(\dfrac{\frac{3\pi}{2}-y}{\delta}\right)\quad \text{else}
+    \end{aligned}\right.,
+
+and
+
+.. math::
+    v^0 = \epsilon\sin(x),
+
+where :math:`\delta=\pi/15` and :math:`\epsilon=0.05`.
+
 """
 import sys
 if './' not in sys.path:
@@ -15,7 +33,7 @@ from tools.frozen import Frozen
 class InitialConditionShearLayerRollUp(Frozen):
     """"""
 
-    def __init__(self, delta=pi / 15, epsilon=0.05):
+    def __init__(self, delta=pi/15, epsilon=0.05):
         """"""
         self._delta_ = delta
         self._epsilon_ = epsilon
