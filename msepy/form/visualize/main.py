@@ -41,7 +41,7 @@ class MsePyRootFormVisualize(Frozen):
                 path = kwargs['saveto'][:-4]
                 assert 'data_only' not in _vkt_kwargs and 'builder' not in _vkt_kwargs, \
                     f"'data_only' and 'builder' are for self configuration, pls do not provide them"
-                return self.vtk(*args, file_path=path, **_vkt_kwargs)
+                return self.vtk(*args, saveto=path, **_vkt_kwargs)
 
             else:
                 pass
