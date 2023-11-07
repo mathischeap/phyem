@@ -1,9 +1,9 @@
 
 .. _GALLERY-NS:
 
-=======================
-Navier-Stokes equations
-=======================
+==========================
+🌊 Navier-Stokes equations
+==========================
 
     The **Navier–Stokes equations** (/nævˈjeɪ stoʊks/ nav-YAY STOHKS) are partial differential equations which
     describe the motion of viscous fluid substances, named after French engineer and physicist Claude-Louis Navier

@@ -59,7 +59,11 @@ class MsePySpaceErrorLambda(Frozen):
             diff = (dis_v - ext_v) ** d
 
             integral.append(
-                np.einsum('ij, ij -> ', diff, metric * quad_weights, optimize='optimal')
+                np.einsum(
+                    'ij, ij -> ',
+                    diff, metric * quad_weights,
+                    optimize='optimal'
+                )
             )
 
         return np.sum(integral) ** (1/d)
@@ -89,7 +93,11 @@ class MsePySpaceErrorLambda(Frozen):
             metric = J(range(start, end))
             diff = (dis_u - ext_u) ** d + (dis_v - ext_v) ** d
             integral.append(
-                np.einsum('eij, eij, i, j -> ', diff, metric, *quad_weights, optimize='optimal')
+                np.einsum(
+                    'eij, eij, i, j -> ',
+                    diff, metric, *quad_weights,
+                    optimize='optimal'
+                )
             )
 
         return np.sum(integral) ** (1/d)
@@ -115,7 +123,11 @@ class MsePySpaceErrorLambda(Frozen):
 
             diff = (dis_v - ext_v) ** d
             integral.append(
-                np.einsum('eij, eij, i, j -> ', diff, metric, *quad_weights, optimize='optimal')
+                np.einsum(
+                    'eij, eij, i, j -> ',
+                    diff, metric, *quad_weights,
+                    optimize='optimal'
+                )
             )
 
         return np.sum(integral) ** (1/d)
@@ -142,7 +154,11 @@ class MsePySpaceErrorLambda(Frozen):
 
             diff = (dis_v - ext_v) ** d
             integral.append(
-                np.einsum('eijk, eijk, i, j, k -> ', diff, metric, *quad_weights, optimize='optimal')
+                np.einsum(
+                    'eijk, eijk, i, j, k -> ',
+                    diff, metric, *quad_weights,
+                    optimize='optimal'
+                )
             )
 
         return np.sum(integral) ** (1/d)
@@ -174,7 +190,11 @@ class MsePySpaceErrorLambda(Frozen):
             metric = J(range(start, end))
             diff = (dis_u - ext_u) ** d + (dis_v - ext_v) ** d + (dis_w - ext_w) ** d
             integral.append(
-                np.einsum('eijk, eijk, i, j, k -> ', diff, metric, *quad_weights, optimize='optimal')
+                np.einsum(
+                    'eijk, eijk, i, j, k -> ',
+                    diff, metric, *quad_weights,
+                    optimize='optimal'
+                )
             )
 
         return np.sum(integral) ** (1/d)

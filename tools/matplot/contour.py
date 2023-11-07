@@ -156,7 +156,7 @@ def contour(
     ax.tick_params(labelsize=ticksize)
 
     if levels is None:
-        assert num_levels is not None, f"num_levels cannot be None when `levels` is not provided."
+        assert num_levels is not None, f"num_levels cannot be None when 'levels' is not provided."
         assert isinstance(num_levels, (int, float)) and num_levels > 0 and num_levels % 1 == 0, \
             f"num_levels = {num_levels} wrong. It must be a positive integer."
         if level_range is None:

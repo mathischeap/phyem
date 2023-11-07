@@ -107,7 +107,7 @@ All predefined *msepy* manifolds are available at Gallery, see :ref:`GALLERY-mse
 Once we have specified the manifold, we should also configure its boundary sections, for example,
 
 >>> implementation.config(Gamma_alpha)(
-...     manifold, {0: [1, 1, 0, 0]}   # the natural condition.
+...     manifold, {0: [1, 1, 0, 0]}   # the natural boundary.
 ... )
 
 This specifies the boundary section ``Gamma_alpha``, :math:`\Gamma_{\alpha}`, to be two faces of the *msepy*
@@ -242,8 +242,8 @@ configures the initial condition of the simulation. The next two lines then comp
 initial condition and the analytic initial condition. It is seen that the error is very low implying that
 the finite dimensional spaces in this mesh (of :math:`12\times12` elements) are fine.
 
-Note that a generic simulation usually does not possess an analytical solution for all time, but only have the initial
-condition. In that case, you can use the same way to initialize the discrete forms to possess the initial condition.
+Note that a generic simulation usually does not possess an analytical solution for all time, but only has the initial
+condition. In that case, we can use the same way to initialize the discrete forms to possess the initial condition.
 
 |
 
@@ -264,6 +264,11 @@ Then we can configure the boundary conditions of this particular linear system b
 >>> ls.bc.config(Gamma_alpha)(eigen2.scalar)   # natural boundary condition
 >>> ls.bc.config(Gamma_beta)(b.cf)             # essential boundary condition
 
+where the first command sets the natural boundary condition on :math:`\Gamma_\alpha` to be the analytical
+solution :math:`\tilde{\alpha}_{\mathrm{analytic}}` and the second line sets the essnetial boundary condition
+on :math:`\Gamma_\beta` to be the analytical
+solution :math:`\tilde{\beta}_{\mathrm{analytic}}` (recall that we have set ``b.cf`` to be
+``eigen2.vector``).
 
 .. _Implementations-msepy-solving:
 
@@ -330,8 +335,9 @@ You can also try
     a[1].visualize.matplot()
 
 This will give a 2-dimensioan plot of ``a[1]`` using the matplotlib package.
-But since matplotlib is not handy for 3-dimensional plots,
+But since matplotlib is not very handy for 3-dimensional plots,
 the ``matplot`` method is only implemented for 2-dimensional forms.
+And we again recommand interactive VTK visualization tools for 3-dimensional visualization.
 
 """
 

@@ -64,17 +64,28 @@ class MsePyStaticNonlinearSystemSolve(Frozen):
         return self._info
 
     def __call__(self, *args, **kwargs):
-        """Note that the results have updated the unknown cochains. Therefore, we do not have an option
-         saying we update `x` or not.
-         """
+        """Note that the results have updated the unknown cochains.
+        Therefore, we do not have an option saying we update `x` or not.
+
+        Returns
+        -------
+        x : list
+            A list of solutions of nls.unknowns. So, they have been distributed to
+            local unknowns.
+        message : str
+            A string message.
+        info : Dict[str]
+            A dictionary of information.
+
+        """
         self._apply_bc()
         if self._scheme == 'Newton-Raphson':
             # the local cochain results is a list of 2d local cochains for self._nls.unknowns (already updated).
-            local_cochain_results, message, info = self._Newton_Raphson(*args, **kwargs)
+            x, message, info = self._Newton_Raphson(*args, **kwargs)
         else:
             raise NotImplementedError(f"I have no scheme called {self._scheme}.")
 
         self._message = message
         self._info = info
 
-        return local_cochain_results
+        return x, message, info

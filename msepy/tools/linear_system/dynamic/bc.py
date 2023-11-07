@@ -188,11 +188,11 @@ class MsePyDLSNaturalBoundaryCondition(MsePyDLSBoundaryCondition):
         if category in (0, 'general_vc'):
             # we provide ONE general vc object as ``tr star bf0`` (NOT bf0) everywhere.
 
-            assert len(args) == 1, f"for ``general_vc`` type configuration, only provide a vc object."
+            assert len(args) == 1, f"for 'general_vc' type configuration, only provide a vc object."
 
             configuration = args[0]
             assert configuration._is_time_space_func(), \
-                f"for ``general_vc`` type configuration, only accept a vc object."
+                f"for 'general_vc' type configuration, only accept a vc object."
 
             self._category = 'general_vc'
             self._configuration = configuration

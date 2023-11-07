@@ -5,16 +5,17 @@
 ==========================
 
 The *msepy* implementation has its own domain and mesh generator. The predefined domains and meshes are
-showcased below
+showcased below.
 
+.. admonition:: *msepy* domains and meshes
 
-.. toctree::
-   :maxdepth: 1
+    .. toctree::
+       :maxdepth: 1
 
-   msepy/crazy
-   msepy/crazy_multi
-   msepy/backward_step
-   msepy/cylinder_channel
+       msepy/crazy
+       msepy/crazy_multi
+       msepy/backward_step
+       msepy/cylinder_channel
 
 
 |

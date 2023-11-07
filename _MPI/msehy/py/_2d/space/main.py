@@ -54,7 +54,7 @@ class MPI_MseHy_Py2_Space(Frozen):
     def coarsen(self):
         return self._coarsen
 
-    # ----------- generic -----------------------------------------------------------------------------------
+    # ----------- generic ------------------------------------------------------------------------
     @property
     def generation(self):
         if self._do_initialize:

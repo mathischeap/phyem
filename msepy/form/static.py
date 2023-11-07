@@ -3,7 +3,6 @@ r"""
 """
 from tools.frozen import Frozen
 from msepy.form.cochain.vector.static import MsePyRootFormStaticCochainVector
-from msepy.form.numeric.main import MsePyRootFormNumeric
 
 
 class MsePyRootFormStaticCopy(Frozen):
@@ -42,9 +41,11 @@ class MsePyRootFormStaticCopy(Frozen):
         gm = self._f.cochain.gathering_matrix
         if self._t in self._f.cochain:
             local = self._f.cochain[self._t].local
-            return MsePyRootFormStaticCochainVector(self._f, self._t, local, gm)  # it is a separate object
+            # it is a separate object
+            return MsePyRootFormStaticCochainVector(self._f, self._t, local, gm)
         else:
-            return MsePyRootFormStaticCochainVector(self._f, self._t, None, gm)  # it is a separate object
+            # it is a separate object
+            return MsePyRootFormStaticCochainVector(self._f, self._t, None, gm)
 
     def reduce(self, update_cochain=True, **kwargs):
         self._f.reduce(self._t, update_cochain=update_cochain, **kwargs)
@@ -79,7 +80,3 @@ class MsePyRootFormStaticCopy(Frozen):
 
         else:
             return False
-
-    @property
-    def numeric(self):
-        return MsePyRootFormNumeric(self._f, self._t)

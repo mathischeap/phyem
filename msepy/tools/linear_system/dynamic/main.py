@@ -350,7 +350,8 @@ class MsePyDynamicLinearSystem(Frozen):
         })
         matplotlib.use('TkAgg')
 
-        assert self._A is not None, f"dynamic linear system initialized but not applied, do `.apply()` firstly."
+        assert self._A is not None, \
+            f"dynamic linear system initialized but not applied, do '.apply()' firstly."
 
         A_text = self._A_pr_text()
 
@@ -458,7 +459,8 @@ class DynamicBlockEntry(Frozen):
 
                     time_indicating_i.append(_str)
 
-            assert isinstance(factor, (int, float)), f"static factor={factor} is wrong, must be a real number."
+            assert isinstance(factor, (int, float)), \
+                f"static factor={factor} is wrong, must be a real number."
 
             # below, we parse the factor into str for printing purpose ------------------------
             _text_factor = round(factor, 12)

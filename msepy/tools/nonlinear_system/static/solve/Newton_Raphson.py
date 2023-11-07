@@ -292,9 +292,10 @@ class MsePyNonlinearSystemNewtonRaphsonSolve(Frozen):
                 xi = xi1
 
         # ------ Newton iteration completed xi1 is the solution...
-        results = xi1
+        x = xi1
         for k, uk in enumerate(self._nls.unknowns):
-            uk.cochain = results[k]  # results sent to the unknowns. Important since yet they are occupied by dx
+            uk.cochain = x[k]  # results sent to the unknowns.
+            # Important since yet they are occupied by dx
 
         t_iteration_end = time()
         Ta = t_iteration_end-t_start
@@ -318,7 +319,7 @@ class MsePyNonlinearSystemNewtonRaphsonSolve(Frozen):
             'residuals': BETA,
         }
 
-        return results, message, info
+        return x, message, info
 
 
 def _check_stop_criterion_(BETA, atol, ITER, maxiter):

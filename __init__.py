@@ -1,12 +1,5 @@
 # -*- coding: utf-8 -*-
 r"""
-@author: Yi Zhang
-@contact: zhangyi_aero@hotmail.com
-@time: 11/26/2022 2:56 PM
-
-To build the web:
-$ sphinx-build -b html web\source web\build\html
-
 """
 
 import os
@@ -19,6 +12,9 @@ __version__ = '0.0.1-alpha'
 
 __all__ = [
     'config',
+
+    'tools',
+
     'list_forms', 'list_spaces', 'list_meshes',
     'clear_forms',
     'samples',
@@ -94,3 +90,5 @@ from tools.read import read
 
 import tools.os_ as os
 import tools.film as film
+
+import tools

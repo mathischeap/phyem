@@ -216,12 +216,12 @@
 <li class="toctree-l1"><a class="reference internal" href="../../summary.html">Summary</a></li>
 </ul>
 <ul class="nav bd-sidenav">
-<li class="toctree-l1 has-children"><a class="reference internal" href="../../../jupyter/index.html">Jupyter notebooks</a><input class="toctree-checkbox" id="toctree-checkbox-3" name="toctree-checkbox-3" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-3"><i class="fa-solid fa-chevron-down"></i></label><ul>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../../jupyter/index.html">Jupyter notebooks 🪐</a><input class="toctree-checkbox" id="toctree-checkbox-3" name="toctree-checkbox-3" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-3"><i class="fa-solid fa-chevron-down"></i></label><ul>
 <li class="toctree-l2"><a class="reference internal" href="../../../jupyter/general/first_equation.html">Set up your first equations</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../jupyter/general/discretize_linear_pH_system.html">How to discretize equations</a></li>
 </ul>
 </li>
-<li class="toctree-l1 has-children"><a class="reference internal" href="../../../gallery/index.html">Gallery</a><input class="toctree-checkbox" id="toctree-checkbox-4" name="toctree-checkbox-4" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-4"><i class="fa-solid fa-chevron-down"></i></label><ul>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../../gallery/index.html">Gallery🖼</a><input class="toctree-checkbox" id="toctree-checkbox-4" name="toctree-checkbox-4" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-4"><i class="fa-solid fa-chevron-down"></i></label><ul>
 <li class="toctree-l2 has-children"><a class="reference internal" href="../../../gallery/msepy_domains_and_meshes/index.html"><em>msepy</em> domains and meshes</a><input class="toctree-checkbox" id="toctree-checkbox-5" name="toctree-checkbox-5" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-5"><i class="fa-solid fa-chevron-down"></i></label><ul>
 <li class="toctree-l3"><a class="reference internal" href="../../../gallery/msepy_domains_and_meshes/msepy/crazy.html">Crazy domain and mesh</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../gallery/msepy_domains_and_meshes/msepy/crazy_multi.html">Multi-crazy domain and mesh</a></li>
@@ -229,13 +229,13 @@
 <li class="toctree-l3"><a class="reference internal" href="../../../gallery/msepy_domains_and_meshes/msepy/cylinder_channel.html">Cylinder channel</a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="../../../gallery/div_grad/index.html">div-grad</a></li>
-<li class="toctree-l2 has-children"><a class="reference internal" href="../../../gallery/Navier_Stokes/index.html">Navier-Stokes equations</a><input class="toctree-checkbox" id="toctree-checkbox-6" name="toctree-checkbox-6" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-6"><i class="fa-solid fa-chevron-down"></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../gallery/div_grad/index.html">🟢 div-grad</a></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../../../gallery/Navier_Stokes/index.html">🌊 Navier-Stokes equations</a><input class="toctree-checkbox" id="toctree-checkbox-6" name="toctree-checkbox-6" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-6"><i class="fa-solid fa-chevron-down"></i></label><ul>
 <li class="toctree-l3"><a class="reference internal" href="../../../gallery/Navier_Stokes/shear_layer_rollup/index.html">Shear layer rollup</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../gallery/Navier_Stokes/normal_dipole_collision/index.html">Normal dipole collision</a></li>
 </ul>
 </li>
-<li class="toctree-l2 has-children"><a class="reference internal" href="../../../gallery/MHD/index.html">MHD</a><input class="toctree-checkbox" id="toctree-checkbox-7" name="toctree-checkbox-7" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-7"><i class="fa-solid fa-chevron-down"></i></label><ul>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../../../gallery/MHD/index.html">🧲 MHD</a><input class="toctree-checkbox" id="toctree-checkbox-7" name="toctree-checkbox-7" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-7"><i class="fa-solid fa-chevron-down"></i></label><ul>
 <li class="toctree-l3"><a class="reference internal" href="../../../gallery/MHD/Orszag_Tang_vortex/index.html">Orszag-Tang Vortex</a></li>
 </ul>
 </li>
@@ -554,7 +554,7 @@ parameters of the predefined manifold.</p>
 <p>All predefined <em>msepy</em> manifolds are available at Gallery, see <a class="reference internal" href="../../../gallery/msepy_domains_and_meshes/index.html#gallery-msepy-domains-and-meshes"><span class="std std-ref">msepy domains and meshes</span></a>.</p>
 <p>Once we have specified the manifold, we should also configure its boundary sections, for example,</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">implementation</span><span class="o">.</span><span class="n">config</span><span class="p">(</span><span class="n">Gamma_alpha</span><span class="p">)(</span>
-<span class="gp">... </span>    <span class="n">manifold</span><span class="p">,</span> <span class="p">{</span><span class="mi">0</span><span class="p">:</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">]}</span>   <span class="c1"># the natural condition.</span>
+<span class="gp">... </span>    <span class="n">manifold</span><span class="p">,</span> <span class="p">{</span><span class="mi">0</span><span class="p">:</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">]}</span>   <span class="c1"># the natural boundary.</span>
 <span class="gp">... </span><span class="p">)</span>
 </pre></div>
 </div>
@@ -675,8 +675,8 @@ the static copy of <code class="docutils literal notranslate"><span class="pre">
 configures the initial condition of the simulation. The next two lines then compute the error between the discrete
 initial condition and the analytic initial condition. It is seen that the error is very low implying that
 the finite dimensional spaces in this mesh (of <span class="math notranslate nohighlight">\(12\times12\)</span> elements) are fine.</p>
-<p>Note that a generic simulation usually does not possess an analytical solution for all time, but only have the initial
-condition. In that case, you can use the same way to initialize the discrete forms to possess the initial condition.</p>
+<p>Note that a generic simulation usually does not possess an analytical solution for all time, but only has the initial
+condition. In that case, we can use the same way to initialize the discrete forms to possess the initial condition.</p>
 <div class="line-block">
 <div class="line"><br /></div>
 </div>
@@ -696,6 +696,11 @@ need to pick up the implemented linear system by its local variable name, i.e.,<
 <span class="gp">&gt;&gt;&gt; </span><span class="n">ls</span><span class="o">.</span><span class="n">bc</span><span class="o">.</span><span class="n">config</span><span class="p">(</span><span class="n">Gamma_beta</span><span class="p">)(</span><span class="n">b</span><span class="o">.</span><span class="n">cf</span><span class="p">)</span>             <span class="c1"># essential boundary condition</span>
 </pre></div>
 </div>
+<p>where the first command sets the natural boundary condition on <span class="math notranslate nohighlight">\(\Gamma_\alpha\)</span> to be the analytical
+solution <span class="math notranslate nohighlight">\(\tilde{\alpha}_{\mathrm{analytic}}\)</span> and the second line sets the essnetial boundary condition
+on <span class="math notranslate nohighlight">\(\Gamma_\beta\)</span> to be the analytical
+solution <span class="math notranslate nohighlight">\(\tilde{\beta}_{\mathrm{analytic}}\)</span> (recall that we have set <code class="docutils literal notranslate"><span class="pre">b.cf</span></code> to be
+<code class="docutils literal notranslate"><span class="pre">eigen2.vector</span></code>).</p>
 </section>
 <section id="solving">
 <span id="implementations-msepy-solving"></span><h2><span class="section-number">7.1.3. </span>Solving<a class="headerlink" href="#solving" title="Permalink to this heading">#</a></h2>
@@ -751,8 +756,9 @@ visualization software <a class="reference external" href="https://www.paraview.
 </pre></div>
 </div>
 <p>This will give a 2-dimensioan plot of <code class="docutils literal notranslate"><span class="pre">a[1]</span></code> using the matplotlib package.
-But since matplotlib is not handy for 3-dimensional plots,
-the <code class="docutils literal notranslate"><span class="pre">matplot</span></code> method is only implemented for 2-dimensional forms.</p>
+But since matplotlib is not very handy for 3-dimensional plots,
+the <code class="docutils literal notranslate"><span class="pre">matplot</span></code> method is only implemented for 2-dimensional forms.
+And we again recommand interactive VTK visualization tools for 3-dimensional visualization.</p>
 </section>
 <div class="line-block">
 <div class="line"><br /></div>
@@ -849,7 +855,7 @@ By Andrea Brugnoli, Ramy Rashad, Stefano Stramigioli, Yi Zhang and more
   <div class="footer-item">
     
 <div class="extra_footer">
-  <div>Last updated on November 03, 2023, 14:49:21, W. Europe Standard Time</div>
+  <div>Last updated on November 07, 2023, 11:28:03, W. Europe Standard Time</div>
 </div>
   </div>
   

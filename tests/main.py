@@ -9,6 +9,8 @@ By running this file, we
 
 $ python tests/main.py
 
+$ mpiexec -n 4 python tests/main.py
+
 """
 import os
 import sys
@@ -20,6 +22,7 @@ from src.config import SIZE
 __all__ = [
     'jupyter',
     'web',
+    'mpi_py_main',
 ]
 
 if SIZE == 1:
@@ -30,4 +33,4 @@ if SIZE == 1:
     import tests.web as web
 
 else:
-    pass
+    import tests.mpi_py.main as mpi_py_main

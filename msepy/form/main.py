@@ -20,6 +20,7 @@ from msepy.form.coboundary import MsePyRootFormCoboundary
 from msepy.form.matrix import MsePyRootFormMatrix
 from msepy.form.boundary_integrate.main import MsePyRootFormBoundaryIntegrate
 from msepy.form.projection import MsePyFormProjection
+from msepy.form.numeric.main import MsePyRootFormNumeric
 
 from tools.miscellaneous.ndarray_cache import ndarray_key_comparer, add_to_ndarray_cache
 
@@ -51,7 +52,7 @@ class MsePyRootForm(Frozen):
         self._boundary_integrate = MsePyRootFormBoundaryIntegrate(self)
         self._reconstruct_matrix = None
         self._reconstruct_matrix_cache = dict()
-        self._numeric = None
+        self._numeric = MsePyRootFormNumeric(self)
         self._projection = None
         self._freeze()
 
@@ -100,7 +101,7 @@ class MsePyRootForm(Frozen):
         """
         if self._is_base():
             assert ati is not None, \
-                f'For base root form,  provide the abstract time instant, i.e. kwarg: `ati`.'
+                f'For base root form,  provide the abstract time instant, i.e. kwarg: ati.'
 
         else:
             if ati is None:
@@ -323,7 +324,7 @@ class MsePyRootForm(Frozen):
             self._visualize = MsePyRootFormVisualize(self)
         return self._visualize
 
-    def error(self, t=None, quad_degree=None, **kwargs):
+    def error(self, t=None, etype='L2', quad_degree=None, **kwargs):
         """error"""
         if t is None:
             t = self.cochain.newest
@@ -331,7 +332,16 @@ class MsePyRootForm(Frozen):
             assert isinstance(t, (int, float)), f"t={t} type wrong!"
         local_cochain = self.cochain[t].local
         degree = self.degree
-        return self.space.error(self.cf, t, local_cochain, degree, quad_degree=quad_degree, **kwargs)
+        self_L2_error = self.space.error(self.cf, t, local_cochain, degree, quad_degree=quad_degree, **kwargs)
+        if etype == 'L2':
+            return self_L2_error
+        elif etype == 'H1':
+            d_self_L2_error = self.d().error(t=t, quad_degree=quad_degree, **kwargs)
+            return (self_L2_error**2 + d_self_L2_error**2) ** 0.5
+        else:
+            raise NotImplementedError(
+                f"etype={etype} is not implemented."
+            )
 
     def norm(self, t=None, quad_degree=None, **kwargs):
         """norm"""
@@ -370,26 +380,34 @@ class MsePyRootForm(Frozen):
         return self._projection
 
     @property
+    def numeric(self):
+        """numeric methods."""
+        return self._numeric
+
+    @property
     def boundary_integrate(self):
         return self._boundary_integrate
 
     def reconstruction_matrix(self, *meshgrid_xi_et_sg, element_range=None):
         """compute reconstruction matrices for particular elements."""
         cached, data = ndarray_key_comparer(
-            self._reconstruct_matrix_cache, meshgrid_xi_et_sg, check_str=str(element_range)
+            self._reconstruct_matrix_cache,
+            meshgrid_xi_et_sg,
+            check_str=str(element_range)
         )
         if cached:
             return data
         else:
-            pass
-
-        data = self._space.reconstruction_matrix(
-            self._degree, *meshgrid_xi_et_sg, element_range=element_range
-        )
-        add_to_ndarray_cache(
-            self._reconstruct_matrix_cache, meshgrid_xi_et_sg, data, check_str=str(element_range)
-        )
-        return data
+            data = self._space.reconstruction_matrix(
+                self._degree, *meshgrid_xi_et_sg, element_range=element_range
+            )
+            add_to_ndarray_cache(
+                self._reconstruct_matrix_cache,
+                meshgrid_xi_et_sg,
+                data,
+                check_str=str(element_range)
+            )
+            return data
 
     def _find_local_dofs_on(self, m, n):
         """find the local dofs numbering on the `n`-face along `m`-direction of element #`element`."""
@@ -451,13 +469,26 @@ if __name__ == '__main__':
     vector = ph.vc.vector(ux, uy)
 
     f1o.cf = vector
-    f2.cf = scalar
+    # f2.cf = scalar
+    #
+    # f2[0].reduce()
 
-    f2[0].reduce()
-    f1o[0].reduce()
     d_f1o = f1o.d()
     # d_f1o[None].visualize()
 
-    f = d_f1o - f2
-    f2[None].visualize()
-    f[None].visualize()
+    # f = d_f1o - f2
+    # f2[None].visualize()
+    # f[None].visualize()
+    # d_f1o[None].visualize()
+
+    f1o[0].reduce()
+    # f1o[1].reduce()
+    # d_f1o[None].visualize()
+    # print(f1o[None].error(etype='H1'))
+
+    f1o[None].visualize(
+        plot_type='quiver',
+        sampling_factor=0.1,
+        colorbar_label=r'$\omega$',
+        colorbar_ticks=[0, 0.5, 1]
+    )

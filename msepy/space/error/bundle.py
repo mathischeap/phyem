@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 r"""
 """
-
 import numpy as np
 from tools.frozen import Frozen
 from tools.quadrature import Quadrature
@@ -67,7 +66,11 @@ class MsePySpaceErrorBundle(Frozen):
             diff = (dis_v - ext_v) ** d
 
             integral.append(
-                np.einsum('ij, ij -> ', diff, metric * quad_weights, optimize='optimal')
+                np.einsum(
+                    'ij, ij -> ',
+                    diff, metric * quad_weights,
+                    optimize='optimal'
+                )
             )
 
         return np.sum(integral) ** (1/d)
@@ -97,7 +100,11 @@ class MsePySpaceErrorBundle(Frozen):
             metric = J(range(start, end))
             diff = (dis_u - ext_u) ** d + (dis_v - ext_v) ** d
             integral.append(
-                np.einsum('eij, eij, i, j -> ', diff, metric, *quad_weights, optimize='optimal')
+                np.einsum(
+                    'eij, eij, i, j -> ',
+                    diff, metric, *quad_weights,
+                    optimize='optimal'
+                )
             )
 
         return np.sum(integral) ** (1/d)
@@ -131,7 +138,11 @@ class MsePySpaceErrorBundle(Frozen):
                     (dis_v10 - ext_v10) ** d + (dis_v11 - ext_v11) ** d)
 
             integral.append(
-                np.einsum('eij, eij, i, j -> ', diff, metric, *quad_weights, optimize='optimal')
+                np.einsum(
+                    'eij, eij, i, j -> ',
+                    diff, metric, *quad_weights,
+                    optimize='optimal'
+                )
             )
 
         return np.sum(integral) ** (1/d)
@@ -163,7 +174,11 @@ class MsePySpaceErrorBundle(Frozen):
             metric = J(range(start, end))
             diff = (dis_u - ext_u) ** d + (dis_v - ext_v) ** d + (dis_w - ext_w) ** d
             integral.append(
-                np.einsum('eij, eij, i, j -> ', diff, metric, *quad_weights, optimize='optimal')
+                np.einsum(
+                    'eij, eij, i, j -> ',
+                    diff, metric, *quad_weights,
+                    optimize='optimal'
+                )
             )
 
         return np.sum(integral) ** (1/d)
@@ -208,7 +223,11 @@ class MsePySpaceErrorBundle(Frozen):
                     (dis_v10 - ext_v10) ** d + (dis_v11 - ext_v11) ** d + (dis_v12 - ext_v12) ** d +
                     (dis_v20 - ext_v20) ** d + (dis_v21 - ext_v21) ** d + (dis_v22 - ext_v22) ** d)
             integral.append(
-                np.einsum('eij, eij, i, j -> ', diff, metric, *quad_weights, optimize='optimal')
+                np.einsum(
+                    'eij, eij, i, j -> ',
+                    diff, metric, *quad_weights,
+                    optimize='optimal'
+                )
             )
 
         return np.sum(integral) ** (1/d)

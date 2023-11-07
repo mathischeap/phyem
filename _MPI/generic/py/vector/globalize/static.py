@@ -33,5 +33,5 @@ class MPI_PY_Globalize_Static_Vector(Frozen):
             _recv_buffer = np.zeros_like(self.V, dtype=float)
         else:
             _recv_buffer = None
-        COMM.Reduce(self.V, [_recv_buffer, MPI.FLOAT], op=MPI.SUM, root=root)
+        COMM.Reduce(self.V, [_recv_buffer, MPI.DOUBLE], op=MPI.SUM, root=root)
         return _recv_buffer

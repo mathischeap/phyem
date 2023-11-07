@@ -1,7 +1,5 @@
 # -*- coding: utf-8 -*-
-"""
-By Yi Zhang
-Created at 5:29 PM on 8/11/2023
+r"""
 """
 from tools.frozen import Frozen
 from msepy.tools.linear_system.dynamic.main import MsePyDynamicLinearSystem

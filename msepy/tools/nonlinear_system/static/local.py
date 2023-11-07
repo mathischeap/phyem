@@ -5,6 +5,7 @@ import matplotlib.pyplot as plt
 import matplotlib
 import numpy as np
 from tools.frozen import Frozen
+from msepy.tools.gathering_matrix import RegularGatheringMatrix
 from msepy.tools.matrix.static.local import MsePyStaticLocalMatrix
 from msepy.tools.vector.static.local import MsePyStaticLocalVector
 from msepy.form.cochain.vector.static import MsePyRootFormStaticCochainVector
@@ -61,6 +62,8 @@ class MsePyStaticLocalNonLinearSystem(Frozen):
         self._uks = unknowns
         self._solve = MsePyStaticNonlinearSystemSolve(self)
         self._customize = MsePyStaticNonlinearSystemCustomize(self)
+        self.___global_row_gm___ = None
+        self.___global_col_gm___ = None
         self._freeze()
 
     @property
@@ -162,9 +165,22 @@ class MsePyStaticLocalNonLinearSystem(Frozen):
         for cgm in col_gms:
             # noinspection PyUnresolvedReferences
             num_elements.append(cgm.num_elements)
+
         # noinspection PyTypeChecker
         assert all(np.array(num_elements) == num_elements[0]), f"total element number dis-match"
         self._total_elements = num_elements[0]
+
+    @property
+    def _global_row_gm(self):
+        if self.___global_row_gm___ is None:
+            self. ___global_row_gm___ = RegularGatheringMatrix(self._row_gms)
+        return self.___global_row_gm___
+
+    @property
+    def _global_col_gm_(self):
+        if self. ___global_col_gm___ is None:
+            self.___global_col_gm___ = RegularGatheringMatrix(self._col_gms)
+        return self.___global_col_gm___
 
     def pr(self):
         """"""
@@ -221,7 +237,7 @@ class MsePyStaticLocalNonLinearSystem(Frozen):
 
         text = r"$" + text + r"$"
         fig = plt.figure(figsize=(10, 4))
-        plt.axis([0, 1, 0, 1])
+        plt.axis((0, 1, 0, 1))
         plt.axis('off')
         if self._time_indicating_text is None:
             plt.text(0.05, 0.5, text, ha='left', va='center', size=15)

@@ -93,7 +93,6 @@ class MITRVisualize:
         x_index = 0 if line_var_index == 1 else 1
         x_name = input_names[x_index]
         # group the plot data: the data will be grouped into a tuple called `data_sequence`
-        num_lines = 0
         data_sequence_line_var = ()  # `i2` changes in each `line_var`.
         data_sequence_inputs2 = ()  # `line_var` changes in each `i2`.
         if prime == 'line_var':
@@ -101,14 +100,12 @@ class MITRVisualize:
                 sub_rdf = D[D[line_var] == ai]
                 for i2i in set(D[input_names[2]][D[line_var] == ai]):
                     data_sequence_line_var += (sub_rdf[sub_rdf[input_names[2]] == i2i],)
-                    num_lines += 1
             data_sequence = data_sequence_line_var
         elif prime == 'input2':
             for i2i in set(D[input_names[2]]):
                 sub_rdf = D[D[input_names[2]] == i2i]
                 for ai in set(D[line_var][D[input_names[2]] == i2i]):
                     data_sequence_inputs2 += (sub_rdf[sub_rdf[line_var] == ai],)
-                    num_lines += 1
             data_sequence = data_sequence_inputs2
         else:
             raise Exception(" <RunnerVisualize> : prime={} is wrong.".format(prime))
@@ -148,11 +145,15 @@ class MITRVisualize:
                                        res2plot[m].replace('_', '-'),)
             labels = list(labels)
         elif labels is False:
-            pass
+            if show_order:
+                labels = ['' for _ in range(num_lines)]
+            else:
+                pass
         else:
             pass
+
         # ___ preparing orders _________________________________________________________
-        orders: List[float] = [0.0 for _ in range(len(labels))]
+        orders: List[float] = [0.0 for _ in range(num_lines)]
         # ___ pre-parameterize the plot_________________________________________________
         if saveto is not None:
             matplotlib.use('Agg')

@@ -2,11 +2,11 @@
 
 .. _GALLERY-Gallery:
 
-Gallery
-=======
+Gallery🖼
+=========
 
 Within this gallery, we categorize predefined objects (for example, computational domains and meshes) and
-representative demos, examples and applications into different showcases listed below.
+representative demos, examples, applications, etc., into different showcases listed below.
 
 ------------------
 Domains and meshes

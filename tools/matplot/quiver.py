@@ -9,15 +9,15 @@ import matplotlib.pyplot as plt
 def quiver(
         X, Y, U, V,
         title=None,
-        usetex=False, colormap='binary', xlim=None, ylim=None,
+        usetex=False, colormap='Spectral', xlim=None, ylim=None,
         show_colorbar=True,
         colorbar_label=None, colorbar_orientation='vertical', colorbar_aspect=20,
-        colorbar_labelsize=12.5, colorbar_extend='both',
-        colorbar_position=None, colorbar_ticks=None,
+        colorbar_labelsize=15, colorbar_extend='both',
+        colorbar_ticks=None,
         quiverkey='1<->1',
-        ticksize=12,
+        ticksize=15,
         labelsize=15,
-        saveto=None, dpi=None,
+        saveto=None, dpi=200,
 ):
     """Could be very badly distributed arrows for non-uniform meshes. Try to use visualization
     of discrete forms.
@@ -39,7 +39,6 @@ def quiver(
     colorbar_aspect
     colorbar_labelsize
     colorbar_extend
-    colorbar_position
     colorbar_ticks
     ticksize
 
@@ -62,6 +61,15 @@ def quiver(
     -------
 
     """
+    assert all([isinstance(_, np.ndarray) for _ in (X, Y, U, V)]), f"X, Y, U, V must all be ndarray."
+    assert np.shape(X) == np.shape(Y) == np.shape(U) == np.shape(V), f"X, Y, U, V must be same shape."
+    if np.ndim(X) > 1:
+        X = X.ravel('F')
+        Y = Y.ravel('F')
+        U = U.ravel('F')
+        V = V.ravel('F')
+    else:
+        pass
 
     M = np.hypot(U, V)
 
@@ -75,7 +83,7 @@ def quiver(
 
     # -------------------------------------------------------------------------
     if saveto is not None:
-        matplotlib.use('Agg')
+        matplotlib.use('TkAgg')
     plt.rc('text', usetex=usetex)
     plt.rcParams.update({
         "font.family": "Times New Roman"
@@ -119,31 +127,23 @@ def quiver(
                 M = np.concatenate((M, [tMin, tMax]))
 
             norm.autoscale(M)
-            cm = getattr(matplotlib.cm, colormap)
+            # cm = getattr(matplotlib.cm, colormap)
+            cm = matplotlib.cm.get_cmap(colormap)
             sm = matplotlib.cm.ScalarMappable(cmap=cm, norm=norm)
             sm.set_array([])
             ax.quiver(X, Y, U, V, color=cm(norm(M)))
 
-            if colorbar_position is not None:
-                cbaxes = fig.add_axes(colorbar_position)
-                cbar = plt.colorbar(
-                    sm, orientation=colorbar_orientation, cax=cbaxes,
-                    extend=colorbar_extend,
-                    aspect=colorbar_aspect,
-                )
-            else:
-                cbar = plt.colorbar(
-                    sm, orientation=colorbar_orientation,
-                    extend=colorbar_extend,
-                    aspect=colorbar_aspect,
-                )
-
+            cbar = fig.colorbar(
+                matplotlib.cm.ScalarMappable(norm=norm, cmap=cm), ax=ax,
+                orientation=colorbar_orientation,
+                extend=colorbar_extend,
+                aspect=colorbar_aspect,
+            )
             if colorbar_label is not None:
-                colorbar_label.set_label(colorbar_label, labelpad=10, size=15)
-
+                cbar.set_label(colorbar_label, labelpad=10, size=colorbar_labelsize)
             if colorbar_ticks is not None:
-                cbar.set_ticks(colorbar_ticks)
-            cbar.ax.tick_params(labelsize=colorbar_labelsize)
+                cbar.set_ticks(colorbar_ticks)           # set colorbar tick size
+                cbar.ax.tick_params(labelsize=ticksize)  # set colorbar tick size
 
         else:
             if colormap is not None:

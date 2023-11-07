@@ -111,7 +111,11 @@ class _OneDimPolynomial(Frozen):
         """(numpy.ndarray) The mass matrix for the lagrange polynomials."""
         quad_nodes, quad_weights = Quadrature(np.size(self.nodes) + 1).quad
         quad_basis = self.lagrange_basis(x=quad_nodes)
-        M = np.einsum('ik,jk,k->ij', quad_basis, quad_basis, quad_weights, optimize='optimal')
+        M = np.einsum(
+            'ik,jk,k->ij',
+            quad_basis, quad_basis, quad_weights,
+            optimize='optimal'
+        )
         return M
 
     @property
@@ -119,12 +123,16 @@ class _OneDimPolynomial(Frozen):
         """(numpy.ndarray) The mass matrix for the edge polynomials."""
         quad_nodes, quad_weights = Quadrature(np.size(self.nodes) + 1).quad
         quad_basis = self.edge_basis(x=quad_nodes)
-        M = np.einsum('ik,jk,k->ij', quad_basis, quad_basis, quad_weights, optimize='optimal')
+        M = np.einsum(
+            'ik,jk,k->ij',
+            quad_basis, quad_basis, quad_weights,
+            optimize='optimal'
+        )
         return M
 
     @staticmethod
     def __derivative_poly_nodes__(p, nodes):
-        """
+        r"""
         For computation of the derivative at the nodes a more efficient and
         accurate formula can be used, see [1]:
                  |
@@ -176,24 +184,29 @@ class _OneDimPolynomial(Frozen):
                             linewidth=1.2, saveto=None, figsize=(6, 4), usetex=True
                             ):
         """
-        Plot the lagrange basis functions in reference 1d domain ``[-1,1]``.
 
-        :param bool dual: (`default`:``False``) If ``True``, we plot the dual basis functions.
-        :param int plot_density: (`default`: ``300``)
-        :param float ylim_ratio: (`default`: ``0.1``)
-        :param title: (`default`: ``None``)
-        :param float left: (`default`: ``0.15``)
-        :param float bottom: (`default`: ``0.15``)
-        :param float minor_tick_length: (`default`: ``5``) The size of the minor ticks.
-        :param float major_tick_length: (`default`: ``10``) The size of the major ticks.
-        :param float tick_pad: (`default`: ``7``) The distance between the tick values and the axis.
-        :param float tick_size: (`default`: ``15``)
-        :param float label_size: (`default`: ``15``)
-        :param float title_size: (`default`: ``15``)
-        :param float linewidth: (`default`: ``1.2``)
-        :param saveto: (`default`: ``None``)
-        :param tuple figsize: (`default`: ``(6,4)``)
-        :param bool usetex: (`default`: ``True``)
+        Parameters
+        ----------
+        dual
+        plot_density
+        ylim_ratio
+        title : {str, bool}
+        left
+        bottom
+        minor_tick_length
+        major_tick_length
+        tick_pad
+        tick_size
+        label_size
+        title_size
+        linewidth
+        saveto
+        figsize
+        usetex
+
+        Returns
+        -------
+
         """
         plt.rc('text', usetex=usetex)
         if usetex:
@@ -256,27 +269,30 @@ class _OneDimPolynomial(Frozen):
         linewidth=1.2, saveto=None, figsize=(6, 4), usetex=True,
     ):
         """
-        Plot the lagrange edge functions in reference 1d domain ``[-1,1]``.
-        Parameter ``fill_between`` is used to config the filling of the area over which the
-        integration of the edge function is 1.
 
-        :param bool dual: (`default`:``False``) If ``True``, we plot the dual basis functions.
-        :param int plot_density: (`default`: ``300``)
-        :param float ylim_ratio: (`default`: ``0.1``)
-        :param title: (`default`: ``True``)
-        :param float left: (`default`: ``0.15``)
-        :param float bottom: (`default`: ``0.15``)
-        :param int fill_between:
-        :param float minor_tick_length: (`default`: ``5``) The size of the minor ticks.
-        :param float major_tick_length: (`default`: ``10``) The size of the major ticks.
-        :param float tick_pad: (`default`: ``7``) The distance between the tick values and the axis.
-        :param float tick_size: (`default`: ``15``)
-        :param float label_size: (`default`: ``15``)
-        :param float title_size: (`default`: ``15``)
-        :param float linewidth: (`default`: ``1.2``)
-        :param saveto: (`default`: ``None``)
-        :param tuple figsize: (`default`: ``(6, 4)``)
-        :param bool usetex: (`default`: ``True``)
+        Parameters
+        ----------
+        dual
+        plot_density
+        ylim_ratio
+        title : {str, bool}
+        left
+        bottom
+        fill_between
+        minor_tick_length
+        major_tick_length
+        tick_pad
+        tick_size
+        label_size
+        title_size
+        linewidth
+        saveto
+        figsize
+        usetex
+
+        Returns
+        -------
+
         """
         plt.rc('text', usetex=usetex)
         if usetex:

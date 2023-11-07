@@ -39,7 +39,7 @@ class MsePyStaticLocalMatrixAssemble(Frozen):
 
         """
         if cache is not None:
-            assert isinstance(cache, str), f" ``cache`` must a string."
+            assert isinstance(cache, str), f"cache must a string."
             if cache in _msepy_assembled_StaticMatrix_cache:
                 return _msepy_assembled_StaticMatrix_cache[cache]
             else:

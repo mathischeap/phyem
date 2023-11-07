@@ -160,15 +160,15 @@ class MsePyRootFormVisualizeMatplot(Frozen):
             else:
                 raise Exception()
 
+            if title is None:
+                pass
+            else:
+                plt.suptitle(title)
+
         elif plot_type == "quiver":
             fig = self._quiver(x, y, u, v, saveto=saveto, **kwargs)
         else:
             raise Exception()
-
-        if title is None:
-            pass
-        else:
-            plt.suptitle(title)
 
         return fig
 
@@ -261,12 +261,12 @@ class MsePyRootFormVisualizeMatplot(Frozen):
             else:
                 raise Exception()
 
+            if title is None:
+                pass
+            else:
+                plt.suptitle(title)
+
         else:
             raise NotImplementedError(f'Not implemented for plot_type={plot_type}')
-
-        if title is None:
-            pass
-        else:
-            plt.suptitle(title)
 
         return fig

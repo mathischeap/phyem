@@ -97,7 +97,7 @@ def _gmres(
         else:
             beta = None
 
-        COMM.Bcast([v0, MPI.FLOAT], root=MASTER_RANK)
+        COMM.Bcast(v0, root=MASTER_RANK)
         beta = COMM.bcast(beta, root=MASTER_RANK)
 
         if BETA is None:
@@ -173,7 +173,7 @@ def _gmres(
 
             if j < restart - 1:
                 # noinspection PyUnboundLocalVariable
-                COMM.Bcast([v_jp1, MPI.FLOAT], root=MASTER_RANK)
+                COMM.Bcast([v_jp1, MPI.DOUBLE], root=MASTER_RANK)
                 if RANK == MASTER_RANK:
                     Vm[j+1] = v_jp1
                 else:
@@ -189,7 +189,7 @@ def _gmres(
             # del HMT, ls_A, ls_b
             x0 += ym.T @ Vm
 
-        COMM.Bcast([x0, MPI.FLOAT], root=MASTER_RANK)
+        COMM.Bcast(x0, root=MASTER_RANK)
         ITER += 1
 
     # ============ iteration done ===========================================================
@@ -276,7 +276,7 @@ def _lgmres(
     else:
         HM = None
 
-    ZZZ = dict()
+    ZZZ: dict = dict()
     AZ_cache = dict()
 
     # ------------- iteration start -----------------------------------------------------------
@@ -297,7 +297,7 @@ def _lgmres(
         else:
             beta = None
 
-        COMM.Bcast([v0, MPI.FLOAT], root=MASTER_RANK)
+        COMM.Bcast(v0, root=MASTER_RANK)
         beta = COMM.bcast(beta, root=MASTER_RANK)
 
         # check stop iteration or not ...
@@ -389,7 +389,7 @@ def _lgmres(
 
             if j < restart - 1:
                 # noinspection PyUnboundLocalVariable
-                COMM.Bcast([v_jp1, MPI.FLOAT], root=MASTER_RANK)
+                COMM.Bcast([v_jp1, MPI.DOUBLE], root=MASTER_RANK)
                 if RANK == MASTER_RANK:
                     Vm[j + 1] = v_jp1
                 else:
@@ -424,7 +424,7 @@ def _lgmres(
             ym = np.empty((shape0,), dtype=float)
             # Important: renew ``ym`` every single iteration.
 
-        COMM.Bcast([ym, MPI.FLOAT], root=MASTER_RANK)
+        COMM.Bcast([ym, MPI.DOUBLE], root=MASTER_RANK)
 
         if ITER >= _k_ > 0:
             del ZZZ[ITER-_k_]

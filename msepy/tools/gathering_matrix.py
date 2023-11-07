@@ -150,7 +150,11 @@ class RegularGatheringMatrix(Frozen):
     def _find_global_numbering(self, elements, local_dofs):
         """find the global numbering at positions indicated by `elements` and `local_dofs`
 
-        So for element #i (elements[i]), we find the global numbering at locations: local_dofs[i]
+        So for element #i (elements[i]), we find the global numbering at locations: local_dofs[i].
+
+        The results of global numbering of dofs will be sorted; thus they are not corresponding to
+        the sequence of the inputs.
+
         """
         global_numbering = set()
         assert len(elements) == len(local_dofs), f"positions are not correct."
