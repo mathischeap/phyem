@@ -89,7 +89,8 @@ class CsvFilerVisualize(Frozen):
         Parameters
         ----------
         column_x
-        column_y
+        column_y : {str, List[str]}
+            Each str represent a column name.
         kwargs
 
         Returns
@@ -127,8 +128,8 @@ class CsvFilerVisualize(Frozen):
         Parameters
         ----------
         column_x
-        column_y
-        kwargs
+        column_y : {str, List[str]}
+            Each str represent a column name.        kwargs
 
         Returns
         -------

@@ -143,7 +143,7 @@ def backward_step(x1=1, x2=1, y1=0.25, y2=0.25, z=None, periodic=False):
 
 
 def _backward_step(mf, x1=1, x2=1, y1=0.25, y2=0.25, z=None, x0=0, y0=0, periodic=False):
-    """
+    r"""
     ^ y
     |
     |              x1                      x2

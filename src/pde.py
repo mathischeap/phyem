@@ -911,7 +911,7 @@ class PartialDifferentialEquations(Frozen):
                                         raw_weak_term = inner(the_form, tfs[i], factor=root_factor, method=test_method)
 
                                 else:
-                                    raise NotImplementedError()
+                                    raise NotImplementedError(front_form_lin_repr, the_end_form)
 
                             else:
                                 raise NotImplementedError()

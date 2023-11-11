@@ -59,7 +59,11 @@ class InitialConditionOrszagTangVortex(Frozen):
     def u(self):
         """fluid velocity field"""
         return self._streaming.curl
-
+    
+    @property
+    def magnetic_potential(self):
+        return self._potential
+    
     @property
     def B(self):
         """magnetic flux density"""
@@ -67,7 +71,7 @@ class InitialConditionOrszagTangVortex(Frozen):
 
     @property
     def H(self):
-        """magnetic field strength, H = B under non-dimensionalization."""
+        """magnetic field strength, H = B under nondimensionalization."""
         return self.B
 
     @property

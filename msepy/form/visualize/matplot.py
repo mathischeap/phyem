@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 r"""
 """
-import matplotlib.pyplot as plt
 import numpy as np
 from tools.frozen import Frozen
 from tools.matplot.plot import plot
@@ -36,9 +35,9 @@ class MsePyRootFormVisualizeMatplot(Frozen):
 
         elif indicator == 'bundle':
             if k in (0, n):  # vector forms
-                return getattr(self, f'_Lambda_m{m}_n{n}_k1')(title=title, **kwargs)
-            else:
-                return getattr(self, f'_bundle_m{m}_n{n}_k1')(title=title, **kwargs)
+                return getattr(self, f'_Lambda_m{m}_n{n}_k1')(**kwargs)
+            else:  # tensor forms
+                return getattr(self, f'_bundle_m{m}_n{n}_k1')(**kwargs)
 
         else:
             raise NotImplementedError(f"msepy matplot not implemented for {indicator}")
@@ -115,7 +114,35 @@ class MsePyRootFormVisualizeMatplot(Frozen):
             title_components=None,
             **kwargs
     ):
-        """"""
+        """Plot a msepy scalar-valued 1-form on 2d manifold in 2d space.
+
+        Parameters
+        ----------
+        sampling_factor
+        plot_type :
+            {
+                'contourf', 'contour', 'quiver',
+                'norm-contour', 'norm-contourf',
+                'magnitude-contour', 'magnitude-contourf',
+            }
+            each of which means:
+                'contourf': contourf plots of two components;
+                'contour': contour plots of two components;
+                'quiver': a quiver plot of the vector;
+                'norm-contour': a contour plot the norm of the vector;
+                'norm-contourf': a contourf plot the norm of the vector;
+                'magnitude-contour': a contour plot the magnitude of the vector;
+                'magnitude-contourf': a contourf plot the magnitude of the vector;
+
+        saveto
+        title
+        title_components
+        kwargs
+
+        Returns
+        -------
+
+        """
         samples = 10000 * sampling_factor
         samples = int((np.ceil(samples / self._mesh.elements._num))**(1/self._mesh.m))
 
@@ -160,13 +187,45 @@ class MsePyRootFormVisualizeMatplot(Frozen):
             else:
                 raise Exception()
 
-            if title is None:
-                pass
-            else:
-                plt.suptitle(title)
+        elif plot_type == "norm-contour":
+            norm = dict()
+            for region in x:
+                ur = u[region]
+                vr = v[region]
+                norm[region] = np.sqrt(ur**2 + vr**2)
+            fig = contour(x, y, norm, saveto=saveto, title=title, **kwargs)
+
+        elif plot_type == "norm-contourf":
+            norm = dict()
+            for region in x:
+                ur = u[region]
+                vr = v[region]
+                norm[region] = np.sqrt(ur**2 + vr**2)
+            fig = contourf(x, y, norm, saveto=saveto, title=title, **kwargs)
+
+        elif plot_type == "magnitude-contour":
+            norm = dict()
+            for region in x:
+                ur = u[region]
+                vr = v[region]
+                _ = np.sqrt(ur**2 + vr**2)
+                _[_ < 1e-16] = 1e-16
+                norm[region] = np.log10(_)
+            fig = contour(x, y, norm, saveto=saveto, title=title, **kwargs)
+
+        elif plot_type == "magnitude-contourf":
+            norm = dict()
+            for region in x:
+                ur = u[region]
+                vr = v[region]
+                _ = np.sqrt(ur**2 + vr**2)
+                _[_ < 1e-16] = 1e-16
+                norm[region] = np.log10(_)
+            fig = contourf(x, y, norm, saveto=saveto, title=title, **kwargs)
 
         elif plot_type == "quiver":
-            fig = self._quiver(x, y, u, v, saveto=saveto, **kwargs)
+            fig = self._quiver(x, y, u, v, saveto=saveto, title=title, **kwargs)
+
         else:
             raise Exception()
 
@@ -201,7 +260,6 @@ class MsePyRootFormVisualizeMatplot(Frozen):
             self, sampling_factor=1,
             plot_type='contourf',
             saveto=None,
-            title=None,
             title_components=None,
             **kwargs
     ):
@@ -260,11 +318,6 @@ class MsePyRootFormVisualizeMatplot(Frozen):
 
             else:
                 raise Exception()
-
-            if title is None:
-                pass
-            else:
-                plt.suptitle(title)
 
         else:
             raise NotImplementedError(f'Not implemented for plot_type={plot_type}')

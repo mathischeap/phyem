@@ -236,14 +236,13 @@ class LinearSystem(Frozen):
 
         for i in range(A_shape[0]):
             for j in range(A_shape[1]):
-                Aij = A(i, j)[0]
                 Xj, Sj = x(j)
                 assert len(Xj) == 1 and Sj[0] == '+', f"entries of x must be of '+' sign."
-                xj = Xj[0]
-
-                for k, aij in enumerate(Aij):
-                    assert aij.shape[1] == _shapes[j], f"{k}th component of A[{i}][{j}], {aij}, shape wrong."
-                assert xj.shape[0] == _shapes[j], f"x[{j}] shape wrong."
+                # Aij = A(i, j)[0]
+                # xj = Xj[0]
+                # for k, aij in enumerate(Aij):
+                #     assert aij.shape[1] == _shapes[j], f"{k}th component of A[{i}][{j}], {aij}, shape wrong."
+                # assert xj.shape[0] == _shapes[j], f"x[{j}] shape wrong."
 
         self._shapes = _shapes
         self._freeze()

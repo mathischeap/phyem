@@ -67,6 +67,13 @@ class MsePyRootFormStaticCopy(Frozen):
         """norm"""
         return self._f.norm(self._t, **kwargs)
 
+    def inner_product(self, other_form_static_copy):
+        """"""
+        assert other_form_static_copy.__class__ is self.__class__, f"other must be a msepy form static copy."
+        other_f = other_form_static_copy._f
+        other_t = other_form_static_copy._t
+        return self._f.inner_product(self._t, other_f, other_t)
+
     @property
     def coboundary(self):
         """coboundary"""

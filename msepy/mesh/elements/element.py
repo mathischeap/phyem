@@ -78,7 +78,7 @@ class MsePyElementCoordinateTransformation(Frozen):
             pass
         else:
             assert m % 1 == 0 and n % 1 == 0 and m >= 0 and 0 <= n <= 1, \
-                f" (m, n) = {(m ,n)} is wrong."
+                f" (m, n) = {(m, n)} is wrong."
             mesh_n = self._element._elements._mesh.n  # the mesh is n-dimensional
             assert m < mesh_n, f"m must be lower than {mesh_n} which is the dimensions of the mesh."
             self._faces[(m, n)] = _FaceCooTrans(self._element, m, n)
@@ -305,7 +305,7 @@ class _FaceCooTrans(Frozen):
             else:
                 raise Exception()
 
-            assert isinstance(mp, (int, float)), f"must be. Otherwise, check lines computing ``mp``."
+            assert isinstance(mp, (int, float)), f"must be. Otherwise, check lines computing 'mp'."
 
             return mp
 

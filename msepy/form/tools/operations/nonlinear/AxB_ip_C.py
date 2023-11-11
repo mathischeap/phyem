@@ -105,7 +105,7 @@ class _AxBipC(Base3Entries):
                     if self._mesh.n == 2:
                         if len(rmA[e]) == 1 and len(rmB[e]) == len(rmC[e]) == 2:
                             # A is a 0-form, B, C are 1-forms!
-                            # so, A = [0 0 w]^T, B = [u, v, 0]^T, C = [a b 0]^T,
+                            # so, A = [0 0 w]^T, B = [u v 0]^T, C = [a b 0]^T,
                             # cp_term = A X B = [-wv wu 0]^T, (cp_term, C) = -wva + wub
                             w = rmA[e][0]
                             u, v = rmB[e]
@@ -118,16 +118,16 @@ class _AxBipC(Base3Entries):
                             )
                         elif len(rmA[e]) == len(rmB[e]) == 2 and len(rmC[e]) == 1:
                             # A, B are 1-forms, C is a 0-form!
-                            # so, A = [wx wy, 0]^T    B = [u v 0]^T   C= [0 0 c]^T
-                            # A x B = [wy*0 - 0*v,   0*u - wx*0,   wx*v - wy*u]^T = [0 0 C0]^T
+                            # so, A = [wx wy 0]^T    B = [u v 0]^T   C= [0 0 c]^T
+                            # A x B = [wy*0 - 0*v   0*u - wx*0   wx*v - wy*u]^T = [0 0 C0]^T
                             # (A x B) dot C = 0*0 + 0*0 + C0*c = wx*v*c - wy*u*c
                             wx, wy = rmA[e]
                             u, v = rmB[e]
                             c = rmC[e][0]
                             dJi = detJ[e]
-                            data = - np.einsum(
+                            data = np.einsum(
                                 'li, lj, lk, l -> ijk', wx, v, c, quad_weights * dJi, optimize='optimal'
-                            ) + np.einsum(
+                            ) - np.einsum(
                                 'li, lj, lk, l -> ijk', wy, u, c, quad_weights * dJi, optimize='optimal'
                             )
 
@@ -139,7 +139,7 @@ class _AxBipC(Base3Entries):
                         if len(rmA[e]) == len(rmB[e]) == len(rmC[e]) == 3:
                             # A, B, C are all vectors.
                             # A = [wx wy, wz]^T    B = [u v w]^T   C= [a b c]^T
-                            # A x B = [wy*w - wz*v,   wz*u - wx*w,   wx*v - wy*u]^T = [A0 B0 C0]^T
+                            # A x B = [wy*w - wz*v   wz*u - wx*w   wx*v - wy*u]^T = [A0 B0 C0]^T
                             # (A x B) dot C = A0*a + B0*b + C0*c
                             wx, wy, wz = rmA[e]
                             u, v, w = rmB[e]

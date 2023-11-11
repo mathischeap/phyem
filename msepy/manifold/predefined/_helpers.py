@@ -93,6 +93,7 @@ class _Transfinite2(Frozen):
         geo_x1
         geo_y0
         geo_y1
+
         """
 
         geo_x0 = GeoFunc2Parser(*geo_x0)

@@ -15,7 +15,7 @@ class Frozen(ABC):
     def __setattr__(self, key, value):
         """"""
         if self.___frozen___ and key not in dir(self):
-            raise FrozenError(f" <Frozen> : {self} is frozen. CANNOT define new attributes.")
+            raise FrozenError(f" <Frozen>: {self} is frozen. CANNOT define new attributes.")
         object.__setattr__(self, key, value)
 
     def _freeze(self):

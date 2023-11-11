@@ -80,12 +80,14 @@ class MPI_PY_AxBipC(MPI_PY_Base3Entries):
             xi = xi.ravel('F')
             et = et.ravel('F')
             detJ = mesh.ct.Jacobian(xi, et)
+
         elif n == 3:
             xi, et, sg = np.meshgrid(*quad_nodes, indexing='ij')
             xi = xi.ravel('F')
             et = et.ravel('F')
             sg = sg.ravel('F')
             detJ = mesh.ct.Jacobian(xi, et, sg)
+
         else:
             raise Exception()
 
@@ -106,7 +108,7 @@ class MPI_PY_AxBipC(MPI_PY_Base3Entries):
                 if len(rmA[index]) == 1 and (len(rmB[index]) == len(rmC[index]) == 2):
                     # must be in 2-d space.
                     # A is a 0-form, B, C are 1-forms!
-                    # so, A = [0 0 w]^T, B = [u, v, 0]^T, C = [a b 0]^T,
+                    # so, A = [0 0 w]^T, B = [u v 0]^T, C = [a b 0]^T,
                     # cp_term = A X B = [-wv wu 0]^T, (cp_term, C) = -wva + wub
                     w = rmA[index][0]
                     u, v = rmB[index]
@@ -116,6 +118,21 @@ class MPI_PY_AxBipC(MPI_PY_Base3Entries):
                         'li, lj, lk, l -> ijk', w, v, a, quad_weights * dJi, optimize='optimal'
                     ) + np.einsum(
                         'li, lj, lk, l -> ijk', w, u, b, quad_weights * dJi, optimize='optimal'
+                    )
+                elif len(rmA[index]) == len(rmB[index]) == 2 and len(rmC[index]) == 1:
+                    # must be in 2-d space.
+                    # A, B are 1-forms, C is a 0-form!
+                    # so, A = [wx wy 0]^T    B = [u v 0]^T   C= [0 0 c]^T
+                    # A x B = [wy*0 - 0*v   0*u - wx*0   wx*v - wy*u]^T = [0 0 C0]^T
+                    # (A x B) dot C = 0*0 + 0*0 + C0*c = wx*v*c - wy*u*c
+                    wx, wy = rmA[index]
+                    u, v = rmB[index]
+                    c = rmC[index][0]
+                    dJi = detJ[index]
+                    data = np.einsum(
+                        'li, lj, lk, l -> ijk', wx, v, c, quad_weights * dJi, optimize='optimal'
+                    ) - np.einsum(
+                        'li, lj, lk, l -> ijk', wy, u, c, quad_weights * dJi, optimize='optimal'
                     )
                 else:
                     raise NotImplementedError()

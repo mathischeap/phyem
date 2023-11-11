@@ -9,7 +9,10 @@ __all__ = [
     'pde_canonical_pH',
     'wf_div_grad',
     "InitialConditionShearLayerRollUp",
+
     "InitialConditionOrszagTangVortex",
+    "InitialCondition_LoopAdvection",
+
     "Eigen2",
     "ManufacturedSolutionMHD2Ideal1",
     "ManufacturedSolutionNS2TGV",
@@ -25,7 +28,10 @@ __all__ = [
 from tests.samples.canonical_pH_pde import pde_canonical_pH
 from tests.samples.div_grad_wf import wf_div_grad
 from tests.samples.iniCond_shear_layer_rollup import InitialConditionShearLayerRollUp
+
 from tests.samples.iniCond_Orszag_Tang_vortex import InitialConditionOrszagTangVortex
+from tests.samples.iniCond_loop_advection import InitialCondition_LoopAdvection
+
 from tests.samples.conditions_flow_around_cylinder_2d import ConditionsFlowAroundCylinder2
 from tests.samples.conditions_normal_dipole_collision import ConditionsNormalDipoleCollision2
 from tests.samples.conditions_lid_driven_cavity import ConditionsLidDrivenCavity2

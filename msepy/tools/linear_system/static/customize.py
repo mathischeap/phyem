@@ -23,6 +23,32 @@ class MsePyStaticLinearSystemCustomize(Frozen):
         A.customize.identify_row(i)
         b.customize.set_value(i, value)
 
+    def set_local_dof(self, unknown_no, element, local_numbering, value):
+        """Set the dof at local position #local_numbering of #element of #unknown_no unknown to be value.
+
+        Parameters
+        ----------
+        unknown_no : {0, 1, 2}
+            0 is the first unknowns.
+        element
+        local_numbering
+        value
+
+        Returns
+        -------
+
+        """
+        local_numbering_start = 0
+        gms = self._ls.gathering_matrices[0]
+        for i in range(unknown_no):
+            gm = gms[i]
+            local_numbering_start += gm.num_local_dofs
+
+        total_local_numbering = local_numbering_start + local_numbering
+        global_numbering = self._ls.global_gathering_matrices[0][element, total_local_numbering]
+        global_numbering = int(global_numbering)
+        self.set_dof(global_numbering, value)
+
     def set_local_dof_ij_of_unknown_k_to_value(self, i, j, k, value):
         """Do what this method name means.
 

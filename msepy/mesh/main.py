@@ -49,7 +49,7 @@ class MsePyMesh(Frozen):
     @property
     def manifold(self):
         """The mse-manifold of this mesh."""
-        assert self._manifold is not None, f"`mesh: {self} is not configured yet."
+        assert self._manifold is not None, f"mesh: {self} is not configured yet."
         return self._manifold
 
     @property

@@ -38,7 +38,7 @@ class T2dScalar(TimeSpaceFunctionBase):
         """return functions evaluated at time `t`."""
         return partial(self, t)
 
-    def visualize(self, mesh_or_bounds, t, sampling_factor=1):
+    def visualize(self, mesh_or_bounds, t, sampling_factor=1, **kwargs):
         """Return a visualize class for a mesh at t=`t`.
 
         Parameters
@@ -63,7 +63,7 @@ class T2dScalar(TimeSpaceFunctionBase):
             mesh = mesh_or_bounds
 
         v = self[t]
-        mesh.visualize._target(v, sampling_factor=sampling_factor)
+        mesh.visualize._target(v, sampling_factor=sampling_factor, **kwargs)
 
     @property
     def ndim(self):

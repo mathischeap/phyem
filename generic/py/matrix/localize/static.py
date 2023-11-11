@@ -139,7 +139,7 @@ class Localize_Static_Matrix(Frozen):
         """
 
         if cache is not None:
-            assert isinstance(cache, str), f" ``cache`` must a string."
+            assert isinstance(cache, str), f"'cache' must a string."
             if cache in _assembled_Static_Matrix_cache:
                 return _assembled_Static_Matrix_cache[cache]
             else:

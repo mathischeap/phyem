@@ -3,7 +3,7 @@ r"""
 """
 
 
-class VoidClass():
+class VoidClass:
     """"""
 
     def __call__(self, *args, **kwargs):

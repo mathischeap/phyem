@@ -36,7 +36,27 @@ class MsePyMeshVisualizeMatplot(Frozen):
         title=True,  # True, False, None or custom
 
     ):
-        """Default matplot method."""
+        """
+
+        Parameters
+        ----------
+        sampling_factor
+        figsize
+        aspect
+        usetex
+        labelsize
+        ticksize
+        xlim
+        ylim
+        saveto
+        linewidth
+        color
+        title : {str, bool, None}, optional
+
+        Returns
+        -------
+
+        """
 
         mesh_data_Lines = self._mesh.visualize._generate_mesh_grid_data(sampling_factor=sampling_factor)
         plt.rc('text', usetex=usetex)

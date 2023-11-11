@@ -20,4 +20,3 @@ Visit the website `jupyter.org <https://jupyter.org/>`_ for install instruction 
 |
 
 ↩️  Back to :ref:`PHYEM`.
-

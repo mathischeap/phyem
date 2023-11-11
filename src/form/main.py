@@ -447,7 +447,7 @@ class Form(Frozen):
             sr = self._sym_repr
             cs = other
             if self.is_root():
-                lr = lr + operator_lin + cs._lin_repr
+                lr = cs._lin_repr + operator_lin + lr
                 sr = cs._sym_repr + sr
             else:
                 lr = cs._lin_repr + operator_lin + r'\{' + lr + r'\}'

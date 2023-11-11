@@ -25,7 +25,7 @@ def RunnerDataReader(filename):
             contents = f.readlines()
             c0 = contents[0]
             assert c0[1:7] == 'Runner' and '>-<' in c0 and c0.split('>-<')[1] != '', \
-                f" <Runner> : it is not a Runner file! Its header is {c0} which does not match the standard format: " \
+                f"<Runner>: it is not a Runner file! Its header is {c0} which does not match the standard format: " \
                 f"<Runner>-<...A particular runner classname...>-<...something whatever else...>"
             runner_name = c0.split('>-<')[1]
     else:

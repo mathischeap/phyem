@@ -224,6 +224,10 @@ class IteratorMonitor(Frozen):
                 ax.spines['left'].set_visible(False)
                 ax.spines['right'].set_visible(False)
                 t1 = f'* {self.name}'
+                if len(t1) > 75:
+                    t1 = '...' + t1[-72:]
+                else:
+                    pass
                 plt.text(-2, 11.3, t1, color='darkorchid', fontsize=26, style='normal', ha='left',
                          va='top', wrap=True)
                 sITC = MyTimer.seconds2hms(self._average_each_run_cost_)
@@ -260,6 +264,7 @@ class IteratorMonitor(Frozen):
                 ax.spines['top'].set_visible(False)
                 ax.spines['left'].set_visible(False)
                 ax.spines['right'].set_visible(False)
+                ax.patch.set_alpha(0)
 
             elif di == 't iteration':
                 ylabel_backgroundcolor = 'greenyellow'

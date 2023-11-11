@@ -84,15 +84,15 @@ class MsePyStaticLinearSystemAssembledSolve(Frozen):
                 cochain.append(local_cochain)
 
             cochain = np.hstack(cochain)
-            assert cochain.shape == self.b._gm.shape, f"provided cochain shape wrong!"
+            assert cochain.shape == self.A._gm_col.shape, f"provided cochain shape wrong!"
 
-            self._x0 = self.b._gm.assemble(cochain, mode='replace')
+            self._x0 = self.A._gm_col.assemble(cochain, mode='replace')
 
         else:
             raise NotImplementedError()
 
         assert isinstance(self._x0, np.ndarray), f"x0 must be a ndarray."
-        assert self._x0.shape == (self.b._gm.num_dofs, ), f"x0 shape wrong!"
+        assert self._x0.shape == (self.A._gm_col.num_dofs, ), f"x0 shape wrong!"
         assert self._x0.shape == (self.A.shape[1], ), f"x0 shape wrong!"
 
     def __call__(self, **kwargs):
@@ -133,6 +133,27 @@ class _PackageScipy(Frozen):
                   f" <direct solver costs: {t_cost}> "
         info = {
             'total cost': t_cost,
+        }
+        return x, message, info
+
+    @staticmethod
+    def lsqr(A, b, x0, **kwargs):
+        """Compute least-squares solution to equation Ax = b.
+
+        Compute a vector x such that the 2-norm |b - A x| is minimized.
+        """
+        t_start = time()
+        # -----------------------------------------------------------------
+        results = spspalinalg.lsqr(A._M, b._v, x0=x0, **kwargs)
+        # =================================================================
+        x = results[0]
+        t_cost = time() - t_start
+        t_cost = MyTimer.seconds2dhms(t_cost)
+        message = f"Linear system of shape: {A.shape}" + \
+                  f" <least square solver costs: {t_cost}> "
+        info = {
+            'total cost': t_cost,
+            'solver info': results[1:-1]
         }
         return x, message, info
 

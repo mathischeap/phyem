@@ -11,6 +11,7 @@ from tools.functions.time_space._2d.wrappers.helpers.scalar_add import t2d_Scala
 from tools.functions.time_space._2d.wrappers.helpers.scalar_sub import t2d_ScalarSub
 from tools.functions.time_space._2d.wrappers.helpers.scalar_neg import t2d_ScalarNeg
 from tools.functions.time_space._2d.wrappers.helpers.scalar_mul import t2d_ScalarMultiply
+from tools.functions.time_space._2d.wrappers.helpers.norm_helper import NormHelper2DVector
 
 from tools.numerical.time_space._2d.partial_derivative_as_functions import \
     NumericalPartialDerivativeTxyFunctions
@@ -41,6 +42,7 @@ class T2dVector(TimeSpaceFunctionBase):
         self._divergence = None
         self._gradient = None
         self._curl = None
+        self._norm = None
         self._freeze()
 
     def __call__(self, t, x, y):
@@ -167,6 +169,20 @@ class T2dVector(TimeSpaceFunctionBase):
             dv1 = T2dScalar(pv0_py)
             self._rot = dv0 - dv1
         return self._rot
+
+    @property
+    def norm(self):
+        """
+
+        Returns
+        -------
+
+        """
+        if self._norm is None:
+            norm = NormHelper2DVector(self._v0_, self._v1_)
+            from tools.functions.time_space._2d.wrappers.scalar import T2dScalar
+            self._norm = T2dScalar(norm)
+        return self._norm
 
     def convection_by(self, u):
         """We compute (u cdot nabla) of self.

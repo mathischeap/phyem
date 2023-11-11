@@ -173,7 +173,7 @@ class _MPI_PY_TrStarRf0DualPairingTrS1(Frozen):
         assert found_root_form is not None, f"we must have found a root form!"
 
         assert dls.bc is not None, \
-            f"must provided something in ``dls.bc`` such that this b vector can be determined!"
+            f"must provided something in 'dls.bc' such that this b vector can be determined!"
 
         if _rf_evaluate_at_lin_repr in found_root_form._pure_lin_repr:
 

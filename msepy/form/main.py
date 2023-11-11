@@ -379,6 +379,34 @@ class MsePyRootForm(Frozen):
             self._projection = MsePyFormProjection(self)
         return self._projection
 
+    def inner_product(self, self_t, other_form, other_t):
+        """"""
+        self_cochain = self.cochain[self_t].local
+        other_cochain = other_form.cochain[other_t].local
+
+        inner_product_matrix = self.space.inner_product(
+            self.degree, (other_form.space, other_form.degree)
+        )
+        from msepy.tools.matrix.static.local import MsePyStaticLocalMatrix
+
+        inner_product_matrix = MsePyStaticLocalMatrix(
+            inner_product_matrix,
+            self.cochain.gathering_matrix,
+            other_form.cochain.gathering_matrix
+        )
+
+        local_inner_product = list()
+        for element_index in inner_product_matrix:
+            ip_element = np.einsum(
+                'i, ij, j ->',
+                self_cochain[element_index],
+                inner_product_matrix[element_index].toarray(),
+                other_cochain[element_index],
+            )
+            local_inner_product.append(ip_element)
+
+        return sum(local_inner_product)
+
     @property
     def numeric(self):
         """numeric methods."""

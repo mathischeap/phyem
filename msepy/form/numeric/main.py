@@ -327,5 +327,6 @@ class MsePyRootFormNumeric(Frozen):
 
             else:
                 raise NotImplementedError()
+        
         else:  # other dimensions
             raise NotImplementedError()
