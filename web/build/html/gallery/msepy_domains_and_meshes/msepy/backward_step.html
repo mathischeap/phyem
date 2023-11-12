@@ -439,6 +439,7 @@ document.write(`
             <nav aria-label="Page">
                 <ul class="visible nav section-nav flex-column">
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#msepy.manifold.predefined.backward_step.backward_step"><code class="docutils literal notranslate"><span class="pre">backward_step()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#boundary-units">Boundary units</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#examples">Examples</a><ul class="nav section-nav flex-column">
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#d">3d</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id1">2d</a></li>
@@ -491,6 +492,40 @@ one.</p>
 </dl>
 </dd></dl>
 
+<section id="boundary-units">
+<h2>Boundary units<a class="headerlink" href="#boundary-units" title="Permalink to this heading">#</a></h2>
+<p>The domain is divided into three regions,</p>
+<table class="table">
+<tbody>
+<tr class="row-odd"><td><p>region <code class="docutils literal notranslate"><span class="pre">0</span></code></p></td>
+<td><p>bottom-right region, <span class="math notranslate nohighlight">\([x_1, (x_1+x_2)]\times[0, y_1]\)</span></p></td>
+</tr>
+<tr class="row-even"><td><p>region <code class="docutils literal notranslate"><span class="pre">1</span></code></p></td>
+<td><p>top-right region , <span class="math notranslate nohighlight">\([x_1, (x_1+x_2)]\times[y_1, (y_1+y_2)]\)</span></p></td>
+</tr>
+<tr class="row-odd"><td><p>region <code class="docutils literal notranslate"><span class="pre">2</span></code></p></td>
+<td><p>top-left region, <span class="math notranslate nohighlight">\([0, x_1]\times[y_1, (y_1+y_2)]\)</span></p></td>
+</tr>
+</tbody>
+</table>
+<p>Thus, for a 2-dimensional domain, it has 8 boundary units, i.e.,</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">boundary</span> <span class="o">=</span> <span class="p">{</span>
+<span class="gp">... </span>    <span class="mi">0</span><span class="p">:</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span>
+<span class="gp">... </span>    <span class="mi">1</span><span class="p">:</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span>
+<span class="gp">... </span>    <span class="mi">2</span><span class="p">:</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span>
+<span class="gp">... </span><span class="p">}</span>
+</pre></div>
+</div>
+<p>And a 3-dimensional domain, it has 8 + 6
+(<span class="math notranslate nohighlight">\(2\times3\)</span> <span class="math notranslate nohighlight">\(z\)</span>-direction) boundary units, i.e.,</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">boundary</span> <span class="o">=</span> <span class="p">{</span>
+<span class="gp">... </span>    <span class="mi">0</span><span class="p">:</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span>
+<span class="gp">... </span>    <span class="mi">1</span><span class="p">:</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span>
+<span class="gp">... </span>    <span class="mi">2</span><span class="p">:</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span>
+<span class="gp">... </span><span class="p">}</span>
+</pre></div>
+</div>
+</section>
 <section id="examples">
 <h2>Examples<a class="headerlink" href="#examples" title="Permalink to this heading">#</a></h2>
 <section id="d">
@@ -590,6 +625,7 @@ is splited into 3 regions).</p>
   <nav class="bd-toc-nav page-toc">
     <ul class="visible nav section-nav flex-column">
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#msepy.manifold.predefined.backward_step.backward_step"><code class="docutils literal notranslate"><span class="pre">backward_step()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#boundary-units">Boundary units</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#examples">Examples</a><ul class="nav section-nav flex-column">
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#d">3d</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id1">2d</a></li>
@@ -632,7 +668,7 @@ By Andrea Brugnoli, Ramy Rashad, Stefano Stramigioli, Yi Zhang and more
   <div class="footer-item">
     
 <div class="extra_footer">
-  <div>Last updated on November 07, 2023, 11:28:03, W. Europe Standard Time</div>
+  <div>Last updated on November 12, 2023, 21:47:22, W. Europe Standard Time</div>
 </div>
   </div>
   

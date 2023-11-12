@@ -29,6 +29,35 @@ are
 
 .. autofunction:: msepy.manifold.predefined.backward_step.backward_step
 
+Boundary units
+==============
+
+The domain is divided into three regions,
+
++---------------+--------------------------------------------------------------------------+
+| region ``0``  |  bottom-right region, :math:`[x_1, (x_1+x_2)]\times[0, y_1]`             |
++---------------+--------------------------------------------------------------------------+
+| region ``1``  |  top-right region , :math:`[x_1, (x_1+x_2)]\times[y_1, (y_1+y_2)]`       |
++---------------+--------------------------------------------------------------------------+
+| region ``2``  |  top-left region, :math:`[0, x_1]\times[y_1, (y_1+y_2)]`                 |
++---------------+--------------------------------------------------------------------------+
+
+Thus, for a 2-dimensional domain, it has 8 boundary units, i.e.,
+
+>>> boundary = {
+...     0: [1, 1, 1, 0],
+...     1: [0, 1, 0, 1],
+...     2: [1, 0, 1, 1],
+... }
+
+And a 3-dimensional domain, it has 8 + 6
+(:math:`2\times3` :math:`z`-direction) boundary units, i.e.,
+
+>>> boundary = {
+...     0: [1, 1, 1, 0, 1, 1],
+...     1: [0, 1, 0, 1, 1, 1],
+...     2: [1, 0, 1, 1, 1, 1],
+... }
 
 Examples
 ========

@@ -130,7 +130,7 @@ class _PackageScipy(Frozen):
         t_cost = time() - t_start
         t_cost = MyTimer.seconds2dhms(t_cost)
         message = f"Linear system of shape: {A.shape}" + \
-                  f" <direct solver costs: {t_cost}> "
+            f" <direct solver costs: {t_cost}> "
         info = {
             'total cost': t_cost,
         }
@@ -150,7 +150,7 @@ class _PackageScipy(Frozen):
         t_cost = time() - t_start
         t_cost = MyTimer.seconds2dhms(t_cost)
         message = f"Linear system of shape: {A.shape}" + \
-                  f" <least square solver costs: {t_cost}> "
+            f" <least square solver costs: {t_cost}> "
         info = {
             'total cost': t_cost,
             'solver info': results[1:-1]
@@ -255,7 +255,7 @@ class _PackageScipy(Frozen):
             if key not in info_kwargs_exclusive:
                 info_kwargs[key] = kwargs[key]
         message = f"Linear system of shape: {A.shape} " + \
-                  f"<gmres costs: {t_cost}> <info: {info}> <inputs: {info_kwargs}>"
+            f"<gmres costs: {t_cost}> <info: {info}> <inputs: {info_kwargs}>"
         info = {
             'total cost': t_cost,
             'convergence info': info,
@@ -286,7 +286,7 @@ class _PackageScipy(Frozen):
             if key not in info_kwargs_exclusive:
                 info_kwargs[key] = kwargs[key]
         message = f"Linear system of shape: {A.shape} " + \
-                  f"<lgmres costs: {t_cost}> <info: {info}> <inputs: {info_kwargs}>"
+            f"<lgmres costs: {t_cost}> <info: {info}> <inputs: {info_kwargs}>"
         info = {
             'total cost': t_cost,
             'convergence info': info,

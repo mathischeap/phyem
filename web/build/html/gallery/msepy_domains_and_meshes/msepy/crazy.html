@@ -439,6 +439,7 @@ document.write(`
             <nav aria-label="Page">
                 <ul class="visible nav section-nav flex-column">
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#msepy.manifold.predefined.crazy.crazy"><code class="docutils literal notranslate"><span class="pre">crazy()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#boundary-units">Boundary units</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#the-mapping-transforming-the-domain">The mapping transforming the domain</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#examples">Examples</a></li>
 </ul>
@@ -487,6 +488,27 @@ life more difficulty. You are absolutely right. When you surely know what you ar
 use <span class="math notranslate nohighlight">\(c=0\)</span>. The meshes of <span class="math notranslate nohighlight">\(c&gt;0\)</span> are normally for testing, for example, the convergence rate of your
 scheme in bad grids.</p>
 </div>
+<section id="boundary-units">
+<h2>Boundary units<a class="headerlink" href="#boundary-units" title="Permalink to this heading">#</a></h2>
+<p>The crazy domain has only one region and its <span class="math notranslate nohighlight">\(2\times n\)</span> (<cite>n</cite> is the dimensions of the manifold)
+faces are all boundary units. They are faces <span class="math notranslate nohighlight">\(x^-\)</span>, <span class="math notranslate nohighlight">\(x^+\)</span>, <span class="math notranslate nohighlight">\(y^-\)</span>, <span class="math notranslate nohighlight">\(\cdots\)</span>.</p>
+<div class="admonition-the-complete-set-of-boundary-units admonition">
+<p class="admonition-title">The complete set of boundary units</p>
+<table class="table">
+<tbody>
+<tr class="row-odd"><td><p>2-dimensional</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">{0:</span> <span class="pre">[1,</span> <span class="pre">1,</span> <span class="pre">1,</span> <span class="pre">1]}</span></code></p></td>
+</tr>
+<tr class="row-even"><td><p>3-dimensional</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">{0:</span> <span class="pre">[1,</span> <span class="pre">1,</span> <span class="pre">1,</span> <span class="pre">1,</span> <span class="pre">1,</span> <span class="pre">1]}</span></code></p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>For example, <code class="docutils literal notranslate"><span class="pre">{0:</span> <span class="pre">[1,</span> <span class="pre">0,</span> <span class="pre">0,</span> <span class="pre">1]}</span></code> represents the <span class="math notranslate nohighlight">\(x^-\)</span> and <span class="math notranslate nohighlight">\(y^+\)</span> faces of a 2-dimensional
+crazy domain. And, for a 3-dimensional crazy domain, <code class="docutils literal notranslate"><span class="pre">{0:</span> <span class="pre">[1,</span> <span class="pre">0,</span> <span class="pre">0,</span> <span class="pre">1,</span> <span class="pre">1,</span> <span class="pre">1]}</span></code> represents them plus
+<span class="math notranslate nohighlight">\(z^-\)</span> and <span class="math notranslate nohighlight">\(z^+\)</span> faces.</p>
+</section>
 <section id="the-mapping-transforming-the-domain">
 <h2>The mapping transforming the domain<a class="headerlink" href="#the-mapping-transforming-the-domain" title="Permalink to this heading">#</a></h2>
 <p>We use <span class="math notranslate nohighlight">\(\mathbb{R}^3\)</span> as an example. Assume the crazy domain is
@@ -600,6 +622,7 @@ at deformation factor <span class="math notranslate nohighlight">\(c=0.3\)</span
   <nav class="bd-toc-nav page-toc">
     <ul class="visible nav section-nav flex-column">
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#msepy.manifold.predefined.crazy.crazy"><code class="docutils literal notranslate"><span class="pre">crazy()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#boundary-units">Boundary units</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#the-mapping-transforming-the-domain">The mapping transforming the domain</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#examples">Examples</a></li>
 </ul>
@@ -639,7 +662,7 @@ By Andrea Brugnoli, Ramy Rashad, Stefano Stramigioli, Yi Zhang and more
   <div class="footer-item">
     
 <div class="extra_footer">
-  <div>Last updated on November 07, 2023, 11:28:03, W. Europe Standard Time</div>
+  <div>Last updated on November 12, 2023, 21:47:22, W. Europe Standard Time</div>
 </div>
   </div>
   

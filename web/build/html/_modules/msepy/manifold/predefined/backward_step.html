@@ -211,12 +211,12 @@
 <li class="toctree-l1"><a class="reference internal" href="../../../../tutorial/summary.html">Summary</a></li>
 </ul>
 <ul class="nav bd-sidenav">
-<li class="toctree-l1 has-children"><a class="reference internal" href="../../../../jupyter/index.html">Jupyter notebooks</a><input class="toctree-checkbox" id="toctree-checkbox-3" name="toctree-checkbox-3" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-3"><i class="fa-solid fa-chevron-down"></i></label><ul>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../../../jupyter/index.html">Jupyter notebooks 🪐</a><input class="toctree-checkbox" id="toctree-checkbox-3" name="toctree-checkbox-3" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-3"><i class="fa-solid fa-chevron-down"></i></label><ul>
 <li class="toctree-l2"><a class="reference internal" href="../../../../jupyter/general/first_equation.html">Set up your first equations</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../jupyter/general/discretize_linear_pH_system.html">How to discretize equations</a></li>
 </ul>
 </li>
-<li class="toctree-l1 has-children"><a class="reference internal" href="../../../../gallery/index.html">Gallery</a><input class="toctree-checkbox" id="toctree-checkbox-4" name="toctree-checkbox-4" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-4"><i class="fa-solid fa-chevron-down"></i></label><ul>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../../../gallery/index.html">Gallery🖼</a><input class="toctree-checkbox" id="toctree-checkbox-4" name="toctree-checkbox-4" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-4"><i class="fa-solid fa-chevron-down"></i></label><ul>
 <li class="toctree-l2 has-children"><a class="reference internal" href="../../../../gallery/msepy_domains_and_meshes/index.html"><em>msepy</em> domains and meshes</a><input class="toctree-checkbox" id="toctree-checkbox-5" name="toctree-checkbox-5" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-5"><i class="fa-solid fa-chevron-down"></i></label><ul>
 <li class="toctree-l3"><a class="reference internal" href="../../../../gallery/msepy_domains_and_meshes/msepy/crazy.html">Crazy domain and mesh</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../../gallery/msepy_domains_and_meshes/msepy/crazy_multi.html">Multi-crazy domain and mesh</a></li>
@@ -224,13 +224,13 @@
 <li class="toctree-l3"><a class="reference internal" href="../../../../gallery/msepy_domains_and_meshes/msepy/cylinder_channel.html">Cylinder channel</a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="../../../../gallery/div_grad/index.html">div-grad</a></li>
-<li class="toctree-l2 has-children"><a class="reference internal" href="../../../../gallery/Navier_Stokes/index.html">Navier-Stokes equations</a><input class="toctree-checkbox" id="toctree-checkbox-6" name="toctree-checkbox-6" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-6"><i class="fa-solid fa-chevron-down"></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../../gallery/div_grad/index.html">🟢 div-grad</a></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../../../../gallery/Navier_Stokes/index.html">🌊 Navier-Stokes equations</a><input class="toctree-checkbox" id="toctree-checkbox-6" name="toctree-checkbox-6" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-6"><i class="fa-solid fa-chevron-down"></i></label><ul>
 <li class="toctree-l3"><a class="reference internal" href="../../../../gallery/Navier_Stokes/shear_layer_rollup/index.html">Shear layer rollup</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../../gallery/Navier_Stokes/normal_dipole_collision/index.html">Normal dipole collision</a></li>
 </ul>
 </li>
-<li class="toctree-l2 has-children"><a class="reference internal" href="../../../../gallery/MHD/index.html">MHD</a><input class="toctree-checkbox" id="toctree-checkbox-7" name="toctree-checkbox-7" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-7"><i class="fa-solid fa-chevron-down"></i></label><ul>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../../../../gallery/MHD/index.html">🧲 MHD</a><input class="toctree-checkbox" id="toctree-checkbox-7" name="toctree-checkbox-7" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-7"><i class="fa-solid fa-chevron-down"></i></label><ul>
 <li class="toctree-l3"><a class="reference internal" href="../../../../gallery/MHD/Orszag_Tang_vortex/index.html">Orszag-Tang Vortex</a></li>
 </ul>
 </li>
@@ -419,6 +419,35 @@ document.write(`
 
 <span class="sd">.. autofunction:: msepy.manifold.predefined.backward_step.backward_step</span>
 
+<span class="sd">Boundary units</span>
+<span class="sd">==============</span>
+
+<span class="sd">The domain is divided into three regions,</span>
+
+<span class="sd">+---------------+--------------------------------------------------------------------------+</span>
+<span class="sd">| region ``0``  |  bottom-right region, :math:`[x_1, (x_1+x_2)]\times[0, y_1]`             |</span>
+<span class="sd">+---------------+--------------------------------------------------------------------------+</span>
+<span class="sd">| region ``1``  |  top-right region , :math:`[x_1, (x_1+x_2)]\times[y_1, (y_1+y_2)]`       |</span>
+<span class="sd">+---------------+--------------------------------------------------------------------------+</span>
+<span class="sd">| region ``2``  |  top-left region, :math:`[0, x_1]\times[y_1, (y_1+y_2)]`                 |</span>
+<span class="sd">+---------------+--------------------------------------------------------------------------+</span>
+
+<span class="sd">Thus, for a 2-dimensional domain, it has 8 boundary units, i.e.,</span>
+
+<span class="sd">&gt;&gt;&gt; boundary = {</span>
+<span class="sd">...     0: [1, 1, 1, 0],</span>
+<span class="sd">...     1: [0, 1, 0, 1],</span>
+<span class="sd">...     2: [1, 0, 1, 1],</span>
+<span class="sd">... }</span>
+
+<span class="sd">And a 3-dimensional domain, it has 8 + 6</span>
+<span class="sd">(:math:`2\times3` :math:`z`-direction) boundary units, i.e.,</span>
+
+<span class="sd">&gt;&gt;&gt; boundary = {</span>
+<span class="sd">...     0: [1, 1, 1, 0, 1, 1],</span>
+<span class="sd">...     1: [0, 1, 0, 1, 1, 1],</span>
+<span class="sd">...     2: [1, 0, 1, 1, 1, 1],</span>
+<span class="sd">... }</span>
 
 <span class="sd">Examples</span>
 <span class="sd">========</span>
@@ -533,7 +562,7 @@ document.write(`
 
 
 <span class="k">def</span> <span class="nf">_backward_step</span><span class="p">(</span><span class="n">mf</span><span class="p">,</span> <span class="n">x1</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">x2</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">y1</span><span class="o">=</span><span class="mf">0.25</span><span class="p">,</span> <span class="n">y2</span><span class="o">=</span><span class="mf">0.25</span><span class="p">,</span> <span class="n">z</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">x0</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">y0</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">periodic</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    ^ y</span>
 <span class="sd">    |</span>
 <span class="sd">    |              x1                      x2</span>
@@ -693,7 +722,7 @@ By Andrea Brugnoli, Ramy Rashad, Stefano Stramigioli, Yi Zhang and more
   <div class="footer-item">
     
 <div class="extra_footer">
-  <div>Last updated on November 03, 2023, 12:21:31, W. Europe Standard Time</div>
+  <div>Last updated on November 12, 2023, 21:47:22, W. Europe Standard Time</div>
 </div>
   </div>
   

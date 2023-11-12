@@ -558,13 +558,21 @@ parameters of the predefined manifold.</p>
 <span class="gp">... </span><span class="p">)</span>
 </pre></div>
 </div>
-<p>This specifies the boundary section <code class="docutils literal notranslate"><span class="pre">Gamma_alpha</span></code>, <span class="math notranslate nohighlight">\(\Gamma_{\alpha}\)</span>, to be two faces of the <em>msepy</em>
-manifold <code class="docutils literal notranslate"><span class="pre">manifold</span></code>. These faces are indicated by dictionary <code class="docutils literal notranslate"><span class="pre">{0:</span> <span class="pre">[1,</span> <span class="pre">1,</span> <span class="pre">0,</span> <span class="pre">0]}</span></code>. For what does this
+<p>This specifies the boundary section <code class="docutils literal notranslate"><span class="pre">Gamma_alpha</span></code>, <span class="math notranslate nohighlight">\(\Gamma_{\alpha}\)</span>, to be two faces (boundary units)
+of the <em>msepy</em>
+manifold <code class="docutils literal notranslate"><span class="pre">manifold</span></code>. These faces (boundary units) are specified by dictionary <code class="docutils literal notranslate"><span class="pre">{0:</span> <span class="pre">[1,</span> <span class="pre">1,</span> <span class="pre">0,</span> <span class="pre">0]}</span></code>.
+For what does this
 dictionary exactly mean, we refer to the introduction page of the <code class="docutils literal notranslate"><span class="pre">'crazy'</span></code> domain,
-<a class="reference internal" href="../../../gallery/msepy_domains_and_meshes/msepy/crazy.html#gallery-msepy-domains-and-meshes-crazy"><span class="std std-ref">Crazy domain and mesh</span></a>. In short, the manifold is one region
-(or divided into multiple regions) with a local coordinate system <span class="math notranslate nohighlight">\((r, s)\)</span>, and
-<code class="docutils literal notranslate"><span class="pre">{0:</span> <span class="pre">[1,</span> <span class="pre">1,</span> <span class="pre">0,</span> <span class="pre">0]}</span></code> indicates the topological faces
-facing <span class="math notranslate nohighlight">\(r-\)</span> and <span class="math notranslate nohighlight">\(r+\)</span> directions of region no. <code class="docutils literal notranslate"><span class="pre">0</span></code>.</p>
+<a class="reference internal" href="../../../gallery/msepy_domains_and_meshes/msepy/crazy.html#gallery-msepy-domains-and-meshes-crazy"><span class="std std-ref">Crazy domain and mesh</span></a>. In short, the manifold has one region
+(no. <code class="docutils literal notranslate"><span class="pre">0</span></code>) and
+<code class="docutils literal notranslate"><span class="pre">{0:</span> <span class="pre">[1,</span> <span class="pre">1,</span> <span class="pre">0,</span> <span class="pre">0]}</span></code> indicates the topological faces (boundary units)
+facing <span class="math notranslate nohighlight">\(x-\)</span> and <span class="math notranslate nohighlight">\(y+\)</span> directions of the region.</p>
+<div class="admonition important">
+<p class="admonition-title">Important</p>
+<p>Indicators of boundary units of a predefined <em>msepy</em> manifold are explained
+at its corresponding gallery page. Find it at
+<a class="reference internal" href="../../../gallery/msepy_domains_and_meshes/index.html#gallery-msepy-domains-and-meshes"><span class="std std-ref">msepy domains and meshes</span></a>.</p>
+</div>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
 <p>Since <code class="docutils literal notranslate"><span class="pre">Gamma_alpha</span></code> and <code class="docutils literal notranslate"><span class="pre">Gamma_beta</span></code> are a partition of the boundary of <code class="docutils literal notranslate"><span class="pre">manifold</span></code>,
@@ -855,7 +863,7 @@ By Andrea Brugnoli, Ramy Rashad, Stefano Stramigioli, Yi Zhang and more
   <div class="footer-item">
     
 <div class="extra_footer">
-  <div>Last updated on November 07, 2023, 11:28:03, W. Europe Standard Time</div>
+  <div>Last updated on November 12, 2023, 21:47:22, W. Europe Standard Time</div>
 </div>
   </div>
   

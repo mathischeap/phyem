@@ -26,6 +26,24 @@ The parameters of a crazy domain are
     use :math:`c=0`. The meshes of :math:`c>0` are normally for testing, for example, the convergence rate of your
     scheme in bad grids.
 
+Boundary units
+--------------
+
+The crazy domain has only one region and its :math:`2\times n` (`n` is the dimensions of the manifold)
+faces are all boundary units. They are faces :math:`x^-`, :math:`x^+`, :math:`y^-`, :math:`\cdots`.
+
+.. admonition:: The complete set of boundary units
+
+   +-----------------------+---------------------------------------+
+   | 2-dimensional         | ``{0: [1, 1, 1, 1]}``                 |
+   +-----------------------+---------------------------------------+
+   | 3-dimensional         | ``{0: [1, 1, 1, 1, 1, 1]}``           |
+   +-----------------------+---------------------------------------+
+
+For example, ``{0: [1, 0, 0, 1]}`` represents the :math:`x^-` and :math:`y^+` faces of a 2-dimensional
+crazy domain. And, for a 3-dimensional crazy domain, ``{0: [1, 0, 0, 1, 1, 1]}`` represents them plus
+:math:`z^-` and :math:`z^+` faces.
+
 The mapping transforming the domain
 -----------------------------------
 

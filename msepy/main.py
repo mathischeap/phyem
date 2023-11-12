@@ -110,13 +110,20 @@ Once we have specified the manifold, we should also configure its boundary secti
 ...     manifold, {0: [1, 1, 0, 0]}   # the natural boundary.
 ... )
 
-This specifies the boundary section ``Gamma_alpha``, :math:`\Gamma_{\alpha}`, to be two faces of the *msepy*
-manifold ``manifold``. These faces are indicated by dictionary ``{0: [1, 1, 0, 0]}``. For what does this
+This specifies the boundary section ``Gamma_alpha``, :math:`\Gamma_{\alpha}`, to be two faces (boundary units)
+of the *msepy*
+manifold ``manifold``. These faces (boundary units) are specified by dictionary ``{0: [1, 1, 0, 0]}``.
+For what does this
 dictionary exactly mean, we refer to the introduction page of the ``'crazy'`` domain,
-:ref:`GALLERY-msepy-domains-and-meshes=crazy`. In short, the manifold is one region
-(or divided into multiple regions) with a local coordinate system :math:`(r, s)`, and
-``{0: [1, 1, 0, 0]}`` indicates the topological faces
-facing :math:`r-` and :math:`r+` directions of region no. ``0``.
+:ref:`GALLERY-msepy-domains-and-meshes=crazy`. In short, the manifold has one region
+(no. ``0``) and
+``{0: [1, 1, 0, 0]}`` indicates the topological faces (boundary units)
+facing :math:`x-` and :math:`y+` directions of the region.
+
+.. important::
+    Indicators of boundary units of a predefined *msepy* manifold are explained
+    at its corresponding gallery page. Find it at
+    :ref:`GALLERY-msepy-domains-and-meshes`.
 
 .. note::
     Since ``Gamma_alpha`` and ``Gamma_beta`` are a partition of the boundary of ``manifold``,

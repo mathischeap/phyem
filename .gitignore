@@ -61,6 +61,9 @@ _notes/
 _app/
 __phcache__/
 _local_tests/
+.doctrees/
+doctest/
+doctrees/
 conf.py
 
 # Translations
