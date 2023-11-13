@@ -61,7 +61,7 @@ Implemented operators are
     | inner product        | :math:`\left(\cdot,\cdot\right)`     | Given two forms,                     |
     |                      |                                      | ``a``: :math:`\alpha` and            |
     |                      |                                      | ``b``: :math:`\beta`,                |
-    |                      |                                      | The wedge product between            |
+    |                      |                                      | The inner product between            |
     |                      |                                      | them, i.e.                           |
     |                      |                                      | :math:`\left(\alpha,\beta\right)`,   |
     |                      |                                      | is ``ph.inner(a,b)``.                |
