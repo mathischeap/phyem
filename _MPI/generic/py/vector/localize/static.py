@@ -15,7 +15,7 @@ class MPI_PY_Localize_Static_Vector(Frozen):
         """"""
         assert gm.__class__ is MPI_PyGM, f'gm is not a {MPI_PyGM}'
 
-        # ------------- initialize a empty vector -------------------------------------
+        # ------------- initialize a empty vector ---------------------------------
         if isinstance(localized_vector, (int, float)) and localized_vector == 0:
             localized_vector = dict()
             _cache = {}
@@ -28,7 +28,7 @@ class MPI_PY_Localize_Static_Vector(Frozen):
                 localized_vector[index] = _cache[_num_local_dofs]
         else:
             pass
-        # ============================================================================
+        # =======================================================================
 
         self._meta_data = None
         self._gm = gm
@@ -51,7 +51,7 @@ class MPI_PY_Localize_Static_Vector(Frozen):
             self._dtype = 'None'
 
         elif isinstance(localized_vector, dict):
-            # -------- data check ------------------------------------------------------
+            # -------- data check -------------------------------------------------
             assert len(localized_vector) == len(self._gm), f"data length wrong."
             for index in localized_vector:
                 data_index = localized_vector[index]
