@@ -439,6 +439,7 @@ document.write(`
             <nav aria-label="Page">
                 <ul class="visible nav section-nav flex-column">
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#msepy.manifold.predefined.crazy_multi.crazy_multi"><code class="docutils literal notranslate"><span class="pre">crazy_multi()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#boundary-units">Boundary units</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#examples">Examples</a></li>
 </ul>
             </nav>
@@ -488,10 +489,26 @@ axes. And when it is <code class="docutils literal notranslate"><span class="pre
 be treated as a region, with them, we can test our codes with meshes of multiple (orthogonal or curvilinear)
 regions.</p>
 </div>
+<section id="boundary-units">
+<h2>Boundary units<a class="headerlink" href="#boundary-units" title="Permalink to this heading">#</a></h2>
+<p>Since the amount of regions is dynamic, its amount of boundary units is dynamic as well.
+They contain the boundary faces of these regions attached to the domain boundary. For example, when
+there are <span class="math notranslate nohighlight">\(2 * 3\)</span> regions/blocks, the complete set of boundary units is</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">boundary_units_set</span> <span class="o">=</span> <span class="p">{</span>
+<span class="gp">... </span><span class="mi">0</span><span class="p">:</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span>
+<span class="gp">... </span><span class="mi">1</span><span class="p">:</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span>
+<span class="gp">... </span><span class="mi">2</span><span class="p">:</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span>
+<span class="gp">... </span><span class="mi">3</span><span class="p">:</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span>
+<span class="gp">... </span><span class="mi">4</span><span class="p">:</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span>
+<span class="gp">... </span><span class="mi">5</span><span class="p">:</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span>
+<span class="go">}</span>
+</pre></div>
+</div>
+</section>
 <section id="examples">
 <h2>Examples<a class="headerlink" href="#examples" title="Permalink to this heading">#</a></h2>
 <p>We now generate a multi-crazy mesh in domain <span class="math notranslate nohighlight">\(\Omega:=(x,y,z)\in[-1,1]\times[0,2]\subset\mathbb{R}^2\)</span> of
-<span class="math notranslate nohighlight">\(2 * 3\)</span> crazy blocks at <span class="math notranslate nohighlight">\(c=0.3\)</span>. In each crazy block, we make <span class="math notranslate nohighlight">\(5 * 3\)</span> elements. The codes are</p>
+<span class="math notranslate nohighlight">\(2 * 3\)</span> crazy regions/blocks at <span class="math notranslate nohighlight">\(c=0.3\)</span>. In each crazy block, we make <span class="math notranslate nohighlight">\(5 * 3\)</span> elements. The codes are</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">ph</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">set_embedding_space_dim</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">manifold</span> <span class="o">=</span> <span class="n">ph</span><span class="o">.</span><span class="n">manifold</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">mesh</span> <span class="o">=</span> <span class="n">ph</span><span class="o">.</span><span class="n">mesh</span><span class="p">(</span><span class="n">manifold</span><span class="p">)</span>
@@ -508,7 +525,7 @@ regions.</p>
 <figure class="align-default" id="id1">
 <a class="reference internal image-reference" href="../../../_images/crazy_multi.png"><img alt="../../../_images/crazy_multi.png" src="../../../_images/crazy_multi.png" style="width: 50%;" /></a>
 <figcaption>
-<p><span class="caption-number">Fig. 3 </span><span class="caption-text">The crazy mesh in <span class="math notranslate nohighlight">\(\Omega=[-1,1]\times[0,2]\subset\mathbb{R}^2\)</span> of <span class="math notranslate nohighlight">\(2 * 3\)</span> blocks
+<p><span class="caption-text">The crazy mesh in <span class="math notranslate nohighlight">\(\Omega=[-1,1]\times[0,2]\subset\mathbb{R}^2\)</span> of <span class="math notranslate nohighlight">\(2 * 3\)</span> blocks
 at deformation factor <span class="math notranslate nohighlight">\(c=0.3\)</span>. In each block, we have <span class="math notranslate nohighlight">\(5 * 3\)</span> elements.</span><a class="headerlink" href="#id1" title="Permalink to this image">#</a></p>
 </figcaption>
 </figure>
@@ -564,6 +581,7 @@ at deformation factor <span class="math notranslate nohighlight">\(c=0.3\)</span
   <nav class="bd-toc-nav page-toc">
     <ul class="visible nav section-nav flex-column">
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#msepy.manifold.predefined.crazy_multi.crazy_multi"><code class="docutils literal notranslate"><span class="pre">crazy_multi()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#boundary-units">Boundary units</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#examples">Examples</a></li>
 </ul>
   </nav></div>
@@ -602,7 +620,7 @@ By Andrea Brugnoli, Ramy Rashad, Stefano Stramigioli, Yi Zhang and more
   <div class="footer-item">
     
 <div class="extra_footer">
-  <div>Last updated on November 12, 2023, 21:47:22, W. Europe Standard Time</div>
+  <div>Last updated on November 13, 2023, 20:18:49, W. Europe Standard Time</div>
 </div>
   </div>
   

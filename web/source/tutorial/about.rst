@@ -28,8 +28,8 @@ Skeleton
 
 The skeleton of a *phyem* simulation is illustrated in the figure below.
 
-.. figure:: ../_static/structure.jpg
-    :width: 90 %
+.. figure:: ../_static/structure.png
+    :width: 100%
 
 Currently, to startup a simulation, we ideally need to input a ``PDE``, which is made of ingredients ``forms``.
 ``forms`` are elements of ``spaces`` which are built upon a ``mesh``. And the ``mesh`` is an object over the domain,

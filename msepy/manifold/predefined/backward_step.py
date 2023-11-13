@@ -44,16 +44,20 @@ The domain is divided into three regions,
 
 Thus, for a 2-dimensional domain, it has 8 boundary units, i.e.,
 
->>> boundary = {
+>>> boundary_units_set = {
 ...     0: [1, 1, 1, 0],
 ...     1: [0, 1, 0, 1],
 ...     2: [1, 0, 1, 1],
 ... }
 
+For example, for the bottom-right region ``0``, its left (:math:`x^-`), right (:math:`x^+`) and bottom
+(:math:`y^-`) faces are boundary units, while its north (:math:`y^+`) face is not. So we have
+``0: [1, 1, 1, 0]`` in the set.
+
 And a 3-dimensional domain, it has 8 + 6
 (:math:`2\times3` :math:`z`-direction) boundary units, i.e.,
 
->>> boundary = {
+>>> boundary_units_set = {
 ...     0: [1, 1, 1, 0, 1, 1],
 ...     1: [0, 1, 0, 1, 1, 1],
 ...     2: [1, 0, 1, 1, 1, 1],

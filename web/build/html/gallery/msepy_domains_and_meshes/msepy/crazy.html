@@ -492,18 +492,13 @@ scheme in bad grids.</p>
 <h2>Boundary units<a class="headerlink" href="#boundary-units" title="Permalink to this heading">#</a></h2>
 <p>The crazy domain has only one region and its <span class="math notranslate nohighlight">\(2\times n\)</span> (<cite>n</cite> is the dimensions of the manifold)
 faces are all boundary units. They are faces <span class="math notranslate nohighlight">\(x^-\)</span>, <span class="math notranslate nohighlight">\(x^+\)</span>, <span class="math notranslate nohighlight">\(y^-\)</span>, <span class="math notranslate nohighlight">\(\cdots\)</span>.</p>
-<div class="admonition-the-complete-set-of-boundary-units admonition">
-<p class="admonition-title">The complete set of boundary units</p>
-<table class="table">
-<tbody>
-<tr class="row-odd"><td><p>2-dimensional</p></td>
-<td><p><code class="docutils literal notranslate"><span class="pre">{0:</span> <span class="pre">[1,</span> <span class="pre">1,</span> <span class="pre">1,</span> <span class="pre">1]}</span></code></p></td>
-</tr>
-<tr class="row-even"><td><p>3-dimensional</p></td>
-<td><p><code class="docutils literal notranslate"><span class="pre">{0:</span> <span class="pre">[1,</span> <span class="pre">1,</span> <span class="pre">1,</span> <span class="pre">1,</span> <span class="pre">1,</span> <span class="pre">1]}</span></code></p></td>
-</tr>
-</tbody>
-</table>
+<p>Therefore, for a 2-dimensional domain, the complete set of boundary units is</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">boundary_units_set</span> <span class="o">=</span> <span class="p">{</span><span class="mi">0</span><span class="p">:</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">]}</span>
+</pre></div>
+</div>
+<p>And for a 3-dimensional one, it is</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">boundary_units_set</span> <span class="o">=</span> <span class="p">{</span><span class="mi">0</span><span class="p">:</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">]}</span>
+</pre></div>
 </div>
 <p>For example, <code class="docutils literal notranslate"><span class="pre">{0:</span> <span class="pre">[1,</span> <span class="pre">0,</span> <span class="pre">0,</span> <span class="pre">1]}</span></code> represents the <span class="math notranslate nohighlight">\(x^-\)</span> and <span class="math notranslate nohighlight">\(y^+\)</span> faces of a 2-dimensional
 crazy domain. And, for a 3-dimensional crazy domain, <code class="docutils literal notranslate"><span class="pre">{0:</span> <span class="pre">[1,</span> <span class="pre">0,</span> <span class="pre">0,</span> <span class="pre">1,</span> <span class="pre">1,</span> <span class="pre">1]}</span></code> represents them plus
@@ -662,7 +657,7 @@ By Andrea Brugnoli, Ramy Rashad, Stefano Stramigioli, Yi Zhang and more
   <div class="footer-item">
     
 <div class="extra_footer">
-  <div>Last updated on November 12, 2023, 21:47:22, W. Europe Standard Time</div>
+  <div>Last updated on November 13, 2023, 20:18:49, W. Europe Standard Time</div>
 </div>
   </div>
   

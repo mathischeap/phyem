@@ -434,16 +434,20 @@ document.write(`
 
 <span class="sd">Thus, for a 2-dimensional domain, it has 8 boundary units, i.e.,</span>
 
-<span class="sd">&gt;&gt;&gt; boundary = {</span>
+<span class="sd">&gt;&gt;&gt; boundary_units_set = {</span>
 <span class="sd">...     0: [1, 1, 1, 0],</span>
 <span class="sd">...     1: [0, 1, 0, 1],</span>
 <span class="sd">...     2: [1, 0, 1, 1],</span>
 <span class="sd">... }</span>
 
+<span class="sd">For example, for the bottom-right region ``0``, its left (:math:`x^-`), right (:math:`x^+`) and bottom</span>
+<span class="sd">(:math:`y^-`) faces are boundary units, while its north (:math:`y^+`) face is not. So we have</span>
+<span class="sd">``0: [1, 1, 1, 0]`` in the set.</span>
+
 <span class="sd">And a 3-dimensional domain, it has 8 + 6</span>
 <span class="sd">(:math:`2\times3` :math:`z`-direction) boundary units, i.e.,</span>
 
-<span class="sd">&gt;&gt;&gt; boundary = {</span>
+<span class="sd">&gt;&gt;&gt; boundary_units_set = {</span>
 <span class="sd">...     0: [1, 1, 1, 0, 1, 1],</span>
 <span class="sd">...     1: [0, 1, 0, 1, 1, 1],</span>
 <span class="sd">...     2: [1, 0, 1, 1, 1, 1],</span>
@@ -722,7 +726,7 @@ By Andrea Brugnoli, Ramy Rashad, Stefano Stramigioli, Yi Zhang and more
   <div class="footer-item">
     
 <div class="extra_footer">
-  <div>Last updated on November 12, 2023, 21:47:22, W. Europe Standard Time</div>
+  <div>Last updated on November 13, 2023, 09:05:35, W. Europe Standard Time</div>
 </div>
   </div>
   

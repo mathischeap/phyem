@@ -25,12 +25,55 @@ The 2d domain is illustrated in the following figure.
 
 .. autofunction:: msepy.manifold.predefined.cylinder_channel.cylinder_channel
 
+Boundary units
+==============
+
+The cylinder channel domain is divided into 7 regions. The topology of these regions is illusrated in the
+following figure.
+
+.. figure:: cylinder_channel_2d_topology.png
+    :width: 100%
+
+    The illustration of the topology of regions in a 2d cylinder channel domain.
+
+Thus, the complete set of boundary units in 2 dimensions is
+
+>>> boundary_units_set = {
+...     0: [1, 0, 1, 0],
+...     1: [0, 0, 1, 1],
+...     2: [0, 1, 1, 0],
+...     3: [1, 1, 0, 0],
+...     4: [1, 1, 0, 0],
+...     5: [1, 0, 0, 1],
+...     6: [0, 0, 1, 1],
+...     7: [0, 1, 0, 1],
+... }
+
+And, for example, if we call the left side the inlet, we can pick up boundary units for the inlet by
+
+>>> boundary_units_inlet = {
+...     0: [1, 0, 0, 0],
+...     3: [1, 0, 0, 0],
+...     5: [1, 0, 0, 0]
+... }
+
+The cylinder surface is
+
+>>> boundary_units_inlet = {
+...     1: [0, 0, 0, 1],
+...     3: [0, 1, 0, 0],
+...     4: [1, 0, 0, 0],
+...     6: [0, 0, 1, 0]
+... }
+
 
 Examples
 ========
 
 2d
 --
+
+We can generate a mesh in this domain by doing
 
 >>> ph.config.set_embedding_space_dim(2)
 >>> manifold = ph.manifold(2)
@@ -39,7 +82,7 @@ Examples
 >>> manifold = obj['manifold']
 >>> mesh = obj['mesh']
 >>> msepy.config(manifold)('cylinder_channel')
->>> msepy.config(mesh)(3)
+>>> msepy.config(mesh)(3)  # refining factor, a positive integer.
 >>> mesh.visualize(saveto=None_or_custom_path)  # doctest: +ELLIPSIS
 <Figure size ...
 
@@ -47,6 +90,8 @@ Examples
     :width: 100%
 
     The cylinder_channel mesh of element factor 3.
+
+Note that we configure the mesh with a factor ``3``. Increasing this factor to refine the mesh.
 
 """
 
@@ -105,6 +150,51 @@ def _make_an_illustration(saveto, r=1, dl=10, dr=25, h=6):
     plt.savefig(saveto, bbox_inches='tight', dpi=200)
     plt.close()
 
+    fig, ax = plt.subplots(figsize=(8, 6))
+    ax.set_aspect('equal')
+    ax.spines['top'].set_visible(False)
+    ax.spines['right'].set_visible(False)
+    ax.spines['left'].set_visible(False)
+    ax.spines['bottom'].set_visible(False)
+    plt.tick_params(
+        axis='both',
+        which='both',
+        left=False,
+        bottom=False,
+        labelbottom=False,
+        labelleft=False
+    )
+    plt.plot(x, y, '-k', linewidth=0.8)
+    plt.plot([0, _r], [0, 0], '-', linewidth=0.8, color='lightgray')
+    _ = 0.05 * h
+    plt.plot([_r - _, _r, _r - _], [_, 0, -_], '-', linewidth=0.8, color='lightgray')
+    plt.text(_r, 0, r"$x$", c='gray', va='bottom', ha='left')
+    _y = 1.4 * h / 2
+    plt.plot([0, 0], [0, _y], '-', linewidth=0.8, color='lightgray')
+    plt.plot([-_, 0, _], [_y-_, _y, _y-_], '-', linewidth=0.8, color='lightgray')
+    plt.text(0, _y, r"$y$", c='gray', va='bottom', ha='left')
+
+    plt.plot([-r, r, r, -r, -r], [-r, -r, r, r, -r], '-k', linewidth=0.8)
+    plt.plot([-r, -dl], [-r, -r], '-', linewidth=0.5, color='gray')
+    plt.plot([r, dr], [-r, -r], '-', linewidth=0.5, color='gray')
+    plt.plot([-r, -dl], [r, r], '-', linewidth=0.5, color='gray')
+    plt.plot([r, dr], [r, r], '-', linewidth=0.5, color='gray')
+    plt.plot([-r, -r], [-r, -h/2], '-', linewidth=0.5, color='gray')
+    plt.plot([-r, -r], [r, h/2], '-', linewidth=0.5, color='gray')
+    plt.plot([r, r], [-r, -h/2], '-', linewidth=0.5, color='gray')
+    plt.plot([r, r], [r, h/2], '-', linewidth=0.5, color='gray')
+    plt.text(-(dl+r)/2, -(h/2+r)/2, r"$r_0$", c='k', va='center', ha='center')
+    plt.text(0, -(h/2+r)/2, r"$r_1$", c='k', va='center', ha='center')
+    plt.text((dr+r)/2, -(h/2+r)/2, r"$r_2$", c='k', va='center', ha='center')
+    plt.text(-(dl+r)/2, 0, r"$r_3$", c='k', va='center', ha='center')
+    plt.text((dr+r)/2, 0, r"$r_4$", c='k', va='center', ha='center')
+    plt.text(-(dl+r)/2, (h/2+r)/2, r"$r_5$", c='k', va='center', ha='center')
+    plt.text(0, (h/2+r)/2, r"$r_6$", c='k', va='center', ha='center')
+    plt.text((dr+r)/2, (h/2+r)/2, r"$r_7$", c='k', va='center', ha='center')
+    saveto = saveto.split('.png')[0] + rf"_topology.png"
+    plt.savefig(saveto, bbox_inches='tight', dpi=200)
+    plt.close()
+
 
 def cylinder_channel(r=1, dl=8, dr=25, h=6, w=0, periodic=True):
     r"""
@@ -135,13 +225,13 @@ class _CylinderChannel(object):
     r"""          ^  y
                   |
     ______________|______________________________________
-    |                                                   |
-    |            ___                                    |
-    |           /  r\                                   |
-    |h         |  .--|                                  |----------> x
-    |           \_|_/                                   |
     |             |                                     |
-    |______dl_____|__________________dr_________________|
+    |            _|_                                    |
+    |           / |r\                                   |
+    |h         |  .--|----------------------------------|----------> x
+    |           \___/                                   |
+    |                                                   |
+    |______dl________________________dr_________________|
 
 
     Regions are distributed as:

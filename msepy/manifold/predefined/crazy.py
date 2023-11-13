@@ -32,13 +32,13 @@ Boundary units
 The crazy domain has only one region and its :math:`2\times n` (`n` is the dimensions of the manifold)
 faces are all boundary units. They are faces :math:`x^-`, :math:`x^+`, :math:`y^-`, :math:`\cdots`.
 
-.. admonition:: The complete set of boundary units
+Therefore, for a 2-dimensional domain, the complete set of boundary units is
 
-   +-----------------------+---------------------------------------+
-   | 2-dimensional         | ``{0: [1, 1, 1, 1]}``                 |
-   +-----------------------+---------------------------------------+
-   | 3-dimensional         | ``{0: [1, 1, 1, 1, 1, 1]}``           |
-   +-----------------------+---------------------------------------+
+>>> boundary_units_set = {0: [1, 1, 1, 1]}
+
+And for a 3-dimensional one, it is
+
+>>> boundary_units_set = {0: [1, 1, 1, 1, 1, 1]}
 
 For example, ``{0: [1, 0, 0, 1]}`` represents the :math:`x^-` and :math:`y^+` faces of a 2-dimensional
 crazy domain. And, for a 3-dimensional crazy domain, ``{0: [1, 0, 0, 1, 1, 1]}`` represents them plus

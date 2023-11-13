@@ -463,7 +463,7 @@ illustrated in the following figure.</p>
 <figure class="align-default" id="id2">
 <a class="reference internal image-reference" href="../../../_images/backward_step_illustration.png"><img alt="../../../_images/backward_step_illustration.png" src="../../../_images/backward_step_illustration.png" style="width: 100%;" /></a>
 <figcaption>
-<p><span class="caption-number">Fig. 4 </span><span class="caption-text">The illustration of the backward step domain.</span><a class="headerlink" href="#id2" title="Permalink to this image">#</a></p>
+<p><span class="caption-number">Fig. 3 </span><span class="caption-text">The illustration of the backward step domain.</span><a class="headerlink" href="#id2" title="Permalink to this image">#</a></p>
 </figcaption>
 </figure>
 <p>When <span class="math notranslate nohighlight">\(n=3\)</span>, The domain is extended to the thrid axis, <span class="math notranslate nohighlight">\(z\)</span>-axis, perpendicular to the plane. The parameters
@@ -509,16 +509,19 @@ one.</p>
 </tbody>
 </table>
 <p>Thus, for a 2-dimensional domain, it has 8 boundary units, i.e.,</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">boundary</span> <span class="o">=</span> <span class="p">{</span>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">boundary_units_set</span> <span class="o">=</span> <span class="p">{</span>
 <span class="gp">... </span>    <span class="mi">0</span><span class="p">:</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span>
 <span class="gp">... </span>    <span class="mi">1</span><span class="p">:</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span>
 <span class="gp">... </span>    <span class="mi">2</span><span class="p">:</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span>
 <span class="gp">... </span><span class="p">}</span>
 </pre></div>
 </div>
+<p>For example, for the bottom-right region <code class="docutils literal notranslate"><span class="pre">0</span></code>, its left (<span class="math notranslate nohighlight">\(x^-\)</span>), right (<span class="math notranslate nohighlight">\(x^+\)</span>) and bottom
+(<span class="math notranslate nohighlight">\(y^-\)</span>) faces are boundary units, while its north (<span class="math notranslate nohighlight">\(y^+\)</span>) face is not. So we have
+<code class="docutils literal notranslate"><span class="pre">0:</span> <span class="pre">[1,</span> <span class="pre">1,</span> <span class="pre">1,</span> <span class="pre">0]</span></code> in the set.</p>
 <p>And a 3-dimensional domain, it has 8 + 6
 (<span class="math notranslate nohighlight">\(2\times3\)</span> <span class="math notranslate nohighlight">\(z\)</span>-direction) boundary units, i.e.,</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">boundary</span> <span class="o">=</span> <span class="p">{</span>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">boundary_units_set</span> <span class="o">=</span> <span class="p">{</span>
 <span class="gp">... </span>    <span class="mi">0</span><span class="p">:</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span>
 <span class="gp">... </span>    <span class="mi">1</span><span class="p">:</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span>
 <span class="gp">... </span>    <span class="mi">2</span><span class="p">:</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span>
@@ -547,7 +550,7 @@ is splited into 3 regions).</p>
 <figure class="align-default" id="id3">
 <a class="reference internal image-reference" href="../../../_images/backward_step3.png"><img alt="../../../_images/backward_step3.png" src="../../../_images/backward_step3.png" style="width: 60%;" /></a>
 <figcaption>
-<p><span class="caption-number">Fig. 5 </span><span class="caption-text">The three-dimensional backward step mesh of <span class="math notranslate nohighlight">\(3*5*5*5\)</span> elements.</span><a class="headerlink" href="#id3" title="Permalink to this image">#</a></p>
+<p><span class="caption-number">Fig. 4 </span><span class="caption-text">The three-dimensional backward step mesh of <span class="math notranslate nohighlight">\(3*5*5*5\)</span> elements.</span><a class="headerlink" href="#id3" title="Permalink to this image">#</a></p>
 </figcaption>
 </figure>
 </section>
@@ -569,7 +572,7 @@ is splited into 3 regions).</p>
 <figure class="align-default" id="id4">
 <a class="reference internal image-reference" href="../../../_images/backward_step2.png"><img alt="../../../_images/backward_step2.png" src="../../../_images/backward_step2.png" style="width: 100%;" /></a>
 <figcaption>
-<p><span class="caption-number">Fig. 6 </span><span class="caption-text">The two-dimensional backward step mesh of <span class="math notranslate nohighlight">\(3*24*6\)</span> elements.</span><a class="headerlink" href="#id4" title="Permalink to this image">#</a></p>
+<p><span class="caption-number">Fig. 5 </span><span class="caption-text">The two-dimensional backward step mesh of <span class="math notranslate nohighlight">\(3*24*6\)</span> elements.</span><a class="headerlink" href="#id4" title="Permalink to this image">#</a></p>
 </figcaption>
 </figure>
 <div class="line-block">
@@ -668,7 +671,7 @@ By Andrea Brugnoli, Ramy Rashad, Stefano Stramigioli, Yi Zhang and more
   <div class="footer-item">
     
 <div class="extra_footer">
-  <div>Last updated on November 12, 2023, 21:47:22, W. Europe Standard Time</div>
+  <div>Last updated on November 13, 2023, 20:18:49, W. Europe Standard Time</div>
 </div>
   </div>
   

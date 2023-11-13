@@ -23,12 +23,27 @@ mesh except there is one additional, ``Ns``, see:
     be treated as a region, with them, we can test our codes with meshes of multiple (orthogonal or curvilinear)
     regions.
 
+Boundary units
+--------------
+
+Since the amount of regions is dynamic, its amount of boundary units is dynamic as well.
+They contain the boundary faces of these regions attached to the domain boundary. For example, when
+there are :math:`2 * 3` regions/blocks, the complete set of boundary units is
+
+>>> boundary_units_set = {
+... 0: [1, 0, 1, 0],
+... 1: [0, 1, 1, 0],
+... 2: [1, 0, 0, 0],
+... 3: [0, 1, 0, 0],
+... 4: [1, 0, 0, 1],
+... 5: [0, 1, 0, 1]
+}
 
 Examples
 --------
 
 We now generate a multi-crazy mesh in domain :math:`\Omega:=(x,y,z)\in[-1,1]\times[0,2]\subset\mathbb{R}^2` of
-:math:`2 * 3` crazy blocks at :math:`c=0.3`. In each crazy block, we make :math:`5 * 3` elements. The codes are
+:math:`2 * 3` crazy regions/blocks at :math:`c=0.3`. In each crazy block, we make :math:`5 * 3` elements. The codes are
 
 >>> ph.config.set_embedding_space_dim(2)
 >>> manifold = ph.manifold(2)
