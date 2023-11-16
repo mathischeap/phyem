@@ -4,7 +4,7 @@ r"""
 import matplotlib.pyplot as plt
 import matplotlib
 
-from src.config import RANK, MASTER_RANK
+from src.config import RANK, MASTER_RANK, SIZE, COMM
 
 from tools.frozen import Frozen
 from _MPI.generic.py.matrix.localize.static import (MPI_PY_Localize_Static_Matrix,
@@ -306,7 +306,8 @@ class _Xxx(Frozen):
     def __init__(self, ls, x):
         time_slots = list()
         for c in range(ls.shape[1]):
-            assert x[c].__class__ is MPI_PY_Localize_Static_Vector_Cochain, f"x[{c}] is not a static cochain vector."
+            assert x[c].__class__ is MPI_PY_Localize_Static_Vector_Cochain, \
+                f"x[{c}] is not a static cochain vector."
             time_slots.append(
                 x[c]._t
             )
@@ -321,7 +322,27 @@ class _Xxx(Frozen):
         return self._representing_time
 
     def update(self, x):
-        """# """
+        """# update the unknowns from x (usually the solution)."""
+
+        if SIZE == 1:
+            self._parallel_update(x)
+
+        else:
+            None_x = x is None
+            None_x_ranks = COMM.allgather(None_x)
+            if None_x_ranks.count(True) == 0:
+                # we got no None in all ranks, then just parallelize it.
+                self._parallel_update(x)
+            elif None_x_ranks.count(False) == 1:
+                # we only find the solution in one single core.
+                solution_rank = None_x_ranks.index(False)
+                x = COMM.bcast(x, root=solution_rank)
+                self._parallel_update(x)
+            else:
+                raise NotImplementedError()
+
+    def _parallel_update(self, x):
+        """"""
         gm = self._vx._gm
         data_dict = dict()
         for index in gm:

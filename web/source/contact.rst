@@ -9,12 +9,16 @@ The main maintainer🛠️ of *phyem* is `Yi Zhang <https://mathischeap.com/>`_.
 
 📧 `zhangyi_aero@hotmail.com <mailto: zhangyi_aero@hotmail.com>`_
 
-You can also find Yi at |ImageLinkRG|_ |ImageLinkorcid|_ |ImageLinklinkedin|_
+You can also find Yi at |ImageLinkmic|_ |ImageLinkRG|_ |ImageLinkorcid|_ |ImageLinklinkedin|_
 |ImageLinkgithub|_ |ImageLinkfb|_ |ImageLinktwitter|_.
 List and contact of all contributors are available at :ref:`Contributors`.
 
 You are also welcome to contact us or report any issue on
 `the Github issue page of phyem <https://github.com/mathischeap/phyem/issues>`_.
+
+.. |ImageLinkmic| image:: _static/favicon-mic.png
+    :height: 1.5em
+.. _ImageLinkmic: https://mathischeap.com/
 
 .. |ImageLinkorcid| image:: _static/orcid-og-image.png
     :height: 1.5em

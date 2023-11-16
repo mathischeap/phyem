@@ -197,6 +197,8 @@ def _gmres(
     if info < 0:
         raise LinerSystemSolverDivergenceError(
             f"gmres0 diverges after {ITER} iterations with error reaching {beta}.")
+    else:
+        pass
 
     Time_end = MPI.Wtime()
 
@@ -438,6 +440,8 @@ def _lgmres(
     if info < 0:
         raise LinerSystemSolverDivergenceError(
             f"lGMRES_0 diverges after {ITER} iterations with error reaching {beta}.")
+    else:
+        pass
 
     Time_end = MPI.Wtime()
 
