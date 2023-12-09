@@ -73,7 +73,7 @@ def div_grad_2d_periodic_manufactured_test(degree, K, c=0):
 
     """
 
-    ph_dir = '../../'  # customize it to your own dir containing phyem
+    ph_dir = '../'  # customize it to your own dir containing phyem
     if ph_dir not in sys.path:
         sys.path.append(ph_dir)
 
@@ -127,7 +127,7 @@ def div_grad_2d_periodic_manufactured_test(degree, K, c=0):
 
 if __name__ == '__main__':
     # python tests/msepy/div_grad/_2d_outer_periodic.py
-    ph_dir = '../'
+    ph_dir = './'
     if ph_dir not in sys.path:
         sys.path.append(ph_dir)
 

@@ -181,7 +181,7 @@ class MsePyRootFormNumeric(Frozen):
         else:   # other dimensions
             raise NotImplementedError()
 
-    def region_wise_interp(self, t=None, density=30, saveto=None):
+    def region_wise_interp(self, t=None, density=30, factor=6, saveto=None):
         """Reconstruct the form at time `t` and use the reconstruction results to
         make interpolation functions in each region.
 
@@ -191,6 +191,7 @@ class MsePyRootFormNumeric(Frozen):
         ----------
         t
         density
+        factor
         saveto
 
         Returns
@@ -217,7 +218,7 @@ class MsePyRootFormNumeric(Frozen):
         interp = self._make_interp(t=t, density=density)
 
         if ndim == 2:         # 2d
-            r = s = np.linspace(0, 1, 3 * density)
+            r = s = np.linspace(0, 1, factor * density)
             r, s = np.meshgrid(r, s, indexing='ij')
             r = r.ravel('F')
             s = s.ravel('F')
@@ -252,7 +253,7 @@ class MsePyRootFormNumeric(Frozen):
 
         return final_interp
 
-    def interp(self, t=None, density=30):
+    def interp(self, t=None, density=30, factor=6):
         """Reconstruct the form at time `t` and use the reconstruction results to
         make interpolation functions all over the domain
 
@@ -262,6 +263,7 @@ class MsePyRootFormNumeric(Frozen):
         ----------
         t
         density
+        factor
 
         Returns
         -------
@@ -290,7 +292,7 @@ class MsePyRootFormNumeric(Frozen):
         interp = self._make_interp(t=t, density=density)
 
         if ndim == 2:         # 2d
-            r = s = np.linspace(0, 1, 3 * density)
+            r = s = np.linspace(0, 1, factor * density)
             r, s = np.meshgrid(r, s, indexing='ij')
             r = r.ravel('F')
             s = s.ravel('F')

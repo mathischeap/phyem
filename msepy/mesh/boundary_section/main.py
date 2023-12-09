@@ -29,6 +29,10 @@ class MsePyBoundarySectionMesh(Frozen):
         self._visualize = MsePyBoundarySectionVisualize(self)
         self._freeze()
 
+    def info(self):
+        """info self."""
+        print(f"-{self.abstract._sym_repr}: {len(self.faces)} faces.")
+
     def __repr__(self):
         """"""
         base_repr = self.base.__repr__()

@@ -507,7 +507,6 @@ def _parse(obj):
 
 def info(*others_2b_printed):
     """We print the info, as much as possible, of the current msepy implementation."""
-    forms = base['forms']
     # -- first we print the newest time of the cochain (if there is) of each form.
     count = _info_cache['info_count']
     old_time = _info_cache['info_time']
@@ -525,6 +524,7 @@ def info(*others_2b_printed):
     print(f'=== [{count}] {MyTimer.current_time()} -after- %.2f(s)'
           f', total: {MyTimer.seconds2dhms(total_cost)} <----' % (new_time - old_time))
     print(f"~) Form with newest cochain @ --------- ")
+    forms = base['forms']
     for form_sym in forms:
         form = forms[form_sym]
         if form._is_base():
@@ -538,6 +538,12 @@ def info(*others_2b_printed):
     for ats_lin in _global_abstract_time_sequence:
         ats = _global_abstract_time_sequence[ats_lin]
         ats.info()
+
+    print(f"\n~) Meshes:")
+    meshes = base['meshes']
+    for mesh_repr in meshes:
+        mesh = meshes[mesh_repr]
+        mesh.info()
 
     print(f"\n~) Others: ~~~~")
     for i, other in enumerate(others_2b_printed):

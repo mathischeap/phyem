@@ -10,7 +10,7 @@ from tools.functions.time_space._2d.wrappers.vector import T2dVector
 class ConditionsLidDrivenCavity2(Frozen):
     """"""
 
-    def __init__(self, lid_speed=1):
+    def __init__(self, lid_speed=-1):
         self._lid_speed = lid_speed
         self._freeze()
 

@@ -36,7 +36,7 @@ class MsePySpaceReconstructLambda(Frozen):
         xi = xi[0]
         x = self._mesh.ct.mapping(xi)
         v = np.einsum('ij, ei -> ej', bf, local_cochain, optimize='optimal')
-        return (x[0].T, ), (v, )  # here x is already in a tuple, like (x-coo, )
+        return (x[0].T, ), (v, )  # here x is already in a tuple, like (x-coo,)
 
     def _m1_n1_k1(self, local_cochain, degree, *meshgrid_xi):
         """"""

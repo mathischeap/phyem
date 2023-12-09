@@ -43,12 +43,21 @@ def contourf(*args, **kwargs):
 def contour(
         x, y, v,
         figsize=(8, 6),
-        levels=None, level_range=None, num_levels=20, linewidth=1, linestyle=None,
-        usetex=True, colormap='bwr',
+        levels=None, level_range=None, num_levels=20, linewidth=1,
+        linestyles=None,
+        usetex=True,
+
+        colormap='bwr',
+        colors=None,
+
         show_colorbar=True,
         colorbar_label=None, colorbar_orientation='vertical', colorbar_aspect=20,
         colorbar_labelsize=12.5, colorbar_extend='both',
+
         ticksize=12,
+        xticks=None, yticks=None,
+        minor_tick_length=4, major_tick_length=8,
+
         labelsize=15,
         xlabel=r'$x$',
         ylabel=r'$y$',
@@ -77,11 +86,12 @@ def contour(
     level_range
     num_levels
     linewidth
-    linestyle:
+    linestyles:
         {None, 'solid', 'dashed', 'dashdot', 'dotted'}
 
     usetex
     colormap
+    colors
     show_colorbar
     colorbar_label
     colorbar_orientation:
@@ -100,6 +110,11 @@ def contour(
         given colormap using the colormap set_under and set_over methods.
 
     ticksize
+    xticks
+    yticks
+    minor_tick_length
+    major_tick_length
+
     labelsize
     xlabel
     ylabel
@@ -153,7 +168,14 @@ def contour(
     ax.spines['bottom'].set_visible(True)
     plt.xlabel(xlabel, fontsize=labelsize)
     plt.ylabel(ylabel, fontsize=labelsize)
+
+    if xticks is not None:
+        plt.xticks(xticks)
+    if yticks is not None:
+        plt.yticks(yticks)
     ax.tick_params(labelsize=ticksize)
+    plt.tick_params(axis='both', which='minor', direction='out', length=minor_tick_length)
+    plt.tick_params(axis='both', which='major', direction='out', length=major_tick_length)
 
     if levels is None:
         assert num_levels is not None, f"num_levels cannot be None when 'levels' is not provided."
@@ -172,9 +194,19 @@ def contour(
     for patch in v:
         v_patch = v[patch]
         if plot_type == 'contour':
-            plt.contour(
-                x[patch], y[patch], v_patch, levels=levels, linewidths=linewidth, linestyles=linestyle
-            )
+            if colors is None:
+                plt.contour(
+                    x[patch], y[patch], v_patch,
+                    levels=levels, linewidths=linewidth,
+                    linestyles=linestyles,
+                )
+            else:
+                plt.contour(
+                    x[patch], y[patch], v_patch,
+                    levels=levels, linewidths=linewidth,
+                    linestyles=linestyles,
+                    colors=colors,
+                )
         elif plot_type == 'contourf':
             VAL = v_patch
             VAL[VAL > levels[-1]] = levels[-1]
@@ -184,7 +216,7 @@ def contour(
             raise Exception(f"plot_type={plot_type} is wrong. Should be one of ('contour', 'contourf')")
 
     # --------------- title -----------------------------------------------------
-    if title is None:
+    if title is None or title is False:
         pass
     else:
         plt.title(title)

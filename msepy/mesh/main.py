@@ -4,6 +4,7 @@ r"""
 import numpy as np
 
 from tools.frozen import Frozen
+from tools.quadrature import Quadrature
 from msepy.manifold.main import MsePyManifold
 from msepy.mesh.elements.main import MsePyMeshElements
 from msepy.mesh.coordinate_transformation import MsePyMeshCoordinateTransformation
@@ -41,6 +42,10 @@ class MsePyMesh(Frozen):
         self._topology = None
         self._face_dict = dict()
         self._freeze()
+
+    def info(self):
+        """info self."""
+        print(f"-{self.abstract._sym_repr}: {self.elements._num} elements.")
 
     @property
     def abstract(self):
@@ -170,7 +175,7 @@ class MsePyMesh(Frozen):
 
         layout = dict()
         assert isinstance(element_layout, dict), f"element_layout must eventually be parsed as a dict!"
-        for i in element_layout:  # element layout for i# region.
+        for i in element_layout:  # element layout for #i region.
             layout_i = element_layout[i]
             assert layout_i is not None and len(layout_i) == self.ndim, \
                 f"element_layout for region #{i} = {layout_i} is illegal"
@@ -182,8 +187,13 @@ class MsePyMesh(Frozen):
                         f"element_layout of region #{i} = {layout_i} is illegal."
                     layout_ij = np.array([1/layout_ij for i in range(int(layout_ij))])
 
+                elif isinstance(layout_ij, str):
+
+                    layout_ij = self._parse_str_element_layout(layout_ij)
+
                 else:
-                    assert np.ndim(layout_ij) == 1, f"element_layout of region #{i} = {layout_i} is illegal."
+                    assert np.ndim(layout_ij) == 1, \
+                        f"element_layout of region #{i} = {layout_i} is illegal."
                     for _ in layout_ij:
                         assert isinstance(_, (int, float)) and _ > 0, \
                             f"element_layout of region #{i} = {layout_i} is illegal."
@@ -197,6 +207,23 @@ class MsePyMesh(Frozen):
             layout[i] = _temp
 
         self.elements._generate_elements_from_layout(layout)
+
+    def _parse_str_element_layout(self, str_layout_indicator):
+        """"""
+        indicator, degree = str_layout_indicator.split('-')
+        degree = int(degree)
+        assert degree > 0, f'degree = {degree} for indicator {str_layout_indicator} is wrong.'
+        if indicator == 'Lobatto':
+            quad = Quadrature(degree, category=indicator)
+            nodes = quad.quad_nodes
+            layout = np.diff(nodes)
+            layout /= np.sum(layout)
+
+        else:
+            raise NotImplementedError(
+                f"cannot understand indicator {str_layout_indicator}."
+            )
+        return layout
 
     def _config_dependent_boundary_section_meshes(self):
         """"""

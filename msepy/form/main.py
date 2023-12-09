@@ -343,7 +343,7 @@ class MsePyRootForm(Frozen):
                 f"etype={etype} is not implemented."
             )
 
-    def norm(self, t=None, quad_degree=None, **kwargs):
+    def norm(self, t=None, quad_degree=None, diff_to_t=None, **kwargs):
         """norm"""
         if t is None:
             t = self.cochain.newest
@@ -351,7 +351,12 @@ class MsePyRootForm(Frozen):
             assert isinstance(t, (int, float)), f"t={t} type wrong!"
         local_cochain = self.cochain[t].local
         degree = self.degree
-        return self.space.norm(local_cochain, degree, quad_degree=quad_degree, **kwargs)
+        if diff_to_t is None:
+            return self.space.norm(local_cochain, degree, quad_degree=quad_degree, **kwargs)
+        else:
+            diff_cochain = self.cochain[diff_to_t].local
+            diff_cochain = diff_cochain - local_cochain
+            return self.space.norm(diff_cochain, degree, quad_degree=quad_degree, **kwargs)
 
     @property
     def coboundary(self):

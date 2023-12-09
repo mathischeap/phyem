@@ -25,6 +25,8 @@ class MsePyRootFormVisualizeMatplot(Frozen):
 
         if title is None:
             title = r'$t=%.3f$' % self._f.visualize._t  # this visualize is for cochain @ t
+        elif title is False:
+            title = None
         else:
             pass
 
@@ -82,12 +84,12 @@ class MsePyRootFormVisualizeMatplot(Frozen):
             **kwargs
     ):
         """"""
-        samples = 10000 * sampling_factor
+        samples = 20000 * sampling_factor
         samples = int((np.ceil(samples / self._mesh.elements._num))**(1/self._mesh.m))
         if samples > 75:
             samples = 75
-        elif samples < 5:
-            samples = 5
+        elif samples < 7:
+            samples = 7
         else:
             samples = int(samples)
 

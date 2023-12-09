@@ -67,8 +67,8 @@ class MsePyMeshVisualizeMatplot(Frozen):
         if esd in (1, 2):  # we use 2-d plot.
             fig, ax = plt.subplots(figsize=figsize)
             ax.set_aspect(aspect)
-            ax.spines['top'].set_visible(False)
-            ax.spines['right'].set_visible(False)
+            ax.spines['top'].set_visible(True)
+            ax.spines['right'].set_visible(True)
             ax.spines['left'].set_visible(True)
             ax.spines['bottom'].set_visible(True)
             plt.xlabel(r"$x$", fontsize=labelsize)

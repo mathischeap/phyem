@@ -10,9 +10,9 @@ if './' not in sys.path:
 import numpy as np
 from scipy import sparse as sp_spa
 from src.config import RANK, MASTER_RANK, COMM
-from _MPI.generic.py.matrix.globalize.static import MPI_PY_Globalize_Static_Matrix
-from _MPI.generic.py.vector.globalize.static import MPI_PY_Globalize_Static_Vector
-from _MPI.generic.py.linear_system.globalize.solve import MPI_PY_Solve
+from phmpi.generic.py.matrix.globalize.static import MPI_PY_Globalize_Static_Matrix
+from phmpi.generic.py.vector.globalize.static import MPI_PY_Globalize_Static_Vector
+from phmpi.generic.py.linear_system.globalize.solve import MPI_PY_Solve
 
 
 if RANK != MASTER_RANK:

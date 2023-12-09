@@ -24,6 +24,10 @@ def __matplot__(
         # ticks
         tick_style: [] = "sci", xticks=None, yticks=None, tick_direction='in',
         tick_size=16, tick_pad=6, minor_tick_length=4, major_tick_length=8,
+
+        labelleft=True,
+        labelbottom=True,
+
         # legend
         legend_size=18, legend_local='best', legend_frame=False,
         xlim=None, ylim=None,
@@ -79,6 +83,8 @@ def __matplot__(
         The gap size between the ticks and the axes.
     minor_tick_length
     major_tick_length
+    labelleft
+    labelbottom
     legend_size
     legend_local
     legend_frame
@@ -109,6 +115,8 @@ def __matplot__(
     _, ax = plt.subplots(figsize=figsize)
     plt.gcf().subplots_adjust(left=left)
     plt.gcf().subplots_adjust(bottom=bottom)
+
+    plt.tick_params(labelleft=labelleft, labelbottom=labelbottom)
 
     # --------- default styles, colors, and labels -------------------------------------------------
 
