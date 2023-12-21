@@ -25,6 +25,7 @@ element_layout = [18, 6]
 
 t_max = 1
 steps = 200
+_dt_ = t_max / steps
 Re = 100
 
 manifold = ph.manifold(2, is_periodic=False)
@@ -62,14 +63,18 @@ pde.unknowns = [u, w, P]
 pde.bc.partition(r"\Gamma_{\perp}", r"\Gamma_P")
 pde.bc.define_bc(
     {
-        r"\Gamma_{\perp}": ph.trace(u),   # essential BC: norm velocity.
+        r"\Gamma_{\perp}": ph.trace(u),       # essential BC: norm velocity.
         r"\Gamma_P": ph.trace(ph.Hodge(P)),   # natural BC: total pressure.
     }
 )
 
 pde.pr(vc=True)
 
-wf = pde.test_with([Out1, Out0, Out2], sym_repr=[r'\tilde{v}', r'\tilde{w}', r'\tilde{q}'])
+wf = pde.test_with(
+    [Out1, Out0, Out2],
+    sym_repr=[r'\tilde{v}', r'\tilde{w}', r'\tilde{q}']
+)
+
 wf = wf.derive.integration_by_parts('0-3')
 wf = wf.derive.integration_by_parts('1-1')
 wf = wf.derive.delete('1-2')   # since the natural BC for tangential velocity is 0 all-over the boundary
@@ -112,7 +117,7 @@ wf = wf.derive.split(
         (w @ ts['k-1']).cross_product(u @ ts['k-1']),
         (w @ ts['k-1']).cross_product(u @ ts['k']),
         (w @ ts['k']).cross_product(u @ ts['k-1']),
-        (w @ ts['k']).cross_product(u @ ts['k'])
+        (w @ ts['k']).cross_product(u @ ts['k']),
     ],
     ['+', '+', '+', '+'],
     factors=[1/4, 1/4, 1/4, 1/4],
@@ -142,6 +147,7 @@ term = wf.terms['0-2']
 term.add_extra_info(
     {'known-cross-product-form': u @ ts['k-1']}
 )
+
 term = wf.terms['0-7']
 term.add_extra_info(
     {'known-cross-product-form': [w @ ts['k-1'], u @ ts['k-1']]}
@@ -183,24 +189,30 @@ for msh in msepy.base['meshes']:
     msh = msepy.base['meshes'][msh]
     msh.visualize()
 
-ts.specify('constant', [0, t_max, steps*2], 2)
 
+# noinspection PyUnusedLocal
 def bc_u0(x, y):
     """"""
     return 1 + np.zeros_like(x)
 
+
+# noinspection PyUnusedLocal
 def bc_u1(x, y):
     """"""
     return np.zeros_like(x)
 
+
+# noinspection PyUnusedLocal
 def bc_u(t, x, y):
     """"""
     return ph.tools.genpiecewise(
         [x, y],
-        [x < 0.1, x>=0.1],
+        [x < 0.1, x >= 0.1],
         [bc_u0, bc_u1]
     )
 
+
+# noinspection PyUnusedLocal
 def bc_v(t, x, y):
     """"""
     return np.zeros_like(x)
@@ -209,6 +221,7 @@ def bc_v(t, x, y):
 bc_velocity = ph.vc.vector(bc_u, bc_v)
 
 
+# noinspection PyUnusedLocal
 def zero_function(t, x, y):
     """"""
     return np.zeros_like(x)
@@ -224,6 +237,22 @@ Rn2.value = 1 / (2 * Re)
 w = obj['w']
 u = obj['u']
 P = obj['P']
+
+# ts.specify('constant', [0, t_max, steps*2], 2)
+
+
+def time_step_function():
+    """"""
+    u_norm_residual = u.norm_residual()
+    if u_norm_residual == np.nan:
+        return _dt_
+    elif u_norm_residual > 1e-3:
+        return _dt_
+    else:
+        return 0.5 * _dt_
+
+
+ts.specify('function', 0, time_step_function)
 
 w.cf = init_vorticity
 u.cf = init_velocity

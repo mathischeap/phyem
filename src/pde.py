@@ -812,10 +812,13 @@ class PartialDifferentialEquations(Frozen):
 
         # parse test spaces from forms if forms provided.
         _test_spaces = list()
+        from src.form.main import Form
+
         for i, obj in enumerate(test_spaces):
-            if obj.__class__.__name__ == 'Form':
+            if isinstance(obj, Form):
                 _test_spaces.append(obj.space)
             else:
+                # noinspection PyUnresolvedReferences
                 assert obj._is_space(), f"test_spaces[{i}] is not a space."
                 _test_spaces.append(obj)
         assert len(_test_spaces) == len(self), \

@@ -126,7 +126,8 @@ class AbstractTimeSequence(Frozen):
 
     def pr(self, *args, **kwargs):
         """We print this time sequence."""
-        assert self._object is not None, f"to print a time sequence, first specify it to a particular one."
+        assert self._object is not None, \
+            f"to print a time sequence, first specify it to a particular one."
         return self._object.pr(*args, **kwargs)
 
 
@@ -159,6 +160,81 @@ class TimeSequence(Frozen):
     def _is_time_sequence():
         """A private tag."""
         return True
+
+    def info(self):
+        raise Exception(f"{self} cannot be info-ed.")
+
+    def pr(self, **kwargs):
+        raise Exception(f'{self} cannot be printed.')
+
+
+class FunctionTimeSequence(TimeSequence):
+    """
+
+    """
+
+    def __init__(self, t0, func, step_interval=1):
+        super().__init__()
+        self._t_0 = t0
+        self._melt()
+
+        self._step_interval = step_interval
+        self._step_sequence = [0, ]
+        self._time_sequence = [t0, ]
+        self._func = func
+        self._freeze()
+
+    def __repr__(self):
+        super_repr = super().__repr__().split('object')[1]
+        return f"<FunctionTimeSequence" + super_repr
+
+    def info(self):
+        """info myself in the console."""
+        if RANK == MASTER_RANK:
+            print(f" =function= t0:{self._t_0};"
+                  f" step_interval:{self._step_interval};"
+                  f" now@step{self._step_sequence[-1]},"
+                  f" time %.5f." % self._time_sequence[-1])
+        else:
+            pass
+
+    def __getitem__(self, k):
+        """"""
+        assert isinstance(k, (int, float)), f"specific time sequence must use number for time instant."
+        k = round(k, 8)
+        if k > self._step_sequence[-1]:
+            # looking for a time step ahead. We first make a new time instant ahead.
+            _new_time_step = round(self._step_sequence[-1] + self._step_interval, 8)
+            self._step_sequence.append(_new_time_step)
+            dt = self._func()
+            assert dt > 0, f"time interval must be larger than 0. Now it is {dt}."
+            self._time_sequence.append(self._time_sequence[-1] + dt)
+        else:
+            pass
+
+        if k in self._step_sequence:
+            index = self._step_sequence.index(k)
+            time = self._time_sequence[index]
+            return TimeInstant(time)
+        elif k > self._step_sequence[-1]:
+            raise TimeInstantError(f"t[{k}] is beyond the valid sequence.")
+        elif k < self._step_sequence[0]:
+            raise TimeInstantError(f"t[{k}] is lower than the initial time.")
+        else:
+            i = -2
+            while 1:
+                if k > self._step_sequence[i]:
+                    assert k < self._step_sequence[i+1], f'must be.'
+                    break
+                else:
+                    i -= 1
+            lower_step = self._step_sequence[i]
+            upper_step = self._step_sequence[i+1]
+            ratio = (k - lower_step) / (upper_step - lower_step)
+            lower_time = self._time_sequence[i]
+            upper_time = self._time_sequence[i+1]
+            time = lower_time + ratio * (upper_time - lower_time)
+            return TimeInstant(time)
 
 
 class ConstantTimeSequence(TimeSequence):
@@ -217,7 +293,7 @@ class ConstantTimeSequence(TimeSequence):
             <TimeInstant t=1.3333...
 
         """
-        assert isinstance(k, (int, float)), f"specific time sequence can not use number for time instant."
+        assert isinstance(k, (int, float)), f"specific time sequence must use number for time instant."
         time = self.t_0 + k * self._dt
         remainder = round(k % 1, 8)
         if time < self.t_0 - self._dt:  # leave a dt as lower margin
@@ -243,6 +319,8 @@ class ConstantTimeSequence(TimeSequence):
         if RANK == MASTER_RANK:
             print(f" =constant= {self._t_0} -> ... -> {self._k_max} * " +
                   f"%.5f -> ... -> {self.t_max}." % self._dt)
+        else:
+            pass
 
     def pr(self, obj=None):
         """print this constant interval time sequence together with an object."""
@@ -439,9 +517,11 @@ class AbstractTimeInstant(Frozen):
         for i, _ in enumerate(k):
             if _.isalpha():
                 if i > 0:
-                    assert not k[i-1].isalpha(), f"abstract time {k} illegal. A variable must contain one alpha-beta."
+                    assert not k[i-1].isalpha(), \
+                        f"abstract time {k} illegal. A variable must contain one alpha-beta."
                 if i < length - 1:
-                    assert not k[i+1].isalpha(), f"abstract time {k} illegal. A variable must contain one alpha-beta."
+                    assert not k[i+1].isalpha(), \
+                        f"abstract time {k} illegal. A variable must contain one alpha-beta."
                 self._kwarg_keys.append(_)
         return k
 
@@ -614,6 +694,7 @@ class AbstractTimeInterval(Frozen):
 
 _implemented_specific_time_sequences = {
     'constant': ConstantTimeSequence,
+    'function': FunctionTimeSequence,
 }
 
 
@@ -640,6 +721,21 @@ if __name__ == '__main__':
     at.specify('constant', [0, 100, 100], 2)
     # for k in range(1,10):
 
-    print(t0, t0._kwarg_keys, t0()())
+    # print(t1(k=1))
 
     # print(ti.start(k=1)(), ti(k=1)(), t1(k=50)())
+    from random import random
+
+    def func():
+        """"""
+        dt = random()
+        return dt
+
+
+    at = AbstractTimeSequence()
+    t1 = at['k']
+    at.specify('function', 0, func)
+
+    print(t1(k=1)())
+    print(t1(k=2)())
+    print(t1(k=3)(), t1(k=2.5)())

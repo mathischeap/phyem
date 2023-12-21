@@ -25,7 +25,7 @@ class BoundaryCondition(Frozen):
             pass
 
         # keys: boundary_section_sym_repr, values: the given form on this boundary section.
-        self._valid_bcs: Dict[str] = dict()
+        self._valid_bcs: Dict = dict()
         self._freeze()
 
     def partition(self, *sym_reprs, config_name=None):

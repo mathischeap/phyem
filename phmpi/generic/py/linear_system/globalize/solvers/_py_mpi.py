@@ -27,7 +27,7 @@ class _PY_MPI_solvers(Frozen):
 
 def _gmres(
         A, b, x0,
-        m=75, maxiter=25, atol=1e-4
+        restart=75, maxiter=25, atol=1e-4
 ):
     """
 
@@ -36,8 +36,7 @@ def _gmres(
     A
     b
     x0
-    m :
-        Another name of `restart`.
+    restart
     maxiter
     atol
 
@@ -48,7 +47,6 @@ def _gmres(
     info
 
     """
-    restart = m
     local_ind = list()
     for i in range(restart):
         if (i % SIZE) == RANK:
@@ -213,7 +211,7 @@ def _gmres(
 
 def _lgmres(
         A, b, x0,
-        m=75, k=15, maxiter=25, atol=1e-4,
+        inner_m=75, outer_k=15, maxiter=25, atol=1e-4,
 ):
     """
 
@@ -222,8 +220,8 @@ def _lgmres(
     A
     b
     x0
-    m
-    k
+    inner_m
+    outer_k
     maxiter
     atol
 
@@ -234,8 +232,8 @@ def _lgmres(
     info
 
     """
-    _m_, _k_ = m, k
-    restart = m + k
+    _m_, _k_ = inner_m, outer_k
+    restart = inner_m + outer_k
 
     local_ind = list()
     for i in range(restart):
@@ -309,7 +307,9 @@ def _lgmres(
             BETA = BETA[:1] + BETA[-2:]
         BETA.append(beta)
 
-        JUDGE, stop_iteration, info, JUDGE_explanation = _check_stop_criterion_(BETA, atol, ITER, maxiter)
+        JUDGE, stop_iteration, info, JUDGE_explanation = _check_stop_criterion_(
+            BETA, atol, ITER, maxiter)
+
         if stop_iteration:
             break
         else:

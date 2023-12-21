@@ -200,13 +200,15 @@ class MsePyRootForm(Frozen):
         sym_repr = str(hash(random() + time()))      # random sym_repr <-- important, do not try to print its repr
         lin_repr = str(hash(random() + time() + 2))  # random lin_repr <-- important, do not try to print its repr
         # The below abstract root-form is not recorded.
-        ab_f = self.abstract.__class__(ab_space, sym_repr, lin_repr, True, update_cache=False)
+        ab_f = self.abstract.__class__(
+            ab_space, sym_repr, lin_repr, True, update_cache=False
+        )
         ab_f.degree = self.degree
         f = self.__class__(ab_f)
         return f
 
     def __sub__(self, other):
-        """self - other"""
+        """self - other."""
         if other.__class__ is self.__class__:
 
             assert other.mesh == self.mesh, f"meshes do not match"
@@ -239,7 +241,7 @@ class MsePyRootForm(Frozen):
             raise NotImplementedError(f"{other}")
 
     def __add__(self, other):
-        """self - other"""
+        """self + other."""
         if other.__class__ is self.__class__:
 
             assert other.mesh == self.mesh, f"meshes do not match"
@@ -319,13 +321,13 @@ class MsePyRootForm(Frozen):
 
     @property
     def visualize(self):
-        """visualize"""
+        """visualize."""
         if self._visualize is None:
             self._visualize = MsePyRootFormVisualize(self)
         return self._visualize
 
     def error(self, t=None, etype='L2', quad_degree=None, **kwargs):
-        """error"""
+        """error."""
         if t is None:
             t = self.cochain.newest
         else:
@@ -344,7 +346,7 @@ class MsePyRootForm(Frozen):
             )
 
     def norm(self, t=None, quad_degree=None, diff_to_t=None, **kwargs):
-        """norm"""
+        """norm."""
         if t is None:
             t = self.cochain.newest
         else:
@@ -358,16 +360,54 @@ class MsePyRootForm(Frozen):
             diff_cochain = diff_cochain - local_cochain
             return self.space.norm(diff_cochain, degree, quad_degree=quad_degree, **kwargs)
 
+    def norm_residual(self, from_time=None, to_time=None, **kwargs):
+        """"""
+        if to_time is None:
+            to_time = self.cochain.newest
+        else:
+            pass
+
+        if from_time is None:
+            all_cochain_times = list(self.cochain._tcd.keys())
+            all_cochain_times.sort()
+            if len(all_cochain_times) == 0:
+                from_time = None
+            elif len(all_cochain_times) == 1:
+                from_time = all_cochain_times[0]
+            else:
+                from_time = all_cochain_times[-2]
+        else:
+            pass
+
+        if from_time is None:
+            assert to_time is None, f"cochain must be of no cochain."
+            return np.nan  # we return np.nan.
+        else:
+            assert isinstance(from_time, (int, float)), f"from_time = {from_time} is wrong."
+            assert isinstance(to_time, (int, float)), f"to_time = {to_time} is wrong."
+
+            if from_time == to_time:
+                if len(self.cochain._tcd) == 1:
+                    return np.nan  # initially, we do not return 0. Instead, we return nan.
+                else:
+                    return 0
+            else:
+                from_cochain = self.cochain[from_time].local
+                to_cochain = self.cochain[to_time].local
+                diff_cochain = from_cochain - to_cochain
+                norm = self.space.norm(diff_cochain, self.degree, **kwargs)
+                return norm
+
     @property
     def coboundary(self):
-        """coboundary"""
+        """coboundary."""
         if self._coboundary is None:
             self._coboundary = MsePyRootFormCoboundary(self)
         return self._coboundary
 
     @property
     def matrix(self):
-        """matrix"""
+        """matrix."""
         if self._matrix is None:
             self._matrix = MsePyRootFormMatrix(self)
         return self._matrix
@@ -419,6 +459,7 @@ class MsePyRootForm(Frozen):
 
     @property
     def boundary_integrate(self):
+        """"""
         return self._boundary_integrate
 
     def reconstruction_matrix(self, *meshgrid_xi_et_sg, element_range=None):
@@ -476,7 +517,9 @@ if __name__ == '__main__':
     manifold = obj['manifold']
     mesh = obj['mesh']
 
-    msepy.config(manifold)('crazy', c=0.0, bounds=[[0, 2] for _ in range(space_dim)], periodic=False)
+    msepy.config(manifold)(
+        'crazy', c=0.0, bounds=[[0, 2] for _ in range(space_dim)], periodic=False
+    )
     msepy.config(mesh)(15)
 
     f0i = obj['f0i']
