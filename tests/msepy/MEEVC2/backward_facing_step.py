@@ -23,9 +23,9 @@ ph.config.set_pr_cache(True)
 N = 2
 element_layout = [18, 6]
 
-t_max = 1
-steps = 200
-_dt_ = t_max / steps
+# t_max = 1
+# steps = 200
+t0 = 0
 Re = 100
 
 manifold = ph.manifold(2, is_periodic=False)
@@ -240,19 +240,29 @@ P = obj['P']
 
 # ts.specify('constant', [0, t_max, steps*2], 2)
 
+_ = {
+    'big_step': True
+}
+
 
 def time_step_function():
     """"""
     u_norm_residual = u.norm_residual()
-    if u_norm_residual == np.nan:
-        return _dt_
-    elif u_norm_residual > 1e-3:
-        return _dt_
+
+    if _['big_step']:
+
+        if u_norm_residual < 1e-6:
+            _['big_step'] = False
+        else:
+            pass
+
+    if _['big_step']:
+        return 1/100
     else:
-        return 0.5 * _dt_
+        return 1/200
 
 
-ts.specify('function', 0, time_step_function)
+ts.specify('function', t0, time_step_function)
 
 w.cf = init_vorticity
 u.cf = init_velocity
@@ -274,7 +284,7 @@ nls.bc.config(boundary_perp)(bc_velocity)  # essential
 nls.bc.config(boundary_P)(bc_P)  # essential
 
 
-for step in range(1, steps+1):
+for step in range(1, 99999999):
 
     s_nls = nls(k=step)
     # s_nls.customize.set_no_evaluation(-1)  # no need to do this since we have pressure boundary now.
@@ -292,3 +302,8 @@ for step in range(1, steps+1):
     )
 
     msepy.info(rf"N={N}", s_nls.solve.message)
+
+    u_norm_residual = u.norm_residual()
+
+    if u_norm_residual < 5e-7:
+        break

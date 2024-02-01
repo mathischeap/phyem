@@ -11,9 +11,9 @@ from src.spaces.main import *
 from src.form.main import _global_root_forms_lin_dict
 from msepy.tools.matrix.static.local import MsePyStaticLocalMatrix
 
-from msepy.form.tools.operations.nonlinear.AxB_ip_C import _AxBipC
-from msepy.form.tools.operations.nonlinear.dA_ip_BtpC import __dA_ip_BtpC__
-from msepy.form.tools.operations.nonlinear.A__ip__B_tp_C import _A__ip__B_tp_C_
+from msepy.form.addons.noc.diff_3_entries_AxB_ip_C import _AxBipC
+from msepy.form.addons.noc.diff_3_entries_dA_ip_BtpC import __dA_ip_BtpC__
+from msepy.form.addons.noc.diff_3_entries_A__ip__B_tp_C import _A__ip__B_tp_C_
 
 from msepy.tools.vector.dynamic import MsePyDynamicLocalVector
 from msepy.tools.vector.static.local import MsePyStaticLocalVector

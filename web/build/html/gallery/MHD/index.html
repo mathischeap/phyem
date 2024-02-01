@@ -1,5 +1,4 @@
 
-
 <!DOCTYPE html>
 
 
@@ -29,20 +28,20 @@
 <link rel="preload" as="font" type="font/woff2" crossorigin href="../../_static/vendor/fontawesome/6.1.2/webfonts/fa-brands-400.woff2" />
 <link rel="preload" as="font" type="font/woff2" crossorigin href="../../_static/vendor/fontawesome/6.1.2/webfonts/fa-regular-400.woff2" />
 
-    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=a746c00c" />
     <link rel="stylesheet" href="../../_static/styles/sphinx-book-theme.css?digest=14f4ca6b54d191a8c7657f6c759bf11a5fb86285" type="text/css" />
-    <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css?v=76b2166b" />
   
   <!-- Pre-loaded scripts that we'll load fully later -->
   <link rel="preload" as="script" href="../../_static/scripts/bootstrap.js?digest=ac02cc09edc035673794" />
 <link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=ac02cc09edc035673794" />
   <script src="../../_static/vendor/fontawesome/6.1.2/js/all.min.js?digest=ac02cc09edc035673794"></script>
 
-    <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
-    <script src="../../_static/doctools.js"></script>
-    <script src="../../_static/sphinx_highlight.js"></script>
-    <script src="../../_static/clipboard.min.js"></script>
-    <script src="../../_static/copybutton.js"></script>
+    <script src="../../_static/documentation_options.js?v=c73c0f3e"></script>
+    <script src="../../_static/doctools.js?v=888ff710"></script>
+    <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
+    <script src="../../_static/copybutton.js?v=f281be69"></script>
     <script src="../../_static/scripts/sphinx-book-theme.js?digest=5a5c038af52cf7bc1a1ec88eea08e6366ee68824"></script>
     <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
     <script>window.MathJax = {"tex": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true}, "options": {"ignoreHtmlClass": "tex2jax_ignore|mathjax_ignore|document", "processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
@@ -452,7 +451,7 @@ document.write(`
                 <article class="bd-article" role="main">
                   
   <section id="mhd">
-<span id="gallery-mhd"></span><h1>🧲 MHD<a class="headerlink" href="#mhd" title="Permalink to this heading">#</a></h1>
+<span id="gallery-mhd"></span><h1>🧲 MHD<a class="headerlink" href="#mhd" title="Link to this heading">#</a></h1>
 <blockquote>
 <div><p><strong>MHD (Magnetohydrodynamics)</strong> (also called <strong>magneto-fluid dynamics</strong> or <strong>hydromagnetics</strong>) is a model of
 electrically conducting fluids that treats all interpenetrating particle species together as a single continuous
@@ -461,12 +460,12 @@ metals and has applications in numerous fields including geophysics, astrophysic
 <p class="attribution">—wikipedia</p>
 </div></blockquote>
 <section id="incompressible-mhd">
-<h2>Incompressible MHD<a class="headerlink" href="#incompressible-mhd" title="Permalink to this heading">#</a></h2>
+<h2>Incompressible MHD<a class="headerlink" href="#incompressible-mhd" title="Link to this heading">#</a></h2>
 <p>In a connected, bounded domain <span class="math notranslate nohighlight">\(\Omega \subset \mathbb{R}^{d}\)</span>, <span class="math notranslate nohighlight">\(d\in\left\lbrace2,3\right\rbrace\)</span> with
 Lipschitz boundary <span class="math notranslate nohighlight">\(\partial \Omega\)</span>, the <em>incompressible constant density magnetohydrodynamic</em>
 (or <em>simply incompressible MHD</em>) equations are given as</p>
 <div class="math notranslate nohighlight" id="equation-incompressiblemhd">
-<span class="eqno">(2)<a class="headerlink" href="#equation-incompressiblemhd" title="Permalink to this equation">#</a></span>\[\begin{split}\begin{equation}
+<span class="eqno">(2)<a class="headerlink" href="#equation-incompressiblemhd" title="Link to this equation">#</a></span>\[\begin{split}\begin{equation}
 \begin{aligned}
     \rho \left[ \partial_t\boldsymbol{u}^* + \left(\boldsymbol{u}^* \cdot \nabla\right)\boldsymbol{u}^* \right]
     - \tilde{\mu} \Delta \boldsymbol{u}^*  - \boldsymbol{j}^* \times \boldsymbol{B}^* + \nabla p^*
@@ -496,7 +495,7 @@ velocity <span class="math notranslate nohighlight">\(U\)</span>,
 and magnetic flux density <span class="math notranslate nohighlight">\(B\)</span>,
 a non-dimensional formulation of <a class="reference internal" href="#equation-incompressiblemhd">(2)</a> is</p>
 <div class="math notranslate nohighlight" id="equation-non-dimensional-mhd">
-<span class="eqno">(3)<a class="headerlink" href="#equation-non-dimensional-mhd" title="Permalink to this equation">#</a></span>\[\begin{split}\begin{equation}
+<span class="eqno">(3)<a class="headerlink" href="#equation-non-dimensional-mhd" title="Link to this equation">#</a></span>\[\begin{split}\begin{equation}
 \begin{aligned}
     \partial_t\boldsymbol{u} + \left(\boldsymbol{u} \cdot \nabla\right)\boldsymbol{u}
     - \mathrm{R}_f^{-1} \Delta \boldsymbol{u}  - \mathrm{A}_l^{-2}\boldsymbol{j} \times \boldsymbol{B} + \nabla p
@@ -519,7 +518,7 @@ being the kinematic viscosity) is the fluid Reynolds number,
 <span class="math notranslate nohighlight">\(P:=p+\frac{1}{2}\boldsymbol{u}\cdot \boldsymbol{u}\)</span>, <a class="reference internal" href="#equation-non-dimensional-mhd">(3)</a> can be written into the
 rotational form:</p>
 <div class="math notranslate nohighlight" id="equation-rotational-non-dimensional-mhd">
-<span class="eqno">(4)<a class="headerlink" href="#equation-rotational-non-dimensional-mhd" title="Permalink to this equation">#</a></span>\[\begin{split}\begin{equation}
+<span class="eqno">(4)<a class="headerlink" href="#equation-rotational-non-dimensional-mhd" title="Link to this equation">#</a></span>\[\begin{split}\begin{equation}
 \begin{aligned}
     \partial_t\boldsymbol{u} + \boldsymbol{\omega}\times\boldsymbol{u}
     - \mathrm{R}_f^{-1} \Delta \boldsymbol{u}  - \mathrm{A}_l^{-2}\boldsymbol{j} \times \boldsymbol{B} + \nabla P
@@ -533,7 +532,7 @@ rotational form:</p>
 \end{equation}\end{split}\]</div>
 </section>
 <section id="numerical-examples">
-<h2>Numerical Examples<a class="headerlink" href="#numerical-examples" title="Permalink to this heading">#</a></h2>
+<h2>Numerical Examples<a class="headerlink" href="#numerical-examples" title="Link to this heading">#</a></h2>
 <p>For numerical examples of MHD, see</p>
 <div class="toctree-wrapper compound">
 <ul>
@@ -630,7 +629,7 @@ By Andrea Brugnoli, Ramy Rashad, Stefano Stramigioli, Yi Zhang and more
   <div class="footer-item">
     
 <div class="extra_footer">
-  <div>Last updated on December 02, 2023, 09:46:39, W. Europe Standard Time</div>
+  <div>Last updated on February 01, 2024, 22:20:29, 中国标准时间</div>
 </div>
   </div>
   

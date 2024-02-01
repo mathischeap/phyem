@@ -1,5 +1,4 @@
 
-
 <!DOCTYPE html>
 
 
@@ -28,20 +27,20 @@
 <link rel="preload" as="font" type="font/woff2" crossorigin href="../../../_static/vendor/fontawesome/6.1.2/webfonts/fa-brands-400.woff2" />
 <link rel="preload" as="font" type="font/woff2" crossorigin href="../../../_static/vendor/fontawesome/6.1.2/webfonts/fa-regular-400.woff2" />
 
-    <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=a746c00c" />
     <link rel="stylesheet" href="../../../_static/styles/sphinx-book-theme.css?digest=14f4ca6b54d191a8c7657f6c759bf11a5fb86285" type="text/css" />
-    <link rel="stylesheet" type="text/css" href="../../../_static/copybutton.css" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/copybutton.css?v=76b2166b" />
   
   <!-- Pre-loaded scripts that we'll load fully later -->
   <link rel="preload" as="script" href="../../../_static/scripts/bootstrap.js?digest=ac02cc09edc035673794" />
 <link rel="preload" as="script" href="../../../_static/scripts/pydata-sphinx-theme.js?digest=ac02cc09edc035673794" />
   <script src="../../../_static/vendor/fontawesome/6.1.2/js/all.min.js?digest=ac02cc09edc035673794"></script>
 
-    <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js"></script>
-    <script src="../../../_static/doctools.js"></script>
-    <script src="../../../_static/sphinx_highlight.js"></script>
-    <script src="../../../_static/clipboard.min.js"></script>
-    <script src="../../../_static/copybutton.js"></script>
+    <script src="../../../_static/documentation_options.js?v=c73c0f3e"></script>
+    <script src="../../../_static/doctools.js?v=888ff710"></script>
+    <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../../_static/clipboard.min.js?v=a7894cd8"></script>
+    <script src="../../../_static/copybutton.js?v=f281be69"></script>
     <script src="../../../_static/scripts/sphinx-book-theme.js?digest=5a5c038af52cf7bc1a1ec88eea08e6366ee68824"></script>
     <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
     <script>DOCUMENTATION_OPTIONS.pagename = '_modules/src/wf/derive';</script>
@@ -395,14 +394,18 @@ document.write(`
 <span class="kn">from</span> <span class="nn">copy</span> <span class="kn">import</span> <span class="n">deepcopy</span>
 
 
-<div class="viewcode-block" id="WfDerive"><a class="viewcode-back" href="../../../tutorial/docs/wf.html#src.wf.main.WfDerive">[docs]</a><span class="k">class</span> <span class="nc">WfDerive</span><span class="p">(</span><span class="n">Frozen</span><span class="p">):</span>
+<div class="viewcode-block" id="WfDerive">
+<a class="viewcode-back" href="../../../tutorial/docs/wf.html#src.wf.main.WfDerive">[docs]</a>
+<span class="k">class</span> <span class="nc">WfDerive</span><span class="p">(</span><span class="n">Frozen</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;&quot;&quot;&quot;</span>
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">wf</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_wf</span> <span class="o">=</span> <span class="n">wf</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_freeze</span><span class="p">()</span>
 
-<div class="viewcode-block" id="WfDerive.replace"><a class="viewcode-back" href="../../../tutorial/docs/wf.html#src.wf.main.WfDerive.replace">[docs]</a>    <span class="k">def</span> <span class="nf">replace</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">index</span><span class="p">,</span> <span class="n">terms</span><span class="p">,</span> <span class="n">signs</span><span class="p">):</span>
+<div class="viewcode-block" id="WfDerive.replace">
+<a class="viewcode-back" href="../../../tutorial/docs/wf.html#src.wf.main.WfDerive.replace">[docs]</a>
+    <span class="k">def</span> <span class="nf">replace</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">index</span><span class="p">,</span> <span class="n">terms</span><span class="p">,</span> <span class="n">signs</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Replace the term indicated by ``index`` by ``terms`` of ``signs``.</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -441,6 +444,7 @@ document.write(`
         <span class="n">new_wf</span><span class="o">.</span><span class="n">_bc</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_wf</span><span class="o">.</span><span class="n">_bc</span>   <span class="c1"># pass the bc</span>
 
         <span class="k">return</span> <span class="n">new_wf</span></div>
+
 
     <span class="k">def</span> <span class="nf">_parse_new_weak_formulation_dict</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">new_term_dict</span><span class="p">,</span> <span class="n">new_sign_dict</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;&quot;&quot;&quot;</span>
@@ -485,7 +489,9 @@ document.write(`
 
         <span class="k">return</span> <span class="n">term_dict</span><span class="p">,</span> <span class="n">sign_dict</span>
 
-<div class="viewcode-block" id="WfDerive.rearrange"><a class="viewcode-back" href="../../../tutorial/docs/wf.html#src.wf.main.WfDerive.rearrange">[docs]</a>    <span class="k">def</span> <span class="nf">rearrange</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">rearrangement</span><span class="p">):</span>
+<div class="viewcode-block" id="WfDerive.rearrange">
+<a class="viewcode-back" href="../../../tutorial/docs/wf.html#src.wf.main.WfDerive.rearrange">[docs]</a>
+    <span class="k">def</span> <span class="nf">rearrange</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">rearrangement</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Rearrange the terms.&quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">rearrangement</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
             <span class="k">pass</span>
@@ -558,7 +564,7 @@ document.write(`
                         <span class="k">else</span><span class="p">:</span>
                             <span class="n">_j</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_wf</span><span class="o">.</span><span class="n">_parse_index</span><span class="p">(</span><span class="n">target_index</span><span class="p">)[</span><span class="mi">1</span><span class="p">]</span>
 
-                            <span class="k">if</span> <span class="n">_j</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>  <span class="c1"># the target term is also at left.</span>
+                            <span class="k">if</span> <span class="n">_j</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>    <span class="c1"># the target term is also at left.</span>
                                 <span class="k">pass</span>
                             <span class="k">elif</span> <span class="n">_j</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>  <span class="c1"># the target term is at opposite side, i.e., right</span>
                                 <span class="n">sign</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_switch_sign</span><span class="p">(</span><span class="n">sign</span><span class="p">)</span>
@@ -596,8 +602,9 @@ document.write(`
 
         <span class="n">new_wf</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_wf</span><span class="o">.</span><span class="vm">__class__</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_wf</span><span class="o">.</span><span class="n">_test_forms</span><span class="p">,</span> <span class="n">term_sign_dict</span><span class="o">=</span><span class="p">[</span><span class="n">term_dict</span><span class="p">,</span> <span class="n">sign_dict</span><span class="p">])</span>
         <span class="n">new_wf</span><span class="o">.</span><span class="n">unknowns</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_wf</span><span class="o">.</span><span class="n">unknowns</span>   <span class="c1"># pass the unknowns</span>
-        <span class="n">new_wf</span><span class="o">.</span><span class="n">_bc</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_wf</span><span class="o">.</span><span class="n">_bc</span>   <span class="c1"># pass the bc</span>
+        <span class="n">new_wf</span><span class="o">.</span><span class="n">_bc</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_wf</span><span class="o">.</span><span class="n">_bc</span>             <span class="c1"># pass the bc</span>
         <span class="k">return</span> <span class="n">new_wf</span></div>
+
 
     <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">_switch_sign</span><span class="p">(</span><span class="n">sign</span><span class="p">):</span>
@@ -609,7 +616,9 @@ document.write(`
         <span class="k">else</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">Exception</span><span class="p">()</span>
 
-<div class="viewcode-block" id="WfDerive.switch_sign"><a class="viewcode-back" href="../../../tutorial/docs/wf.html#src.wf.main.WfDerive.switch_sign">[docs]</a>    <span class="k">def</span> <span class="nf">switch_sign</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">rows</span><span class="p">):</span>
+<div class="viewcode-block" id="WfDerive.switch_sign">
+<a class="viewcode-back" href="../../../tutorial/docs/wf.html#src.wf.main.WfDerive.switch_sign">[docs]</a>
+    <span class="k">def</span> <span class="nf">switch_sign</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">rows</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Switch the signs of all terms of equations ``rows``&quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">rows</span><span class="p">,</span> <span class="nb">int</span><span class="p">):</span>
             <span class="n">rows</span> <span class="o">=</span> <span class="p">[</span><span class="n">rows</span><span class="p">,</span> <span class="p">]</span>
@@ -644,25 +653,36 @@ document.write(`
             <span class="n">term_sign_dict</span><span class="o">=</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_wf</span><span class="o">.</span><span class="n">_term_dict</span><span class="p">,</span> <span class="n">new_sign_dict</span><span class="p">]</span>
         <span class="p">)</span>
         <span class="n">new_wf</span><span class="o">.</span><span class="n">unknowns</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_wf</span><span class="o">.</span><span class="n">unknowns</span>   <span class="c1"># pass the unknowns</span>
-        <span class="n">new_wf</span><span class="o">.</span><span class="n">_bc</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_wf</span><span class="o">.</span><span class="n">_bc</span>   <span class="c1"># pass the bc</span>
+        <span class="n">new_wf</span><span class="o">.</span><span class="n">_bc</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_wf</span><span class="o">.</span><span class="n">_bc</span>             <span class="c1"># pass the bc</span>
         <span class="k">return</span> <span class="n">new_wf</span></div>
 
-<div class="viewcode-block" id="WfDerive.integration_by_parts"><a class="viewcode-back" href="../../../tutorial/docs/wf.html#src.wf.main.WfDerive.integration_by_parts">[docs]</a>    <span class="k">def</span> <span class="nf">integration_by_parts</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">index</span><span class="p">):</span>
+
+<div class="viewcode-block" id="WfDerive.integration_by_parts">
+<a class="viewcode-back" href="../../../tutorial/docs/wf.html#src.wf.main.WfDerive.integration_by_parts">[docs]</a>
+    <span class="k">def</span> <span class="nf">integration_by_parts</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">index</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Do integration by parts for the term indicated by ``index``.&quot;&quot;&quot;</span>
         <span class="n">term</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_wf</span><span class="p">[</span><span class="n">index</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span>
         <span class="n">terms</span><span class="p">,</span> <span class="n">signs</span> <span class="o">=</span> <span class="n">term</span><span class="o">.</span><span class="n">_integration_by_parts</span><span class="p">()</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="n">index</span><span class="p">,</span> <span class="n">terms</span><span class="p">,</span> <span class="n">signs</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="WfDerive.split"><a class="viewcode-back" href="../../../tutorial/docs/wf.html#src.wf.main.WfDerive.split">[docs]</a>    <span class="k">def</span> <span class="nf">split</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">index</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+
+<div class="viewcode-block" id="WfDerive.split">
+<a class="viewcode-back" href="../../../tutorial/docs/wf.html#src.wf.main.WfDerive.split">[docs]</a>
+    <span class="k">def</span> <span class="nf">split</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">index</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Split the term indicated by ``index`` into multiple terms.&quot;&quot;&quot;</span>
         <span class="n">term</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_wf</span><span class="p">[</span><span class="n">index</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span>
         <span class="n">terms</span><span class="p">,</span> <span class="n">signs</span> <span class="o">=</span> <span class="n">term</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="n">index</span><span class="p">,</span> <span class="n">terms</span><span class="p">,</span> <span class="n">signs</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="WfDerive.delete"><a class="viewcode-back" href="../../../tutorial/docs/wf.html#src.wf.main.WfDerive.delete">[docs]</a>    <span class="k">def</span> <span class="nf">delete</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">index</span><span class="p">):</span>
+
+<div class="viewcode-block" id="WfDerive.delete">
+<a class="viewcode-back" href="../../../tutorial/docs/wf.html#src.wf.main.WfDerive.delete">[docs]</a>
+    <span class="k">def</span> <span class="nf">delete</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">index</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Delete the term indicated by ``index``.&quot;&quot;&quot;</span>
         <span class="n">wf</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="n">index</span><span class="p">,</span> <span class="p">[],</span> <span class="p">[])</span>
-        <span class="k">return</span> <span class="n">wf</span></div></div>
+        <span class="k">return</span> <span class="n">wf</span></div>
+</div>
+
 </pre></div>
 
                 </article>
@@ -714,7 +734,7 @@ By Andrea Brugnoli, Ramy Rashad, Stefano Stramigioli, Yi Zhang and more
   <div class="footer-item">
     
 <div class="extra_footer">
-  <div>Last updated on December 02, 2023, 09:46:39, W. Europe Standard Time</div>
+  <div>Last updated on February 01, 2024, 22:20:29, 中国标准时间</div>
 </div>
   </div>
   

@@ -1,5 +1,4 @@
 
-
 <!DOCTYPE html>
 
 
@@ -29,20 +28,20 @@
 <link rel="preload" as="font" type="font/woff2" crossorigin href="../../_static/vendor/fontawesome/6.1.2/webfonts/fa-brands-400.woff2" />
 <link rel="preload" as="font" type="font/woff2" crossorigin href="../../_static/vendor/fontawesome/6.1.2/webfonts/fa-regular-400.woff2" />
 
-    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=a746c00c" />
     <link rel="stylesheet" href="../../_static/styles/sphinx-book-theme.css?digest=14f4ca6b54d191a8c7657f6c759bf11a5fb86285" type="text/css" />
-    <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css?v=76b2166b" />
   
   <!-- Pre-loaded scripts that we'll load fully later -->
   <link rel="preload" as="script" href="../../_static/scripts/bootstrap.js?digest=ac02cc09edc035673794" />
 <link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=ac02cc09edc035673794" />
   <script src="../../_static/vendor/fontawesome/6.1.2/js/all.min.js?digest=ac02cc09edc035673794"></script>
 
-    <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
-    <script src="../../_static/doctools.js"></script>
-    <script src="../../_static/sphinx_highlight.js"></script>
-    <script src="../../_static/clipboard.min.js"></script>
-    <script src="../../_static/copybutton.js"></script>
+    <script src="../../_static/documentation_options.js?v=c73c0f3e"></script>
+    <script src="../../_static/doctools.js?v=888ff710"></script>
+    <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
+    <script src="../../_static/copybutton.js?v=f281be69"></script>
     <script src="../../_static/scripts/sphinx-book-theme.js?digest=5a5c038af52cf7bc1a1ec88eea08e6366ee68824"></script>
     <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
     <script>window.MathJax = {"tex": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true}, "options": {"ignoreHtmlClass": "tex2jax_ignore|mathjax_ignore|document", "processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
@@ -467,18 +466,18 @@ document.write(`
                 <article class="bd-article" role="main">
                   
   <section id="pde">
-<span id="docs-pde"></span><h1><span class="section-number">4. </span>PDE<a class="headerlink" href="#pde" title="Permalink to this heading">#</a></h1>
+<span id="docs-pde"></span><h1><span class="section-number">4. </span>PDE<a class="headerlink" href="#pde" title="Link to this heading">#</a></h1>
 <aside class="topic">
 <p class="topic-title">Estimated reading time</p>
 <p>⏱️ 15 minutes</p>
 </aside>
-<span class="target" id="module-src.pde"></span><section id="initialization">
-<span id="pde-initialization"></span><h2><span class="section-number">4.1. </span>Initialization<a class="headerlink" href="#initialization" title="Permalink to this heading">#</a></h2>
+<section id="initialization">
+<span id="pde-initialization"></span><span id="module-src.pde"></span><h2><span class="section-number">4.1. </span>Initialization<a class="headerlink" href="#initialization" title="Link to this heading">#</a></h2>
 <p>To initialize/construct a PDE instance, call the method <code class="docutils literal notranslate"><span class="pre">ph.pde</span></code>,</p>
 <blockquote>
 <div><dl class="py function">
 <dt class="sig sig-object py" id="src.pde.pde">
-<span class="sig-name descname"><span class="pre">pde</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">expression</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">interpreter</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">terms_and_signs_dict</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/src/pde.html#pde"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#src.pde.pde" title="Permalink to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">pde</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">expression</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">interpreter</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">terms_and_signs_dict</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/src/pde.html#pde"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#src.pde.pde" title="Link to this definition">#</a></dt>
 <dd><p>A wrapper of the <code class="docutils literal notranslate"><span class="pre">__init__</span></code> method of <a class="reference internal" href="#src.pde.PartialDifferentialEquations" title="src.pde.PartialDifferentialEquations"><code class="xref py py-class docutils literal notranslate"><span class="pre">PartialDifferentialEquations</span></code></a>.</p>
 <p>To make a PDE instance, you can either input</p>
 <ul class="simple">
@@ -557,23 +556,23 @@ Therefore, alternatively we can use</p>
 <blockquote>
 <div><dl class="py class">
 <dt class="sig sig-object py" id="src.pde.PartialDifferentialEquations">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">PartialDifferentialEquations</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">expression</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">interpreter</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">terms_and_signs_dict</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/src/pde.html#PartialDifferentialEquations"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#src.pde.PartialDifferentialEquations" title="Permalink to this definition">#</a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">PartialDifferentialEquations</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">expression</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">interpreter</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">terms_and_signs_dict</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/src/pde.html#PartialDifferentialEquations"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#src.pde.PartialDifferentialEquations" title="Link to this definition">#</a></dt>
 <dd><p>The Partial Differential Equations class.</p>
 <dl class="py property">
 <dt class="sig sig-object py" id="src.pde.PartialDifferentialEquations.bc">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">bc</span></span><a class="headerlink" href="#src.pde.PartialDifferentialEquations.bc" title="Permalink to this definition">#</a></dt>
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">bc</span></span><a class="headerlink" href="#src.pde.PartialDifferentialEquations.bc" title="Link to this definition">#</a></dt>
 <dd><p>The boundary condition of the PDE.</p>
 </dd></dl>
 
 <dl class="py property">
 <dt class="sig sig-object py" id="src.pde.PartialDifferentialEquations.derive">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">derive</span></span><a class="headerlink" href="#src.pde.PartialDifferentialEquations.derive" title="Permalink to this definition">#</a></dt>
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">derive</span></span><a class="headerlink" href="#src.pde.PartialDifferentialEquations.derive" title="Link to this definition">#</a></dt>
 <dd><p>A wrapper all possible derivations to the PDE.</p>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="src.pde.PartialDifferentialEquations.pr">
-<span class="sig-name descname"><span class="pre">pr</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">indexing</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">figsize</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">(8,</span> <span class="pre">6)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">vc</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">title</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/src/pde.html#PartialDifferentialEquations.pr"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#src.pde.PartialDifferentialEquations.pr" title="Permalink to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">pr</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">indexing</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">figsize</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">(8,</span> <span class="pre">6)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">vc</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">title</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/src/pde.html#PartialDifferentialEquations.pr"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#src.pde.PartialDifferentialEquations.pr" title="Link to this definition">#</a></dt>
 <dd><p>Print the representation of the PDE.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -600,7 +599,7 @@ applied when it is the case. The default value is <code class="docutils literal 
 
 <dl class="py method">
 <dt class="sig sig-object py" id="src.pde.PartialDifferentialEquations.test_with">
-<span class="sig-name descname"><span class="pre">test_with</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">test_spaces</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">test_method</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'L2'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sym_repr</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/src/pde.html#PartialDifferentialEquations.test_with"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#src.pde.PartialDifferentialEquations.test_with" title="Permalink to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">test_with</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">test_spaces</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">test_method</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'L2'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sym_repr</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/src/pde.html#PartialDifferentialEquations.test_with"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#src.pde.PartialDifferentialEquations.test_with" title="Link to this definition">#</a></dt>
 <dd><p>Test the PDE with a set of spaces to obtain a weak formulation.</p>
 <dl class="field-list">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -626,7 +625,7 @@ The default value is <code class="docutils literal notranslate"><span class="pre
 
 <dl class="py property">
 <dt class="sig sig-object py" id="src.pde.PartialDifferentialEquations.unknowns">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">unknowns</span></span><a class="headerlink" href="#src.pde.PartialDifferentialEquations.unknowns" title="Permalink to this definition">#</a></dt>
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">unknowns</span></span><a class="headerlink" href="#src.pde.PartialDifferentialEquations.unknowns" title="Link to this definition">#</a></dt>
 <dd><p>Unknowns of the PDE.</p>
 </dd></dl>
 
@@ -655,7 +654,7 @@ you have input the correct differential form version of it, especially in 2-dime
 between vector calculus and differential form suffers from extra minus signs here and there.</p>
 </section>
 <section id="boundary-conditions">
-<span id="pde-bc"></span><h2><span class="section-number">4.2. </span>Boundary conditions<a class="headerlink" href="#boundary-conditions" title="Permalink to this heading">#</a></h2>
+<span id="pde-bc"></span><h2><span class="section-number">4.2. </span>Boundary conditions<a class="headerlink" href="#boundary-conditions" title="Link to this heading">#</a></h2>
 <p>The boundary condition setting of a PDE can be accessed through property <a class="reference internal" href="#src.pde.PartialDifferentialEquations.bc" title="src.pde.PartialDifferentialEquations.bc"><code class="xref py py-attr docutils literal notranslate"><span class="pre">PartialDifferentialEquations.bc</span></code></a>.
 To define boundary conditions for a PDE, we first need to identify boundary sections. We can define boundary
 sections by calling the <code class="docutils literal notranslate"><span class="pre">partition</span></code> method, for example,</p>
@@ -703,14 +702,14 @@ of <a class="reference internal" href="#src.pde.PartialDifferentialEquations.bc"
 </div>
 </section>
 <section id="derivations">
-<span id="pde-derivations"></span><h2><span class="section-number">4.3. </span>Derivations<a class="headerlink" href="#derivations" title="Permalink to this heading">#</a></h2>
+<span id="pde-derivations"></span><h2><span class="section-number">4.3. </span>Derivations<a class="headerlink" href="#derivations" title="Link to this heading">#</a></h2>
 <p>We can make changes to (for example, delete, replace or split a term in) the initialized PDE through property
 <code class="docutils literal notranslate"><span class="pre">pde.derive</span></code> which gives an instance of <a class="reference internal" href="#src.pde.PDEDerive" title="src.pde.PDEDerive"><code class="xref py py-class docutils literal notranslate"><span class="pre">PDEDerive</span></code></a>, a wrapper of all possible derivations
 to a PDE instance.</p>
 <blockquote>
 <div><dl class="py class">
 <dt class="sig sig-object py" id="src.pde.PDEDerive">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">PDEDerive</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pde</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/src/pde.html#PDEDerive"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#src.pde.PDEDerive" title="Permalink to this definition">#</a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">PDEDerive</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pde</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/src/pde.html#PDEDerive"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#src.pde.PDEDerive" title="Link to this definition">#</a></dt>
 <dd><p>A wrapper all possible derivations to a PDE instance.</p>
 <div class="admonition-todo admonition" id="id1">
 <p class="admonition-title">Todo</p>
@@ -830,7 +829,7 @@ By Andrea Brugnoli, Ramy Rashad, Stefano Stramigioli, Yi Zhang and more
   <div class="footer-item">
     
 <div class="extra_footer">
-  <div>Last updated on December 02, 2023, 09:46:39, W. Europe Standard Time</div>
+  <div>Last updated on February 01, 2024, 22:20:29, 中国标准时间</div>
 </div>
   </div>
   

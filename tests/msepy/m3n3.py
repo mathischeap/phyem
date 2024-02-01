@@ -147,7 +147,11 @@ pr.iterate(
 
 
 PR = ph.rdr(current_dir + '/WTP3.txt')
-PR.visualize.quick('K', y='f3_error', saveto=current_dir + '/images/f3_error_quick.png')
+PR.visualize.quick(
+    'K',
+    y='f3_error',
+    saveto=current_dir + '/images/f3_error_quick.png'
+)
 
 orders = PR.visualize(
     'loglog', 'N', 'f0_error', prime='input2', hcp=1, usetex=True,

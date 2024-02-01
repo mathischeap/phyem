@@ -1,5 +1,4 @@
 
-
 <!DOCTYPE html>
 
 
@@ -28,20 +27,20 @@
 <link rel="preload" as="font" type="font/woff2" crossorigin href="../../../_static/vendor/fontawesome/6.1.2/webfonts/fa-brands-400.woff2" />
 <link rel="preload" as="font" type="font/woff2" crossorigin href="../../../_static/vendor/fontawesome/6.1.2/webfonts/fa-regular-400.woff2" />
 
-    <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=a746c00c" />
     <link rel="stylesheet" href="../../../_static/styles/sphinx-book-theme.css?digest=14f4ca6b54d191a8c7657f6c759bf11a5fb86285" type="text/css" />
-    <link rel="stylesheet" type="text/css" href="../../../_static/copybutton.css" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/copybutton.css?v=76b2166b" />
   
   <!-- Pre-loaded scripts that we'll load fully later -->
   <link rel="preload" as="script" href="../../../_static/scripts/bootstrap.js?digest=ac02cc09edc035673794" />
 <link rel="preload" as="script" href="../../../_static/scripts/pydata-sphinx-theme.js?digest=ac02cc09edc035673794" />
   <script src="../../../_static/vendor/fontawesome/6.1.2/js/all.min.js?digest=ac02cc09edc035673794"></script>
 
-    <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js"></script>
-    <script src="../../../_static/doctools.js"></script>
-    <script src="../../../_static/sphinx_highlight.js"></script>
-    <script src="../../../_static/clipboard.min.js"></script>
-    <script src="../../../_static/copybutton.js"></script>
+    <script src="../../../_static/documentation_options.js?v=c73c0f3e"></script>
+    <script src="../../../_static/doctools.js?v=888ff710"></script>
+    <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../../_static/clipboard.min.js?v=a7894cd8"></script>
+    <script src="../../../_static/copybutton.js?v=f281be69"></script>
     <script src="../../../_static/scripts/sphinx-book-theme.js?digest=5a5c038af52cf7bc1a1ec88eea08e6366ee68824"></script>
     <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
     <script>DOCUMENTATION_OPTIONS.pagename = '_modules/src/wf/td';</script>
@@ -400,7 +399,9 @@ document.write(`
 <span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Dict</span>
 
 
-<div class="viewcode-block" id="TemporalDiscretization"><a class="viewcode-back" href="../../../tutorial/docs/wf.html#src.wf.main.TemporalDiscretization">[docs]</a><span class="k">class</span> <span class="nc">TemporalDiscretization</span><span class="p">(</span><span class="n">Frozen</span><span class="p">):</span>
+<div class="viewcode-block" id="TemporalDiscretization">
+<a class="viewcode-back" href="../../../tutorial/docs/wf.html#src.wf.main.TemporalDiscretization">[docs]</a>
+<span class="k">class</span> <span class="nc">TemporalDiscretization</span><span class="p">(</span><span class="n">Frozen</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;A wrapper of the temporal discretization setting of a weak formulation.&quot;&quot;&quot;</span>
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">wf</span><span class="p">):</span>
@@ -466,7 +467,9 @@ document.write(`
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;The time sequence this temporal discretization is working on.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ats</span>
 
-<div class="viewcode-block" id="TemporalDiscretization.set_time_sequence"><a class="viewcode-back" href="../../../tutorial/docs/wf.html#src.wf.main.TemporalDiscretization.set_time_sequence">[docs]</a>    <span class="k">def</span> <span class="nf">set_time_sequence</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ts</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<div class="viewcode-block" id="TemporalDiscretization.set_time_sequence">
+<a class="viewcode-back" href="../../../tutorial/docs/wf.html#src.wf.main.TemporalDiscretization.set_time_sequence">[docs]</a>
+    <span class="k">def</span> <span class="nf">set_time_sequence</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ts</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;The method of setting time sequence.</span>
 
 <span class="sd">        .. note::</span>
@@ -486,24 +489,38 @@ document.write(`
         <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="bp">self</span><span class="p">:</span>
             <span class="bp">self</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">set_time_sequence</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_ats</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="TemporalDiscretization.define_abstract_time_instants"><a class="viewcode-back" href="../../../tutorial/docs/wf.html#src.wf.main.TemporalDiscretization.define_abstract_time_instants">[docs]</a>    <span class="k">def</span> <span class="nf">define_abstract_time_instants</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">atis</span><span class="p">):</span>
+
+<div class="viewcode-block" id="TemporalDiscretization.define_abstract_time_instants">
+<a class="viewcode-back" href="../../../tutorial/docs/wf.html#src.wf.main.TemporalDiscretization.define_abstract_time_instants">[docs]</a>
+    <span class="k">def</span> <span class="nf">define_abstract_time_instants</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">atis</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Define abstract time instants for the temporal discretization.&quot;&quot;&quot;</span>
         <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="bp">self</span><span class="p">:</span>
             <span class="bp">self</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">define_abstract_time_instants</span><span class="p">(</span><span class="o">*</span><span class="n">atis</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="TemporalDiscretization.differentiate"><a class="viewcode-back" href="../../../tutorial/docs/wf.html#src.wf.main.TemporalDiscretization.differentiate">[docs]</a>    <span class="k">def</span> <span class="nf">differentiate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">index</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">):</span>
+
+<div class="viewcode-block" id="TemporalDiscretization.differentiate">
+<a class="viewcode-back" href="../../../tutorial/docs/wf.html#src.wf.main.TemporalDiscretization.differentiate">[docs]</a>
+    <span class="k">def</span> <span class="nf">differentiate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">index</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Differentiate the term indexed ``index`` at abstract time instances.&quot;&quot;&quot;</span>
         <span class="k">assert</span> <span class="n">index</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_wf</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;index=</span><span class="si">{</span><span class="n">index</span><span class="si">}</span><span class="s2"> is illegal, print representations to check the indices.&quot;</span>
         <span class="n">i</span><span class="p">,</span> <span class="n">j</span> <span class="o">=</span> <span class="n">index</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;-&#39;</span><span class="p">)</span>
         <span class="n">ode_d</span> <span class="o">=</span> <span class="bp">self</span><span class="p">[</span><span class="nb">int</span><span class="p">(</span><span class="n">i</span><span class="p">)]</span>
         <span class="n">ode_d</span><span class="o">.</span><span class="n">differentiate</span><span class="p">(</span><span class="n">j</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="TemporalDiscretization.average"><a class="viewcode-back" href="../../../tutorial/docs/wf.html#src.wf.main.TemporalDiscretization.average">[docs]</a>    <span class="k">def</span> <span class="nf">average</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">index</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">):</span>
+
+<div class="viewcode-block" id="TemporalDiscretization.average">
+<a class="viewcode-back" href="../../../tutorial/docs/wf.html#src.wf.main.TemporalDiscretization.average">[docs]</a>
+    <span class="k">def</span> <span class="nf">average</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">index</span><span class="p">,</span> <span class="n">f</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Average the term indexed ``index`` at abstract time instances.&quot;&quot;&quot;</span>
         <span class="k">assert</span> <span class="n">index</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_wf</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;index=</span><span class="si">{</span><span class="n">index</span><span class="si">}</span><span class="s2"> is illegal, print representations to check the indices.&quot;</span>
         <span class="n">i</span><span class="p">,</span> <span class="n">j</span> <span class="o">=</span> <span class="n">index</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;-&#39;</span><span class="p">)</span>
         <span class="n">ode_d</span> <span class="o">=</span> <span class="bp">self</span><span class="p">[</span><span class="nb">int</span><span class="p">(</span><span class="n">i</span><span class="p">)]</span>
-        <span class="n">ode_d</span><span class="o">.</span><span class="n">average</span><span class="p">(</span><span class="n">j</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">)</span></div></div>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">args</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="n">ode_d</span><span class="o">.</span><span class="n">average</span><span class="p">(</span><span class="n">j</span><span class="p">,</span> <span class="n">f</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">ode_d</span><span class="o">.</span><span class="n">average</span><span class="p">(</span><span class="n">j</span><span class="p">,</span> <span class="n">f</span><span class="p">,</span> <span class="n">args</span><span class="p">)</span></div>
+</div>
+
 
 
 <span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s1">&#39;__main__&#39;</span><span class="p">:</span>
@@ -618,7 +635,7 @@ By Andrea Brugnoli, Ramy Rashad, Stefano Stramigioli, Yi Zhang and more
   <div class="footer-item">
     
 <div class="extra_footer">
-  <div>Last updated on December 02, 2023, 09:46:39, W. Europe Standard Time</div>
+  <div>Last updated on February 01, 2024, 22:20:29, 中国标准时间</div>
 </div>
   </div>
   

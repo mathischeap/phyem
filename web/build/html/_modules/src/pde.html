@@ -1,5 +1,4 @@
 
-
 <!DOCTYPE html>
 
 
@@ -28,20 +27,20 @@
 <link rel="preload" as="font" type="font/woff2" crossorigin href="../../_static/vendor/fontawesome/6.1.2/webfonts/fa-brands-400.woff2" />
 <link rel="preload" as="font" type="font/woff2" crossorigin href="../../_static/vendor/fontawesome/6.1.2/webfonts/fa-regular-400.woff2" />
 
-    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=a746c00c" />
     <link rel="stylesheet" href="../../_static/styles/sphinx-book-theme.css?digest=14f4ca6b54d191a8c7657f6c759bf11a5fb86285" type="text/css" />
-    <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css?v=76b2166b" />
   
   <!-- Pre-loaded scripts that we'll load fully later -->
   <link rel="preload" as="script" href="../../_static/scripts/bootstrap.js?digest=ac02cc09edc035673794" />
 <link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=ac02cc09edc035673794" />
   <script src="../../_static/vendor/fontawesome/6.1.2/js/all.min.js?digest=ac02cc09edc035673794"></script>
 
-    <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
-    <script src="../../_static/doctools.js"></script>
-    <script src="../../_static/sphinx_highlight.js"></script>
-    <script src="../../_static/clipboard.min.js"></script>
-    <script src="../../_static/copybutton.js"></script>
+    <script src="../../_static/documentation_options.js?v=c73c0f3e"></script>
+    <script src="../../_static/doctools.js?v=888ff710"></script>
+    <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
+    <script src="../../_static/copybutton.js?v=f281be69"></script>
     <script src="../../_static/scripts/sphinx-book-theme.js?digest=5a5c038af52cf7bc1a1ec88eea08e6366ee68824"></script>
     <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
     <script>DOCUMENTATION_OPTIONS.pagename = '_modules/src/pde';</script>
@@ -565,7 +564,9 @@ document.write(`
 <span class="kn">from</span> <span class="nn">src.bc</span> <span class="kn">import</span> <span class="n">BoundaryCondition</span>
 
 
-<div class="viewcode-block" id="pde"><a class="viewcode-back" href="../../tutorial/docs/pde.html#src.pde.pde">[docs]</a><span class="k">def</span> <span class="nf">pde</span><span class="p">(</span><span class="n">expression</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">interpreter</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">terms_and_signs_dict</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<div class="viewcode-block" id="pde">
+<a class="viewcode-back" href="../../tutorial/docs/pde.html#src.pde.pde">[docs]</a>
+<span class="k">def</span> <span class="nf">pde</span><span class="p">(</span><span class="n">expression</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">interpreter</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">terms_and_signs_dict</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;A wrapper of the ``__init__`` method of :class:`PartialDifferentialEquations`.</span>
 
 <span class="sd">    To make a PDE instance, you can either input</span>
@@ -603,7 +604,10 @@ document.write(`
     <span class="k">return</span> <span class="n">pde</span></div>
 
 
-<div class="viewcode-block" id="PartialDifferentialEquations"><a class="viewcode-back" href="../../tutorial/docs/pde.html#src.pde.PartialDifferentialEquations">[docs]</a><span class="k">class</span> <span class="nc">PartialDifferentialEquations</span><span class="p">(</span><span class="n">Frozen</span><span class="p">):</span>
+
+<div class="viewcode-block" id="PartialDifferentialEquations">
+<a class="viewcode-back" href="../../tutorial/docs/pde.html#src.pde.PartialDifferentialEquations">[docs]</a>
+<span class="k">class</span> <span class="nc">PartialDifferentialEquations</span><span class="p">(</span><span class="n">Frozen</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;The Partial Differential Equations class.&quot;&quot;&quot;</span>
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">expression</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">interpreter</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">terms_and_signs_dict</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
@@ -815,8 +819,12 @@ document.write(`
                         <span class="n">form_sym_repr</span> <span class="o">=</span> <span class="n">form</span><span class="o">.</span><span class="n">_sym_repr</span>
                         <span class="n">form_lin_repr</span> <span class="o">=</span> <span class="n">form</span><span class="o">.</span><span class="n">_lin_repr</span>
 
+                        <span class="n">do_it</span> <span class="o">=</span> <span class="kc">False</span>
+                        <span class="n">_ec_operator_type</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
+
                         <span class="k">if</span> <span class="n">form_lin_repr</span><span class="o">.</span><span class="n">count</span><span class="p">(</span><span class="n">d_lin_repr</span><span class="p">)</span> <span class="o">+</span> <span class="n">form_lin_repr</span><span class="o">.</span><span class="n">count</span><span class="p">(</span><span class="n">cd_lin_repr</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
-                            <span class="c1"># we only deal with the case that only one d or cd presents.</span>
+                            <span class="c1"># we do the vc pr when only one d or cd presents.</span>
+                            <span class="n">do_it</span> <span class="o">=</span> <span class="kc">True</span>
                             <span class="k">if</span> <span class="n">d_lin_repr</span> <span class="ow">in</span> <span class="n">form_lin_repr</span><span class="p">:</span>
                                 <span class="n">_ec_operator_type</span> <span class="o">=</span> <span class="s1">&#39;d&#39;</span>
                                 <span class="n">form_lin_repr</span> <span class="o">=</span> <span class="n">form_lin_repr</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="n">d_lin_repr</span><span class="p">)[</span><span class="mi">1</span><span class="p">]</span>
@@ -825,11 +833,27 @@ document.write(`
                                 <span class="n">form_lin_repr</span> <span class="o">=</span> <span class="n">form_lin_repr</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="n">cd_lin_repr</span><span class="p">)[</span><span class="mi">1</span><span class="p">]</span>
                             <span class="k">else</span><span class="p">:</span>
                                 <span class="k">raise</span> <span class="ne">Exception</span><span class="p">()</span>
+                        <span class="k">elif</span> <span class="n">form_lin_repr</span><span class="o">.</span><span class="n">count</span><span class="p">(</span><span class="n">cd_lin_repr</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+                            <span class="c1"># we do the vc pr when only one cd presents (may have multiple d).</span>
+                            <span class="n">do_it</span> <span class="o">=</span> <span class="kc">True</span>
+                            <span class="n">_ec_operator_type</span> <span class="o">=</span> <span class="s1">&#39;cd&#39;</span>
+                            <span class="n">form_lin_repr</span> <span class="o">=</span> <span class="n">form_lin_repr</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="n">cd_lin_repr</span><span class="p">)[</span><span class="mi">1</span><span class="p">]</span>
 
-                            <span class="k">if</span> <span class="n">form_lin_repr</span><span class="p">[</span><span class="o">-</span><span class="nb">len</span><span class="p">(</span><span class="n">end</span><span class="p">):]</span> <span class="o">==</span> <span class="n">end</span><span class="p">:</span>
-                                <span class="n">form_lin_repr</span> <span class="o">=</span> <span class="n">form_lin_repr</span><span class="p">[:</span><span class="o">-</span><span class="nb">len</span><span class="p">(</span><span class="n">end</span><span class="p">)]</span>
-                            <span class="k">else</span><span class="p">:</span>
-                                <span class="k">pass</span>
+                        <span class="k">else</span><span class="p">:</span>
+                            <span class="k">pass</span>
+
+                        <span class="k">if</span> <span class="n">do_it</span><span class="p">:</span>
+                            <span class="k">while</span> <span class="mi">1</span><span class="p">:</span>
+                                <span class="k">if</span> <span class="n">form_lin_repr</span><span class="p">[:</span><span class="nb">len</span><span class="p">(</span><span class="n">start</span><span class="p">)]</span> <span class="o">==</span> <span class="n">start</span><span class="p">:</span>
+                                    <span class="n">form_lin_repr</span> <span class="o">=</span> <span class="n">form_lin_repr</span><span class="p">[</span><span class="nb">len</span><span class="p">(</span><span class="n">start</span><span class="p">):]</span>
+                                <span class="k">else</span><span class="p">:</span>
+                                    <span class="k">break</span>
+
+                            <span class="k">while</span> <span class="mi">1</span><span class="p">:</span>
+                                <span class="k">if</span> <span class="n">form_lin_repr</span><span class="p">[</span><span class="o">-</span><span class="nb">len</span><span class="p">(</span><span class="n">end</span><span class="p">):]</span> <span class="o">==</span> <span class="n">end</span><span class="p">:</span>
+                                    <span class="n">form_lin_repr</span> <span class="o">=</span> <span class="n">form_lin_repr</span><span class="p">[:</span><span class="o">-</span><span class="nb">len</span><span class="p">(</span><span class="n">end</span><span class="p">)]</span>
+                                <span class="k">else</span><span class="p">:</span>
+                                    <span class="k">break</span>
 
                             <span class="n">form</span> <span class="o">=</span> <span class="n">_find_form</span><span class="p">(</span><span class="n">form_lin_repr</span><span class="p">)</span>
                             <span class="n">space</span> <span class="o">=</span> <span class="n">form</span><span class="o">.</span><span class="n">space</span>
@@ -951,7 +975,9 @@ document.write(`
             <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">(</span><span class="n">block</span><span class="o">=</span><span class="n">_setting</span><span class="p">[</span><span class="s1">&#39;block&#39;</span><span class="p">])</span>
         <span class="k">return</span> <span class="n">fig</span>
 
-<div class="viewcode-block" id="PartialDifferentialEquations.pr"><a class="viewcode-back" href="../../tutorial/docs/pde.html#src.pde.PartialDifferentialEquations.pr">[docs]</a>    <span class="k">def</span> <span class="nf">pr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">indexing</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">8</span><span class="p">,</span> <span class="mi">6</span><span class="p">),</span> <span class="n">vc</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">title</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<div class="viewcode-block" id="PartialDifferentialEquations.pr">
+<a class="viewcode-back" href="../../tutorial/docs/pde.html#src.pde.PartialDifferentialEquations.pr">[docs]</a>
+    <span class="k">def</span> <span class="nf">pr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">indexing</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">8</span><span class="p">,</span> <span class="mi">6</span><span class="p">),</span> <span class="n">vc</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">title</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Print the representation of the PDE.</span>
 
 <span class="sd">        Parameters</span>
@@ -1127,6 +1153,7 @@ document.write(`
             <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">(</span><span class="n">block</span><span class="o">=</span><span class="n">_setting</span><span class="p">[</span><span class="s1">&#39;block&#39;</span><span class="p">])</span>
         <span class="k">return</span> <span class="n">fig</span></div>
 
+
     <span class="k">def</span> <span class="fm">__len__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;How many equations we have?&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_term_dict</span><span class="p">)</span>
@@ -1175,7 +1202,9 @@ document.write(`
 
         <span class="bp">self</span><span class="o">.</span><span class="n">_unknowns</span> <span class="o">=</span> <span class="n">unknowns</span>
 
-<div class="viewcode-block" id="PartialDifferentialEquations.test_with"><a class="viewcode-back" href="../../tutorial/docs/pde.html#src.pde.PartialDifferentialEquations.test_with">[docs]</a>    <span class="k">def</span> <span class="nf">test_with</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">test_spaces</span><span class="p">,</span> <span class="n">test_method</span><span class="o">=</span><span class="s1">&#39;L2&#39;</span><span class="p">,</span> <span class="n">sym_repr</span><span class="p">:</span> <span class="nb">list</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
+<div class="viewcode-block" id="PartialDifferentialEquations.test_with">
+<a class="viewcode-back" href="../../tutorial/docs/pde.html#src.pde.PartialDifferentialEquations.test_with">[docs]</a>
+    <span class="k">def</span> <span class="nf">test_with</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">test_spaces</span><span class="p">,</span> <span class="n">test_method</span><span class="o">=</span><span class="s1">&#39;L2&#39;</span><span class="p">,</span> <span class="n">sym_repr</span><span class="p">:</span> <span class="nb">list</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Test the PDE with a set of spaces to obtain a weak formulation.</span>
 
 <span class="sd">        Parameters</span>
@@ -1202,10 +1231,13 @@ document.write(`
 
         <span class="c1"># parse test spaces from forms if forms provided.</span>
         <span class="n">_test_spaces</span> <span class="o">=</span> <span class="nb">list</span><span class="p">()</span>
+        <span class="kn">from</span> <span class="nn">src.form.main</span> <span class="kn">import</span> <span class="n">Form</span>
+
         <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">obj</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">test_spaces</span><span class="p">):</span>
-            <span class="k">if</span> <span class="n">obj</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span> <span class="o">==</span> <span class="s1">&#39;Form&#39;</span><span class="p">:</span>
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="n">Form</span><span class="p">):</span>
                 <span class="n">_test_spaces</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">obj</span><span class="o">.</span><span class="n">space</span><span class="p">)</span>
             <span class="k">else</span><span class="p">:</span>
+                <span class="c1"># noinspection PyUnresolvedReferences</span>
                 <span class="k">assert</span> <span class="n">obj</span><span class="o">.</span><span class="n">_is_space</span><span class="p">(),</span> <span class="sa">f</span><span class="s2">&quot;test_spaces[</span><span class="si">{</span><span class="n">i</span><span class="si">}</span><span class="s2">] is not a space.&quot;</span>
                 <span class="n">_test_spaces</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">obj</span><span class="p">)</span>
         <span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="n">_test_spaces</span><span class="p">)</span> <span class="o">==</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="p">),</span> \
@@ -1317,6 +1349,7 @@ document.write(`
         <span class="n">wf</span><span class="o">.</span><span class="n">_bc</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_bc</span>   <span class="c1"># send the BC to the weak formulation.</span>
         <span class="k">return</span> <span class="n">wf</span></div>
 
+
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">bc</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;The boundary condition of the PDE.&quot;&quot;&quot;</span>
@@ -1330,7 +1363,10 @@ document.write(`
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_derive</span></div>
 
 
-<div class="viewcode-block" id="PDEDerive"><a class="viewcode-back" href="../../tutorial/docs/pde.html#src.pde.PDEDerive">[docs]</a><span class="k">class</span> <span class="nc">PDEDerive</span><span class="p">(</span><span class="n">Frozen</span><span class="p">):</span>
+
+<div class="viewcode-block" id="PDEDerive">
+<a class="viewcode-back" href="../../tutorial/docs/pde.html#src.pde.PDEDerive">[docs]</a>
+<span class="k">class</span> <span class="nc">PDEDerive</span><span class="p">(</span><span class="n">Frozen</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;A wrapper all possible derivations to a PDE instance.</span>
 
 <span class="sd">    .. todo::</span>
@@ -1345,6 +1381,7 @@ document.write(`
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;&quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_pde</span> <span class="o">=</span> <span class="n">pde</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_freeze</span><span class="p">()</span></div>
+
 </pre></div>
 
                 </article>
@@ -1396,7 +1433,7 @@ By Andrea Brugnoli, Ramy Rashad, Stefano Stramigioli, Yi Zhang and more
   <div class="footer-item">
     
 <div class="extra_footer">
-  <div>Last updated on December 02, 2023, 09:46:39, W. Europe Standard Time</div>
+  <div>Last updated on February 01, 2024, 22:20:29, 中国标准时间</div>
 </div>
   </div>
   

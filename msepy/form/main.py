@@ -14,7 +14,7 @@ from msepy.space.main import MsePySpace
 from msepy.form.cf import MsePyContinuousForm
 from msepy.form.cochain.main import MsePyRootFormCochain
 from msepy.form.cochain.passive import MsePyRootFormCochainPassive
-from msepy.form.static import MsePyRootFormStaticCopy
+from msepy.form.addons.static import MsePyRootFormStaticCopy
 from msepy.form.visualize.main import MsePyRootFormVisualize
 from msepy.form.coboundary import MsePyRootFormCoboundary
 from msepy.form.matrix import MsePyRootFormMatrix
@@ -76,6 +76,16 @@ class MsePyRootForm(Frozen):
         """return the realtime copy of `self` at time `t`."""
         if t is None:
             t = self.cochain.newest  # newest time
+        elif isinstance(t, str):
+            # when use str, we are looking for the form at a time step.
+            from src.time_sequence import _global_abstract_time_sequence
+            if len(_global_abstract_time_sequence) == 1:
+                ts_indicator = list(_global_abstract_time_sequence.keys())[0]
+                ts = _global_abstract_time_sequence[ts_indicator]
+                abstract_time_instant = ts[t]
+                t = abstract_time_instant()()
+            else:
+                raise Exception(f"multiple time sequences exist.")
         else:
             pass
         t = self.cochain._parse_t(t)  # round off the truncation error to make it clear.
@@ -195,7 +205,7 @@ class MsePyRootForm(Frozen):
         return df
 
     def _copy(self):
-        """Make a copy of df of empty cochain; do not specify cochain."""
+        """Make a copy of empty cochain; do not specify cochain."""
         ab_space = self.abstract.space
         sym_repr = str(hash(random() + time()))      # random sym_repr <-- important, do not try to print its repr
         lin_repr = str(hash(random() + time() + 2))  # random lin_repr <-- important, do not try to print its repr

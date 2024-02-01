@@ -4,7 +4,7 @@ r"""
 from tools.frozen import Frozen
 from msepy.manifold.main import MsePyManifold
 
-from msepy.form.static import MsePyRootFormStaticCopy
+from msepy.form.addons.static import MsePyRootFormStaticCopy
 from msepy.form.cochain.vector.static import MsePyRootFormStaticCochainVector
 
 from msepy.form.cf import MsePyContinuousForm

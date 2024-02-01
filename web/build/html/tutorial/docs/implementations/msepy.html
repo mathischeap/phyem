@@ -1,5 +1,4 @@
 
-
 <!DOCTYPE html>
 
 
@@ -29,20 +28,20 @@
 <link rel="preload" as="font" type="font/woff2" crossorigin href="../../../_static/vendor/fontawesome/6.1.2/webfonts/fa-brands-400.woff2" />
 <link rel="preload" as="font" type="font/woff2" crossorigin href="../../../_static/vendor/fontawesome/6.1.2/webfonts/fa-regular-400.woff2" />
 
-    <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=a746c00c" />
     <link rel="stylesheet" href="../../../_static/styles/sphinx-book-theme.css?digest=14f4ca6b54d191a8c7657f6c759bf11a5fb86285" type="text/css" />
-    <link rel="stylesheet" type="text/css" href="../../../_static/copybutton.css" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/copybutton.css?v=76b2166b" />
   
   <!-- Pre-loaded scripts that we'll load fully later -->
   <link rel="preload" as="script" href="../../../_static/scripts/bootstrap.js?digest=ac02cc09edc035673794" />
 <link rel="preload" as="script" href="../../../_static/scripts/pydata-sphinx-theme.js?digest=ac02cc09edc035673794" />
   <script src="../../../_static/vendor/fontawesome/6.1.2/js/all.min.js?digest=ac02cc09edc035673794"></script>
 
-    <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js"></script>
-    <script src="../../../_static/doctools.js"></script>
-    <script src="../../../_static/sphinx_highlight.js"></script>
-    <script src="../../../_static/clipboard.min.js"></script>
-    <script src="../../../_static/copybutton.js"></script>
+    <script src="../../../_static/documentation_options.js?v=c73c0f3e"></script>
+    <script src="../../../_static/doctools.js?v=888ff710"></script>
+    <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../../_static/clipboard.min.js?v=a7894cd8"></script>
+    <script src="../../../_static/copybutton.js?v=f281be69"></script>
     <script src="../../../_static/scripts/sphinx-book-theme.js?digest=5a5c038af52cf7bc1a1ec88eea08e6366ee68824"></script>
     <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
     <script>window.MathJax = {"tex": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true}, "options": {"ignoreHtmlClass": "tex2jax_ignore|mathjax_ignore|document", "processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
@@ -454,12 +453,12 @@ document.write(`
                 <article class="bd-article" role="main">
                   
   <section id="msepy">
-<span id="implementations-msepy"></span><h1><span class="section-number">7.1. </span>msepy<a class="headerlink" href="#msepy" title="Permalink to this heading">#</a></h1>
+<span id="implementations-msepy"></span><h1><span class="section-number">7.1. </span>msepy<a class="headerlink" href="#msepy" title="Link to this heading">#</a></h1>
 <aside class="topic">
 <p class="topic-title">Estimated reading time</p>
 <p>⏱️ 15 minutes</p>
 </aside>
-<span class="target" id="module-msepy.main"></span><div class="admonition note">
+<div class="admonition note" id="module-msepy.main">
 <p class="admonition-title">Note</p>
 <p><em>msepy</em> stands for <strong>mimetic spectral elements in Python</strong>. It is an implementation of
 the mimetic spectral element methods using pure Python. In other words, the most
@@ -487,7 +486,7 @@ first argument for <code class="docutils literal notranslate"><span class="pre">
 <p>We get the implementation body, <code class="docutils literal notranslate"><span class="pre">implementation</span></code>, and the dictionary of all
 implemented counterparts, <code class="docutils literal notranslate"><span class="pre">objects</span></code>.</p>
 <section id="implemented-counterparts">
-<span id="implementations-msepy-counterparts"></span><h2><span class="section-number">7.1.1. </span>Implemented counterparts<a class="headerlink" href="#implemented-counterparts" title="Permalink to this heading">#</a></h2>
+<span id="implementations-msepy-counterparts"></span><h2><span class="section-number">7.1.1. </span>Implemented counterparts<a class="headerlink" href="#implemented-counterparts" title="Link to this heading">#</a></h2>
 <p>To pick up the implemented counterparts of abstract instances, we can just use their variable names, for example,</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">manifold</span> <span class="o">=</span> <span class="n">objects</span><span class="p">[</span><span class="s1">&#39;manifold&#39;</span><span class="p">]</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">mesh</span> <span class="o">=</span> <span class="n">objects</span><span class="p">[</span><span class="s1">&#39;mesh&#39;</span><span class="p">]</span>
@@ -513,7 +512,7 @@ respectively. For example</p>
 from <code class="docutils literal notranslate"><span class="pre">objects</span></code>.</p>
 </section>
 <section id="configuration">
-<span id="implementations-msepy-config"></span><h2><span class="section-number">7.1.2. </span>Configuration<a class="headerlink" href="#configuration" title="Permalink to this heading">#</a></h2>
+<span id="implementations-msepy-config"></span><h2><span class="section-number">7.1.2. </span>Configuration<a class="headerlink" href="#configuration" title="Link to this heading">#</a></h2>
 <p>❇️ <strong>Manifold &amp; Mesh</strong></p>
 <p>There are two ways to configure the abstract manifold and mesh to be exact ones:</p>
 <p><em>1) Use predefined setting</em>:</p>
@@ -711,7 +710,7 @@ solution <span class="math notranslate nohighlight">\(\tilde{\beta}_{\mathrm{ana
 <code class="docutils literal notranslate"><span class="pre">eigen2.vector</span></code>).</p>
 </section>
 <section id="solving">
-<span id="implementations-msepy-solving"></span><h2><span class="section-number">7.1.3. </span>Solving<a class="headerlink" href="#solving" title="Permalink to this heading">#</a></h2>
+<span id="implementations-msepy-solving"></span><h2><span class="section-number">7.1.3. </span>Solving<a class="headerlink" href="#solving" title="Link to this heading">#</a></h2>
 <p>We first define two lists to store the errors,</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">a_errors</span> <span class="o">=</span> <span class="p">[</span><span class="n">a_L2_error_t0</span><span class="p">,</span> <span class="p">]</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">b_errors</span> <span class="o">=</span> <span class="p">[</span><span class="n">b_L2_error_t0</span><span class="p">,</span> <span class="p">]</span>
@@ -743,7 +742,7 @@ it. To check it, do</p>
 </div>
 </section>
 <section id="post-processing">
-<span id="implementations-msepy-pp"></span><h2><span class="section-number">7.1.4. </span>Post-processing<a class="headerlink" href="#post-processing" title="Permalink to this heading">#</a></h2>
+<span id="implementations-msepy-pp"></span><h2><span class="section-number">7.1.4. </span>Post-processing<a class="headerlink" href="#post-processing" title="Link to this heading">#</a></h2>
 <p>You can save the solution to VTK file by calling</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">a</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">visualize</span><span class="o">.</span><span class="n">vtk</span><span class="p">(</span><span class="n">saveto</span><span class="o">=</span><span class="s1">&#39;a1&#39;</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">b</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">visualize</span><span class="o">.</span><span class="n">vtk</span><span class="p">(</span><span class="n">saveto</span><span class="o">=</span><span class="s1">&#39;b1&#39;</span><span class="p">)</span>
@@ -863,7 +862,7 @@ By Andrea Brugnoli, Ramy Rashad, Stefano Stramigioli, Yi Zhang and more
   <div class="footer-item">
     
 <div class="extra_footer">
-  <div>Last updated on December 02, 2023, 09:46:39, W. Europe Standard Time</div>
+  <div>Last updated on February 01, 2024, 22:20:29, 中国标准时间</div>
 </div>
   </div>
   

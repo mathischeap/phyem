@@ -85,6 +85,19 @@ def _inner_simpler_pattern_examiner_scalar_valued_forms(factor, f0, f1, extra_in
             else:
                 pass
 
+        # (d root-form, d root-form) ----------------------------------------------------
+        if f0._lin_repr[:len(lin_d)] == lin_d and f1._lin_repr[:len(lin_d)] == lin_d:
+            bf0 = _find_form(f0._lin_repr, upon=d)
+            bf1 = _find_form(f1._lin_repr, upon=d)
+
+            if bf0.is_root() and bf1.is_root():
+                return _simple_patterns['(d,d)'], {
+                    'rsf0': bf0,     # root-scalar-form-0
+                    'rsf1': bf1,     # root-scalar-form-1
+                }
+            else:
+                pass
+
         # <A, d(pi(B))> --------------------------------------------------------------------------------
         projection_lin = _global_operator_lin_repr_setting['projection']
         if projection_lin in f1._lin_repr and lin_d in f1._lin_repr:
@@ -153,6 +166,58 @@ def _inner_simpler_pattern_examiner_scalar_valued_forms(factor, f0, f1, extra_in
                         'c': f1
                     }
 
+            elif f_a.is_root() and f_b.is_root() and not f1.is_root() and f_a is not f_b:
+                if f1._lin_repr[:len(lin_d)] == lin_d:
+                    # (a x b, d(c)) where a, b, c are root-forms.
+                    f_c = _find_form(f1._lin_repr, upon=d)
+                    if 'known-cross-product-form' in extra_info:
+                        known_forms = extra_info['known-cross-product-form']
+                        if known_forms is f_a:
+                            return _simple_patterns['(*x,d)'], {
+                                'a': f_a,
+                                'b': f_b,
+                                'c': f_c,
+                                'dc': f1,
+                            }
+                        elif known_forms is f_b:
+                            return _simple_patterns['(x*,d)'], {
+                                'a': f_a,
+                                'b': f_b,
+                                'c': f_c,
+                                'dc': f1,
+                            }
+
+                        elif isinstance(known_forms, (list, tuple)) and len(known_forms) == 2:
+
+                            kf0, kf1 = known_forms
+
+                            if kf0 is f_a and kf1 is f_b:
+
+                                return _simple_patterns['(*x*,d)'], {
+                                    'a': f_a,
+                                    'b': f_b,
+                                    'c': f_c,
+                                    'dc': f1,
+                                }
+
+                            elif kf0 is f_b and kf1 is f_a:
+
+                                return _simple_patterns['(*x*,d)'], {
+                                    'a': f_a,
+                                    'b': f_b,
+                                    'c': f_c,
+                                    'dc': f1,
+                                }
+
+                            else:
+                                pass
+
+                        else:
+                            pass
+                    else:  # nonlinear patterns
+                        pass
+                else:
+                    pass
             else:
                 pass
 

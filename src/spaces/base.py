@@ -12,6 +12,8 @@ from tools.frozen import Frozen
 from src.config import get_embedding_space_dim
 from src.form.main import Form
 from src.spaces.finite import SpaceFiniteSetting
+from tools.miscellaneous.random_ import string_digits
+from time import time
 
 
 class SpaceBase(Frozen):
@@ -74,7 +76,11 @@ class SpaceBase(Frozen):
     def m(self):
         return get_embedding_space_dim()
 
-    def make_form(self, sym_repr, lin_repr, dual_representation=False):
+    def make_form(
+            self,
+            sym_repr, lin_repr,
+            dual_representation=False
+    ):
         """Define a form which is an element of this space.
 
         Parameters
@@ -102,6 +108,14 @@ class SpaceBase(Frozen):
         else:
             pass
         return form
+
+    def make_random_form(self):
+        """Usually used as intermediate forms."""
+        sym = string_digits(8)
+        t = time()
+        random_sym_repr = sym+str(t)[-5:]
+        random_lin_repr = str(hash(random_sym_repr))
+        return self.make_form(random_sym_repr, random_lin_repr)
 
     def __eq__(self, other):
         """"""

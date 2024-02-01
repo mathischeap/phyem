@@ -22,7 +22,6 @@ from src.config import SIZE
 __all__ = [
     'jupyter',
     'web',
-    'mpi_py_main',
 ]
 
 if SIZE == 1:
@@ -33,4 +32,4 @@ if SIZE == 1:
     import tests.web as web
 
 else:
-    import tests.mpi_py.main as mpi_py_main
+    pass

@@ -142,6 +142,9 @@ class _SimplePatternAPParser(Frozen):
             elif sp == _simple_patterns['(,d)']:
                 return self._parse_reprs__d(test_form=test_form)
 
+            elif sp == _simple_patterns['(d,d)']:
+                return self._parse_reprs_dd(test_form=test_form)
+
             elif sp == _simple_patterns['<d,>']:
                 return self._parse_reprs_d_dual_(test_form=test_form)
             elif sp == _simple_patterns['<,d>']:
@@ -158,6 +161,13 @@ class _SimplePatternAPParser(Frozen):
                 return self._parse_reprs_A_x_astB_ip_C(test_form=test_form)
             elif sp == _simple_patterns['(x,)']:  # nonlinear term A, B, C all are unknown
                 return self._parse_reprs_A_x_B_ip_C(test_form)
+
+            elif sp == _simple_patterns['(*x,d)']:
+                return self._parse_reprs_astA_x_B_ip_dC(test_form=test_form)
+            elif sp == _simple_patterns['(x*,d)']:
+                return self._parse_reprs_A_x_astB_ip_dC(test_form=test_form)
+            elif sp == _simple_patterns['(*x*,d)']:
+                return self._parse_reprs_astA_x_astB_ip_dC(test_form=test_form)
 
             elif sp == _simple_patterns['(d0*,0*tp)']:  # vector
                 return self._parse_reprs_dastA_astA_tp_C(test_form=test_form)  #
@@ -298,6 +308,43 @@ class _SimplePatternAPParser(Frozen):
         sign = '+'
         return term, sign, 'linear'
 
+    def _parse_reprs_dd(self, test_form):
+        """"""
+        spk = self._wft.___simple_pattern_keys___
+        # (d bf0, d bf1)
+        bf0 = spk['rsf0']
+        bf1 = spk['rsf1']
+
+        s0 = self._wft._f0.space  # space of d bf0
+        s1 = self._wft._f1.space  # space of d bf1
+        d0 = bf0._degree   # degree of d bf0, same to that of bf0
+        d1 = bf1._degree   # degree of d bf1, same to that of bf1
+
+        if test_form == bf1:
+            mass_matrix = _VarPar_M(s1, s0, d1, d0)
+
+            dT_matrix = _VarPar_E(bf1, transpose=True)
+            d_matrix = _VarPar_E(bf0)
+            v0 = bf0.ap()
+            v1 = bf1.ap().T
+            term_ap = v1 @ dT_matrix @ mass_matrix @ d_matrix @ v0
+
+        elif test_form == bf0:
+            mass_matrix = _VarPar_M(s0, s1, d0, d1)
+
+            dT_matrix = _VarPar_E(bf0, transpose=True)
+            d_matrix = _VarPar_E(bf1)
+            v0 = bf1.ap()
+            v1 = bf0.ap().T
+            term_ap = v1 @ dT_matrix @ mass_matrix @ d_matrix @ v0
+
+        else:
+            raise Exception
+
+        term = self._wft._factor * TermLinearAlgebraicProxy(term_ap)
+        sign = '+'
+        return term, sign, 'linear'
+
     def _parse_reprs__dual_d(self, test_form=None):
         """"""
         spk = self._wft.___simple_pattern_keys___
@@ -418,8 +465,82 @@ class _SimplePatternAPParser(Frozen):
 
         return term, sign, 'nonlinear'
 
-    # (dA, B tp C) ---------------------------------------------------------------------------
+    # (A x B, d C) -------------------------------------------------------------------
+    def _parse_reprs_astA_x_B_ip_dC(self, test_form):
+        """(A x B, dC) where A is known! So this term is linear."""
+        spk = self._wft.___simple_pattern_keys___
+        A, B, C = spk['a'], spk['b'], spk['c']
+        dC = spk['dc']
+        new_intermediate_root_form = dC.space.make_random_form()
+        new_intermediate_root_form.degree = C.degree
 
+        if test_form == C:
+
+            cpm = _VarPar_astA_x_B_ip_tC(A, B, new_intermediate_root_form)  # a root-array matrix
+            dT_matrix = _VarPar_E(C, transpose=True)
+
+            v0 = C.ap().T
+            v1 = B.ap()
+            term_ap = v0 @ dT_matrix @ cpm @ v1
+
+        else:
+            raise Exception('TO BE IMPLEMENTED!')  # better not to use NotImplementedError
+
+        term = self._wft._factor * TermLinearAlgebraicProxy(term_ap)
+        sign = '+'
+
+        return term, sign, 'linear'
+
+    def _parse_reprs_A_x_astB_ip_dC(self, test_form):
+        """(A x B, dC) where B is known! So this term is linear."""
+        spk = self._wft.___simple_pattern_keys___
+        A, B, C = spk['a'], spk['b'], spk['c']
+        dC = spk['dc']
+        new_intermediate_root_form = dC.space.make_random_form()
+        new_intermediate_root_form.degree = C.degree
+
+        if test_form == C:
+
+            cpm = _VarPar_A_x_astB_ip_tC(A, B, new_intermediate_root_form)  # a root-array matrix
+            dT_matrix = _VarPar_E(C, transpose=True)
+
+            v0 = C.ap().T
+            v1 = A.ap()
+            term_ap = v0 @ dT_matrix @ cpm @ v1
+
+        else:
+            raise Exception('TO BE IMPLEMENTED!')  # better not to use NotImplementedError
+
+        term = self._wft._factor * TermLinearAlgebraicProxy(term_ap)
+        sign = '+'
+
+        return term, sign, 'linear'
+
+    def _parse_reprs_astA_x_astB_ip_dC(self, test_form):
+        """(A x B, dC), A and B are known. This will give a vector."""
+        spk = self._wft.___simple_pattern_keys___
+        A, B, C = spk['a'], spk['b'], spk['c']
+        dC = spk['dc']
+        new_intermediate_root_form = dC.space.make_random_form()
+        new_intermediate_root_form.degree = C.degree
+
+        if test_form == C:
+
+            cpm = _VarPar_astA_x_astB_ip_tC(A, B, new_intermediate_root_form)  # a root-array matrix
+            dT_matrix = _VarPar_E(C, transpose=True)
+
+            v0 = C.ap().T
+            term_ap = v0 @ dT_matrix @ cpm
+
+        else:
+            raise Exception('TO BE IMPLEMENTED!')  # better not to use NotImplementedError
+
+        term = self._wft._factor * TermLinearAlgebraicProxy(term_ap)
+        sign = '+'
+
+        return term, sign, 'linear'
+
+    # (dA, B tp C) --------------------------------------------------------------------------
     def _parse_reprs_dastA_astA_tp_C(self, test_form):
         """"""
         spk = self._wft.___simple_pattern_keys___

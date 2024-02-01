@@ -425,8 +425,12 @@ class PartialDifferentialEquations(Frozen):
                         form_sym_repr = form._sym_repr
                         form_lin_repr = form._lin_repr
 
+                        do_it = False
+                        _ec_operator_type = ''
+
                         if form_lin_repr.count(d_lin_repr) + form_lin_repr.count(cd_lin_repr) == 1:
-                            # we only deal with the case that only one d or cd presents.
+                            # we do the vc pr when only one d or cd presents.
+                            do_it = True
                             if d_lin_repr in form_lin_repr:
                                 _ec_operator_type = 'd'
                                 form_lin_repr = form_lin_repr.split(d_lin_repr)[1]
@@ -435,11 +439,27 @@ class PartialDifferentialEquations(Frozen):
                                 form_lin_repr = form_lin_repr.split(cd_lin_repr)[1]
                             else:
                                 raise Exception()
+                        elif form_lin_repr.count(cd_lin_repr) == 1:
+                            # we do the vc pr when only one cd presents (may have multiple d).
+                            do_it = True
+                            _ec_operator_type = 'cd'
+                            form_lin_repr = form_lin_repr.split(cd_lin_repr)[1]
 
-                            if form_lin_repr[-len(end):] == end:
-                                form_lin_repr = form_lin_repr[:-len(end)]
-                            else:
-                                pass
+                        else:
+                            pass
+
+                        if do_it:
+                            while 1:
+                                if form_lin_repr[:len(start)] == start:
+                                    form_lin_repr = form_lin_repr[len(start):]
+                                else:
+                                    break
+
+                            while 1:
+                                if form_lin_repr[-len(end):] == end:
+                                    form_lin_repr = form_lin_repr[:-len(end)]
+                                else:
+                                    break
 
                             form = _find_form(form_lin_repr)
                             space = form.space

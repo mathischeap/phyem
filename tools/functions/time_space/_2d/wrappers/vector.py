@@ -20,6 +20,11 @@ from tools.numerical.time_space._2d.partial_derivative_as_functions import \
 from scipy.interpolate import LinearNDInterpolator
 
 
+# noinspection PyUnusedLocal
+def _0_function(t, x, y):
+    return np.zeros_like(x)
+
+
 class T2dVector(TimeSpaceFunctionBase):
     """ Wrap two functions into a vector class.
     """
@@ -32,6 +37,12 @@ class T2dVector(TimeSpaceFunctionBase):
         v0
         v1
         """
+        if v0 == 0:
+            v0 = _0_function
+
+        if v1 == 0:
+            v1 = _0_function
+
         self._v0_ = v0
         self._v1_ = v1
         self._vs_ = [v0, v1]

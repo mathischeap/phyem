@@ -7,7 +7,7 @@ from scipy.sparse import csr_matrix
 from tools.frozen import Frozen
 from msepy.form.cochain.time_instant import _CochainAtOneTime
 from msepy.form.main import MsePyRootForm
-from msepy.form.static import MsePyRootFormStaticCopy
+from msepy.form.addons.static import MsePyRootFormStaticCopy
 from msepy.form.cochain.vector.static import MsePyRootFormStaticCochainVector
 from msepy.tools.matrix.static.local import MsePyStaticLocalMatrix
 

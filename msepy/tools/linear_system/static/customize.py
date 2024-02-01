@@ -28,7 +28,7 @@ class MsePyStaticLinearSystemCustomize(Frozen):
 
         Parameters
         ----------
-        unknown_no : {0, 1, 2}
+        unknown_no : {0, 1, 2, ...}
             0 is the first unknowns.
         element
         local_numbering

@@ -1,5 +1,4 @@
 
-
 <!DOCTYPE html>
 
 
@@ -29,20 +28,20 @@
 <link rel="preload" as="font" type="font/woff2" crossorigin href="../../_static/vendor/fontawesome/6.1.2/webfonts/fa-brands-400.woff2" />
 <link rel="preload" as="font" type="font/woff2" crossorigin href="../../_static/vendor/fontawesome/6.1.2/webfonts/fa-regular-400.woff2" />
 
-    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=a746c00c" />
     <link rel="stylesheet" href="../../_static/styles/sphinx-book-theme.css?digest=14f4ca6b54d191a8c7657f6c759bf11a5fb86285" type="text/css" />
-    <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css?v=76b2166b" />
   
   <!-- Pre-loaded scripts that we'll load fully later -->
   <link rel="preload" as="script" href="../../_static/scripts/bootstrap.js?digest=ac02cc09edc035673794" />
 <link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=ac02cc09edc035673794" />
   <script src="../../_static/vendor/fontawesome/6.1.2/js/all.min.js?digest=ac02cc09edc035673794"></script>
 
-    <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
-    <script src="../../_static/doctools.js"></script>
-    <script src="../../_static/sphinx_highlight.js"></script>
-    <script src="../../_static/clipboard.min.js"></script>
-    <script src="../../_static/copybutton.js"></script>
+    <script src="../../_static/documentation_options.js?v=c73c0f3e"></script>
+    <script src="../../_static/doctools.js?v=888ff710"></script>
+    <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
+    <script src="../../_static/copybutton.js?v=f281be69"></script>
     <script src="../../_static/scripts/sphinx-book-theme.js?digest=5a5c038af52cf7bc1a1ec88eea08e6366ee68824"></script>
     <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
     <script>window.MathJax = {"tex": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true}, "options": {"ignoreHtmlClass": "tex2jax_ignore|mathjax_ignore|document", "processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
@@ -489,13 +488,13 @@ document.write(`
                 <article class="bd-article" role="main">
                   
   <section id="weak-formulation-discretization">
-<span id="docs-wf-and-discretization"></span><h1><span class="section-number">5. </span>Weak formulation &amp; discretization<a class="headerlink" href="#weak-formulation-discretization" title="Permalink to this heading">#</a></h1>
+<span id="docs-wf-and-discretization"></span><h1><span class="section-number">5. </span>Weak formulation &amp; discretization<a class="headerlink" href="#weak-formulation-discretization" title="Link to this heading">#</a></h1>
 <aside class="topic">
 <p class="topic-title">Estimated reading time</p>
 <p>⏱️ 20 minutes</p>
 </aside>
-<span class="target" id="module-src.wf.main"></span><section id="weak-formulation">
-<span id="docs-wf"></span><h2><span class="section-number">5.1. </span>Weak formulation<a class="headerlink" href="#weak-formulation" title="Permalink to this heading">#</a></h2>
+<section id="weak-formulation">
+<span id="docs-wf"></span><span id="module-src.wf.main"></span><h2><span class="section-number">5.1. </span>Weak formulation<a class="headerlink" href="#weak-formulation" title="Link to this heading">#</a></h2>
 <p>Once the PDE is complete, as well as its boundary conditions are correctly imposed, it shall be
 tested with test function spaces through <a class="reference internal" href="pde.html#src.pde.PartialDifferentialEquations.test_with" title="src.pde.PartialDifferentialEquations.test_with"><code class="xref py py-meth docutils literal notranslate"><span class="pre">src.pde.PartialDifferentialEquations.test_with()</span></code></a>,</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">wf</span> <span class="o">=</span> <span class="n">pde</span><span class="o">.</span><span class="n">test_with</span><span class="p">([</span><span class="n">Out2</span><span class="p">,</span> <span class="n">Out1</span><span class="p">],</span> <span class="n">sym_repr</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;p&#39;</span><span class="p">,</span> <span class="s1">&#39;q&#39;</span><span class="p">])</span>
@@ -505,23 +504,23 @@ tested with test function spaces through <a class="reference internal" href="pde
 <blockquote>
 <div><dl class="py class">
 <dt class="sig sig-object py" id="src.wf.main.WeakFormulation">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">WeakFormulation</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">test_forms</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">term_sign_dict</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">expression</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">interpreter</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">merge</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/src/wf/main.html#WeakFormulation"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#src.wf.main.WeakFormulation" title="Permalink to this definition">#</a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">WeakFormulation</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">test_forms</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">term_sign_dict</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">expression</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">interpreter</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">merge</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/src/wf/main.html#WeakFormulation"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#src.wf.main.WeakFormulation" title="Link to this definition">#</a></dt>
 <dd><p>The Weak Formulation class.</p>
 <dl class="py property">
 <dt class="sig sig-object py" id="src.wf.main.WeakFormulation.bc">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">bc</span></span><a class="headerlink" href="#src.wf.main.WeakFormulation.bc" title="Permalink to this definition">#</a></dt>
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">bc</span></span><a class="headerlink" href="#src.wf.main.WeakFormulation.bc" title="Link to this definition">#</a></dt>
 <dd><p>The boundary condition of the weak formulation.</p>
 </dd></dl>
 
 <dl class="py property">
 <dt class="sig sig-object py" id="src.wf.main.WeakFormulation.derive">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">derive</span></span><a class="headerlink" href="#src.wf.main.WeakFormulation.derive" title="Permalink to this definition">#</a></dt>
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">derive</span></span><a class="headerlink" href="#src.wf.main.WeakFormulation.derive" title="Link to this definition">#</a></dt>
 <dd><p>A wrapper all possible derivations to the weak formulation.</p>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="src.wf.main.WeakFormulation.mp">
-<span class="sig-name descname"><span class="pre">mp</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/src/wf/main.html#WeakFormulation.mp"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#src.wf.main.WeakFormulation.mp" title="Permalink to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">mp</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/src/wf/main.html#WeakFormulation.mp"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#src.wf.main.WeakFormulation.mp" title="Link to this definition">#</a></dt>
 <dd><p>Generate a matrix proxy for the weak formulation.</p>
 <dl class="field-list">
 <dt class="field-odd">Returns<span class="colon">:</span></dt>
@@ -534,7 +533,7 @@ tested with test function spaces through <a class="reference internal" href="pde
 
 <dl class="py method">
 <dt class="sig sig-object py" id="src.wf.main.WeakFormulation.pr">
-<span class="sig-name descname"><span class="pre">pr</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">indexing</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">patterns</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">saveto</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/src/wf/main.html#WeakFormulation.pr"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#src.wf.main.WeakFormulation.pr" title="Permalink to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">pr</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">indexing</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">patterns</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">saveto</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/src/wf/main.html#WeakFormulation.pr"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#src.wf.main.WeakFormulation.pr" title="Link to this definition">#</a></dt>
 <dd><p>Print the representation of this weak formulation.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -551,13 +550,13 @@ tested with test function spaces through <a class="reference internal" href="pde
 
 <dl class="py property">
 <dt class="sig sig-object py" id="src.wf.main.WeakFormulation.td">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">td</span></span><a class="headerlink" href="#src.wf.main.WeakFormulation.td" title="Permalink to this definition">#</a></dt>
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">td</span></span><a class="headerlink" href="#src.wf.main.WeakFormulation.td" title="Link to this definition">#</a></dt>
 <dd><p>Temporal discretization of the weak formulation.</p>
 </dd></dl>
 
 <dl class="py property">
 <dt class="sig sig-object py" id="src.wf.main.WeakFormulation.unknowns">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">unknowns</span></span><a class="headerlink" href="#src.wf.main.WeakFormulation.unknowns" title="Permalink to this definition">#</a></dt>
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">unknowns</span></span><a class="headerlink" href="#src.wf.main.WeakFormulation.unknowns" title="Link to this definition">#</a></dt>
 <dd><p>The unknowns of this weak formulation</p>
 </dd></dl>
 
@@ -573,53 +572,53 @@ tested with test function spaces through <a class="reference internal" href="pde
 <figure class="align-center" id="id1">
 <span id="docs-wf-fig-wf"></span><a class="reference internal image-reference" href="../../_images/docs_raw_wf.png"><img alt="../../_images/docs_raw_wf.png" src="../../_images/docs_raw_wf.png" style="width: 100%;" /></a>
 <figcaption>
-<p><span class="caption-number">Fig. 5.1 </span><span class="caption-text"><em>pr</em> of the weak formulation</span><a class="headerlink" href="#id1" title="Permalink to this image">#</a></p>
+<p><span class="caption-number">Fig. 5.1 </span><span class="caption-text"><em>pr</em> of the weak formulation</span><a class="headerlink" href="#id1" title="Link to this image">#</a></p>
 </figcaption>
 </figure>
 <p>In Fig. <a class="reference internal" href="#docs-wf-fig-wf"><span class="std std-ref">pr of the weak formulation</span></a>, we can see that boundary conditions, unknowns of the PDE are correctly inherited,
 and indices of terms, <code class="docutils literal notranslate"><span class="pre">'0-0'</span></code>, <code class="docutils literal notranslate"><span class="pre">'0-1'</span></code> and so on, are shown by default.</p>
 </section>
 <section id="derivations">
-<span id="docs-wf-derivations"></span><h2><span class="section-number">5.2. </span>Derivations<a class="headerlink" href="#derivations" title="Permalink to this heading">#</a></h2>
+<span id="docs-wf-derivations"></span><h2><span class="section-number">5.2. </span>Derivations<a class="headerlink" href="#derivations" title="Link to this heading">#</a></h2>
 <p>Derivations usually should be applied to the raw weak formulation such that it could be discretized properly
 later on. All possible derivations are wrapped into a class, <a class="reference internal" href="#src.wf.main.WfDerive" title="src.wf.main.WfDerive"><code class="xref py py-class docutils literal notranslate"><span class="pre">WfDerive</span></code></a>,</p>
 <blockquote>
 <div><dl class="py class">
 <dt class="sig sig-object py" id="src.wf.main.WfDerive">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">WfDerive</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">wf</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/src/wf/derive.html#WfDerive"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#src.wf.main.WfDerive" title="Permalink to this definition">#</a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">WfDerive</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">wf</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/src/wf/derive.html#WfDerive"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#src.wf.main.WfDerive" title="Link to this definition">#</a></dt>
 <dd><dl class="py method">
 <dt class="sig sig-object py" id="src.wf.main.WfDerive.delete">
-<span class="sig-name descname"><span class="pre">delete</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">index</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/src/wf/derive.html#WfDerive.delete"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#src.wf.main.WfDerive.delete" title="Permalink to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">delete</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">index</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/src/wf/derive.html#WfDerive.delete"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#src.wf.main.WfDerive.delete" title="Link to this definition">#</a></dt>
 <dd><p>Delete the term indicated by <code class="docutils literal notranslate"><span class="pre">index</span></code>.</p>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="src.wf.main.WfDerive.integration_by_parts">
-<span class="sig-name descname"><span class="pre">integration_by_parts</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">index</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/src/wf/derive.html#WfDerive.integration_by_parts"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#src.wf.main.WfDerive.integration_by_parts" title="Permalink to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">integration_by_parts</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">index</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/src/wf/derive.html#WfDerive.integration_by_parts"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#src.wf.main.WfDerive.integration_by_parts" title="Link to this definition">#</a></dt>
 <dd><p>Do integration by parts for the term indicated by <code class="docutils literal notranslate"><span class="pre">index</span></code>.</p>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="src.wf.main.WfDerive.rearrange">
-<span class="sig-name descname"><span class="pre">rearrange</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">rearrangement</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/src/wf/derive.html#WfDerive.rearrange"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#src.wf.main.WfDerive.rearrange" title="Permalink to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">rearrange</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">rearrangement</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/src/wf/derive.html#WfDerive.rearrange"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#src.wf.main.WfDerive.rearrange" title="Link to this definition">#</a></dt>
 <dd><p>Rearrange the terms.</p>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="src.wf.main.WfDerive.replace">
-<span class="sig-name descname"><span class="pre">replace</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">index</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">terms</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">signs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/src/wf/derive.html#WfDerive.replace"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#src.wf.main.WfDerive.replace" title="Permalink to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">replace</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">index</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">terms</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">signs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/src/wf/derive.html#WfDerive.replace"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#src.wf.main.WfDerive.replace" title="Link to this definition">#</a></dt>
 <dd><p>Replace the term indicated by <code class="docutils literal notranslate"><span class="pre">index</span></code> by <code class="docutils literal notranslate"><span class="pre">terms</span></code> of <code class="docutils literal notranslate"><span class="pre">signs</span></code>.</p>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="src.wf.main.WfDerive.split">
-<span class="sig-name descname"><span class="pre">split</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">index</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/src/wf/derive.html#WfDerive.split"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#src.wf.main.WfDerive.split" title="Permalink to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">split</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">index</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/src/wf/derive.html#WfDerive.split"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#src.wf.main.WfDerive.split" title="Link to this definition">#</a></dt>
 <dd><p>Split the term indicated by <code class="docutils literal notranslate"><span class="pre">index</span></code> into multiple terms.</p>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="src.wf.main.WfDerive.switch_sign">
-<span class="sig-name descname"><span class="pre">switch_sign</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">rows</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/src/wf/derive.html#WfDerive.switch_sign"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#src.wf.main.WfDerive.switch_sign" title="Permalink to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">switch_sign</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">rows</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/src/wf/derive.html#WfDerive.switch_sign"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#src.wf.main.WfDerive.switch_sign" title="Link to this definition">#</a></dt>
 <dd><p>Switch the signs of all terms of equations <code class="docutils literal notranslate"><span class="pre">rows</span></code></p>
 </dd></dl>
 
@@ -664,9 +663,9 @@ And usage of <a class="reference internal" href="#src.wf.main.WfDerive.replace" 
 <a class="reference internal" href="#docs-temporal-discretization"><span class="std std-ref">Temporal discretization</span></a>.</p>
 </section>
 <section id="discretization">
-<span id="docs-discretization"></span><h2><span class="section-number">5.3. </span>Discretization<a class="headerlink" href="#discretization" title="Permalink to this heading">#</a></h2>
+<span id="docs-discretization"></span><h2><span class="section-number">5.3. </span>Discretization<a class="headerlink" href="#discretization" title="Link to this heading">#</a></h2>
 <section id="temporal-discretization">
-<span id="docs-temporal-discretization"></span><h3><span class="section-number">5.3.1. </span>Temporal discretization<a class="headerlink" href="#temporal-discretization" title="Permalink to this heading">#</a></h3>
+<span id="docs-temporal-discretization"></span><h3><span class="section-number">5.3.1. </span>Temporal discretization<a class="headerlink" href="#temporal-discretization" title="Link to this heading">#</a></h3>
 <p>Before the temporal discretization, we shall first set up an abstract time sequence,</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">ts</span> <span class="o">=</span> <span class="n">ph</span><span class="o">.</span><span class="n">time_sequence</span><span class="p">()</span>
 </pre></div>
@@ -684,29 +683,29 @@ which is an instance of the wrapper class,
 <blockquote>
 <div><dl class="py class">
 <dt class="sig sig-object py" id="src.wf.main.TemporalDiscretization">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">TemporalDiscretization</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">wf</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/src/wf/td.html#TemporalDiscretization"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#src.wf.main.TemporalDiscretization" title="Permalink to this definition">#</a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">TemporalDiscretization</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">wf</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/src/wf/td.html#TemporalDiscretization"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#src.wf.main.TemporalDiscretization" title="Link to this definition">#</a></dt>
 <dd><p>A wrapper of the temporal discretization setting of a weak formulation.</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="src.wf.main.TemporalDiscretization.average">
-<span class="sig-name descname"><span class="pre">average</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">index</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/src/wf/td.html#TemporalDiscretization.average"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#src.wf.main.TemporalDiscretization.average" title="Permalink to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">average</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">index</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">f</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/src/wf/td.html#TemporalDiscretization.average"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#src.wf.main.TemporalDiscretization.average" title="Link to this definition">#</a></dt>
 <dd><p>Average the term indexed <code class="docutils literal notranslate"><span class="pre">index</span></code> at abstract time instances.</p>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="src.wf.main.TemporalDiscretization.define_abstract_time_instants">
-<span class="sig-name descname"><span class="pre">define_abstract_time_instants</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">atis</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/src/wf/td.html#TemporalDiscretization.define_abstract_time_instants"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#src.wf.main.TemporalDiscretization.define_abstract_time_instants" title="Permalink to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">define_abstract_time_instants</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">atis</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/src/wf/td.html#TemporalDiscretization.define_abstract_time_instants"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#src.wf.main.TemporalDiscretization.define_abstract_time_instants" title="Link to this definition">#</a></dt>
 <dd><p>Define abstract time instants for the temporal discretization.</p>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="src.wf.main.TemporalDiscretization.differentiate">
-<span class="sig-name descname"><span class="pre">differentiate</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">index</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/src/wf/td.html#TemporalDiscretization.differentiate"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#src.wf.main.TemporalDiscretization.differentiate" title="Permalink to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">differentiate</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">index</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/src/wf/td.html#TemporalDiscretization.differentiate"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#src.wf.main.TemporalDiscretization.differentiate" title="Link to this definition">#</a></dt>
 <dd><p>Differentiate the term indexed <code class="docutils literal notranslate"><span class="pre">index</span></code> at abstract time instances.</p>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="src.wf.main.TemporalDiscretization.set_time_sequence">
-<span class="sig-name descname"><span class="pre">set_time_sequence</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ts</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/src/wf/td.html#TemporalDiscretization.set_time_sequence"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#src.wf.main.TemporalDiscretization.set_time_sequence" title="Permalink to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">set_time_sequence</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ts</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/src/wf/td.html#TemporalDiscretization.set_time_sequence"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#src.wf.main.TemporalDiscretization.set_time_sequence" title="Link to this definition">#</a></dt>
 <dd><p>The method of setting time sequence.</p>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
@@ -718,7 +717,7 @@ it instead of using multiple time sequences.</p>
 
 <dl class="py property">
 <dt class="sig sig-object py" id="src.wf.main.TemporalDiscretization.time_sequence">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">time_sequence</span></span><a class="headerlink" href="#src.wf.main.TemporalDiscretization.time_sequence" title="Permalink to this definition">#</a></dt>
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">time_sequence</span></span><a class="headerlink" href="#src.wf.main.TemporalDiscretization.time_sequence" title="Link to this definition">#</a></dt>
 <dd><p>The time sequence this temporal discretization is working on.</p>
 </dd></dl>
 
@@ -851,7 +850,7 @@ indexing system befoew any further derivations.</p>
 <p>We now obtain the final (semi-)discrete system for the linear port-Hamiltonian system.</p>
 </section>
 <section id="spacial-discretization">
-<span id="docs-spacial-discretization"></span><h3><span class="section-number">5.3.2. </span>Spacial discretization<a class="headerlink" href="#spacial-discretization" title="Permalink to this heading">#</a></h3>
+<span id="docs-spacial-discretization"></span><h3><span class="section-number">5.3.2. </span>Spacial discretization<a class="headerlink" href="#spacial-discretization" title="Link to this heading">#</a></h3>
 <p>Since we are already working with an abstract mesh, the spacial discretization can be accomplished
 simply by specifying finite degrees to finite dimensional forms we have made.
 This can be done globally by using</p>
@@ -999,7 +998,7 @@ By Andrea Brugnoli, Ramy Rashad, Stefano Stramigioli, Yi Zhang and more
   <div class="footer-item">
     
 <div class="extra_footer">
-  <div>Last updated on December 02, 2023, 09:46:39, W. Europe Standard Time</div>
+  <div>Last updated on February 01, 2024, 22:20:29, 中国标准时间</div>
 </div>
   </div>
   

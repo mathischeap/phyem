@@ -55,7 +55,7 @@ class MsePyRootFormVisualizeVTK(Frozen):
             )
 
             from msepy.form.main import MsePyRootForm
-            from msepy.form.static import MsePyRootFormStaticCopy
+            from msepy.form.addons.static import MsePyRootFormStaticCopy
 
             for of in other_forms:
                 if of.__class__ is MsePyRootFormStaticCopy:

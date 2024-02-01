@@ -22,7 +22,7 @@ _global_abstract_time_interval = dict()
 
 
 def abstract_time_sequence():
-    """A wrapper of AbstractTimeSequence"""
+    """A wrapper of AbstractTimeSequence."""
     return AbstractTimeSequence()
 
 
@@ -174,6 +174,18 @@ class FunctionTimeSequence(TimeSequence):
     """
 
     def __init__(self, t0, func, step_interval=1):
+        """
+
+        Parameters
+        ----------
+        t0 :
+            The initial time (not a step index). The whole sequence starts with this time.
+        func :
+            Whenever call this function, it will make a new time as a new time step.
+        step_interval :
+            When call the function, the new time step is the newest time step + `step_interval`.
+
+        """
         super().__init__()
         self._t_0 = t0
         self._melt()
@@ -191,8 +203,8 @@ class FunctionTimeSequence(TimeSequence):
     def info(self):
         """info myself in the console."""
         if RANK == MASTER_RANK:
-            print(f" =function= t0:{self._t_0};"
-                  f" step_interval:{self._step_interval};"
+            print(f" =function= t0: {self._t_0};"
+                  f" step_interval: {self._step_interval};"
                   f" now@step{self._step_sequence[-1]},"
                   f" time %.5f." % self._time_sequence[-1])
         else:
@@ -238,7 +250,7 @@ class FunctionTimeSequence(TimeSequence):
 
 
 class ConstantTimeSequence(TimeSequence):
-    """Steps are all equal.
+    """Steps are all equal. And can be valid only on defined instants.
 
     """
 

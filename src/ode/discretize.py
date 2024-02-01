@@ -81,6 +81,10 @@ class OrdinaryDifferentialEquationDiscretize(Frozen):
         """Use average at time instants `time_instants` for form `f` in term indexed `index`.
         """
         f_ = list()
+        if isinstance(time_instants, str):  # at one time, we can put it in a str.
+            time_instants = [time_instants]
+        else:
+            pass
         assert isinstance(time_instants, (list, tuple)), f"pls put time_instants in a list or tuple."
         for ti in time_instants:
             assert ti in self._at_instants, f"abstract time instant {ti} is not defined."

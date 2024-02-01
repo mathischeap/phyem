@@ -42,7 +42,7 @@ class IteratorMonitor(Frozen):
         self._str_started_time_ = MyTimer.current_time()
         self._iteration_start_time = 0
 
-        # ------ machine info --------
+        # ------ machine info ---------------------------------------------
         memory = psutil.virtual_memory()
         self._mem_total_ = str(round(memory.total / 1024 / 1024 / 1024, 2))
         self._cpu_count_ = psutil.cpu_count(logical=False)

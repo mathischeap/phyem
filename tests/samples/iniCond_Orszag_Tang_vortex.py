@@ -36,6 +36,7 @@ from numpy import sin, cos, pi
 
 from tools.frozen import Frozen
 from tools.functions.time_space._2d.wrappers.scalar import T2dScalar
+from tools.functions.time_space._2d.wrappers.vector import T2dVector
 
 
 def _phi(t, x, y):
@@ -89,8 +90,12 @@ class InitialConditionOrszagTangVortex(Frozen):
         """vorticity"""
         return self.u.rot
 
+    @property
+    def f(self):
+        return T2dVector(0, 0)
+
 
 if __name__ == '__main__':
     # python tests/samples/iniCond_Orszag_Tang_vortex.py
     ic = InitialConditionOrszagTangVortex()
-    ic.j.visualize([0, 2*pi], 0)
+    ic.u.visualize([0, 2*pi], 0)

@@ -77,7 +77,7 @@ class MsePyRootFormCochain(Frozen):
             elif isinstance(what, (int, float)):
 
                 what = int(what)
-                if what < 0:  # clean all cochain except the last newest `what` ones.
+                if what < 0:  # clean all cochain except the largest `what` ones.
 
                     leave_amount = -what
                     keys = list(self._tcd.keys())

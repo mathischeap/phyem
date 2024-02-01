@@ -17,7 +17,7 @@ mesh except there is one additional, ``Ns``, see:
 
 .. autofunction:: msepy.manifold.predefined.crazy_multi.crazy_multi
 
-.. note::
+.. note::p
 
     Multi-crazy domains and meshes, like the crazy ones, are also mainly used for testing purposes. As each block will
     be treated as a region, with them, we can test our codes with meshes of multiple (orthogonal or curvilinear)
@@ -31,13 +31,13 @@ They contain the boundary faces of these regions attached to the domain boundary
 there are :math:`2 * 3` regions/blocks, the complete set of boundary units is
 
 >>> boundary_units_set = {
-... 0: [1, 0, 1, 0],
-... 1: [0, 1, 1, 0],
-... 2: [1, 0, 0, 0],
-... 3: [0, 1, 0, 0],
-... 4: [1, 0, 0, 1],
-... 5: [0, 1, 0, 1]
-}
+...     0: [1, 0, 1, 0],
+...     1: [0, 1, 1, 0],
+...     2: [1, 0, 0, 0],
+...     3: [0, 1, 0, 0],
+...     4: [1, 0, 0, 1],
+...     5: [0, 1, 0, 1],
+... }
 
 Examples
 --------

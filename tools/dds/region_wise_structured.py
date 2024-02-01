@@ -47,7 +47,7 @@ class DDSRegionWiseStructured(Frozen):
                     assert data_shape == xyz.shape, f"#{i}th coordinate in region {region} does not match."
 
         self._space_dim = space_dim    # we are in n-d space.
-        self._value_shape = val_shape   # the shape of the val list; implies it is a scalar, vector or something else.
+        self._value_shape = val_shape  # the shape of the val list; implies it is a scalar, vector or something else.
         self._data_shape = data_shape  # the shape of all ndarray in coo or val.
         assert len(data_shape) == space_dim, f'put data into a structured way, so n-d data in n-d space.'
         self._coo_dict_list = coo_dict_list

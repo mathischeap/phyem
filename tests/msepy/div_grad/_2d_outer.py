@@ -1,38 +1,5 @@
 # -*- coding: utf-8 -*-
 r"""
-Here we repeat the test, but with essential boundary :math:`\mathrm{tr}\ u^1`
-on faces :math:`y=0` and :math:`y=1`, and natural boundary condition
-:math:`\mathrm{tr}\left(\star \varphi^2\right)` on faces :math:`x=0` and :math:`x=1`.
-
-The implementation is
-
-    .. autofunction:: tests.msepy.div_grad._2d_outer.div_grad_2d_general_bc_manufactured_test
-
-
-Examples
---------
-
-If we solve it with :math:`4\times4` elements
-(note that here we use a different mesh compared to the periodic test)
-at polynomial degree 2,
-
->>> errors4 = div_grad_2d_general_bc_manufactured_test(2, 4)
->>> errors4[0]  # doctest: +ELLIPSIS
-0.06...
-
-We increase :math:`K` to :math:`K=8`, we do
-
->>> errors8 = div_grad_2d_general_bc_manufactured_test(2, 8)
-
-We can compute the convergence rate of the :math:`L^2`-error of solution :math:`\varphi_h^2` by
-
->>> import numpy as np
->>> rate = (np.log10(errors4[0]) - np.log10(errors8[0])) / (np.log10(1/4) - np.log10(1/8))
->>> round(rate, 1)
-2.0
-
-Again, the optimal convergence rate is obtained.
-
 """
 
 import sys

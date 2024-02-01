@@ -1,5 +1,4 @@
 
-
 <!DOCTYPE html>
 
 
@@ -29,20 +28,20 @@
 <link rel="preload" as="font" type="font/woff2" crossorigin href="../../_static/vendor/fontawesome/6.1.2/webfonts/fa-brands-400.woff2" />
 <link rel="preload" as="font" type="font/woff2" crossorigin href="../../_static/vendor/fontawesome/6.1.2/webfonts/fa-regular-400.woff2" />
 
-    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=a746c00c" />
     <link rel="stylesheet" href="../../_static/styles/sphinx-book-theme.css?digest=14f4ca6b54d191a8c7657f6c759bf11a5fb86285" type="text/css" />
-    <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css?v=76b2166b" />
   
   <!-- Pre-loaded scripts that we'll load fully later -->
   <link rel="preload" as="script" href="../../_static/scripts/bootstrap.js?digest=ac02cc09edc035673794" />
 <link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=ac02cc09edc035673794" />
   <script src="../../_static/vendor/fontawesome/6.1.2/js/all.min.js?digest=ac02cc09edc035673794"></script>
 
-    <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
-    <script src="../../_static/doctools.js"></script>
-    <script src="../../_static/sphinx_highlight.js"></script>
-    <script src="../../_static/clipboard.min.js"></script>
-    <script src="../../_static/copybutton.js"></script>
+    <script src="../../_static/documentation_options.js?v=c73c0f3e"></script>
+    <script src="../../_static/doctools.js?v=888ff710"></script>
+    <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
+    <script src="../../_static/copybutton.js?v=f281be69"></script>
     <script src="../../_static/scripts/sphinx-book-theme.js?digest=5a5c038af52cf7bc1a1ec88eea08e6366ee68824"></script>
     <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
     <script>DOCUMENTATION_OPTIONS.pagename = 'tutorial/docs/implementations';</script>
@@ -439,12 +438,12 @@ document.write(`
                 <article class="bd-article" role="main">
                   
   <section id="implementations">
-<span id="id1"></span><h1><span class="section-number">7. </span>Implementations<a class="headerlink" href="#implementations" title="Permalink to this heading">#</a></h1>
+<span id="id1"></span><h1><span class="section-number">7. </span>Implementations<a class="headerlink" href="#implementations" title="Link to this heading">#</a></h1>
 <aside class="topic">
 <p class="topic-title">Estimated reading time</p>
 <p>⏱️ 5 minutes</p>
 </aside>
-<span class="target" id="module-src.fem"></span><p>To bring an abstract setting to an implementation, we just need to call <code class="docutils literal notranslate"><span class="pre">apply</span></code> in <code class="docutils literal notranslate"><span class="pre">fem</span></code> module of <em>phyem</em>,
+<p id="module-src.fem">To bring an abstract setting to an implementation, we just need to call <code class="docutils literal notranslate"><span class="pre">apply</span></code> in <code class="docutils literal notranslate"><span class="pre">fem</span></code> module of <em>phyem</em>,
 for example,</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">implementation</span><span class="p">,</span> <span class="n">objects</span> <span class="o">=</span> <span class="n">ph</span><span class="o">.</span><span class="n">fem</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="n">arg0</span><span class="p">,</span> <span class="n">arg1</span><span class="p">)</span>
 </pre></div>
@@ -452,7 +451,7 @@ for example,</p>
 <p>This function takes two arguments,</p>
 <ul class="simple">
 <li><p>the first argument, <code class="docutils literal notranslate"><span class="pre">arg0</span></code>, is an indicator implying which implementation we want to use,</p></li>
-<li><p>the second argument. <code class="docutils literal notranslate"><span class="pre">arg1</span></code>, is a dictionary of target objects; if we use <code class="docutils literal notranslate"><span class="pre">local()</span></code>,
+<li><p>the second argument, <code class="docutils literal notranslate"><span class="pre">arg1</span></code>, is a dictionary of target objects; if we use <code class="docutils literal notranslate"><span class="pre">local()</span></code>,
 we target at all local variables.</p></li>
 </ul>
 <div class="admonition important">
@@ -562,7 +561,7 @@ By Andrea Brugnoli, Ramy Rashad, Stefano Stramigioli, Yi Zhang and more
   <div class="footer-item">
     
 <div class="extra_footer">
-  <div>Last updated on December 02, 2023, 09:46:39, W. Europe Standard Time</div>
+  <div>Last updated on February 01, 2024, 22:20:29, 中国标准时间</div>
 </div>
   </div>
   

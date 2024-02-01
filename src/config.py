@@ -409,6 +409,8 @@ _wf_term_default_simple_patterns = {   # use only str to represent a simple patt
     '(,d)': '(rf, d rf)',
     '<,d>': '<dual-rf, d rf>',
 
+    '(d,d)': '(d rf, d rf)',
+
     '(<db>,d<b>)': '(root-diagonal-bf, d root-bf)',
 
     '<tr star | tr >': '<tr star rf | trace rf>',
@@ -418,6 +420,10 @@ _wf_term_default_simple_patterns = {   # use only str to represent a simple patt
     '(*x*,)': r'(krf $\times$ krf, rf)',   # vector
     '(*x,)': r'(krf $\times$ rf, rf)',
     '(x*,)': r'(rf $\times$ krf, rf)',
+
+    '(*x,d)': r"(krf $\times$ rf, d rf)",
+    '(x*,d)': r"(rf $\times$ krf, d rf)",
+    '(*x*,d)': r"(krf $\times$ krf, d rf)",   # vector
 
     '(x,)': r'(rf $\times$ rf, rf)',   # nonlinear term.
 

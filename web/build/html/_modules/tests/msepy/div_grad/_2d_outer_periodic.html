@@ -1,5 +1,4 @@
 
-
 <!DOCTYPE html>
 
 
@@ -28,20 +27,20 @@
 <link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../_static/vendor/fontawesome/6.1.2/webfonts/fa-brands-400.woff2" />
 <link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../_static/vendor/fontawesome/6.1.2/webfonts/fa-regular-400.woff2" />
 
-    <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css?v=a746c00c" />
     <link rel="stylesheet" href="../../../../_static/styles/sphinx-book-theme.css?digest=14f4ca6b54d191a8c7657f6c759bf11a5fb86285" type="text/css" />
-    <link rel="stylesheet" type="text/css" href="../../../../_static/copybutton.css" />
+    <link rel="stylesheet" type="text/css" href="../../../../_static/copybutton.css?v=76b2166b" />
   
   <!-- Pre-loaded scripts that we'll load fully later -->
   <link rel="preload" as="script" href="../../../../_static/scripts/bootstrap.js?digest=ac02cc09edc035673794" />
 <link rel="preload" as="script" href="../../../../_static/scripts/pydata-sphinx-theme.js?digest=ac02cc09edc035673794" />
   <script src="../../../../_static/vendor/fontawesome/6.1.2/js/all.min.js?digest=ac02cc09edc035673794"></script>
 
-    <script data-url_root="../../../../" id="documentation_options" src="../../../../_static/documentation_options.js"></script>
-    <script src="../../../../_static/doctools.js"></script>
-    <script src="../../../../_static/sphinx_highlight.js"></script>
-    <script src="../../../../_static/clipboard.min.js"></script>
-    <script src="../../../../_static/copybutton.js"></script>
+    <script src="../../../../_static/documentation_options.js?v=c73c0f3e"></script>
+    <script src="../../../../_static/doctools.js?v=888ff710"></script>
+    <script src="../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../../../_static/clipboard.min.js?v=a7894cd8"></script>
+    <script src="../../../../_static/copybutton.js?v=f281be69"></script>
     <script src="../../../../_static/scripts/sphinx-book-theme.js?digest=5a5c038af52cf7bc1a1ec88eea08e6366ee68824"></script>
     <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
     <script>DOCUMENTATION_OPTIONS.pagename = '_modules/tests/msepy/div_grad/_2d_outer_periodic';</script>
@@ -390,59 +389,14 @@ document.write(`
   <h1>Source code for tests.msepy.div_grad._2d_outer_periodic</h1><div class="highlight"><pre>
 <span></span><span class="c1"># -*- coding: utf-8 -*-</span>
 <span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">Here we demonstrate how to use *phyem*, the *msepy* implementation, to solve the two-dimensional div-grad problem.</span>
-
-<span class="sd">In two-dimensions, the mixed formulation of the div-grad problem is</span>
-
-<span class="sd">.. math::</span>
-<span class="sd">    \begin{equation}\left\lbrace</span>
-<span class="sd">    \begin{aligned}</span>
-<span class="sd">        u ^1 &amp;= \mathrm{d}^{\ast}\varphi^2 ,\\</span>
-<span class="sd">        - \mathrm{d} u^1 &amp;= f^2.</span>
-<span class="sd">    \end{aligned}\right.</span>
-<span class="sd">    \end{equation}</span>
-
-<span class="sd">We use smooth manufactured solutions for this case. The exact solution for :math:`\varphi` is</span>
-
-<span class="sd">.. math::</span>
-<span class="sd">    \varphi = - \sin(2\pi x) \sin(2\pi y).</span>
-
-<span class="sd">Exact solutions of :math:`u^1` and :math:`f^2` then follow.</span>
-<span class="sd">We consider the domain to be :math:`\Omega = (x,y) \in [0,1]^2` and it is fully periodic.</span>
-<span class="sd">We use the :ref:`GALLERY-msepy-domains-and-meshes=multi-crazy` for this test. The solver is given below.</span>
-
-<span class="sd">    .. autofunction:: tests.msepy.div_grad._2d_outer_periodic.div_grad_2d_periodic_manufactured_test</span>
-
-
-<span class="sd">========</span>
-<span class="sd">Examples</span>
-<span class="sd">========</span>
-
-<span class="sd">Below, we use mimetic spectral elements of degree 2 on a uniform mesh of :math:`4 * 4 * 4` :math:`(K=4)` elements.</span>
-
-<span class="sd">&gt;&gt;&gt; errors4 = div_grad_2d_periodic_manufactured_test(2, 4)</span>
-<span class="sd">&gt;&gt;&gt; errors4[0]  # doctest: +ELLIPSIS</span>
-<span class="sd">0.01...</span>
-
-<span class="sd">We increase :math:`K` to :math:`K=8`, we do</span>
-
-<span class="sd">&gt;&gt;&gt; errors8 = div_grad_2d_periodic_manufactured_test(2, 8)</span>
-
-<span class="sd">We can compute the convergence rate of the :math:`L^2`-error of solution :math:`\varphi_h^2` by</span>
-
-<span class="sd">&gt;&gt;&gt; import numpy as np</span>
-<span class="sd">&gt;&gt;&gt; rate = (np.log10(errors4[0]) - np.log10(errors8[0])) / (np.log10(1/4) - np.log10(1/8))</span>
-<span class="sd">&gt;&gt;&gt; round(rate, 1)</span>
-<span class="sd">2.0</span>
-
-<span class="sd">The optimal convergence rate is obtained.</span>
-
 <span class="sd">&quot;&quot;&quot;</span>
 
 <span class="kn">import</span> <span class="nn">sys</span>
 
 
-<div class="viewcode-block" id="div_grad_2d_periodic_manufactured_test"><a class="viewcode-back" href="../../../../gallery/div_grad/index.html#tests.msepy.div_grad._2d_outer_periodic.div_grad_2d_periodic_manufactured_test">[docs]</a><span class="k">def</span> <span class="nf">div_grad_2d_periodic_manufactured_test</span><span class="p">(</span><span class="n">degree</span><span class="p">,</span> <span class="n">K</span><span class="p">,</span> <span class="n">c</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
+<div class="viewcode-block" id="div_grad_2d_periodic_manufactured_test">
+<a class="viewcode-back" href="../../../../gallery/div_grad/index.html#tests.msepy.div_grad._2d_outer_periodic.div_grad_2d_periodic_manufactured_test">[docs]</a>
+<span class="k">def</span> <span class="nf">div_grad_2d_periodic_manufactured_test</span><span class="p">(</span><span class="n">degree</span><span class="p">,</span> <span class="n">K</span><span class="p">,</span> <span class="n">c</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
 <span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
 
 <span class="sd">    Parameters</span>
@@ -462,13 +416,12 @@ document.write(`
 <span class="sd">        The :math:`L^2`-error of solution :math:`u_h^1`.</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
-
-    <span class="n">ph_dir</span> <span class="o">=</span> <span class="s1">&#39;../&#39;</span>  <span class="c1"># customize it to your own dir containing phyem</span>
+    <span class="n">ph_dir</span> <span class="o">=</span> <span class="s1">&#39;../../&#39;</span>  <span class="c1"># customize it to your own dir containing phyem</span>
     <span class="k">if</span> <span class="n">ph_dir</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">sys</span><span class="o">.</span><span class="n">path</span><span class="p">:</span>
         <span class="n">sys</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">ph_dir</span><span class="p">)</span>
 
-    <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
     <span class="kn">import</span> <span class="nn">phyem</span> <span class="k">as</span> <span class="nn">ph</span>
+    <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 
     <span class="n">ls</span> <span class="o">=</span> <span class="n">ph</span><span class="o">.</span><span class="n">samples</span><span class="o">.</span><span class="n">wf_div_grad</span><span class="p">(</span><span class="n">n</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">degree</span><span class="o">=</span><span class="n">degree</span><span class="p">,</span> <span class="n">orientation</span><span class="o">=</span><span class="s1">&#39;outer&#39;</span><span class="p">,</span> <span class="n">periodic</span><span class="o">=</span><span class="kc">True</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>  <span class="c1"># ls.pr()</span>
     <span class="n">msepy</span><span class="p">,</span> <span class="n">obj</span> <span class="o">=</span> <span class="n">ph</span><span class="o">.</span><span class="n">fem</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="s1">&#39;msepy&#39;</span><span class="p">,</span> <span class="nb">locals</span><span class="p">())</span>
@@ -515,9 +468,10 @@ document.write(`
     <span class="k">return</span> <span class="n">phi_error</span><span class="p">,</span> <span class="n">u_error</span></div>
 
 
+
 <span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s1">&#39;__main__&#39;</span><span class="p">:</span>
     <span class="c1"># python tests/msepy/div_grad/_2d_outer_periodic.py</span>
-    <span class="n">ph_dir</span> <span class="o">=</span> <span class="s1">&#39;./&#39;</span>
+    <span class="n">ph_dir</span> <span class="o">=</span> <span class="s1">&#39;../&#39;</span>
     <span class="k">if</span> <span class="n">ph_dir</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">sys</span><span class="o">.</span><span class="n">path</span><span class="p">:</span>
         <span class="n">sys</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">ph_dir</span><span class="p">)</span>
 
@@ -576,7 +530,7 @@ By Andrea Brugnoli, Ramy Rashad, Stefano Stramigioli, Yi Zhang and more
   <div class="footer-item">
     
 <div class="extra_footer">
-  <div>Last updated on December 02, 2023, 09:46:39, W. Europe Standard Time</div>
+  <div>Last updated on February 01, 2024, 22:20:29, 中国标准时间</div>
 </div>
   </div>
   

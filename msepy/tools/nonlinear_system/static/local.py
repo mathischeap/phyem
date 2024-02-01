@@ -9,7 +9,7 @@ from msepy.tools.gathering_matrix import RegularGatheringMatrix
 from msepy.tools.matrix.static.local import MsePyStaticLocalMatrix
 from msepy.tools.vector.static.local import MsePyStaticLocalVector
 from msepy.form.cochain.vector.static import MsePyRootFormStaticCochainVector
-from msepy.form.static import MsePyRootFormStaticCopy
+from msepy.form.addons.static import MsePyRootFormStaticCopy
 from msepy.form.main import MsePyRootForm
 from msepy.tools.nonlinear_system.static.customize import MsePyStaticNonlinearSystemCustomize
 from msepy.tools.nonlinear_system.static.solve.main import MsePyStaticNonlinearSystemSolve

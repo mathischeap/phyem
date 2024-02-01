@@ -1,5 +1,4 @@
 
-
 <!DOCTYPE html>
 
 
@@ -28,20 +27,20 @@
 <link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../_static/vendor/fontawesome/6.1.2/webfonts/fa-brands-400.woff2" />
 <link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../_static/vendor/fontawesome/6.1.2/webfonts/fa-regular-400.woff2" />
 
-    <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css?v=a746c00c" />
     <link rel="stylesheet" href="../../../../_static/styles/sphinx-book-theme.css?digest=14f4ca6b54d191a8c7657f6c759bf11a5fb86285" type="text/css" />
-    <link rel="stylesheet" type="text/css" href="../../../../_static/copybutton.css" />
+    <link rel="stylesheet" type="text/css" href="../../../../_static/copybutton.css?v=76b2166b" />
   
   <!-- Pre-loaded scripts that we'll load fully later -->
   <link rel="preload" as="script" href="../../../../_static/scripts/bootstrap.js?digest=ac02cc09edc035673794" />
 <link rel="preload" as="script" href="../../../../_static/scripts/pydata-sphinx-theme.js?digest=ac02cc09edc035673794" />
   <script src="../../../../_static/vendor/fontawesome/6.1.2/js/all.min.js?digest=ac02cc09edc035673794"></script>
 
-    <script data-url_root="../../../../" id="documentation_options" src="../../../../_static/documentation_options.js"></script>
-    <script src="../../../../_static/doctools.js"></script>
-    <script src="../../../../_static/sphinx_highlight.js"></script>
-    <script src="../../../../_static/clipboard.min.js"></script>
-    <script src="../../../../_static/copybutton.js"></script>
+    <script src="../../../../_static/documentation_options.js?v=c73c0f3e"></script>
+    <script src="../../../../_static/doctools.js?v=888ff710"></script>
+    <script src="../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../../../_static/clipboard.min.js?v=a7894cd8"></script>
+    <script src="../../../../_static/copybutton.js?v=f281be69"></script>
     <script src="../../../../_static/scripts/sphinx-book-theme.js?digest=5a5c038af52cf7bc1a1ec88eea08e6366ee68824"></script>
     <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
     <script>DOCUMENTATION_OPTIONS.pagename = '_modules/src/wf/mp/main';</script>
@@ -466,7 +465,9 @@ document.write(`
 <span class="kn">from</span> <span class="nn">src.wf.mp.nonlinear_system</span> <span class="kn">import</span> <span class="n">MatrixProxyNoneLinearSystem</span>
 
 
-<div class="viewcode-block" id="MatrixProxy"><a class="viewcode-back" href="../../../../tutorial/docs/ap.html#src.wf.mp.main.MatrixProxy">[docs]</a><span class="k">class</span> <span class="nc">MatrixProxy</span><span class="p">(</span><span class="n">Frozen</span><span class="p">):</span>
+<div class="viewcode-block" id="MatrixProxy">
+<a class="viewcode-back" href="../../../../tutorial/docs/ap.html#src.wf.mp.main.MatrixProxy">[docs]</a>
+<span class="k">class</span> <span class="nc">MatrixProxy</span><span class="p">(</span><span class="n">Frozen</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;&quot;&quot;&quot;</span>
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">wf</span><span class="p">):</span>
@@ -856,7 +857,9 @@ document.write(`
         <span class="n">seek_text</span> <span class="o">+=</span> <span class="s1">&#39;$, such that</span><span class="se">\n</span><span class="s1">&#39;</span>
         <span class="k">return</span> <span class="n">seek_text</span>
 
-<div class="viewcode-block" id="MatrixProxy.pr"><a class="viewcode-back" href="../../../../tutorial/docs/ap.html#src.wf.mp.main.MatrixProxy.pr">[docs]</a>    <span class="k">def</span> <span class="nf">pr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">12</span><span class="p">,</span> <span class="mi">8</span><span class="p">)):</span>
+<div class="viewcode-block" id="MatrixProxy.pr">
+<a class="viewcode-back" href="../../../../tutorial/docs/ap.html#src.wf.mp.main.MatrixProxy.pr">[docs]</a>
+    <span class="k">def</span> <span class="nf">pr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">12</span><span class="p">,</span> <span class="mi">8</span><span class="p">)):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Print the representation, a figure, of this weak formulation.</span>
 
 <span class="sd">        Parameters</span>
@@ -889,6 +892,7 @@ document.write(`
             <span class="n">plt</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">()</span>
             <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">(</span><span class="n">block</span><span class="o">=</span><span class="n">_setting</span><span class="p">[</span><span class="s1">&#39;block&#39;</span><span class="p">])</span>
         <span class="k">return</span> <span class="n">fig</span></div>
+
 
     <span class="k">def</span> <span class="nf">_parse_ls</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;&quot;&quot;&quot;</span>
@@ -927,7 +931,9 @@ document.write(`
 
         <span class="k">return</span> <span class="n">ls</span>
 
-<div class="viewcode-block" id="MatrixProxy.ls"><a class="viewcode-back" href="../../../../tutorial/docs/ap.html#src.wf.mp.main.MatrixProxy.ls">[docs]</a>    <span class="k">def</span> <span class="nf">ls</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="MatrixProxy.ls">
+<a class="viewcode-back" href="../../../../tutorial/docs/ap.html#src.wf.mp.main.MatrixProxy.ls">[docs]</a>
+    <span class="k">def</span> <span class="nf">ls</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Convert self to an abstract linear system.</span>
 
 <span class="sd">        Returns</span>
@@ -940,7 +946,10 @@ document.write(`
         <span class="n">ls</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_parse_ls</span><span class="p">()</span>
         <span class="k">return</span> <span class="n">MatrixProxyLinearSystem</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ls</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">bc</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="MatrixProxy.nls"><a class="viewcode-back" href="../../../../tutorial/docs/ap.html#src.wf.mp.main.MatrixProxy.nls">[docs]</a>    <span class="k">def</span> <span class="nf">nls</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+
+<div class="viewcode-block" id="MatrixProxy.nls">
+<a class="viewcode-back" href="../../../../tutorial/docs/ap.html#src.wf.mp.main.MatrixProxy.nls">[docs]</a>
+    <span class="k">def</span> <span class="nf">nls</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Convert self to an abstract nonlinear system.</span>
 
 <span class="sd">        Returns</span>
@@ -963,6 +972,7 @@ document.write(`
         <span class="p">)</span>
         <span class="k">return</span> <span class="n">MatrixProxyNoneLinearSystem</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">mp_ls</span><span class="p">,</span> <span class="n">nls</span><span class="p">)</span></div>
 
+
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">bc</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_bc</span>
@@ -970,6 +980,7 @@ document.write(`
     <span class="k">def</span> <span class="nf">_pr_temporal_advancing</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_wf</span><span class="o">.</span><span class="n">_pr_temporal_advancing</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
+
 </pre></div>
 
                 </article>
@@ -1021,7 +1032,7 @@ By Andrea Brugnoli, Ramy Rashad, Stefano Stramigioli, Yi Zhang and more
   <div class="footer-item">
     
 <div class="extra_footer">
-  <div>Last updated on December 02, 2023, 09:46:39, W. Europe Standard Time</div>
+  <div>Last updated on February 01, 2024, 22:20:29, 中国标准时间</div>
 </div>
   </div>
   

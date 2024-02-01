@@ -93,7 +93,27 @@ class _WeakFormulationTerm(Frozen):
 
     def add_extra_info(self, info_dict):
         """"""
+        if not isinstance(info_dict, dict):
+            raise Exception('put info in a dict with keys being indicators.')
         self._extra_info.update(info_dict)
+        self._check_extra_info()
+
+    def _check_extra_info(self):
+        """"""
+        for indicator in self._extra_info:
+            if indicator == 'known-cross-product-form':
+                cross_product_lin = _global_operator_lin_repr_setting['cross_product']
+                assert cross_product_lin in self._f0._lin_repr or cross_product_lin in self._f1._lin_repr
+                known_forms = self._extra_info[indicator]
+                if isinstance(known_forms, (list, tuple)):
+                    pass
+                else:
+                    known_forms = [known_forms]
+
+                for kf in known_forms:
+                    assert kf in self._efs, f"form {kf} is not a valid elementary form."
+            else:
+                raise Exception()
 
     @property
     def _sym_repr(self):

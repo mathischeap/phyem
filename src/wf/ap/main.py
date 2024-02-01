@@ -172,7 +172,7 @@ class AlgebraicProxy(Frozen):
                             pass
 
                         if color == 'r':  # this term is not converted into algebraic proxy yet!
-                            term_sym_repr = r"\left[" + term_sym_repr + r"\right]^{!}"
+                            term_sym_repr = r"\left[\left[" + term_sym_repr + r"\right]\right]^{!}"
                         else:
                             pass
 

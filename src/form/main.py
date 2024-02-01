@@ -394,10 +394,10 @@ class Form(Frozen):
             sym_repr = self_sr + operator_sym + other_sr
 
             f = Form(
-                self.space,  # space
+                self.space,        # space
                 sym_repr,          # symbolic representation
                 lin_repr,          # linguistic representation
-                False,       # must not be a root-form anymore.
+                False,      # must not be a root-form anymore.
             )
             return f
 
@@ -422,9 +422,9 @@ class Form(Frozen):
             sym_repr = self_sr + operator_sym + other_sr
 
             f = Form(
-                self.space,  # space
-                sym_repr,          # symbolic representation
-                lin_repr,          # linguistic representation
+                self.space,         # space
+                sym_repr,           # symbolic representation
+                lin_repr,           # linguistic representation
                 False,       # must not be a root-form anymore.
             )
             return f
@@ -457,9 +457,9 @@ class Form(Frozen):
                     sr = cs._sym_repr + r'\left(' + sr + r'\right)'
 
             f = Form(
-                self.space,  # space
-                sr,          # symbolic representation
-                lr,          # linguistic representation
+                self.space,         # space
+                sr,                 # symbolic representation
+                lr,                 # linguistic representation
                 False,       # not a root-form anymore.
             )
             return f
@@ -486,9 +486,9 @@ class Form(Frozen):
                 lr = r'\{' + lr + r'\}' + operator_lin + cs._lin_repr
             sr = operator_sym[0] + sr + operator_sym[1] + cs._sym_repr + operator_sym[2]
             f = Form(
-                self.space,  # space
-                sr,          # symbolic representation
-                lr,          # linguistic representation
+                self.space,         # space
+                sr,                 # symbolic representation
+                lr,                 # linguistic representation
                 False,       # not a root-form anymore.
             )
             return f
@@ -498,7 +498,19 @@ class Form(Frozen):
 
     def _evaluate_at(self, other):
         """evaluate_at"""
-        if other.__class__.__name__ == 'AbstractTimeInstant':
+        from src.time_sequence import AbstractTimeInstant
+        from src.time_sequence import _global_abstract_time_sequence
+
+        if isinstance(other, str) and len(_global_abstract_time_sequence) == 1:
+            # when there is only one abstract time sequence at behind, we can
+            # access its abstract time instant by str directly.
+            the_only_ats_lin_repr = list(_global_abstract_time_sequence.keys())[0]
+            the_only_ats = _global_abstract_time_sequence[the_only_ats_lin_repr]
+            other = the_only_ats[other]
+        else:
+            pass
+
+        if other.__class__ is AbstractTimeInstant:
             ati = other
             assert self.is_root(), f"Can only evaluate a root form at an abstract time instant."
             sym_repr = self._sym_repr

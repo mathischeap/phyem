@@ -53,7 +53,7 @@ def msepy_root_array_parser(dls, array_lin_repr):
 
         indicators = array_lin_repr.split(_sep)  # these section represents all info of this root-array.
         type_indicator = indicators[0]           # this first one indicates the type
-        info_indicators = indicators[1:]         # the others indicate the details.
+        info_indicators = indicators[1:]         # the _auxiliaries indicate the details.
 
         # Mass matrices, incidence matrices ---------------------------------
         if type_indicator == _find_indicator(

@@ -74,3 +74,23 @@ class _CochainAtOneTime(Frozen):
             return sum(values) / len(values)
         else:
             return values[0]
+
+    def __add__(self, other):
+        """return a 'cochain' object that can be sent to `_receive`. Not return a _CochainAtOneTime instance."""
+        if other.__class__ is not self.__class__:
+            raise TypeError(f"Type wrong.")
+
+        if self._type == 'ndarray' and other._type == 'ndarray':
+            return self.local + other.local
+        else:
+            raise NotImplementedError()
+
+    def __sub__(self, other):
+        """return a 'cochain' object that can be sent to `_receive`. Not return a _CochainAtOneTime instance."""
+        if other.__class__ is not self.__class__:
+            raise TypeError(f"Type wrong.")
+
+        if self._type == 'ndarray' and other._type == 'ndarray':
+            return self.local - other.local
+        else:
+            raise NotImplementedError()

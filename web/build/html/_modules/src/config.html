@@ -1,5 +1,4 @@
 
-
 <!DOCTYPE html>
 
 
@@ -28,20 +27,20 @@
 <link rel="preload" as="font" type="font/woff2" crossorigin href="../../_static/vendor/fontawesome/6.1.2/webfonts/fa-brands-400.woff2" />
 <link rel="preload" as="font" type="font/woff2" crossorigin href="../../_static/vendor/fontawesome/6.1.2/webfonts/fa-regular-400.woff2" />
 
-    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=a746c00c" />
     <link rel="stylesheet" href="../../_static/styles/sphinx-book-theme.css?digest=14f4ca6b54d191a8c7657f6c759bf11a5fb86285" type="text/css" />
-    <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css?v=76b2166b" />
   
   <!-- Pre-loaded scripts that we'll load fully later -->
   <link rel="preload" as="script" href="../../_static/scripts/bootstrap.js?digest=ac02cc09edc035673794" />
 <link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=ac02cc09edc035673794" />
   <script src="../../_static/vendor/fontawesome/6.1.2/js/all.min.js?digest=ac02cc09edc035673794"></script>
 
-    <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
-    <script src="../../_static/doctools.js"></script>
-    <script src="../../_static/sphinx_highlight.js"></script>
-    <script src="../../_static/clipboard.min.js"></script>
-    <script src="../../_static/copybutton.js"></script>
+    <script src="../../_static/documentation_options.js?v=c73c0f3e"></script>
+    <script src="../../_static/doctools.js?v=888ff710"></script>
+    <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
+    <script src="../../_static/copybutton.js?v=f281be69"></script>
     <script src="../../_static/scripts/sphinx-book-theme.js?digest=5a5c038af52cf7bc1a1ec88eea08e6366ee68824"></script>
     <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
     <script>DOCUMENTATION_OPTIONS.pagename = '_modules/src/config';</script>
@@ -449,7 +448,9 @@ document.write(`
 <span class="p">}</span>
 
 
-<div class="viewcode-block" id="set_embedding_space_dim"><a class="viewcode-back" href="../../tutorial/docs/presetting.html#src.config.set_embedding_space_dim">[docs]</a><span class="k">def</span> <span class="nf">set_embedding_space_dim</span><span class="p">(</span><span class="n">ndim</span><span class="p">):</span>
+<div class="viewcode-block" id="set_embedding_space_dim">
+<a class="viewcode-back" href="../../tutorial/docs/presetting.html#src.config.set_embedding_space_dim">[docs]</a>
+<span class="k">def</span> <span class="nf">set_embedding_space_dim</span><span class="p">(</span><span class="n">ndim</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;To set the dimensions of the space where our simulation problem is defined, i.e., the embedding space.</span>
 <span class="sd">    The default dimensions are 2.</span>
 
@@ -465,7 +466,10 @@ document.write(`
     <span class="n">_clear_pr_cache</span><span class="p">()</span></div>
 
 
-<div class="viewcode-block" id="set_high_accuracy"><a class="viewcode-back" href="../../tutorial/docs/presetting.html#src.config.set_high_accuracy">[docs]</a><span class="k">def</span> <span class="nf">set_high_accuracy</span><span class="p">(</span><span class="n">_bool</span><span class="p">):</span>
+
+<div class="viewcode-block" id="set_high_accuracy">
+<a class="viewcode-back" href="../../tutorial/docs/presetting.html#src.config.set_high_accuracy">[docs]</a>
+<span class="k">def</span> <span class="nf">set_high_accuracy</span><span class="p">(</span><span class="n">_bool</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;*phyem* may trade for higher accuracy in the cost of losing a little performance. Turn this feature</span>
 <span class="sd">    on or off through this function. The default value is ``True``.</span>
 
@@ -483,7 +487,10 @@ document.write(`
     <span class="n">_setting</span><span class="p">[</span><span class="s1">&#39;high_accuracy&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">_bool</span></div>
 
 
-<div class="viewcode-block" id="set_pr_cache"><a class="viewcode-back" href="../../tutorial/docs/presetting.html#src.config.set_pr_cache">[docs]</a><span class="k">def</span> <span class="nf">set_pr_cache</span><span class="p">(</span><span class="n">_bool</span><span class="p">):</span>
+
+<div class="viewcode-block" id="set_pr_cache">
+<a class="viewcode-back" href="../../tutorial/docs/presetting.html#src.config.set_pr_cache">[docs]</a>
+<span class="k">def</span> <span class="nf">set_pr_cache</span><span class="p">(</span><span class="n">_bool</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot; The abbreviation `pr` stands for `print representation`.</span>
 <span class="sd">    Many classes in *phyem* have the ``pr`` method. Calling it of an instance by ``.pr()`` will usually invoke</span>
 <span class="sd">    the ``matplotlib`` and ``LaTeX`` pakages to render a picture which proper illustrates the instance.</span>
@@ -501,6 +508,7 @@ document.write(`
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">assert</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">_bool</span><span class="p">,</span> <span class="nb">bool</span><span class="p">),</span> <span class="sa">f</span><span class="s2">&quot;give me True or False&quot;</span>
     <span class="n">_setting</span><span class="p">[</span><span class="s1">&#39;pr_cache&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">_bool</span></div>
+
 
 
 <span class="k">def</span> <span class="nf">_pr_cache</span><span class="p">(</span><span class="n">fig</span><span class="p">,</span> <span class="n">filename</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
@@ -799,6 +807,8 @@ document.write(`
     <span class="s1">&#39;(,d)&#39;</span><span class="p">:</span> <span class="s1">&#39;(rf, d rf)&#39;</span><span class="p">,</span>
     <span class="s1">&#39;&lt;,d&gt;&#39;</span><span class="p">:</span> <span class="s1">&#39;&lt;dual-rf, d rf&gt;&#39;</span><span class="p">,</span>
 
+    <span class="s1">&#39;(d,d)&#39;</span><span class="p">:</span> <span class="s1">&#39;(d rf, d rf)&#39;</span><span class="p">,</span>
+
     <span class="s1">&#39;(&lt;db&gt;,d&lt;b&gt;)&#39;</span><span class="p">:</span> <span class="s1">&#39;(root-diagonal-bf, d root-bf)&#39;</span><span class="p">,</span>
 
     <span class="s1">&#39;&lt;tr star | tr &gt;&#39;</span><span class="p">:</span> <span class="s1">&#39;&lt;tr star rf | trace rf&gt;&#39;</span><span class="p">,</span>
@@ -808,6 +818,10 @@ document.write(`
     <span class="s1">&#39;(*x*,)&#39;</span><span class="p">:</span> <span class="sa">r</span><span class="s1">&#39;(krf $\times$ krf, rf)&#39;</span><span class="p">,</span>   <span class="c1"># vector</span>
     <span class="s1">&#39;(*x,)&#39;</span><span class="p">:</span> <span class="sa">r</span><span class="s1">&#39;(krf $\times$ rf, rf)&#39;</span><span class="p">,</span>
     <span class="s1">&#39;(x*,)&#39;</span><span class="p">:</span> <span class="sa">r</span><span class="s1">&#39;(rf $\times$ krf, rf)&#39;</span><span class="p">,</span>
+
+    <span class="s1">&#39;(*x,d)&#39;</span><span class="p">:</span> <span class="sa">r</span><span class="s2">&quot;(krf $\times$ rf, d rf)&quot;</span><span class="p">,</span>
+    <span class="s1">&#39;(x*,d)&#39;</span><span class="p">:</span> <span class="sa">r</span><span class="s2">&quot;(rf $\times$ krf, d rf)&quot;</span><span class="p">,</span>
+    <span class="s1">&#39;(*x*,d)&#39;</span><span class="p">:</span> <span class="sa">r</span><span class="s2">&quot;(krf $\times$ krf, d rf)&quot;</span><span class="p">,</span>   <span class="c1"># vector</span>
 
     <span class="s1">&#39;(x,)&#39;</span><span class="p">:</span> <span class="sa">r</span><span class="s1">&#39;(rf $\times$ rf, rf)&#39;</span><span class="p">,</span>   <span class="c1"># nonlinear term.</span>
 
@@ -881,7 +895,7 @@ By Andrea Brugnoli, Ramy Rashad, Stefano Stramigioli, Yi Zhang and more
   <div class="footer-item">
     
 <div class="extra_footer">
-  <div>Last updated on December 02, 2023, 09:46:39, W. Europe Standard Time</div>
+  <div>Last updated on February 01, 2024, 22:20:29, 中国标准时间</div>
 </div>
   </div>
   

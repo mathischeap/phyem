@@ -11,7 +11,7 @@ def memoize1(func):
     - ``+``: Can be used for frozen object.
     - ``+``: Can be used for numpy.ndarray inputs. But normally when we can have numpy.ndarray as input,
         we do not use @memoize because storing the input may need a lot of memory.
-    - ``-``: it is relatively slower than others.
+    - ``-``: it is relatively slower than _auxiliaries.
     - ``-``: kwargs seem not to cached in keys at all.
     """
     cache = func.cache = dict()

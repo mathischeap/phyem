@@ -1,5 +1,4 @@
 
-
 <!DOCTYPE html>
 
 
@@ -28,20 +27,20 @@
 <link rel="preload" as="font" type="font/woff2" crossorigin href="../../../_static/vendor/fontawesome/6.1.2/webfonts/fa-brands-400.woff2" />
 <link rel="preload" as="font" type="font/woff2" crossorigin href="../../../_static/vendor/fontawesome/6.1.2/webfonts/fa-regular-400.woff2" />
 
-    <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=a746c00c" />
     <link rel="stylesheet" href="../../../_static/styles/sphinx-book-theme.css?digest=14f4ca6b54d191a8c7657f6c759bf11a5fb86285" type="text/css" />
-    <link rel="stylesheet" type="text/css" href="../../../_static/copybutton.css" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/copybutton.css?v=76b2166b" />
   
   <!-- Pre-loaded scripts that we'll load fully later -->
   <link rel="preload" as="script" href="../../../_static/scripts/bootstrap.js?digest=ac02cc09edc035673794" />
 <link rel="preload" as="script" href="../../../_static/scripts/pydata-sphinx-theme.js?digest=ac02cc09edc035673794" />
   <script src="../../../_static/vendor/fontawesome/6.1.2/js/all.min.js?digest=ac02cc09edc035673794"></script>
 
-    <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js"></script>
-    <script src="../../../_static/doctools.js"></script>
-    <script src="../../../_static/sphinx_highlight.js"></script>
-    <script src="../../../_static/clipboard.min.js"></script>
-    <script src="../../../_static/copybutton.js"></script>
+    <script src="../../../_static/documentation_options.js?v=c73c0f3e"></script>
+    <script src="../../../_static/doctools.js?v=888ff710"></script>
+    <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../../_static/clipboard.min.js?v=a7894cd8"></script>
+    <script src="../../../_static/copybutton.js?v=f281be69"></script>
     <script src="../../../_static/scripts/sphinx-book-theme.js?digest=5a5c038af52cf7bc1a1ec88eea08e6366ee68824"></script>
     <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
     <script>DOCUMENTATION_OPTIONS.pagename = '_modules/src/spaces/main';</script>
@@ -467,7 +466,9 @@ document.write(`
 <span class="p">}</span>
 
 
-<div class="viewcode-block" id="new"><a class="viewcode-back" href="../../../tutorial/docs/space_form.html#src.spaces.main.new">[docs]</a><span class="k">def</span> <span class="nf">new</span><span class="p">(</span><span class="n">abbr</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="n">mesh</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<div class="viewcode-block" id="new">
+<a class="viewcode-back" href="../../../tutorial/docs/space_form.html#src.spaces.main.new">[docs]</a>
+<span class="k">def</span> <span class="nf">new</span><span class="p">(</span><span class="n">abbr</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="n">mesh</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Generate a spaces on the mesh.</span>
 
 <span class="sd">    Parameters</span>
@@ -534,6 +535,7 @@ document.write(`
     <span class="k">return</span> <span class="n">space</span></div>
 
 
+
 <span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span>
     <span class="s1">&#39;_VarSetting_mass_matrix&#39;</span><span class="p">,</span>                     <span class="c1">#</span>
     <span class="s1">&#39;_VarSetting_d_matrix&#39;</span><span class="p">,</span>                        <span class="c1">#</span>
@@ -560,6 +562,10 @@ document.write(`
 
     <span class="s1">&#39;_VarSetting_IP_matrix_db_bf&#39;</span><span class="p">,</span>                <span class="c1">#</span>
     <span class="s1">&#39;_VarSetting_IP_matrix_bf_db&#39;</span><span class="p">,</span>                <span class="c1">#</span>
+
+    <span class="c1"># &#39;_VarSetting_A_x_astB_ip_dC&#39;,                 # (A x B, dC)</span>
+    <span class="c1"># &#39;_VarSetting_astA_x_B_ip_dC&#39;,                 # (A x B, dC)</span>
+    <span class="c1"># &#39;_VarSetting_astA_x_astB_ip_dC&#39;,              # (A x B, dC)</span>
 <span class="p">]</span>
 
 <span class="c1"># ------ basic -----------------------------------------------------------------------------------</span>
@@ -617,6 +623,23 @@ document.write(`
     <span class="sa">r</span><span class="s2">&quot;\mathsf</span><span class="si">{X}</span><span class="s2">&quot;</span><span class="p">,</span>
     <span class="n">_sep</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="s2">&quot;_X_:&quot;</span><span class="p">,</span> <span class="s2">&quot;[</span><span class="si">{A}</span><span class="s2">]&quot;</span><span class="p">,</span> <span class="s2">&quot;[</span><span class="si">{B}</span><span class="s2">]&quot;</span><span class="p">,</span> <span class="s2">&quot;[</span><span class="si">{C}</span><span class="s2">]&quot;</span><span class="p">]),</span>
 <span class="p">]</span>
+
+<span class="c1"># --------------- (A x B, dC) -------------------------------------------------------</span>
+
+<span class="c1"># _VarSetting_A_x_astB_ip_dC = [</span>
+<span class="c1">#     r&quot;\mathsf{C}_d&quot;,</span>
+<span class="c1">#     _sep.join([&quot;_XipD:&quot;, &quot;[{A}]&quot;, &quot;[{B}]&quot;, &quot;[{C}]&quot;])</span>
+<span class="c1"># ]</span>
+<span class="c1">#</span>
+<span class="c1"># _VarSetting_astA_x_B_ip_dC = [</span>
+<span class="c1">#     r&quot;\mathsf{c}_d&quot;,</span>
+<span class="c1">#     _sep.join([&quot;X_ipD:&quot;, &quot;[{A}]&quot;, &quot;[{B}]&quot;, &quot;[{C}]&quot;])</span>
+<span class="c1"># ]</span>
+<span class="c1">#</span>
+<span class="c1"># _VarSetting_astA_x_astB_ip_dC = [</span>
+<span class="c1">#     r&quot;\mathsf{X}_d&quot;,</span>
+<span class="c1">#     _sep.join([&quot;XipD:&quot;, &quot;[{A}]&quot;, &quot;[{B}]&quot;, &quot;[{C}]&quot;])</span>
+<span class="c1"># ]</span>
 
 <span class="c1"># -----(dA, B otimes C) --------------------------------------------------------------------------</span>
 
@@ -838,7 +861,7 @@ By Andrea Brugnoli, Ramy Rashad, Stefano Stramigioli, Yi Zhang and more
   <div class="footer-item">
     
 <div class="extra_footer">
-  <div>Last updated on December 02, 2023, 09:46:39, W. Europe Standard Time</div>
+  <div>Last updated on February 01, 2024, 22:20:29, 中国标准时间</div>
 </div>
   </div>
   

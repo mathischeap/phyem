@@ -1,5 +1,4 @@
 
-
 <!DOCTYPE html>
 
 
@@ -29,20 +28,20 @@
 <link rel="preload" as="font" type="font/woff2" crossorigin href="../../_static/vendor/fontawesome/6.1.2/webfonts/fa-brands-400.woff2" />
 <link rel="preload" as="font" type="font/woff2" crossorigin href="../../_static/vendor/fontawesome/6.1.2/webfonts/fa-regular-400.woff2" />
 
-    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=a746c00c" />
     <link rel="stylesheet" href="../../_static/styles/sphinx-book-theme.css?digest=14f4ca6b54d191a8c7657f6c759bf11a5fb86285" type="text/css" />
-    <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css?v=76b2166b" />
   
   <!-- Pre-loaded scripts that we'll load fully later -->
   <link rel="preload" as="script" href="../../_static/scripts/bootstrap.js?digest=ac02cc09edc035673794" />
 <link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=ac02cc09edc035673794" />
   <script src="../../_static/vendor/fontawesome/6.1.2/js/all.min.js?digest=ac02cc09edc035673794"></script>
 
-    <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
-    <script src="../../_static/doctools.js"></script>
-    <script src="../../_static/sphinx_highlight.js"></script>
-    <script src="../../_static/clipboard.min.js"></script>
-    <script src="../../_static/copybutton.js"></script>
+    <script src="../../_static/documentation_options.js?v=c73c0f3e"></script>
+    <script src="../../_static/doctools.js?v=888ff710"></script>
+    <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
+    <script src="../../_static/copybutton.js?v=f281be69"></script>
     <script src="../../_static/scripts/sphinx-book-theme.js?digest=5a5c038af52cf7bc1a1ec88eea08e6366ee68824"></script>
     <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
     <script>DOCUMENTATION_OPTIONS.pagename = 'tutorial/docs/ap';</script>
@@ -462,13 +461,13 @@ document.write(`
                 <article class="bd-article" role="main">
                   
   <section id="algebraic-proxy">
-<span id="docs-ap"></span><h1><span class="section-number">6. </span>Algebraic proxy<a class="headerlink" href="#algebraic-proxy" title="Permalink to this heading">#</a></h1>
+<span id="docs-ap"></span><h1><span class="section-number">6. </span>Algebraic proxy<a class="headerlink" href="#algebraic-proxy" title="Link to this heading">#</a></h1>
 <aside class="topic">
 <p class="topic-title">Estimated reading time</p>
 <p>⏱️ 5 minutes</p>
 </aside>
-<span class="target" id="module-src.wf.mp.main"></span><section id="matrix-proxy">
-<span id="ap-mp"></span><h2><span class="section-number">6.1. </span>Matrix proxy<a class="headerlink" href="#matrix-proxy" title="Permalink to this heading">#</a></h2>
+<section id="matrix-proxy">
+<span id="ap-mp"></span><span id="module-src.wf.mp.main"></span><h2><span class="section-number">6.1. </span>Matrix proxy<a class="headerlink" href="#matrix-proxy" title="Link to this heading">#</a></h2>
 <p>With the fully discrete weak formulation <code class="docutils literal notranslate"><span class="pre">wf</span></code>, we can bring it into its algebraic proxy by calling its method
 <code class="docutils literal notranslate"><span class="pre">mp</span></code>, standing for <em>matrix proxy</em>,</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">mp</span> <span class="o">=</span> <span class="n">wf</span><span class="o">.</span><span class="n">mp</span><span class="p">()</span>
@@ -478,10 +477,10 @@ document.write(`
 <blockquote>
 <div><dl class="py class">
 <dt class="sig sig-object py" id="src.wf.mp.main.MatrixProxy">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">MatrixProxy</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">wf</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/src/wf/mp/main.html#MatrixProxy"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#src.wf.mp.main.MatrixProxy" title="Permalink to this definition">#</a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">MatrixProxy</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">wf</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/src/wf/mp/main.html#MatrixProxy"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#src.wf.mp.main.MatrixProxy" title="Link to this definition">#</a></dt>
 <dd><dl class="py method">
 <dt class="sig sig-object py" id="src.wf.mp.main.MatrixProxy.ls">
-<span class="sig-name descname"><span class="pre">ls</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/src/wf/mp/main.html#MatrixProxy.ls"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#src.wf.mp.main.MatrixProxy.ls" title="Permalink to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">ls</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/src/wf/mp/main.html#MatrixProxy.ls"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#src.wf.mp.main.MatrixProxy.ls" title="Link to this definition">#</a></dt>
 <dd><p>Convert self to an abstract linear system.</p>
 <dl class="field-list">
 <dt class="field-odd">Returns<span class="colon">:</span></dt>
@@ -495,7 +494,7 @@ document.write(`
 
 <dl class="py method">
 <dt class="sig sig-object py" id="src.wf.mp.main.MatrixProxy.nls">
-<span class="sig-name descname"><span class="pre">nls</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/src/wf/mp/main.html#MatrixProxy.nls"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#src.wf.mp.main.MatrixProxy.nls" title="Permalink to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">nls</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/src/wf/mp/main.html#MatrixProxy.nls"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#src.wf.mp.main.MatrixProxy.nls" title="Link to this definition">#</a></dt>
 <dd><p>Convert self to an abstract nonlinear system.</p>
 <dl class="field-list">
 <dt class="field-odd">Returns<span class="colon">:</span></dt>
@@ -509,7 +508,7 @@ document.write(`
 
 <dl class="py method">
 <dt class="sig sig-object py" id="src.wf.mp.main.MatrixProxy.pr">
-<span class="sig-name descname"><span class="pre">pr</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">figsize</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">(12,</span> <span class="pre">8)</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/src/wf/mp/main.html#MatrixProxy.pr"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#src.wf.mp.main.MatrixProxy.pr" title="Permalink to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">pr</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">figsize</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">(12,</span> <span class="pre">8)</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/src/wf/mp/main.html#MatrixProxy.pr"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#src.wf.mp.main.MatrixProxy.pr" title="Link to this definition">#</a></dt>
 <dd><p>Print the representation, a figure, of this weak formulation.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -532,7 +531,7 @@ applied when it is the case. The default value is <code class="docutils literal 
 </div>
 </section>
 <section id="algebraic-representation">
-<span id="ap-ap"></span><h2><span class="section-number">6.2. </span>Algebraic representation<a class="headerlink" href="#algebraic-representation" title="Permalink to this heading">#</a></h2>
+<span id="ap-ap"></span><h2><span class="section-number">6.2. </span>Algebraic representation<a class="headerlink" href="#algebraic-representation" title="Link to this heading">#</a></h2>
 <p>Depend on <code class="docutils literal notranslate"><span class="pre">mp</span></code> is linear or nonlinear, an algebraic system can be produced
 through either method <code class="docutils literal notranslate"><span class="pre">ls</span></code> or <code class="docutils literal notranslate"><span class="pre">nls</span></code> of <code class="docutils literal notranslate"><span class="pre">mp</span></code>,
 see <a class="reference internal" href="#src.wf.mp.main.MatrixProxy.ls" title="src.wf.mp.main.MatrixProxy.ls"><code class="xref py py-meth docutils literal notranslate"><span class="pre">MatrixProxy.ls()</span></code></a> and <a class="reference internal" href="#src.wf.mp.main.MatrixProxy.nls" title="src.wf.mp.main.MatrixProxy.nls"><code class="xref py py-meth docutils literal notranslate"><span class="pre">MatrixProxy.nls()</span></code></a>.</p>
@@ -540,7 +539,7 @@ see <a class="reference internal" href="#src.wf.mp.main.MatrixProxy.ls" title="s
 <blockquote>
 <div><dl class="py class">
 <dt class="sig sig-object py" id="src.wf.mp.main.MatrixProxyLinearSystem">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">MatrixProxyLinearSystem</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">mp</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ls</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mp_bc</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/src/wf/mp/linear_system.html#MatrixProxyLinearSystem"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#src.wf.mp.main.MatrixProxyLinearSystem" title="Permalink to this definition">#</a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">MatrixProxyLinearSystem</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">mp</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ls</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mp_bc</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/src/wf/mp/linear_system.html#MatrixProxyLinearSystem"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#src.wf.mp.main.MatrixProxyLinearSystem" title="Link to this definition">#</a></dt>
 <dd></dd></dl>
 
 </div></blockquote>
@@ -548,7 +547,7 @@ see <a class="reference internal" href="#src.wf.mp.main.MatrixProxy.ls" title="s
 <blockquote>
 <div><dl class="py class">
 <dt class="sig sig-object py" id="src.wf.mp.main.MatrixProxyNoneLinearSystem">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">MatrixProxyNoneLinearSystem</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">mp</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mp_ls</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">nls</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/src/wf/mp/nonlinear_system.html#MatrixProxyNoneLinearSystem"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#src.wf.mp.main.MatrixProxyNoneLinearSystem" title="Permalink to this definition">#</a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">MatrixProxyNoneLinearSystem</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">mp</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mp_ls</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">nls</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/src/wf/mp/nonlinear_system.html#MatrixProxyNoneLinearSystem"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#src.wf.mp.main.MatrixProxyNoneLinearSystem" title="Link to this definition">#</a></dt>
 <dd></dd></dl>
 
 </div></blockquote>
@@ -667,7 +666,7 @@ By Andrea Brugnoli, Ramy Rashad, Stefano Stramigioli, Yi Zhang and more
   <div class="footer-item">
     
 <div class="extra_footer">
-  <div>Last updated on December 02, 2023, 09:46:39, W. Europe Standard Time</div>
+  <div>Last updated on February 01, 2024, 22:20:29, 中国标准时间</div>
 </div>
   </div>
   

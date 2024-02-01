@@ -1,5 +1,4 @@
 
-
 <!DOCTYPE html>
 
 
@@ -29,20 +28,20 @@
 <link rel="preload" as="font" type="font/woff2" crossorigin href="../../_static/vendor/fontawesome/6.1.2/webfonts/fa-brands-400.woff2" />
 <link rel="preload" as="font" type="font/woff2" crossorigin href="../../_static/vendor/fontawesome/6.1.2/webfonts/fa-regular-400.woff2" />
 
-    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=a746c00c" />
     <link rel="stylesheet" href="../../_static/styles/sphinx-book-theme.css?digest=14f4ca6b54d191a8c7657f6c759bf11a5fb86285" type="text/css" />
-    <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css?v=76b2166b" />
   
   <!-- Pre-loaded scripts that we'll load fully later -->
   <link rel="preload" as="script" href="../../_static/scripts/bootstrap.js?digest=ac02cc09edc035673794" />
 <link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=ac02cc09edc035673794" />
   <script src="../../_static/vendor/fontawesome/6.1.2/js/all.min.js?digest=ac02cc09edc035673794"></script>
 
-    <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
-    <script src="../../_static/doctools.js"></script>
-    <script src="../../_static/sphinx_highlight.js"></script>
-    <script src="../../_static/clipboard.min.js"></script>
-    <script src="../../_static/copybutton.js"></script>
+    <script src="../../_static/documentation_options.js?v=c73c0f3e"></script>
+    <script src="../../_static/doctools.js?v=888ff710"></script>
+    <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
+    <script src="../../_static/copybutton.js?v=f281be69"></script>
     <script src="../../_static/scripts/sphinx-book-theme.js?digest=5a5c038af52cf7bc1a1ec88eea08e6366ee68824"></script>
     <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
     <script>window.MathJax = {"tex": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true}, "options": {"ignoreHtmlClass": "tex2jax_ignore|mathjax_ignore|document", "processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
@@ -476,13 +475,13 @@ document.write(`
                 <article class="bd-article" role="main">
                   
   <section id="space-form">
-<span id="docs-space-form"></span><h1><span class="section-number">3. </span>Space &amp; form<a class="headerlink" href="#space-form" title="Permalink to this heading">#</a></h1>
+<span id="docs-space-form"></span><h1><span class="section-number">3. </span>Space &amp; form<a class="headerlink" href="#space-form" title="Link to this heading">#</a></h1>
 <aside class="topic">
 <p class="topic-title">Estimated reading time</p>
 <p>⏱️ 10 minutes</p>
 </aside>
-<span class="target" id="module-src.spaces.main"></span><section id="space">
-<span id="docs-space"></span><h2><span class="section-number">3.1. </span>Space<a class="headerlink" href="#space" title="Permalink to this heading">#</a></h2>
+<section id="space">
+<span id="docs-space"></span><span id="module-src.spaces.main"></span><h2><span class="section-number">3.1. </span>Space<a class="headerlink" href="#space" title="Link to this heading">#</a></h2>
 <p>Having abstract meshes, you can define abstract finite dimensional function spaces on them.
 To do so, we first need to set the target mesh by calling</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">ph</span><span class="o">.</span><span class="n">space</span><span class="o">.</span><span class="n">set_mesh</span><span class="p">(</span><span class="n">mesh</span><span class="p">)</span>
@@ -493,7 +492,7 @@ To do so, we first need to set the target mesh by calling</p>
 <blockquote>
 <div><dl class="py function">
 <dt class="sig sig-object py" id="src.spaces.main.new">
-<span class="sig-name descname"><span class="pre">new</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">abbr</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mesh</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/src/spaces/main.html#new"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#src.spaces.main.new" title="Permalink to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">new</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">abbr</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mesh</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/src/spaces/main.html#new"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#src.spaces.main.new" title="Link to this definition">#</a></dt>
 <dd><p>Generate a spaces on the mesh.</p>
 <dl class="field-list">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -554,14 +553,14 @@ The default orientation is
 <span class="go">Implemented spaces:...</span>
 </pre></div>
 </div>
-<span class="target" id="module-src.spaces.base"></span><p>Each space is an instance of a particular space class which inherits <a class="reference internal" href="#src.spaces.base.SpaceBase" title="src.spaces.base.SpaceBase"><code class="xref py py-class docutils literal notranslate"><span class="pre">SpaceBase</span></code></a>.</p>
+<p id="module-src.spaces.base">Each space is an instance of a particular space class which inherits <a class="reference internal" href="#src.spaces.base.SpaceBase" title="src.spaces.base.SpaceBase"><code class="xref py py-class docutils literal notranslate"><span class="pre">SpaceBase</span></code></a>.</p>
 <blockquote>
 <div><dl class="py class">
 <dt class="sig sig-object py" id="src.spaces.base.SpaceBase">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">SpaceBase</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">mesh</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">orientation</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/src/spaces/base.html#SpaceBase"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#src.spaces.base.SpaceBase" title="Permalink to this definition">#</a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">SpaceBase</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">mesh</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">orientation</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/src/spaces/base.html#SpaceBase"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#src.spaces.base.SpaceBase" title="Link to this definition">#</a></dt>
 <dd><dl class="py method">
 <dt class="sig sig-object py" id="src.spaces.base.SpaceBase.make_form">
-<span class="sig-name descname"><span class="pre">make_form</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">sym_repr</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lin_repr</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dual_representation</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/src/spaces/base.html#SpaceBase.make_form"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#src.spaces.base.SpaceBase.make_form" title="Permalink to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">make_form</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">sym_repr</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lin_repr</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dual_representation</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/src/spaces/base.html#SpaceBase.make_form"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#src.spaces.base.SpaceBase.make_form" title="Link to this definition">#</a></dt>
 <dd><p>Define a form which is an element of this space.</p>
 <dl class="field-list">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -585,13 +584,13 @@ The default orientation is
 
 <dl class="py property">
 <dt class="sig sig-object py" id="src.spaces.base.SpaceBase.manifold">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">manifold</span></span><a class="headerlink" href="#src.spaces.base.SpaceBase.manifold" title="Permalink to this definition">#</a></dt>
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">manifold</span></span><a class="headerlink" href="#src.spaces.base.SpaceBase.manifold" title="Link to this definition">#</a></dt>
 <dd><p>The manifold I am built on.</p>
 </dd></dl>
 
 <dl class="py property">
 <dt class="sig sig-object py" id="src.spaces.base.SpaceBase.mesh">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">mesh</span></span><a class="headerlink" href="#src.spaces.base.SpaceBase.mesh" title="Permalink to this definition">#</a></dt>
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">mesh</span></span><a class="headerlink" href="#src.spaces.base.SpaceBase.mesh" title="Link to this definition">#</a></dt>
 <dd><p>The mesh I am built on.</p>
 </dd></dl>
 
@@ -599,8 +598,8 @@ The default orientation is
 
 </div></blockquote>
 </section>
-<span class="target" id="module-src.form.main"></span><section id="form">
-<span id="docs-form"></span><h2><span class="section-number">3.2. </span>Form<a class="headerlink" href="#form" title="Permalink to this heading">#</a></h2>
+<section id="form">
+<span id="docs-form"></span><span id="module-src.form.main"></span><h2><span class="section-number">3.2. </span>Form<a class="headerlink" href="#form" title="Link to this heading">#</a></h2>
 <p>A form is simply an element of a space. Thus, it is logical to define a form through a space. To do that,
 just call the <code class="docutils literal notranslate"><span class="pre">make_form</span></code> method of the space instance (see <a class="reference internal" href="#src.spaces.base.SpaceBase.make_form" title="src.spaces.base.SpaceBase.make_form"><code class="xref py py-meth docutils literal notranslate"><span class="pre">src.spaces.base.SpaceBase.make_form()</span></code></a>).
 The following code makes an outer oriented 2-form, <code class="docutils literal notranslate"><span class="pre">a</span></code>, in space <code class="docutils literal notranslate"><span class="pre">Out2</span></code> and
@@ -620,65 +619,65 @@ it is saved to <code class="docutils literal notranslate"><span class="pre">./__
 <blockquote>
 <div><dl class="py class">
 <dt class="sig sig-object py" id="src.form.main.Form">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">Form</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">space</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sym_repr</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lin_repr</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">is_root</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">update_cache</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/src/form/main.html#Form"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#src.form.main.Form" title="Permalink to this definition">#</a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">Form</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">space</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sym_repr</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lin_repr</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">is_root</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">update_cache</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/src/form/main.html#Form"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#src.form.main.Form" title="Link to this definition">#</a></dt>
 <dd><p>The form class.</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="src.form.main.Form.codifferential">
-<span class="sig-name descname"><span class="pre">codifferential</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/src/form/main.html#Form.codifferential"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#src.form.main.Form.codifferential" title="Permalink to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">codifferential</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/src/form/main.html#Form.codifferential"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#src.form.main.Form.codifferential" title="Link to this definition">#</a></dt>
 <dd><p>The codifferential, <span class="math notranslate nohighlight">\(\mathrm{d}^\ast\)</span>, of this form.</p>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="src.form.main.Form.cross_product">
-<span class="sig-name descname"><span class="pre">cross_product</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">other</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/src/form/main.html#Form.cross_product"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#src.form.main.Form.cross_product" title="Permalink to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">cross_product</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">other</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/src/form/main.html#Form.cross_product"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#src.form.main.Form.cross_product" title="Link to this definition">#</a></dt>
 <dd><p>The cross product, <span class="math notranslate nohighlight">\(\times\)</span>, between this form and another form.</p>
 </dd></dl>
 
 <dl class="py property">
 <dt class="sig sig-object py" id="src.form.main.Form.degree">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">degree</span></span><a class="headerlink" href="#src.form.main.Form.degree" title="Permalink to this definition">#</a></dt>
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">degree</span></span><a class="headerlink" href="#src.form.main.Form.degree" title="Link to this definition">#</a></dt>
 <dd><p>This form is in the space of particular finite dimensional <code class="docutils literal notranslate"><span class="pre">degree</span></code>.</p>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="src.form.main.Form.exterior_derivative">
-<span class="sig-name descname"><span class="pre">exterior_derivative</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/src/form/main.html#Form.exterior_derivative"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#src.form.main.Form.exterior_derivative" title="Permalink to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">exterior_derivative</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/src/form/main.html#Form.exterior_derivative"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#src.form.main.Form.exterior_derivative" title="Link to this definition">#</a></dt>
 <dd><p>The exterior derivative, <span class="math notranslate nohighlight">\(\mathrm{d}\)</span>, of this form.</p>
 </dd></dl>
 
 <dl class="py property">
 <dt class="sig sig-object py" id="src.form.main.Form.manifold">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">manifold</span></span><a class="headerlink" href="#src.form.main.Form.manifold" title="Permalink to this definition">#</a></dt>
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">manifold</span></span><a class="headerlink" href="#src.form.main.Form.manifold" title="Link to this definition">#</a></dt>
 <dd><p>The manifold this form is on.</p>
 </dd></dl>
 
 <dl class="py property">
 <dt class="sig sig-object py" id="src.form.main.Form.mesh">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">mesh</span></span><a class="headerlink" href="#src.form.main.Form.mesh" title="Permalink to this definition">#</a></dt>
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">mesh</span></span><a class="headerlink" href="#src.form.main.Form.mesh" title="Link to this definition">#</a></dt>
 <dd><p>The mesh this form is on.</p>
 </dd></dl>
 
 <dl class="py property">
 <dt class="sig sig-object py" id="src.form.main.Form.orientation">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">orientation</span></span><a class="headerlink" href="#src.form.main.Form.orientation" title="Permalink to this definition">#</a></dt>
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">orientation</span></span><a class="headerlink" href="#src.form.main.Form.orientation" title="Link to this definition">#</a></dt>
 <dd><p>My orientation.</p>
 </dd></dl>
 
 <dl class="py property">
 <dt class="sig sig-object py" id="src.form.main.Form.space">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">space</span></span><a class="headerlink" href="#src.form.main.Form.space" title="Permalink to this definition">#</a></dt>
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">space</span></span><a class="headerlink" href="#src.form.main.Form.space" title="Link to this definition">#</a></dt>
 <dd><p>The space this form is in.</p>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="src.form.main.Form.time_derivative">
-<span class="sig-name descname"><span class="pre">time_derivative</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">degree</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/src/form/main.html#Form.time_derivative"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#src.form.main.Form.time_derivative" title="Permalink to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">time_derivative</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">degree</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/src/form/main.html#Form.time_derivative"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#src.form.main.Form.time_derivative" title="Link to this definition">#</a></dt>
 <dd><p>The time derivative, <span class="math notranslate nohighlight">\(\dfrac{\partial}{\partial t}\)</span>, of this form.</p>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="src.form.main.Form.wedge">
-<span class="sig-name descname"><span class="pre">wedge</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">other</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/src/form/main.html#Form.wedge"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#src.form.main.Form.wedge" title="Permalink to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">wedge</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">other</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/src/form/main.html#Form.wedge"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#src.form.main.Form.wedge" title="Link to this definition">#</a></dt>
 <dd><p>The wedge, <span class="math notranslate nohighlight">\(\wedge\)</span>, between this form and another form.</p>
 </dd></dl>
 
@@ -883,7 +882,7 @@ By Andrea Brugnoli, Ramy Rashad, Stefano Stramigioli, Yi Zhang and more
   <div class="footer-item">
     
 <div class="extra_footer">
-  <div>Last updated on December 02, 2023, 09:46:39, W. Europe Standard Time</div>
+  <div>Last updated on February 01, 2024, 22:20:29, 中国标准时间</div>
 </div>
   </div>
   

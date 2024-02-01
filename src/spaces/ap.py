@@ -24,6 +24,10 @@ __all__ = [
     '_VarPar_A_x_astB_ip_tC',
     '_VarPar_A_x_B_ip_C',           # nonlinear
 
+    # "_VarPar_astA_x_B_ip_dC",
+    # "_VarPar_A_x_astB_ip_dC",
+    # "_VarPar_astA_x_astB_ip_dC",
+
     '_VarPar_dastA_astA_tp_tC',
     '_VarPar_dastA_tB_tp_astA',
     '_VarPar_dtA_astB_tp_astB',
@@ -57,12 +61,15 @@ def _VarPar_M(s0, s1, d0, d1):
     lin = lin.replace('{d0}', str_d0)
     lin = lin.replace('{d1}', str_d1)
 
-    return _root_array(
-        sym, lin, (
-            s0._sym_repr + _default_space_degree_repr + str_d0,
-            s1._sym_repr + _default_space_degree_repr + str_d1
-        ), symmetric=True,
-    )
+    if d0 == d1:
+        return _root_array(
+            sym, lin, (
+                s0._sym_repr + _default_space_degree_repr + str_d0,
+                s1._sym_repr + _default_space_degree_repr + str_d1
+            ), symmetric=True,
+        )
+    else:
+        raise NotImplementedError()
 
 
 def _VarPar_E(f_or_space_degree, transpose=False):

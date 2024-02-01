@@ -38,6 +38,7 @@ def constant_scalar(*args):
         assert isinstance(sym_repr, str), f"symbolic representation must be a str."
         assert isinstance(lin_repr, str), f"symbolic representation must be a str."
         is_real = False
+
     else:
         raise NotImplementedError()
 

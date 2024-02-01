@@ -170,6 +170,10 @@ __all__ = [
 
     '_VarSetting_IP_matrix_db_bf',                #
     '_VarSetting_IP_matrix_bf_db',                #
+
+    # '_VarSetting_A_x_astB_ip_dC',                 # (A x B, dC)
+    # '_VarSetting_astA_x_B_ip_dC',                 # (A x B, dC)
+    # '_VarSetting_astA_x_astB_ip_dC',              # (A x B, dC)
 ]
 
 # ------ basic -----------------------------------------------------------------------------------
@@ -227,6 +231,23 @@ _VarSetting_A_x_B_ip_C = [
     r"\mathsf{X}",
     _sep.join(["_X_:", "[{A}]", "[{B}]", "[{C}]"]),
 ]
+
+# --------------- (A x B, dC) -------------------------------------------------------
+
+# _VarSetting_A_x_astB_ip_dC = [
+#     r"\mathsf{C}_d",
+#     _sep.join(["_XipD:", "[{A}]", "[{B}]", "[{C}]"])
+# ]
+#
+# _VarSetting_astA_x_B_ip_dC = [
+#     r"\mathsf{c}_d",
+#     _sep.join(["X_ipD:", "[{A}]", "[{B}]", "[{C}]"])
+# ]
+#
+# _VarSetting_astA_x_astB_ip_dC = [
+#     r"\mathsf{X}_d",
+#     _sep.join(["XipD:", "[{A}]", "[{B}]", "[{C}]"])
+# ]
 
 # -----(dA, B otimes C) --------------------------------------------------------------------------
 

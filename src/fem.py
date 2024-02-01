@@ -43,16 +43,10 @@ from src.mesh import _global_meshes                     # [mesh_sym_repr] -> mes
 from src.spaces.main import _space_set                  # [mesh_sym_repr][space_sym_repr] -> space
 from src.form.main import _global_root_forms_lin_dict   # [root-form_lin_repr] -> root-form
 import msepy.main as msepy
-import legacy.msehy.py._2d.main as meshy_py2
-import phmpi.msehy.py._2d.main as mpi_meshy_py2
-
-from src.config import get_embedding_space_dim
 
 
 _implemented_finite_elements = {
     'msepy': msepy,                  # mimetic spectral elements, python implementation
-    'msehy-py2': meshy_py2,          # hybrid mimetic spectral elements , python implementation , 2-dimensions.
-    'mpi-msehy-py2': mpi_meshy_py2,  # mpi, hybrid mimetic spectral elements , python implementation , 2-dimensions.
 }
 
 
@@ -68,23 +62,6 @@ def apply(fe_name, obj_dict):
     -------
 
     """
-    if fe_name == 'msehy':
-        m = get_embedding_space_dim()
-        if m == 2:
-            fe_name = 'msehy-py2'
-        else:
-            raise NotImplementedError()
-
-    elif fe_name == 'mpi-msehy':
-        m = get_embedding_space_dim()
-        if m == 2:
-            fe_name = 'mpi-msehy-py2'
-        else:
-            raise NotImplementedError()
-
-    else:
-        pass
-
     assert fe_name in _implemented_finite_elements, \
         f"finite element name={fe_name} is wrong, should be one of {_implemented_finite_elements.keys()}"
 

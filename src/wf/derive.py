@@ -168,7 +168,7 @@ class WfDerive(Frozen):
                         else:
                             _j = self._wf._parse_index(target_index)[1]
 
-                            if _j == 0:  # the target term is also at left.
+                            if _j == 0:    # the target term is also at left.
                                 pass
                             elif _j == 1:  # the target term is at opposite side, i.e., right
                                 sign = self._switch_sign(sign)
@@ -206,7 +206,7 @@ class WfDerive(Frozen):
 
         new_wf = self._wf.__class__(self._wf._test_forms, term_sign_dict=[term_dict, sign_dict])
         new_wf.unknowns = self._wf.unknowns   # pass the unknowns
-        new_wf._bc = self._wf._bc   # pass the bc
+        new_wf._bc = self._wf._bc             # pass the bc
         return new_wf
 
     @staticmethod
@@ -254,7 +254,7 @@ class WfDerive(Frozen):
             term_sign_dict=[self._wf._term_dict, new_sign_dict]
         )
         new_wf.unknowns = self._wf.unknowns   # pass the unknowns
-        new_wf._bc = self._wf._bc   # pass the bc
+        new_wf._bc = self._wf._bc             # pass the bc
         return new_wf
 
     def integration_by_parts(self, index):

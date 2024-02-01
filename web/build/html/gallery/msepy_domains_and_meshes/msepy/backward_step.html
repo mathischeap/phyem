@@ -1,5 +1,4 @@
 
-
 <!DOCTYPE html>
 
 
@@ -29,20 +28,20 @@
 <link rel="preload" as="font" type="font/woff2" crossorigin href="../../../_static/vendor/fontawesome/6.1.2/webfonts/fa-brands-400.woff2" />
 <link rel="preload" as="font" type="font/woff2" crossorigin href="../../../_static/vendor/fontawesome/6.1.2/webfonts/fa-regular-400.woff2" />
 
-    <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=a746c00c" />
     <link rel="stylesheet" href="../../../_static/styles/sphinx-book-theme.css?digest=14f4ca6b54d191a8c7657f6c759bf11a5fb86285" type="text/css" />
-    <link rel="stylesheet" type="text/css" href="../../../_static/copybutton.css" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/copybutton.css?v=76b2166b" />
   
   <!-- Pre-loaded scripts that we'll load fully later -->
   <link rel="preload" as="script" href="../../../_static/scripts/bootstrap.js?digest=ac02cc09edc035673794" />
 <link rel="preload" as="script" href="../../../_static/scripts/pydata-sphinx-theme.js?digest=ac02cc09edc035673794" />
   <script src="../../../_static/vendor/fontawesome/6.1.2/js/all.min.js?digest=ac02cc09edc035673794"></script>
 
-    <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js"></script>
-    <script src="../../../_static/doctools.js"></script>
-    <script src="../../../_static/sphinx_highlight.js"></script>
-    <script src="../../../_static/clipboard.min.js"></script>
-    <script src="../../../_static/copybutton.js"></script>
+    <script src="../../../_static/documentation_options.js?v=c73c0f3e"></script>
+    <script src="../../../_static/doctools.js?v=888ff710"></script>
+    <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../../_static/clipboard.min.js?v=a7894cd8"></script>
+    <script src="../../../_static/copybutton.js?v=f281be69"></script>
     <script src="../../../_static/scripts/sphinx-book-theme.js?digest=5a5c038af52cf7bc1a1ec88eea08e6366ee68824"></script>
     <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
     <script>window.MathJax = {"tex": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true}, "options": {"ignoreHtmlClass": "tex2jax_ignore|mathjax_ignore|document", "processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
@@ -457,20 +456,20 @@ document.write(`
                 <article class="bd-article" role="main">
                   
   <section id="module-msepy.manifold.predefined.backward_step">
-<span id="backward-step"></span><span id="gallery-msepy-domains-and-meshes-backward-step"></span><h1>Backward step<a class="headerlink" href="#module-msepy.manifold.predefined.backward_step" title="Permalink to this heading">#</a></h1>
+<span id="backward-step"></span><span id="gallery-msepy-domains-and-meshes-backward-step"></span><h1>Backward step<a class="headerlink" href="#module-msepy.manifold.predefined.backward_step" title="Link to this heading">#</a></h1>
 <p>The backward step is a mesh (or domain) in <span class="math notranslate nohighlight">\(\mathbb{R}^n\)</span>, <span class="math notranslate nohighlight">\(n\in\left\lbrace2,3\right\rbrace\)</span>. The domain is
 illustrated in the following figure.</p>
 <figure class="align-default" id="id2">
 <a class="reference internal image-reference" href="../../../_images/backward_step_illustration.png"><img alt="../../../_images/backward_step_illustration.png" src="../../../_images/backward_step_illustration.png" style="width: 100%;" /></a>
 <figcaption>
-<p><span class="caption-number">Fig. 4 </span><span class="caption-text">The illustration of the backward step domain.</span><a class="headerlink" href="#id2" title="Permalink to this image">#</a></p>
+<p><span class="caption-number">Fig. 4 </span><span class="caption-text">The illustration of the backward step domain.</span><a class="headerlink" href="#id2" title="Link to this image">#</a></p>
 </figcaption>
 </figure>
 <p>When <span class="math notranslate nohighlight">\(n=3\)</span>, The domain is extended to the thrid axis, <span class="math notranslate nohighlight">\(z\)</span>-axis, perpendicular to the plane. The parameters
 are</p>
 <dl class="py function">
 <dt class="sig sig-object py" id="msepy.manifold.predefined.backward_step.backward_step">
-<span class="sig-name descname"><span class="pre">backward_step</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x1</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">x2</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y1</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.25</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y2</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.25</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">z</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">periodic</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/msepy/manifold/predefined/backward_step.html#backward_step"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#msepy.manifold.predefined.backward_step.backward_step" title="Permalink to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">backward_step</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x1</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">x2</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y1</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.25</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y2</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.25</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">z</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">periodic</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/msepy/manifold/predefined/backward_step.html#backward_step"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#msepy.manifold.predefined.backward_step.backward_step" title="Link to this definition">#</a></dt>
 <dd><dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><dl class="simple">
@@ -493,7 +492,7 @@ one.</p>
 </dd></dl>
 
 <section id="boundary-units">
-<h2>Boundary units<a class="headerlink" href="#boundary-units" title="Permalink to this heading">#</a></h2>
+<h2>Boundary units<a class="headerlink" href="#boundary-units" title="Link to this heading">#</a></h2>
 <p>The domain is divided into three regions,</p>
 <table class="table">
 <tbody>
@@ -530,9 +529,9 @@ one.</p>
 </div>
 </section>
 <section id="examples">
-<h2>Examples<a class="headerlink" href="#examples" title="Permalink to this heading">#</a></h2>
+<h2>Examples<a class="headerlink" href="#examples" title="Link to this heading">#</a></h2>
 <section id="d">
-<h3>3d<a class="headerlink" href="#d" title="Permalink to this heading">#</a></h3>
+<h3>3d<a class="headerlink" href="#d" title="Link to this heading">#</a></h3>
 <p>Below codes will lead to a three-dimensional backward step mesh of <span class="math notranslate nohighlight">\(3*5*5*5\)</span> elements (because the domain
 is splited into 3 regions).</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">ph</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">set_embedding_space_dim</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
@@ -550,12 +549,12 @@ is splited into 3 regions).</p>
 <figure class="align-default" id="id3">
 <a class="reference internal image-reference" href="../../../_images/backward_step3.png"><img alt="../../../_images/backward_step3.png" src="../../../_images/backward_step3.png" style="width: 60%;" /></a>
 <figcaption>
-<p><span class="caption-number">Fig. 5 </span><span class="caption-text">The three-dimensional backward step mesh of <span class="math notranslate nohighlight">\(3*5*5*5\)</span> elements.</span><a class="headerlink" href="#id3" title="Permalink to this image">#</a></p>
+<p><span class="caption-number">Fig. 5 </span><span class="caption-text">The three-dimensional backward step mesh of <span class="math notranslate nohighlight">\(3*5*5*5\)</span> elements.</span><a class="headerlink" href="#id3" title="Link to this image">#</a></p>
 </figcaption>
 </figure>
 </section>
 <section id="id1">
-<h3>2d<a class="headerlink" href="#id1" title="Permalink to this heading">#</a></h3>
+<h3>2d<a class="headerlink" href="#id1" title="Link to this heading">#</a></h3>
 <p>To make a two-dimensional backward step mesh of <span class="math notranslate nohighlight">\(3*24*6\)</span> elements, just do</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">ph</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">set_embedding_space_dim</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">manifold</span> <span class="o">=</span> <span class="n">ph</span><span class="o">.</span><span class="n">manifold</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
@@ -572,7 +571,7 @@ is splited into 3 regions).</p>
 <figure class="align-default" id="id4">
 <a class="reference internal image-reference" href="../../../_images/backward_step2.png"><img alt="../../../_images/backward_step2.png" src="../../../_images/backward_step2.png" style="width: 100%;" /></a>
 <figcaption>
-<p><span class="caption-number">Fig. 6 </span><span class="caption-text">The two-dimensional backward step mesh of <span class="math notranslate nohighlight">\(3*24*6\)</span> elements.</span><a class="headerlink" href="#id4" title="Permalink to this image">#</a></p>
+<p><span class="caption-number">Fig. 6 </span><span class="caption-text">The two-dimensional backward step mesh of <span class="math notranslate nohighlight">\(3*24*6\)</span> elements.</span><a class="headerlink" href="#id4" title="Link to this image">#</a></p>
 </figcaption>
 </figure>
 <div class="line-block">
@@ -671,7 +670,7 @@ By Andrea Brugnoli, Ramy Rashad, Stefano Stramigioli, Yi Zhang and more
   <div class="footer-item">
     
 <div class="extra_footer">
-  <div>Last updated on December 02, 2023, 09:46:39, W. Europe Standard Time</div>
+  <div>Last updated on February 01, 2024, 22:20:29, 中国标准时间</div>
 </div>
   </div>
   

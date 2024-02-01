@@ -2,6 +2,7 @@
 r"""
 """
 
+
 class VoidClass:
     """"""
 

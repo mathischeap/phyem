@@ -1,5 +1,4 @@
 
-
 <!DOCTYPE html>
 
 
@@ -28,20 +27,20 @@
 <link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../_static/vendor/fontawesome/6.1.2/webfonts/fa-brands-400.woff2" />
 <link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../_static/vendor/fontawesome/6.1.2/webfonts/fa-regular-400.woff2" />
 
-    <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css?v=a746c00c" />
     <link rel="stylesheet" href="../../../../_static/styles/sphinx-book-theme.css?digest=14f4ca6b54d191a8c7657f6c759bf11a5fb86285" type="text/css" />
-    <link rel="stylesheet" type="text/css" href="../../../../_static/copybutton.css" />
+    <link rel="stylesheet" type="text/css" href="../../../../_static/copybutton.css?v=76b2166b" />
   
   <!-- Pre-loaded scripts that we'll load fully later -->
   <link rel="preload" as="script" href="../../../../_static/scripts/bootstrap.js?digest=ac02cc09edc035673794" />
 <link rel="preload" as="script" href="../../../../_static/scripts/pydata-sphinx-theme.js?digest=ac02cc09edc035673794" />
   <script src="../../../../_static/vendor/fontawesome/6.1.2/js/all.min.js?digest=ac02cc09edc035673794"></script>
 
-    <script data-url_root="../../../../" id="documentation_options" src="../../../../_static/documentation_options.js"></script>
-    <script src="../../../../_static/doctools.js"></script>
-    <script src="../../../../_static/sphinx_highlight.js"></script>
-    <script src="../../../../_static/clipboard.min.js"></script>
-    <script src="../../../../_static/copybutton.js"></script>
+    <script src="../../../../_static/documentation_options.js?v=c73c0f3e"></script>
+    <script src="../../../../_static/doctools.js?v=888ff710"></script>
+    <script src="../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../../../_static/clipboard.min.js?v=a7894cd8"></script>
+    <script src="../../../../_static/copybutton.js?v=f281be69"></script>
     <script src="../../../../_static/scripts/sphinx-book-theme.js?digest=5a5c038af52cf7bc1a1ec88eea08e6366ee68824"></script>
     <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
     <script>DOCUMENTATION_OPTIONS.pagename = '_modules/tests/msepy/div_grad/_2d_outer';</script>
@@ -390,45 +389,14 @@ document.write(`
   <h1>Source code for tests.msepy.div_grad._2d_outer</h1><div class="highlight"><pre>
 <span></span><span class="c1"># -*- coding: utf-8 -*-</span>
 <span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">Here we repeat the test, but with essential boundary :math:`\mathrm{tr}\ u^1`</span>
-<span class="sd">on faces :math:`y=0` and :math:`y=1`, and natural boundary condition</span>
-<span class="sd">:math:`\mathrm{tr}\left(\star \varphi^2\right)` on faces :math:`x=0` and :math:`x=1`.</span>
-
-<span class="sd">The implementation is</span>
-
-<span class="sd">    .. autofunction:: tests.msepy.div_grad._2d_outer.div_grad_2d_general_bc_manufactured_test</span>
-
-
-<span class="sd">Examples</span>
-<span class="sd">--------</span>
-
-<span class="sd">If we solve it with :math:`4\times4` elements</span>
-<span class="sd">(note that here we use a different mesh compared to the periodic test)</span>
-<span class="sd">at polynomial degree 2,</span>
-
-<span class="sd">&gt;&gt;&gt; errors4 = div_grad_2d_general_bc_manufactured_test(2, 4)</span>
-<span class="sd">&gt;&gt;&gt; errors4[0]  # doctest: +ELLIPSIS</span>
-<span class="sd">0.06...</span>
-
-<span class="sd">We increase :math:`K` to :math:`K=8`, we do</span>
-
-<span class="sd">&gt;&gt;&gt; errors8 = div_grad_2d_general_bc_manufactured_test(2, 8)</span>
-
-<span class="sd">We can compute the convergence rate of the :math:`L^2`-error of solution :math:`\varphi_h^2` by</span>
-
-<span class="sd">&gt;&gt;&gt; import numpy as np</span>
-<span class="sd">&gt;&gt;&gt; rate = (np.log10(errors4[0]) - np.log10(errors8[0])) / (np.log10(1/4) - np.log10(1/8))</span>
-<span class="sd">&gt;&gt;&gt; round(rate, 1)</span>
-<span class="sd">2.0</span>
-
-<span class="sd">Again, the optimal convergence rate is obtained.</span>
-
 <span class="sd">&quot;&quot;&quot;</span>
 
 <span class="kn">import</span> <span class="nn">sys</span>
 
 
-<div class="viewcode-block" id="div_grad_2d_general_bc_manufactured_test"><a class="viewcode-back" href="../../../../gallery/div_grad/index.html#tests.msepy.div_grad._2d_outer.div_grad_2d_general_bc_manufactured_test">[docs]</a><span class="k">def</span> <span class="nf">div_grad_2d_general_bc_manufactured_test</span><span class="p">(</span><span class="n">degree</span><span class="p">,</span> <span class="n">K</span><span class="p">,</span> <span class="n">c</span><span class="o">=</span><span class="mf">0.</span><span class="p">):</span>
+<div class="viewcode-block" id="div_grad_2d_general_bc_manufactured_test">
+<a class="viewcode-back" href="../../../../gallery/div_grad/index.html#tests.msepy.div_grad._2d_outer.div_grad_2d_general_bc_manufactured_test">[docs]</a>
+<span class="k">def</span> <span class="nf">div_grad_2d_general_bc_manufactured_test</span><span class="p">(</span><span class="n">degree</span><span class="p">,</span> <span class="n">K</span><span class="p">,</span> <span class="n">c</span><span class="o">=</span><span class="mf">0.</span><span class="p">):</span>
 <span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
 
 <span class="sd">    Parameters</span>
@@ -521,6 +489,7 @@ document.write(`
     <span class="k">return</span> <span class="n">phi</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">error</span><span class="p">(),</span> <span class="n">u</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">error</span><span class="p">()</span></div>
 
 
+
 <span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s1">&#39;__main__&#39;</span><span class="p">:</span>
     <span class="c1"># python tests/msepy/div_grad/_2d_outer.py</span>
     <span class="n">ph_dir</span> <span class="o">=</span> <span class="s1">&#39;../&#39;</span>
@@ -583,7 +552,7 @@ By Andrea Brugnoli, Ramy Rashad, Stefano Stramigioli, Yi Zhang and more
   <div class="footer-item">
     
 <div class="extra_footer">
-  <div>Last updated on December 02, 2023, 09:46:39, W. Europe Standard Time</div>
+  <div>Last updated on February 01, 2024, 22:20:29, 中国标准时间</div>
 </div>
   </div>
   
