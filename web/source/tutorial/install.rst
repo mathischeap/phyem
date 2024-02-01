@@ -13,7 +13,7 @@ Download
 
     We commend you to visit the release page of *phyem* git repository,
     `Releases <https://github.com/mathischeap/phyem/releases>`_, to download the most recent stable version,
-    `v0.0.1 <https://github.com/mathischeap/phyem/releases/tag/v0.0.1-release>`_.
+    `v0.0.2 <https://github.com/mathischeap/phyem/releases/tag/v0.0.2>`_.
 
 
 You can also download the most recent (maybe not thoroughly tested) source code from the GitHub page,
