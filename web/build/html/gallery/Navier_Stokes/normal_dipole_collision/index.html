@@ -50,8 +50,8 @@
     <link rel="icon" href="../../../_static/favicon.png"/>
     <link rel="index" title="Index" href="../../../genindex.html" />
     <link rel="search" title="Search" href="../../../search.html" />
-    <link rel="next" title="🧲 MHD" href="../../MHD/index.html" />
-    <link rel="prev" title="Shear layer rollup" href="../shear_layer_rollup/index.html" />
+    <link rel="next" title="Shear layer rollup" href="../shear_layer_rollup/index.html" />
+    <link rel="prev" title="Lid-driven cavity" href="../lid_driven_cavity/index.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
   </head>
@@ -222,20 +222,23 @@
 </li>
 <li class="toctree-l1 current active has-children"><a class="reference internal" href="../../index.html">Gallery🖼</a><input checked="" class="toctree-checkbox" id="toctree-checkbox-4" name="toctree-checkbox-4" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-4"><i class="fa-solid fa-chevron-down"></i></label><ul class="current">
 <li class="toctree-l2 has-children"><a class="reference internal" href="../../msepy_domains_and_meshes/index.html"><em>msepy</em> domains and meshes</a><input class="toctree-checkbox" id="toctree-checkbox-5" name="toctree-checkbox-5" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-5"><i class="fa-solid fa-chevron-down"></i></label><ul>
-<li class="toctree-l3"><a class="reference internal" href="../../msepy_domains_and_meshes/msepy/crazy.html">Crazy domain and mesh</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../../msepy_domains_and_meshes/msepy/crazy_multi.html">Multi-crazy domain and mesh</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../msepy_domains_and_meshes/msepy/backward_step.html">Backward step</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../msepy_domains_and_meshes/msepy/crazy.html">Crazy domain and mesh</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../msepy_domains_and_meshes/msepy/cylinder_channel.html">Cylinder channel</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../msepy_domains_and_meshes/msepy/multi_crazy.html">Multi-crazy domain and mesh</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="../../div_grad/index.html">🟢 div-grad</a></li>
-<li class="toctree-l2 current active has-children"><a class="reference internal" href="../index.html">🌊 Navier-Stokes equations</a><input checked="" class="toctree-checkbox" id="toctree-checkbox-6" name="toctree-checkbox-6" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-6"><i class="fa-solid fa-chevron-down"></i></label><ul class="current">
-<li class="toctree-l3"><a class="reference internal" href="../shear_layer_rollup/index.html">Shear layer rollup</a></li>
-<li class="toctree-l3 current active"><a class="current reference internal" href="#">Normal dipole collision</a></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../../MHD/index.html">🧲 MHD</a><input class="toctree-checkbox" id="toctree-checkbox-6" name="toctree-checkbox-6" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-6"><i class="fa-solid fa-chevron-down"></i></label><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../MHD/Orszag_Tang_vortex/index.html">Orszag-Tang Vortex</a></li>
 </ul>
 </li>
-<li class="toctree-l2 has-children"><a class="reference internal" href="../../MHD/index.html">🧲 MHD</a><input class="toctree-checkbox" id="toctree-checkbox-7" name="toctree-checkbox-7" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-7"><i class="fa-solid fa-chevron-down"></i></label><ul>
-<li class="toctree-l3"><a class="reference internal" href="../../MHD/Orszag_Tang_vortex/index.html">Orszag-Tang Vortex</a></li>
+<li class="toctree-l2 current active has-children"><a class="reference internal" href="../index.html">🌊 Navier-Stokes equations</a><input checked="" class="toctree-checkbox" id="toctree-checkbox-7" name="toctree-checkbox-7" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-7"><i class="fa-solid fa-chevron-down"></i></label><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="../backward_facing_step/index.html">Backward facing step flow</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../lid_driven_cavity/index.html">Lid-driven cavity</a></li>
+<li class="toctree-l3 current active"><a class="current reference internal" href="#">Normal dipole collision</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../shear_layer_rollup/index.html">Shear layer rollup</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../Taylor_Green_vortex/index.html">Taylor-Green vortex</a></li>
 </ul>
 </li>
 </ul>
@@ -441,11 +444,11 @@ document.write(`
                   
   <section id="normal-dipole-collision">
 <span id="gallery-ns2-ndc"></span><h1>Normal dipole collision<a class="headerlink" href="#normal-dipole-collision" title="Link to this heading">#</a></h1>
-<p>The normal dipole collision flow is a 2-dimensional incompressible NS flow.</p>
+<p>The normal dipole collision flow is a 2-dimensional incompressible viscous flow.</p>
 <figure class="align-default" id="id1">
 <a class="reference internal image-reference" href="../../../_images/vorticity.jpg"><img alt="../../../_images/vorticity.jpg" src="../../../_images/vorticity.jpg" style="width: 100%;" /></a>
 <figcaption>
-<p><span class="caption-number">Fig. 11 </span><span class="caption-text">The vorticity field of the normal dipole collision flow at
+<p><span class="caption-number">Fig. 12 </span><span class="caption-text">The vorticity field of the normal dipole collision flow at
 <span class="math notranslate nohighlight">\(t\in\left\lbrace0,0.2,0.4,0.6,0.8,1\right\rbrace\)</span> with contour.</span><a class="headerlink" href="#id1" title="Link to this image">#</a></p>
 </figcaption>
 </figure>
@@ -470,20 +473,20 @@ document.write(`
                   <!-- Previous / next buttons -->
 <div class="prev-next-area">
     <a class="left-prev"
-       href="../shear_layer_rollup/index.html"
+       href="../lid_driven_cavity/index.html"
        title="previous page">
       <i class="fa-solid fa-angle-left"></i>
       <div class="prev-next-info">
         <p class="prev-next-subtitle">previous</p>
-        <p class="prev-next-title">Shear layer rollup</p>
+        <p class="prev-next-title">Lid-driven cavity</p>
       </div>
     </a>
     <a class="right-next"
-       href="../../MHD/index.html"
+       href="../shear_layer_rollup/index.html"
        title="next page">
       <div class="prev-next-info">
         <p class="prev-next-subtitle">next</p>
-        <p class="prev-next-title">🧲 MHD</p>
+        <p class="prev-next-title">Shear layer rollup</p>
       </div>
       <i class="fa-solid fa-angle-right"></i>
     </a>
@@ -526,7 +529,7 @@ By Andrea Brugnoli, Ramy Rashad, Stefano Stramigioli, Yi Zhang and more
   <div class="footer-item">
     
 <div class="extra_footer">
-  <div>Last updated on February 01, 2024, 22:52:38, 中国标准时间</div>
+  <div>Last updated on February 28, 2024, 15:56:39, China Standard Time</div>
 </div>
   </div>
   

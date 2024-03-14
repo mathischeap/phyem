@@ -32,7 +32,7 @@ import sys
 if './' not in sys.path:
     sys.path.append('./')
 
-from numpy import sin, cos, pi
+from numpy import sin, cos, pi, inf
 
 from tools.frozen import Frozen
 from tools.functions.time_space._2d.wrappers.scalar import T2dScalar
@@ -51,9 +51,10 @@ def _A(t, x, y):
 
 class InitialConditionOrszagTangVortex(Frozen):
     """"""
-    def __init__(self):
+    def __init__(self, Rm=inf):
         self._streaming = T2dScalar(_phi)
         self._potential = T2dScalar(_A)
+        self._Rm = Rm
         self._freeze()
 
     @property
@@ -83,7 +84,7 @@ class InitialConditionOrszagTangVortex(Frozen):
     @property
     def E(self):
         """electric field strength"""
-        return - self.u.cross_product(self.B)
+        return (1 / self._Rm) * self.j - self.u.cross_product(self.B)
 
     @property
     def omega(self):
@@ -97,5 +98,5 @@ class InitialConditionOrszagTangVortex(Frozen):
 
 if __name__ == '__main__':
     # python tests/samples/iniCond_Orszag_Tang_vortex.py
-    ic = InitialConditionOrszagTangVortex()
-    ic.u.visualize([0, 2*pi], 0)
+    ic = InitialConditionOrszagTangVortex(Rm=1)
+    ic.j.visualize([0, 2*pi], 0)

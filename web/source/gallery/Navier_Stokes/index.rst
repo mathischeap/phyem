@@ -43,11 +43,13 @@ Numerical Examples
 For numerical simulations of Navier-Stokes flows with *phyem*, see
 
 .. toctree::
-   :maxdepth: 1
+    :maxdepth: 1
 
-   shear_layer_rollup/index
-   normal_dipole_collision/index
-
+    backward_facing_step/index
+    lid_driven_cavity/index
+    normal_dipole_collision/index
+    shear_layer_rollup/index
+    Taylor_Green_vortex/index
 
 |
 

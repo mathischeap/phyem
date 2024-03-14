@@ -178,8 +178,8 @@ msepy.config(boundary_perp)(
     }
 )
 
-mesh = obj['mesh']
-msepy.config(mesh)({
+_mesh = obj['mesh']
+msepy.config(_mesh)({
     0: element_layout,
     1: element_layout,
     2: element_layout,
@@ -188,6 +188,55 @@ msepy.config(mesh)({
 for msh in msepy.base['meshes']:
     msh = msepy.base['meshes'][msh]
     msh.visualize()
+
+Rn2.value = 1 / (2 * Re)
+
+
+# noinspection PyUnusedLocal
+def zero_function(t, x, y):
+    """"""
+    return np.zeros_like(x)
+
+
+w = obj['w']
+u = obj['u']
+P = obj['P']
+
+init_velocity = ph.vc.vector(zero_function, zero_function)
+init_vorticity = ph.vc.scalar(zero_function)
+
+
+w.cf = init_vorticity
+u.cf = init_velocity
+w[0].reduce()
+u[0].reduce()
+
+
+# ts.specify('constant', [0, t_max, steps*2], 2)
+
+_ = {
+    'big_step': True
+}
+
+
+def time_step_function():
+    """"""
+    u_norm_residual = u.norm_residual()
+
+    if _['big_step']:
+
+        if u_norm_residual < 1e-6:
+            _['big_step'] = False
+        else:
+            pass
+
+    if _['big_step']:
+        return 1/100
+    else:
+        return 1/200
+
+
+ts.specify('function', t0, time_step_function)
 
 
 # noinspection PyUnusedLocal
@@ -218,56 +267,8 @@ def bc_v(t, x, y):
     return np.zeros_like(x)
 
 
+
 bc_velocity = ph.vc.vector(bc_u, bc_v)
-
-
-# noinspection PyUnusedLocal
-def zero_function(t, x, y):
-    """"""
-    return np.zeros_like(x)
-
-
-bc_P = ph.vc.scalar(zero_function)
-init_velocity = ph.vc.vector(zero_function, zero_function)
-init_vorticity = ph.vc.scalar(zero_function)
-
-
-Rn2.value = 1 / (2 * Re)
-
-w = obj['w']
-u = obj['u']
-P = obj['P']
-
-# ts.specify('constant', [0, t_max, steps*2], 2)
-
-_ = {
-    'big_step': True
-}
-
-
-def time_step_function():
-    """"""
-    u_norm_residual = u.norm_residual()
-
-    if _['big_step']:
-
-        if u_norm_residual < 1e-6:
-            _['big_step'] = False
-        else:
-            pass
-
-    if _['big_step']:
-        return 1/100
-    else:
-        return 1/200
-
-
-ts.specify('function', t0, time_step_function)
-
-w.cf = init_vorticity
-u.cf = init_velocity
-w[0].reduce()
-u[0].reduce()
 
 
 results_dir = './__phcache__/backward_facing_step/'
@@ -281,6 +282,8 @@ else:
 
 nls = obj['nls'].apply()
 nls.bc.config(boundary_perp)(bc_velocity)  # essential
+
+bc_P = u.numeric.function.local_energy_with_time_shift()
 nls.bc.config(boundary_P)(bc_P)  # essential
 
 

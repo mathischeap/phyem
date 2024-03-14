@@ -8,7 +8,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
 
-    <title>Multi-crazy domain and mesh &#8212; phyem, a finite element library powering LEGO-like simulations for (multi-)physics.</title>
+    <title>Lid-driven cavity &#8212; phyem, a finite element library powering LEGO-like simulations for (multi-)physics.</title>
   
   
   
@@ -46,12 +46,12 @@
     <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
     <script>window.MathJax = {"tex": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true}, "options": {"ignoreHtmlClass": "tex2jax_ignore|mathjax_ignore|document", "processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
     <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
-    <script>DOCUMENTATION_OPTIONS.pagename = 'gallery/msepy_domains_and_meshes/msepy/crazy_multi';</script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'gallery/Navier_Stokes/lid_driven_cavity/index';</script>
     <link rel="icon" href="../../../_static/favicon.png"/>
     <link rel="index" title="Index" href="../../../genindex.html" />
     <link rel="search" title="Search" href="../../../search.html" />
-    <link rel="next" title="Backward step" href="backward_step.html" />
-    <link rel="prev" title="Crazy domain and mesh" href="crazy.html" />
+    <link rel="next" title="Normal dipole collision" href="../normal_dipole_collision/index.html" />
+    <link rel="prev" title="Backward facing step flow" href="../backward_facing_step/index.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
   </head>
@@ -221,21 +221,24 @@
 </ul>
 </li>
 <li class="toctree-l1 current active has-children"><a class="reference internal" href="../../index.html">Gallery🖼</a><input checked="" class="toctree-checkbox" id="toctree-checkbox-4" name="toctree-checkbox-4" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-4"><i class="fa-solid fa-chevron-down"></i></label><ul class="current">
-<li class="toctree-l2 current active has-children"><a class="reference internal" href="../index.html"><em>msepy</em> domains and meshes</a><input checked="" class="toctree-checkbox" id="toctree-checkbox-5" name="toctree-checkbox-5" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-5"><i class="fa-solid fa-chevron-down"></i></label><ul class="current">
-<li class="toctree-l3"><a class="reference internal" href="crazy.html">Crazy domain and mesh</a></li>
-<li class="toctree-l3 current active"><a class="current reference internal" href="#">Multi-crazy domain and mesh</a></li>
-<li class="toctree-l3"><a class="reference internal" href="backward_step.html">Backward step</a></li>
-<li class="toctree-l3"><a class="reference internal" href="cylinder_channel.html">Cylinder channel</a></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../../msepy_domains_and_meshes/index.html"><em>msepy</em> domains and meshes</a><input class="toctree-checkbox" id="toctree-checkbox-5" name="toctree-checkbox-5" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-5"><i class="fa-solid fa-chevron-down"></i></label><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../msepy_domains_and_meshes/msepy/backward_step.html">Backward step</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../msepy_domains_and_meshes/msepy/crazy.html">Crazy domain and mesh</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../msepy_domains_and_meshes/msepy/cylinder_channel.html">Cylinder channel</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../msepy_domains_and_meshes/msepy/multi_crazy.html">Multi-crazy domain and mesh</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="../../div_grad/index.html">🟢 div-grad</a></li>
-<li class="toctree-l2 has-children"><a class="reference internal" href="../../Navier_Stokes/index.html">🌊 Navier-Stokes equations</a><input class="toctree-checkbox" id="toctree-checkbox-6" name="toctree-checkbox-6" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-6"><i class="fa-solid fa-chevron-down"></i></label><ul>
-<li class="toctree-l3"><a class="reference internal" href="../../Navier_Stokes/shear_layer_rollup/index.html">Shear layer rollup</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../../Navier_Stokes/normal_dipole_collision/index.html">Normal dipole collision</a></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../../MHD/index.html">🧲 MHD</a><input class="toctree-checkbox" id="toctree-checkbox-6" name="toctree-checkbox-6" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-6"><i class="fa-solid fa-chevron-down"></i></label><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../MHD/Orszag_Tang_vortex/index.html">Orszag-Tang Vortex</a></li>
 </ul>
 </li>
-<li class="toctree-l2 has-children"><a class="reference internal" href="../../MHD/index.html">🧲 MHD</a><input class="toctree-checkbox" id="toctree-checkbox-7" name="toctree-checkbox-7" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-7"><i class="fa-solid fa-chevron-down"></i></label><ul>
-<li class="toctree-l3"><a class="reference internal" href="../../MHD/Orszag_Tang_vortex/index.html">Orszag-Tang Vortex</a></li>
+<li class="toctree-l2 current active has-children"><a class="reference internal" href="../index.html">🌊 Navier-Stokes equations</a><input checked="" class="toctree-checkbox" id="toctree-checkbox-7" name="toctree-checkbox-7" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-7"><i class="fa-solid fa-chevron-down"></i></label><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="../backward_facing_step/index.html">Backward facing step flow</a></li>
+<li class="toctree-l3 current active"><a class="current reference internal" href="#">Lid-driven cavity</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../normal_dipole_collision/index.html">Normal dipole collision</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../shear_layer_rollup/index.html">Shear layer rollup</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../Taylor_Green_vortex/index.html">Taylor-Green vortex</a></li>
 </ul>
 </li>
 </ul>
@@ -315,7 +318,7 @@
       
       
       
-      <li><a href="https://github.com/mathischeap/phyem/issues/new?title=Issue%20on%20page%20%2Fgallery/msepy_domains_and_meshes/msepy/crazy_multi.html&body=Your%20issue%20content%20here." target="_blank"
+      <li><a href="https://github.com/mathischeap/phyem/issues/new?title=Issue%20on%20page%20%2Fgallery/Navier_Stokes/lid_driven_cavity/index.html&body=Your%20issue%20content%20here." target="_blank"
    class="btn btn-sm btn-source-issues-button dropdown-item"
    title="Open an issue"
    data-bs-placement="left" data-bs-toggle="tooltip"
@@ -345,7 +348,7 @@
       
       
       
-      <li><a href="../../../_sources/gallery/msepy_domains_and_meshes/msepy/crazy_multi.rst" target="_blank"
+      <li><a href="../../../_sources/gallery/Navier_Stokes/lid_driven_cavity/index.rst" target="_blank"
    class="btn btn-sm btn-download-source-button dropdown-item"
    title="Download source file"
    data-bs-placement="left" data-bs-toggle="tooltip"
@@ -414,9 +417,7 @@ document.write(`
   </button>
 `);
 </script>
-<label class="sidebar-toggle secondary-toggle btn btn-sm" for="__secondary"title="Toggle secondary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
-    <span class="fa-solid fa-list"></span>
-</label>
+
 </div></div>
       
     </div>
@@ -427,21 +428,11 @@ document.write(`
               
 
 <div id="jb-print-docs-body" class="onlyprint">
-    <h1>Multi-crazy domain and mesh</h1>
+    <h1>Lid-driven cavity</h1>
     <!-- Table of contents -->
     <div id="print-main-content">
         <div id="jb-print-toc">
             
-            <div>
-                <h2> On this page </h2>
-            </div>
-            <nav aria-label="Page">
-                <ul class="visible nav section-nav flex-column">
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#msepy.manifold.predefined.crazy_multi.crazy_multi"><code class="docutils literal notranslate"><span class="pre">crazy_multi()</span></code></a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#boundary-units">Boundary units</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#examples">Examples</a></li>
-</ul>
-            </nav>
         </div>
     </div>
 </div>
@@ -451,82 +442,19 @@ document.write(`
 <div id="searchbox"></div>
                 <article class="bd-article" role="main">
                   
-  <section id="module-msepy.manifold.predefined.crazy_multi">
-<span id="multi-crazy-domain-and-mesh"></span><span id="gallery-msepy-domains-and-meshes-multi-crazy"></span><h1>Multi-crazy domain and mesh<a class="headerlink" href="#module-msepy.manifold.predefined.crazy_multi" title="Link to this heading">#</a></h1>
-<p>The multi-crazy ones are like stacking multiple <a class="reference internal" href="crazy.html#gallery-msepy-domains-and-meshes-crazy"><span class="std std-ref">Crazy domain and mesh</span></a>
-(blocks) together. The parameters are same to those of the crazy
-mesh except there is one additional, <code class="docutils literal notranslate"><span class="pre">Ns</span></code>, see:</p>
-<dl class="py function">
-<dt class="sig sig-object py" id="msepy.manifold.predefined.crazy_multi.crazy_multi">
-<span class="sig-name descname"><span class="pre">crazy_multi</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">bounds</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">c</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Ns</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">periodic</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/msepy/manifold/predefined/crazy_multi.html#crazy_multi"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#msepy.manifold.predefined.crazy_multi.crazy_multi" title="Link to this definition">#</a></dt>
-<dd><dl class="field-list">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><dl>
-<dt><strong>bounds</strong><span class="classifier">list, tuple, <code class="docutils literal notranslate"><span class="pre">None</span></code>, default=None</span></dt><dd><p>The bounds of the domain along each axis. When it is <code class="docutils literal notranslate"><span class="pre">None</span></code>, the code will automatically analyze the
-manifold and set the <code class="docutils literal notranslate"><span class="pre">bounds</span></code> to be <span class="math notranslate nohighlight">\([0,1]^n\)</span> where <span class="math notranslate nohighlight">\(n\)</span> is the dimensions of the space.</p>
-<p>For example, the unit cube is of <code class="docutils literal notranslate"><span class="pre">bounds</span> <span class="pre">=</span> <span class="pre">([0,</span> <span class="pre">1],</span> <span class="pre">[0,</span> <span class="pre">1],</span> <span class="pre">[0,</span> <span class="pre">1])</span></code>.</p>
-</dd>
-<dt><strong>c</strong><span class="classifier">float, default=0.</span></dt><dd><p>The deformation factor. <code class="docutils literal notranslate"><span class="pre">c</span></code> must be in <span class="math notranslate nohighlight">\([0, 0.3]\)</span>. When <code class="docutils literal notranslate"><span class="pre">c</span> <span class="pre">=</span> <span class="pre">0</span></code>, the domain is orthogonal, and
-when <code class="docutils literal notranslate"><span class="pre">c</span> <span class="pre">&gt;</span> <span class="pre">0</span></code>, the space in the domain is distorted.</p>
-</dd>
-<dt><strong>Ns</strong><span class="classifier">list, None, default=None</span></dt><dd><p><code class="docutils literal notranslate"><span class="pre">Ns</span></code> should be a list of <span class="math notranslate nohighlight">\(n\)</span> (the dimensions of the manifold) positive integers. It means along
-each axis, we will stack how many crazy meshes.</p>
-<p>When it is <code class="docutils literal notranslate"><span class="pre">None</span></code>, the code will automatically analyze the manifold and then set <code class="docutils literal notranslate"><span class="pre">Ns</span></code> to be
-<span class="math notranslate nohighlight">\([\underbrace{2, 2, \cdots}_{n}]\)</span>.</p>
-</dd>
-<dt><strong>periodic</strong><span class="classifier">bool, default=False</span></dt><dd><p>It indicates whether the domain is periodic. When it is <code class="docutils literal notranslate"><span class="pre">True</span></code>, the domain is fully periodic along all
-axes. And when it is <code class="docutils literal notranslate"><span class="pre">False</span></code>, the domain is not periodic at all.</p>
-</dd>
-</dl>
-</dd>
-</dl>
-</dd></dl>
-
-<section id="boundary-units">
-<h2>Boundary units<a class="headerlink" href="#boundary-units" title="Link to this heading">#</a></h2>
-<p>Since the amount of regions is dynamic, its amount of boundary units is dynamic as well.
-They contain the boundary faces of these regions attached to the domain boundary. For example, when
-there are <span class="math notranslate nohighlight">\(2 * 3\)</span> regions/blocks, the complete set of boundary units is</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">boundary_units_set</span> <span class="o">=</span> <span class="p">{</span>
-<span class="gp">... </span>    <span class="mi">0</span><span class="p">:</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span>
-<span class="gp">... </span>    <span class="mi">1</span><span class="p">:</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span>
-<span class="gp">... </span>    <span class="mi">2</span><span class="p">:</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span>
-<span class="gp">... </span>    <span class="mi">3</span><span class="p">:</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span>
-<span class="gp">... </span>    <span class="mi">4</span><span class="p">:</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span>
-<span class="gp">... </span>    <span class="mi">5</span><span class="p">:</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span>
-<span class="gp">... </span><span class="p">}</span>
-</pre></div>
-</div>
-</section>
-<section id="examples">
-<h2>Examples<a class="headerlink" href="#examples" title="Link to this heading">#</a></h2>
-<p>We now generate a multi-crazy mesh in domain <span class="math notranslate nohighlight">\(\Omega:=(x,y,z)\in[-1,1]\times[0,2]\subset\mathbb{R}^2\)</span> of
-<span class="math notranslate nohighlight">\(2 * 3\)</span> crazy regions/blocks at <span class="math notranslate nohighlight">\(c=0.3\)</span>. In each crazy block, we make <span class="math notranslate nohighlight">\(5 * 3\)</span> elements. The codes are</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">ph</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">set_embedding_space_dim</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">manifold</span> <span class="o">=</span> <span class="n">ph</span><span class="o">.</span><span class="n">manifold</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">mesh</span> <span class="o">=</span> <span class="n">ph</span><span class="o">.</span><span class="n">mesh</span><span class="p">(</span><span class="n">manifold</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">msepy</span><span class="p">,</span> <span class="n">obj</span> <span class="o">=</span> <span class="n">ph</span><span class="o">.</span><span class="n">fem</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="s1">&#39;msepy&#39;</span><span class="p">,</span> <span class="nb">locals</span><span class="p">())</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">manifold</span> <span class="o">=</span> <span class="n">obj</span><span class="p">[</span><span class="s1">&#39;manifold&#39;</span><span class="p">]</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">mesh</span> <span class="o">=</span> <span class="n">obj</span><span class="p">[</span><span class="s1">&#39;mesh&#39;</span><span class="p">]</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">msepy</span><span class="o">.</span><span class="n">config</span><span class="p">(</span><span class="n">manifold</span><span class="p">)(</span><span class="s1">&#39;crazy_multi&#39;</span><span class="p">,</span> <span class="n">c</span><span class="o">=</span><span class="mf">0.3</span><span class="p">,</span> <span class="n">periodic</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">Ns</span><span class="o">=</span><span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">],</span> <span class="n">bounds</span><span class="o">=</span><span class="p">[[</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="p">]])</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">msepy</span><span class="o">.</span><span class="n">config</span><span class="p">(</span><span class="n">mesh</span><span class="p">)([</span><span class="mi">5</span><span class="p">,</span> <span class="mi">3</span><span class="p">])</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">mesh</span><span class="o">.</span><span class="n">visualize</span><span class="p">(</span><span class="n">saveto</span><span class="o">=</span><span class="n">None_or_custom_path</span><span class="p">)</span>  
-<span class="go">&lt;Figure size ...</span>
-</pre></div>
-</div>
-<p>The multi-crazy mesh is visualized as</p>
-<figure class="align-default" id="id1">
-<a class="reference internal image-reference" href="../../../_images/crazy_multi.png"><img alt="../../../_images/crazy_multi.png" src="../../../_images/crazy_multi.png" style="width: 50%;" /></a>
-<figcaption>
-<p><span class="caption-number">Fig. 3 </span><span class="caption-text">The crazy mesh in <span class="math notranslate nohighlight">\(\Omega=[-1,1]\times[0,2]\subset\mathbb{R}^2\)</span> of <span class="math notranslate nohighlight">\(2 * 3\)</span> blocks
-at deformation factor <span class="math notranslate nohighlight">\(c=0.3\)</span>. In each block, we have <span class="math notranslate nohighlight">\(5 * 3\)</span> elements.</span><a class="headerlink" href="#id1" title="Link to this image">#</a></p>
-</figcaption>
-</figure>
+  <section id="lid-driven-cavity">
+<span id="gallery-ns2-ldc"></span><h1>Lid-driven cavity<a class="headerlink" href="#lid-driven-cavity" title="Link to this heading">#</a></h1>
+<p>The lid-driven cavity flow is a incompressible viscous flow.</p>
+<p>In 2-dimensions, it is usually cast as follows. The domain is set to be
+<span class="math notranslate nohighlight">\(\Omega=[0,1]^2\)</span> with four infinite no-slip solid walls. The media
+is still initially. From time <span class="math notranslate nohighlight">\(t=0\)</span>,
+the top wall, i.e. <span class="math notranslate nohighlight">\(y=1\)</span>, moves left with a constant speed, i.e. the lid speed,
+<span class="math notranslate nohighlight">\(\left.\boldsymbol{u}\right|_{\mathrm{lid}}=\begin{bmatrix}-1, 0\end{bmatrix}^\mathsf{T}\)</span>,
+and drives the viscous flow.</p>
 <div class="line-block">
 <div class="line"><br /></div>
 </div>
-<p>↩️  Back to <a class="reference internal" href="../index.html#gallery-msepy-domains-and-meshes"><span class="std std-ref">msepy domains and meshes</span></a>.</p>
-</section>
+<p>↩️  Back to <a class="reference internal" href="../index.html#gallery-ns"><span class="std std-ref">🌊 Navier-Stokes equations</span></a>.</p>
 </section>
 
 
@@ -541,20 +469,20 @@ at deformation factor <span class="math notranslate nohighlight">\(c=0.3\)</span
                   <!-- Previous / next buttons -->
 <div class="prev-next-area">
     <a class="left-prev"
-       href="crazy.html"
+       href="../backward_facing_step/index.html"
        title="previous page">
       <i class="fa-solid fa-angle-left"></i>
       <div class="prev-next-info">
         <p class="prev-next-subtitle">previous</p>
-        <p class="prev-next-title">Crazy domain and mesh</p>
+        <p class="prev-next-title">Backward facing step flow</p>
       </div>
     </a>
     <a class="right-next"
-       href="backward_step.html"
+       href="../normal_dipole_collision/index.html"
        title="next page">
       <div class="prev-next-info">
         <p class="prev-next-subtitle">next</p>
-        <p class="prev-next-title">Backward step</p>
+        <p class="prev-next-title">Normal dipole collision</p>
       </div>
       <i class="fa-solid fa-angle-right"></i>
     </a>
@@ -564,22 +492,6 @@ at deformation factor <span class="math notranslate nohighlight">\(c=0.3\)</span
             </div>
             
             
-              
-                <div class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
-
-  <div class="sidebar-secondary-item">
-  <div class="page-toc tocsection onthispage">
-    <i class="fa-solid fa-list"></i> On this page
-  </div>
-  <nav class="bd-toc-nav page-toc">
-    <ul class="visible nav section-nav flex-column">
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#msepy.manifold.predefined.crazy_multi.crazy_multi"><code class="docutils literal notranslate"><span class="pre">crazy_multi()</span></code></a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#boundary-units">Boundary units</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#examples">Examples</a></li>
-</ul>
-  </nav></div>
-
-</div></div>
               
             
           </div>
@@ -613,7 +525,7 @@ By Andrea Brugnoli, Ramy Rashad, Stefano Stramigioli, Yi Zhang and more
   <div class="footer-item">
     
 <div class="extra_footer">
-  <div>Last updated on February 01, 2024, 22:52:38, 中国标准时间</div>
+  <div>Last updated on February 28, 2024, 15:56:39, China Standard Time</div>
 </div>
   </div>
   

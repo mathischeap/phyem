@@ -7,6 +7,7 @@ from tools.dds.region_wise_structured import DDSRegionWiseStructured
 from typing import Dict
 from tools.quadrature import Quadrature
 from scipy.interpolate import LinearNDInterpolator, NearestNDInterpolator
+from msepy.form.numeric.function import MsePyRootFormNumericFunction
 
 
 class MsePyRootFormNumeric(Frozen):
@@ -15,7 +16,12 @@ class MsePyRootFormNumeric(Frozen):
     def __init__(self, rf):
         """"""
         self._f = rf
+        self._func = MsePyRootFormNumericFunction(rf)
         self._freeze()
+
+    @property
+    def function(self):
+        return self._func
 
     def rot(self, *grid_xi_et_sg, t=None):
         """Compute the rot of the form at `t` and save the results in a region-wise structured data set."""
@@ -87,7 +93,7 @@ class MsePyRootFormNumeric(Frozen):
         else:
             raise NotImplementedError()
 
-    def _make_interp(self, t=None, density=30):
+    def _make_interp(self, t=None, density=10):
         """"""
         if t is None:
             time = self._f.cochain.newest
@@ -181,7 +187,7 @@ class MsePyRootFormNumeric(Frozen):
         else:   # other dimensions
             raise NotImplementedError()
 
-    def region_wise_interp(self, t=None, density=30, factor=6, saveto=None):
+    def region_wise_interp(self, t=None, density=10, factor=6, saveto=None):
         """Reconstruct the form at time `t` and use the reconstruction results to
         make interpolation functions in each region.
 
@@ -253,7 +259,7 @@ class MsePyRootFormNumeric(Frozen):
 
         return final_interp
 
-    def interp(self, t=None, density=30, factor=6):
+    def interp(self, t=None, density=10, factor=6):
         """Reconstruct the form at time `t` and use the reconstruction results to
         make interpolation functions all over the domain
 

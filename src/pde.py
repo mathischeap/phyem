@@ -378,9 +378,9 @@ class PartialDifferentialEquations(Frozen):
             if all([_.__class__ is Form for _ in all_terms_of_equation_i]):
 
                 term_i0 = all_terms_of_equation_i[0]
-                for term_ij in all_terms_of_equation_i[1:]:
+                for k, term_ij in enumerate(all_terms_of_equation_i[1:]):
                     assert term_i0.space == term_ij.space, \
-                        f"spaces in equation #{i} do not match each other."
+                        f"spaces in equation #{i} do not match each other: {k+1}th term."
 
             elif all([
                 hasattr(_, '_is_able_to_be_a_weak_term') for _ in all_terms_of_equation_i

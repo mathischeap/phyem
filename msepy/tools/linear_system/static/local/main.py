@@ -10,10 +10,10 @@ from msepy.tools.matrix.static.local import MsePyStaticLocalMatrix
 from msepy.tools.vector.static.local import MsePyStaticLocalVector
 from msepy.form.cochain.vector.static import MsePyRootFormStaticCochainVector
 from msepy.tools.linear_system.static.assembled.main import MsePyStaticLinearSystemAssembled
-from msepy.tools.linear_system.static.customize import MsePyStaticLinearSystemCustomize
+from msepy.tools.linear_system.static.local.customize import MsePyStaticLinearSystemCustomize
 
-from msepy.tools.matrix.static.bmat import bmat
-from msepy.tools.vector.static.concatenate import concatenate
+from msepy.tools.matrix.static.local import bmat
+from msepy.tools.vector.static.local import concatenate
 
 
 class MsePyStaticLocalLinearSystem(Frozen):

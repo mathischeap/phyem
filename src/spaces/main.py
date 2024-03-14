@@ -157,6 +157,11 @@ __all__ = [
     '_VarSetting_A_x_astB_ip_tC',                  #
     '_VarSetting_A_x_B_ip_C',                      # nonlinear
 
+    '_VarSetting_astA_x_astB__dp__tC',             # vector <A x B | C>, AB are known
+
+    '_VarSetting_astA_x_astB__ip__astC_x_tD',      # vector  (A x B, C x D), ABC known, D test.
+    '_VarSetting_astA_x_astB__dp__astC_x_tD',      # vector  <A x B | C x D>, ABC known, D test.
+
     '_VarSetting_dastA_astA_tp_tC',                #
     '_VarSetting_dastA_tB_tp_astA',
     '_VarSetting_dtA_astB_tp_astB',
@@ -232,6 +237,23 @@ _VarSetting_A_x_B_ip_C = [
     _sep.join(["_X_:", "[{A}]", "[{B}]", "[{C}]"]),
 ]
 
+# --------------- <A x B | C> --------------------------------------------------------------------
+_VarSetting_astA_x_astB__dp__tC = [
+    r"\mathsf{\left.x\right|}",
+    _sep.join(["_X_dp", "[{A}]", "[{B}]", "[{C}]"])
+]
+
+# --------------- (A x B, C x D) ----------------------------------------------------
+_VarSetting_astA_x_astB__ip__astC_x_tD = [
+    r"\mathsf{XX}",
+    _sep.join(["_X__Xip", "[{A}]", "[{B}]", "[{C}]", "[{D}]"]),
+]
+
+_VarSetting_astA_x_astB__dp__astC_x_tD= [
+    r"\mathsf{xx}",
+    _sep.join(["_X__Xdp", "[{A}]", "[{B}]", "[{C}]", "[{D}]"]),
+]
+
 # --------------- (A x B, dC) -------------------------------------------------------
 
 # _VarSetting_A_x_astB_ip_dC = [
@@ -264,12 +286,6 @@ _VarSetting_dastA_tB_tp_astA = [
 _VarSetting_dtA_astB_tp_astB = [
     r"\left<\mathsf{d\_,\cdot\otimes\cdot}\right>",
     _sep.join(["dtA--*B-tp-*B", "[{A}]", "[{B}]"]),
-]
-
-
-_VarSetting_dastA_astA_tp_tC = [
-    r"\left<\mathsf{d\cdot,\cdot\otimes\_}\right>",
-    _sep.join(["d*A--*A-tp-tC", "[{A}]", "[{C}]"]),
 ]
 
 

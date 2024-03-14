@@ -273,3 +273,13 @@ class WfDerive(Frozen):
         """Delete the term indicated by ``index``."""
         wf = self.replace(index, [], [])
         return wf
+
+    def commutation_wrt_inner_and_x(self, index, *args, **kwargs):
+        term = self._wf[index][1]
+        terms, signs = term._commutation_wrt_inner_and_x(*args, **kwargs)
+        return self.replace(index, terms, signs)
+
+    def switch_to_duality_pairing(self, index):
+        term = self._wf[index][1]
+        terms, signs = term._switch_to_duality_pairing()
+        return self.replace(index, terms, signs)

@@ -86,6 +86,7 @@ class MsePyDynamicLinearSystemBoundaryCondition(Frozen):
         assert boundary_section_sym_repr in self, f"no valid BC is defined on {boundary_section_sym_repr}."
         return self._valid_bcs[boundary_section_sym_repr]
 
+    # noinspection PyRedeclaration
     def __len__(self):
         """How many valid boundary sections?"""
         return len(self._valid_bcs)

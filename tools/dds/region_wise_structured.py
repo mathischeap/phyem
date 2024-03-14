@@ -52,7 +52,28 @@ class DDSRegionWiseStructured(Frozen):
         assert len(data_shape) == space_dim, f'put data into a structured way, so n-d data in n-d space.'
         self._coo_dict_list = coo_dict_list
         self._val_dict_list = val_dict_list
+        self._dtype = None
         self._freeze()
+
+    @property
+    def dtype(self):
+        """'scalar', 'vector', 'tensor' or so on."""
+        if self._dtype is None:
+            if self._value_shape == 1:
+                self._dtype = 'scalar'
+            else:
+                if self._space_dim == self._value_shape:
+                    self._dtype = 'vector'
+                elif self._value_shape == self._space_dim ** 2:
+                    self._dtype = 'tensor'
+                else:
+                    raise NotImplementedError()
+        return self._dtype
+
+    @property
+    def ndim(self):
+        """dimensions of the space."""
+        return self._space_dim
 
     def visualize(self, magnitude=False, saveto=None, **kwargs):
         """"""
@@ -147,6 +168,12 @@ class DDSRegionWiseStructured(Frozen):
                 value_dict[_][region] = self_v[region] + other_v[region]
 
         return self.__class__(self._coo_dict_list, value_dict)
+
+    def x(self, other):
+        """cross-product."""
+
+    def cross_product(self, other):
+        """cross-product."""
 
 
 def _find_shape(list_of_dict):

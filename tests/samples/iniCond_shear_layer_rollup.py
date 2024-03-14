@@ -1,9 +1,10 @@
 # -*- coding: utf-8 -*-
 r"""
-The shear layer rollup is a 2-dimensional ideal incompressible NS flow (Euler flow).
+The shear layer rollup is a 2-dimensional ideal incompressible flow (Euler flow).
+And the external body force is zero.
 
-The flow is in a periodic domain :math:`\Omega = [0, 2\pi]^2`, and components of the initial condition
-of the velocity field :math:`\boldsymbol{u}^0 = \begin{bmatrix}u^0 & v^0\end{bmatrix}^{\mathsf{T}}` are
+The flow is in a periodic domain :math:`\Omega = [0, 2\pi]^2`, and components of
+the initial velocity :math:`\boldsymbol{u}^0 = \begin{bmatrix}u^0 & v^0\end{bmatrix}^{\mathsf{T}}` are
 
 .. math::
 

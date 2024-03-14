@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+# noinspection PyUnresolvedReferences
 r"""
 
 .. note::
@@ -415,11 +416,19 @@ _wf_term_default_simple_patterns = {   # use only str to represent a simple patt
 
     '<tr star | tr >': '<tr star rf | trace rf>',
 
+    '<AxB|C>': r'$\left<\left.\mathrm{rf} \times \mathrm{rf} \right| \mathrm{rf}\right>$',  # nonlinear term. <AxB|C>
+    '<*x*|C>': r'$\left<\left.\mathrm{krf} \times \mathrm{krf} \right| \mathrm{rf}\right>$',  # nonlinear term. <AxB|C>
+
+    '<AxB|CxD>': r"$\left<\left.\mathrm{rf} \times \mathrm{rf} \right| \mathrm{rf} \times \mathrm{rf}\right>$",
+    '<*x*|*xD>': r"$\left<\left.\mathrm{krf} \times \mathrm{krf} \right| \mathrm{krf} \times \mathrm{rf}\right>$",
+
     '(,d-pi)': '(rf, d(pi(rf)))',
 
     '(*x*,)': r'(krf $\times$ krf, rf)',   # vector
     '(*x,)': r'(krf $\times$ rf, rf)',
     '(x*,)': r'(rf $\times$ krf, rf)',
+
+    '(*x*,*x)': r"(krf $\times$ krf, krf $\times$ rf)",  # vector , (A x B, C x D)
 
     '(*x,d)': r"(krf $\times$ rf, d rf)",
     '(x*,d)': r"(rf $\times$ krf, d rf)",

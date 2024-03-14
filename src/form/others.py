@@ -100,6 +100,7 @@ def _list_forms():
     cell_text = list()
     for form_id in _global_forms:
         form = _global_forms[form_id]
+        # noinspection PyTypeChecker
         cell_text.append(
             r'$\quad$'.join(
                 [
@@ -115,6 +116,7 @@ def _list_forms():
     from src.wf.term.main import _global_wf_terms
     for term_id in _global_wf_terms:
         wft = _global_wf_terms[term_id]
+        # noinspection PyTypeChecker
         cell_text.append(
             r'$\quad$'.join(
                 [

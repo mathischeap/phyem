@@ -24,6 +24,12 @@ __all__ = [
     '_VarPar_A_x_astB_ip_tC',
     '_VarPar_A_x_B_ip_C',           # nonlinear
 
+    '_VarPar_astA_x_astB_dp_tC',    # <A x B | C>
+
+    '_VarPar_astA_x_astB__ip__astC_x_tD',  # vector (A x B, C x D), ABC known, D test
+
+    '_VarPar_astA_x_astB__dp__astC_x_tD',  # vector <A x B | C x D>, ABC known, D test
+
     # "_VarPar_astA_x_B_ip_dC",
     # "_VarPar_A_x_astB_ip_dC",
     # "_VarPar_astA_x_astB_ip_dC",
@@ -255,6 +261,71 @@ def _VarPar_A_x_B_ip_C(A, B, C):
 
     mda = AbstractNonlinearOperator(sym, lin)
     return mda
+
+
+# ------- <A x B | C> ------------------------------------------------------------------------------
+def _VarPar_astA_x_astB_dp_tC(gA, gB, tC):
+    """"""
+    sym, lin = _VarSetting_astA_x_astB__dp__tC[:2]
+
+    sym += r"_{(" + gA._sym_repr + ',' + gB._sym_repr + r")}"
+    lin = lin.replace('{A}', gA._pure_lin_repr)
+    lin = lin.replace('{B}', gB._pure_lin_repr)
+    lin = lin.replace('{C}', tC._pure_lin_repr)
+
+    s0 = tC.space
+    d0 = tC._degree
+    str_d0 = _degree_str_maker(d0)
+
+    shape0 = s0._sym_repr + _default_space_degree_repr + str_d0
+
+    shape = (shape0, 1)
+    ra = _root_array(sym, lin, shape)
+    return ra
+
+
+# ------ (A x B, C x D) ----------------------------------------------------------------------------
+
+def _VarPar_astA_x_astB__ip__astC_x_tD(gA, gB, gC, tD):
+    """"""
+    sym, lin = _VarSetting_astA_x_astB__ip__astC_x_tD[:2]
+
+    sym += r"_{\left(" + gA._sym_repr + ',' + gB._sym_repr + ',' + gC._sym_repr + r"\right)}"
+    lin = lin.replace('{A}', gA._pure_lin_repr)
+    lin = lin.replace('{B}', gB._pure_lin_repr)
+    lin = lin.replace('{C}', gC._pure_lin_repr)
+    lin = lin.replace('{D}', tD._pure_lin_repr)
+
+    s0 = tD.space
+    d0 = tD._degree
+    str_d0 = _degree_str_maker(d0)
+
+    shape0 = s0._sym_repr + _default_space_degree_repr + str_d0
+
+    shape = (shape0, 1)
+    ra = _root_array(sym, lin, shape)
+    return ra
+
+# ----- <A x B | C x D> ----------------------------------------------------------------------------
+def _VarPar_astA_x_astB__dp__astC_x_tD(gA, gB, gC, tD):
+    """"""
+    sym, lin = _VarSetting_astA_x_astB__dp__astC_x_tD[:2]
+
+    sym += r"_{\left(" + gA._sym_repr + ',' + gB._sym_repr + ',' + gC._sym_repr + r"\right)}"
+    lin = lin.replace('{A}', gA._pure_lin_repr)
+    lin = lin.replace('{B}', gB._pure_lin_repr)
+    lin = lin.replace('{C}', gC._pure_lin_repr)
+    lin = lin.replace('{D}', tD._pure_lin_repr)
+
+    s0 = tD.space
+    d0 = tD._degree
+    str_d0 = _degree_str_maker(d0)
+
+    shape0 = s0._sym_repr + _default_space_degree_repr + str_d0
+
+    shape = (shape0, 1)
+    ra = _root_array(sym, lin, shape)
+    return ra
 
 
 # -----(dA, B otimes C) ----------------------------------------------------------------------------

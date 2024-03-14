@@ -50,8 +50,8 @@
     <link rel="icon" href="../../_static/favicon.png"/>
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
-    <link rel="next" title="🌊 Navier-Stokes equations" href="../Navier_Stokes/index.html" />
-    <link rel="prev" title="Cylinder channel" href="../msepy_domains_and_meshes/msepy/cylinder_channel.html" />
+    <link rel="next" title="🧲 MHD" href="../MHD/index.html" />
+    <link rel="prev" title="Multi-crazy domain and mesh" href="../msepy_domains_and_meshes/msepy/multi_crazy.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
   </head>
@@ -222,20 +222,23 @@
 </li>
 <li class="toctree-l1 current active has-children"><a class="reference internal" href="../index.html">Gallery🖼</a><input checked="" class="toctree-checkbox" id="toctree-checkbox-4" name="toctree-checkbox-4" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-4"><i class="fa-solid fa-chevron-down"></i></label><ul class="current">
 <li class="toctree-l2 has-children"><a class="reference internal" href="../msepy_domains_and_meshes/index.html"><em>msepy</em> domains and meshes</a><input class="toctree-checkbox" id="toctree-checkbox-5" name="toctree-checkbox-5" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-5"><i class="fa-solid fa-chevron-down"></i></label><ul>
-<li class="toctree-l3"><a class="reference internal" href="../msepy_domains_and_meshes/msepy/crazy.html">Crazy domain and mesh</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../msepy_domains_and_meshes/msepy/crazy_multi.html">Multi-crazy domain and mesh</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../msepy_domains_and_meshes/msepy/backward_step.html">Backward step</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../msepy_domains_and_meshes/msepy/crazy.html">Crazy domain and mesh</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../msepy_domains_and_meshes/msepy/cylinder_channel.html">Cylinder channel</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../msepy_domains_and_meshes/msepy/multi_crazy.html">Multi-crazy domain and mesh</a></li>
 </ul>
 </li>
 <li class="toctree-l2 current active"><a class="current reference internal" href="#">🟢 div-grad</a></li>
-<li class="toctree-l2 has-children"><a class="reference internal" href="../Navier_Stokes/index.html">🌊 Navier-Stokes equations</a><input class="toctree-checkbox" id="toctree-checkbox-6" name="toctree-checkbox-6" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-6"><i class="fa-solid fa-chevron-down"></i></label><ul>
-<li class="toctree-l3"><a class="reference internal" href="../Navier_Stokes/shear_layer_rollup/index.html">Shear layer rollup</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../Navier_Stokes/normal_dipole_collision/index.html">Normal dipole collision</a></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../MHD/index.html">🧲 MHD</a><input class="toctree-checkbox" id="toctree-checkbox-6" name="toctree-checkbox-6" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-6"><i class="fa-solid fa-chevron-down"></i></label><ul>
+<li class="toctree-l3"><a class="reference internal" href="../MHD/Orszag_Tang_vortex/index.html">Orszag-Tang Vortex</a></li>
 </ul>
 </li>
-<li class="toctree-l2 has-children"><a class="reference internal" href="../MHD/index.html">🧲 MHD</a><input class="toctree-checkbox" id="toctree-checkbox-7" name="toctree-checkbox-7" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-7"><i class="fa-solid fa-chevron-down"></i></label><ul>
-<li class="toctree-l3"><a class="reference internal" href="../MHD/Orszag_Tang_vortex/index.html">Orszag-Tang Vortex</a></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../Navier_Stokes/index.html">🌊 Navier-Stokes equations</a><input class="toctree-checkbox" id="toctree-checkbox-7" name="toctree-checkbox-7" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-7"><i class="fa-solid fa-chevron-down"></i></label><ul>
+<li class="toctree-l3"><a class="reference internal" href="../Navier_Stokes/backward_facing_step/index.html">Backward facing step flow</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../Navier_Stokes/lid_driven_cavity/index.html">Lid-driven cavity</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../Navier_Stokes/normal_dipole_collision/index.html">Normal dipole collision</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../Navier_Stokes/shear_layer_rollup/index.html">Shear layer rollup</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../Navier_Stokes/Taylor_Green_vortex/index.html">Taylor-Green vortex</a></li>
 </ul>
 </li>
 </ul>
@@ -438,12 +441,12 @@ document.write(`
             <nav aria-label="Page">
                 <ul class="visible nav section-nav flex-column">
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#d-periodic-boundary-conditions">2d periodic boundary conditions</a><ul class="nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#tests.msepy.div_grad._2d_outer_periodic.div_grad_2d_periodic_manufactured_test"><code class="docutils literal notranslate"><span class="pre">div_grad_2d_periodic_manufactured_test()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#web.source.gallery.div_grad.outer_periodic.div_grad_2d_periodic_manufactured_test"><code class="docutils literal notranslate"><span class="pre">div_grad_2d_periodic_manufactured_test()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#examples">Examples</a></li>
 </ul>
 </li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#d-general-boundary-conditions">2d general boundary conditions</a><ul class="nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#tests.msepy.div_grad._2d_outer.div_grad_2d_general_bc_manufactured_test"><code class="docutils literal notranslate"><span class="pre">div_grad_2d_general_bc_manufactured_test()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#web.source.gallery.div_grad.outer.div_grad_2d_general_bc_manufactured_test"><code class="docutils literal notranslate"><span class="pre">div_grad_2d_general_bc_manufactured_test()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id1">Examples</a></li>
 </ul>
 </li>
@@ -482,11 +485,11 @@ different domains.</p>
 \[\varphi = - \sin(2\pi x) \sin(2\pi y).\]</div>
 <p>Exact solutions of <span class="math notranslate nohighlight">\(u^1\)</span> and <span class="math notranslate nohighlight">\(f^2\)</span> then follow.
 We consider the domain to be <span class="math notranslate nohighlight">\(\Omega = (x,y) \in [0,1]^2\)</span> and it is fully periodic.
-We use the <a class="reference internal" href="../msepy_domains_and_meshes/msepy/crazy_multi.html#gallery-msepy-domains-and-meshes-multi-crazy"><span class="std std-ref">Multi-crazy domain and mesh</span></a> for this test. The solver is given below.</p>
+We use the <a class="reference internal" href="../msepy_domains_and_meshes/msepy/multi_crazy.html#gallery-msepy-domains-and-meshes-multi-crazy"><span class="std std-ref">Multi-crazy domain and mesh</span></a> for this test. The solver is given below.</p>
 <blockquote>
 <div><dl class="py function">
-<dt class="sig sig-object py" id="tests.msepy.div_grad._2d_outer_periodic.div_grad_2d_periodic_manufactured_test">
-<span class="sig-name descname"><span class="pre">div_grad_2d_periodic_manufactured_test</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">degree</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">K</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">c</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/tests/msepy/div_grad/_2d_outer_periodic.html#div_grad_2d_periodic_manufactured_test"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tests.msepy.div_grad._2d_outer_periodic.div_grad_2d_periodic_manufactured_test" title="Link to this definition">#</a></dt>
+<dt class="sig sig-object py" id="web.source.gallery.div_grad.outer_periodic.div_grad_2d_periodic_manufactured_test">
+<span class="sig-name descname"><span class="pre">div_grad_2d_periodic_manufactured_test</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">degree</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">K</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">c</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/web/source/gallery/div_grad/outer_periodic.html#div_grad_2d_periodic_manufactured_test"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#web.source.gallery.div_grad.outer_periodic.div_grad_2d_periodic_manufactured_test" title="Link to this definition">#</a></dt>
 <dd><dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><dl class="simple">
@@ -494,7 +497,7 @@ We use the <a class="reference internal" href="../msepy_domains_and_meshes/msepy
 </dd>
 <dt><strong>K</strong><span class="classifier">int</span></dt><dd><p>In total we will use <span class="math notranslate nohighlight">\(4 * K * K\)</span> elements.</p>
 </dd>
-<dt><strong>c</strong><span class="classifier">float, default=0</span></dt><dd><p>The deformation factor of the <a class="reference internal" href="../msepy_domains_and_meshes/msepy/crazy_multi.html#gallery-msepy-domains-and-meshes-multi-crazy"><span class="std std-ref">Multi-crazy domain and mesh</span></a>.</p>
+<dt><strong>c</strong><span class="classifier">float, default=0</span></dt><dd><p>The deformation factor of the <a class="reference internal" href="../msepy_domains_and_meshes/msepy/multi_crazy.html#gallery-msepy-domains-and-meshes-multi-crazy"><span class="std std-ref">Multi-crazy domain and mesh</span></a>.</p>
 </dd>
 </dl>
 </dd>
@@ -540,8 +543,8 @@ on faces <span class="math notranslate nohighlight">\(y=0\)</span> and <span cla
 <p>The implementation is</p>
 <blockquote>
 <div><dl class="py function">
-<dt class="sig sig-object py" id="tests.msepy.div_grad._2d_outer.div_grad_2d_general_bc_manufactured_test">
-<span class="sig-name descname"><span class="pre">div_grad_2d_general_bc_manufactured_test</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">degree</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">K</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">c</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.0</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/tests/msepy/div_grad/_2d_outer.html#div_grad_2d_general_bc_manufactured_test"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tests.msepy.div_grad._2d_outer.div_grad_2d_general_bc_manufactured_test" title="Link to this definition">#</a></dt>
+<dt class="sig sig-object py" id="web.source.gallery.div_grad.outer.div_grad_2d_general_bc_manufactured_test">
+<span class="sig-name descname"><span class="pre">div_grad_2d_general_bc_manufactured_test</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">degree</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">K</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">c</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.0</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/web/source/gallery/div_grad/outer.html#div_grad_2d_general_bc_manufactured_test"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#web.source.gallery.div_grad.outer.div_grad_2d_general_bc_manufactured_test" title="Link to this definition">#</a></dt>
 <dd><dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><dl class="simple">
@@ -607,20 +610,20 @@ at polynomial degree 2,</p>
                   <!-- Previous / next buttons -->
 <div class="prev-next-area">
     <a class="left-prev"
-       href="../msepy_domains_and_meshes/msepy/cylinder_channel.html"
+       href="../msepy_domains_and_meshes/msepy/multi_crazy.html"
        title="previous page">
       <i class="fa-solid fa-angle-left"></i>
       <div class="prev-next-info">
         <p class="prev-next-subtitle">previous</p>
-        <p class="prev-next-title">Cylinder channel</p>
+        <p class="prev-next-title">Multi-crazy domain and mesh</p>
       </div>
     </a>
     <a class="right-next"
-       href="../Navier_Stokes/index.html"
+       href="../MHD/index.html"
        title="next page">
       <div class="prev-next-info">
         <p class="prev-next-subtitle">next</p>
-        <p class="prev-next-title">🌊 Navier-Stokes equations</p>
+        <p class="prev-next-title">🧲 MHD</p>
       </div>
       <i class="fa-solid fa-angle-right"></i>
     </a>
@@ -640,12 +643,12 @@ at polynomial degree 2,</p>
   <nav class="bd-toc-nav page-toc">
     <ul class="visible nav section-nav flex-column">
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#d-periodic-boundary-conditions">2d periodic boundary conditions</a><ul class="nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#tests.msepy.div_grad._2d_outer_periodic.div_grad_2d_periodic_manufactured_test"><code class="docutils literal notranslate"><span class="pre">div_grad_2d_periodic_manufactured_test()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#web.source.gallery.div_grad.outer_periodic.div_grad_2d_periodic_manufactured_test"><code class="docutils literal notranslate"><span class="pre">div_grad_2d_periodic_manufactured_test()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#examples">Examples</a></li>
 </ul>
 </li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#d-general-boundary-conditions">2d general boundary conditions</a><ul class="nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#tests.msepy.div_grad._2d_outer.div_grad_2d_general_bc_manufactured_test"><code class="docutils literal notranslate"><span class="pre">div_grad_2d_general_bc_manufactured_test()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#web.source.gallery.div_grad.outer.div_grad_2d_general_bc_manufactured_test"><code class="docutils literal notranslate"><span class="pre">div_grad_2d_general_bc_manufactured_test()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id1">Examples</a></li>
 </ul>
 </li>
@@ -686,7 +689,7 @@ By Andrea Brugnoli, Ramy Rashad, Stefano Stramigioli, Yi Zhang and more
   <div class="footer-item">
     
 <div class="extra_footer">
-  <div>Last updated on February 01, 2024, 22:52:38, 中国标准时间</div>
+  <div>Last updated on February 28, 2024, 15:56:39, China Standard Time</div>
 </div>
   </div>
   

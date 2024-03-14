@@ -468,6 +468,11 @@ class MsePyRootForm(Frozen):
         return self._numeric
 
     @property
+    def bi(self):
+        """Another name of boundary_integrate."""
+        return self._boundary_integrate
+
+    @property
     def boundary_integrate(self):
         """"""
         return self._boundary_integrate

@@ -18,7 +18,7 @@ Contributors
 🧩💡🛠️ `Yi Zhang <https://mathischeap.com/>`_ ★★★★★
 
 All contributions are equally important to the library. And
-The stars indicate the amount of work (estimated by the maintainer) by the contributior.
+The stars (★⛤) indicate the amount of work (estimated by the maintainer) by the contributior.
 
 | 🛠️ maintainer
 | 💡 initiator

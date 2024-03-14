@@ -15,12 +15,12 @@ def _inner_simpler_pattern_examiner_scalar_valued_forms(factor, f0, f1, extra_in
     """"""
     if factor.__class__ is ConstantScalar0Form:
 
-        # (codifferential sf, sf) ----------------------------------------------------------------------
+        # --- (codifferential sf, sf) ---------------------------------------------------------------------------
         lin_codifferential = _global_operator_lin_repr_setting['codifferential']
         if f0._lin_repr[:len(lin_codifferential)] == lin_codifferential:
             return _simple_patterns['(cd,)'], None
 
-        # (partial_time_derivative of root-sf, sf) -----------------------------------------------------
+        # --- (partial_time_derivative of root-sf, sf) ---------------------------------------------------------
         lin_td = _global_operator_lin_repr_setting['time_derivative']
         if f0._lin_repr[:len(lin_td)] == lin_td:
             bf0 = _find_form(f0._lin_repr, upon=time_derivative)
@@ -30,7 +30,7 @@ def _inner_simpler_pattern_examiner_scalar_valued_forms(factor, f0, f1, extra_in
                     'rsf1': f1,    # root-scalar-form-1
                 }
 
-        # (root-sf, root-sf) ---------------------------------------------------------------------------
+        # --- (root-sf, root-sf) ------------------------------------------------------------------------------
         if f0.is_root() and f1.is_root():
             return _simple_patterns['(rt,rt)'], {
                     'rsf0': f0,   # root-scalar-form-0
@@ -39,7 +39,7 @@ def _inner_simpler_pattern_examiner_scalar_valued_forms(factor, f0, f1, extra_in
         else:
             pass
 
-        # (d of root-sf, root-sf) ---------------------------------------------------------------------
+        # --- (d of root-sf, root-sf) ------------------------------------------------------------------------
         lin_d = _global_operator_lin_repr_setting['d']
         if f0._lin_repr[:len(lin_d)] == lin_d:
             bf0 = _find_form(f0._lin_repr, upon=d)
@@ -63,7 +63,7 @@ def _inner_simpler_pattern_examiner_scalar_valued_forms(factor, f0, f1, extra_in
             else:
                 pass
 
-        # (root-sf, d of root-sf) -------------------------------------------------------------------
+        # -------- (root-sf, d of root-sf) -------------------------------------------------------------------
         lin_d = _global_operator_lin_repr_setting['d']
         if f1._lin_repr[:len(lin_d)] == lin_d:
             bf1 = _find_form(f1._lin_repr, upon=d)
@@ -85,7 +85,7 @@ def _inner_simpler_pattern_examiner_scalar_valued_forms(factor, f0, f1, extra_in
             else:
                 pass
 
-        # (d root-form, d root-form) ----------------------------------------------------
+        # --- (d root-form, d root-form) -------------------------------------------------------------------------
         if f0._lin_repr[:len(lin_d)] == lin_d and f1._lin_repr[:len(lin_d)] == lin_d:
             bf0 = _find_form(f0._lin_repr, upon=d)
             bf1 = _find_form(f1._lin_repr, upon=d)
@@ -98,7 +98,7 @@ def _inner_simpler_pattern_examiner_scalar_valued_forms(factor, f0, f1, extra_in
             else:
                 pass
 
-        # <A, d(pi(B))> --------------------------------------------------------------------------------
+        # --- <A, d(pi(B))> --------------------------------------------------------------------------------------
         projection_lin = _global_operator_lin_repr_setting['projection']
         if projection_lin in f1._lin_repr and lin_d in f1._lin_repr:
             root_forms_in_f1 = _find_root_forms_through_lin_repr(f1._lin_repr)
@@ -111,10 +111,71 @@ def _inner_simpler_pattern_examiner_scalar_valued_forms(factor, f0, f1, extra_in
                     'B': B,    # root-form B
                 }  # d(pi(B)) is in the same space of A, and is of same degree.
 
-        # (a x b, c) types term, where x is cross product, and a, b, c are root-scalar-valued forms ----
+        # --- (a x b, c) types term, where x is cross product, and a, b, c are root-scalar-valued forms ----------
         cross_product_lin = _global_operator_lin_repr_setting['cross_product']
+        existing0 = cross_product_lin in f0._lin_repr
+        amount0 = f0._lin_repr.count(cross_product_lin)
 
-        if cross_product_lin in f0._lin_repr and f0._lin_repr.count(cross_product_lin) == 1:
+        Hodge_lin = _global_operator_lin_repr_setting['Hodge']
+        existing0_Hodge = Hodge_lin in f0._lin_repr
+        amount0_Hodge = f0._lin_repr.count(Hodge_lin)
+
+        if existing0 and amount0 == 1 and existing0_Hodge and amount0_Hodge == 1:
+            hodge_start = Hodge_lin + _non_root_lin_sep[0]
+            hodge_end = _non_root_lin_sep[1]
+            if f0._lin_repr[:len(hodge_start)] == hodge_start and f0._lin_repr[-len(hodge_end):] == hodge_end:
+                f0_looking_lin = f0._lin_repr[len(hodge_start):-len(hodge_end)]
+                a_lin, b_lin = f0_looking_lin.split(cross_product_lin)
+
+                f_a = _find_form(a_lin)
+                f_b = _find_form(b_lin)
+
+                if (f_a.is_root() and f_b.is_root() and f1.is_root() and
+                        (f_a is not f_b) and (f_a is not f1) and (f_b is not f1)):
+
+                    if 'known-cross-product-form' in extra_info:
+
+                        known_forms = extra_info['known-cross-product-form']
+                        if known_forms is f_a:
+                            return _simple_patterns['(*x,)'], {
+                                'a': f_a,
+                                'b': f_b,
+                                'c': f1
+                            }
+
+                        elif known_forms is f_b:
+
+                            return _simple_patterns['(x*,)'], {
+                                'a': f_a,
+                                'b': f_b,
+                                'c': f1
+                            }
+
+                        elif isinstance(known_forms, (list, tuple)) and len(known_forms) == 2:
+
+                            kf0, kf1 = known_forms
+
+                            if kf0 is f_a and kf1 is f_b:
+                                return _simple_patterns['(*x*,)'], {
+                                    'a': f_a,
+                                    'b': f_b,
+                                    'c': f1
+                                }
+
+                        else:
+                            raise Exception
+
+                    else:
+
+                        return _simple_patterns['(x,)'], {
+                            'a': f_a,
+                            'b': f_b,
+                            'c': f1
+                        }
+                else:
+                    raise Exception()
+
+        if existing0 and amount0 == 1:
             # it is like `a` x `b` for f0
             a_lin, b_lin = f0._lin_repr.split(cross_product_lin)
 
@@ -221,6 +282,33 @@ def _inner_simpler_pattern_examiner_scalar_valued_forms(factor, f0, f1, extra_in
             else:
                 pass
 
+        # --- (A x B, C x D) type terms ----------------------------------------------------------------------
+        existing0 = cross_product_lin in f0._lin_repr
+        amount0 = f0._lin_repr.count(cross_product_lin)
+        existing1 = cross_product_lin in f1._lin_repr
+        amount1 = f1._lin_repr.count(cross_product_lin)
+
+        if existing0 and existing1:  # make sure `x` is in f0 and f1.
+            if amount0 == amount1 == 1:  # only one `x` in f0 or f1.
+                A_lin, B_lin = f0._lin_repr.split(cross_product_lin)
+                C_lin, D_lin = f1._lin_repr.split(cross_product_lin)
+
+                A = _find_form(A_lin)
+                B = _find_form(B_lin)
+                C = _find_form(C_lin)
+                D = _find_form(D_lin)
+
+                if A.is_root() and B.is_root() and C.is_root() and D.is_root():
+                    if 'known-cross-product-form' in extra_info:
+                        known_forms = extra_info['known-cross-product-form']
+                        if A in known_forms and B in known_forms and C in known_forms:
+                            return _simple_patterns['(*x*,*x)'], {
+                                'A': A,
+                                'B': B,
+                                'C': C,
+                                'D': D,
+                            }
+
         return '', None
 
     else:
@@ -231,12 +319,12 @@ def _inner_simpler_pattern_examiner_bundle_valued_forms(factor, f0, f1, extra_in
     """"""
     if factor.__class__ is ConstantScalar0Form:
 
-        # (codifferential sf, sf) ---------------------------------------------------------------------
+        # ---------- (codifferential sf, sf) ---------------------------------------------------------------------
         lin_codifferential = _global_operator_lin_repr_setting['codifferential']
         if f0._lin_repr[:len(lin_codifferential)] == lin_codifferential:
             return _simple_patterns['(cd,)'], None
 
-        # (partial_time_derivative of root-sf, sf) ----------------------------------------------------
+        # ------- (partial_time_derivative of root-sf, sf) ------------------------------------------------------
         lin_td = _global_operator_lin_repr_setting['time_derivative']
         if f0._lin_repr[:len(lin_td)] == lin_td:
             bf0 = _find_form(f0._lin_repr, upon=time_derivative)
@@ -246,14 +334,14 @@ def _inner_simpler_pattern_examiner_bundle_valued_forms(factor, f0, f1, extra_in
                     'rsf1': f1,    # root-scalar-form-1
                 }
 
-        # (root-sf, root-sf) ---------------------------------------------------------------------------
+        # ------ (root-sf, root-sf) ---------------------------------------------------------------------------
         if f0.is_root() and f1.is_root():
             return _simple_patterns['(rt,rt)'], {
                 'rsf0': f0,   # root-scalar-form-0
                 'rsf1': f1,   # root-scalar-form-1
             }
 
-        # (d of root-sf, root-sf) ----------------------------------------------------------------------
+        # ----- (d of root-sf, root-sf) ----------------------------------------------------------------------
         lin_d = _global_operator_lin_repr_setting['d']
         if f0._lin_repr[:len(lin_d)] == lin_d:
             bf0 = _find_form(f0._lin_repr, upon=d)
@@ -267,7 +355,7 @@ def _inner_simpler_pattern_examiner_bundle_valued_forms(factor, f0, f1, extra_in
             else:
                 pass
 
-        # (root-sf, d of root-sf) --------------------------------------------------------------------
+        # --------- (root-sf, d of root-sf) --------------------------------------------------------------------
         lin_d = _global_operator_lin_repr_setting['d']
         if f1._lin_repr[:len(lin_d)] == lin_d:
             bf1 = _find_form(f1._lin_repr, upon=d)
@@ -283,7 +371,7 @@ def _inner_simpler_pattern_examiner_bundle_valued_forms(factor, f0, f1, extra_in
 
         tensor_product_lin = _global_operator_lin_repr_setting['tensor_product']
 
-        # (d A, B tp C) --------------------------------------------------------------------------
+        # ---- (d A, B tp C) -----------------------------------------------------------------------------------
         if (f0._lin_repr[:len(lin_d)] == lin_d and
                 tensor_product_lin in f1._lin_repr and f1._lin_repr.count(tensor_product_lin) == 1):
 
@@ -350,7 +438,7 @@ def _inner_simpler_pattern_examiner_bundle_valued_forms(factor, f0, f1, extra_in
                             'C': C,
                         }
 
-        # (A, B tp C) --------------------------------------------------------------------------
+        # ---------- (A, B tp C) --------------------------------------------------------------------------
         if tensor_product_lin in f1._lin_repr and f1._lin_repr.count(tensor_product_lin) == 1:
             A = _find_form(f0._lin_repr)
             B_lin_repr, C_lin_repr = f1._lin_repr.split(tensor_product_lin)
@@ -386,7 +474,7 @@ def _inner_simpler_pattern_examiner_bundle_valued_forms(factor, f0, f1, extra_in
                             'C': C,
                         }
 
-        # ========= No pattern found !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! =======================
+        # ========= No pattern found !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! ===============================
         return '', None
 
     else:
@@ -397,7 +485,7 @@ def _inner_simpler_pattern_examiner_diagonal_bundle_valued_forms(factor, f0, f1,
     """"""
     if factor.__class__ is ConstantScalar0Form:
 
-        # (root-sf, d of root-sf) -------------------------------------------
+        # --------- (root-sf, d of root-sf) -----------------------------------------------------------------
         lin_d = _global_operator_lin_repr_setting['d']
         if f1._lin_repr[:len(lin_d)] == lin_d:
             bf1 = _find_form(f1._lin_repr, upon=d)
@@ -417,12 +505,12 @@ def _inner_simpler_pattern_examiner_diagonal_bundle_valued_forms(factor, f0, f1,
         raise NotImplementedError(f'Not implemented for factor={factor}, extra_info={extra_info}.')
 
 
-def _dp_simpler_pattern_examiner_scalar_valued_forms(factor, f0, f1):
+def _dp_simpler_pattern_examiner_scalar_valued_forms(factor, f0, f1, extra_info):
     """ """
-    if factor.__class__.__name__ == 'ConstantScalar0Form':
+    if factor.__class__ is ConstantScalar0Form:
+        # --- <tr star | tr > ---------------------------------------------------------------------------------
         lin_tr = _global_operator_lin_repr_setting['trace']
         lin_hodge = _global_operator_lin_repr_setting['Hodge']
-
         lin = lin_tr + _non_root_lin_sep[0] + lin_hodge
         if f0._lin_repr[:len(lin)] == lin and \
                 f0._lin_repr[-len(_non_root_lin_sep[1]):] == _non_root_lin_sep[1] and \
@@ -440,6 +528,65 @@ def _dp_simpler_pattern_examiner_scalar_valued_forms(factor, f0, f1):
                     'rsf1': bf1,   # root-scalar-form-1
                 }
 
+        # --- <A x B | C> -------------------------------------------------------------------------------------
+        cross_product_lin = _global_operator_lin_repr_setting['cross_product']
+        existing0 = cross_product_lin in f0._lin_repr
+        amount0 = f0._lin_repr.count(cross_product_lin)
+
+        if existing0 and amount0 == 1:
+            A_lin, B_lin = f0._lin_repr.split(cross_product_lin)
+            C_lin = f1._lin_repr
+            A = _find_form(A_lin)
+            B = _find_form(B_lin)
+            C = _find_form(C_lin)
+
+            if A.is_root() and B.is_root() and C.is_root():
+                if 'known-cross-product-form' in extra_info:
+                    kfs = extra_info['known-cross-product-form']
+
+                    if (A in kfs) and (B in kfs) and (A is not B):
+                        return _simple_patterns['<*x*|C>'], {
+                            'A': A,  # root-scalar-form-0
+                            'B': B,  # root-scalar-form-1
+                            'C': C,
+                        }
+
+                else:  # Nonlinear
+                    return _simple_patterns['<AxB|C>'], {
+                        'A': A,  # root-scalar-form-0
+                        'B': B,  # root-scalar-form-1
+                        'C': C,
+                    }
+
+        # ---- <A x B | C x D> ------------------------------------------------------------------------------
+        cross_product_lin = _global_operator_lin_repr_setting['cross_product']
+        existing0 = cross_product_lin in f0._lin_repr
+        amount0 = f0._lin_repr.count(cross_product_lin)
+        existing1 = cross_product_lin in f1._lin_repr
+        amount1 = f1._lin_repr.count(cross_product_lin)
+        if existing0 and amount0 == 1 and existing1 and amount1 == 1:
+
+            A_lin, B_lin = f0._lin_repr.split(cross_product_lin)
+            C_lin, D_lin = f1._lin_repr.split(cross_product_lin)
+            A = _find_form(A_lin)
+            B = _find_form(B_lin)
+            C = _find_form(C_lin)
+            D = _find_form(D_lin)
+            if A.is_root() and B.is_root() and C.is_root() and D.is_root():
+                if 'known-cross-product-form' in extra_info:
+                    kfs = extra_info['known-cross-product-form']
+                    if (A in kfs) and (B in kfs) and (C in kfs):
+                        return _simple_patterns['<*x*|*xD>'], {
+                            'A': A,  # root-scalar-form-0
+                            'B': B,  # root-scalar-form-1
+                            'C': C,
+                            'D': D
+                        }
+
+                else:  # Nonlinear
+                    pass  # tbd
+
         return '', None
+
     else:
         raise NotImplementedError(f'Not implemented for factor={factor}')

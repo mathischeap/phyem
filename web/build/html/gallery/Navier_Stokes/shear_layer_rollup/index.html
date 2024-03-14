@@ -50,8 +50,8 @@
     <link rel="icon" href="../../../_static/favicon.png"/>
     <link rel="index" title="Index" href="../../../genindex.html" />
     <link rel="search" title="Search" href="../../../search.html" />
-    <link rel="next" title="Normal dipole collision" href="../normal_dipole_collision/index.html" />
-    <link rel="prev" title="🌊 Navier-Stokes equations" href="../index.html" />
+    <link rel="next" title="Taylor-Green vortex" href="../Taylor_Green_vortex/index.html" />
+    <link rel="prev" title="Normal dipole collision" href="../normal_dipole_collision/index.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
   </head>
@@ -222,20 +222,23 @@
 </li>
 <li class="toctree-l1 current active has-children"><a class="reference internal" href="../../index.html">Gallery🖼</a><input checked="" class="toctree-checkbox" id="toctree-checkbox-4" name="toctree-checkbox-4" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-4"><i class="fa-solid fa-chevron-down"></i></label><ul class="current">
 <li class="toctree-l2 has-children"><a class="reference internal" href="../../msepy_domains_and_meshes/index.html"><em>msepy</em> domains and meshes</a><input class="toctree-checkbox" id="toctree-checkbox-5" name="toctree-checkbox-5" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-5"><i class="fa-solid fa-chevron-down"></i></label><ul>
-<li class="toctree-l3"><a class="reference internal" href="../../msepy_domains_and_meshes/msepy/crazy.html">Crazy domain and mesh</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../../msepy_domains_and_meshes/msepy/crazy_multi.html">Multi-crazy domain and mesh</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../msepy_domains_and_meshes/msepy/backward_step.html">Backward step</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../msepy_domains_and_meshes/msepy/crazy.html">Crazy domain and mesh</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../msepy_domains_and_meshes/msepy/cylinder_channel.html">Cylinder channel</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../msepy_domains_and_meshes/msepy/multi_crazy.html">Multi-crazy domain and mesh</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="../../div_grad/index.html">🟢 div-grad</a></li>
-<li class="toctree-l2 current active has-children"><a class="reference internal" href="../index.html">🌊 Navier-Stokes equations</a><input checked="" class="toctree-checkbox" id="toctree-checkbox-6" name="toctree-checkbox-6" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-6"><i class="fa-solid fa-chevron-down"></i></label><ul class="current">
-<li class="toctree-l3 current active"><a class="current reference internal" href="#">Shear layer rollup</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../normal_dipole_collision/index.html">Normal dipole collision</a></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../../MHD/index.html">🧲 MHD</a><input class="toctree-checkbox" id="toctree-checkbox-6" name="toctree-checkbox-6" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-6"><i class="fa-solid fa-chevron-down"></i></label><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../MHD/Orszag_Tang_vortex/index.html">Orszag-Tang Vortex</a></li>
 </ul>
 </li>
-<li class="toctree-l2 has-children"><a class="reference internal" href="../../MHD/index.html">🧲 MHD</a><input class="toctree-checkbox" id="toctree-checkbox-7" name="toctree-checkbox-7" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-7"><i class="fa-solid fa-chevron-down"></i></label><ul>
-<li class="toctree-l3"><a class="reference internal" href="../../MHD/Orszag_Tang_vortex/index.html">Orszag-Tang Vortex</a></li>
+<li class="toctree-l2 current active has-children"><a class="reference internal" href="../index.html">🌊 Navier-Stokes equations</a><input checked="" class="toctree-checkbox" id="toctree-checkbox-7" name="toctree-checkbox-7" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-7"><i class="fa-solid fa-chevron-down"></i></label><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="../backward_facing_step/index.html">Backward facing step flow</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../lid_driven_cavity/index.html">Lid-driven cavity</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../normal_dipole_collision/index.html">Normal dipole collision</a></li>
+<li class="toctree-l3 current active"><a class="current reference internal" href="#">Shear layer rollup</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../Taylor_Green_vortex/index.html">Taylor-Green vortex</a></li>
 </ul>
 </li>
 </ul>
@@ -441,9 +444,10 @@ document.write(`
                   
   <section id="module-tests.samples.iniCond_shear_layer_rollup">
 <span id="shear-layer-rollup"></span><h1>Shear layer rollup<a class="headerlink" href="#module-tests.samples.iniCond_shear_layer_rollup" title="Link to this heading">#</a></h1>
-<p>The shear layer rollup is a 2-dimensional ideal incompressible NS flow (Euler flow).</p>
-<p>The flow is in a periodic domain <span class="math notranslate nohighlight">\(\Omega = [0, 2\pi]^2\)</span>, and components of the initial condition
-of the velocity field <span class="math notranslate nohighlight">\(\boldsymbol{u}^0 = \begin{bmatrix}u^0 &amp; v^0\end{bmatrix}^{\mathsf{T}}\)</span> are</p>
+<p>The shear layer rollup is a 2-dimensional ideal incompressible flow (Euler flow).
+And the external body force is zero.</p>
+<p>The flow is in a periodic domain <span class="math notranslate nohighlight">\(\Omega = [0, 2\pi]^2\)</span>, and components of
+the initial velocity <span class="math notranslate nohighlight">\(\boldsymbol{u}^0 = \begin{bmatrix}u^0 &amp; v^0\end{bmatrix}^{\mathsf{T}}\)</span> are</p>
 <div class="math notranslate nohighlight">
 \[\begin{split}u^0 = \left\lbrace\begin{aligned}
 &amp;\tanh\left(\dfrac{y-\frac{\pi}{2}}{\delta}\right)\quad \text{if }  y\leq\pi\\
@@ -456,10 +460,11 @@ of the velocity field <span class="math notranslate nohighlight">\(\boldsymbol{u
 <figure class="align-default" id="id1">
 <a class="reference internal image-reference" href="../../../_images/t048.png"><img alt="../../../_images/t048.png" src="../../../_images/t048.png" style="width: 100%;" /></a>
 <figcaption>
-<p><span class="caption-number">Fig. 10 </span><span class="caption-text">The vorticity field of the shear layer rollup flow at <span class="math notranslate nohighlight">\(t\in\left\lbrace0,4,8\right\rbrace\)</span> with contour
+<p><span class="caption-number">Fig. 13 </span><span class="caption-text">The vorticity field of the shear layer rollup flow at <span class="math notranslate nohighlight">\(t\in\left\lbrace0,4,8\right\rbrace\)</span> with contour
 lines for <span class="math notranslate nohighlight">\(\left\lbrace\pm 1,\pm 2, \cdots, \pm 6\right\rbrace\)</span>.</span><a class="headerlink" href="#id1" title="Link to this image">#</a></p>
 </figcaption>
 </figure>
+<p>It is seen that two vorticity layers gradually roll up due to the initial perturbation in the velocity field.</p>
 <p>For a <em>phyem</em> implementation of the shear layer rollup using the dual-field method introduced in
 <a class="reference external" href="https://doi.org/10.1016/j.jcp.2021.110868">[Dual-field NS, Zhang et al.]</a>, click
 <a class="reference download internal" download="" href="../../../_downloads/09b6af2843e7dd440be691d822e8ca64/shear_layer_rollup.py"><code class="xref download docutils literal notranslate"><span class="pre">phyem_slr.py</span></code></a></p>
@@ -481,20 +486,20 @@ lines for <span class="math notranslate nohighlight">\(\left\lbrace\pm 1,\pm 2, 
                   <!-- Previous / next buttons -->
 <div class="prev-next-area">
     <a class="left-prev"
-       href="../index.html"
+       href="../normal_dipole_collision/index.html"
        title="previous page">
       <i class="fa-solid fa-angle-left"></i>
       <div class="prev-next-info">
         <p class="prev-next-subtitle">previous</p>
-        <p class="prev-next-title">🌊 Navier-Stokes equations</p>
+        <p class="prev-next-title">Normal dipole collision</p>
       </div>
     </a>
     <a class="right-next"
-       href="../normal_dipole_collision/index.html"
+       href="../Taylor_Green_vortex/index.html"
        title="next page">
       <div class="prev-next-info">
         <p class="prev-next-subtitle">next</p>
-        <p class="prev-next-title">Normal dipole collision</p>
+        <p class="prev-next-title">Taylor-Green vortex</p>
       </div>
       <i class="fa-solid fa-angle-right"></i>
     </a>
@@ -537,7 +542,7 @@ By Andrea Brugnoli, Ramy Rashad, Stefano Stramigioli, Yi Zhang and more
   <div class="footer-item">
     
 <div class="extra_footer">
-  <div>Last updated on February 01, 2024, 22:52:38, 中国标准时间</div>
+  <div>Last updated on February 28, 2024, 15:56:39, China Standard Time</div>
 </div>
   </div>
   

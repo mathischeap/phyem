@@ -4,6 +4,12 @@ r"""
 
 import sys
 
+if './' not in sys.path:
+    sys.path.append('./')
+
+import __init__ as ph
+import numpy as np
+
 
 def div_grad_2d_periodic_manufactured_test(degree, K, c=0):
     r"""
@@ -25,12 +31,6 @@ def div_grad_2d_periodic_manufactured_test(degree, K, c=0):
         The :math:`L^2`-error of solution :math:`u_h^1`.
 
     """
-    ph_dir = '../../'  # customize it to your own dir containing phyem
-    if ph_dir not in sys.path:
-        sys.path.append(ph_dir)
-
-    import phyem as ph
-    import numpy as np
 
     ls = ph.samples.wf_div_grad(n=2, degree=degree, orientation='outer', periodic=True)[0]  # ls.pr()
     msepy, obj = ph.fem.apply('msepy', locals())
@@ -79,10 +79,6 @@ def div_grad_2d_periodic_manufactured_test(degree, K, c=0):
 
 if __name__ == '__main__':
     # python tests/msepy/div_grad/_2d_outer_periodic.py
-    ph_dir = '../'
-    if ph_dir not in sys.path:
-        sys.path.append(ph_dir)
-
     import doctest
     doctest.testmod()
     errors = div_grad_2d_periodic_manufactured_test(2, 8)

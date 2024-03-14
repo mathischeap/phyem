@@ -50,8 +50,8 @@
     <link rel="icon" href="../../../_static/favicon.png"/>
     <link rel="index" title="Index" href="../../../genindex.html" />
     <link rel="search" title="Search" href="../../../search.html" />
-    <link rel="next" title="Cylinder channel" href="cylinder_channel.html" />
-    <link rel="prev" title="Multi-crazy domain and mesh" href="crazy_multi.html" />
+    <link rel="next" title="Crazy domain and mesh" href="crazy.html" />
+    <link rel="prev" title="msepy domains and meshes" href="../index.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
   </head>
@@ -222,20 +222,23 @@
 </li>
 <li class="toctree-l1 current active has-children"><a class="reference internal" href="../../index.html">Gallery🖼</a><input checked="" class="toctree-checkbox" id="toctree-checkbox-4" name="toctree-checkbox-4" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-4"><i class="fa-solid fa-chevron-down"></i></label><ul class="current">
 <li class="toctree-l2 current active has-children"><a class="reference internal" href="../index.html"><em>msepy</em> domains and meshes</a><input checked="" class="toctree-checkbox" id="toctree-checkbox-5" name="toctree-checkbox-5" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-5"><i class="fa-solid fa-chevron-down"></i></label><ul class="current">
-<li class="toctree-l3"><a class="reference internal" href="crazy.html">Crazy domain and mesh</a></li>
-<li class="toctree-l3"><a class="reference internal" href="crazy_multi.html">Multi-crazy domain and mesh</a></li>
 <li class="toctree-l3 current active"><a class="current reference internal" href="#">Backward step</a></li>
+<li class="toctree-l3"><a class="reference internal" href="crazy.html">Crazy domain and mesh</a></li>
 <li class="toctree-l3"><a class="reference internal" href="cylinder_channel.html">Cylinder channel</a></li>
+<li class="toctree-l3"><a class="reference internal" href="multi_crazy.html">Multi-crazy domain and mesh</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="../../div_grad/index.html">🟢 div-grad</a></li>
-<li class="toctree-l2 has-children"><a class="reference internal" href="../../Navier_Stokes/index.html">🌊 Navier-Stokes equations</a><input class="toctree-checkbox" id="toctree-checkbox-6" name="toctree-checkbox-6" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-6"><i class="fa-solid fa-chevron-down"></i></label><ul>
-<li class="toctree-l3"><a class="reference internal" href="../../Navier_Stokes/shear_layer_rollup/index.html">Shear layer rollup</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../../Navier_Stokes/normal_dipole_collision/index.html">Normal dipole collision</a></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../../MHD/index.html">🧲 MHD</a><input class="toctree-checkbox" id="toctree-checkbox-6" name="toctree-checkbox-6" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-6"><i class="fa-solid fa-chevron-down"></i></label><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../MHD/Orszag_Tang_vortex/index.html">Orszag-Tang Vortex</a></li>
 </ul>
 </li>
-<li class="toctree-l2 has-children"><a class="reference internal" href="../../MHD/index.html">🧲 MHD</a><input class="toctree-checkbox" id="toctree-checkbox-7" name="toctree-checkbox-7" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-7"><i class="fa-solid fa-chevron-down"></i></label><ul>
-<li class="toctree-l3"><a class="reference internal" href="../../MHD/Orszag_Tang_vortex/index.html">Orszag-Tang Vortex</a></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../../Navier_Stokes/index.html">🌊 Navier-Stokes equations</a><input class="toctree-checkbox" id="toctree-checkbox-7" name="toctree-checkbox-7" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-7"><i class="fa-solid fa-chevron-down"></i></label><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../Navier_Stokes/backward_facing_step/index.html">Backward facing step flow</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../Navier_Stokes/lid_driven_cavity/index.html">Lid-driven cavity</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../Navier_Stokes/normal_dipole_collision/index.html">Normal dipole collision</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../Navier_Stokes/shear_layer_rollup/index.html">Shear layer rollup</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../Navier_Stokes/Taylor_Green_vortex/index.html">Taylor-Green vortex</a></li>
 </ul>
 </li>
 </ul>
@@ -462,7 +465,7 @@ illustrated in the following figure.</p>
 <figure class="align-default" id="id2">
 <a class="reference internal image-reference" href="../../../_images/backward_step_illustration.png"><img alt="../../../_images/backward_step_illustration.png" src="../../../_images/backward_step_illustration.png" style="width: 100%;" /></a>
 <figcaption>
-<p><span class="caption-number">Fig. 4 </span><span class="caption-text">The illustration of the backward step domain.</span><a class="headerlink" href="#id2" title="Link to this image">#</a></p>
+<p><span class="caption-number">Fig. 1 </span><span class="caption-text">The illustration of the backward step domain.</span><a class="headerlink" href="#id2" title="Link to this image">#</a></p>
 </figcaption>
 </figure>
 <p>When <span class="math notranslate nohighlight">\(n=3\)</span>, The domain is extended to the thrid axis, <span class="math notranslate nohighlight">\(z\)</span>-axis, perpendicular to the plane. The parameters
@@ -549,7 +552,7 @@ is splited into 3 regions).</p>
 <figure class="align-default" id="id3">
 <a class="reference internal image-reference" href="../../../_images/backward_step3.png"><img alt="../../../_images/backward_step3.png" src="../../../_images/backward_step3.png" style="width: 60%;" /></a>
 <figcaption>
-<p><span class="caption-number">Fig. 5 </span><span class="caption-text">The three-dimensional backward step mesh of <span class="math notranslate nohighlight">\(3*5*5*5\)</span> elements.</span><a class="headerlink" href="#id3" title="Link to this image">#</a></p>
+<p><span class="caption-number">Fig. 2 </span><span class="caption-text">The three-dimensional backward step mesh of <span class="math notranslate nohighlight">\(3*5*5*5\)</span> elements.</span><a class="headerlink" href="#id3" title="Link to this image">#</a></p>
 </figcaption>
 </figure>
 </section>
@@ -571,7 +574,7 @@ is splited into 3 regions).</p>
 <figure class="align-default" id="id4">
 <a class="reference internal image-reference" href="../../../_images/backward_step2.png"><img alt="../../../_images/backward_step2.png" src="../../../_images/backward_step2.png" style="width: 100%;" /></a>
 <figcaption>
-<p><span class="caption-number">Fig. 6 </span><span class="caption-text">The two-dimensional backward step mesh of <span class="math notranslate nohighlight">\(3*24*6\)</span> elements.</span><a class="headerlink" href="#id4" title="Link to this image">#</a></p>
+<p><span class="caption-number">Fig. 3 </span><span class="caption-text">The two-dimensional backward step mesh of <span class="math notranslate nohighlight">\(3*24*6\)</span> elements.</span><a class="headerlink" href="#id4" title="Link to this image">#</a></p>
 </figcaption>
 </figure>
 <div class="line-block">
@@ -594,20 +597,20 @@ is splited into 3 regions).</p>
                   <!-- Previous / next buttons -->
 <div class="prev-next-area">
     <a class="left-prev"
-       href="crazy_multi.html"
+       href="../index.html"
        title="previous page">
       <i class="fa-solid fa-angle-left"></i>
       <div class="prev-next-info">
         <p class="prev-next-subtitle">previous</p>
-        <p class="prev-next-title">Multi-crazy domain and mesh</p>
+        <p class="prev-next-title"><em>msepy</em> domains and meshes</p>
       </div>
     </a>
     <a class="right-next"
-       href="cylinder_channel.html"
+       href="crazy.html"
        title="next page">
       <div class="prev-next-info">
         <p class="prev-next-subtitle">next</p>
-        <p class="prev-next-title">Cylinder channel</p>
+        <p class="prev-next-title">Crazy domain and mesh</p>
       </div>
       <i class="fa-solid fa-angle-right"></i>
     </a>
@@ -670,7 +673,7 @@ By Andrea Brugnoli, Ramy Rashad, Stefano Stramigioli, Yi Zhang and more
   <div class="footer-item">
     
 <div class="extra_footer">
-  <div>Last updated on February 01, 2024, 22:52:38, 中国标准时间</div>
+  <div>Last updated on February 28, 2024, 15:56:39, China Standard Time</div>
 </div>
   </div>
   

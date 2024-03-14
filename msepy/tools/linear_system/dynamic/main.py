@@ -4,7 +4,6 @@ r"""
 import matplotlib.pyplot as plt
 import matplotlib
 
-
 from tools.frozen import Frozen
 from msepy.tools.matrix.static.local import MsePyStaticLocalMatrix
 from msepy.tools.matrix.dynamic import MsePyDynamicLocalMatrix
@@ -15,7 +14,7 @@ from src.form.parameters import constant_scalar, ConstantScalar0Form
 from src.form.parameters import _factor_parser
 from msepy.tools.linear_system.dynamic.array_parser import msepy_root_array_parser
 
-from msepy.tools.linear_system.static.local import MsePyStaticLocalLinearSystem
+from msepy.tools.linear_system.static.local.main import MsePyStaticLocalLinearSystem
 
 from msepy.tools.vector.static.local import MsePyStaticLocalVector
 from msepy.form.cochain.vector.static import MsePyRootFormStaticCochainVector

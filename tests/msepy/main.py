@@ -45,6 +45,13 @@ for _ in codifferential_tests:
 
 
 from tests.msepy.div_grad._2d_outer_periodic import div_grad_2d_periodic_manufactured_test
+from tests.msepy.div_grad._2d_outer import div_grad_2d_general_bc_manufactured_test
 
-errors = div_grad_2d_periodic_manufactured_test(3, 4)
+
+a, b = div_grad_2d_periodic_manufactured_test(3, 4)
+errors = [a, b]
 assert all([_ < 0.01 for _ in errors]), f"div_grad_2d_periodic_manufactured_test!"
+
+a, b = div_grad_2d_general_bc_manufactured_test(3, 4)
+assert a < 0.01, f"div_grad_2d_general_bc_manufactured_test!"
+assert b < 0.06, f"div_grad_2d_general_bc_manufactured_test!"

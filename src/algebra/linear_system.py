@@ -181,6 +181,7 @@ class BlockColVector(Frozen):
             plt.show(block=_setting['block'])
             return fig
 
+    # noinspection PyRedeclaration
     def __iter__(self):
         """iter"""
         for i in range(self._shape):

@@ -2,14 +2,18 @@
 r"""
 """
 import matplotlib.pyplot as plt
-from scipy.sparse import issparse, isspmatrix_csr, isspmatrix_csc, csr_matrix
+
+from scipy.sparse import csr_matrix, csc_matrix
+from scipy.sparse import issparse, isspmatrix_csr, isspmatrix_csc
 from tools.frozen import Frozen
 from msepy.mesh.elements.main import _DataDictDistributor
 from msepy.tools.vector.static.local import MsePyStaticLocalVector
 from msepy.form.cochain.vector.static import MsePyRootFormStaticCochainVector
 import numpy as np
 
-from msepy.tools.matrix.static.assemble import MsePyStaticLocalMatrixAssemble
+
+from msepy.tools.gathering_matrix import RegularGatheringMatrix
+from scipy.sparse import bmat as sp_bmat
 
 
 class MsePyStaticLocalMatrix(Frozen):
@@ -638,3 +642,210 @@ class _MsePyStaticLocalMatrixCustomize(Frozen):
             else:
                 pass
             self._customizations[element] = data.tocsr()
+
+
+def bmat(A_2d_list):
+    """"""
+    row_shape = len(A_2d_list)
+    for Ai_ in A_2d_list:
+        assert isinstance(Ai_, (list, tuple)), f"bmat must apply to 2d list or tuple."
+    col_shape = len(A_2d_list[0])
+
+    row_gms = [None for _ in range(row_shape)]
+    col_gms = [None for _ in range(col_shape)]
+
+    for i in range(row_shape):
+        for j in range(col_shape):
+            A_ij = A_2d_list[i][j]
+
+            if A_ij is None:
+                pass
+            else:
+                assert A_ij.__class__ is MsePyStaticLocalMatrix, f"A[{i}][{j}] is {A_ij.__class__}, wrong!"
+                row_gm_i = A_ij._gm0_row
+                col_gm_j = A_ij._gm1_col
+
+                if row_gms[i] is None:
+                    row_gms[i] = row_gm_i
+                else:
+                    assert row_gms[i] is row_gm_i, f"by construction, this must be the case as we only construct" \
+                                                   f"gathering matrix once and store only once copy somewhere!"
+
+                if col_gms[j] is None:
+                    col_gms[j] = col_gm_j
+                else:
+                    assert col_gms[j] is col_gm_j, f"by construction, this must be the case as we only construct" \
+                                                   f"gathering matrix once and store only once copy somewhere!"
+
+    chain_row_gm = RegularGatheringMatrix(row_gms)
+    chain_col_gm = RegularGatheringMatrix(col_gms)
+
+    # only adjustments take effect. Customization will be skipped.
+    M = _MsePyStaticLocalMatrixBmat(A_2d_list, (row_shape, col_shape))
+
+    return MsePyStaticLocalMatrix(M, chain_row_gm, chain_col_gm, M.cache_key)
+
+
+class _MsePyStaticLocalMatrixBmat(Frozen):
+    """"""
+
+    def __init__(self, A_2d_list, shape):
+        """"""
+        self._A = A_2d_list
+        self._shape = shape
+        self._freeze()
+
+    def __call__(self, i):
+        row_shape, col_shape = self._shape
+        data = [[None for _ in range(col_shape)] for _ in range(row_shape)]
+        for r in range(row_shape):
+            for c in range(col_shape):
+                Arc = self._A[r][c]
+                if Arc is None:
+                    pass
+                else:
+                    data[r][c] = Arc[i]  # ALL adjustments and customizations take effect!
+
+        return sp_bmat(
+            data, format='csr'
+        )
+
+    def cache_key(self, i):
+        """Do this in real time."""
+        row_shape, col_shape = self._shape
+        keys = list()
+        for r in range(row_shape):
+            for c in range(col_shape):
+                Arc = self._A[r][c]
+
+                if Arc is None:
+                    pass
+                else:
+                    if i in Arc.customize:  # important! do not use adjust!
+                        return 'unique'
+                    else:
+                        key = Arc._cache_key(i)
+                        if key == 'unique':
+                            return 'unique'
+                        else:
+                            keys.append(
+                                key
+                            )
+
+        if all([_ == 'constant' for _ in keys]):
+            return 'constant'
+        else:
+            return ''.join(keys)
+
+
+from numpy import diff
+from msepy.tools.matrix.static.assembled import MsePyStaticAssembledMatrix
+
+_msepy_assembled_StaticMatrix_cache = {}
+# we can cache the assembled matrices in case that it is the same for many or even all time steps.
+
+
+class MsePyStaticLocalMatrixAssemble(Frozen):
+    """"""
+
+    @property
+    def ___assembled_class___(self):
+        return MsePyStaticAssembledMatrix
+
+    def __init__(self, M):
+        """"""
+        self._M = M
+        self._freeze()
+
+    def __call__(self, format='csc', cache=None):
+        """
+
+        Parameters
+        ----------
+        format
+        cache :
+            We can manually cache the assembled matrix by set ``cache`` to be a string. When next time
+            it sees the same `cache` it will return the cached matrix from the cache, i.e.,
+            ``_msepy_assembled_StaticMatrix_cache``.
+
+        Returns
+        -------
+
+        """
+        if cache is not None:
+            assert isinstance(cache, str), f"cache must a string."
+            if cache in _msepy_assembled_StaticMatrix_cache:
+                return _msepy_assembled_StaticMatrix_cache[cache]
+            else:
+                pass
+
+        else:
+            pass
+
+        gm_row = self._M._gm0_row
+        gm_col = self._M._gm1_col
+
+        dep = int(gm_row.num_dofs)
+        wid = int(gm_col.num_dofs)
+
+        ROW = list()
+        COL = list()
+        DAT = list()
+
+        if format == 'csc':
+            SPA_MATRIX = csc_matrix
+        elif format == 'csr':
+            SPA_MATRIX = csr_matrix
+        else:
+            raise Exception
+
+        # A = SPA_MATRIX((dep, wid))  # initialize a sparse matrix
+
+        for i in self._M:
+
+            Mi = self._M[i]  # all adjustments and customizations take effect
+            indices = Mi.indices
+            indptr = Mi.indptr
+            data = Mi.data
+            nums: list = list(diff(indptr))
+            row = []
+            col = []
+
+            if Mi.__class__.__name__ == 'csc_matrix':
+                for j, num in enumerate(nums):
+                    idx = indices[indptr[j]:indptr[j+1]]
+                    row.extend(gm_row[i][idx])
+                    col.extend([gm_col[i][j] for _ in range(num)])
+
+            elif Mi.__class__.__name__ == 'csr_matrix':
+                for j, num in enumerate(nums):
+                    idx = indices[indptr[j]:indptr[j+1]]
+                    row.extend([gm_row[i][j] for _ in range(num)])
+                    col.extend(gm_col[i][idx])
+
+            else:
+                raise Exception("I can not handle %r." % Mi)
+
+            ROW.extend(row)
+            COL.extend(col)
+            DAT.extend(data)
+
+            # if len(DAT) > 1e7:  # every 10 million data, we make it into a sparse matrix.
+            #     _ = SPA_MATRIX((DAT, (ROW, COL)), shape=(dep, wid))  # we make it into sparse
+            #
+            #     del ROW, COL, DAT
+            #     A += _
+            #     del _
+            #     ROW = list()
+            #     COL = list()
+            #     DAT = list()
+
+        # _ = SPA_MATRIX((DAT, (ROW, COL)), shape=(dep, wid))  # we make it into sparse
+        # del ROW, COL, DAT
+        # A += _
+
+        A = SPA_MATRIX((DAT, (ROW, COL)), shape=(dep, wid))
+        A = self.___assembled_class___(A, gm_row, gm_col)
+        if isinstance(cache, str):
+            _msepy_assembled_StaticMatrix_cache[cache] = A
+        return A

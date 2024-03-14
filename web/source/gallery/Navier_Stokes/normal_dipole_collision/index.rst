@@ -5,7 +5,7 @@
 Normal dipole collision
 =======================
 
-The normal dipole collision flow is a 2-dimensional incompressible NS flow.
+The normal dipole collision flow is a 2-dimensional incompressible viscous flow.
 
 .. figure:: vorticity.jpg
     :width: 100 %

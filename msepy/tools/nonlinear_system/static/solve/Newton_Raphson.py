@@ -6,7 +6,7 @@ from time import time
 from tools.frozen import Frozen
 from msepy.form.main import MsePyRootForm
 from msepy.tools.matrix.static.local import MsePyStaticLocalMatrix
-from msepy.tools.linear_system.static.local import MsePyStaticLocalLinearSystem
+from msepy.tools.linear_system.static.local.main import MsePyStaticLocalLinearSystem
 
 
 class MsePyNonlinearSystemNewtonRaphsonSolve(Frozen):

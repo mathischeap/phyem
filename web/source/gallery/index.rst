@@ -15,9 +15,9 @@ Domains and meshes
 The predefined domains and meshes includes below categories,
 
 .. toctree::
-   :maxdepth: 1
+    :maxdepth: 1
 
-   msepy_domains_and_meshes/index
+    msepy_domains_and_meshes/index
 
 
 ---------------
@@ -27,11 +27,11 @@ Problem solving
 Below, different kinds of problems are solved as demonstrations,
 
 .. toctree::
-   :maxdepth: 1
+    :maxdepth: 1
 
-   div_grad/index
-   Navier_Stokes/index
-   MHD/index
+    div_grad/index
+    MHD/index
+    Navier_Stokes/index
 
 
 |
