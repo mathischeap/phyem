@@ -230,7 +230,7 @@
 </li>
 <li class="toctree-l2 has-children"><a class="reference internal" href="../../../gallery/Navier_Stokes/index.html">🌊 Navier-Stokes equations</a><input class="toctree-checkbox" id="toctree-checkbox-7" name="toctree-checkbox-7" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-7"><i class="fa-solid fa-chevron-down"></i></label><ul>
 <li class="toctree-l3"><a class="reference internal" href="../../../gallery/Navier_Stokes/backward_facing_step/index.html">Backward facing step flow</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../../../gallery/Navier_Stokes/lid_driven_cavity/index.html">Lid-driven Cavity</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../gallery/Navier_Stokes/lid_driven_cavity/index.html">Lid-driven cavity</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../gallery/Navier_Stokes/normal_dipole_collision/index.html">Normal dipole collision</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../gallery/Navier_Stokes/shear_layer_rollup/index.html">Shear layer rollup</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../gallery/Navier_Stokes/Taylor_Green_vortex/index.html">Taylor-Green vortex</a></li>
@@ -552,6 +552,11 @@ document.write(`
     <span class="s1">&#39;_VarSetting_A_x_astB_ip_tC&#39;</span><span class="p">,</span>                  <span class="c1">#</span>
     <span class="s1">&#39;_VarSetting_A_x_B_ip_C&#39;</span><span class="p">,</span>                      <span class="c1"># nonlinear</span>
 
+    <span class="s1">&#39;_VarSetting_astA_x_astB__dp__tC&#39;</span><span class="p">,</span>             <span class="c1"># vector &lt;A x B | C&gt;, AB are known</span>
+
+    <span class="s1">&#39;_VarSetting_astA_x_astB__ip__astC_x_tD&#39;</span><span class="p">,</span>      <span class="c1"># vector  (A x B, C x D), ABC known, D test.</span>
+    <span class="s1">&#39;_VarSetting_astA_x_astB__dp__astC_x_tD&#39;</span><span class="p">,</span>      <span class="c1"># vector  &lt;A x B | C x D&gt;, ABC known, D test.</span>
+
     <span class="s1">&#39;_VarSetting_dastA_astA_tp_tC&#39;</span><span class="p">,</span>                <span class="c1">#</span>
     <span class="s1">&#39;_VarSetting_dastA_tB_tp_astA&#39;</span><span class="p">,</span>
     <span class="s1">&#39;_VarSetting_dtA_astB_tp_astB&#39;</span><span class="p">,</span>
@@ -627,6 +632,23 @@ document.write(`
     <span class="n">_sep</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="s2">&quot;_X_:&quot;</span><span class="p">,</span> <span class="s2">&quot;[</span><span class="si">{A}</span><span class="s2">]&quot;</span><span class="p">,</span> <span class="s2">&quot;[</span><span class="si">{B}</span><span class="s2">]&quot;</span><span class="p">,</span> <span class="s2">&quot;[</span><span class="si">{C}</span><span class="s2">]&quot;</span><span class="p">]),</span>
 <span class="p">]</span>
 
+<span class="c1"># --------------- &lt;A x B | C&gt; --------------------------------------------------------------------</span>
+<span class="n">_VarSetting_astA_x_astB__dp__tC</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="sa">r</span><span class="s2">&quot;\mathsf{\left.x\right|}&quot;</span><span class="p">,</span>
+    <span class="n">_sep</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="s2">&quot;_X_dp&quot;</span><span class="p">,</span> <span class="s2">&quot;[</span><span class="si">{A}</span><span class="s2">]&quot;</span><span class="p">,</span> <span class="s2">&quot;[</span><span class="si">{B}</span><span class="s2">]&quot;</span><span class="p">,</span> <span class="s2">&quot;[</span><span class="si">{C}</span><span class="s2">]&quot;</span><span class="p">])</span>
+<span class="p">]</span>
+
+<span class="c1"># --------------- (A x B, C x D) ----------------------------------------------------</span>
+<span class="n">_VarSetting_astA_x_astB__ip__astC_x_tD</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="sa">r</span><span class="s2">&quot;\mathsf</span><span class="si">{XX}</span><span class="s2">&quot;</span><span class="p">,</span>
+    <span class="n">_sep</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="s2">&quot;_X__Xip&quot;</span><span class="p">,</span> <span class="s2">&quot;[</span><span class="si">{A}</span><span class="s2">]&quot;</span><span class="p">,</span> <span class="s2">&quot;[</span><span class="si">{B}</span><span class="s2">]&quot;</span><span class="p">,</span> <span class="s2">&quot;[</span><span class="si">{C}</span><span class="s2">]&quot;</span><span class="p">,</span> <span class="s2">&quot;[</span><span class="si">{D}</span><span class="s2">]&quot;</span><span class="p">]),</span>
+<span class="p">]</span>
+
+<span class="n">_VarSetting_astA_x_astB__dp__astC_x_tD</span><span class="o">=</span> <span class="p">[</span>
+    <span class="sa">r</span><span class="s2">&quot;\mathsf</span><span class="si">{xx}</span><span class="s2">&quot;</span><span class="p">,</span>
+    <span class="n">_sep</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="s2">&quot;_X__Xdp&quot;</span><span class="p">,</span> <span class="s2">&quot;[</span><span class="si">{A}</span><span class="s2">]&quot;</span><span class="p">,</span> <span class="s2">&quot;[</span><span class="si">{B}</span><span class="s2">]&quot;</span><span class="p">,</span> <span class="s2">&quot;[</span><span class="si">{C}</span><span class="s2">]&quot;</span><span class="p">,</span> <span class="s2">&quot;[</span><span class="si">{D}</span><span class="s2">]&quot;</span><span class="p">]),</span>
+<span class="p">]</span>
+
 <span class="c1"># --------------- (A x B, dC) -------------------------------------------------------</span>
 
 <span class="c1"># _VarSetting_A_x_astB_ip_dC = [</span>
@@ -659,12 +681,6 @@ document.write(`
 <span class="n">_VarSetting_dtA_astB_tp_astB</span> <span class="o">=</span> <span class="p">[</span>
     <span class="sa">r</span><span class="s2">&quot;\left&lt;\mathsf{d\_,\cdot\otimes\cdot}\right&gt;&quot;</span><span class="p">,</span>
     <span class="n">_sep</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="s2">&quot;dtA--*B-tp-*B&quot;</span><span class="p">,</span> <span class="s2">&quot;[</span><span class="si">{A}</span><span class="s2">]&quot;</span><span class="p">,</span> <span class="s2">&quot;[</span><span class="si">{B}</span><span class="s2">]&quot;</span><span class="p">]),</span>
-<span class="p">]</span>
-
-
-<span class="n">_VarSetting_dastA_astA_tp_tC</span> <span class="o">=</span> <span class="p">[</span>
-    <span class="sa">r</span><span class="s2">&quot;\left&lt;\mathsf{d\cdot,\cdot\otimes\_}\right&gt;&quot;</span><span class="p">,</span>
-    <span class="n">_sep</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="s2">&quot;d*A--*A-tp-tC&quot;</span><span class="p">,</span> <span class="s2">&quot;[</span><span class="si">{A}</span><span class="s2">]&quot;</span><span class="p">,</span> <span class="s2">&quot;[</span><span class="si">{C}</span><span class="s2">]&quot;</span><span class="p">]),</span>
 <span class="p">]</span>
 
 
@@ -864,7 +880,7 @@ By Andrea Brugnoli, Ramy Rashad, Stefano Stramigioli, Yi Zhang and more
   <div class="footer-item">
     
 <div class="extra_footer">
-  <div>Last updated on February 03, 2024, 17:15:14, 中国标准时间</div>
+  <div>Last updated on March 15, 2024, 22:52:58, 中国标准时间</div>
 </div>
   </div>
   

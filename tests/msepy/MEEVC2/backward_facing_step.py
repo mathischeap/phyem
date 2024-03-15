@@ -267,10 +267,7 @@ def bc_v(t, x, y):
     return np.zeros_like(x)
 
 
-
 bc_velocity = ph.vc.vector(bc_u, bc_v)
-
-
 results_dir = './__phcache__/backward_facing_step/'
 
 import os
@@ -287,7 +284,7 @@ bc_P = u.numeric.function.local_energy_with_time_shift()
 nls.bc.config(boundary_P)(bc_P)  # essential
 
 
-for step in range(1, 99999999):
+for step in range(1, 1000):
 
     s_nls = nls(k=step)
     # s_nls.customize.set_no_evaluation(-1)  # no need to do this since we have pressure boundary now.
@@ -308,5 +305,5 @@ for step in range(1, 99999999):
 
     u_norm_residual = u.norm_residual()
 
-    if u_norm_residual < 5e-7:
+    if u_norm_residual < 1e-6:
         break

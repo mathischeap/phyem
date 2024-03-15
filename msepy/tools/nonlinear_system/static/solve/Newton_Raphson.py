@@ -50,7 +50,7 @@ class MsePyNonlinearSystemNewtonRaphsonSolve(Frozen):
 
     def __call__(
             self,
-            x0, atol=1e-4, maxiter=10,        # args for the outer Newton method.
+            x0, atol=1e-6, maxiter=10,        # args for the outer Newton method.
             # for the inner solver
             inner_solver_package='scipy',
             inner_solver_scheme='spsolve',

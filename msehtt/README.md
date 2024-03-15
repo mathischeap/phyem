@@ -1,3 +1,1 @@
-Mimetic spectral element - hybrid mesh - python - triangle and tetrahedron
-
-MPI enabled
+Mimetic spectral element - hybrid mesh - triangle and tetrahedron - in python

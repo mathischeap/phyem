@@ -3,7 +3,7 @@ r"""
 """
 
 import sys
-ph_dir = '../../'  # customize it to your own dir containing phyem
+ph_dir = '../'  # customize it to your own dir containing phyem
 if ph_dir not in sys.path:
     sys.path.append(ph_dir)
 
