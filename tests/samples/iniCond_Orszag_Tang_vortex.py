@@ -98,5 +98,5 @@ class InitialConditionOrszagTangVortex(Frozen):
 
 if __name__ == '__main__':
     # python tests/samples/iniCond_Orszag_Tang_vortex.py
-    ic = InitialConditionOrszagTangVortex(Rm=1)
+    ic = InitialConditionOrszagTangVortex(Rm=100)
     ic.j.visualize([0, 2*pi], 0)

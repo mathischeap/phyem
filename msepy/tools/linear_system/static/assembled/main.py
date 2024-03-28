@@ -40,6 +40,10 @@ class MsePyStaticLinearSystemAssembled(Frozen):
         return self._A.condition_number
 
     @property
+    def shape(self):
+        return self.A.shape
+
+    @property
     def rank(self):
         """The rank of A"""
         return self._A.rank

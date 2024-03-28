@@ -82,6 +82,14 @@ class Iterator(Frozen):
         # noinspection PyAttributeOutsideInit
         self._exit_code_ = exit_code
 
+    @staticmethod
+    def _exit_code_explanations(exit_code):
+        explanations = {
+            0: 'continue',
+            1: 'normal stop'
+        }
+        return explanations[exit_code]
+
     @property
     def message(self):
         """List(str) Return the messages of the solver for the last run."""
@@ -173,6 +181,14 @@ class Iterator(Frozen):
                 pbar.update(1)
             else:
                 pass
+
+            exit_code_explanation = self._exit_code_explanations(self.exit_code)
+            if exit_code_explanation == 'continue':  # everything is fine, continue!
+                pass
+            elif exit_code_explanation == 'normal stop':  # Fine but enough, stop now.
+                break
+            else:
+                raise NotImplementedError(f"cannot understand exit_code={self.exit_code}!")
 
         # --- after iteration ------------------------------------------------------------------------
         if RANK == MASTER_RANK:

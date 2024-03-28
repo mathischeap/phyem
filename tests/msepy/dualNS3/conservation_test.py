@@ -134,11 +134,11 @@ iwf0.pr()
 
 term = iwf0.terms['0-4']
 term.add_extra_info(
-    {'known-cross-product-form': wo @ ts['0']}
+    {'known-forms': wo @ ts['0']}
 )
 term = iwf0.terms['0-1']
 term.add_extra_info(
-    {'known-cross-product-form': wo @ ts['0']}
+    {'known-forms': wo @ ts['0']}
 )
 ph.space.finite(N)
 mp0 = iwf0.mp()
@@ -187,11 +187,11 @@ iwf.pr()
 
 term = iwf.terms['0-4']
 term.add_extra_info(
-    {'known-cross-product-form': wo @ ts['k']}
+    {'known-forms': wo @ ts['k']}
 )
 term = iwf.terms['0-1']
 term.add_extra_info(
-    {'known-cross-product-form': wo @ ts['k']}
+    {'known-forms': wo @ ts['k']}
 )
 ph.space.finite(N)
 mpi = iwf.mp()
@@ -237,11 +237,11 @@ owf = owf.derive.rearrange(
 )
 term = owf.terms['0-4']
 term.add_extra_info(
-    {'known-cross-product-form': wi @ ts['k-1/2']}
+    {'known-forms': wi @ ts['k-1/2']}
 )
 term = owf.terms['0-1']
 term.add_extra_info(
-    {'known-cross-product-form': wi @ ts['k-1/2']}
+    {'known-forms': wi @ ts['k-1/2']}
 )
 owf.pr()
 

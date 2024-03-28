@@ -133,16 +133,16 @@ wf = wf.derive.rearrange(
 
 term = wf.terms['0-1']
 term.add_extra_info(
-    {'known-cross-product-form': w @ ts['k-1']}
+    {'known-forms': w @ ts['k-1']}
 )
 
 term = wf.terms['0-2']
 term.add_extra_info(
-    {'known-cross-product-form': u @ ts['k-1']}
+    {'known-forms': u @ ts['k-1']}
 )
 term = wf.terms['0-7']
 term.add_extra_info(
-    {'known-cross-product-form': [w @ ts['k-1'], u @ ts['k-1']]}
+    {'known-forms': [w @ ts['k-1'], u @ ts['k-1']]}
 )
 wf.pr()
 

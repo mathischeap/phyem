@@ -265,6 +265,12 @@ class IteratorMonitor(Frozen):
                 ax.spines['left'].set_visible(False)
                 ax.spines['right'].set_visible(False)
                 ax.patch.set_alpha(0)
+                exit_code_explanation = self._iterator_._exit_code_explanations(
+                    self._iterator_.exit_code)
+                TEXT = f"exit_code: {self._iterator_.exit_code}\n" \
+                       f"{exit_code_explanation}\n"
+                plt.text(0.1, 9, TEXT, color='black', fontsize=30,
+                         ha='left', va='top', wrap=True)
 
             elif di == 't iteration':
                 ylabel_backgroundcolor = 'greenyellow'
@@ -378,14 +384,32 @@ class IteratorMonitor(Frozen):
 
             else:
                 if 't' in RDF:
-                    plt.plot(RDF['t'], RDF[di], color=colors(i-6), linewidth=1.5)
-                    a, b = min(RDF['t']), max(RDF['t'])
-                    if isinstance(a, (int, float)) and isinstance(b, (int, float)) and a < b:
-                        plt.xlim([a, b])
+                    if di == 't':
+                        if len(indices) <= 10:
+                            plt.plot(indices, RDF[di], '-o', color=colors(i-6), linewidth=1.5)
+                        else:
+                            plt.plot(indices, RDF[di], color=colors(i-6), linewidth=1.5)
+                        plt.xlim([min(indices), max(indices)])
+                        plt.xlabel('iterations')
+                        if len(indices) <= 5:
+                            ax.set_xticks(indices)
+                    else:
+                        if len(indices) <= 10:
+                            plt.plot(RDF['t'], RDF[di], '-o', color=colors(i-6), linewidth=1.5)
+                        else:
+                            plt.plot(RDF['t'], RDF[di], color=colors(i-6), linewidth=1.5)
+                        a, b = min(RDF['t']), max(RDF['t'])
+                        if isinstance(a, (int, float)) and isinstance(b, (int, float)) and a < b:
+                            plt.xlim([a, b])
                 else:
-                    plt.plot(range(len(RDF[di])), RDF[di], color=colors(i-6), linewidth=1.5)
-                    plt.xlim([0, len(RDF[di])-1])
-                    plt.xlabel('steps')
+                    if len(indices) <= 10:
+                        plt.plot(indices, RDF[di], '-o', color=colors(i-6), linewidth=1.5)
+                    else:
+                        plt.plot(indices, RDF[di], color=colors(i-6), linewidth=1.5)
+                    plt.xlim([min(indices), max(indices)])
+                    plt.xlabel('iterations')
+                    if len(indices) <= 5:
+                        ax.set_xticks(indices)
 
             ax.tick_params(axis="x", direction='in', length=8, labelsize=15)
             ax.tick_params(axis="y", direction='in', length=8, labelsize=15)

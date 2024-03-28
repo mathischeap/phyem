@@ -324,6 +324,10 @@ class T2dVector(TimeSpaceFunctionBase):
         else:
             raise NotImplementedError()
 
+    def x(self, other):
+        """shortcut of `cross_product`."""
+        return self.cross_product(other)
+
     def cross_product(self, other):
         """self x other."""
         from tools.functions.time_space._2d.wrappers.scalar import T2dScalar

@@ -11,9 +11,12 @@ from src.spaces.main import *
 from src.form.main import _global_root_forms_lin_dict
 from msepy.tools.matrix.static.local import MsePyStaticLocalMatrix
 
-from msepy.form.addons.noc.diff_3_entries_AxB_ip_C import _AxBipC
+from msepy.form.addons.noc.diff_3_entries_AxB_ip_C import _AxBipC, _AxBdpC
+from msepy.form.addons.noc.diff_3_entries_A_convect_B_ip_C import _A_convect_B_ip_C
 from msepy.form.addons.noc.diff_3_entries_dA_ip_BtpC import __dA_ip_BtpC__
 from msepy.form.addons.noc.diff_3_entries_A__ip__B_tp_C import _A__ip__B_tp_C_
+from msepy.form.addons.noc.AxB_ip_CxD import AxB_ip_CxD
+from msepy.form.addons.noc.AxB_dp_CxD import AxB_dp_CxD
 
 from msepy.tools.vector.dynamic import MsePyDynamicLocalVector
 from msepy.tools.vector.static.local import MsePyStaticLocalVector
@@ -34,13 +37,27 @@ __all__ = [
     '_parse_root_form',
 
     'Parse__M_matrix',
+    'Parse__dp_matrix',     # Wedge matrix
     'Parse__E_matrix',
-    'Parse__pi_matrix',
+    'Parse__pi_matrix',     # projection is different from (bigger than) the Hodge.
+    "Parse__star_matrix",   # Hodge matrix
+
     'Parse__trStar_rf0_dp_tr_s1_vector',
 
-    'Parse__astA_x_astB_ip_tC',
+    'Parse__astA_convect_astB_ip_tC',  # (*A .V *B, C) where AB are given and C is the test form.
+
+    'Parse__astA_x_astB_ip_tC',   # (A x B, C) where AB are given and C is the test form.
     'Parse__astA_x_B_ip_tC',
     'Parse__A_x_astB_ip_tC',
+
+    'Parse__astA_x_astB__dp__tC',  # <A x B | C> where AB are given and C is the test form.
+    'Parse__astA_x_B__dp__tC',
+    'Parse__A_x_astB__dp__tC',
+
+    'Parse__astA_x_astB__ip__astC_x_tD',  # (A x B, C x D) where ABC are given and D is the test form.
+    'Parse__A_x_astB__ip__astC_x_tD',     # (A x *B, *C x D) where BC are given and D is the test form.
+
+    'Parse__astA_x_astB__dp__astC_x_tD',  # <A x B | C x D> where ABC are given and D is the test form.
 
     'Parse__IP_matrix_bf_db',
 
@@ -91,7 +108,7 @@ def _find_from_bracket_ABC(default_repr, *ABC, key_words=("{A}", "{B}", "{C}")):
     """"""
     lin_reprs = default_repr[1]
     bases = lin_reprs.split(_sep)[1:]
-    # now we try to find the form gA, B and tC
+    # now we try to find the form A, B and C
     ABC_forms = list()
 
     msepy_forms = base['forms']
@@ -106,6 +123,7 @@ def _find_from_bracket_ABC(default_repr, *ABC, key_words=("{A}", "{B}", "{C}")):
                 break
             else:
                 pass
+
         assert found_root_form is not None, f"must have found root-for for {format_form}."
 
         msepy_base_form = None
@@ -115,6 +133,7 @@ def _find_from_bracket_ABC(default_repr, *ABC, key_words=("{A}", "{B}", "{C}")):
                 break
             else:
                 pass
+
         assert msepy_base_form is not None, f"we must have found a msepy copy of the root-form."
         ABC_forms.append(msepy_base_form)
 
@@ -184,6 +203,25 @@ def Parse__M_matrix(space, degree0, degree1):
         raise NotImplementedError()
 
 
+def Parse__dp_matrix(s0, s1, d0, d1):
+    """<A|B> or <B|A>; s0 and d0 refer to the axis-0."""
+    d0 = _str_degree_parser(d0)
+    d1 = _str_degree_parser(d1)
+
+    s0 = _find_space_through_pure_lin_repr(s0)
+    s1 = _find_space_through_pure_lin_repr(s1)
+
+    gm0 = s0.gathering_matrix(d0)
+    gm1 = s1.gathering_matrix(d1)
+
+    W = MsePyStaticLocalMatrix(
+        s0.wedge_matrix(s1, d0, d1),
+        gm0,
+        gm1
+    )
+    return W, None  # time_indicator is None since W does not change over time.
+
+
 def Parse__E_matrix(space, degree):
     """"""
     degree = _str_degree_parser(degree)
@@ -206,9 +244,20 @@ def Parse__pi_matrix(from_space, to_space, from_d, to_d):
     to_d = _str_degree_parser(to_d)
     from_space = _find_space_through_pure_lin_repr(from_space)
     to_space = _find_space_through_pure_lin_repr(to_space)
-    from msepy.space.projection import MsePySpaceProjection
+    from msepy.space.addons.projection import MsePySpaceProjection
     pi = MsePySpaceProjection(from_space, to_space, from_d, to_d)
     return pi.matrix, None
+
+
+def Parse__star_matrix(from_space, to_space, from_d, to_d):
+    """Hodge matrix."""
+    from_d = _str_degree_parser(from_d)
+    to_d = _str_degree_parser(to_d)
+    from_space = _find_space_through_pure_lin_repr(from_space)
+    to_space = _find_space_through_pure_lin_repr(to_space)
+    from msepy.space.addons.Hodge import MsePySpaceHodge
+    H = MsePySpaceHodge(from_space, to_space, from_d, to_d)
+    return H.matrix, None
 
 
 def Parse__trStar_rf0_dp_tr_s1_vector(dls, tr_star_rf0, tr_rf1):
@@ -371,15 +420,25 @@ class _TrStarRf0DualPairingTrS1(Frozen):
         return full_vector
 
 
+# --- (A .V B, C) ---------------------------------------------------------------------------------
+def Parse__astA_convect_astB_ip_tC(gA, gB, tC):
+    """(*A .V *B, C)"""
+    ABC_forms = _find_from_bracket_ABC(_VarSetting_astA_convect_astB_ip_tC, gA, gB, tC)
+    _, _, msepy_C = ABC_forms
+    nonlinear_operation = _A_convect_B_ip_C(*ABC_forms)
+    c, time_caller = nonlinear_operation(1, msepy_C)
+    return c, time_caller
+
+
 # - (w x u, v) ------------------------------------------------------------------------------------
 def Parse__astA_x_astB_ip_tC(gA, gB, tC):
-    """(A X B, C), A and B are given, C is the test form, so it gives a dynamic vector."""
+    """(*A X *B, C), A and B are given, C is the test form, so it gives a dynamic vector."""
 
     ABC_forms = _find_from_bracket_ABC(_VarSetting_astA_x_astB_ip_tC, gA, gB, tC)
     _, _, msepy_C = ABC_forms
     nonlinear_operation = _AxBipC(*ABC_forms)
     c, time_caller = nonlinear_operation(1, msepy_C)
-    return c, time_caller  # since A is given, its ati determine the time of C.
+    return c, time_caller
 
 
 def Parse__astA_x_B_ip_tC(gA, B, tC):
@@ -400,6 +459,76 @@ def Parse__A_x_astB_ip_tC(A, gB, tC):
     nonlinear_operation = _AxBipC(*ABC_forms)
     C = nonlinear_operation(2, msepy_C, msepy_A)
     return C, msepy_B.cochain._ati_time_caller  # since B is given, its ati determine the time of C.
+
+
+# ----- <A x B | C> -----------------------------------------------------------------------------
+def Parse__astA_x_astB__dp__tC(gA, gB, tC):
+    """<A X B | C>, A and B are given, C is the test form, so it gives a dynamic vector."""
+
+    ABC_forms = _find_from_bracket_ABC(_VarSetting_astA_x_astB__dp__tC, gA, gB, tC)
+    _, _, msepy_C = ABC_forms
+    nonlinear_operation = _AxBdpC(*ABC_forms)
+    c, time_caller = nonlinear_operation(1, msepy_C)
+    return c, time_caller
+
+
+def Parse__astA_x_B__dp__tC(gA, B, tC):
+    """"""
+    ABC_forms = _find_from_bracket_ABC(_VarSetting_astA_x_B__dp__tC, gA, B, tC)
+    msepy_A, msepy_B, msepy_C = ABC_forms  # A is given
+    nonlinear_operation = _AxBdpC(*ABC_forms)
+    C = nonlinear_operation(2, msepy_C, msepy_B)
+
+    return C, msepy_A.cochain._ati_time_caller  # since A is given, its ati determine the time of C.
+
+
+def Parse__A_x_astB__dp__tC(A, gB, tC):
+    """"""
+    ABC_forms = _find_from_bracket_ABC(_VarSetting_A_x_astB__dp__tC, A, gB, tC)
+    msepy_A, msepy_B, msepy_C = ABC_forms  # B is given
+    nonlinear_operation = _AxBdpC(*ABC_forms)
+    C = nonlinear_operation(2, msepy_C, msepy_A)
+    return C, msepy_B.cochain._ati_time_caller  # since B is given, its ati determine the time of C.
+
+
+# ------ (A x B, C x D) --------------------------------------------------------------------------
+def Parse__astA_x_astB__ip__astC_x_tD(gA, gB, gC, tD):
+    """(*A x *B, *C x D)"""
+    A, B, C, D = _find_from_bracket_ABC(
+        _VarSetting_astA_x_astB__ip__astC_x_tD,
+        gA, gB, gC, tD,
+        key_words=("{A}", "{B}", "{C}", "{D}")
+    )
+    nonlinear_operation = AxB_ip_CxD(A, B, C, D)
+    V, time_caller = nonlinear_operation(1, D)
+
+    return V, time_caller
+
+
+def Parse__A_x_astB__ip__astC_x_tD(A, gB, gC, tD):
+    """(A x *B, *C x D), D is the test function."""
+    A, B, C, D = _find_from_bracket_ABC(
+        _VarSetting_A_x_astB__ip__astC_x_tD,
+        A, gB, gC, tD,
+        key_words=("{A}", "{B}", "{C}", "{D}")
+    )
+    nonlinear_operation = AxB_ip_CxD(A, B, C, D)
+    M, time_caller = nonlinear_operation(2, D, A)
+    return M, time_caller
+
+
+# ------ <A x B | C x D> --------------------------------------------------------------------------
+def Parse__astA_x_astB__dp__astC_x_tD(gA, gB, gC, tD):
+    """"""
+    A, B, C, D = _find_from_bracket_ABC(
+        _VarSetting_astA_x_astB__dp__astC_x_tD,
+        gA, gB, gC, tD,
+        key_words=("{A}", "{B}", "{C}", "{D}")
+    )
+    nonlinear_operation = AxB_dp_CxD(A, B, C, D)
+    V, time_caller = nonlinear_operation(1, D)
+
+    return V, time_caller
 
 
 # - (bf, db) ------------------------------------------------------------------------------------

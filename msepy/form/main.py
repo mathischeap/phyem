@@ -15,6 +15,7 @@ from msepy.form.cf import MsePyContinuousForm
 from msepy.form.cochain.main import MsePyRootFormCochain
 from msepy.form.cochain.passive import MsePyRootFormCochainPassive
 from msepy.form.addons.static import MsePyRootFormStaticCopy
+from msepy.form.addons.interpolate import MsePyRootFormInterpolateCopy
 from msepy.form.visualize.main import MsePyRootFormVisualize
 from msepy.form.coboundary import MsePyRootFormCoboundary
 from msepy.form.matrix import MsePyRootFormMatrix
@@ -85,7 +86,8 @@ class MsePyRootForm(Frozen):
                 abstract_time_instant = ts[t]
                 t = abstract_time_instant()()
             else:
-                raise Exception(f"multiple time sequences exist.")
+                raise Exception(f"multiple time sequences exist. "
+                                f"I don't know which one you are referring to")
         else:
             pass
         t = self.cochain._parse_t(t)  # round off the truncation error to make it clear.
@@ -94,6 +96,33 @@ class MsePyRootForm(Frozen):
                 return MsePyRootFormStaticCopy(self, t)
             else:
                 return MsePyRootFormStaticCopy(self._base, t)
+        else:
+            raise Exception(f"cannot accept t={t}.")
+
+    def ic(self, t):
+        """Interpolate copy at any time t."""
+        if t is None:
+            t = self.cochain.newest  # newest time
+        elif isinstance(t, str):
+            # when use str, we are looking for the form at a time step.
+            from src.time_sequence import _global_abstract_time_sequence
+            if len(_global_abstract_time_sequence) == 1:
+                ts_indicator = list(_global_abstract_time_sequence.keys())[0]
+                ts = _global_abstract_time_sequence[ts_indicator]
+                abstract_time_instant = ts[t]
+                t = abstract_time_instant()()
+            else:
+                raise Exception(f"multiple time sequences exist. "
+                                f"I don't know which one you are referring to")
+        else:
+            pass
+
+        t = self.cochain._parse_t(t)  # round off the truncation error to make it clear.
+        if isinstance(t, (int, float)):
+            if self._is_base():
+                return MsePyRootFormInterpolateCopy(self, t)
+            else:
+                return MsePyRootFormInterpolateCopy(self._base, t)
         else:
             raise Exception(f"cannot accept t={t}.")
 
@@ -367,25 +396,35 @@ class MsePyRootForm(Frozen):
             return self.space.norm(local_cochain, degree, quad_degree=quad_degree, **kwargs)
         else:
             diff_cochain = self.cochain[diff_to_t].local
-            diff_cochain = diff_cochain - local_cochain
+            diff_cochain = local_cochain - diff_cochain
             return self.space.norm(diff_cochain, degree, quad_degree=quad_degree, **kwargs)
 
     def norm_residual(self, from_time=None, to_time=None, **kwargs):
-        """"""
-        if to_time is None:
-            to_time = self.cochain.newest
-        else:
-            pass
-
-        if from_time is None:
+        """By default, use L2-norm."""
+        if to_time is None or from_time is None:
             all_cochain_times = list(self.cochain._tcd.keys())
             all_cochain_times.sort()
-            if len(all_cochain_times) == 0:
-                from_time = None
-            elif len(all_cochain_times) == 1:
-                from_time = all_cochain_times[0]
+
+            if to_time is None:
+                if len(all_cochain_times) == 0:
+                    to_time = None
+                elif len(all_cochain_times) == 1:
+                    to_time = all_cochain_times[0]
+                else:
+                    to_time = all_cochain_times[-1]
             else:
-                from_time = all_cochain_times[-2]
+                pass
+
+            if from_time is None:
+                if len(all_cochain_times) == 0:
+                    from_time = None
+                elif len(all_cochain_times) == 1:
+                    from_time = all_cochain_times[0]
+                else:
+                    from_time = all_cochain_times[-2]
+            else:
+                pass
+
         else:
             pass
 
@@ -397,16 +436,19 @@ class MsePyRootForm(Frozen):
             assert isinstance(to_time, (int, float)), f"to_time = {to_time} is wrong."
 
             if from_time == to_time:
-                if len(self.cochain._tcd) == 1:
-                    return np.nan  # initially, we do not return 0. Instead, we return nan.
-                else:
-                    return 0
+                return np.nan  # return nan since it is not a residual
+
             else:
                 from_cochain = self.cochain[from_time].local
                 to_cochain = self.cochain[to_time].local
-                diff_cochain = from_cochain - to_cochain
+                diff_cochain = to_cochain - from_cochain
                 norm = self.space.norm(diff_cochain, self.degree, **kwargs)
                 return norm
+
+    @property
+    def residual(self):
+        """The default residual of this form: using L2-norm-residual."""
+        return self.norm_residual()
 
     @property
     def coboundary(self):
@@ -530,56 +572,34 @@ if __name__ == '__main__':
     msepy, obj = ph.fem.apply('msepy', locals())
 
     manifold = obj['manifold']
-    mesh = obj['mesh']
+    _mesh = obj['mesh']
 
     msepy.config(manifold)(
-        'crazy', c=0.0, bounds=[[0, 2] for _ in range(space_dim)], periodic=False
+        'crazy', c=0.3, bounds=[[0, 2] for _ in range(space_dim)], periodic=False
     )
-    msepy.config(mesh)(15)
-
-    f0i = obj['f0i']
-    f0o = obj['f0o']
-    f1i = obj['f1i']
-    f1o = obj['f1o']
-    f2 = obj['f2']
+    msepy.config(_mesh)(15)
+    #
+    # f0i = obj['f0i']
+    # f0o = obj['f0o']
+    # f1 = obj['f1i']
+    _f1o = obj['f1o']
+    # f2 = obj['f2']
 
 
     def fx(t, x, y):
         return np.sin(2*np.pi*x) * np.sin(np.pi*y) + t
 
-
-    def ux(t, x, y):
-        return np.sin(2*np.pi*x) * np.cos(2*np.pi*y) + t
-
-
-    def uy(t, x, y):
-        return -np.cos(2*np.pi*x) * np.sin(2*np.pi*y) + t
-
+    # def ux(t, x, y):
+    #     return np.sin(2*np.pi*x) * np.cos(2*np.pi*y) + t
+    #
+    # def uy(t, x, y):
+    #     return -np.cos(2*np.pi*x) * np.sin(2*np.pi*y) + t
 
     scalar = ph.vc.scalar(fx)
-    vector = ph.vc.vector(ux, uy)
-
-    f1o.cf = vector
-    # f2.cf = scalar
+    # vector = ph.vc.vector(ux, uy)
     #
-    # f2[0].reduce()
+    _f1o.cf = scalar.curl
+    _f1o[0].reduce()
 
-    d_f1o = f1o.d()
-    # d_f1o[None].visualize()
-
-    # f = d_f1o - f2
-    # f2[None].visualize()
-    # f[None].visualize()
-    # d_f1o[None].visualize()
-
-    f1o[0].reduce()
-    # f1o[1].reduce()
-    # d_f1o[None].visualize()
-    # print(f1o[None].error(etype='H1'))
-
-    f1o[None].visualize(
-        plot_type='quiver',
-        sampling_factor=0.1,
-        colorbar_label=r'$\omega$',
-        colorbar_ticks=[0, 0.5, 1]
-    )
+    sf = _f1o.numeric.streamfunction()
+    sf.visualize()

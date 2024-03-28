@@ -5,6 +5,7 @@ from tools.frozen import Frozen
 from msepy.space.gathering_matrix.main import MsePyGatheringMatrix
 from msepy.space.incidence_matrix.main import MsePyIncidenceMatrix
 from msepy.space.mass_matrix.main import MsePyMassMatrix
+from msepy.space.wedge_matrix.main import MsePyWedgeMatrix
 from msepy.space.inner_product.main import MsePyInnerProduct
 from msepy.space.local_numbering.main import MsePyLocalNumbering
 from msepy.space.num_local_dofs.main import MsePyNumLocalDofs
@@ -41,6 +42,7 @@ class MsePySpace(Frozen):
         self._gathering_matrix = None
         self._incidence_matrix = None
         self._mass_matrix = None
+        self._wedge_matrix = None
         self._basis_functions = None
         self._num_local_dofs = None
         self._num_local_dof_components = None
@@ -136,6 +138,13 @@ class MsePySpace(Frozen):
         if self._mass_matrix is None:
             self._mass_matrix = MsePyMassMatrix(self)
         return self._mass_matrix
+
+    @property
+    def wedge_matrix(self):
+        """incidence_matrix"""
+        if self._wedge_matrix is None:
+            self._wedge_matrix = MsePyWedgeMatrix(self)
+        return self._wedge_matrix
 
     @property
     def gathering_matrix(self):

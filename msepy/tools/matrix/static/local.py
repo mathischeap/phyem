@@ -25,7 +25,7 @@ class MsePyStaticLocalMatrix(Frozen):
             self._data = data  # element-wise csc or csr matrix.
             self._cache_key = data._cache_key_generator
 
-        elif issparse(data) or data == 0:
+        elif issparse(data) or data == 0:   # constant data; same in all elements.
             if issparse(data):
                 if not (isspmatrix_csc(data) or isspmatrix_csr(data)):
                     data = data.tocsr()

@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+# noinspection PyUnresolvedReferences,PyRedeclaration
 r"""
 .. testsetup:: *
 

@@ -149,19 +149,29 @@ __all__ = [
     '_VarSetting_d_matrix',                        #
     '_VarSetting_d_matrix_transpose',              #
     '_VarSetting_pi_matrix',
+    '_VarSetting_star_matrix',                     # Hodge matrix
+    '_VarSetting_dp_matrix',                       # <A|B>
 
     '_VarSetting_boundary_dp_vector',              #
+
+    '_VarSetting_astA_convect_astB_ip_tC',         # (*A .V *B, @C), AB are known, vector.
 
     '_VarSetting_astA_x_astB_ip_tC',               #
     '_VarSetting_astA_x_B_ip_tC',                  #
     '_VarSetting_A_x_astB_ip_tC',                  #
     '_VarSetting_A_x_B_ip_C',                      # nonlinear
 
-    '_VarSetting_astA_x_astB__dp__tC',             # vector <A x B | C>, AB are known
+    '_VarSetting_astA_x_astB__dp__tC',             # vector <*A x *B | @C>, AB are known
+    '_VarSetting_astA_x_B__dp__tC',
+    '_VarSetting_A_x_astB__dp__tC',
 
-    '_VarSetting_astA_x_astB__ip__astC_x_tD',      # vector  (A x B, C x D), ABC known, D test.
-    '_VarSetting_astA_x_astB__dp__astC_x_tD',      # vector  <A x B | C x D>, ABC known, D test.
+    '_VarSetting_astA_x_astB__ip__astC_x_tD',      # vector  (*A x *B, *C x @D), ABC known, D test.
+    '_VarSetting_A_x_astB__ip__astC_x_tD',         # matrix  (A x *B, *C x @D), BC known, D test.
 
+    '_VarSetting_astA_x_astB__dp__astC_x_tD',      # vector  <*A x *B | *C x @D>, ABC known, D test.
+
+
+    # bundle valued forms ---------------------------------------------------------
     '_VarSetting_dastA_astA_tp_tC',                #
     '_VarSetting_dastA_tB_tp_astA',
     '_VarSetting_dtA_astB_tp_astB',
@@ -180,6 +190,7 @@ __all__ = [
     # '_VarSetting_astA_x_B_ip_dC',                 # (A x B, dC)
     # '_VarSetting_astA_x_astB_ip_dC',              # (A x B, dC)
 ]
+
 
 # ------ basic -----------------------------------------------------------------------------------
 _VarSetting_mass_matrix = [
@@ -202,8 +213,22 @@ _VarSetting_pi_matrix = [
     _sep.join([
         "d:P:Mat",
         "{space_pure_lin_repr_from}", "{space_pure_lin_repr_to}",
-        "{d_from}", "{d_to}"
+        "{d_from}", "{d_to}"  # degree_from, degree_to
     ]),
+]
+
+_VarSetting_star_matrix = [
+    r"\mathsf{H}",
+    _sep.join([
+        "Hodge:Mat",
+        "{space_pure_lin_repr_from}", "{space_pure_lin_repr_to}",
+        "{d_from}", "{d_to}"   # degree_from, degree_to
+    ]),
+]
+
+_VarSetting_dp_matrix = [   # <A|B> or <B|A> : 0 refers to the axis-0 space.
+    r"\mathsf{W}",
+    _sep.join(["Wedge:Mat", "{s0}", "{s1}", "{d0}", "{d1}"]),
 ]
 
 # Natural bc -------------------------------------------------------------------------------------
@@ -215,15 +240,21 @@ _VarSetting_boundary_dp_vector = [
     #                            <tr star bf0 | tr f1>.
 ]
 
+# (A .V B, C) -------------------------------------------------------------------------------------
+_VarSetting_astA_convect_astB_ip_tC = [
+    r"\mathsf{V}_{\left({A} \cdot\nabla {B}, \mathsf{t}\right)}^{\left[\mathsf{t}\right]}",
+    _sep.join(["*convect*_ip", "[{A}]", "[{B}]", "[{C}]"]),
+]
+
 # (w x u, u) --------------------------------------------------------------------------------------
 
 _VarSetting_astA_x_astB_ip_tC = [
-    r"\mathsf{c}",
+    r"\mathsf{V}_{\left({A}\times{B}, \mathsf{t}\right)}^{\left[\mathsf{t}\right]}",
     _sep.join(["c_ip", "[{A}]", "[{B}]", "[{C}]"]),
 ]
 
 _VarSetting_astA_x_B_ip_tC = [
-    r"\mathsf{C}",
+    r"\mathsf{M}_{\left({A}\times \circ, \mathsf{t}\right)}^{\left[\mathsf{t},\circ\right]}",
     _sep.join(["X_ip", "[{A}]", "[{B}]", "[{C}]"]),
 ]
 
@@ -238,38 +269,38 @@ _VarSetting_A_x_B_ip_C = [
 ]
 
 # --------------- <A x B | C> --------------------------------------------------------------------
-_VarSetting_astA_x_astB__dp__tC = [
-    r"\mathsf{\left.x\right|}",
-    _sep.join(["_X_dp", "[{A}]", "[{B}]", "[{C}]"])
+_VarSetting_astA_x_astB__dp__tC = [   # <*A x *B | @D>
+    r"\mathsf{V}_{\left\langle\left.{A}\times {B} \right| \mathsf{t}\right\rangle}^{\left[\mathsf{t}\right]}",
+    _sep.join(["<*x*|C>", "[{A}]", "[{B}]", "[{C}]"])
+]
+
+_VarSetting_astA_x_B__dp__tC = [   # <*A x B | @D>
+    r"\mathsf{M}_{\left\langle\left.{A}\times \circ \right| \mathsf{t}\right\rangle}^{\left[\mathsf{t},\circ\right]}",
+    _sep.join(["<*xB|C>", "[{A}]", "[{B}]", "[{C}]"])
+]
+
+_VarSetting_A_x_astB__dp__tC = [   # <A x *B | @D>
+    r"\mathsf{M}_{\left\langle\left. \circ \times {B} \right| \mathsf{t}\right\rangle}^{\left[\mathsf{t},\circ\right]}",
+    _sep.join(["<Ax*|C>", "[{A}]", "[{B}]", "[{C}]"])
 ]
 
 # --------------- (A x B, C x D) ----------------------------------------------------
-_VarSetting_astA_x_astB__ip__astC_x_tD = [
-    r"\mathsf{XX}",
-    _sep.join(["_X__Xip", "[{A}]", "[{B}]", "[{C}]", "[{D}]"]),
+_VarSetting_astA_x_astB__ip__astC_x_tD = [   # (*A x *B, *C x @D)
+    r"\mathsf{V}_{\left({A} \times {B}, {C} \times \mathsf{t}\right)}^{\left[\mathsf{t}\right]}",
+    _sep.join(["(*x*,*xD)", "[{A}]", "[{B}]", "[{C}]", "[{D}]"]),
 ]
 
-_VarSetting_astA_x_astB__dp__astC_x_tD= [
-    r"\mathsf{xx}",
-    _sep.join(["_X__Xdp", "[{A}]", "[{B}]", "[{C}]", "[{D}]"]),
+_VarSetting_A_x_astB__ip__astC_x_tD = [    # (A x *B, *C x @D)
+    r"\mathsf{M}_{\left(\circ \times {B}, {C} \times \mathsf{t}\right)}^{\left[\mathsf{t},\circ\right]}",
+    _sep.join(["(Ax*,*xD)", "[{A}]", "[{B}]", "[{C}]", "[{D}]"]),
 ]
 
-# --------------- (A x B, dC) -------------------------------------------------------
+# --------------- <A x B | C x D> ----------------------------------------------------
+_VarSetting_astA_x_astB__dp__astC_x_tD = [  # <*A x *B | *C x @D>
+    r"\mathsf{V}_{\left\langle\left.{A}\times {B} \right| {C}\times \mathsf{t}\right\rangle}^{\left[\mathsf{t}\right]}",
+    _sep.join(["<*x*|*xD>", "[{A}]", "[{B}]", "[{C}]", "[{D}]"]),
+]
 
-# _VarSetting_A_x_astB_ip_dC = [
-#     r"\mathsf{C}_d",
-#     _sep.join(["_XipD:", "[{A}]", "[{B}]", "[{C}]"])
-# ]
-#
-# _VarSetting_astA_x_B_ip_dC = [
-#     r"\mathsf{c}_d",
-#     _sep.join(["X_ipD:", "[{A}]", "[{B}]", "[{C}]"])
-# ]
-#
-# _VarSetting_astA_x_astB_ip_dC = [
-#     r"\mathsf{X}_d",
-#     _sep.join(["XipD:", "[{A}]", "[{B}]", "[{C}]"])
-# ]
 
 # -----(dA, B otimes C) --------------------------------------------------------------------------
 

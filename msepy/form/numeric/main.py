@@ -6,8 +6,11 @@ from tools.frozen import Frozen
 from tools.dds.region_wise_structured import DDSRegionWiseStructured
 from typing import Dict
 from tools.quadrature import Quadrature
-from scipy.interpolate import LinearNDInterpolator, NearestNDInterpolator
-from msepy.form.numeric.function import MsePyRootFormNumericFunction
+from scipy.interpolate import NearestNDInterpolator
+from msepy.form.numeric.tsf import MsePyRootFormNumericTimeSpaceFunction
+from msepy.form.numeric.tsp import MsePyRootFormNumericTimeSpaceProperty
+from msepy.form.numeric.dds import MsePyRootFormNumericDiscreteDataStructure
+from msepy.form.numeric.streamfunction import MsePyRootFormNumericStreamFunction
 
 
 class MsePyRootFormNumeric(Frozen):
@@ -16,12 +19,60 @@ class MsePyRootFormNumeric(Frozen):
     def __init__(self, rf):
         """"""
         self._f = rf
-        self._func = MsePyRootFormNumericFunction(rf)
+        self._tsf = None
+        self._tsp = None
+        self._dds = None
+        self._sf = None
         self._freeze()
 
     @property
-    def function(self):
-        return self._func
+    def tsf(self):
+        """Time-space function"""
+        if self._tsf is None:
+            self._tsf = MsePyRootFormNumericTimeSpaceFunction(self._f)
+        return self._tsf
+
+    @property
+    def tsp(self):
+        """Time-Space property"""
+        if self._tsp is None:
+            self._tsp = MsePyRootFormNumericTimeSpaceProperty(self._f)
+        return self._tsp
+
+    @property
+    def dds(self):
+        """Express the form as (customized) discrete data structure."""
+        if self._dds is None:
+            self._dds = MsePyRootFormNumericDiscreteDataStructure(self._f)
+        return self._dds
+
+    @property
+    def streamfunction(self):
+        if self._sf is None:
+            self._sf = MsePyRootFormNumericStreamFunction(self._f)
+        return self._sf
+
+    def ___parse_t___(self, t):
+        if t is None:
+            t = self._f.cochain.newest
+        else:
+            pass
+        return t
+
+    def ___decide_type___(self):
+        """"""
+        indicator = self._f.space.abstract.indicator
+        if indicator == 'Lambda':
+            space = self._f.space.abstract
+            m, n, k = space.m, space.n, space.k
+            if m == n == 2 and k in (0, 2):
+                return 2, 'scalar'
+            elif m == n == 2 and k == 1:
+                return 2, 'vector'
+            else:
+                raise NotImplementedError()
+        else:
+            raise NotImplementedError()
 
     def rot(self, *grid_xi_et_sg, t=None):
         """Compute the rot of the form at `t` and save the results in a region-wise structured data set."""
@@ -30,9 +81,9 @@ class MsePyRootFormNumeric(Frozen):
         else:
             time = t
         indicator = self._f.space.abstract.indicator
+        space = self._f.space.abstract
+        m, n, k = space.m, space.n, space.k
         if indicator == 'bundle':
-            space = self._f.space.abstract
-            m, n, k = space.m, space.n, space.k
             if m == n == 2 and k == 0:
                 df = self._f.coboundary[time]
 
@@ -51,6 +102,7 @@ class MsePyRootFormNumeric(Frozen):
 
             else:
                 raise Exception(f"form of space {space} cannot perform curl.")
+
         else:
             raise NotImplementedError()
 
@@ -187,7 +239,7 @@ class MsePyRootFormNumeric(Frozen):
         else:   # other dimensions
             raise NotImplementedError()
 
-    def region_wise_interp(self, t=None, density=10, factor=6, saveto=None):
+    def region_wise_interp(self, t=None, density=10, factor=20, saveto=None):
         """Reconstruct the form at time `t` and use the reconstruction results to
         make interpolation functions in each region.
 
@@ -235,7 +287,7 @@ class MsePyRootFormNumeric(Frozen):
                     x, y = regions[region]._ct.mapping(r, s)
                     xy = np.vstack([x, y]).T
                     v = interp[region](x, y)
-                    final_itp = LinearNDInterpolator(xy, v)
+                    final_itp = NearestNDInterpolator(xy, v)
                     final_interp[region] = final_itp
 
             else:
@@ -259,7 +311,7 @@ class MsePyRootFormNumeric(Frozen):
 
         return final_interp
 
-    def interp(self, t=None, density=10, factor=6):
+    def interp(self, t=None, density=10, factor=20):
         """Reconstruct the form at time `t` and use the reconstruction results to
         make interpolation functions all over the domain
 
@@ -314,7 +366,7 @@ class MsePyRootFormNumeric(Frozen):
                     X.extend(x)
                     Y.extend(y)
                     V0.extend(v)
-                final_itp = LinearNDInterpolator(list(zip(X, Y)), V0)
+                final_itp = NearestNDInterpolator(list(zip(X, Y)), V0)
                 return final_itp
 
             elif shape == [2]:  # vector in 2d
@@ -329,8 +381,8 @@ class MsePyRootFormNumeric(Frozen):
                     U.extend(u)
                     V.extend(v)
                 xy = list(zip(X, Y))
-                final_itp_u = LinearNDInterpolator(xy, U)
-                final_itp_v = LinearNDInterpolator(xy, V)
+                final_itp_u = NearestNDInterpolator(xy, U)
+                final_itp_v = NearestNDInterpolator(xy, V)
                 return final_itp_u, final_itp_v
 
             else:

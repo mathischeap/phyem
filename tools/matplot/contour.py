@@ -218,8 +218,10 @@ def contour(
     # --------------- title -----------------------------------------------------
     if title is None or title is False:
         pass
-    else:
+    elif isinstance(title, str):
         plt.title(title)
+    else:
+        raise Exception(f"title must be a string.")
     # -------------------------------- color bar ---------------------------------
     if show_colorbar:
         mappable = cm.ScalarMappable()

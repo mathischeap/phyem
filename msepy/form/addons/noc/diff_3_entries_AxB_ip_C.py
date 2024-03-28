@@ -178,3 +178,7 @@ class _AxBipC(Base3Entries):
 
         self._3d_data = _3d_data
         _3d_data_cache[self._cache_key] = _3d_data
+
+
+class _AxBdpC(_AxBipC):
+    """Renaming `_AxBipC` gives all functions of `_AxBdpC`."""

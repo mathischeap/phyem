@@ -160,11 +160,11 @@ def TGV2(N, K, steps):
 
     term = iwf.terms['0-5']
     term.add_extra_info(
-        {'known-cross-product-form': wo @ ts['k']}
+        {'known-forms': wo @ ts['k']}
     )
     term = iwf.terms['0-1']
     term.add_extra_info(
-        {'known-cross-product-form': wo @ ts['k']}
+        {'known-forms': wo @ ts['k']}
     )
     ph.space.finite(N)
     mpi = iwf.mp()
@@ -219,11 +219,11 @@ def TGV2(N, K, steps):
 
     term = owf.terms['0-5']
     term.add_extra_info(
-        {'known-cross-product-form': wi @ ts['k-1/2']}
+        {'known-forms': wi @ ts['k-1/2']}
     )
     term = owf.terms['0-1']
     term.add_extra_info(
-        {'known-cross-product-form': wi @ ts['k-1/2']}
+        {'known-forms': wi @ ts['k-1/2']}
     )
 
     ph.space.finite(N)

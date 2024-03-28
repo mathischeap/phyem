@@ -20,6 +20,8 @@ __all__ = [
     "ConditionsNormalDipoleCollision2",
     "ConditionsLidDrivenCavity2",
 
+    "ConditionsLidDrivenCavity_2dMHD_1",
+
     "ManufacturedSolutionNS3Conservation1",
 
     "ManufacturedSolutionLSingularity",
@@ -35,6 +37,9 @@ from tests.samples.iniCond_loop_advection import InitialCondition_LoopAdvection
 from tests.samples.conditions_flow_around_cylinder_2d import ConditionsFlowAroundCylinder2
 from tests.samples.conditions_normal_dipole_collision import ConditionsNormalDipoleCollision2
 from tests.samples.conditions_lid_driven_cavity import ConditionsLidDrivenCavity2
+
+from tests.samples.conditions_lid_driven_cavity_MHD import ConditionsLidDrivenCavity_2dMHD_1
+
 from tests.samples.manuSolution_Eigen2 import Eigen2
 from tests.samples.manuSolution_MHD2 import ManufacturedSolutionMHD2Ideal1
 from tests.samples.manuSolution_NS2 import ManufacturedSolutionNS2TGV

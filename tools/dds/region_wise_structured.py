@@ -55,6 +55,11 @@ class DDSRegionWiseStructured(Frozen):
         self._dtype = None
         self._freeze()
 
+    def __repr__(self):
+        super_repr = super().__repr__().split('object')[1]
+        return rf"<DDR-RWS {self.ndim}d {self.dtype}" + super_repr
+
+    # -- properties --------------------------------------------------------------------------
     @property
     def dtype(self):
         """'scalar', 'vector', 'tensor' or so on."""
@@ -75,14 +80,27 @@ class DDSRegionWiseStructured(Frozen):
         """dimensions of the space."""
         return self._space_dim
 
+    @property
+    def classification(self):
+        """"""
+        if (self.ndim, self.dtype) == (2, 'scalar'):
+            return '2d scalar'
+        elif (self.ndim, self.dtype) == (2, 'vector'):
+            return '2d vector'
+        elif (self.ndim, self.dtype) == (3, 'scalar'):
+            return '3d scalar'
+        elif (self.ndim, self.dtype) == (3, 'vector'):
+            return '3d vector'
+        else:
+            raise NotImplementedError()
+
+    # -- visualization --------------------------------------------------------------------------
     def visualize(self, magnitude=False, saveto=None, **kwargs):
         """"""
-        if self._space_dim == 2 and self._value_shape == 1:
-            # plot a scalar field in 2d.
+        if self.classification == '2d scalar':
             return self._2d_scalar_field(magnitude=magnitude, saveto=saveto, **kwargs)
 
-        elif self._space_dim == 2 and self._value_shape == 2:
-            # plot a vector field in 2d.
+        elif self.classification == '2d vector':
             return self._2d_vector_field(magnitude=magnitude, saveto=saveto, **kwargs)
 
         else:
@@ -123,6 +141,7 @@ class DDSRegionWiseStructured(Frozen):
 
         return fig0, fig1
 
+    # -- Operations --------------------------------------------------------------------------
     def __sub__(self, other):
         """self - other"""
         assert other.__class__ == self.__class__, f"type wrong"
@@ -169,11 +188,50 @@ class DDSRegionWiseStructured(Frozen):
 
         return self.__class__(self._coo_dict_list, value_dict)
 
+    def __rmul__(self, other):
+        """other * self"""
+        if isinstance(other, (int, float)):
+            value_dict = [dict() for _ in range(self._value_shape)]
+            for _ in range(self._value_shape):
+                self_v = self._val_dict_list[_]
+                for region in self_v:
+                    value_dict[_][region] = other * self_v[region]
+            return self.__class__(self._coo_dict_list, value_dict)
+        else:
+            raise NotImplementedError()
+
     def x(self, other):
         """cross-product."""
+        return self.cross_product(other)
 
     def cross_product(self, other):
         """cross-product."""
+        if self.classification == '2d vector':
+
+            if other.classification == '2d vector':
+                # let A = [wx wy 0]^T    B = [u v 0]^T
+                # A x B = [wy*0 - 0*v   0*u - wx*0   wx*v - wy*u]^T = [0   0   C0]^T
+
+                wx, wy = self._val_dict_list
+                u, v = other._val_dict_list
+
+                c0 = {}
+
+                for region in wx:
+
+                    _wx = wx[region]
+                    _wy = wy[region]
+                    _u = u[region]
+                    _v = v[region]
+
+                    c0[region] = _wx*_v - _wy*_u
+
+                return self.__class__(self._coo_dict_list, [c0])
+
+            else:
+                raise NotImplementedError
+        else:
+            raise NotImplementedError()
 
 
 def _find_shape(list_of_dict):

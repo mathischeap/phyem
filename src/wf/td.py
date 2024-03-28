@@ -108,15 +108,15 @@ class TemporalDiscretization(Frozen):
         ode_d = self[int(i)]
         ode_d.differentiate(j, *args)
 
-    def average(self, index, f, *args):
+    def average(self, index, f, *args, which='all'):
         """Average the term indexed ``index`` at abstract time instances."""
         assert index in self._wf, f"index={index} is illegal, print representations to check the indices."
         i, j = index.split('-')
         ode_d = self[int(i)]
         if len(args) == 1:
-            ode_d.average(j, f, *args)
+            ode_d.average(j, f, *args, which=which)
         else:
-            ode_d.average(j, f, args)
+            ode_d.average(j, f, args, which=which)
 
 
 if __name__ == '__main__':

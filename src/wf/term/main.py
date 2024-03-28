@@ -104,9 +104,7 @@ class _WeakFormulationTerm(Frozen):
     def _check_extra_info(self):
         """"""
         for indicator in self._extra_info:
-            if indicator == 'known-cross-product-form':
-                cross_product_lin = _global_operator_lin_repr_setting['cross_product']
-                assert cross_product_lin in self._f0._lin_repr or cross_product_lin in self._f1._lin_repr
+            if indicator == 'known-forms':
                 known_forms = self._extra_info[indicator]
                 if isinstance(known_forms, (list, tuple)):
                     pass
@@ -199,6 +197,8 @@ class _WeakFormulationTerm(Frozen):
         -------
 
         """
+        from src.form.main import Form
+
         if f == 'f0':
             assert by.__class__.__name__ == 'Form' and by.space == f.space, f"Spaces do not match."
             assert self._f0.space == by.space, f"spaces do not match."
@@ -209,13 +209,40 @@ class _WeakFormulationTerm(Frozen):
             assert self._f1.space == by.space, f"spaces do not match."
             return self.__class__(self._f0, by, factor=self._factor)
 
-        elif f.__class__.__name__ == 'Form':
+        elif f.__class__ is Form:
             assert f.space == by.space, f"spaces do not match."
             if which == 'all':
                 places = {
                     'f0': 'all',
                     'f1': 'all',
                 }
+            elif isinstance(which, (list, tuple)) and len(which) == 2:
+                # which can be like (0, 0), (1, 2) which refer to the first one in term f0, and
+                # the third one in f1.
+                # Or which = (0, [0, 2, 3]), it means the first, third, forth ones in f0.
+                wh0, wh1 = which
+                assert wh0 in (0, 1, 'f0', 'f1'), f"which={which} format wrong."
+                if wh0 == 0:
+                    wh0 = 'f0'
+                elif wh0 == 1:
+                    wh0 = 'f1'
+                else:
+                    pass
+                if isinstance(wh1, int):
+                    assert wh1 >= 0, f"which={which} format wrong."
+                    places = {
+                        wh0: [wh1],
+                    }
+                elif isinstance(wh1, (list, tuple)):
+                    for _ in wh1:
+                        assert isinstance(_, int) and _ >= 0, f"which={which} format wrong."
+                    places = {
+                        wh0: wh1,
+                    }
+
+                else:
+                    raise NotImplementedError()
+
             else:
                 raise NotImplementedError(f"which={which} is not implemented.")
 
@@ -229,7 +256,8 @@ class _WeakFormulationTerm(Frozen):
                 elif place == 'f1':
                     f1 = self._f1.replace(f, by, which=places['f1'])
                 else:
-                    raise NotImplementedError
+                    raise NotImplementedError()
+
             if change_sign:
                 sign = '-'
             else:
@@ -367,6 +395,7 @@ class DualityPairingTerm(_WeakFormulationTerm):
         s1 = f1.space
         if s0.__class__.__name__ == 'ScalarValuedFormSpace' and \
                 s1.__class__.__name__ == 'ScalarValuedFormSpace':
+            # print(self.extra_info)
             return _dp_simpler_pattern_examiner_scalar_valued_forms(factor, f0, f1, self.extra_info)
         else:
             raise NotImplementedError()

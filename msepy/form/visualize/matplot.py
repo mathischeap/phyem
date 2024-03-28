@@ -114,6 +114,7 @@ class MsePyRootFormVisualizeMatplot(Frozen):
             saveto=None,
             title=None,
             title_components=None,
+            levels=None,
             **kwargs
     ):
         """Plot a msepy scalar-valued 1-form on 2d manifold in 2d space.
@@ -139,6 +140,7 @@ class MsePyRootFormVisualizeMatplot(Frozen):
         saveto
         title
         title_components
+        levels
         kwargs
 
         Returns
@@ -165,26 +167,47 @@ class MsePyRootFormVisualizeMatplot(Frozen):
             if saveto is None:
                 saveto_x = None
                 saveto_y = None
-            else:
+            elif isinstance(saveto, str):
                 saveto0, saveto1 = saveto.split('.')
                 saveto_x = saveto0 + '_x' + '.' + saveto1
                 saveto_y = saveto0 + '_y' + '.' + saveto1
+            elif isinstance(saveto, (list, tuple)):
+                assert len(saveto) == 2, f"saveto={saveto} format wrong; it should be of 2 strings."
+                saveto_x, saveto_y = saveto
+                assert isinstance(saveto_x, str) and isinstance(saveto_y, str), \
+                    f"saveto={saveto} format wrong; it should be of 2 strings."
+            else:
+                raise Exception(f"saveto={saveto} format wrong.")
 
             if title_components is None:
                 title_x = '$x$-component'
                 title_y = '$y$-component'
+                if title is None:
+                    pass
+                else:
+                    title_x += ', ' + title
+                    title_y += ', ' + title
             else:
                 title_x, title_y = title_components
 
+            if levels is None:
+                levels_x = None
+                levels_y = None
+            elif isinstance(levels, (list, tuple)):
+                assert len(levels) == 2, f"levels={levels} format wrong; it should be of length 2."
+                levels_x, levels_y = levels
+            else:
+                raise Exception(f"levels={levels} format wrong.")
+
             if plot_type == 'contourf':
                 fig = [
-                    contourf(x, y, u, title=title_x, saveto=saveto_x, **kwargs),
-                    contourf(x, y, v, title=title_y, saveto=saveto_y, **kwargs)
+                    contourf(x, y, u, title=title_x, saveto=saveto_x, levels=levels_x, **kwargs),
+                    contourf(x, y, v, title=title_y, saveto=saveto_y, levels=levels_y, **kwargs)
                 ]
             elif plot_type == 'contour':
                 fig = [
-                    contour(x, y, u, title=title_x, saveto=saveto_x, **kwargs),
-                    contour(x, y, v, title=title_y, saveto=saveto_y, **kwargs)
+                    contour(x, y, u, title=title_x, saveto=saveto_x, levels=levels_x, **kwargs),
+                    contour(x, y, v, title=title_y, saveto=saveto_y, levels=levels_y, **kwargs)
                 ]
             else:
                 raise Exception()
@@ -195,7 +218,7 @@ class MsePyRootFormVisualizeMatplot(Frozen):
                 ur = u[region]
                 vr = v[region]
                 norm[region] = np.sqrt(ur**2 + vr**2)
-            fig = contour(x, y, norm, saveto=saveto, title=title, **kwargs)
+            fig = contour(x, y, norm, saveto=saveto, title=title, levels=levels, **kwargs)
 
         elif plot_type == "norm-contourf":
             norm = dict()
@@ -203,7 +226,7 @@ class MsePyRootFormVisualizeMatplot(Frozen):
                 ur = u[region]
                 vr = v[region]
                 norm[region] = np.sqrt(ur**2 + vr**2)
-            fig = contourf(x, y, norm, saveto=saveto, title=title, **kwargs)
+            fig = contourf(x, y, norm, saveto=saveto, title=title, levels=levels, **kwargs)
 
         elif plot_type == "magnitude-contour":
             norm = dict()
@@ -213,7 +236,7 @@ class MsePyRootFormVisualizeMatplot(Frozen):
                 _ = np.sqrt(ur**2 + vr**2)
                 _[_ < 1e-16] = 1e-16
                 norm[region] = np.log10(_)
-            fig = contour(x, y, norm, saveto=saveto, title=title, **kwargs)
+            fig = contour(x, y, norm, saveto=saveto, title=title, levels=levels, **kwargs)
 
         elif plot_type == "magnitude-contourf":
             norm = dict()
@@ -223,7 +246,7 @@ class MsePyRootFormVisualizeMatplot(Frozen):
                 _ = np.sqrt(ur**2 + vr**2)
                 _[_ < 1e-16] = 1e-16
                 norm[region] = np.log10(_)
-            fig = contourf(x, y, norm, saveto=saveto, title=title, **kwargs)
+            fig = contourf(x, y, norm, saveto=saveto, title=title, levels=levels, **kwargs)
 
         elif plot_type == "quiver":
             fig = self._quiver(x, y, u, v, saveto=saveto, title=title, **kwargs)

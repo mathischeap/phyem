@@ -1,11 +1,11 @@
 # -*- coding: utf-8 -*-
 """
 """
+from numpy import isnan
 from tools.frozen import Frozen
-from tools.functions.time_space._2d.wrappers.scalar import T2dScalar
 
 
-class MsePyRootFormNumericFunction(Frozen):
+class MsePyRootFormNumericTimeSpaceFunction(Frozen):
     """"""
 
     def __init__(self, rf):
@@ -13,11 +13,25 @@ class MsePyRootFormNumericFunction(Frozen):
         self._f = rf
         self._freeze()
 
-    def local_energy_with_time_shift(self, time_shift=True):
-        """"""
-        def ture_local_energy_computer(t, *xyz):
-            return self._local_energy_computer(t, *xyz, time_shift=time_shift)
-        return T2dScalar(ture_local_energy_computer)
+    def __call__(self):
+        """Return the form as a numerical function copy which takes (t, *xyz) as inputs. For example,
+        Suppose there are two scalar valued 1-forms, A and B,
+
+            a = A.numeric.function(None)
+            b = B.numeric.function(None)
+
+        We got `a` and `b` which are two vectors. Then we can do for example
+
+            c = a.dot(b)
+            d = a.cross_product(b)
+
+        and so on.
+        """
+        raise NotImplementedError()
+
+    def L2_energy(self, t, *xyz):
+        """0.5 * (u dot u) where u is the form, i.e. `self._f`. """
+        return self._local_energy_computer(t, *xyz)
 
     def _local_energy_computer(self, t, *xyz, time_shift=False):
         """Compute 0.5 * u.dot(u) where u is the form at coordinates *xyz and time t.
@@ -60,6 +74,8 @@ class MsePyRootFormNumericFunction(Frozen):
             u = itp0(*xyz)
             v = itp1(*xyz)
             energy = 0.5 * (u**2 + v**2)
+            energy[isnan(energy)] = 0
+
         else:
             raise NotImplementedError()
 

@@ -21,6 +21,14 @@ class MsePyMeshVisualize(Frozen):
         """"""
         return self.matplot(*args, **kwargs)
 
+    @property
+    def outlines(self):
+        """return arrays that descript the outlines (boundaries) of the domain."""
+
+        # idea: Use boundary_section, and product outlines of each boundary section,
+        # return a dict keys are boundary section `.abstract._sym_repr`
+        raise NotImplementedError()
+
     def _target(self, function, sampling_factor=1, **kwargs):
         """We plot the function on this mesh
 
@@ -37,7 +45,9 @@ class MsePyMeshVisualize(Frozen):
         -------
 
         """
-        return MsePyMeshVisualizeTarget(self._mesh)(function, sampling_factor=sampling_factor, **kwargs)
+        return MsePyMeshVisualizeTarget(self._mesh)(
+            function, sampling_factor=sampling_factor, **kwargs
+        )
 
     @property
     def matplot(self):

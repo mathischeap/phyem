@@ -2,7 +2,9 @@
 """
 Algebraic Proxy.
 """
+import src.spaces.main as space_main
 from src.spaces.main import *
+from src.spaces.main import _sep
 from src.config import _form_evaluate_at_repr_setting
 from src.spaces.main import _default_space_degree_repr
 from src.spaces.main import _degree_str_maker
@@ -11,13 +13,28 @@ from src.algebra.nonlinear_operator import AbstractNonlinearOperator
 from src.spaces.operators import d
 
 
+# check that all lin_signature are different.
+lin_list = list()
+for _var_setting_ in space_main.__all__:
+    var_setting = getattr(space_main, _var_setting_)
+    lin = var_setting[1]
+    lin = lin.split(_sep)[0]
+    assert lin not in lin_list, f"{lin} is used as indicator for other pattern."
+    lin_list.append(lin)
+del lin_list
+
+
 __all__ = [
-    '_VarPar_M',
+    '_VarPar_M',    # mass matrix
+    '_VarPar_dp',   # <A|B> matrix
     '_VarPar_E',
 
     '_VarPar_P',
+    "_VarPar_H",   # Hodge matrix
 
     '_VarPar_boundary_dp_vector',
+
+    '_VarPar_astA_convect_astB_ip_tC',  # (*A .V *B, C)
 
     '_VarPar_astA_x_astB_ip_tC',
     '_VarPar_astA_x_B_ip_tC',
@@ -25,8 +42,11 @@ __all__ = [
     '_VarPar_A_x_B_ip_C',           # nonlinear
 
     '_VarPar_astA_x_astB_dp_tC',    # <A x B | C>
+    '_VarPar_astA_x_B_dp_tC',
+    '_VarPar_A_x_astB_dp_tC',
 
-    '_VarPar_astA_x_astB__ip__astC_x_tD',  # vector (A x B, C x D), ABC known, D test
+    '_VarPar_astA_x_astB__ip__astC_x_tD',  # vector (*A x *B, *C x D), ABC known, D test
+    '_VarPar_A_x_astB__ip__astC_x_tD',     # vector (A x *B, *C x D), BC known, D test
 
     '_VarPar_astA_x_astB__dp__astC_x_tD',  # vector <A x B | C x D>, ABC known, D test
 
@@ -78,6 +98,34 @@ def _VarPar_M(s0, s1, d0, d1):
         raise NotImplementedError()
 
 
+def _VarPar_dp(A, B):
+    """Give a Wedge matrix W, <A | B> = vec(A) W vec(B).
+    """
+    sym, lin = _VarSetting_dp_matrix[:2]
+    s0 = A.space
+    d0 = A._degree
+
+    s1 = B.space
+    d1 = B._degree
+
+    str_d0 = _degree_str_maker(d0)
+    str_d1 = _degree_str_maker(d1)
+
+    lin = lin.replace('{s0}', str(s0._pure_lin_repr))
+    lin = lin.replace('{s1}', str(s1._pure_lin_repr))
+
+    lin = lin.replace('{d0}', str_d0)
+    lin = lin.replace('{d1}', str_d1)
+
+    sym += r"^{\left(" + f"{s0.k}, {s1.k}" + r"\right)}"
+    return _root_array(
+        sym, lin, (
+            s0._sym_repr + _default_space_degree_repr + str_d0,
+            s1._sym_repr + _default_space_degree_repr + str_d1
+        ), symmetric=False,
+    )
+
+
 def _VarPar_E(f_or_space_degree, transpose=False):
     """"""
     from src.form.main import Form
@@ -127,13 +175,37 @@ def _VarPar_P(from_space__and__to_space, from_degree__and__to_degree, transpose=
     fr_shape = fs._sym_repr + _default_space_degree_repr + fd
     to_shape = ts._sym_repr + _default_space_degree_repr + td
 
-    sym, lin = _VarSetting_pi_matrix
+    sym, lin = _VarSetting_pi_matrix[:2]
     lin = lin.replace('{space_pure_lin_repr_from}', str(fs._pure_lin_repr))
     lin = lin.replace('{space_pure_lin_repr_to}', str(ts._pure_lin_repr))
     lin = lin.replace('{d_from}', str(fd))
     lin = lin.replace('{d_to}', str(td))
     sym += r"_{" + ts._sym_repr + r'\leftarrow' + fs._sym_repr + r"}"
     shape = (to_shape, fr_shape)
+    P = _root_array(sym, lin, shape)
+    if transpose:
+        P = P.T
+    else:
+        pass
+    return P
+
+
+def _VarPar_H(from_space, from_degree, to_space, to_degree, transpose=False):
+    """Hodge matrix; star."""
+    from_degree = _degree_str_maker(from_degree)
+    to_degree = _degree_str_maker(to_degree)
+    from_shape = from_space._sym_repr + _default_space_degree_repr + from_degree
+    to_shape = to_space._sym_repr + _default_space_degree_repr + to_degree
+
+    sym, lin = _VarSetting_star_matrix[:2]
+    lin = lin.replace('{space_pure_lin_repr_from}', str(from_space._pure_lin_repr))
+    lin = lin.replace('{space_pure_lin_repr_to}', str(to_space._pure_lin_repr))
+    lin = lin.replace('{d_from}', str(from_degree))
+    lin = lin.replace('{d_to}', str(to_degree))
+
+    sym += r"_{" + to_space._sym_repr + r'\leftarrow' + from_space._sym_repr + r"}"
+
+    shape = (to_shape, from_shape)
     P = _root_array(sym, lin, shape)
     if transpose:
         P = P.T
@@ -180,13 +252,39 @@ def _VarPar_boundary_dp_vector(rf0, f1):
     return ra
 
 
-# (w x u, u) --------------------------------------------------------------------------------------
+# (A .V B, C) -------------------------------------------------------------------------------------
+def _VarPar_astA_convect_astB_ip_tC(gA, gB, tC):
+    """(*A .V *B, C)"""
+    sym, lin = _VarSetting_astA_convect_astB_ip_tC[:2]
+
+    sym = sym.replace(r'{A}', gA._sym_repr)
+    sym = sym.replace(r'{B}', gB._sym_repr)
+    sym = sym.replace(r'{C}', tC._sym_repr)
+
+    lin = lin.replace('{A}', gA._pure_lin_repr)
+    lin = lin.replace('{B}', gB._pure_lin_repr)
+    lin = lin.replace('{C}', tC._pure_lin_repr)
+
+    s0 = tC.space
+    d0 = tC._degree
+    str_d0 = _degree_str_maker(d0)
+
+    shape0 = s0._sym_repr + _default_space_degree_repr + str_d0
+
+    shape = (shape0, 1)
+    ra = _root_array(sym, lin, shape)
+    return ra
+
+
+# (w x u, v) --------------------------------------------------------------------------------------
 
 def _VarPar_astA_x_astB_ip_tC(gA, gB, tC):
-    """"""
+    """(*w x *u, @v)"""
     sym, lin = _VarSetting_astA_x_astB_ip_tC[:2]
 
-    sym += r"_{(" + gA._sym_repr + ',' + gB._sym_repr + r")}"
+    sym = sym.replace(r'{A}', gA._sym_repr)
+    sym = sym.replace(r'{B}', gB._sym_repr)
+
     lin = lin.replace('{A}', gA._pure_lin_repr)
     lin = lin.replace('{B}', gB._pure_lin_repr)
     lin = lin.replace('{C}', tC._pure_lin_repr)
@@ -203,10 +301,10 @@ def _VarPar_astA_x_astB_ip_tC(gA, gB, tC):
 
 
 def _VarPar_astA_x_B_ip_tC(gA, B, tC):
-    """<A x B, C> where A is given (ast). and C is the test form."""
+    """<*A x B, @C> where A is given (ast). and C is the test form."""
     sym, lin = _VarSetting_astA_x_B_ip_tC[:2]
+    sym = sym.replace(r'{A}', gA._sym_repr)
 
-    sym += r"_{" + gA._sym_repr + r"}"
     lin = lin.replace('{A}', gA._pure_lin_repr)
     lin = lin.replace('{B}', B._pure_lin_repr)
     lin = lin.replace('{C}', tC._pure_lin_repr)
@@ -227,7 +325,7 @@ def _VarPar_astA_x_B_ip_tC(gA, B, tC):
 
 
 def _VarPar_A_x_astB_ip_tC(A, gB, tC):
-    """"""
+    """<A x *B, @C>"""
     sym, lin = _VarSetting_A_x_astB_ip_tC[:2]
 
     sym += r"_{" + gB._sym_repr + r"}"
@@ -265,10 +363,12 @@ def _VarPar_A_x_B_ip_C(A, B, C):
 
 # ------- <A x B | C> ------------------------------------------------------------------------------
 def _VarPar_astA_x_astB_dp_tC(gA, gB, tC):
-    """"""
+    """<*A x *B | @C>"""
     sym, lin = _VarSetting_astA_x_astB__dp__tC[:2]
 
-    sym += r"_{(" + gA._sym_repr + ',' + gB._sym_repr + r")}"
+    sym = sym.replace('{A}', gA._sym_repr)
+    sym = sym.replace('{B}', gB._sym_repr)
+
     lin = lin.replace('{A}', gA._pure_lin_repr)
     lin = lin.replace('{B}', gB._pure_lin_repr)
     lin = lin.replace('{C}', tC._pure_lin_repr)
@@ -284,13 +384,68 @@ def _VarPar_astA_x_astB_dp_tC(gA, gB, tC):
     return ra
 
 
+def _VarPar_astA_x_B_dp_tC(gA, B, tC):
+    """<*A x B | @C>"""
+    sym, lin = _VarSetting_astA_x_B__dp__tC[:2]
+    sym = sym.replace('{A}', gA._sym_repr)
+
+    lin = lin.replace('{A}', gA._pure_lin_repr)
+    lin = lin.replace('{B}', B._pure_lin_repr)
+    lin = lin.replace('{C}', tC._pure_lin_repr)
+
+    s0 = tC.space
+    d0 = tC._degree
+
+    s1 = B.space
+    d1 = B._degree
+
+    str_d0 = _degree_str_maker(d0)
+    str_d1 = _degree_str_maker(d1)
+
+    shape0 = s0._sym_repr + _default_space_degree_repr + str_d0
+    shape1 = s1._sym_repr + _default_space_degree_repr + str_d1
+
+    shape = (shape0, shape1)
+    ra = _root_array(sym, lin, shape)
+    return ra
+
+
+def _VarPar_A_x_astB_dp_tC(A, gB, tC):
+    """<A x *B | @C>"""
+    sym, lin = _VarSetting_A_x_astB__dp__tC[:2]
+    sym = sym.replace('{B}', gB._sym_repr)
+
+    lin = lin.replace('{A}', A._pure_lin_repr)
+    lin = lin.replace('{B}', gB._pure_lin_repr)
+    lin = lin.replace('{C}', tC._pure_lin_repr)
+
+    s0 = tC.space
+    d0 = tC._degree
+
+    s1 = A.space
+    d1 = A._degree
+
+    str_d0 = _degree_str_maker(d0)
+    str_d1 = _degree_str_maker(d1)
+
+    shape0 = s0._sym_repr + _default_space_degree_repr + str_d0
+    shape1 = s1._sym_repr + _default_space_degree_repr + str_d1
+
+    shape = (shape0, shape1)
+    ra = _root_array(sym, lin, shape)
+    return ra
+
+
 # ------ (A x B, C x D) ----------------------------------------------------------------------------
 
 def _VarPar_astA_x_astB__ip__astC_x_tD(gA, gB, gC, tD):
-    """"""
+    """(*A x *B, *C x @D)"""
     sym, lin = _VarSetting_astA_x_astB__ip__astC_x_tD[:2]
 
-    sym += r"_{\left(" + gA._sym_repr + ',' + gB._sym_repr + ',' + gC._sym_repr + r"\right)}"
+    sym = sym.replace('{A}', gA._sym_repr)
+    sym = sym.replace('{B}', gB._sym_repr)
+    sym = sym.replace('{C}', gC._sym_repr)
+
     lin = lin.replace('{A}', gA._pure_lin_repr)
     lin = lin.replace('{B}', gB._pure_lin_repr)
     lin = lin.replace('{C}', gC._pure_lin_repr)
@@ -306,12 +461,45 @@ def _VarPar_astA_x_astB__ip__astC_x_tD(gA, gB, gC, tD):
     ra = _root_array(sym, lin, shape)
     return ra
 
+
+def _VarPar_A_x_astB__ip__astC_x_tD(A, gB, gC, tD):
+    """(A x *B, *C x @D)"""
+    sym, lin = _VarSetting_A_x_astB__ip__astC_x_tD[:2]
+
+    sym = sym.replace('{B}', gB._sym_repr)
+    sym = sym.replace('{C}', gC._sym_repr)
+
+    lin = lin.replace('{A}', A._pure_lin_repr)
+    lin = lin.replace('{B}', gB._pure_lin_repr)
+    lin = lin.replace('{C}', gC._pure_lin_repr)
+    lin = lin.replace('{D}', tD._pure_lin_repr)
+
+    s0 = tD.space
+    d0 = tD._degree
+    str_d0 = _degree_str_maker(d0)
+    s1 = A.space
+    d1 = A._degree
+    str_d1 = _degree_str_maker(d1)
+
+    shape0 = s0._sym_repr + _default_space_degree_repr + str_d0
+    shape1 = s1._sym_repr + _default_space_degree_repr + str_d1
+
+    shape = (shape0, shape1)
+    ra = _root_array(sym, lin, shape)
+    return ra
+
+
 # ----- <A x B | C x D> ----------------------------------------------------------------------------
 def _VarPar_astA_x_astB__dp__astC_x_tD(gA, gB, gC, tD):
-    """"""
+    """<*A x *B | *C x D> """
     sym, lin = _VarSetting_astA_x_astB__dp__astC_x_tD[:2]
 
-    sym += r"_{\left(" + gA._sym_repr + ',' + gB._sym_repr + ',' + gC._sym_repr + r"\right)}"
+    # sym += r"_{\left(" + gA._sym_repr + ',' + gB._sym_repr + ',' + gC._sym_repr + r"\right)}"
+
+    sym = sym.replace('{A}', gA._sym_repr)
+    sym = sym.replace('{B}', gB._sym_repr)
+    sym = sym.replace('{C}', gC._sym_repr)
+
     lin = lin.replace('{A}', gA._pure_lin_repr)
     lin = lin.replace('{B}', gB._pure_lin_repr)
     lin = lin.replace('{C}', gC._pure_lin_repr)

@@ -122,6 +122,7 @@ matplotlib.use('TkAgg')
 from src.config import _global_lin_repr_setting
 from src.config import _parse_lin_repr
 from src.form.operators import wedge, time_derivative, d, codifferential, cross_product, tensor_product
+from src.form.operators import convect
 from src.form.operators import _project_to
 from src.config import _check_sym_repr
 from src.form.parameters import constant_scalar
@@ -357,6 +358,10 @@ class Form(Frozen):
         r"""The exterior derivative, :math:`\mathrm{d}`, of this form."""
         return d(self)
 
+    def d(self):
+        r""""""
+        return self.exterior_derivative()
+
     def codifferential(self):
         r"""The codifferential, :math:`\mathrm{d}^\ast`, of this form."""
         return codifferential(self)
@@ -364,6 +369,10 @@ class Form(Frozen):
     def cross_product(self, other):
         r"""The cross product, :math:`\times`, between this form and another form."""
         return cross_product(self, other)
+
+    def convect(self, other):
+        """Let self be u, other be w, we compute u dot(grad(w))."""
+        return convect(self, other)
 
     def tensor_product(self, other):
         """"""
@@ -556,8 +565,51 @@ class Form(Frozen):
             if which == 'all':
                 lin_repr = self._lin_repr.replace(f._lin_repr, by._lin_repr)
                 sym_repr = self._sym_repr.replace(f._sym_repr, by._sym_repr)
+
+            elif isinstance(which, (list, tuple)) and all([isinstance(_, int) and _ >= 0 for _ in which]):
+                # use 1, or [0,1] to indicate which targets to be replaced.
+                lin_list = self._lin_repr.split(f._lin_repr)
+                sym_list = self._sym_repr.split(f._sym_repr)
+                assert len(lin_list) == len(sym_list), f'must be!'
+
+                if len(lin_list) == 1:  # no replace target found!
+                    raise Exception('found no target to replace.')
+                else:
+                    pass
+                amount_places = len(lin_list) - 1
+                to_join_lin = ['' for _ in range(amount_places)]
+                to_join_sym = ['' for _ in range(amount_places)]
+                for i in which:
+                    assert i < amount_places, (f"cannot deal with `which={which}` for form replace, "
+                                               f"not that many targets.)")
+                    to_join_lin[i] = by._lin_repr
+                    to_join_sym[i] = by._sym_repr
+
+                for i, s in enumerate(to_join_lin):
+                    if s == '':
+                        to_join_lin[i] = f._lin_repr
+                    else:
+                        pass
+
+                for i, s in enumerate(to_join_sym):
+                    if s == '':
+                        to_join_sym[i] = f._sym_repr
+                    else:
+                        pass
+
+                final_lin_repr = ''
+                final_sym_repr = ''
+                for i in range(amount_places):
+                    final_lin_repr += lin_list[i] + to_join_lin[i]
+                    final_sym_repr += sym_list[i] + to_join_sym[i]
+                final_lin_repr += lin_list[-1]
+                final_sym_repr += sym_list[-1]
+
+                sym_repr = final_sym_repr
+                lin_repr = final_lin_repr
+
             else:
-                raise NotImplementedError()
+                raise NotImplementedError(f"cannot deal with `which={which}` for form replace.)")
 
             return Form(
                 self.space,

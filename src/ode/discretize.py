@@ -77,7 +77,7 @@ class OrdinaryDifferentialEquationDiscretize(Frozen):
         else:
             raise NotImplementedError()
 
-    def average(self, index, f, time_instants):
+    def average(self, index, f, time_instants, which='all'):
         """Use average at time instants `time_instants` for form `f` in term indexed `index`.
         """
         f_ = list()
@@ -104,16 +104,18 @@ class OrdinaryDifferentialEquationDiscretize(Frozen):
             f_ = sum_f / num
 
         if index not in self._eq_terms:
+
             term = self._ode[index][1]
-            new_term, new_sign = term.replace(f, f_)
+            new_term, new_sign = term.replace(f, f_, which=which)
             self._eq_terms[index] = [(new_term, new_sign), ]
+
         else:
             term_sign = self._eq_terms[index]
             if len(term_sign) == 1:
 
                 term, old_sign = term_sign[0]
 
-                new_term, new_sign = term.replace(f, f_)
+                new_term, new_sign = term.replace(f, f_, which=which)
 
                 if old_sign == new_sign:
                     sign = '+'

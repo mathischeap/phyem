@@ -1,10 +1,7 @@
 # -*- coding: utf-8 -*-
-r"""A *phyem* implementation of the backward facing step flow.
-
-By `Yi Zhang <https://mathischeap.com/>`_.
-
+r"""
+python tests/msepy/MEEVC2/flow_around_cylinder.py
 """
-# python tests/msepy/MEEVC2/backward_facing_step.py
 
 import sys
 
@@ -21,12 +18,14 @@ ph.config.set_high_accuracy(True)
 ph.config.set_pr_cache(True)
 
 N = 3
-element_layout = [24, 8]
 
-# t_max = 1
-# steps = 200
+Re = 200
+t_max = 5
+steps_per_second = 200
+
+steps = t_max * steps_per_second
+
 t0 = 0
-Re = 800
 
 manifold = ph.manifold(2, is_periodic=False)
 mesh = ph.mesh(manifold)
@@ -163,27 +162,26 @@ nls.pr()
 msepy, obj = ph.fem.apply('msepy', locals())
 manifold = obj['manifold']
 msepy.config(manifold)(
-    'backward_step',
+    'cylinder_channel', r=0.15, dl=1, dr=5, h=1,
 )
-
 boundary_perp = msepy.base['manifolds'][r"\Gamma_{\perp}"]
 boundary_P = msepy.base['manifolds'][r"\Gamma_P"]
 
 msepy.config(boundary_perp)(
-    manifold,
-    {
+    manifold, {
         0: [1, 0, 1, 0],
-        1: [0, 0, 0, 1],
-        2: [1, 0, 1, 1],
+        1: [0, 0, 1, 1],
+        2: [0, 0, 1, 0],
+        3: [1, 1, 0, 0],
+        4: [1, 0, 0, 0],
+        5: [1, 0, 0, 1],
+        6: [0, 0, 1, 1],
+        7: [0, 0, 0, 1],
     }
 )
 
 _mesh = obj['mesh']
-msepy.config(_mesh)({
-    0: element_layout,
-    1: element_layout,
-    2: element_layout,
-})
+msepy.config(_mesh)(3)
 
 for msh in msepy.base['meshes']:
     msh = msepy.base['meshes'][msh]
@@ -212,31 +210,7 @@ w[0].reduce()
 u[0].reduce()
 
 
-# ts.specify('constant', [0, t_max, steps*2], 2)
-
-_ = {
-    'big_step': True
-}
-
-
-def time_step_function():
-    """"""
-    u_norm_residual = u.norm_residual()
-
-    if _['big_step']:
-
-        if u_norm_residual < 1e-6:
-            _['big_step'] = False
-        else:
-            pass
-
-    if _['big_step']:
-        return 1/1000
-    else:
-        return 1/2000
-
-
-ts.specify('function', t0, time_step_function)
+ts.specify('constant', [0, t_max, steps*2], 2)
 
 
 # noinspection PyUnusedLocal
@@ -256,7 +230,7 @@ def bc_u(t, x, y):
     """"""
     return ph.tools.genpiecewise(
         [x, y],
-        [x < 0.1, x >= 0.1],
+        [x < - 0.5, x >= -0.5],
         [bc_u0, bc_u1]
     )
 
@@ -268,7 +242,7 @@ def bc_v(t, x, y):
 
 
 bc_velocity = ph.vc.vector(bc_u, bc_v)
-results_dir = './__phcache__/backward_facing_step/'
+results_dir = './__phcache__/flow_around_cylinder/'
 
 import os
 if os.path.isdir(results_dir):
@@ -280,26 +254,27 @@ else:
 nls = obj['nls'].apply()
 nls.bc.config(boundary_perp)(bc_velocity)  # essential
 
+# bc_P = init_vorticity
 bc_P = u.numeric.tsp.L2_energy()
 nls.bc.config(boundary_P)(bc_P)  # essential
 
 
-for step in range(1, 10000):
+for step in range(1, steps+1):
 
     s_nls = nls(k=step)
     # s_nls.customize.set_no_evaluation(-1)  # no need to do this since we have pressure boundary now.
-    s_nls.solve([u, w, P], atol=1e-10)
+    s_nls.solve([u, w, P])
 
-    u[None].visualize(
-        plot_type='quiver',
-        saveto=results_dir+f'u_{int(step)}.png'
-    )
+    # u[None].visualize(
+    #     plot_type='quiver',
+    #     saveto=results_dir+f'u_{int(step)}.png'
+    # )
 
-    P[None].visualize(
-        plot_type='contourf',
-        num_levels=50,
-        saveto=results_dir+f'P_{int(step)}.png'
-    )
+    # P[None].visualize(
+    #     plot_type='contourf',
+    #     num_levels=50,
+    #     saveto=results_dir+f'P_{int(step)}.png'
+    # )
 
     w[None].visualize(
         plot_type='contourf',

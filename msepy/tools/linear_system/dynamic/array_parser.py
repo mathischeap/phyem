@@ -43,6 +43,7 @@ def msepy_root_array_parser(dls, array_lin_repr):
     array_lin_repr = array_lin_repr[_len_front:-_len_back]
 
     if array_lin_repr[-_len_rf_ap_lin_repr:] == _root_form_ap_lin_repr:
+
         assert transpose is False, 'should be this case.'
         # we are parsing a vector representing a root form.
         root_form_vec_lin_repr = array_lin_repr[:-_len_rf_ap_lin_repr]
@@ -61,6 +62,10 @@ def msepy_root_array_parser(dls, array_lin_repr):
             A, _ti = Parse__M_matrix(*info_indicators)
 
         elif type_indicator == _find_indicator(
+                _VarSetting_dp_matrix):
+            A, _ti = Parse__dp_matrix(*info_indicators)
+
+        elif type_indicator == _find_indicator(
                 _VarSetting_d_matrix):
             A, _ti = Parse__E_matrix(*info_indicators)
 
@@ -73,10 +78,19 @@ def msepy_root_array_parser(dls, array_lin_repr):
                 _VarSetting_pi_matrix):
             A, _ti = Parse__pi_matrix(*info_indicators)
 
+        elif type_indicator == _find_indicator(
+                _VarSetting_star_matrix):
+            A, _ti = Parse__star_matrix(*info_indicators)
+
         # natural bc vector =================================================
         elif type_indicator == _find_indicator(
                 _VarSetting_boundary_dp_vector):
             A, _ti = Parse__trStar_rf0_dp_tr_s1_vector(dls, *info_indicators)
+
+        # === (A .V B, C) ===================================================
+        elif type_indicator == _find_indicator(
+                _VarSetting_astA_convect_astB_ip_tC):
+            A, _ti = Parse__astA_convect_astB_ip_tC(*info_indicators)
 
         # (w x u, v) ========================================================
         elif type_indicator == _find_indicator(
@@ -90,6 +104,33 @@ def msepy_root_array_parser(dls, array_lin_repr):
         elif type_indicator == _find_indicator(
                 _VarSetting_A_x_astB_ip_tC):
             A, _ti = Parse__A_x_astB_ip_tC(*info_indicators)
+
+        # <A x B | C> ========================================================
+        elif type_indicator == _find_indicator(
+                _VarSetting_astA_x_astB__dp__tC):
+            A, _ti = Parse__astA_x_astB__dp__tC(*info_indicators)
+
+        elif type_indicator == _find_indicator(
+                _VarSetting_astA_x_B__dp__tC):
+            A, _ti = Parse__astA_x_B__dp__tC(*info_indicators)
+
+        elif type_indicator == _find_indicator(
+                _VarSetting_A_x_astB__dp__tC):
+            A, _ti = Parse__A_x_astB__dp__tC(*info_indicators)
+
+        # ============ (A x B, C x D) ========================================
+        elif type_indicator == _find_indicator(        # (*A x *B, *C x D)
+                _VarSetting_astA_x_astB__ip__astC_x_tD):
+            A, _ti = Parse__astA_x_astB__ip__astC_x_tD(*info_indicators)
+
+        elif type_indicator == _find_indicator(
+                _VarSetting_A_x_astB__ip__astC_x_tD):   # (A x *B, *C x D)
+            A, _ti = Parse__A_x_astB__ip__astC_x_tD(*info_indicators)
+
+        # ============ <A x B | C x D> ========================================
+        elif type_indicator == _find_indicator(
+                _VarSetting_astA_x_astB__dp__astC_x_tD):
+            A, _ti = Parse__astA_x_astB__dp__astC_x_tD(*info_indicators)
 
         # (dA, B otimes C) ===================================================
         elif type_indicator == _find_indicator(

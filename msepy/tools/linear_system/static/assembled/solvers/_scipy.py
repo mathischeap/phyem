@@ -21,7 +21,7 @@ class _PackageScipy(Frozen):
             pass
 
         t_start = time()
-        # -----------------------------------------------------------------
+        # ------------------------------------------------------------------
         x = spspalinalg.spsolve(A._M, b._v)
         # ==================================================================
         t_cost = time() - t_start
@@ -37,7 +37,7 @@ class _PackageScipy(Frozen):
     def lsqr(A, b, x0, **kwargs):
         """Compute least-squares solution to equation Ax = b.
 
-        Compute a vector x such that the 2-norm |b - A x| is minimized.
+        Compute a vector x such that the 2-norm |b - Ax| is minimized.
         """
         t_start = time()
         # -----------------------------------------------------------------
@@ -94,7 +94,7 @@ class _PackageScipy(Frozen):
                     parameters[key] = preconditioner_parameters[key]
                 else:
                     pass
-            # --- below we make the preconditioner --------
+            # --- below we make the preconditioner --------------------------------------------
             if preconditioner_name == 'spilu':
                 ILU_fact = spspalinalg.spilu(A, **parameters)
                 # noinspection PyArgumentList
@@ -106,8 +106,9 @@ class _PackageScipy(Frozen):
 
             else:
                 raise NotImplementedError(f"cannot make preconditioner {preconditioner_name}.")
+            # =================================================================================
 
-    def gmres(self, A, b, x0, preconditioner=True, **kwargs):
+    def gmres(self, A, b, x0, preconditioner=None, **kwargs):
         """
 
         Parameters
@@ -131,10 +132,10 @@ class _PackageScipy(Frozen):
         """
         t_start = time()
 
-        # ----------------------------------------------------------------------------
+        # ------------------------------------------------------------
         A = A._M
         b = b._v
-        # ============================================================================
+        # ============================================================
 
         preconditioner = self._parse_preconditioner(A, preconditioner)
 
@@ -159,14 +160,14 @@ class _PackageScipy(Frozen):
         }
         return x, message, info
 
-    def lgmres(self, A, b, x0, preconditioner=True, **kwargs):
+    def lgmres(self, A, b, x0, preconditioner=False, **kwargs):
         """"""
         t_start = time()
 
-        # ----------------------------------------------------------------------------
+        # ------------------------------------------------------------
         A = A._M
         b = b._v
-        # ============================================================================
+        # ============================================================
 
         preconditioner = self._parse_preconditioner(A, preconditioner)
 

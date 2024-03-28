@@ -109,6 +109,8 @@ class WfDerive(Frozen):
                     f"rearrangement can only be represent by str or None, {i}th rearrangement = {rag} is illegal."
                 rag_dict[i] = rag
             rearrangement = rag_dict
+        else:
+            raise Exception(f"Rearrangement indicator format wrong.")
 
         term_dict = dict()
         sign_dict = dict()
@@ -126,6 +128,10 @@ class WfDerive(Frozen):
 
             else:
                 assert isinstance(ri, str), "Use str to represent a rearrangement pls."
+                if '=' not in ri:
+                    ri += '='
+                else:
+                    pass
 
                 # noinspection PyUnresolvedReferences
                 left_terms, right_terms = ri.replace(' ', '').split('=')
@@ -140,22 +146,45 @@ class WfDerive(Frozen):
                 left_terms = left_terms.split(',')
                 right_terms = right_terms.split(',')
 
+                number_terms = len(self._wf._term_dict[i][0]) + len(self._wf._term_dict[i][1])
+
+                if right_terms == [''] and len(left_terms) < number_terms:  # move all rest terms to right
+                    right_terms = list()
+                    for m in range(number_terms):
+                        if str(m) not in left_terms:
+                            right_terms.append(str(m))
+                        else:
+                            pass
+                elif left_terms == [''] and len(right_terms) < number_terms:  # move all rest terms to left
+                    left_terms = list()
+                    for m in range(number_terms):
+                        if str(m) not in right_terms:
+                            left_terms.append(str(m))
+                        else:
+                            pass
+                else:
+                    pass
+
                 _ = list()
-                if left_terms != ['', ]:
+                if left_terms != ['']:
                     _.extend(left_terms)
                 else:
                     left_terms = 0
-                if right_terms != ['', ]:
+                if right_terms != ['']:
                     _.extend(right_terms)
                 else:
                     right_terms = 0
+
                 _ = [int(__) for __ in _]
+                for _i_ in _:
+                    assert _i_ in range(number_terms), \
+                        f"touching wrong index: {_i_} for equation #{i} whose valid terms ranged({number_terms})."
+
                 _.sort()
                 _ = [str(__) for __ in _]
 
-                number_terms = len(self._wf._term_dict[i][0]) + len(self._wf._term_dict[i][1])
                 assert _ == [str(j) for j in range(number_terms)], \
-                    f'indices of rearrangement for {i}th equation: {ri} are wrong. {_}'
+                    f'indices of rearrangement for {i}th equation: {ri} are wrong.'
 
                 if left_terms == 0:
                     pass

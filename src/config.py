@@ -57,6 +57,7 @@ _setting = {
     "pr_cache_folder_prefix": 'Pr_',  # we cache where in particular?
     "pr_cache_current_folder": 'current',  # we cache where in particular?
     "high_accuracy": True,  # influence sparsity of some matrices.
+    "auto_cleaning": True,  # automatic memory saving
 }
 
 
@@ -112,6 +113,27 @@ def set_pr_cache(_bool):
     """
     assert isinstance(_bool, bool), f"give me True or False"
     _setting['pr_cache'] = _bool
+
+
+def set_auto_cleaning(_bool_or_factor):
+    """
+
+    Parameters
+    ----------
+    _bool_or_factor
+
+    Returns
+    -------
+
+    """
+    if isinstance(_bool_or_factor, bool):
+        pass
+    elif isinstance(_bool_or_factor, (int, float)):
+        _bool_or_factor = int(_bool_or_factor)
+        assert _bool_or_factor >= 2, f"must set clean factor >= 2."
+    else:
+        raise Exception(f"clean factor to be a bool or a positive integer.")
+    _setting['auto_cleaning'] = _bool_or_factor
 
 
 def _pr_cache(fig, filename=None):
@@ -371,6 +393,7 @@ _global_operator_lin_repr_setting = {  # coded operators
     'multiply': r' \emph{multiply} ',
 
     'cross_product': r"$\times$",
+    'convect': r"$\cdot\nabla$",
     'tensor_product': r"$\otimes$",
 
     'projection': r'$\pi$ '
@@ -393,6 +416,7 @@ _global_operator_sym_repr_setting = {  # coded operators
 
     'cross_product': r"{\times}",
     'tensor_product': r"{\otimes}",
+    'convect': r"{\cdot\nabla}",
 
     'projection': r'{\pi}'
 }
@@ -405,6 +429,7 @@ _wf_term_default_simple_patterns = {   # use only str to represent a simple patt
 
     # below, we have simple patterns only for root-sf.
     '(rt,rt)': '(rf, rf)',
+    '<|>': r"$\left<\left. \mathrm{rf} \right| \mathrm{rf} \right>$",              # <A|B>
     '(d,)': '(d rf, rf)',
     '<d,>': '<d rf, dual-rf>',
     '(,d)': '(rf, d rf)',
@@ -412,12 +437,19 @@ _wf_term_default_simple_patterns = {   # use only str to represent a simple patt
 
     '(d,d)': '(d rf, d rf)',
 
+    '(d(*A),B)': r"$\left(\mathrm{d}\left(\star A\right),B\right)$",
+
     '(<db>,d<b>)': '(root-diagonal-bf, d root-bf)',
 
     '<tr star | tr >': '<tr star rf | trace rf>',
 
-    '<AxB|C>': r'$\left<\left.\mathrm{rf} \times \mathrm{rf} \right| \mathrm{rf}\right>$',  # nonlinear term. <AxB|C>
-    '<*x*|C>': r'$\left<\left.\mathrm{krf} \times \mathrm{krf} \right| \mathrm{rf}\right>$',  # nonlinear term. <AxB|C>
+    '<*x*|C>': r'$\left<\left.\mathrm{krf} \times \mathrm{krf} \right| \mathrm{rf}\right>$',
+    '<Ax*|C>': r'$\left<\left.\mathrm{rf} \times \mathrm{krf} \right| \mathrm{rf}\right>$',
+    '<*xB|C>': r'$\left<\left.\mathrm{krf} \times \mathrm{rf} \right| \mathrm{rf}\right>$',
+
+    '<*x*|d(C)>': r'$\left<\left.\mathrm{krf} \times \mathrm{krf} \right| \mathrm{d}(\mathrm{rf})\right>$',
+
+    '(* .V *, C)': r"$\left(\mathrm{krf} \cdot\nabla \mathrm{krf}, \mathrm{rf}\right)$",
 
     '<AxB|CxD>': r"$\left<\left.\mathrm{rf} \times \mathrm{rf} \right| \mathrm{rf} \times \mathrm{rf}\right>$",
     '<*x*|*xD>': r"$\left<\left.\mathrm{krf} \times \mathrm{krf} \right| \mathrm{krf} \times \mathrm{rf}\right>$",
@@ -428,7 +460,8 @@ _wf_term_default_simple_patterns = {   # use only str to represent a simple patt
     '(*x,)': r'(krf $\times$ rf, rf)',
     '(x*,)': r'(rf $\times$ krf, rf)',
 
-    '(*x*,*x)': r"(krf $\times$ krf, krf $\times$ rf)",  # vector , (A x B, C x D)
+    '(*x*,*x)': r"(krf $\times$ krf, krf $\times$ rf)",  # vector , (*A x *B, *C x D)
+    '(x*,*x)': r"(rf $\times$ krf, krf $\times$ rf)",    # matrix , (A x *B, *C x D)
 
     '(*x,d)': r"(krf $\times$ rf, d rf)",
     '(x*,d)': r"(rf $\times$ krf, d rf)",
