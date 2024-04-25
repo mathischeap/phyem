@@ -68,6 +68,7 @@ class MsePyRootFormCochain(Frozen):
             _cochain_at_time._receive(cochain)
 
             self._tcd[t] = _cochain_at_time
+
             if self._newest_t is None:
                 self._newest_t = t
             else:

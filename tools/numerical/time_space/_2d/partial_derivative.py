@@ -14,7 +14,7 @@ class NumericalPartialDerivativeTxy(ABC):
     ``A=f(t,x,y)``. And we will evaluate dA/dt, dA/dx, dA/dy at `(t, x, y)`. Note that `(x,y)`
     must be of the same shape; no matter the dimensions (we do not do mesh grid to them). And t must be 1-d.
     """
-    def __init__(self, func, t, x, y, h=1e-6):
+    def __init__(self, func, t, x, y, h=1e-4):
         self._check_func(func)
         self._check_txy(t, x, y)
         self._h = h

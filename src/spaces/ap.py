@@ -5,6 +5,7 @@ Algebraic Proxy.
 import src.spaces.main as space_main
 from src.spaces.main import *
 from src.spaces.main import _sep
+from src.spaces.operators import trace as space_trace
 from src.config import _form_evaluate_at_repr_setting
 from src.spaces.main import _default_space_degree_repr
 from src.spaces.main import _degree_str_maker
@@ -33,6 +34,8 @@ __all__ = [
     "_VarPar_H",   # Hodge matrix
 
     '_VarPar_boundary_dp_vector',
+
+    '_VarPar_tM',  # trace matrix
 
     '_VarPar_astA_convect_astB_ip_tC',  # (*A .V *B, C)
 
@@ -75,7 +78,7 @@ def _VarPar_M(s0, s1, d0, d1):
     """parse l2 inner product mass matrix."""
     assert s0 == s1, f"spaces do not match."
 
-    sym, lin = _VarSetting_mass_matrix
+    sym, lin = _VarSetting_mass_matrix[:2]
     assert d0 is not None and d1 is not None, f"space is not finite."
     sym += rf"^{s0.k}"
 
@@ -124,6 +127,24 @@ def _VarPar_dp(A, B):
             s1._sym_repr + _default_space_degree_repr + str_d1
         ), symmetric=False,
     )
+
+
+def _VarPar_tM(B):
+    """trace matrix of the space of form B."""
+    space = B.space
+    trace_space = space_trace(space)
+    degree = B.degree
+    str_d = _degree_str_maker(degree)
+    sym, lin = _VarSetting_trace_matrix[:2]
+    lin = lin.replace('{space_pure_lin_repr}', str(space._pure_lin_repr))
+    lin = lin.replace('{degree}', str_d)
+    sym += r"_{" + str(space.k) + r"}"
+    return _root_array(
+            sym, lin, (
+                trace_space._sym_repr + _default_space_degree_repr + str_d,
+                space._sym_repr + _default_space_degree_repr + str_d
+            ), symmetric=False,
+        )
 
 
 def _VarPar_E(f_or_space_degree, transpose=False):

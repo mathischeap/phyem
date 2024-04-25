@@ -43,10 +43,13 @@ from src.mesh import _global_meshes                     # [mesh_sym_repr] -> mes
 from src.spaces.main import _space_set                  # [mesh_sym_repr][space_sym_repr] -> space
 from src.form.main import _global_root_forms_lin_dict   # [root-form_lin_repr] -> root-form
 import msepy.main as msepy
+import msehtt.static.main as msehtt_static
 
 
 _implemented_finite_elements = {
     'msepy': msepy,                  # mimetic spectral elements, python implementation
+    'msehtt-s':      msehtt_static,  # shortcut of msehtt-static
+    'msehtt-static': msehtt_static,  #
 }
 
 

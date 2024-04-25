@@ -27,6 +27,7 @@ class MsePyBoundarySectionMesh(Frozen):
         self._faces = None
         self._ct = None
         self._visualize = MsePyBoundarySectionVisualize(self)
+        self._gm_cache_find_ = {}
         self._freeze()
 
     def info(self):
@@ -81,6 +82,63 @@ class MsePyBoundarySectionMesh(Frozen):
         if self._ct is None:
             self._ct = MsePyBoundarySectionMeshCooTrans(self)
         return self._ct
+
+    def find_boundary_objects(self, f, *targets):
+        """find all the objects of targets on all faces.
+
+        So, each target must be of shape (num_elements, num_local_dofs), so, be
+        of the same shape as the gathering matrix.
+
+        If the target is the gathering matrix, then we find all global dofs on the
+        boundary section.
+        """
+        from msepy.form.main import MsePyRootForm
+        assert f.__class__ is MsePyRootForm, f"f must be a msepy root form."
+        gathering_matrix = f.cochain.gathering_matrix
+
+        if len(targets) == 0:
+            return
+        else:
+            pass
+
+        for target in targets:
+            if isinstance(target, str) and target == 'gathering_matrix':
+                pass
+            else:
+                assert target.shape == gathering_matrix.shape
+
+        faces = self.faces
+        returns = list()
+
+        for target in targets:
+
+            if isinstance(target, str) and target == 'gathering_matrix':
+                key = f.__repr__()
+                if key in self._gm_cache_find_:
+                    find = self._gm_cache_find_[key]
+                else:
+                    find = list()
+                    for k in faces:
+                        face = faces[k]
+                        m, n, element = face._m, face._n, face._element
+                        local_dofs = f._find_local_dofs_on(m, n)
+                        find.extend(gathering_matrix[element, local_dofs])
+                    self._gm_cache_find_[key] = find
+
+            else:
+                find = list()
+                for k in faces:
+                    face = faces[k]
+                    m, n, element = face._m, face._n, face._element
+                    local_dofs = f._find_local_dofs_on(m, n)
+                    find.extend(target[element, local_dofs])
+
+            returns.append(find)
+
+        if len(targets) == 1:
+            return returns[0]
+        else:
+            return tuple(returns)
 
 
 if __name__ == '__main__':

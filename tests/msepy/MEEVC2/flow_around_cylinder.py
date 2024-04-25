@@ -19,15 +19,15 @@ ph.config.set_pr_cache(True)
 
 N = 3
 
-Re = 200
+Re = 800
 t_max = 5
-steps_per_second = 200
+steps_per_second = 800
 
 steps = t_max * steps_per_second
 
 t0 = 0
 
-manifold = ph.manifold(2, is_periodic=False)
+manifold = ph.manifold(2, periodic=False)
 mesh = ph.mesh(manifold)
 
 Out0 = ph.space.new('Lambda', 0, orientation='outer')
@@ -162,7 +162,7 @@ nls.pr()
 msepy, obj = ph.fem.apply('msepy', locals())
 manifold = obj['manifold']
 msepy.config(manifold)(
-    'cylinder_channel', r=0.15, dl=1, dr=5, h=1,
+    'cylinder_channel', r=0.05, dl=0.2, dr=2, h=0.41, hl=0.2
 )
 boundary_perp = msepy.base['manifolds'][r"\Gamma_{\perp}"]
 boundary_P = msepy.base['manifolds'][r"\Gamma_P"]
@@ -171,14 +171,25 @@ msepy.config(boundary_perp)(
     manifold, {
         0: [1, 0, 1, 0],
         1: [0, 0, 1, 1],
-        2: [0, 0, 1, 0],
+        2: [0, 1, 1, 0],
         3: [1, 1, 0, 0],
-        4: [1, 0, 0, 0],
+        4: [1, 1, 0, 0],
         5: [1, 0, 0, 1],
         6: [0, 0, 1, 1],
-        7: [0, 0, 0, 1],
+        7: [0, 1, 0, 1],
     }
 )
+#     manifold, {
+#         0: [1, 0, 1, 0],
+#         1: [0, 0, 1, 1],
+#         2: [0, 0, 1, 0],
+#         3: [1, 1, 0, 0],
+#         4: [1, 0, 0, 0],
+#         5: [1, 0, 0, 1],
+#         6: [0, 0, 1, 1],
+#         7: [0, 0, 0, 1],
+#     }
+# )
 
 _mesh = obj['mesh']
 msepy.config(_mesh)(3)
@@ -214,34 +225,28 @@ ts.specify('constant', [0, t_max, steps*2], 2)
 
 
 # noinspection PyUnusedLocal
-def bc_u0(x, y):
+def flux_in_outlet(t, y):
     """"""
-    return 1 + np.zeros_like(x)
+    return (6 / 0.41**2) * np.sin(np.pi * t / 8) * (y+0.2) * (0.21 - y)
 
 
 # noinspection PyUnusedLocal
-def bc_u1(x, y):
+def flux_wall(t, y):
     """"""
-    return np.zeros_like(x)
+    return np.zeros_like(y)
 
 
 # noinspection PyUnusedLocal
 def bc_u(t, x, y):
     """"""
     return ph.tools.genpiecewise(
-        [x, y],
-        [x < - 0.5, x >= -0.5],
-        [bc_u0, bc_u1]
+        [t, y],
+        [x < -0.15, np.logical_and(x >= -0.15, x <= 1), x > 1],
+        [flux_in_outlet, flux_wall, flux_in_outlet]
     )
 
 
-# noinspection PyUnusedLocal
-def bc_v(t, x, y):
-    """"""
-    return np.zeros_like(x)
-
-
-bc_velocity = ph.vc.vector(bc_u, bc_v)
+bc_velocity = ph.vc.vector(bc_u, 0)
 results_dir = './__phcache__/flow_around_cylinder/'
 
 import os
@@ -256,35 +261,37 @@ nls.bc.config(boundary_perp)(bc_velocity)  # essential
 
 # bc_P = init_vorticity
 bc_P = u.numeric.tsp.L2_energy()
-nls.bc.config(boundary_P)(bc_P)  # essential
+nls.bc.config(boundary_P)(bc_P)  # natural
 
 
 for step in range(1, steps+1):
 
     s_nls = nls(k=step)
-    # s_nls.customize.set_no_evaluation(-1)  # no need to do this since we have pressure boundary now.
+    s_nls.customize.set_no_evaluation(-1)
     s_nls.solve([u, w, P])
 
-    # u[None].visualize(
-    #     plot_type='quiver',
-    #     saveto=results_dir+f'u_{int(step)}.png'
-    # )
+    if step % 10 == 0:
+        u[None].visualize(
+            saveto=[
+                results_dir + f'ux_{int(step)}.png',
+                results_dir + f'uy_{int(step)}.png',
+            ]
+        )
 
-    # P[None].visualize(
-    #     plot_type='contourf',
-    #     num_levels=50,
-    #     saveto=results_dir+f'P_{int(step)}.png'
-    # )
+        P[None].visualize(
+            plot_type='contourf',
+            num_levels=50,
+            saveto=results_dir+f'P_{int(step)}.png'
+        )
 
-    w[None].visualize(
-        plot_type='contourf',
-        num_levels=50,
-        saveto=results_dir+f'w_{int(step)}.png'
-    )
-
-    msepy.info(rf"N={N}", s_nls.solve.message)
+        w[None].visualize(
+            plot_type='contourf',
+            levels=np.linspace(-15, 15, 50),
+            saveto=results_dir+f'w_{int(step)}.png'
+        )
 
     u_norm_residual = u.norm_residual()
+    msepy.info(rf"N={N}", s_nls.solve.message, f"u residual: {u_norm_residual}")
 
-    if u_norm_residual < 1e-6:
-        break
+    # if u_norm_residual < 1e-6:
+    #     break

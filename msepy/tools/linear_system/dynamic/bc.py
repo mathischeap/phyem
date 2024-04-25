@@ -12,6 +12,7 @@ from msepy.mesh.boundary_section.main import MsePyBoundarySectionMesh
 
 from src.wf.mp.linear_system_bc import _EssentialBoundaryCondition
 from src.wf.mp.linear_system_bc import _NaturalBoundaryCondition
+from src.wf.mp.linear_system_bc import _ManualBoundaryCondition
 
 
 class MsePyDynamicLinearSystemBoundaryCondition(Frozen):
@@ -63,6 +64,10 @@ class MsePyDynamicLinearSystemBoundaryCondition(Frozen):
                         MsePyDLSNaturalBoundaryCondition(msepy_boundary_manifold, raw_bc)
                     )
 
+                elif raw_bc.__class__ is _ManualBoundaryCondition:
+                    msepy_bcs_list.append(
+                        MsePyDLSManualBoundaryCondition(msepy_boundary_manifold, raw_bc)
+                    )
                 else:
                     raise NotImplementedError(raw_bc)
 
@@ -115,7 +120,7 @@ class MsePyDynamicLinearSystemBoundaryCondition(Frozen):
         for i in self._labels():
             print(i, self._labels()[i])
 
-    def config(self, what):
+    def config(self, what, form=None):
         """Config a boundary condition to make it particular!"""
 
         if isinstance(what, MsePyManifold):
@@ -123,11 +128,23 @@ class MsePyDynamicLinearSystemBoundaryCondition(Frozen):
             manifold_sym_repr = abstract_manifold._sym_repr
             if manifold_sym_repr in self:
 
-                assert len(self[manifold_sym_repr]) == 1, \
-                    f"There are multiple bcs defined on {what}, " \
-                    f"use other way to identify which bc you want to config"
+                if len(self[manifold_sym_repr]) == 1:
 
-                bc_2b_config = self[manifold_sym_repr][0]
+                    bc_2b_config = self[manifold_sym_repr][0]
+
+                else:  # There are multiple bcs defined on {what}
+                    assert form is not None, (f"multiple B.C.s found on {manifold_sym_repr}, let me know"
+                                              f"which form you are looking for such that I can locate.")
+                    bc_2b_config = None
+                    for bc in self[manifold_sym_repr]:
+                        if form._sym_repr == bc._raw_ls_bc._raw_bc_form._sym_repr:
+                            bc_2b_config = bc
+                        else:
+                            pass
+
+                    if bc_2b_config is None:
+                        raise Exception(
+                            f'I cannot find a valid BC defined on {manifold_sym_repr} for form {form}')
 
             else:
                 raise Exception(
@@ -162,7 +179,16 @@ class MsePyDLSBoundaryCondition(Frozen):
 
     def __repr__(self):
         """repr"""
-        return '<MsePy DLS ' + self._raw_ls_bc.__repr__()[1:]
+        return '<MsePy DLS = ' + self._raw_ls_bc.__repr__()[1:]
+
+
+class MsePyDLSManualBoundaryCondition(MsePyDLSBoundaryCondition):
+    """"""
+    def __init__(self, msepy_boundary_manifold, raw_ls_bc):
+        """"""
+        super().__init__(msepy_boundary_manifold, raw_ls_bc)
+        self._num_application = 'manual'
+        self._freeze()
 
 
 class MsePyDLSNaturalBoundaryCondition(MsePyDLSBoundaryCondition):

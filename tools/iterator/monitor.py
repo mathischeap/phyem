@@ -123,11 +123,14 @@ class IteratorMonitor(Frozen):
 
     def save(self):
         """save to .csv file"""
-        try:
+        try:  # in case like PermissionError.
             self._iterator_.RDF.to_csv(self.name + '.csv', header=True)
         except:
             sleep(2)
-            self._iterator_.RDF.to_csv(self.name + '.csv', header=True)
+            try:
+                self._iterator_.RDF.to_csv(self.name + '.csv', header=True)
+            except:  # just skip the saving in case like PermissionError.
+                pass
 
     def report(self, over=False):
         """make graphic report"""
@@ -470,7 +473,7 @@ class IteratorMonitor(Frozen):
                 bbox_inches='tight',
                 facecolor='honeydew',
             )
-        except:
+        except:  # in case like PermissionError
             pass
 
         plt.close(fig)

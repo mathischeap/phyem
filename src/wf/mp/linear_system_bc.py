@@ -329,9 +329,36 @@ class _EssentialBoundaryCondition(_BoundaryCondition):
         return False
 
 
+class _ManualBoundaryCondition(_BoundaryCondition):
+    """"""
+    def __init__(self, ls, raw_bc_form, i, am, manual):
+        """"""
+        assert i == 'I' and am == 'am' and manual == 'manual', f'Must be!'
+        self._ls = ls
+        self._raw_bc_form = raw_bc_form
+        self._freeze()
+
+    @classmethod
+    def _check_raw_bc(cls, ls, raw_bc_form):
+        """"""
+        return 'I', 'am', 'manual'
+
+    def __repr__(self):
+        """"""
+        super_repr = super().__repr__().split('object')[1]
+        raw_bc_repr = self._raw_bc_form.__repr__()[1:].split(' at ')[0]
+        return '<Manual B.C.: ' + raw_bc_repr + super_repr
+
+    def _pr_text(self):
+        """"""
+        return f"Manual B.C.: ${self._raw_bc_form._sym_repr}$."
+
+
 ___all_boundary_type_classes___ = [
     _EssentialBoundaryCondition,
     _NaturalBoundaryCondition,
+
+    _ManualBoundaryCondition,  # must always be at the end!
 ]
 
 

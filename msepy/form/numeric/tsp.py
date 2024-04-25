@@ -22,6 +22,7 @@ class MsePyRootFormNumericTimeSpaceProperty(Frozen):
             # local energy at the newest cochain time.
             def ture_local_energy_computer(t, *xyz):
                 return self._f.numeric.tsf._local_energy_computer(t, *xyz, time_shift=True)
+
             return T2dScalar(ture_local_energy_computer)
         else:
             raise NotImplementedError()

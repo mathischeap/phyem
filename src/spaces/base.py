@@ -70,10 +70,12 @@ class SpaceBase(Frozen):
 
     @property
     def n(self):
+        """the dimensions of the mesh I am living in."""
         return self.mesh.ndim
 
     @property
     def m(self):
+        """the dimensions of the space I am living in."""
         return get_embedding_space_dim()
 
     def make_form(

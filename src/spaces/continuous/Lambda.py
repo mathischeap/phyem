@@ -36,7 +36,7 @@ class ScalarValuedFormSpace(SpaceBase):
 
     @property
     def k(self):
-        """I am k-form."""
+        """I am scalar-valued k-form."""
         return self._k
 
     def __repr__(self):

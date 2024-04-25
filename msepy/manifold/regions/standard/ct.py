@@ -47,6 +47,10 @@ class MsePyStandardRegionCoordinateTransformation(Frozen):
         self._mtype = mtp
 
 
+class UniqueRegionException(Exception):
+    """"""
+
+
 class _MsePyRegionMtype(Frozen):
     """"""
     def __init__(self, indicator, parameters):
@@ -81,7 +85,7 @@ class _MsePyRegionMtype(Frozen):
         element_mtype_dict = dict()
 
         if self._indicator == 'Unique':
-            raise Exception(f"Unique region cannot distribute metric type to elements.")
+            raise UniqueRegionException(f"Unique region cannot distribute metric type to elements.")
 
         elif self._indicator == 'Linear':
             # parameters are for example: ['x1.33333', 'y1.666666', ...]

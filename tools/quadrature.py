@@ -11,6 +11,20 @@ _global_cache_2 = {}
 _global_cache_3 = {}
 
 
+_cache_quad_ = {}
+
+
+def quadrature(p, category):
+    """"""
+    key = (p, category)
+    if key in _cache_quad_:
+        return _cache_quad_[key]
+    else:
+        qd = Quadrature(p, category=category)
+        _cache_quad_[key] = qd
+        return qd
+
+
 class Quadrature(object):
     """ Here we store the class for 1d-quadrature nodes and weights. """
     def __init__(self, p, category='Gauss'):

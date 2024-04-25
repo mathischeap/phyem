@@ -6,6 +6,7 @@ from tools.frozen import Frozen
 from tools.matplot.plot import plot
 from tools.matplot.contour import contour, contourf
 from tools.matplot.quiver import quiver
+from tools.matplot.plot3d import plot3d
 
 
 class MsePyRootFormVisualizeMatplot(Frozen):
@@ -347,4 +348,37 @@ class MsePyRootFormVisualizeMatplot(Frozen):
         else:
             raise NotImplementedError(f'Not implemented for plot_type={plot_type}')
 
+        return fig
+
+    def _Lambda_m2_n1_k1(
+            self,
+            sampling_factor=1,
+            **kwargs
+    ):
+        """"""
+        mesh = self._mesh
+        from msepy.main import base
+        meshes = base['meshes']
+        boundary_sym = mesh.abstract.boundary()._sym_repr
+        boundary_section = None
+        for sym in meshes:
+            if sym == boundary_sym:
+                boundary_section = meshes[sym]
+                break
+            else:
+                pass
+        assert boundary_section is not None, f"must have found a boundary section."
+
+        num_faces = len(boundary_section.faces)
+
+        samples = int(np.ceil(5000 * sampling_factor / num_faces))
+        xi_et = np.linspace(-1, 1, samples)
+
+        t = self._f.visualize._t
+        xy, v = self._f[t].reconstruct(xi_et)
+
+        x, y = xy
+        v = v[0]
+
+        fig = plot3d(x, y, v, **kwargs)
         return fig

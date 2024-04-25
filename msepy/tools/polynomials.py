@@ -14,6 +14,21 @@ _cache_nodes = dict()
 _cache_edges = dict()
 
 
+_cache_1d_polynomials_ = {}
+
+
+def Lobatto_polynomials_of_degree(p):
+    """"""
+    if p in _cache_1d_polynomials_:
+        return _cache_1d_polynomials_[p]
+    else:
+        assert isinstance(p, int) and p > 0, f'p={p} wrong, it must be positive int.'
+        nodes = Quadrature(p, category='Lobatto').quad[0]
+        polynomials = _OneDimPolynomial(nodes)
+        _cache_1d_polynomials_[p] = polynomials
+        return polynomials
+
+
 class _OneDimPolynomial(Frozen):
     """
     The 1d polynomial basis function space.

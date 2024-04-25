@@ -210,7 +210,7 @@ class _MesPyRegionCrazyMapping(Frozen):
 
     def mapping(self, *rst):
         """ `*rst` be in [0, 1]. """
-        assert len(rst) == self._esd, f"amount of inputs wrong."
+        assert len(rst) == self._esd, f"amount of inputs wrong. {len(rst)} != {self._esd}"
 
         if self._esd == 1:
 

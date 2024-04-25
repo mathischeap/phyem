@@ -30,7 +30,7 @@ t_max = 1
 steps = 200
 Re = 625
 
-manifold = ph.manifold(2, is_periodic=False)
+manifold = ph.manifold(2, periodic=False)
 mesh = ph.mesh(manifold)
 
 Out0 = ph.space.new('Lambda', 0, orientation='outer')

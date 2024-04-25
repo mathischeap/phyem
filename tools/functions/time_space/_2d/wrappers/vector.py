@@ -39,9 +39,13 @@ class T2dVector(TimeSpaceFunctionBase):
         """
         if v0 == 0:
             v0 = _0_function
+        else:
+            pass
 
         if v1 == 0:
             v1 = _0_function
+        else:
+            pass
 
         self._v0_ = v0
         self._v1_ = v1
@@ -54,6 +58,14 @@ class T2dVector(TimeSpaceFunctionBase):
         self._gradient = None
         self._curl = None
         self._norm = None
+
+        self._integrate_cache_ = {
+            'x': [],
+            'y': [],
+            'int0': [],
+            'int1': []
+        }
+
         self._freeze()
 
     def __call__(self, t, x, y):
@@ -120,9 +132,116 @@ class T2dVector(TimeSpaceFunctionBase):
             self._time_derivative = self.__class__(pv0_pt, pv1_pt)
         return self._time_derivative
 
+    def ___time_integrate___(self, component, t0, t1, x, y, h=1e-4):
+        r"""`\int_{t0}^{t1} self`. Integration of the component of self
+        from t0 to t1 at (x, y).
+        """
+        assert isinstance(t0, (int, float)) and isinstance(t1, (int, float)), \
+            f"t0, t1 must be int or float."
+        assert isinstance(h, (int, float)) and h > 0, \
+            f"h={h} wrong, it must be positive."
+
+        if abs(t0 - t1) < 1e-8:
+            return np.zeros_like(x)
+        else:
+            return self.___compute_integral___(component, t0, t1, x, y, h)
+
+            # cache_x = self._integrate_cache_['x']
+            # cache_y = self._integrate_cache_['y']
+            # # find cache coo
+            # cache_coo = False
+            # for cx, cy in zip(cache_x, cache_y):
+            #     if ((np.shape(x) == np.shape(cx) and np.allclose(x, cx)) and
+            #             (np.shape(y) == np.shape(cy) and np.allclose(y, cy))):
+            #         cache_coo = True
+            #     else:
+            #         pass
+            # if cache_coo:
+            #     pass
+            # else:
+            #     self._integrate_cache_['x'].append(x)
+            #     self._integrate_cache_['y'].append(y)
+            #     self._integrate_cache_['int0'].append(None)
+            #     self._integrate_cache_['int1'].append(None)
+            #
+            # cache_x = self._integrate_cache_['x']
+            # cache_y = self._integrate_cache_['y']
+            # num_cached = len(cache_x)
+            # i = -1
+            # must_found = False
+            # for i, cx, cy in zip(range(num_cached), cache_x, cache_y):
+            #     if ((np.shape(x) == np.shape(cx) and np.allclose(x, cx)) and
+            #             (np.shape(y) == np.shape(cy) and np.allclose(y, cy))):
+            #         must_found = True
+            #         break
+            #     else:
+            #         pass
+            # assert i != -1 and must_found, f"must be true."
+            # if component == 0:
+            #     int_value = self._integrate_cache_['int0'][i]
+            # elif component == 1:
+            #     int_value = self._integrate_cache_['int1'][i]
+            # else:
+            #     raise Exception()
+            #
+            # if int_value is None:
+            #     integral = self.___compute_integral___(component, t0, t1, x, y, h)
+            # else:
+            #     ct0, ct1, cin = int_value
+            #     int_front = self.___compute_integral___(component, t0, ct0, x, y, h)
+            #     int_end = self.___compute_integral___(component, ct1, t1, x, y, h)
+            #     integral = int_front + cin + int_end
+            # if component == 0:
+            #     self._integrate_cache_['int0'][i] = (t0, t1, integral)
+            # elif component == 1:
+            #     self._integrate_cache_['int1'][i] = (t0, t1, integral)
+            # else:
+            #     raise Exception
+            # print(len(self._integrate_cache_['int0']))
+            # return integral
+
+    def ___compute_integral___(self, component, t0, t1, x, y, h):
+        """"""
+        if abs(t0 - t1) < 1e-8:
+            return np.zeros_like(x)
+        num_segments = int(abs(t1 - t0) / h) + 1
+        true_h = abs(t1 - t0) / num_segments
+        if t0 > t1:
+            true_h = - true_h
+        else:
+            pass
+        integral = 0
+        it0 = t0
+        for i in range(num_segments):
+            it1 = it0 + true_h
+            if component == 0:
+                v_t0 = self._v0_(it0, x, y)
+                v_t1 = self._v0_(it1, x, y)
+            elif component == 1:
+                v_t0 = self._v1_(it0, x, y)
+                v_t1 = self._v1_(it1, x, y)
+            else:
+                raise Exception(f"component must be 0 or 1.")
+            v_m = (v_t0 + v_t1) / 2
+            integral += v_m * true_h
+            it0 = it1
+
+        return integral
+
+    def integral(self, t0, h=1e-4):
+        """Return another vector as its integral from t0.
+        """
+        def v0(t, x, y):
+            return self.___time_integrate___(0, t0, t, x, y, h=h)
+
+        def v1(t, x, y):
+            return self.___time_integrate___(1, t0, t, x, y, h=h)
+
+        return self.__class__(v0, v1)
+
     @property
     def gradient(self):
-        """Gives a 2 by 2 tensor."""
+        """Gives a 2 by 2 tensor. Note the difference from curl, rot, div."""
         if self._gradient is None:
             p0_px = self._NPD0_('x')
             p0_py = self._NPD0_('y')
@@ -137,6 +256,7 @@ class T2dVector(TimeSpaceFunctionBase):
     
     @property
     def curl(self):
+        """gives a tensor. Note the difference from `rot`."""
         if self._curl is None:
             p0_px = self._NPD0_('x')
             p0_py = self._NPD0_('y')
@@ -167,6 +287,8 @@ class T2dVector(TimeSpaceFunctionBase):
     @property
     def rot(self):
         """Compute the rot of self.
+
+        R -> grad -> rot -> 0
 
         Returns
         -------

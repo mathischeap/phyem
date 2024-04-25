@@ -382,6 +382,7 @@ base = {
     'meshes': dict(),     # keys: abstract mesh sym_repr
     'spaces': dict(),  # keys: abstract space sym_repr, values: MsePy spaces
     'forms': dict(),  # keys: abstract root form pure_lin_repr, values: root-forms,
+    'the_great_mesh': None,   # all forms will point to this space.
 }
 
 
@@ -403,6 +404,7 @@ def _clear_self():
     base['meshes'] = dict()
     base['spaces'] = dict()
     base['forms'] = dict()
+    base['the_great_mesh'] = None   # all space will point to this mesh.
     _info_cache['start_time'] = -1.
     _info_cache['info_count'] = 0
     _info_cache['info_time'] = -1.
@@ -428,6 +430,29 @@ def _parse_meshes(abstract_meshes):
         mesh_dict[sym] = m
     base['meshes'] = mesh_dict
 
+    # parse the great mesh and save it --------------------------
+    mn_p = list()
+    sym_p = list()
+    for sym in mesh_dict:
+        abm = mesh_dict[sym].abstract
+        mn = abm.m + abm.n
+        sym_p.append(sym)
+        mn_p.append(mn)
+
+    max_mn = max(mn_p)
+    count = mn_p.count(max_mn)
+
+    if count == 1:  # only have one great mesh
+        the_great_index = mn_p.index(max_mn)
+        the_great_mesh = mesh_dict[sym_p[the_great_index]]
+        # noinspection PyTypedDict
+        base['the_great_mesh'] = the_great_mesh
+
+    else:
+        raise NotImplementedError()
+
+    # ============================================================
+
 
 def _parse_spaces(abstract_spaces):
     """"""
@@ -438,8 +463,15 @@ def _parse_spaces(abstract_spaces):
         for ab_sp_sym_repr in ab_sps:
             ab_sp = ab_sps[ab_sp_sym_repr]
 
-            if ab_sp.orientation != 'unknown':  # Those spaces are probably not for root-forms, skipping is OK.
+            if ab_sp.orientation != 'unknown':
+                # Those spaces are probably not for root-forms, skipping is OK.
                 space = MsePySpace(ab_sp)
+
+                if space._mesh is not base['the_great_mesh']:
+                    space._mesh = base['the_great_mesh']
+                else:
+                    pass
+
                 space_dict[ab_sp_sym_repr] = space
             else:
                 pass

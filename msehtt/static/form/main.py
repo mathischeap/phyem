@@ -1,0 +1,148 @@
+# -*- coding: utf-8 -*-
+r"""
+"""
+from tools.frozen import Frozen
+from typing import Dict
+from src.form.main import Form
+from msehtt.static.form.cf import MseHttStaticFormCF
+from msehtt.static.form.addons.static import MseHttFormStaticCopy
+from msehtt.static.form.cochain.main import MseHttCochain
+from msehtt.static.form.visualize.main import MseHttFormVisualize
+
+
+class MseHttForm(Frozen):
+    """"""
+
+    def __init__(self, abstract_root_form):
+        """"""
+        self._pAti_form: Dict = {
+            'base_form': None,  # the base form
+            'ats': None,  # abstract time sequence
+            'ati': None,  # abstract time instant
+        }
+        self._ats_particular_forms = dict()   # the abstract forms based on this form.
+        assert abstract_root_form.__class__ is Form, f"I need an abstract form."
+        self._degree = abstract_root_form._degree
+        self._abstract = abstract_root_form
+
+        self._tgm = None  # the msehtt great mesh
+        self._tpm = None  # the msehtt partial mesh
+        self._space = None  # the msehtt space
+        self._manifold = None   # the msehtt manifold
+
+        self._cf = None
+        self._cochain = None
+        self._freeze()
+
+    @property
+    def abstract(self):
+        """Return the abstract form."""
+        return self._abstract
+
+    def __repr__(self):
+        """repr"""
+        ab_rf_repr = self._abstract.__repr__().split(' at ')[0][1:]
+        return "<MseHtt " + ab_rf_repr + super().__repr__().split(" object")[1]
+
+    @property
+    def degree(self):
+        """The degree of the form."""
+        return self._degree
+
+    def _is_base(self):
+        """Am I a base root-form (not abstracted at a time)?"""
+        return self._base is None
+
+    @property
+    def _base(self):
+        """The base root-form I have.
+
+        if `self._is_base()`, return None. Else return the base form.
+        """
+        return self._pAti_form['base_form']
+
+    @property
+    def tgm(self):
+        """Return the msehtt great mesh."""
+        return self._tgm
+
+    @property
+    def tpm(self):
+        """Return the msehtt partial mesh."""
+        return self._tpm
+
+    @property
+    def space(self):
+        """Return the msehtt space."""
+        return self._space
+
+    @property
+    def manifold(self):
+        """Return the msehtt manifold."""
+        return self._manifold
+
+    @property
+    def cf(self):
+        """Continuous form."""
+        if self._is_base():
+            if self._cf is None:
+                self._cf = MseHttStaticFormCF(self)
+            return self._cf
+        else:
+            return self._base.cf
+
+    @cf.setter
+    def cf(self, _cf):
+        """"""
+        if self._is_base():
+            self.cf.field = _cf
+        else:
+            self._base.cf = _cf
+
+    def __getitem__(self, t):
+        """"""
+        if t is None:
+            t = self.cochain.newest  # newest time
+        elif isinstance(t, str):
+            # when use str, we are looking for the form at a time step.
+            from src.time_sequence import _global_abstract_time_sequence
+            if len(_global_abstract_time_sequence) == 1:
+                ts_indicator = list(_global_abstract_time_sequence.keys())[0]
+                ts = _global_abstract_time_sequence[ts_indicator]
+                abstract_time_instant = ts[t]
+                t = abstract_time_instant()()
+            else:
+                raise Exception(f"multiple time sequences exist. "
+                                f"I don't know which one you are referring to")
+        else:
+            pass
+        t = self.cochain._parse_t(t)  # round off the truncation error to make it clear.
+
+        if isinstance(t, (int, float)):
+            if self._is_base():
+                return MseHttFormStaticCopy(self, t)
+            else:
+                return MseHttFormStaticCopy(self._base, t)
+        else:
+            raise Exception(f"cannot accept t={t}.")
+
+    @property
+    def cochain(self):
+        """The cochain class."""
+        if self._cochain is None:
+            self._cochain = MseHttCochain(self)
+        return self._cochain
+
+    def reduce(self, target, t):
+        """"""
+        return self._space.reduce(target, t, self.tpm, self.degree)
+
+    def reconstruct(self, cochain, *meshgrid, ravel=False):
+        """"""
+        return self._space.reconstruct(self.tpm, self.degree, cochain, *meshgrid, ravel=ravel)
+
+    def visualize(self, t):
+        if self._is_base():
+            return MseHttFormVisualize(self, t)
+        else:
+            return self._base.visualize(t)

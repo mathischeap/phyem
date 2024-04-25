@@ -312,7 +312,7 @@ class _FaceCooTrans(Frozen):
         elif self._element_dimensions == 2:
             assert len(xi_et) == 1, rf"only need one parameter for element face mapping in 2d."
             t = xi_et[0]
-            ones = np.ones(len(t))
+            ones = np.ones_like(t)
             if m == 0:  # x-direction
                 if n == 0:  # x-
                     return self._element.ct.mapping(-ones, t)
@@ -374,7 +374,7 @@ class _FaceCooTrans(Frozen):
             assert len(xi_et) == self._element_dimensions - 1, f"xi_et wrong!"
 
             t = xi_et[0]
-            ones = np.ones(len(t))
+            ones = np.ones_like(t)
             if m == 0:  # x-direction
                 if n == 0:  # x-
                     JM = self._element.ct.Jacobian_matrix(-ones, t)
@@ -401,7 +401,7 @@ class _FaceCooTrans(Frozen):
         elif self._element_dimensions == 3:
             if len(xi_et) == self._element_dimensions - 1:
                 t, s = xi_et
-                ones = np.ones(len(t))
+                ones = np.ones_like(t)
 
                 if m == 0:  # x-direction
                     if n == 0:

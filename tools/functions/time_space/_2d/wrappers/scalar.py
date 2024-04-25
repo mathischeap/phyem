@@ -101,7 +101,7 @@ class T2dScalar(TimeSpaceFunctionBase):
     
     @property
     def curl(self):
-        """"""
+        """R -> curl -> div -> 0"""
         px = self._NPD_('x')
         py = self._NPD_('y')
 

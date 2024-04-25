@@ -57,6 +57,9 @@ class _MsePySpaceFindLocalDofs(Frozen):
                 elif _m == _n == _k:
                     raise Exception(f"top-form has no dofs on element face!")
 
+                elif _m == 2 and _n == 1 and _k == 1 and _orientation == 'outer':
+                    local_dofs = self._Lambda_m2_n1_k1_outer(m, n, degree)
+
                 else:
                     raise NotImplementedError()
 
@@ -96,9 +99,9 @@ class _MsePySpaceFindLocalDofs(Frozen):
         if m == 0:
             local_numbering = local_numbering_dy
 
-            if n == 0:
+            if n == 0:    # North
                 face_local_numbering = local_numbering[0, :]
-            elif n == 1:
+            elif n == 1:  # South
                 face_local_numbering = local_numbering[-1, :]
             else:
                 raise Exception()
@@ -106,12 +109,13 @@ class _MsePySpaceFindLocalDofs(Frozen):
         elif m == 1:
             local_numbering = local_numbering_dx
 
-            if n == 0:
+            if n == 0:     # West
                 face_local_numbering = local_numbering[:, 0]
-            elif n == 1:
+            elif n == 1:   # East
                 face_local_numbering = local_numbering[:, -1]
             else:
                 raise Exception()
+
         else:
             raise Exception()
 
@@ -280,3 +284,19 @@ class _MsePySpaceFindLocalDofs(Frozen):
             raise Exception()
 
         return face_local_numbering
+
+    def _Lambda_m2_n1_k1_outer(self, m, n, degree):
+        """"""
+        p = self._space[degree].p
+        nWE, nNS = p
+
+        if m == 0 and n == 0:    # North
+            return [_ for _ in range(0, nNS)]
+        elif m == 0 and n == 1:  # South
+            return [_ for _ in range(nNS, nNS * 2)]
+        elif m == 1 and n == 0:  # West
+            return [_ for _ in range(nNS * 2, nNS * 2 + nWE)]
+        elif m == 1 and n == 1:  # East
+            return [_ for _ in range(nNS * 2 + nWE, nNS * 2 + nWE * 2)]
+        else:
+            raise Exception()

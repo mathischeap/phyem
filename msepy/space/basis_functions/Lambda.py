@@ -38,8 +38,13 @@ class MsePyBasisFunctionsLambda(Frozen):
             else:
                 pass
 
-        if self._n == 2 and self._k == 1:
+        if self._m == 2 and self._n == 2 and self._k == 1:
             return getattr(self, f"_m{m}_n{n}_k{k}_{self._orientation}")(*meshgrid_xi_et_sg)
+
+        elif self._m == 2 and self._n == 1 and self._k == 1:
+            return getattr(
+                self, f"_m2_n1_k1_{self._orientation}"
+            )(*meshgrid_xi_et_sg)
         else:
             return getattr(self, f"_m{m}_n{n}_k{k}")(*meshgrid_xi_et_sg)
 
@@ -151,6 +156,32 @@ class MsePyBasisFunctionsLambda(Frozen):
         bf_edge_dxi = np.kron(lb_et, ed_xi)
         _basis_ = (bf_edge_det, bf_edge_dxi)
         return mesh_grid, _basis_
+
+    def _m2_n1_k1_outer(self, *xi_eta):
+        """"""
+        if len(xi_eta) == 1:
+            xi = xi_eta[0]   # use these nodes along all faces.
+            assert isinstance(xi, np.ndarray) and np.ndim(xi) == 1, f"xi must be 1d array."
+
+            edge_functions = self._bfs[0].edge_basis(x=xi)
+
+            return {
+                # (m, n) : evaluation points
+                (0, 0): xi,
+                (0, 1): xi,
+                (1, 0): xi,
+                (1, 1): xi,
+            }, {
+                # (m, n) : basis functions.
+                (0, 0): edge_functions,
+                (0, 1): edge_functions,
+                (1, 0): edge_functions,
+                (1, 1): edge_functions,
+            }
+
+        else:
+            raise NotImplementedError()
+
 
     def _m2_n2_k0(self, *domain):
         r""""""

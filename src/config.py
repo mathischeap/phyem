@@ -443,6 +443,9 @@ _wf_term_default_simple_patterns = {   # use only str to represent a simple patt
 
     '<tr star | tr >': '<tr star rf | trace rf>',
 
+    '(A, trB)': r"$(A, \mathrm{tr} B)$",
+    '(trB, A)': r"$(\mathrm{tr} B, A)$",
+
     '<*x*|C>': r'$\left<\left.\mathrm{krf} \times \mathrm{krf} \right| \mathrm{rf}\right>$',
     '<Ax*|C>': r'$\left<\left.\mathrm{rf} \times \mathrm{krf} \right| \mathrm{rf}\right>$',
     '<*xB|C>': r'$\left<\left.\mathrm{krf} \times \mathrm{rf} \right| \mathrm{rf}\right>$',

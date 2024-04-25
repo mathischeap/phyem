@@ -44,7 +44,7 @@ class BoundaryCondition(Frozen):
 
             bcs = bcs_dict[key]
 
-            if bcs.__class__.__name__ == 'Form':
+            if bcs.__class__ is Form:
                 bcs = [bcs, ]
             else:
                 pass

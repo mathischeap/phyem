@@ -62,6 +62,10 @@ def msepy_root_array_parser(dls, array_lin_repr):
             A, _ti = Parse__M_matrix(*info_indicators)
 
         elif type_indicator == _find_indicator(
+                _VarSetting_trace_matrix):
+            A, _ti = Parse__trace_matrix(*info_indicators)
+
+        elif type_indicator == _find_indicator(
                 _VarSetting_dp_matrix):
             A, _ti = Parse__dp_matrix(*info_indicators)
 

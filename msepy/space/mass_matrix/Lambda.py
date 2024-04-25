@@ -4,7 +4,7 @@ r"""
 from tools.frozen import Frozen
 from tools.quadrature import Quadrature
 import numpy as np
-from scipy.sparse import csr_matrix, bmat
+from scipy.sparse import csr_matrix, bmat, lil_matrix
 from src.config import _setting
 
 
@@ -14,6 +14,7 @@ class MsePyMassMatrixLambda(Frozen):
     def __init__(self, space):
         """Store required info."""
         self._space = space
+        self._mesh = space.mesh
         self._k = space.abstract.k
         self._n = space.abstract.n  # manifold dimensions
         self._m = space.abstract.m  # dimensions of the embedding space.
@@ -54,10 +55,20 @@ class MsePyMassMatrixLambda(Frozen):
         else:
             if m == 2 and n == 2 and k == 1:  # for k == 0 and k == 1.
                 method_name = f"_m{m}_n{n}_k{k}_{self._orientation}"
+            elif m == 2 and n == 1 and k == 1:
+                method_name = f"_m{m}_n{n}_k{k}_{self._orientation}"
             else:
                 method_name = f"_m{m}_n{n}_k{k}"
             M = getattr(self, method_name)(degree, quad)
-            M = self._space.mesh.elements._index_mapping.distribute_according_to_reference_elements_dict(M)
+
+            if isinstance(M, tuple):
+                indicator, M = M
+                if indicator == 'unique dict':
+                    pass
+                else:
+                    raise NotImplementedError()
+            else:
+                M = self._space.mesh.elements._index_mapping.distribute_according_to_reference_elements_dict(M)
             self._cache[key] = M
 
         return M
@@ -314,6 +325,75 @@ class MsePyMassMatrixLambda(Frozen):
                 ], format='csr'
             )
         return M
+
+    def _m2_n1_k1_outer(self, degree, quad):
+        """"""
+        quad_degree, quad_type = quad
+        if isinstance(quad_degree, int):
+            pass
+        else:
+            quad_degree = max(quad_degree)
+        quad = Quadrature(quad_degree, category=quad_type)
+        quad_nodes, quad_weights = quad.quad
+        xi_et, bfs = self._space.basis_functions[degree](quad_nodes)
+
+        from msepy.main import base
+        meshes = base['meshes']
+        boundary_sym = self._mesh.abstract.boundary()._sym_repr
+        boundary_section = None
+        for sym in meshes:
+            if sym == boundary_sym:
+                boundary_section = meshes[sym]
+                break
+            else:
+                pass
+        assert boundary_section is not None, f"must have found a boundary section."
+
+        p = self._space[degree].p
+        nWE, nNS = p
+        local_indices = {
+            (0, 0): (0, nNS),
+            (0, 1): (nNS, 2 * nNS),
+            (1, 0): (2 * nNS, 2 * nNS + nWE),
+            (1, 1): (2 * nNS + nWE, 2 * nNS + 2 * nWE),
+        }
+
+        M = {}
+        for i in range(self._mesh.elements._num):
+            M[i] = lil_matrix(
+                (2 * (nWE + nNS), 2 * (nWE + nNS))
+            )
+        faces = boundary_section.faces
+        for i in faces:
+            face = faces[i]
+            m, n, element = face._m, face._n, face._element
+            ct = face.ct
+            quad_nodes = xi_et[(m, n)]
+            bf = bfs[(m, n)]
+            JM = ct.Jacobian_matrix(quad_nodes)
+            Jacobian = np.sqrt(JM[0]**2 + JM[1]**2)
+            reciprocal_det_jm = np.reciprocal(Jacobian)
+            M_face = np.einsum(
+                'im, jm, m -> ij',
+                bf, bf, reciprocal_det_jm * quad_weights,
+                optimize='optimal',
+            )
+
+            if m == 0 and n == 1:  # south
+                M_face = - M_face
+            elif m == 1 and n == 0:  # West
+                M_face = - M_face
+            else:
+                pass
+
+            i0, i1 = local_indices[(m, n)]
+            M[element][i0:i1, i0:i1] = M_face
+
+        for i in M:
+            # noinspection PyUnresolvedReferences
+            M[i] = M[i].tocsr()
+
+        return 'unique dict', M
 
     def _m1_n1_k0(self, degree, quad):
         """mass matrix of 0-form on 1-manifold in 1d space"""

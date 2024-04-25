@@ -756,7 +756,7 @@ class L2InnerProductTerm(_WeakFormulationTerm):
 
                 trace_form_1 = trace(self._f1)
 
-                term_boundary = duality_pairing(trace_form_0, trace_form_1)
+                term_boundary = duality_pairing(trace_form_0, trace_form_1, factor=self._factor)
 
                 return (term_manifold, term_boundary), ('+', '-')
 

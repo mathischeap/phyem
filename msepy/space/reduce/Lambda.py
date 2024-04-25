@@ -346,6 +346,120 @@ class MsePySpaceReduceLambda(Frozen):
             self._cache222[key] = data
         return data
 
+    def _m2_n1_k1(self, cf, t, degree, quad_degree=None):
+        """"""
+        mesh = self._mesh
+        num_elements = mesh.elements._num
+        p = self._space[degree].p
+        nWE, nNS = p
+
+        N_s, N_e = 0, nNS
+        S_s, S_e = nNS, 2 * nNS
+        W_s, W_e = 2 * nNS, 2 * nNS + nWE
+        E_s, E_e = 2 * nNS + nWE, 2 * nNS + 2 * nWE
+
+        if quad_degree is None:
+
+            qd_NS = nNS + 2
+            qd_WE = nWE + 2
+
+        else:
+            raise NotImplementedError()
+
+        quad = Quadrature(qd_NS).quad  # using Gauss quadrature by default.
+        qn_NS, qw_NS = quad
+
+        quad = Quadrature(qd_WE).quad  # using Gauss quadrature by default.
+        qn_WE, qw_WE = quad
+
+        nodes = self._space[degree].nodes
+        nodes_WE, nodes_NS = nodes
+        edges = self._space[degree].edges
+        edges_WE, edges_NS = edges
+
+        qn_NS = (qn_NS[:, np.newaxis].repeat(nNS, axis=1) + 1) * edges_NS / 2 + nodes_NS[:-1]
+        qn_WE = (qn_WE[:, np.newaxis].repeat(nWE, axis=1) + 1) * edges_WE / 2 + nodes_WE[:-1]
+
+        cochain = np.zeros(
+            [num_elements, 2 * (nNS + nWE)],
+            dtype=float
+        )
+
+        from msepy.main import base
+        meshes = base['meshes']
+        boundary_sym = mesh.abstract.boundary()._sym_repr
+        boundary_section = None
+        for sym in meshes:
+            if sym == boundary_sym:
+                boundary_section = meshes[sym]
+                break
+            else:
+                pass
+        assert boundary_section is not None, f"must have found a boundary section."
+
+        faces = boundary_section.faces
+
+        for i in faces:  # go through all trace elements on the boundary.
+            face = faces[i]
+            m, n = face._m, face._n
+            element = face._element
+            ct = face.ct
+            region = mesh.elements[element].region
+
+            scalar = cf.field[region]
+
+            if m == 0 and n == 0:   # North side
+                x, y = ct.mapping(qn_NS)
+                JM = face.ct.Jacobian_matrix(qn_NS)
+                edges = edges_NS
+                qw = qw_NS
+
+            elif m == 0 and n == 1:  # South
+                x, y = ct.mapping(qn_NS)
+                JM = face.ct.Jacobian_matrix(qn_NS)
+                edges = edges_NS
+                qw = qw_NS
+
+            elif m == 1 and n == 0:  # West
+                x, y = ct.mapping(qn_WE)
+                JM = face.ct.Jacobian_matrix(qn_WE)
+                edges = edges_WE
+                qw = qw_WE
+
+            elif m == 1 and n == 1:  # East
+                x, y = ct.mapping(qn_WE)
+                JM = face.ct.Jacobian_matrix(qn_WE)
+                edges = edges_WE
+                qw = qw_WE
+
+            else:
+                raise Exception
+
+            scalar_value = scalar(t, x, y)[0]
+            Jacobian = np.sqrt(JM[0]**2 + JM[1]**2)
+
+            local_cochain_element = np.einsum(
+                'ik, i, ik, k -> k',
+                scalar_value,
+                qw,
+                Jacobian,
+                edges * 0.5,
+                optimize='optimal',
+            )
+
+            if m == 0 and n == 0:   # North side
+                cochain[element, N_s:N_e] = local_cochain_element
+            elif m == 0 and n == 1:  # South
+                cochain[element, S_s:S_e] = local_cochain_element
+            elif m == 1 and n == 0:  # West
+                cochain[element, W_s:W_e] = local_cochain_element
+            elif m == 1 and n == 1:  # East
+                cochain[element, E_s:E_e] = local_cochain_element
+            else:
+                raise Exception
+
+        return cochain
+
     def _m3_n3_k0(self, cf, t, degree):
         """0-form on 3-manifold in 3d space."""
         nodes = self._space[degree].nodes
@@ -599,13 +713,13 @@ class MsePySpaceReduceLambda(Frozen):
 
             self._cache332[key] = data
 
-        # ----------------------------------------------
+        # --------------------------------------------------------
         coo_x, Jx, area_dydz, \
             coo_y, Jy, area_dzdx, \
             coo_z, Jz, area_dxdy \
             = data
 
-        # dx-perp face -
+        # dx-perp face ------------------------------------------
         u, v, w = cf[t](*coo_x, axis=-1)
         u, v, w = u.transpose(3, 0, 1, 2), v.transpose(3, 0, 1, 2), w.transpose(3, 0, 1, 2)
         u, v, w = Jx.split(u, axis=0), Jx.split(v, axis=0), Jx.split(w, axis=0)
@@ -625,7 +739,7 @@ class MsePySpaceReduceLambda(Frozen):
                 )
             )
 
-        # dy-perp face -
+        # dy-perp face -----------------------------------------
         u, v, w = cf[t](*coo_y, axis=-1)
         u, v, w = u.transpose(3, 0, 1, 2), v.transpose(3, 0, 1, 2), w.transpose(3, 0, 1, 2)
         u, v, w = Jy.split(u, axis=0), Jy.split(v, axis=0), Jy.split(w, axis=0)
@@ -645,7 +759,7 @@ class MsePySpaceReduceLambda(Frozen):
                 )
             )
 
-        # dz-perp face -
+        # dz-perp face ----------------------------------------
         u, v, w = cf[t](*coo_z, axis=-1)
         u, v, w = u.transpose(3, 0, 1, 2), v.transpose(3, 0, 1, 2), w.transpose(3, 0, 1, 2)
         u, v, w = Jz.split(u, axis=0), Jz.split(v, axis=0), Jz.split(w, axis=0)
@@ -665,7 +779,7 @@ class MsePySpaceReduceLambda(Frozen):
                 )
             )
 
-        # =============
+        # ====================================================
         local_dydz = Jx.merge(local_dydz, axis=0)
         local_dzdx = Jy.merge(local_dzdx, axis=0)
         local_dxdy = Jz.merge(local_dxdy, axis=0)

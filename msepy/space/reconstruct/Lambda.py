@@ -26,6 +26,14 @@ class MsePySpaceReconstructLambda(Frozen):
 
         if m == n == 2 and k == 1:
             return getattr(self, f'_m{m}_n{n}_k{k}_{orientation}')(local_cochain, degree, *meshgrid, **kwargs)
+
+        elif m == 2 and n == 1 and k == 1:
+
+            if orientation == 'outer':
+                return self._m2_n1_k1_outer(local_cochain, degree, *meshgrid, **kwargs)
+            else:
+                raise NotImplementedError()
+
         else:
             return getattr(self, f'_m{m}_n{n}_k{k}')(local_cochain, degree, *meshgrid, **kwargs)
 
@@ -204,6 +212,52 @@ class MsePySpaceReconstructLambda(Frozen):
 
         return (x, y), (vx, vy)
 
+    def _m2_n1_k1_outer(self, local_cochain, degree, *xi_et, **kwargs):
+        """"""
+        assert len(xi_et) == 1, f"I only need one 1-d array."
+        xi = xi_et[0]
+        assert np.ndim(xi) == 1 and np.min(xi) >= -1 and np.max(xi) <= 1, \
+            f"xi wrong; it must be 1d in [-1, 1]."
+        assert len(kwargs) == 0, f"_m2_n1_k1_outer reconstruct takes no kwargs."
+
+        nodes, bfs = self._space.basis_functions[degree](xi)
+
+        mesh = self._mesh
+        from msepy.main import base
+        meshes = base['meshes']
+        boundary_sym = mesh.abstract.boundary()._sym_repr
+        boundary_section = None
+        for sym in meshes:
+            if sym == boundary_sym:
+                boundary_section = meshes[sym]
+                break
+            else:
+                pass
+        assert boundary_section is not None, f"must have found a boundary section."
+
+        faces = boundary_section.faces  # reconstruct on all faces.
+
+        X, Y, R = dict(), dict(), dict()
+        for i in faces:
+            face = faces[i]
+            element, m, n = face._element, face._m, face._n
+            ct = face.ct
+            face_nodes = nodes[(m, n)]
+            x, y = ct.mapping(face_nodes)
+            JM = ct.Jacobian_matrix(face_nodes)
+            Jacobian = np.sqrt(JM[0]**2 + JM[1]**2)
+            reciprocal_det_jm = np.reciprocal(Jacobian)
+            bf = bfs[(m, n)]
+            local_dofs = self._space.find.local_dofs(m, n, degree)
+            cochain = local_cochain[element, local_dofs]
+            reconstruct = np.einsum(
+                'ik, i, k -> k', bf, cochain, reciprocal_det_jm, optimize='optimal'
+            )
+            X[(element, m, n)] = x
+            Y[(element, m, n)] = y
+            R[(element, m, n)] = reconstruct
+        return (X, Y), (R,)
+
     def _m2_n2_k2(self, local_cochain, degree, *meshgrid_xi_et, ravel=False):
         """"""
         n = 2
@@ -228,6 +282,7 @@ class MsePySpaceReconstructLambda(Frozen):
                     optimize='optimal',
                 )
             )
+
         v = iJ.merge(v, axis=0)
         if ravel:
             pass

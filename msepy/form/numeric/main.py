@@ -23,6 +23,11 @@ class MsePyRootFormNumeric(Frozen):
         self._tsp = None
         self._dds = None
         self._sf = None
+        self._interp_cache = {
+            'time': None,
+            'cochain_id': -1,
+            'interp': None
+        }
         self._freeze()
 
     @property
@@ -329,6 +334,23 @@ class MsePyRootFormNumeric(Frozen):
             A interpolation for the whole domain.
 
         """
+        if t is None:
+            time = self._f.cochain.newest
+        else:
+            time = t
+
+        if isinstance(self._interp_cache['time'], (float, int)):
+            cached_time = self._interp_cache['time']
+            cochain_id = self._interp_cache['cochain_id']   # check whether cochain at time t is changed.
+            current_cochain_id = id(self._f.cochain[time])
+            if cached_time == time and cochain_id == current_cochain_id:
+                return self._interp_cache['interp']
+
+            else:
+                pass
+        else:
+            pass
+
         indicator = self._f.space.abstract.indicator
         if indicator == 'Lambda':
             space = self._f.space.abstract
@@ -347,7 +369,7 @@ class MsePyRootFormNumeric(Frozen):
             raise NotImplementedError()
 
         regions = self._f.mesh.manifold.regions
-        interp = self._make_interp(t=t, density=density)
+        interp = self._make_interp(t=time, density=density)
 
         if ndim == 2:         # 2d
             r = s = np.linspace(0, 1, factor * density)
@@ -367,7 +389,7 @@ class MsePyRootFormNumeric(Frozen):
                     Y.extend(y)
                     V0.extend(v)
                 final_itp = NearestNDInterpolator(list(zip(X, Y)), V0)
-                return final_itp
+                _2b_return_ = final_itp
 
             elif shape == [2]:  # vector in 2d
                 U, V = list(), list()
@@ -383,10 +405,17 @@ class MsePyRootFormNumeric(Frozen):
                 xy = list(zip(X, Y))
                 final_itp_u = NearestNDInterpolator(xy, U)
                 final_itp_v = NearestNDInterpolator(xy, V)
-                return final_itp_u, final_itp_v
+                _2b_return_ = final_itp_u, final_itp_v
 
             else:
                 raise NotImplementedError()
-        
+
         else:  # other dimensions
             raise NotImplementedError()
+
+        self._interp_cache['time'] = time
+        self._interp_cache['cochain_id'] = id(self._f.cochain[time])
+        # noinspection PyTypedDict
+        self._interp_cache['interp'] = _2b_return_
+
+        return _2b_return_

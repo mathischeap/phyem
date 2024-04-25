@@ -12,6 +12,11 @@ import numpy as np
 from collections.abc import Callable
 
 
+def _zeros(*args):
+    """"""
+    return np.zeros_like(args[-1])
+
+
 def genpiecewise(xi, condlist, funclist, fillvalue=0, args=(), **kw):
     """Evaluate a piecewise-defined function.
 

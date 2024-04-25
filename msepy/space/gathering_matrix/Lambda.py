@@ -15,6 +15,7 @@ class MsePyGatheringMatrixLambda(Frozen):
         self._mesh = space.mesh
         self._k = space.abstract.k
         self._n = space.abstract.n  # manifold dimensions
+        self._m = space.abstract.m
         self._orientation = space.abstract.orientation
         self._cache = dict()
         self._freeze()
@@ -26,26 +27,26 @@ class MsePyGatheringMatrixLambda(Frozen):
         if cache_key in self._cache:
             gm = self._cache[cache_key]
         else:
-            if self._n == 2 and self._k == 1:
-                method_name = f"_n{self._n}_k{self._k}_{self._orientation}"
+            if self._m == 2 and self._n == 2 and self._k == 1:
+                method_name = f"_m{self._m}_n{self._n}_k{self._k}_{self._orientation}"
             else:
-                method_name = f"_n{self._n}_k{self._k}"
+                method_name = f"_m{self._m}_n{self._n}_k{self._k}"
             gm = getattr(self, method_name)(p)
             self._cache[cache_key] = gm
 
         return gm
 
-    def _n3_k3(self, p):
+    def _m3_n3_k3(self, p):
         """"""
         total_num_elements = self._mesh.elements._num
-        num_local_dofs = self._space.num_local_dofs.Lambda._n3_k3(p)
+        num_local_dofs = self._space.num_local_dofs.Lambda._m3_n3_k3(p)
         total_num_dofs = total_num_elements * num_local_dofs
         gm = np.arange(0, total_num_dofs).reshape(
             (self._mesh.elements._num, num_local_dofs), order='C',
         )
         return RegularGatheringMatrix(gm)
 
-    def _n3_k2(self, p):
+    def _m3_n3_k2(self, p):
         """A very old scheme, ugly but works."""
         gn0 = np.zeros((self._mesh.elements._num, p[0] + 1, p[1], p[2]), dtype=int)
         gn1 = np.zeros((self._mesh.elements._num, p[0], p[1] + 1, p[2]), dtype=int)
@@ -55,6 +56,7 @@ class MsePyGatheringMatrixLambda(Frozen):
         num_basis_on_sides_dict = {'N': p[1]*p[2], 'S': p[1]*p[2],
                                    'W': p[0]*p[2], 'E': p[0]*p[2],
                                    'B': p[0]*p[1], 'F': p[0]*p[1]}
+
         for n in range(self._mesh.elements._num):  # currently, we are numbering nth element.
             # we first see the north side__________________________________________
             what_north = element_map[n][0]
@@ -206,7 +208,7 @@ class MsePyGatheringMatrixLambda(Frozen):
         ])
         return RegularGatheringMatrix(gn)
 
-    def _n3_k1(self, p):
+    def _m3_n3_k1(self, p):
         """A very old scheme, ugly but works."""
         gn0 = -np.ones((self._mesh.elements._num, p[0], p[1] + 1, p[2] + 1), dtype=int)
         gn1 = -np.ones((self._mesh.elements._num, p[0] + 1, p[1], p[2] + 1), dtype=int)
@@ -589,7 +591,7 @@ class MsePyGatheringMatrixLambda(Frozen):
         edge1, edge2 = edges
         return ith, edge1, edge2
 
-    def _n3_k0(self, p):
+    def _m3_n3_k0(self, p):
         """A very old scheme, ugly but works."""
         mesh = self._mesh
         corner_position = mesh.topology.corner_attachment
@@ -1060,7 +1062,7 @@ class MsePyGatheringMatrixLambda(Frozen):
             current_num += p
         return gn, current_num
 
-    def _n2_k0(self, p):
+    def _m2_n2_k0(self, p):
         """A very old scheme, ugly but works."""
         # the idea of numbering 0-form on 2-manifold is the following
         # 1) we go through all elements
@@ -1160,7 +1162,7 @@ class MsePyGatheringMatrixLambda(Frozen):
         gm = np.array([gm[j].ravel('F') for j in range(self._mesh.elements._num)])
         return RegularGatheringMatrix(gm)
 
-    def _n2_k1_inner(self, p):
+    def _m2_n2_k1_inner(self, p):
         """A very old scheme, ugly but works.
         An old scheme. it is slow. But since we only do it once, we keep it.
         """
@@ -1248,7 +1250,7 @@ class MsePyGatheringMatrixLambda(Frozen):
         ])
         return RegularGatheringMatrix(gm)
 
-    def _n2_k1_outer(self, p):
+    def _m2_n2_k1_outer(self, p):
         """A very old scheme, ugly but works.
         An old scheme. it is slow. But since we only do it once, we keep it.
         """
@@ -1336,20 +1338,78 @@ class MsePyGatheringMatrixLambda(Frozen):
         ])
         return RegularGatheringMatrix(gm)
 
-    def _n2_k2(self, p):
+    def _m2_n1_k1(self, p):
+        """"""
+        from msepy.main import base
+        meshes = base['meshes']
+        boundary_sym = self._mesh.abstract.boundary()._sym_repr
+        boundary_section = None
+        for sym in meshes:
+            if sym == boundary_sym:
+                boundary_section = meshes[sym]
+                break
+            else:
+                pass
+        assert boundary_section is not None, f"must have found a boundary section."
+
+        nWE, nNS = p
+
+        N_s, N_e = 0, nNS
+        S_s, S_e = nNS, 2 * nNS
+        W_s, W_e = 2 * nNS, 2 * nNS + nWE
+        E_s, E_e = 2 * nNS + nWE, 2 * nNS + 2 * nWE
+        # N -> S -> W -> E  # local numbering sequence
+
+        gm = np.zeros(   # do not use -1!
+            (self._mesh.elements._num, 2 * (nWE + nNS)),
+            dtype=int
+        )
+        faces = boundary_section.faces
+        numbering = 0
+        for i in faces:
+            face = faces[i]
+            m, n = face._m, face._n
+            element = face._element
+
+            if m == 0 and n == 0:  # N side
+                gm[element, N_s:N_e] = np.arange(numbering, numbering + nNS)
+                numbering += nNS
+
+            elif m == 0 and n == 1:  # S side
+                gm[element, S_s:S_e] = np.arange(numbering, numbering + nNS)
+                numbering += nNS
+
+            elif m == 1 and n == 0:  # W side
+                gm[element, W_s:W_e] = np.arange(numbering, numbering + nWE)
+                numbering += nWE
+
+            elif m == 1 and n == 1:  # E side
+                gm[element, E_s:E_e] = np.arange(numbering, numbering + nWE)
+                numbering += nWE
+
+            else:
+                raise Exception()
+
+        return RegularGatheringMatrix(
+            gm, redundant_dof_setting={
+                0: ([0], [0])
+            }
+        )
+
+    def _m2_n2_k2(self, p):
         """"""
         total_num_elements = self._mesh.elements._num
-        num_local_dofs = self._space.num_local_dofs.Lambda._n2_k2(p)
+        num_local_dofs = self._space.num_local_dofs.Lambda._m2_n2_k2(p)
         total_num_dofs = total_num_elements * num_local_dofs
         gm = np.arange(0, total_num_dofs).reshape(
             (self._mesh.elements._num, num_local_dofs), order='C',
         )
         return RegularGatheringMatrix(gm)
 
-    def _n1_k0(self, p):
+    def _m1_n1_k0(self, p):
         """"""
         element_map = self._mesh.elements.map
-        gm = - np.ones((self._mesh.elements._num, self._space.num_local_dofs.Lambda._n1_k0(p)), dtype=int)
+        gm = - np.ones((self._mesh.elements._num, self._space.num_local_dofs.Lambda._m1_n1_k0(p)), dtype=int)
         current = 0
         p = p[0]
         for e, mp in enumerate(element_map):
@@ -1373,10 +1433,10 @@ class MsePyGatheringMatrixLambda(Frozen):
                 gm[e, -1] = gm[x_p, 0]
         return RegularGatheringMatrix(gm)
 
-    def _n1_k1(self, p):
+    def _m1_n1_k1(self, p):
         """"""
         total_num_elements = self._mesh.elements._num
-        num_local_dofs = self._space.num_local_dofs.Lambda._n1_k1(p)
+        num_local_dofs = self._space.num_local_dofs.Lambda._m1_n1_k1(p)
         total_num_dofs = total_num_elements * num_local_dofs
         gm = np.arange(0, total_num_dofs).reshape(
             (self._mesh.elements._num, num_local_dofs), order='C',

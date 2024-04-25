@@ -227,13 +227,15 @@ class _CylinderChannel(object):
                   |
     ______________|______________________________________
     |             |                                     |
-    |            _|_                                    |
+    |hu          _|_                                    |
     |           / |r\                                   |
-    |h         |  .--|----------------------------------|----------> x
+    |-----------|  .--|----------------------------------|----------> x
     |           \___/                                   |
-    |                                                   |
-    |______dl________________________dr_________________|
+    |hl           |                                     |
+    |______dl_____|__________________dr_________________|
 
+
+    hl + hu = h
 
     Regions are distributed as:
 
@@ -248,7 +250,7 @@ class _CylinderChannel(object):
     |_______|__________|_____________________|
 
     """
-    def __init__(self, mf, r=1, dl=8, dr=25, h=6, w=0, periodic=True):
+    def __init__(self, mf, r=1, dl=8, dr=25, h=6, w=0, periodic=True, hl=None):
         """
         Parameters
         ----------
@@ -258,8 +260,11 @@ class _CylinderChannel(object):
         dr
         h
         w
-        periodic
-
+        periodic : bool
+            Only make sense in 3d.
+        hl :
+            ``hl + hu = h``
+            if ``hl`` is None, ``hl = 0.5 * h``.
         Returns
         -------
 
@@ -270,9 +275,14 @@ class _CylinderChannel(object):
         self._dr = dr
         self._h = h
         self._w = w
+        if hl is None:
+            hl = 0.5 * h
+        else:
+            pass
+        self._hl = hl
+        hu = h - hl
         self._periodic = periodic
 
-        assert dl > 2 * r and (h/2) > 2 * r and dr > 5 * r, f"shape wrong!"
         assert mf.esd == mf.ndim, f"_cylinder_channel mesh only works for manifold.ndim == embedding space dimensions."
         assert mf.esd in (2, 3), f"_cylinder_channel mesh only works in 2-, 3-dimensions."
         esd = mf.esd
@@ -324,9 +334,9 @@ class _CylinderChannel(object):
 
         if esd == 2:
             tf1 = _Transfinite2(
-                ['straight line', [(-hr, -h/2), (-hr, -hr)]],
-                ['straight line', [(hr, -h/2), (hr, -hr)]],
-                ['straight line', [(-hr, -h/2), (hr, -h/2)]],
+                ['straight line', [(-hr, -hl), (-hr, -hr)]],
+                ['straight line', [(hr, -hl), (hr, -hr)]],
+                ['straight line', [(-hr, -hl), (hr, -hl)]],
                 ['anticlockwise arc', [(0, 0), (-hr, -hr), (hr, -hr)]],
             )
             tf3 = _Transfinite2(
@@ -342,19 +352,19 @@ class _CylinderChannel(object):
                 ['straight line', [(hr, hr), (dr, hr)]],
             )
             tf6 = _Transfinite2(
-                ['straight line', [(-hr, hr), (-hr, h/2)]],
-                ['straight line', [(hr, hr), (hr, h/2)]],
+                ['straight line', [(-hr, hr), (-hr, hu)]],
+                ['straight line', [(hr, hr), (hr, hu)]],
                 ['clockwise arc', [(0, 0), (-hr, hr), (hr, hr)]],
-                ['straight line', [(-hr, h/2), (hr, h/2)]],
+                ['straight line', [(-hr, hu), (hr, hu)]],
             )
-            rm0 = _LinearTransformation(-dl, -hr, -h/2, -hr)
+            rm0 = _LinearTransformation(-dl, -hr, -hl, -hr)
             rm1 = tf1
-            rm2 = _LinearTransformation(hr, dr, -h/2, -hr)
+            rm2 = _LinearTransformation(hr, dr, -hl, -hr)
             rm3 = tf3
             rm4 = tf4
-            rm5 = _LinearTransformation(-dl, -hr, hr, h/2)
+            rm5 = _LinearTransformation(-dl, -hr, hr, hu)
             rm6 = tf6
-            rm7 = _LinearTransformation(hr, dr, hr, h/2)
+            rm7 = _LinearTransformation(hr, dr, hr, hu)
         elif esd == 3:
             raise NotImplementedError()
         else:

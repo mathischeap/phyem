@@ -18,7 +18,7 @@ from tools.functions.time_space._2d.wrappers.vector import T2dVector
 
 
 class ManufacturedSolutionNS2TGV(Frozen):
-    """"""
+    """Domain must be [0, 2]^2."""
 
     def __init__(self, Re=100):
         """

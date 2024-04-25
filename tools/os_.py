@@ -5,6 +5,10 @@ from src.config import RANK, MASTER_RANK
 import os
 
 
+def dirname(file):
+    return os.path.dirname(file)
+
+
 def isfile(filename):
     """"""
     return os.path.isfile(filename)

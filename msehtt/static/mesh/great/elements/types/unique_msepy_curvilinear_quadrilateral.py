@@ -1,0 +1,231 @@
+# -*- coding: utf-8 -*-
+"""
+"""
+from tools.frozen import Frozen
+import numpy as np
+from msehtt.static.mesh.great.elements.types.base import MseHttGreatMeshBaseElement
+from msehtt.static.mesh.great.elements.types.base import MseHttGreatMeshBaseElementCooTrans
+
+
+class MseHttGreatMeshUniqueMsepyCurvilinearQuadrilateralElement(MseHttGreatMeshBaseElement):
+    """
+    The real element is mapped from the following reference element.
+
+   _________________________________> eta
+    |  0        face #0       2
+    |  -----------------------
+    |  |                     |
+    |  |         (ref)       |
+    |  | face #2             |face #3
+    |  |                     |
+    |  -----------------------
+    v  1      face #1        3
+    xi
+
+    The labels in _map refers to the for nodes in such a sequence.
+
+    For example, _map = [87, 44, 156, 7561], then it is
+    _________________________________> eta
+    |  87                    156
+    |  -----------------------
+    |  |                     |
+    |  |                     |
+    |  |                     |
+    |  |                     |
+    |  -----------------------
+    v  44                    7561
+    xi
+
+    And the real number inherits the numbering.
+
+    """
+
+    def __init__(self, element_index, parameters, _map, msepy_manifold):
+        """"""
+        self._region = parameters['region']
+        self._origin = parameters['origin']
+        self._delta = parameters['delta']
+        assert msepy_manifold is not None, \
+            f"unique msepy curvilinear quadrilateral must have the original msepy manifold."
+        self._msepy_manifold = msepy_manifold
+        super().__init__()
+        self._m = 2                          # this element works in 2d space
+        self._n = 2                          # this element itself is 2d
+        self._index = element_index
+        self._parameters = parameters
+        self._map = _map
+        self._ct = MseHttGreatMeshUniqueMsepyCurvilinearQuadrilateralElementCooTrans(self, self.metric_signature)
+
+    def __repr__(self):
+        """"""
+        super_repr = super().__repr__().split('object')[1]
+        return f"<Unique Msepy Curvilinear quadrilateral element indexed:{self._index}" + super_repr
+
+    @classmethod
+    def _etype(cls):
+        return 'unique msepy curvilinear quadrilateral'
+
+    @property
+    def metric_signature(self):
+        """return int when it is unique."""
+        return id(self)
+
+    def _generate_outline_data(self, ddf=1):
+        """"""
+        if ddf <= 0.1:
+            ddf = 0.1
+        else:
+            pass
+        samples = 30 * ddf
+        if samples >= 100:
+            samples = 100
+        elif samples < 5:
+            samples = 5
+        else:
+            samples = int(samples)
+
+        linspace = np.linspace(-1, 1, samples)
+        ones = np.ones_like(linspace)
+
+        return {
+            'mn': (self.m, self.n),
+            0: self.ct.mapping(-ones, linspace),   # face #0
+            1: self.ct.mapping(ones, linspace),    # face #1
+            2: self.ct.mapping(linspace, -ones),   # face #2
+            3: self.ct.mapping(linspace, ones),    # face #3
+        }
+
+    @classmethod
+    def face_setting(cls):
+        """To show the nodes of faces and the positive direction."""
+        return {
+            0: (0, 2),   # face #0 is from node 0 -> node 2  (positive direction)
+            1: (1, 3),   # face #1 is from node 1 -> node 3  (positive direction)
+            2: (0, 1),   # face #2 is from node 0 -> node 1  (positive direction)
+            3: (2, 3),   # face #3 is from node 2 -> node 3  (positive direction)
+        }
+
+    @property
+    def faces(self):
+        if self._faces is None:
+            self._faces = MseHttGreatMeshUniqueMsepyCurvilinearQuadrilateralElementFaces(self)
+        return self._faces
+
+
+# ============ ELEMENT CT =====================================================================================
+class MseHttGreatMeshUniqueMsepyCurvilinearQuadrilateralElementCooTrans(MseHttGreatMeshBaseElementCooTrans):
+    """"""
+
+    def mapping(self, xi, et):
+        """"""
+        md_ref_coo = list()
+        for j, _ in enumerate([xi, et]):
+            _ = (_ + 1) * 0.5 * self._element._delta[j] + self._element._origin[j]
+            md_ref_coo.append(_)
+
+        return self._element._msepy_manifold.ct.mapping(
+            *md_ref_coo, regions=self._element._region
+        )[self._element._region]
+
+    def ___Jacobian_matrix___(self, xi, et):
+        """"""
+        xi_et_sg = (xi, et)
+        md_ref_coo = list()
+        for j, _ in enumerate(xi_et_sg):
+            _ = (_ + 1) * 0.5 * self._element._delta[j] + self._element._origin[j]
+            md_ref_coo.append(_)
+
+        jm = self._element._msepy_manifold.ct.Jacobian_matrix(
+            *md_ref_coo, regions=self._element._region
+        )[self._element._region]
+
+        s0 = len(jm)
+        s1 = len(jm[0])
+
+        JM = tuple([[0 for _ in range(s0)] for _ in range(s1)])
+        for i in range(s0):
+            for j in range(s1):
+                jm_ij = jm[i][j]
+                jm_ij *= self._element._delta[j] / 2
+                JM[i][j] = jm_ij
+        return JM
+
+
+# ============ FACES =====================================================================================
+class MseHttGreatMeshUniqueMsepyCurvilinearQuadrilateralElementFaces(Frozen):
+    """"""
+    def __init__(self, element):
+        """"""
+        self._element = element
+        self._faces = {}
+        self._freeze()
+
+    def __getitem__(self, face_id):
+        """0, 1, 2, 3.
+
+       _________________________________> eta
+        |  0        face #0       2
+        |  -----------------------
+        |  |                     |
+        |  |         (ref)       |
+        |  | face #2             |face #3
+        |  |                     |
+        |  -----------------------
+        v  1      face #1        3
+        xi
+
+        """
+        assert face_id in range(4), f"face id must be in range(4)."
+        if face_id not in self._faces:
+            self._faces[face_id] = MseHttGreatMeshUniqueMsepyCurvilinearQuadrilateralElementFace(self._element, face_id)
+        else:
+            pass
+        return self._faces[face_id]
+
+    def __repr__(self):
+        """"""
+        return f"<Faces of {self._element}>"
+
+
+class MseHttGreatMeshUniqueMsepyCurvilinearQuadrilateralElementFace(Frozen):
+    """"""
+    def __init__(self, element, face_id):
+        self._element = element
+        self._id = face_id
+        self._ct = MseHttGreatMeshUniqueMsepyCurvilinearQuadrilateralElementFaceCT(self)
+        self._freeze()
+
+    def __repr__(self):
+        """"""
+        return f"<Face#{self._id} of {self._element}>"
+
+    @property
+    def ct(self):
+        """Coordinate transformation of this face."""
+        return self._ct
+
+
+from msehtt.static.mesh.great.elements.types.orthogonal_rectangle import MseHttGreatMeshOrthogonalRectangleElementFaceCT
+
+
+class MseHttGreatMeshUniqueMsepyCurvilinearQuadrilateralElementFaceCT(
+    MseHttGreatMeshOrthogonalRectangleElementFaceCT
+):
+    """"""
+    def __init__(self, face):
+        super().__init__(face)
+        self._melt()
+        self.___is_place___ = None
+        self._freeze()
+
+    def is_plane(self):
+        """"""
+        if self.___is_place___ is None:
+            xi = np.linspace(-1, 1, 23)
+            ounv = self.outward_unit_normal_vector(xi)
+            n0, n1 = ounv
+            if np.all(n0 == n0[0]) and np.all(n1 == n1[1]):
+                self.___is_place___ = True
+            else:
+                self.___is_place___ = False
+        return self.___is_place___

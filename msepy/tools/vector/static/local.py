@@ -34,7 +34,6 @@ class MsePyStaticLocalVector(Frozen):
         """"""
         self._gm = gathering_matrix
         self.data = _2d_data
-        self._adjust = MsePyStaticLocalVectorAdjust(self)
         self._customize = MsePyStaticLocalVectorCustomize(self)
         self._assemble = None
         self._freeze()
@@ -48,11 +47,11 @@ class MsePyStaticLocalVector(Frozen):
     def data(self):
         """Let the data ready as a 2-d array.
 
-        All adjustments and customizations take effects.
+        All customizations take effects.
 
         Must return a 2-d array data.
         """
-        if len(self._adjust) == len(self._customize) == 0:
+        if len(self._customize) == 0:
             if self._dtype == 'callable':
                 # collect all callable data here
                 raise NotImplementedError(f"callable data is not ready")
@@ -62,6 +61,7 @@ class MsePyStaticLocalVector(Frozen):
 
             else:
                 return self._data  # will raise Error when data is callable (generated in realtime) or None.
+
         else:
             raise NotImplementedError()
 
@@ -100,31 +100,19 @@ class MsePyStaticLocalVector(Frozen):
         else:
             return self._data[i]  # raise Error when data is None.
 
-    def _get_data_adjusted(self, i):
-        """"""
-        if i in self.adjust:
-            # adjusted data is cached in `adjust.adjustment` anyway!
-            data = self.adjust[i]
-        else:
-            data = self._get_meta_data(i)
-        return data
-
     def __getitem__(self, i):
         """When `self._data` is None, raise Error.
 
         return the vector (1d array) for element #i.
         """
-        if len(self._adjust) == len(self._customize) == 0:
+        if len(self._customize) == 0:
             return self._get_meta_data(i)
-
-        elif len(self._customize) == 0:
-            return self._get_data_adjusted(i)
 
         else:
             if i in self.customize:
                 data = self.customize[i]
             else:
-                data = self._get_data_adjusted(i)
+                data = self._get_meta_data(i)
             return data
 
     def __iter__(self):
@@ -193,16 +181,6 @@ class MsePyStaticLocalVector(Frozen):
         """
         return self._customize
 
-    @property
-    def adjust(self):
-        """
-        Adjustment will change matrices dependent on me. For example, B = A.T. If I adjust A late on,
-        B will also change.
-
-        While if we ``customize`` A, B will not be affected.
-        """
-        return self._adjust
-
     def __rmul__(self, other):
         """rmul"""
         if isinstance(other, (int, float)):
@@ -210,10 +188,8 @@ class MsePyStaticLocalVector(Frozen):
                 raise Exception(f"cannot do * for None type vector")
             elif self._dtype in ("homogeneous", "2d"):
 
-                if len(self.adjust) == 0:
-                    data = other * self.data
-                else:
-                    raise NotImplementedError()
+                data = other * self.data
+
                 return self.__class__(data, self._gm)
 
             elif self._dtype == 'callable':
@@ -228,58 +204,51 @@ class MsePyStaticLocalVector(Frozen):
 
             if self._dtype == 'None' or other._dtype == 'None':
                 raise Exception(f"cannot do + for None type vector")
+
             elif self._dtype in ("homogeneous", "2d") and other._dtype in ("homogeneous", "2d"):
 
-                if len(self.adjust) == 0 and len(other.adjust) == 0:
-                    data = self.data + other.data
-                else:
-                    raise NotImplementedError()
+                data = self.data + other.data
                 return self.__class__(data, self._gm)
 
             elif self._dtype == 'callable' or other._dtype == 'callable':
-                raise NotImplementedError()
+                def ___add___(i):
+                    return self[i] + other[i]
+
+                return self.__class__(___add___, self._gm)
 
         else:
             raise NotImplementedError(f"{other}")
 
     def __neg__(self):
-        """- self."""
+        """# all adjustment and customization take effect."""
         if self._dtype == 'None':
             raise Exception(f"cannot do * for None type vector")
+
         elif self._dtype in ("homogeneous", "2d"):
 
-            if len(self.adjust) == 0:
+            if len(self._customize) == 0:
                 data = - self.data
+
+                return self.__class__(data, self._gm)
+
             else:
-                raise NotImplementedError()
-            return self.__class__(data, self._gm)
+
+                def ___neg_data___(i):
+                    """"""
+                    return - self[i]
+
+                return self.__class__(___neg_data___, self._gm)
 
         elif self._dtype == 'callable':
-            raise NotImplementedError()
+
+
+            def ___neg_callable___(i):
+                return - self[i]
+
+            return self.__class__(___neg_callable___, self._gm)
 
         else:
             raise NotImplementedError()
-
-
-class MsePyStaticLocalVectorAdjust(Frozen):
-    """"""
-
-    def __init__(self, v):
-        """"""
-        self._v = v
-        self._adjustments = {}
-        self._freeze()
-
-    def __len__(self):
-        return len(self._adjustments)
-
-    def __contains__(self, i):
-        """"""
-        return i in self._adjustments
-
-    def __getitem__(self, i):
-        """"""
-        return self._adjustments[i]
 
 
 class MsePyStaticLocalVectorCustomize(Frozen):
@@ -408,6 +377,6 @@ class _MsePyStaticLocalVectorConcatenate(Frozen):
         v_list = list()
         for v in self._vs:
             v_list.append(
-                v[i]  # all adjustments and customizations take effect.
+                v[i]  # all customizations take effect.
             )
         return np.concatenate(v_list)

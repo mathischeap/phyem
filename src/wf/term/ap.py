@@ -148,6 +148,9 @@ class _SimplePatternAPParser(Frozen):
             elif sp == _simple_patterns['(d,d)']:
                 return self._parse_reprs_dd(test_form=test_form)
 
+            elif sp == _simple_patterns['(trB, A)'] or sp == _simple_patterns['(A, trB)']:
+                return self._parse_reprs_A_trB(test_form=test_form)
+
             elif sp == _simple_patterns['<d,>']:
                 return self._parse_reprs_d_dual_(test_form=test_form)
             elif sp == _simple_patterns['<,d>']:
@@ -428,6 +431,44 @@ class _SimplePatternAPParser(Frozen):
 
         term = self._wft._factor * TermLinearAlgebraicProxy(term_ap)
         sign = '+'
+        return term, sign, 'linear'
+
+    # -------- (A, trB) -------------------------------------------------
+    def _parse_reprs_A_trB(self, test_form):
+        """"""
+        f0, f1 = self._wft._f0, self._wft._f1
+
+        spk = self._wft.___simple_pattern_keys___
+        A = spk['A']   # (A, tr B)
+        B = spk['B']   # (A, tr B)
+
+        M_space = A.space
+        assert M_space is f0.space and M_space is f1.space
+
+        dA = A._degree
+        dB = B._degree
+
+        mass_matrix = _VarPar_M(M_space, M_space, dA, dB)   # shape -> [dA, dB]
+
+        trace_matrix = _VarPar_tM(B)
+
+        vA = A.ap()
+        vB = B.ap()
+
+        if test_form == A:
+
+            term_ap = vA.T @ mass_matrix @ trace_matrix @ vB
+
+        elif test_form == B:
+
+            term_ap = vB.T @ trace_matrix.T @ mass_matrix @ vA
+
+        else:
+            raise Exception()
+
+        term = self._wft._factor * TermLinearAlgebraicProxy(term_ap)
+        sign = '+'
+
         return term, sign, 'linear'
 
     # --- (A .V B, C) ----------------------------------------------------------------------

@@ -20,15 +20,15 @@ ph.config.set_embedding_space_dim(2)
 ph.config.set_high_accuracy(True)
 ph.config.set_pr_cache(True)
 
-N = 3
-element_layout = [24, 8]
+N = 2
+element_layout = [16, 6]
 
 # t_max = 1
 # steps = 200
 t0 = 0
-Re = 800
+Re = 100
 
-manifold = ph.manifold(2, is_periodic=False)
+manifold = ph.manifold(2, periodic=False)
 mesh = ph.mesh(manifold)
 
 Out0 = ph.space.new('Lambda', 0, orientation='outer')

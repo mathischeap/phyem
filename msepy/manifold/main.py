@@ -40,7 +40,7 @@ def config(mf, arg, *args, **kwargs):
             )
 
         mf._parse_regions_from_region_map(
-            0,
+            0,                    # region map type 0 for regular region
             region_map,
             mapping_dict,
             Jacobian_matrix_dict,
@@ -94,7 +94,8 @@ class MsePyManifold(Frozen):
             region_map,
             mapping_dict,
             Jacobian_matrix_dict,
-            mtype_dict
+            mtype_dict,
+            check_periodic=True
     ):
         """Will set `regions._map` and `region._regions` and `regions._map_type`.
 
@@ -124,7 +125,10 @@ class MsePyManifold(Frozen):
 
         self.regions._map = region_map  # ***
         self._regions._map_type = region_map_type
-        assert self.abstract._is_periodic is self.regions._is_periodic(), f"Periodicity does not match."
+        if check_periodic:
+            assert self.abstract._is_periodic is self.regions._is_periodic(), f"Periodicity does not match."
+        else:
+            pass
 
         boundary_manifold = self.abstract.boundary()
         from src.manifold import NullManifold

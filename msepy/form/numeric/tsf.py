@@ -57,11 +57,9 @@ class MsePyRootFormNumericTimeSpaceFunction(Frozen):
             space = self._f.space.abstract
             m, n, k = space.m, space.n, space.k
             if m == n == 2 and k in (0, 2):
-                shape = [1]   # scalar in 2d
-                ndim = 2      # scalar in 2d
+                dtype = '2d scalar'
             elif m == n == 2 and k == 1:
-                shape = [2]   # vector in 2d
-                ndim = 2      # vector in 2d
+                dtype = '2d vector'
             else:
                 raise NotImplementedError()
         else:
@@ -69,14 +67,16 @@ class MsePyRootFormNumericTimeSpaceFunction(Frozen):
 
         final_itp = self._f.numeric.interp(t=t)
 
-        if shape == [2] and ndim == 2:  # vector in 2d
+        if dtype == '2d vector':  # vector in 2d
             itp0, itp1 = final_itp
             u = itp0(*xyz)
             v = itp1(*xyz)
             energy = 0.5 * (u**2 + v**2)
-            energy[isnan(energy)] = 0
 
         else:
             raise NotImplementedError()
+
+        if (isnan(energy)).any():
+            raise Exception
 
         return energy

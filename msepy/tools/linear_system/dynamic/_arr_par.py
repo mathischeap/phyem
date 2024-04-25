@@ -37,6 +37,7 @@ __all__ = [
     '_parse_root_form',
 
     'Parse__M_matrix',
+    "Parse__trace_matrix",  # trace matrix
     'Parse__dp_matrix',     # Wedge matrix
     'Parse__E_matrix',
     'Parse__pi_matrix',     # projection is different from (bigger than) the Hodge.
@@ -201,6 +202,23 @@ def Parse__M_matrix(space, degree0, degree1):
 
     else:
         raise NotImplementedError()
+
+
+def Parse__trace_matrix(space_lin_repr, degree_str):
+    """"""
+    degree = _str_degree_parser(degree_str)
+    space = _find_space_through_pure_lin_repr(space_lin_repr)
+    gm_space_1 = space.gathering_matrix(degree)
+    from src.spaces.operators import trace as space_trace
+    trace_space = _find_space_through_pure_lin_repr(space_trace(space.abstract)._pure_lin_repr)
+    gm_trace_0 = trace_space.gathering_matrix(degree)
+    tM = space.trace_matrix(degree)
+    tM = MsePyStaticLocalMatrix(
+        tM,
+        gm_trace_0,
+        gm_space_1,
+    )
+    return tM, None  # time_indicator is None, mean tM is same all the time.
 
 
 def Parse__dp_matrix(s0, s1, d0, d1):

@@ -42,7 +42,7 @@ def manifold(
         ndim,
         sym_repr=None,
         lin_repr=None,
-        is_periodic=False
+        periodic=False
 ):
     """Generate an abstract manifold. It is actually a wrapper of the ``__init__`` method of :class:`Manifold`.
 
@@ -56,7 +56,7 @@ def manifold(
     lin_repr : {None, str}, optional
         The linguistic representation of the manifold. If it is ``None``, we will use a pre-set linguistic
         representation. The default is ``None``.
-    is_periodic : bool, optional
+    periodic : bool, optional
         If this is set to ``True``, the manifold is a periodic. Otherwise, it is not periodic.
         The default is ``True``.
 
@@ -66,7 +66,7 @@ def manifold(
         The abstract manifold instance.
 
     """
-    return Manifold(ndim, sym_repr=sym_repr, lin_repr=lin_repr, is_periodic=is_periodic)
+    return Manifold(ndim, sym_repr=sym_repr, lin_repr=lin_repr, periodic=periodic)
 
 
 class Manifold(Frozen):
@@ -75,7 +75,7 @@ class Manifold(Frozen):
         self, ndim,
         sym_repr=None,
         lin_repr=None,
-        is_periodic=False,   # means fully periodic
+        periodic=False,   # means fully periodic
         # add other representations here.
     ):
         """"""
@@ -120,8 +120,8 @@ class Manifold(Frozen):
         self._pure_lin_repr = pure_lin_repr
         _global_manifolds[sym_repr] = self
 
-        assert isinstance(is_periodic, bool), f"is_periodic must be bool type."
-        self._is_periodic = is_periodic
+        assert isinstance(periodic, bool), f"is_periodic must be bool type."
+        self._is_periodic = periodic
 
         self._udg = None  # if it has an udg_repr representation.
         self._boundary = None
@@ -179,7 +179,7 @@ class Manifold(Frozen):
                     self.ndim-1,
                     sym_repr=sym_repr,
                     lin_repr=f'boundary-of-{self._pure_lin_repr}',
-                    is_periodic=True,
+                    periodic=True,
                 )
                 self._boundary._inclusion = self
         return self._boundary

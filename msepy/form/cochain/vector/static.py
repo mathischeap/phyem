@@ -22,7 +22,7 @@ class MsePyRootFormStaticCochainVector(MsePyStaticLocalVector):
 
     def override(self):
         """override `self._data` to be the cochain of `self._f` at time `self._t`."""
-        if len(self.adjust) == 0 and len(self.customize) == 0:
+        if len(self.customize) == 0:
             assert self.data is not None, f"I have no data."
             self._f[self._time].cochain = self.data
         else:

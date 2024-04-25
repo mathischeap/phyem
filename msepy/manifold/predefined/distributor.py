@@ -19,11 +19,11 @@ class PredefinedMsePyManifoldDistributor(Frozen):
 
         _module = import_module(predefined_path)
 
-        _the_mf_config = getattr(_module, self._predefined_manifolds[object_name])
+        _the_mf_config = getattr(_module, self._predefined_manifolds()[object_name])
 
         return _the_mf_config
 
-    @property
+    @classmethod
     def _predefined_manifolds(self):
         return {
             'crazy': '_crazy',

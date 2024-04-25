@@ -307,29 +307,51 @@ from src.config import _form_evaluate_at_repr_setting
 class WeakFormulation(Frozen):
     """The Weak Formulation class."""
 
-    def __init__(self, test_forms, term_sign_dict=None, expression=None, interpreter=None, merge=None):
+    def __init__(
+            self, test_forms,
+            term_sign_dict=None,
+            expression=None,
+            interpreter=None,
+            wfs=None,
+            merge=None,
+    ):
         """
 
         Parameters
         ----------
-        term_sign_dict
         test_forms
+        term_sign_dict
         expression
+        interpreter
+        wfs
+        merge
+
         """
         if term_sign_dict is not None:
             assert expression is None
+            assert wfs is None
             assert merge is None
             self._parse_term_sign_dict(term_sign_dict, test_forms)
 
         elif expression is not None:
             assert term_sign_dict is None
+            assert wfs is None
             assert merge is None
             self._parse_expression(expression, interpreter, test_forms)
 
         elif merge is not None:  # merge multiple weak formulations
             assert term_sign_dict is None
             assert expression is None
+            assert wfs is None
             self._initialize_through_merging(merge, test_forms)
+
+        elif wfs is not None:
+            # provided multiple weak forms, we merge them.
+            assert test_forms is None
+            assert term_sign_dict is None
+            assert expression is None
+            assert merge is None
+            self._merge_multiple_weak_formulations(wfs)
 
         else:
             raise Exception()
@@ -444,6 +466,29 @@ class WeakFormulation(Frozen):
                     sign = sign_dict[i][j][k]
                     assert sign in ('+', '-'), f"sign[{i}][{j}][{k}] = {sign} illegal."
         self._parse_term_sign_dict([term_dict, sign_dict], test_forms)
+
+    def _merge_multiple_weak_formulations(self, wfs):
+        """"""
+        test_forms = []
+        for wf in wfs:
+            assert wf.__class__ is self.__class__
+            test_forms.extend(wf.test_forms)
+
+        term_dict, sign_dict = {}, {}
+
+        i = 0
+        for wf in wfs:
+            for j in wf._term_dict:
+
+                td = wf._term_dict[j]
+                sd = wf._sign_dict[j]
+
+                term_dict[i] = td
+                sign_dict[i] = sd
+
+                i += 1
+
+        self._parse_term_sign_dict((term_dict, sign_dict), test_forms)
 
     @classmethod
     def _parse_meshes(cls, term_dict):

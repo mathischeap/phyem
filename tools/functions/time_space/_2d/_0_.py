@@ -16,7 +16,7 @@ def _0t_(t, x, y):
         0.0
     """
     assert np.shape(x) == np.shape(y)
-    return np.zeros(np.shape(x)) + 0 * t
+    return np.zeros_like(x) + 0 * t
 
 
 if __name__ == "__main__":

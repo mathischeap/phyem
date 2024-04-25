@@ -55,7 +55,7 @@ class MsePyContinuousForm(Frozen):
             abstract = self._f.abstract
             space = abstract.space
             if space.__class__ is ScalarValuedFormSpace:
-                n, k = space.n, space.k
+                m, n, k = space.m, space.n, space.k
 
                 if k == 0 or k == n:
                     self._shape = (1, )

@@ -62,7 +62,7 @@ class MsePyRootFormNumericStreamFunction(Frozen):
             x, y = xyz
             u, v = value
             x, y, u, v = self._f.mesh._regionwsie_stack(x, y, u, v)
-            if len(x) == 1:
+            if len(x) == 1:  # only one region!
                 region_key = list(x.keys())[0]
                 sf0 = self._compute_1rw_2d_streamfunction_from_xy_uv(
                     x[region_key], y[region_key], u[region_key], v[region_key]
@@ -70,7 +70,7 @@ class MsePyRootFormNumericStreamFunction(Frozen):
                 sf = {region_key: sf0}
                 return DDSRegionWiseStructured([x, y], [sf])
             else:
-                return NotImplementedError()
+                raise NotImplementedError((ndim, dtype))
         else:
             raise NotImplementedError()
 

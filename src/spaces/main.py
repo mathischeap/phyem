@@ -146,6 +146,7 @@ def new(abbr, *args, mesh=None, **kwargs):
 
 __all__ = [
     '_VarSetting_mass_matrix',                     #
+    '_VarSetting_trace_matrix',                    # trace matrix
     '_VarSetting_d_matrix',                        #
     '_VarSetting_d_matrix_transpose',              #
     '_VarSetting_pi_matrix',
@@ -197,6 +198,16 @@ _VarSetting_mass_matrix = [
     r"\mathsf{M}",
     _sep.join(["Mass:Mat", "{space_pure_lin_repr}", "{d0}", "{d1}"]),
 ]
+
+_VarSetting_trace_matrix = [
+    r"\mathbb{T}",
+    _sep.join(["Trace:Mat", "{space_pure_lin_repr}", "{degree}"]),
+]
+
+# _VarSetting_trace_mass_matrix = [
+#     r"\mathbb{M}",
+#     _sep.join(["Trace:Mat", "{space_pure_lin_repr}", "{degree}"]),
+# ]
 
 _VarSetting_d_matrix = [
     r"\mathsf{D}",

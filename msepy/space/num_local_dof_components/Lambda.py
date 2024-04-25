@@ -12,6 +12,7 @@ class MsePyNumLocalDofComponentsLambda(Frozen):
         self._space = space
         self._k = space.abstract.k
         self._n = space.abstract.n  # manifold dimensions
+        self._m = space.abstract.m
         self._orientation = space.abstract.orientation
         self._cache = dict()
         self._freeze()
@@ -25,10 +26,10 @@ class MsePyNumLocalDofComponentsLambda(Frozen):
         if key in self._cache:
             LN = self._cache[key]
         else:
-            if self._n == 2 and self._k == 1:
-                method_name = f"_n{self._n}_k{self._k}_{self._orientation}"
+            if self._m == 2 and self._n == 2 and self._k == 1:
+                method_name = f"_m{self._m}_n{self._n}_k{self._k}_{self._orientation}"
             else:
-                method_name = f"_n{self._n}_k{self._k}"
+                method_name = f"_m{self._m}_n{self._n}_k{self._k}"
 
             LN = getattr(self, method_name)(p)
             self._cache[key] = LN
@@ -36,13 +37,13 @@ class MsePyNumLocalDofComponentsLambda(Frozen):
         return LN
 
     @staticmethod
-    def _n3_k3(p):
+    def _m3_n3_k3(p):
         """"""
         px, py, pz = p
         return [px * py * pz, ]
 
     @staticmethod
-    def _n3_k2(p):
+    def _m3_n3_k2(p):
         """"""
         px, py, pz = p
         Px = (px+1) * py * pz
@@ -51,7 +52,7 @@ class MsePyNumLocalDofComponentsLambda(Frozen):
         return Px, Py, Pz
 
     @staticmethod
-    def _n3_k1(p):
+    def _m3_n3_k1(p):
         """"""
         px, py, pz = p
         Px = px * (py+1) * (pz+1)
@@ -60,19 +61,19 @@ class MsePyNumLocalDofComponentsLambda(Frozen):
         return Px, Py, Pz
 
     @staticmethod
-    def _n3_k0(p):
+    def _m3_n3_k0(p):
         """"""
         px, py, pz = p
         return [(px+1) * (py+1) * (pz+1), ]
 
     @staticmethod
-    def _n2_k0(p):
+    def _m2_n2_k0(p):
         """"""
         px, py = p
         return [(px+1) * (py+1), ]
 
     @staticmethod
-    def _n2_k1_inner(p):
+    def _m2_n2_k1_inner(p):
         """"""
         px, py = p
         Px = px * (py+1)
@@ -80,7 +81,7 @@ class MsePyNumLocalDofComponentsLambda(Frozen):
         return Px, Py
 
     @staticmethod
-    def _n2_k1_outer(p):
+    def _m2_n2_k1_outer(p):
         """"""
         px, py = p
         Px = (px+1) * py
@@ -88,19 +89,19 @@ class MsePyNumLocalDofComponentsLambda(Frozen):
         return Px, Py
 
     @staticmethod
-    def _n2_k2(p):
+    def _m2_n2_k2(p):
         """"""
         px, py = p
         return [px * py, ]
 
     @staticmethod
-    def _n1_k0(p):
+    def _m1_n1_k0(p):
         """"""
         p = p[0]
         return [p+1, ]
 
     @staticmethod
-    def _n1_k1(p):
+    def _m1_n1_k1(p):
         """"""
         p = p[0]
         return [p, ]

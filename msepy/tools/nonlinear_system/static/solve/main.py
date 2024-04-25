@@ -29,8 +29,10 @@ class MsePyStaticNonlinearSystemSolve(Frozen):
                 bcs = self._bc[boundary_section]
                 for j, bc in enumerate(bcs):
                     number_application = bc._num_application
+                    if number_application == 'manual':
+                        pass
 
-                    if number_application == 0:  # this particular not take effect yet
+                    elif number_application == 0:  # this particular not take effect yet
 
                         particular_bc = self._bc[boundary_section][j]
 
@@ -47,7 +49,10 @@ class MsePyStaticNonlinearSystemSolve(Frozen):
             for boundary_section in self._bc:
                 bcs = self._bc[boundary_section]
                 for j, bc in enumerate(bcs):
-                    bc._num_application = 0
+                    if bc._num_application == 'manual':
+                        pass
+                    else:
+                        bc._num_application = 0
 
     @property
     def scheme(self):

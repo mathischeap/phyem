@@ -207,6 +207,7 @@ class MsePyMesh(Frozen):
             layout[i] = _temp
 
         self.elements._generate_elements_from_layout(layout)
+        return layout
 
     def _parse_str_element_layout(self, str_layout_indicator):
         """"""

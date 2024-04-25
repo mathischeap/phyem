@@ -100,3 +100,168 @@ class MsePyStaticNonlinearSystemCustomize(Frozen):
         self._customizations.append(
             ('set_no_evaluation_for_overall_local_dofs', [elements, overall_local_dofs])
         )
+
+    def _apply_essential_BC_to_linear_part(
+            self,
+            i, j,
+            boundary_section,
+            bc_function, t=None
+    ):
+        """Apply essential-like B.C. to the block[i][j] of the linear part of the nonlinear system.
+
+        We change the dofs on `faces` of `boundary_section` to the cochain reduced from
+        `bc_function` at time `t`.
+
+        Parameters
+        ----------
+        i
+        j
+        boundary_section
+        bc_function
+        t
+
+        Returns
+        -------
+
+        """
+        if i == j:
+            self._apply_diagonal_essential_BC_to_linear_part(
+                i,
+                boundary_section,
+                bc_function, t=t
+            )
+        else:
+            pass
+
+        sfi = self._nls.unknowns[i]   # it is an essential B.C. for this form (static copy)
+        sfj = self._nls.unknowns[j]
+        fi = sfi._f
+        fj = sfj._f
+
+        if t is None:  # we get the time from the unknown.
+            t = sfj._t
+        else:
+            if t != sfj._t:
+                print("warning!, time differs from unknown time.")
+            else:
+                pass
+
+        cochain = fj.reduce(t, update_cochain=False, target=bc_function)
+
+        # now we parse the boundary section
+        the_msepy_boundary_section = None   # to store the found msepy boundary section
+        from msepy.manifold.main import MsePyManifold
+        from msepy.main import base
+        if boundary_section.__class__ is MsePyManifold:
+
+            meshes = base['meshes']
+            for sym in meshes:
+                mesh = meshes[sym]
+                if mesh.abstract.manifold is boundary_section.abstract:
+                    the_msepy_boundary_section = mesh
+                    break
+
+        else:
+            raise NotImplementedError(f"do not understand boundary section: {boundary_section}.")
+
+        assert the_msepy_boundary_section is not None, \
+            f"Cannot find a MsePyBoundarySection instance from {boundary_section}."
+
+        # parse the global-dofs and global-cochains to be applied ----
+
+        dofs_i = the_msepy_boundary_section.find_boundary_objects(
+            fi, 'gathering_matrix'
+        )
+        dofs_j, cochain = the_msepy_boundary_section.find_boundary_objects(
+            fj, 'gathering_matrix', cochain
+        )
+
+        assert len(dofs_i) == len(dofs_j) == len(cochain), f'must be!'
+
+        # --- find the related blocks in A, b of the linear part -------
+        A = self._nls._A
+        b = self._nls._b
+        bi = b[i]             # the right-hand vector to be customized
+        Aij = A[i][j]         # the left-hand matrix block to identify
+        Ai_ = list()          # the left-hand matrix blocks to zero
+        for k, A__ in enumerate(A[i]):
+            if k != j:
+                Ai_.append(A__)
+
+        # ----- make the changes --------------------------------------
+        for aij in Ai_:  # zeros all rows in Blocks Ai_ (not in Aij).
+            aij.customize.set_zero(dofs_i)
+
+        Aij.customize.set_values_and_zero_rest(dofs_i, dofs_j, 1)
+        bi.customize.set_values(dofs_i, cochain)
+
+    def _apply_diagonal_essential_BC_to_linear_part(
+            self,
+            i,
+            boundary_section,
+            bc_function, t=None
+    ):
+        """
+
+        Parameters
+        ----------
+        i
+        boundary_section
+        bc_function
+        t
+
+        Returns
+        -------
+
+        """
+        sf = self._nls.unknowns[i]  # it is an essential B.C. for this form (static copy)
+        f = sf._f
+
+        if t is None:  # we get the time from the unknown.
+            t = sf._t
+        else:
+            if t != sf._t:
+                print("warning!, time differs from unknown time.")
+            else:
+                pass
+
+        cochain = f.reduce(t, update_cochain=False, target=bc_function)
+
+        # now we parse the boundary section
+        the_msepy_boundary_section = None   # to store the found msepy boundary section
+        from msepy.manifold.main import MsePyManifold
+        from msepy.main import base
+        if boundary_section.__class__ is MsePyManifold:
+
+            meshes = base['meshes']
+            for sym in meshes:
+                mesh = meshes[sym]
+                if mesh.abstract.manifold is boundary_section.abstract:
+                    the_msepy_boundary_section = mesh
+                    break
+
+        else:
+            raise NotImplementedError(f"do not understand boundary section: {boundary_section}.")
+
+        dofs, cochain = the_msepy_boundary_section.find_boundary_objects(
+            f, 'gathering_matrix', cochain
+        )
+
+        assert len(dofs) == len(cochain), f'must be!'
+
+        # --- find the related blocks in A, b of the linear part -------
+        A = self._nls._A
+        b = self._nls._b
+        bi = b[i]             # the right-hand vector to be customized
+        Aii = A[i][i]         # the diagonal left-hand matrix block to identify
+        Ai_ = list()          # the off-diagonal left-hand matrix blocks to zero
+        for k, A__ in enumerate(A[i]):
+            if k != i:
+                Ai_.append(A__)
+
+        # ----- make the changes --------------------------------------
+        for aij in Ai_:  # zeros all rows in Blocks Ai_ (not in Aij).
+            aij.customize.set_zero(dofs)
+
+        Aii.customize.identify_diagonal(dofs)
+        bi.customize.set_values(dofs, cochain)

@@ -53,6 +53,13 @@ class MsePyStaticLocalMatrix(Frozen):
             else:
                 self._cache_key = cache_key
 
+        elif isinstance(data, dict):
+            self._dtype = 'realtime'
+            self.___dict_2_realtime_data___ = data
+            self._data = self._dict_2_realtime_caller
+            assert cache_key is None, f"when provided dict, provide no cache key."
+            self._cache_key = self._unique_cache_key
+
         else:
             raise NotImplementedError(f"MsePyLocalMatrix cannot take data of type {data.__class__}.")
 
@@ -62,7 +69,6 @@ class MsePyStaticLocalMatrix(Frozen):
         self._cache = {}
         self._irs = None
         self._customize = _MsePyStaticLocalMatrixCustomize(self)
-        self._adjust = _MsePyStaticLocalMatrixAdjust(self)
         self._assemble = MsePyStaticLocalMatrixAssemble(self)
         self._freeze()
 
@@ -73,6 +79,10 @@ class MsePyStaticLocalMatrix(Frozen):
         num_elements = self._gm0_row.num_elements
         self_repr = 'MsePy Static Local Matrix: ' + self._dtype + f"={num_elements}+{shape}"
         return r"<" + self_repr + super_repr
+
+    def _dict_2_realtime_caller(self, i):
+        """"""
+        return self.___dict_2_realtime_data___[i]
 
     def _constant_cache_key(self, i):
         """"""
@@ -120,25 +130,13 @@ class MsePyStaticLocalMatrix(Frozen):
 
             return data
 
-    def _get_data_adjusted(self, i):
-        """"""
-        if i in self.adjust:
-            # adjusted data is cached in `adjust.adjustment` anyway!
-            data = self.adjust[i]
-        else:
-            data = self._get_meta_data_from_cache(i)
-
-        assert isspmatrix_csc(data) or isspmatrix_csr(data), f"data={data.__class__} for element #{i} is not sparse."
-
-        return data
-
     def __getitem__(self, i):
         """Get the final (adjusted and customized) matrix for element #i.
         """
         if i in self.customize:
             data = self.customize[i]
         else:
-            data = self._get_data_adjusted(i)
+            data = self._get_meta_data_from_cache(i)
 
         assert isspmatrix_csc(data) or isspmatrix_csr(data), f"data for element #i is not sparse."
 
@@ -185,18 +183,6 @@ class MsePyStaticLocalMatrix(Frozen):
         return self._customize
 
     @property
-    def adjust(self):
-        """Will touch the data (not the meta-data).
-        Modification will be applied to new copies of the meta-data.
-
-        Adjustment will change the matrices dependent on me. For example, B = A.T. If I adjust A late on,
-        B will also change.
-
-        While if we ``customize`` A, B will not be affected.
-        """
-        return self._adjust
-
-    @property
     def assemble(self):
         """assemble self."""
         return self._assemble
@@ -219,6 +205,10 @@ class MsePyStaticLocalMatrix(Frozen):
         """static"""
         return True
 
+    def is_untouched(self):
+        """If no customization, it is untouched."""
+        return True if len(self.customize) == 0 else False
+
     def _is_regularly_square(self):
         if self._irs is None:
             self._irs = np.all(self._gm0_row._gm == self._gm1_col._gm)
@@ -236,15 +226,13 @@ class MsePyStaticLocalMatrix(Frozen):
 
     def _data_T(self, i):
         """"""
-        data = self._get_data_adjusted(i)
+        assert len(self.customize) == 0, f"customized matrix bears no operations."
+        data = self[i]
         return data.T
 
     def _cache_key_T(self, i):
         """"""
-        if i in self.adjust:
-            return 'unique'
-        else:
-            return self._cache_key(i)
+        return self._cache_key(i)
 
     def __matmul__(self, other):
         """self @ other.
@@ -300,6 +288,10 @@ class MsePyStaticLocalMatrix(Frozen):
             cache_key=self._cache_key_T,
         )
 
+    def _neg_T(self, i):
+        assert len(self.customize) == 0, f"customized matrix bears no operation."
+        return - self[i]
+
     def __add__(self, other):
         """self + other"""
         if other.__class__ is self.__class__:
@@ -322,9 +314,6 @@ class MsePyStaticLocalMatrix(Frozen):
         else:
             raise NotImplementedError(f"cannot + {other}")
 
-    def _neg_T(self, i):
-        return - self._get_data_adjusted(i)
-
 
 class _AddSubHelper(Frozen):
     """"""
@@ -338,8 +327,10 @@ class _AddSubHelper(Frozen):
 
     def __call__(self, i):
         """data for element #i"""
-        d0 = self._m0._get_data_adjusted(i)
-        d1 = self._m1._get_data_adjusted(i)
+        assert len(self._m0.customize) == 0 and len(self._m1.customize) == 0, \
+            f"customized matrix bears no operation."
+        d0 = self._m0[i]
+        d1 = self._m1[i]
         if self._plus_or_minus == '+':
             return d0 + d1
         elif self._plus_or_minus == '-':
@@ -349,15 +340,12 @@ class _AddSubHelper(Frozen):
 
     def _cache_key(self, i):
         """"""
-        if i in self._m0.adjust or i in self._m1.adjust:
-            return 'unique'
+        ck0 = self._m0._cache_key(i)
+        ck1 = self._m1._cache_key(i)
+        if ck0 == 'constant' and ck1 == 'constant':
+            return 'constant'
         else:
-            ck0 = self._m0._cache_key(i)
-            ck1 = self._m1._cache_key(i)
-            if ck0 == 'constant' and ck1 == 'constant':
-                return 'constant'
-            else:
-                return ck0+'@'+ck1
+            return ck0+'@'+ck1
 
 
 class _FactorRmul(Frozen):
@@ -370,15 +358,13 @@ class _FactorRmul(Frozen):
 
     def __call__(self, i):
         """"""
-        mat = self._mat._get_data_adjusted(i)
+        assert len(self._mat.customize) == 0, f"customized matrix bears no operation."
+        mat = self._mat[i]
         return self._f * mat
 
     def _cache_key(self, i):
         """"""
-        if i in self._mat.adjust:
-            return 'unique'
-        else:
-            return self._mat._cache_key(i)
+        return self._mat._cache_key(i)
 
 
 class _MatmulMatMat(Frozen):
@@ -392,22 +378,16 @@ class _MatmulMatMat(Frozen):
 
     def __call__(self, i):
         """"""
-        data0 = self._m0._get_data_adjusted(i)
-        data1 = self._m1._get_data_adjusted(i)
+        assert len(self._m0.customize) == 0 and len(self._m1.customize) == 0, \
+            f"customized matrix bears no operation."
+        data0 = self._m0[i]
+        data1 = self._m1[i]
         return data0 @ data1
 
     def cache_key(self, i):
         """"""
-        if i in self._m0.adjust:
-            return 'unique'
-        else:
-            ck0 = self._m0._cache_key(i)
-
-        if i in self._m1.adjust:
-            return 'unique'
-        else:
-            ck1 = self._m1._cache_key(i)
-
+        ck0 = self._m0._cache_key(i)
+        ck1 = self._m1._cache_key(i)
         if 'unique' in (ck0, ck1):
             return 'unique'
         elif ck0 == 'constant' and ck1 == 'constant':
@@ -418,18 +398,15 @@ class _MatmulMatMat(Frozen):
 
 def _mat_mul_mat_vec(m, v):
     """"""
-    vec = v.data  # make sure the 2D data is ready.
 
-    # if isinstance(v, MsePyRootFormStaticCochainVector):
-    #     print(v._t)
+    vec = v.data  # make sure the 2D data is ready.
 
     if vec is None:
         raise Exception('msepy local vector has no data, cannot @ it.')
     else:
         pass
 
-    if len(m.adjust) == 0:  # we take 2d data (ready).
-
+    if len(m.customize) == 0:
         if m._dtype == 'constant':
 
             mat = m._data.toarray()
@@ -478,31 +455,16 @@ def _mat_mul_mat_vec(m, v):
         else:
             raise NotImplementedError(f"{m._dtype}")
 
+        return data
+
     else:
-        raise NotImplementedError(f"take adjusted data.")
+        def ___mat_at_vec___(i):
+            """"""
+            mat_i = m[i]
+            vec_i = vec[i]
+            return mat_i @ vec_i
 
-    return data
-
-
-class _MsePyStaticLocalMatrixAdjust(Frozen):
-    """"""
-
-    def __init__(self, M):
-        """"""
-        self._M = M
-        self._adjustments = {}  # keys are elements, values are the data.
-        self._freeze()
-
-    def __len__(self):
-        return len(self._adjustments)
-
-    def __contains__(self, i):
-        """Whether element #i is adjusted?"""
-        return i in self._adjustments
-
-    def __getitem__(self, i):
-        """Return the instance that contains all adjustments of data for element #i."""
-        return self._adjustments[i]
+        return ___mat_at_vec___
 
 
 class _MsePyStaticLocalMatrixCustomize(Frozen):
@@ -616,6 +578,113 @@ class _MsePyStaticLocalMatrixCustomize(Frozen):
 
             self._customizations[element] = data.tocsr()
 
+    def set_values_and_zero_rest(self, rows, cols, vals):
+        """Let self be `M`. We do
+
+            M[rows] = 0
+            M[rows, cols] = values
+
+        rows and cols are both global.
+
+        Parameters
+        ----------
+        rows
+        cols
+        vals
+
+        Returns
+        -------
+
+        """
+        self.set_zero(rows)
+        self.set_values(rows, cols, vals)
+
+    def set_values(self, rows, cols, vals):
+        """Let self be M. We do
+            M[rows, cols] = vals
+
+        where rows and cols are both global.
+
+        Parameters
+        ----------
+        rows
+        cols
+        vals
+
+        Returns
+        -------
+
+        """
+        if isinstance(rows, int):
+            rows = [rows]
+        else:
+            pass
+        if isinstance(cols, int):
+            cols = [cols]
+        else:
+            pass
+        if isinstance(vals, (int, float)):
+            vals = np.array(
+                [vals for _ in range(len(rows))]
+            )
+        else:
+            pass
+
+        assert isinstance(rows, (list, tuple)), f"rows must be a list or tuple."
+        assert isinstance(cols, (list, tuple)), f"cols must be a list or tuple."
+        assert isinstance(vals, (list, tuple, np.ndarray)), f"vals must be a list or tuple or ndarray."
+        assert np.ndim(rows) == np.ndim(cols) == np.ndim(vals) == 1, f"data must be 1d."
+        assert len(rows) == len(cols) == len(vals), f"data shape must be same."
+
+        elements_local_rows = self._M._gm0_row._find_elements_and_local_indices_of_dofs(rows)
+        elements_local_cols = self._M._gm1_col._find_elements_and_local_indices_of_dofs(cols)
+
+        all_positions = dict()
+
+        for global_row, global_col, val in zip(elements_local_rows, elements_local_cols, vals):
+            row_elements_indices = elements_local_rows[global_row]
+            col_elements_indices = elements_local_cols[global_col]
+
+            row_elements, row_indices = row_elements_indices
+            col_elements, col_indices = col_elements_indices
+
+            len_row_elements = len(row_elements)
+            len_col_elements = len(col_elements)
+
+            if len_row_elements == len_col_elements == 1:
+
+                re = row_elements[0]
+                ce = col_elements[0]
+
+                if re == ce:  # if we reach here, we are probably dealing boundary dofs.
+                    element = re
+                    ri = row_indices[0]
+                    ci = col_indices[0]
+
+                    if element in all_positions:
+                        pass
+                    else:
+                        all_positions[element] = list()
+
+                    all_positions[element].append((ri, ci, val))
+
+                else:
+                    raise Exception(
+                        'dof elements are not consistent. It is difficult.')
+
+            else:
+                raise Exception(
+                    f'dof location is not unique {len_row_elements} {len_col_elements}. '
+                    f'It is difficult.'
+                )
+
+        for element in all_positions:
+            data = self._M[element].copy().tolil()
+            for ri_ci_val in all_positions[element]:
+                ri, ci, val = ri_ci_val
+                data[ri, ci] = val
+            self._customizations[element] = data.tocsr()
+
     def set_zero(self, global_dofs):
         """Set the global rows of ``global_dofs`` to be all zero."""
         elements_local_rows = self._M._gm0_row._find_elements_and_local_indices_of_dofs(global_dofs)
@@ -704,7 +773,7 @@ class _MsePyStaticLocalMatrixBmat(Frozen):
                 if Arc is None:
                     pass
                 else:
-                    data[r][c] = Arc[i]  # ALL adjustments and customizations take effect!
+                    data[r][c] = Arc[i]  # All customizations take effect!
 
         return sp_bmat(
             data, format='csr'

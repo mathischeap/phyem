@@ -8,6 +8,7 @@ import numpy as np
 from tools.frozen import Frozen
 from tools.quadrature import Quadrature
 from tools.functions.time_space._2d.wrappers.vector import T2dVector
+from tools.functions.time_space._2d.wrappers.scalar import T2dScalar
 
 
 class ConditionsNormalDipoleCollision2(Frozen):
@@ -90,6 +91,14 @@ class ConditionsNormalDipoleCollision2(Frozen):
     def velocity_boundary_condition(self):
         """"""
         return T2dVector(self._0, self._0)
+
+    @property
+    def normal_velocity_boundary_condition(self):
+        return T2dScalar(self._0)
+
+    @property
+    def tangential_velocity_boundary_condition(self):
+        return T2dScalar(self._0)
 
     # noinspection PyUnusedLocal
     @staticmethod

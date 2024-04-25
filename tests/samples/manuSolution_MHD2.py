@@ -11,6 +11,7 @@ from numpy import sin, cos, pi, exp
 from tools.frozen import Frozen
 
 from tools.functions.time_space._2d.wrappers.scalar import T2dScalar
+from tools.functions.time_space._2d.wrappers.vector import T2dVector
 
 
 def _phi(t, x, y):
@@ -18,13 +19,39 @@ def _phi(t, x, y):
     return (2 * sin(y) - 2 * cos(x)) * exp(-t)
 
 
-def _A(t, x, y):
-    """"""
-    return (cos(2*y) - 2 * cos(x)) * exp(-t)
-
-
-def _P(t, x, y):
+def _P_function(t, x, y):
     return sin(x) * sin(y) * exp(-t)
+
+
+def _E_function(t, x, y):
+    """"""
+    return sin(x) * sin(y) * exp(t)
+
+
+def _curl_E_x(t, x, y):
+    return sin(x) * cos(y) * exp(t)
+
+
+def _curl_E_y(t, x, y):
+    return - cos(x) * sin(y) * exp(t)
+
+
+def _int_0_t_curl_E_x(t, x, y):
+    """"""
+    return sin(x) * cos(y) * (exp(t) - 1)
+
+
+def _int_0_t_curl_E_y(t, x, y):
+    """"""
+    return - cos(x) * sin(y) * (exp(t) - 1)
+
+
+def _Bx(t, x, y):
+    return sin(x) * cos(y) - _int_0_t_curl_E_x(t, x, y)
+
+
+def _By(t, x, y):
+    return - cos(x) * sin(y) - _int_0_t_curl_E_y(t, x, y)
 
 
 class ManufacturedSolutionMHD2Ideal1(Frozen):
@@ -42,9 +69,10 @@ class ManufacturedSolutionMHD2Ideal1(Frozen):
         self._c = c
         self._Rm = Rm
         self._Rf = Rf
-        self._streaming = T2dScalar(_phi)
-        self._potential = T2dScalar(_A)
-        self._P = T2dScalar(_P)
+        self._streamfunction = T2dScalar(_phi)
+        self._P = T2dScalar(_P_function)
+        self._E = T2dScalar(_E_function)
+        self._B = T2dVector(_Bx, _By)
         self._freeze()
 
     @property
@@ -60,14 +88,13 @@ class ManufacturedSolutionMHD2Ideal1(Frozen):
         return self._Rf
 
     @property
-    def u(self):
-        """fluid velocity field"""
-        return self._streaming.curl
+    def streamfunction(self):
+        return self._streamfunction
 
     @property
-    def B(self):
-        """magnetic flux density"""
-        return self._potential.curl
+    def u(self):
+        """fluid velocity field"""
+        return self._streamfunction.curl
 
     @property
     def P(self):
@@ -79,14 +106,31 @@ class ManufacturedSolutionMHD2Ideal1(Frozen):
         return self.u.rot
 
     @property
+    def E(self):
+        """Electronic field."""
+        return self._E
+
+    @property
+    def B(self):
+        return self._B
+
+    @property
+    def divB(self):
+        return self.B.divergence
+
+    @property
     def j(self):
         """electric current density"""
         return self.B.rot
 
     @property
-    def E(self):
-        """electric field strength"""
-        return (1 / self.Rm) * self.j - self.u.cross_product(self.B)
+    def m(self):
+        """electric source.
+
+        (1/Rm)j - E - u x B = m
+        """
+        # noinspection PyTypeChecker
+        return (1 / self.Rm) * self.j - self.E - self.u.cross_product(self.B)
 
     @property
     def f(self):
@@ -96,13 +140,9 @@ class ManufacturedSolutionMHD2Ideal1(Frozen):
             - self._c * (self.j.cross_product(self.B)) + self.P.gradient
         )
 
-    @property
-    def g(self):
-        """magnetic source"""
-        return self.B.time_derivative + self.E.curl
-
 
 if __name__ == '__main__':
     # python tests/samples/manuSolution_MHD2.py
     ic = ManufacturedSolutionMHD2Ideal1()
-    ic.j.visualize([0, 2*pi], 1)
+    ic.E.visualize([0, 2*pi], 0.151231)
+    # ic.f.visualize([0, 2*pi], 0.151231)

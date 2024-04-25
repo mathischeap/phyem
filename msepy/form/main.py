@@ -50,12 +50,16 @@ class MsePyRootForm(Frozen):
         self._visualize = None
         self._coboundary = None
         self._matrix = None
-        self._boundary_integrate = MsePyRootFormBoundaryIntegrate(self)
+        self._boundary_integrate = None
         self._reconstruct_matrix = None
         self._reconstruct_matrix_cache = dict()
-        self._numeric = MsePyRootFormNumeric(self)
+        self._numeric = None
         self._projection = None
         self._freeze()
+
+    def lift(self, msepy_mesh):
+        """"""
+        self.space._mesh = msepy_mesh
 
     def _saving_check(self):
         """If you want to use `ph.save` to save instances of this class, it must have this method."""
@@ -151,7 +155,7 @@ class MsePyRootForm(Frozen):
         return self[t]
 
     def _is_base(self):
-        """Am I a base root-form (not abstracted at a time.)"""
+        """Am I a base root-form (not abstracted at a time)?"""
         return self._base is None
 
     @property
@@ -408,8 +412,6 @@ class MsePyRootForm(Frozen):
             if to_time is None:
                 if len(all_cochain_times) == 0:
                     to_time = None
-                elif len(all_cochain_times) == 1:
-                    to_time = all_cochain_times[0]
                 else:
                     to_time = all_cochain_times[-1]
             else:
@@ -419,7 +421,7 @@ class MsePyRootForm(Frozen):
                 if len(all_cochain_times) == 0:
                     from_time = None
                 elif len(all_cochain_times) == 1:
-                    from_time = all_cochain_times[0]
+                    from_time = all_cochain_times[-1]
                 else:
                     from_time = all_cochain_times[-2]
             else:
@@ -507,16 +509,20 @@ class MsePyRootForm(Frozen):
     @property
     def numeric(self):
         """numeric methods."""
+        if self._numeric is None:
+            self._numeric = MsePyRootFormNumeric(self)
         return self._numeric
 
     @property
     def bi(self):
         """Another name of boundary_integrate."""
-        return self._boundary_integrate
+        return self.boundary_integrate
 
     @property
     def boundary_integrate(self):
         """"""
+        if self._boundary_integrate is None:
+            self._boundary_integrate = MsePyRootFormBoundaryIntegrate(self)
         return self._boundary_integrate
 
     def reconstruction_matrix(self, *meshgrid_xi_et_sg, element_range=None):
@@ -552,7 +558,7 @@ if __name__ == '__main__':
     space_dim = 2
     ph.config.set_embedding_space_dim(space_dim)
 
-    manifold = ph.manifold(space_dim, is_periodic=False)
+    manifold = ph.manifold(space_dim, periodic=False)
     mesh = ph.mesh(manifold)
 
     L0i = ph.space.new('Lambda', 0, orientation='inner')

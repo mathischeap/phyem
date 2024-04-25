@@ -88,14 +88,20 @@ class MsePyDynamicLinearSystem(Frozen):
                 for j, bc in enumerate(bcs):
                     number_application = bc._num_application
 
-                    assert number_application == 1, f"#{j}th bc={bc} is not handled yet"
-                    # this particular does not take effect yet
+                    if number_application == 'manual':
+                        pass
+                    else:
+                        assert number_application == 1, f"#{j}th bc={bc} is not handled yet"
+                        # this particular does not take effect yet
 
             # clean all number_application, to make sure in future new static ls, they are applied again.
             for boundary_section in self._bc:
                 bcs = self._bc[boundary_section]
                 for j, bc in enumerate(bcs):
-                    bc._num_application = 0
+                    if bc._num_application == 'manual':
+                        pass
+                    else:
+                        bc._num_application = 0
 
         # static_A, static_x and static_b are used to make a static linear system
         return MsePyStaticLocalLinearSystem(

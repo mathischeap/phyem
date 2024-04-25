@@ -1,0 +1,366 @@
+# -*- coding: utf-8 -*-
+"""
+"""
+from tools.frozen import Frozen
+import numpy as np
+from msehtt.static.mesh.great.elements.types.base import MseHttGreatMeshBaseElement
+
+
+class MseHttGreatMeshOrthogonalRectangleElement(MseHttGreatMeshBaseElement):
+    """
+    _________________________________> y
+    |  0        face #0       2
+    |  -----------------------
+    |  |                     |
+    |  |                     |
+    |  | face #2             |face #3
+    |  |                     |
+    |  -----------------------
+    v  1      face #1        3
+    x
+
+    The labels in _map refers to the for nodes in such a sequence.
+
+    For example, _map = [87, 44, 156, 7561], then it is
+    _________________________________> y
+    |  87                    156
+    |  -----------------------
+    |  |                     |
+    |  |                     |
+    |  |                     |
+    |  |                     |
+    |  -----------------------
+    v  44                    7561
+    x
+
+    """
+
+    def __init__(self, element_index, parameters, _map):
+        """"""
+        origin_x, origin_y = parameters['origin']
+        delta_x, delta_y = parameters['delta']
+        self._metric_signature = f"OR:x%.5f" % delta_x + "y%.5f" % delta_y
+        self._space_dim = 2
+        self._element_dim = 2
+        super().__init__()
+        self._m = 2                          # this element works in 2d space
+        self._n = 2                          # this element itself is 2d
+        self._index = element_index
+        self._parameters = parameters
+        self._map = _map
+        self._ct = MseHttGreatMeshOrthogonalRectangleElementCooTrans(self, origin_x, origin_y, delta_x, delta_y)
+
+    @classmethod
+    def _etype(cls):
+        return 'orthogonal rectangle'
+
+    def __repr__(self):
+        """"""
+        super_repr = super().__repr__().split('object')[1]
+        return f"<Orthogonal Rectangle element indexed:{self._index}" + super_repr
+
+    @property
+    def metric_signature(self):
+        """"""
+        return self._metric_signature
+
+    def _generate_outline_data(self, ddf=None):
+        """"""
+        linspace = np.array([-1, 1])
+        ones = np.ones_like(linspace)
+
+        return {
+            'mn': (self.m, self.n),
+            0: self.ct.mapping(-ones, linspace),   # face #0
+            1: self.ct.mapping(ones, linspace),    # face #1
+            2: self.ct.mapping(linspace, -ones),   # face #2
+            3: self.ct.mapping(linspace, ones),    # face #3
+        }
+
+    @classmethod
+    def face_setting(cls):
+        """To show the nodes of faces and the positive direction."""
+        return {
+            0: (0, 2),   # face #0 is from node 0 -> node 2  (positive direction)
+            1: (1, 3),   # face #1 is from node 1 -> node 3  (positive direction)
+            2: (0, 1),   # face #2 is from node 0 -> node 1  (positive direction)
+            3: (2, 3),   # face #3 is from node 2 -> node 3  (positive direction)
+        }
+
+    @property
+    def faces(self):
+        """The faces of this element."""
+        if self._faces is None:
+            self._faces = MseHttGreatMeshOrthogonalRectangleElementFaces(self)
+        return self._faces
+
+
+# ============ ELEMENT CT =====================================================================================
+class MseHttGreatMeshOrthogonalRectangleElementCooTrans(Frozen):
+    """No need to use the standard CT form."""
+    def __init__(self, element, origin_x, origin_y, delta_x, delta_y):
+        self._element = element
+        self._origin_x = origin_x
+        self._origin_y = origin_y
+        self._ratio_x = delta_x / 2
+        self._ratio_y = delta_y / 2
+        self._ct_helper = ___ct_helper_parser___(self._ratio_x, self._ratio_y)
+        self._freeze()
+
+    def __repr__(self):
+        """"""
+        return f"<CT of {self._element.__repr__()}>"
+
+    def mapping(self, xi, et):
+        """"""
+        r = (xi + 1) * self._ratio_x
+        s = (et + 1) * self._ratio_y
+        x = self._origin_x + r
+        y = self._origin_y + s
+        return x, y
+
+    def Jacobian_matrix(self, xi, et):
+        """"""
+        return self._ct_helper.Jacobian_matrix(xi, et)
+
+    def Jacobian(self, xi, et):
+        """"""
+        return self._ct_helper.Jacobian(xi, et)
+
+    def inverse_Jacobian_matrix(self, xi, et):
+        """"""
+        return self._ct_helper.inverse_Jacobian_matrix(xi, et)
+
+    def metric(self, xi, et):
+        """"""
+        return self._ct_helper.metric(xi, et)
+
+    def inverse_Jacobian(self, xi, et):
+        """"""
+        return self._ct_helper.inverse_Jacobian(xi, et)
+
+    def metric_matrix(self, xi, et):
+        """"""
+        return self._ct_helper.metric_matrix(xi, et)
+
+    def inverse_metric_matrix(self, xi, et):
+        """"""
+        return self._ct_helper.inverse_metric_matrix(xi, et)
+
+
+___ct_helper_pool___ = {}
+
+
+def ___ct_helper_parser___(ratio_x, ratio_y):
+    """"""
+    ratio_x = round(ratio_x, 8)
+    ratio_y = round(ratio_y, 8)
+    key = (ratio_x, ratio_y)
+    if key in ___ct_helper_pool___:
+        pass
+    else:
+        ___ct_helper_pool___[key] = ___OrthogonalRectangle___(ratio_x, ratio_y)
+    return ___ct_helper_pool___[key]
+
+
+# noinspection PyUnusedLocal
+class ___OrthogonalRectangle___(Frozen):
+    """"""
+    def __init__(self, ratio_x, ratio_y):
+
+        self._Jacobian_constant = ratio_x * ratio_y
+        self._metric_constant = self._Jacobian_constant ** 2
+
+        reciprocalJacobian_constant = 1 / self._Jacobian_constant
+        inverse_Jacobian_matrix_00 = reciprocalJacobian_constant * ratio_y
+        inverse_Jacobian_matrix_11 = reciprocalJacobian_constant * ratio_x
+
+        self._inverse_Jacobian_constant = inverse_Jacobian_matrix_00 * inverse_Jacobian_matrix_11
+
+        self._Jacobian_matrix = (
+            (ratio_x, 0),
+            (0, ratio_y)
+        )
+        self._iJM = (
+            (inverse_Jacobian_matrix_00, 0),
+            (0, inverse_Jacobian_matrix_11)
+        )
+
+        self._mm = (
+            [ratio_x ** 2, 0],
+            [0, ratio_y ** 2]
+        )
+
+        self._imm = (
+            [inverse_Jacobian_matrix_00 ** 2, 0],
+            [0, inverse_Jacobian_matrix_11 ** 2]
+        )
+
+        self._freeze()
+
+    def Jacobian_matrix(self, xi, et):
+        """"""
+        return self._Jacobian_matrix
+
+    def Jacobian(self, xi, et):
+        """"""
+        return self._Jacobian_constant
+
+    def inverse_Jacobian_matrix(self, xi, et):
+        """"""
+        return self._iJM
+
+    def metric(self, xi, et):
+        """"""
+        return self._metric_constant
+
+    def inverse_Jacobian(self, xi, et):
+        """"""
+        return self._inverse_Jacobian_constant
+
+    def metric_matrix(self, xi, et):
+        """"""
+        return self._mm
+
+    def inverse_metric_matrix(self, xi, et):
+        """"""
+        return self._imm
+
+
+# ============ FACES =====================================================================================
+class MseHttGreatMeshOrthogonalRectangleElementFaces(Frozen):
+    """"""
+    def __init__(self, element):
+        """"""
+        self._element = element
+        self._faces = {}
+        self._freeze()
+
+    def __getitem__(self, face_id):
+        """0, 1, 2, 3.
+
+        _________________________________> y
+        |           face #0
+        |  -----------------------
+        |  |                     |
+        |  |                     |
+        |  | face #2             |face #3
+        |  |                     |
+        |  -----------------------
+        v         face #1
+        x
+
+        """
+        assert face_id in range(4), f"face id must be in range(4)."
+        if face_id not in self._faces:
+            self._faces[face_id] = MseHttGreatMeshOrthogonalRectangleElementFace(self._element, face_id)
+        else:
+            pass
+        return self._faces[face_id]
+
+    def __repr__(self):
+        """"""
+        return f"<Faces of {self._element}>"
+
+
+class MseHttGreatMeshOrthogonalRectangleElementFace(Frozen):
+    """"""
+    def __init__(self, element, face_id):
+        self._element = element
+        self._id = face_id
+        self._ct = MseHttGreatMeshOrthogonalRectangleElementFaceCT(self)
+        self._freeze()
+
+    def __repr__(self):
+        """"""
+        return f"<Face#{self._id} of {self._element}>"
+
+    @property
+    def ct(self):
+        """Coordinate transformation of this face."""
+        return self._ct
+
+
+from msehtt.static.mesh.great.elements.types.base import _FaceCoordinateTransformationBase
+
+
+class MseHttGreatMeshOrthogonalRectangleElementFaceCT(_FaceCoordinateTransformationBase):
+    """"""
+    def __init__(self, face):
+        super().__init__(face)
+        self._melt()
+        fid = face._id
+        self._axis, self._start_end = fid // 2, fid % 2
+        self._freeze()
+
+    def __repr__(self):
+        """repr"""
+        side = '+' if self._start_end == 1 else '-'
+        return f"<Face CT of {side}side along {self._axis}axis of {self._element}>"
+
+    def mapping(self, xi):
+        """"""
+        m, n = self._axis, self._start_end
+        ones = np.ones_like(xi)
+        if m == 0:  # x-direction
+            if n == 0:  # x-
+                return self._element.ct.mapping(-ones, xi)
+            elif n == 1:  # x+
+                return self._element.ct.mapping(ones, xi)
+            else:
+                raise Exception()
+        elif m == 1:  # y-direction
+            if n == 0:  # y-
+                return self._element.ct.mapping(xi, -ones)
+            elif n == 1:  # y+
+                return self._element.ct.mapping(xi, ones)
+            else:
+                raise Exception()
+        else:
+            raise Exception()
+
+    def Jacobian_matrix(self, xi):
+        """"""
+        m, n = self._axis, self._start_end
+
+        ones = np.ones_like(xi)
+        if m == 0:  # x-direction
+            if n == 0:  # x-
+                JM = self._element.ct.Jacobian_matrix(-ones, xi)
+            elif n == 1:  # x+
+                JM = self._element.ct.Jacobian_matrix(ones, xi)
+            else:
+                raise Exception()
+
+            return JM[0][1], JM[1][1]
+
+        elif m == 1:  # y-direction
+            if n == 0:  # y-
+                JM = self._element.ct.Jacobian_matrix(xi, -ones)
+            elif n == 1:  # y+
+                JM = self._element.ct.Jacobian_matrix(xi, ones)
+            else:
+                raise Exception()
+
+            return JM[0][0], JM[1][0]
+
+        else:
+            raise Exception()
+
+    def outward_unit_normal_vector(self, xi):
+        """The outward unit norm vector (vec{n})."""
+        JM = self.Jacobian_matrix(xi)
+        x, y = JM
+        m, n = self._axis, self._start_end
+        if m == 0 and n == 0:
+            vx, vy = -y, x
+        elif m == 1 and n == 1:
+            vx, vy = -y, x
+        else:
+            vx, vy = y, -x
+        magnitude = np.sqrt(vx**2 + vy**2)
+        return vx / magnitude, vy / magnitude
+
+    def is_plane(self):
+        """"""
+        return True

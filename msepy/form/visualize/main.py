@@ -44,9 +44,7 @@ class MsePyRootFormVisualize(Frozen):
                 return self.vtk(*args, saveto=path, **_vkt_kwargs)
 
             else:
-                pass
-
-            return self.matplot(*args, **kwargs)
+                return self.matplot(*args, **kwargs)
 
     @property
     def matplot(self):

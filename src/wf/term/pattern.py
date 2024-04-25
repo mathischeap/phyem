@@ -3,7 +3,7 @@ r"""
 """
 from src.form.operators import _parse_related_time_derivative
 from src.form.main import _global_root_forms_lin_dict, Form
-from src.form.operators import time_derivative, d, Hodge
+from src.form.operators import time_derivative, d, Hodge, trace
 from src.config import _global_operator_lin_repr_setting
 from src.form.others import _find_form, _find_root_forms_through_lin_repr
 from src.config import _non_root_lin_sep
@@ -380,6 +380,34 @@ def _inner_simpler_pattern_examiner_scalar_valued_forms(factor, f0, f1, extra_in
                         }
                     else:
                         pass
+
+        # -------------- (A, tr B) or (tr B, A) ------------------------------------------
+        lin_tr = _global_operator_lin_repr_setting['trace']
+        existing0 = lin_tr in f0._lin_repr
+        amount0 = f0._lin_repr.count(lin_tr)
+        existing1 = lin_tr in f1._lin_repr
+        amount1 = f1._lin_repr.count(lin_tr)
+
+        if f0.is_root() and existing1 and amount1 == 1:
+            B = _find_form(f1._lin_repr, upon=trace)
+            if B.is_root():
+                return _simple_patterns['(A, trB)'], {
+                    'A': f0,
+                    'B': B,
+                }
+            else:
+                pass
+        elif f1.is_root() and existing0 and amount0 == 1:
+            B = _find_form(f0._lin_repr, upon=trace)
+            if B.is_root():
+                return _simple_patterns['(trB, A)'], {
+                    'A': f1,
+                    'B': B,
+                }
+            else:
+                pass
+        else:
+            pass
 
         return '', None
 
