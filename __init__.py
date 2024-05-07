@@ -46,6 +46,9 @@ __all__ = [
 
     "os",
     "film",
+
+    "find_manifold",
+
 ]
 
 import src.config as config
@@ -59,6 +62,7 @@ from src.form.main import _clear_forms as clear_forms
 import tests.samples.main as samples
 
 from src.manifold import manifold
+from src.manifold import find_manifold
 
 from src.mesh import mesh
 

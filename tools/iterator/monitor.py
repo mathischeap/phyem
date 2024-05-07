@@ -59,8 +59,8 @@ class IteratorMonitor(Frozen):
         """"""
         assert 0 <= monitoring_factor <= 1, \
             f"monitoring_factor={monitoring_factor} is wrong, must be in [0,1]."
-        self._ast = 360 * (1-monitoring_factor)  # auto_save_time
-        self._rpt = 60 * (1-monitoring_factor)  # report time
+        self._ast = 600 * (1-monitoring_factor)    # auto_save_time
+        self._rpt = 1000 * (1-monitoring_factor)   # report time
 
         self._last_ast = time() - self._ast  # this is correct, do not delete - self._ast
         self._last_rpt = time() - self._rpt  # this is correct, do not delete - self._rpt

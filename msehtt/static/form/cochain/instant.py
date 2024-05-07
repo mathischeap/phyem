@@ -4,6 +4,7 @@
 import numpy as np
 
 from tools.frozen import Frozen
+from src.config import COMM
 
 
 class MseHttTimeInstantCochain(Frozen):
@@ -13,6 +14,7 @@ class MseHttTimeInstantCochain(Frozen):
         """"""
         self._f = f
         self._t = t
+        self._gm = self._f.cochain.gathering_matrix
         self._ctype = None
         self._cochain = None
         self._freeze()
@@ -48,7 +50,7 @@ class MseHttTimeInstantCochain(Frozen):
 
     def __getitem__(self, e):
         """"""
-        assert e in self._f.cochain.gathering_matrix, f"element #{e} is not a rank element."
+        assert e in self._gm, f"element #{e} is not a rank element."
         if self._ctype == 'dict':
             if e in self._cochain:
                 return self._cochain[e]
@@ -59,3 +61,31 @@ class MseHttTimeInstantCochain(Frozen):
             return self._cochain(e)
         else:
             raise NotImplementedError()
+
+    def ___cochain_caller___(self, e):
+        """"""
+        return self[e]
+
+    def of_dof(self, global_dof):
+        """Find the cochain for global_dof #global_dof."""
+        elements__local_numbering = self._gm.find_rank_locations_of_global_dofs(global_dof)
+        elements__local_numbering = elements__local_numbering[list(elements__local_numbering.keys())[0]]
+        cochain = list()
+        if len(elements__local_numbering) > 0:
+            for location in elements__local_numbering:
+                element, local_numbering = location
+                cochain.append(
+                    self[element][local_numbering]
+                )
+        cochain = COMM.allgather(cochain)
+        COCHAIN = list()
+        for _ in cochain:
+            COCHAIN.extend(_)
+        if len(COCHAIN) == 0:
+            raise Exception()
+        elif len(COCHAIN) == 1:
+            pass
+        else:
+            for c in COCHAIN[1:]:
+                np.testing.assert_almost_equal(c, COCHAIN[0])
+        return COCHAIN[0]

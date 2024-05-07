@@ -49,8 +49,6 @@ class MseHttGreatMeshUniqueMsepyCurvilinearQuadrilateralElement(MseHttGreatMeshB
             f"unique msepy curvilinear quadrilateral must have the original msepy manifold."
         self._msepy_manifold = msepy_manifold
         super().__init__()
-        self._m = 2                          # this element works in 2d space
-        self._n = 2                          # this element itself is 2d
         self._index = element_index
         self._parameters = parameters
         self._map = _map
@@ -60,6 +58,16 @@ class MseHttGreatMeshUniqueMsepyCurvilinearQuadrilateralElement(MseHttGreatMeshB
         """"""
         super_repr = super().__repr__().split('object')[1]
         return f"<Unique Msepy Curvilinear quadrilateral element indexed:{self._index}" + super_repr
+
+    @classmethod
+    def m(cls):
+        """the dimensions of the space"""
+        return 2
+
+    @classmethod
+    def n(cls):
+        """the dimensions of the element"""
+        return 2
 
     @classmethod
     def _etype(cls):
@@ -88,7 +96,7 @@ class MseHttGreatMeshUniqueMsepyCurvilinearQuadrilateralElement(MseHttGreatMeshB
         ones = np.ones_like(linspace)
 
         return {
-            'mn': (self.m, self.n),
+            'mn': (self.m(), self.n()),
             0: self.ct.mapping(-ones, linspace),   # face #0
             1: self.ct.mapping(ones, linspace),    # face #1
             2: self.ct.mapping(linspace, -ones),   # face #2
@@ -110,6 +118,34 @@ class MseHttGreatMeshUniqueMsepyCurvilinearQuadrilateralElement(MseHttGreatMeshB
         if self._faces is None:
             self._faces = MseHttGreatMeshUniqueMsepyCurvilinearQuadrilateralElementFaces(self)
         return self._faces
+
+    @classmethod
+    def degree_parser(cls, degree):
+        """"""
+        if isinstance(degree, int):
+            p = (degree, degree)
+            dtype = 'Lobatto'
+        else:
+            raise NotImplementedError()
+        return p, dtype
+
+    @classmethod
+    def _form_face_dof_direction_topology(cls):
+        m2n2k1_outer = {
+            0: '-',   # on the x- faces, material leave the element is negative.
+            1: '+',   # on the x+ faces, material leave the element is positive.
+            2: '-',   # on the y- faces, material leave the element is negative.
+            3: '+',   # on the y+ faces, material leave the element is positive.
+        }
+
+        m2n2k1_inner = {
+            0: '-',  # on the x- faces, positive direction is from 2 to 0, i.e., reversed
+            1: '+',  # on the x+ faces, positive direction is from 1 to 3
+            2: '+',  # on the y- faces, positive direction is from 0 to 1
+            3: '-',  # on the y+ faces, positive direction is from 3 to 2, i.e., reversed
+        }
+
+        return {'m2n2k1_outer': m2n2k1_outer, 'm2n2k1_inner': m2n2k1_inner}
 
 
 # ============ ELEMENT CT =====================================================================================
@@ -151,7 +187,7 @@ class MseHttGreatMeshUniqueMsepyCurvilinearQuadrilateralElementCooTrans(MseHttGr
         return JM
 
 
-# ============ FACES =====================================================================================
+# ============ FACES ============================================================================================
 class MseHttGreatMeshUniqueMsepyCurvilinearQuadrilateralElementFaces(Frozen):
     """"""
     def __init__(self, element):
@@ -224,7 +260,7 @@ class MseHttGreatMeshUniqueMsepyCurvilinearQuadrilateralElementFaceCT(
             xi = np.linspace(-1, 1, 23)
             ounv = self.outward_unit_normal_vector(xi)
             n0, n1 = ounv
-            if np.all(n0 == n0[0]) and np.all(n1 == n1[1]):
+            if np.allclose(n0, n0[0]) and np.allclose(n1, n1[0]):
                 self.___is_place___ = True
             else:
                 self.___is_place___ = False

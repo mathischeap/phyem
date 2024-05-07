@@ -1,11 +1,9 @@
 # -*- coding: utf-8 -*-
 r"""
 """
-import sys
-
-if './' not in sys.path:
-    sys.path.append('./')
 from tools.frozen import Frozen
+import matplotlib.pyplot as plt
+from numpy import linalg as np_linalg
 from src.config import COMM, RANK, MASTER_RANK
 
 from scipy.sparse import isspmatrix_csc, isspmatrix_csr
@@ -83,3 +81,56 @@ class MseHttGlobalMatrix(Frozen):
             return sum(all_M)
         else:
             return None
+
+    def spy(self, markerfacecolor='k', markeredgecolor='g', markersize=6):
+        """spy the assembled matrix.
+
+        Parameters
+        ----------
+        markerfacecolor
+        markeredgecolor
+        markersize
+
+        Returns
+        -------
+
+        """
+        M = self.gather(root=MASTER_RANK)
+        if RANK != MASTER_RANK:
+            return
+        fig = plt.figure()
+        plt.spy(
+            M,
+            markerfacecolor=markerfacecolor,
+            markeredgecolor=markeredgecolor,
+            markersize=markersize
+        )
+        plt.tick_params(axis='both', which='major', direction='out')
+        plt.tick_params(which='both', top=True, right=True, labelbottom=True, labelright=True)
+        plt.show()
+        return fig
+
+    @property
+    def condition_number(self):
+        """The condition number of this static assembled matrix."""
+        M = self.gather(root=MASTER_RANK)
+        if RANK == MASTER_RANK:
+            cn = np_linalg.cond(M.toarray())
+        else:
+            cn = 0
+        return COMM.bcast(cn, root=MASTER_RANK)
+
+    @property
+    def rank(self):
+        """compute the rank of this static assembled matrix"""
+        M = self.gather(root=MASTER_RANK)
+        if RANK == MASTER_RANK:
+            rank = np_linalg.matrix_rank(M.toarray())
+        else:
+            rank = 0
+        return COMM.bcast(rank, root=MASTER_RANK)
+
+    @property
+    def num_singularities(self):
+        """The amount of singular modes in this static assembled matrix."""
+        return self.shape[0] - self.rank

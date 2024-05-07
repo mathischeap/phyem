@@ -5,7 +5,7 @@ import numpy as np
 from tools.quadrature import Quadrature
 
 
-def reduce_Lambda__m2n2k1_outer(target, t, tpm, degree):
+def reduce_Lambda__m2n2k1_inner(cf_t, tpm, degree):
     """Reduce target at time `t` to m2n2k1 outer space of degree ``degree`` on partial mesh ``tpm``."""
 
     elements = tpm.composition
@@ -14,21 +14,94 @@ def reduce_Lambda__m2n2k1_outer(target, t, tpm, degree):
         element = elements[e]
         etype = element.etype
         if etype in ("orthogonal rectangle", "unique msepy curvilinear quadrilateral"):
-            cochain[e] = ___221o_msepy_quadrilateral___(element, target, t, degree)
+            cochain[e] = ___221i_msepy_quadrilateral___(element, cf_t, degree)
         else:
             raise NotImplementedError()
     return cochain
 
 
-def ___221o_msepy_quadrilateral___(element, target, t, degree):
+def ___221i_msepy_quadrilateral___(element, cf_t, degree):
     """"""
     xi, et, edge_size_d, quad_weights = _msepy_data_preparation('x', degree)
     x, y = element.ct.mapping(xi, et)
     J = element.ct.Jacobian_matrix(xi, et)
-    u, v = target[t](x, y)
-    J00, J01 = J[0]
-    J10, J11 = J[1]
+    u, v = cf_t(x, y)
+    J00, _ = J[0]
+    J10, _ = J[1]
+    if isinstance(J10, (int, float)) and J10 == 0:
+        vdx = J00 * u
+    else:
+        vdx = J00 * u + J10 * v
+    cochain_dx = (
+        np.einsum(
+            'ij, i, j -> j',
+            vdx, quad_weights[0], edge_size_d * 0.5,
+            optimize='optimal'
+        )
+    )
+
+    xi, et, edge_size_d, quad_weights = _msepy_data_preparation('y', degree)
+    x, y = element.ct.mapping(xi, et)
+    J = element.ct.Jacobian_matrix(xi, et)
+    u, v = cf_t(x, y)
+    _, J01 = J[0]
+    _, J11 = J[1]
     if isinstance(J01, (int, float)) and J01 == 0:
+        vdy = J11 * v
+    else:
+        vdy = J01 * u + J11 * v
+
+    cochain_dy = (
+        np.einsum(
+            'ij, i, j -> j',
+            vdy, quad_weights[1], edge_size_d * 0.5,
+            optimize='optimal'
+        )
+    )
+
+    if 'm2n2k1_inner' in element.dof_reverse_info:
+        face_indices = element.dof_reverse_info['m2n2k1_inner']
+
+        for fi in face_indices:
+            component, local_dofs = element.find_local_dofs_on_face(
+                indicator='m2n2k1_inner', degree=degree, face_index=fi, component_wise=True
+            )
+            if component == 0:
+                cochain_dx[local_dofs] = - cochain_dx[local_dofs]
+            elif component == 1:
+                cochain_dy[local_dofs] = - cochain_dy[local_dofs]
+            else:
+                raise Exception()
+    else:
+        pass
+
+    return np.concatenate([cochain_dx, cochain_dy])
+
+
+def reduce_Lambda__m2n2k1_outer(cf_t, tpm, degree):
+    """Reduce target at time `t` to m2n2k1 outer space of degree ``degree`` on partial mesh ``tpm``."""
+
+    elements = tpm.composition
+    cochain = {}
+    for e in elements:
+        element = elements[e]
+        etype = element.etype
+        if etype in ("orthogonal rectangle", "unique msepy curvilinear quadrilateral"):
+            cochain[e] = ___221o_msepy_quadrilateral___(element, cf_t, degree)
+        else:
+            raise NotImplementedError()
+    return cochain
+
+
+def ___221o_msepy_quadrilateral___(element, cf_t, degree):
+    """"""
+    xi, et, edge_size_d, quad_weights = _msepy_data_preparation('x', degree)
+    x, y = element.ct.mapping(xi, et)
+    J = element.ct.Jacobian_matrix(xi, et)
+    u, v = cf_t(x, y)
+    J00, _ = J[0]
+    J10, _ = J[1]
+    if isinstance(J10, (int, float)) and J10 == 0:
         vdx = J00 * v
     else:
         vdx = J00 * v - J10 * u
@@ -43,13 +116,14 @@ def ___221o_msepy_quadrilateral___(element, target, t, degree):
     xi, et, edge_size_d, quad_weights = _msepy_data_preparation('y', degree)
     x, y = element.ct.mapping(xi, et)
     J = element.ct.Jacobian_matrix(xi, et)
-    u, v = target[t](x, y)
-    J00, J01 = J[0]
-    J10, J11 = J[1]
+    u, v = cf_t(x, y)
+    _, J01 = J[0]
+    _, J11 = J[1]
     if isinstance(J01, (int, float)) and J01 == 0:
         vdy = J11 * u
     else:
-        vdy = -J01 * v + J11 * u
+        vdy = - J01 * v + J11 * u
+
     cochain_dy = (
         np.einsum(
             'ij, i, j -> j',
@@ -57,21 +131,34 @@ def ___221o_msepy_quadrilateral___(element, target, t, degree):
             optimize='optimal'
         )
     )
+
+    if 'm2n2k1_outer' in element.dof_reverse_info:
+        face_indices = element.dof_reverse_info['m2n2k1_outer']
+
+        for fi in face_indices:
+            component, local_dofs = element.find_local_dofs_on_face(
+                indicator='m2n2k1_outer', degree=degree, face_index=fi, component_wise=True
+            )
+            if component == 0:
+                cochain_dy[local_dofs] = - cochain_dy[local_dofs]
+            elif component == 1:
+                cochain_dx[local_dofs] = - cochain_dx[local_dofs]
+            else:
+                raise Exception()
+    else:
+        pass
     return np.concatenate([cochain_dy, cochain_dx])
 
 
 _cache_rd_221_dp_ = {}
+from msehtt.static.mesh.great.elements.types.orthogonal_rectangle import MseHttGreatMeshOrthogonalRectangleElement
 
 
 def _msepy_data_preparation(d_, degree):
     """"""
-    if isinstance(degree, int):
-        p = (degree, degree)
-        btype = 'Lobatto'
-    else:
-        raise NotImplementedError()
+    p, btype = MseHttGreatMeshOrthogonalRectangleElement.degree_parser(degree)
 
-    key = str(p) + btype
+    key = str(p) + btype + d_
 
     if key in _cache_rd_221_dp_:
         return _cache_rd_221_dp_[key]

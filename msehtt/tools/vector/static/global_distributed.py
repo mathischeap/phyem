@@ -1,12 +1,7 @@
 # -*- coding: utf-8 -*-
 r"""
 """
-import sys
-
 import numpy as np
-
-if './' not in sys.path:
-    sys.path.append('./')
 from src.config import RANK, MASTER_RANK, COMM
 from tools.frozen import Frozen
 from scipy.sparse import isspmatrix_csc
@@ -24,7 +19,12 @@ class MseHttGlobalVectorDistributed(Frozen):
             assert V.shape[1] == 1, f"V must be of shape (x, 1)."
             V = V.toarray().ravel('F')
         elif isinstance(V, np.ndarray):
-            assert np.ndim(V) == 1
+            if np.ndim(V) == 1:
+                pass
+            elif np.ndim(V) == 2 and V.shape[1] == 1:
+                V = V[:, 0]
+            else:
+                raise Exception(f"V must be 1d array!")
         else:
             raise NotImplementedError()
 

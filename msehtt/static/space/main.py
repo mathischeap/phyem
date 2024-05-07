@@ -3,9 +3,12 @@ r"""
 """
 from tools.frozen import Frozen
 from msehtt.static.space.gathering_matrix.main import MseHttSpaceGatheringMatrix
-from msehtt.static.space.local_numbering.main import MseHttSpaceLocalNumbering
 from msehtt.static.space.reduce.main import MseHttSpaceReduce
 from msehtt.static.space.reconstruct.main import MseHttSpaceReconstruct
+from msehtt.static.space.mass_matrix.main import MseHttSpaceMassMatrix
+from msehtt.static.space.error.main import MseHttSpaceError
+from msehtt.static.space.incidence_matrix.main import MseHttSpaceIncidenceMatrix
+from msehtt.static.space.norm.main import MseHttSpaceNorm
 
 
 class MseHttSpace(Frozen):
@@ -15,11 +18,25 @@ class MseHttSpace(Frozen):
         """"""
         assert abstract_space._is_space(), f"I need a, abstract space"
         self._abstract = abstract_space
+        self._tpm = None
         self._gm = None
-        self._ln = None
         self._rd = None
         self._rc = None
+        self._mm = None
+        self._im = None
+        self._error = None
+        self._norm = None
         self._freeze()
+
+    @property
+    def tpm(self):
+        if self._tpm is None:
+            raise Exception(f"first set tpm!")
+        return self._tpm
+
+    @property
+    def tgm(self):
+        return self.tpm._tgm
 
     @property
     def abstract(self):
@@ -64,13 +81,6 @@ class MseHttSpace(Frozen):
         return self._gm
 
     @property
-    def local_numbering(self):
-        """local numbering property"""
-        if self._ln is None:
-            self._ln = MseHttSpaceLocalNumbering(self)
-        return self._ln
-
-    @property
     def reduce(self):
         if self._rd is None:
             self._rd = MseHttSpaceReduce(self)
@@ -81,3 +91,27 @@ class MseHttSpace(Frozen):
         if self._rc is None:
             self._rc = MseHttSpaceReconstruct(self)
         return self._rc
+
+    @property
+    def mass_matrix(self):
+        if self._mm is None:
+            self._mm = MseHttSpaceMassMatrix(self)
+        return self._mm
+
+    @property
+    def error(self):
+        if self._error is None:
+            self._error = MseHttSpaceError(self)
+        return self._error
+
+    @property
+    def incidence_matrix(self):
+        if self._im is None:
+            self._im = MseHttSpaceIncidenceMatrix(self)
+        return self._im
+
+    @property
+    def norm(self):
+        if self._norm is None:
+            self._norm = MseHttSpaceNorm(self)
+        return self._norm

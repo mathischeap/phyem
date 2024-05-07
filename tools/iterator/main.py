@@ -28,7 +28,10 @@ class Iterator(Frozen):
         Parameters
         ----------
         solver
-        monitoring_factor
+        monitoring_factor:
+            in [0, 1]. If it is 1, then monitor after each iteration. If it is 0, then the monitor
+            frequency is very low.
+
         name
         initials
         """

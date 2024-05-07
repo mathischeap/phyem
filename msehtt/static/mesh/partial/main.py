@@ -28,6 +28,13 @@ class MseHttMeshPartial(Frozen):
         return self._abstract
 
     @property
+    def tgm(self):
+        """Raise Error if it is not set yet!"""
+        if self._tgm is None:
+            raise Exception('tgm is empty!')
+        return self._tgm
+
+    @property
     def composition(self):
         """The composition; the main body of this partial mesh."""
         if self._composition is None:
@@ -125,14 +132,14 @@ class MseHttMeshPartial(Frozen):
 
     def _perform_configuration(self, including):
         """Really do the configuration."""
-        type = including['type']
-        if type == 'local great elements':
+        _type = including['type']
+        if _type == 'local great elements':
             # CONFIGURATION 1 ===========================================================================
             # this partial mesh consists of local (rank) elements of the great mesh.
             rank_great_element_range = including['range']  # the range of local great elements.
             self._composition = MseHttElementsPartialMesh(self, self._tgm, rank_great_element_range)
 
-        elif type == 'boundary of partial elements':
+        elif _type == 'boundary of partial elements':
             # CONFIGURATION 2 ===========================================================================
             # this partial mesh consists of boundary faces of a bunch of local partial elements.
             the_partial_elements = including['partial elements'].composition  # the local partial elements

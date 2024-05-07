@@ -441,7 +441,8 @@ _wf_term_default_simple_patterns = {   # use only str to represent a simple patt
 
     '(<db>,d<b>)': '(root-diagonal-bf, d root-bf)',
 
-    '<tr star | tr >': '<tr star rf | trace rf>',
+    '<tr star | tr >': r'$\left\langle\right.$ tr star rf $|$ trace rf$\left.\right\rangle$',
+    '<tr star | tr > - restrict': r'$\left\langle\right.$ tr star rf $||$ trace rf$\left.\right\rangle$',
 
     '(A, trB)': r"$(A, \mathrm{tr} B)$",
     '(trB, A)': r"$(\mathrm{tr} B, A)$",

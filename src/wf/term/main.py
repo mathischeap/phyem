@@ -32,6 +32,7 @@ from src.config import _global_operator_sym_repr_setting
 from src.config import _non_root_lin_sep
 from src.wf.term.ap import _SimplePatternAPParser
 from src.wf.term.pattern import _dp_simpler_pattern_examiner_scalar_valued_forms
+from src.wf.term.pattern import _dp_simpler_pattern_examiner_scalar_valued_forms_restrict
 from src.wf.term.pattern import _inner_simpler_pattern_examiner_scalar_valued_forms
 from src.wf.term.pattern import _inner_simpler_pattern_examiner_bundle_valued_forms
 from src.wf.term.pattern import _inner_simpler_pattern_examiner_diagonal_bundle_valued_forms
@@ -68,7 +69,12 @@ class _WeakFormulationTerm(Frozen):
         self.___simple_pattern___ = None
         self.___simple_pattern_keys___ = None
         self._extra_info = dict()
+        self._restrict_manifold = None
         self._freeze()
+
+    def restrict(self, sym):
+        """"""
+        raise NotImplementedError()
 
     @property
     def _simple_pattern(self):
@@ -262,8 +268,12 @@ class _WeakFormulationTerm(Frozen):
                 sign = '-'
             else:
                 sign = '+'
-            return self.__class__(f0, f1, factor=factor), sign
-
+            new_term = self.__class__(f0, f1, factor=factor)
+            if self._restrict_manifold is None:
+                pass
+            else:
+                new_term.restrict(self._restrict_manifold._sym_repr)
+            return new_term, sign
         else:
             raise NotImplementedError()
 
@@ -294,6 +304,10 @@ class _WeakFormulationTerm(Frozen):
                     assert ifi.__class__.__name__ == 'Form', f"{i}th object = {ifi} is not a form."
                     assert ifi.mesh == f1.mesh, f"mesh of {i}th object = {ifi.mesh} does not fit."
                     term = term_class(ifi, f1, factor=factors[i])
+                    if self._restrict_manifold is None:
+                        pass
+                    else:
+                        raise NotImplementedError()
                     new_terms.append(term)
                 return new_terms, signs
             elif f == 'f1':
@@ -303,6 +317,10 @@ class _WeakFormulationTerm(Frozen):
                     assert ifi.__class__.__name__ == 'Form', f"{i}th object = {ifi} is not a form."
                     assert ifi.mesh == f0.mesh, f"mesh of {i}th object = {ifi.mesh} does not fit."
                     term = term_class(f0, ifi, factor=factors[i])
+                    if self._restrict_manifold is None:
+                        pass
+                    else:
+                        raise NotImplementedError()
                     new_terms.append(term)
                 return new_terms, signs
             else:
@@ -384,6 +402,23 @@ class DualityPairingTerm(_WeakFormulationTerm):
         self.___sym_repr___ = sym_repr
         self.___lin_repr___ = lin_repr
 
+    def restrict(self, sub_manifold_sym_repr):
+        """"""
+        from src.manifold import find_manifold
+        sr1 = self._f0._sym_repr
+        sr2 = self._f1._sym_repr
+        lr1 = self._f0._lin_repr
+        lr2 = self._f1._lin_repr
+        over_ = sub_manifold_sym_repr
+        olr0, olr1, olr2 = _global_operator_lin_repr_setting['duality-pairing']
+        sym_repr = rf'\left<\left.{sr1}\right|{sr2}\right>_' + r"{" + over_ + "}"
+
+        sub_manifold = find_manifold(sub_manifold_sym_repr)
+        lin_repr = olr0 + lr1 + olr1 + lr2 + olr2 + sub_manifold._lin_repr
+        self.___sym_repr___ = sym_repr
+        self.___lin_repr___ = lin_repr
+        self._restrict_manifold = sub_manifold
+
     def __repr__(self):
         """"""
         super_repr = super().__repr__().split('object')[1]
@@ -395,8 +430,15 @@ class DualityPairingTerm(_WeakFormulationTerm):
         s1 = f1.space
         if s0.__class__.__name__ == 'ScalarValuedFormSpace' and \
                 s1.__class__.__name__ == 'ScalarValuedFormSpace':
-            # print(self.extra_info)
-            return _dp_simpler_pattern_examiner_scalar_valued_forms(factor, f0, f1, self.extra_info)
+            if self._restrict_manifold is None:
+                return _dp_simpler_pattern_examiner_scalar_valued_forms(
+                    factor, f0, f1, self.extra_info
+                )
+            else:
+                return _dp_simpler_pattern_examiner_scalar_valued_forms_restrict(
+                    factor, f0, f1, self.extra_info, self._restrict_manifold
+                )
+
         else:
             raise NotImplementedError()
 

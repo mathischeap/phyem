@@ -15,7 +15,7 @@ def codifferential_test(n, k, orientation):
     """"""
     ph.config.set_embedding_space_dim(n)
     ph.config.set_high_accuracy(False)
-    manifold = ph.manifold(n, is_periodic=True)
+    manifold = ph.manifold(n, periodic=True)
     mesh = ph.mesh(manifold)
 
     Lambda_n = ph.space.new('Lambda', k, orientation=orientation)

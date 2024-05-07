@@ -39,6 +39,10 @@ class MseHttLinearSystem(Frozen):
         self._solve = None
         self._freeze()
 
+    def __repr__(self):
+        super_repr = super().__repr__().split('object')[1]
+        return f"<msehtt static global linear system of shape {self.shape} at" + super_repr
+
     @property
     def A(self):
         """A of Ax=b."""
@@ -70,3 +74,18 @@ class MseHttLinearSystem(Frozen):
         if self._solve is None:
             self._solve = MseHttLinearSystemSolve(self)
         return self._solve
+
+    @property
+    def condition_number(self):
+        return self.A.condition_number
+
+    @property
+    def rank(self):
+        return self.A.rank
+
+    @property
+    def num_singularities(self):
+        return self.A.num_singularities
+
+    def spy(self, **kwargs):
+        return self.A.spy(**kwargs)

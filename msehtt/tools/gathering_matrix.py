@@ -40,7 +40,7 @@ def ___msehtt_gm_chaining_method_0___(gms):
         else:
             pass
 
-    rank_elements = COMM.gather(gms[0]._gm.keys(), root=MASTER_RANK)
+    rank_elements = COMM.gather(list(gms[0]._gm.keys()), root=MASTER_RANK)
 
     if RANK == MASTER_RANK:
         total_global_dofs = sum(num_global_dofs)
@@ -78,7 +78,7 @@ def ___msett_gm_chaining___(gms, method=0):
     element_indices = gms[0]._gm.keys()
 
     for j, gm in enumerate(gms[1:]):
-        assert gm.keys() == element_indices, f"gm[{j+1}] element indices dis-match that of gm[0]."
+        assert gm._gm.keys() == element_indices, f"gm[{j+1}] element indices dis-match that of gm[0]."
 
     if method == 0:
         return ___msehtt_gm_chaining_method_0___(gms)
@@ -199,7 +199,7 @@ class MseHttGatheringMatrix(Frozen):
                 pass
 
         max_numbering = COMM.allgather(max_numbering)
-        self._num_global_dofs = max(max_numbering) + 1
+        self._num_global_dofs = int(max(max_numbering) + 1)
 
     @property
     def num_global_dofs(self):
@@ -309,6 +309,11 @@ class MseHttGatheringMatrix(Frozen):
 
         """
         if isinstance(global_dofs, (int, float)):
+            if global_dofs < 0:
+                global_dofs += self.num_global_dofs
+                global_dofs = int(global_dofs)
+            else:
+                pass
             global_dofs = [global_dofs,]
         else:
             pass
@@ -341,3 +346,24 @@ class MseHttGatheringMatrix(Frozen):
     def assemble(self, data):
         """Assemble a data structure in a _1d array."""
         raise NotImplementedError()
+
+    def split(self, data_dict):
+        """Split the data_dict into multiple ones according to self._gms."""
+        if self._composite == 1:
+            return [data_dict, ]
+        else:
+            x_individuals = list()
+            for _ in self._gms:
+                x_individuals.append(dict())
+
+            for i in self:
+                all_values = data_dict[i]
+                end = 0
+                for j, x_j in enumerate(x_individuals):
+                    start = end
+                    num_local_dofs = self._gms[j].num_local_dofs(i)
+                    end = start + num_local_dofs
+                    x_j[i] = all_values[start:end]
+                assert end == len(all_values), f"must make use of all data of element #{i}."
+
+            return x_individuals

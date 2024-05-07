@@ -15,9 +15,10 @@ class MseHttGreatMesh(Frozen):
 
     def __init__(self):
         """"""
-        self._msepy_manifold = None  # only for configuring msepy elements.
+        self._msepy_manifold = None  # only for configuring msepy elements. It can be None for else situation.
         self._elements = None
         self._visualize = None
+        self._config_method = ''
         if RANK == MASTER_RANK:
             self._global_element_type_dict = None
             self._global_element_map_dict = None
@@ -53,21 +54,30 @@ class MseHttGreatMesh(Frozen):
         rank_element_dict = {}
         if self._msepy_manifold is not None:   # we are configuring from a msepy mesh (manifold).
             for i in rank_elements_type:
-                rank_element_dict[i] = element_distributor(
+                element = element_distributor(
                     i, rank_elements_type[i], rank_elements_parameter[i], rank_elements_map[i],
                     msepy_manifold=self._msepy_manifold,
                 )
+                rank_element_dict[i] = element
         else:
             raise NotImplementedError()
 
-        self._elements = MseHttGreatMeshElements(self, rank_element_dict)
+        assert self._config_method != '', f"must change this indicator!"
+        if self._config_method == 'msepy':
+            # _config_method == 'msepy' means we config the great mesh from a msepy mesh.
+            self._elements = MseHttGreatMeshElements(self, rank_element_dict, element_face_topology_mismatch=False)
+        else:
+            self._elements = MseHttGreatMeshElements(self, rank_element_dict)
 
     def _config(self, indicator, element_layout, **kwargs):
         """"""
+        assert self._config_method == '', f"I must be not-configured yet!"
         if RANK != MASTER_RANK:
             if isinstance(indicator, str) and indicator in PredefinedMsePyManifoldDistributor._predefined_manifolds():
                 # We config the great mesh through a predefined msepy mesh, and we need to save the msepy manifold
                 self._msepy_manifold = COMM.bcast(None, root=MASTER_RANK)
+                self._config_method = 'msepy'
+                # _config_method == 'msepy' means we config the great mesh from a msepy mesh.
             else:
                 raise NotImplementedError()
 
@@ -86,6 +96,8 @@ class MseHttGreatMesh(Frozen):
                 )
                 # We need to save the msepy manifold
                 self._msepy_manifold = COMM.bcast(msepy_manifold, root=MASTER_RANK)
+                self._config_method = 'msepy'
+                # _config_method == 'msepy' means we config the great mesh from a msepy mesh.
             else:
                 raise NotImplementedError()
 
@@ -113,10 +125,14 @@ class MseHttGreatMesh(Frozen):
             self,
             all_element_type_dict,
             all_element_parameter_dict,
-            all_element_map_dict
+            all_element_map_dict,
+            method='naive',
     ):
         """"""
         if SIZE == 1:
+            elements_indices = list(all_element_type_dict.keys())
+            elements_indices.sort()
+            self._element_distribution = {MASTER_RANK: elements_indices}
             return all_element_type_dict, all_element_parameter_dict, all_element_map_dict
         else:
             pass
@@ -125,26 +141,53 @@ class MseHttGreatMesh(Frozen):
             elements_type = [{} for _ in range(SIZE)]
             elements_parameter = [{} for _ in range(SIZE)]
             elements_map = [{} for _ in range(SIZE)]
+            element_distribution = {}  # only in the master rank
 
-            elements_indices = list(all_element_type_dict.keys())
-            elements_indices.sort()
-            num_total_elements = len(elements_indices)
+            # ----------- Different element distribution methods -------------------------------------
+            if method == 'naive':
+                # ------ most trivial method ---------------------------------------------------------
+                elements_indices = list(all_element_type_dict.keys())
+                elements_indices.sort()
+                num_total_elements = len(elements_indices)
 
-            num_piles = 3 * (SIZE - 1) + 1  # master rank takes 1 pile, other ranks take 3 piles each.
-            num_elements_each_pile = num_total_elements / num_piles  # OK to be decimal
+                num_piles = 3 * (SIZE - 1) + 1  # master rank takes 1 pile, other ranks take 3 piles each.
+                num_elements_each_pile = num_total_elements / num_piles  # OK to be decimal
 
-            start = 0
-            element_distribution = {}
-            for rank in range(SIZE):
-                take_num_piles = 1 if rank == MASTER_RANK else 3
-                end = int(start + take_num_piles * num_elements_each_pile) + 1
-                element_distribution[rank] = elements_indices[start:end]
-                for i in elements_indices[start:end]:
-                    elements_type[rank][i] = all_element_type_dict[i]
-                    elements_parameter[rank][i] = all_element_parameter_dict[i]
-                    elements_map[rank][i] = all_element_map_dict[i]
-                start = end
-            self._element_distribution = element_distribution
+                start = 0
+                for rank in range(SIZE):
+                    take_num_piles = 1 if rank == MASTER_RANK else 3
+                    end = int(start + take_num_piles * num_elements_each_pile) + 1
+                    element_distribution[rank] = elements_indices[start:end]
+                    for i in element_distribution[rank]:
+                        elements_type[rank][i] = all_element_type_dict[i]
+                        elements_parameter[rank][i] = all_element_parameter_dict[i]
+                        elements_map[rank][i] = all_element_map_dict[i]
+                    start = end
+
+            else:
+                raise NotImplementedError(f"Please implement better element distributor late. It helps a lot.")
+
+            # ------------- check distribution ----------------------------------------------------------------
+            total_element_indices_set = set()
+            for rank in element_distribution:
+                rank_indices = set(element_distribution[rank])
+                num_elements = len(rank_indices)
+                assert len(elements_type[rank]) == num_elements, f"elements_type dict wrong."
+                assert len(elements_parameter[rank]) == num_elements, f"elements_parameter dict wrong."
+                assert len(elements_map[rank]) == num_elements, f"elements_map dict wrong."
+                for index in rank_indices:
+                    assert index in elements_type[rank], f"element #{index} missing in elements_type dict."
+                    assert index in elements_parameter[rank], f"element #{index} missing in elements_type dict."
+                    assert index in elements_map[rank], f"element #{index} missing in elements_type dict."
+                total_element_indices_set.update(rank_indices)
+            for i in total_element_indices_set:
+                assert i in all_element_type_dict, f"element #{i} missing in elements_type dict."
+                assert i in all_element_parameter_dict, f"element #{i} missing in elements_type dict."
+                assert i in all_element_map_dict, f"element #{i} missing in elements_type dict."
+            assert len(total_element_indices_set) == len(all_element_type_dict), f"elements_type dict wrong."
+            assert len(total_element_indices_set) == len(all_element_parameter_dict), f"elements_parameter dict wrong."
+            assert len(total_element_indices_set) == len(all_element_map_dict), f"elements_map dict wrong."
+            # =================================================================================================
 
         else:
             assert all_element_type_dict is None, f"we must distribute only from the master core."
@@ -153,8 +196,13 @@ class MseHttGreatMesh(Frozen):
 
             elements_type, elements_parameter, elements_map = None, None, None
 
+        # ------ distribute and save data ---------------------------------------------------
         rank_elements_type = COMM.scatter(elements_type, root=MASTER_RANK)
         rank_elements_parameter = COMM.scatter(elements_parameter, root=MASTER_RANK)
         rank_elements_map = COMM.scatter(elements_map, root=MASTER_RANK)
-
+        if RANK == MASTER_RANK:
+            # noinspection PyUnboundLocalVariable
+            self._element_distribution = element_distribution
+        else:
+            pass
         return rank_elements_type, rank_elements_parameter, rank_elements_map

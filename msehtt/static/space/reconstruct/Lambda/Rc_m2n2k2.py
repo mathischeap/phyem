@@ -25,13 +25,10 @@ def reconstruct_Lambda__m2n2k2(tpm, degree, cochain, xi, et, ravel=False):
     return (x, y), (u, )
 
 
-from msehtt.static.space.basis_function.Lambda.bf_m2n2k2 import ___bf222_msepy_quadrilateral___ as bf222
-
-
 def ___rc222_msepy_quadrilateral___(element, degree, local_cochain, xi, et, ravel=False):
     """"""
     shape: list = [len(xi), len(et)]
-    xi_et, bfs = bf222(degree, xi, et)
+    xi_et, bfs = element.bf('m2n2k2', degree, xi, et)
     xy = element.ct.mapping(*xi_et)
     x, y = xy
     iJ = element.ct.inverse_Jacobian(*xi_et)

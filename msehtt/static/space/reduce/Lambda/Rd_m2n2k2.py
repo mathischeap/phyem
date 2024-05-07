@@ -5,7 +5,7 @@ import numpy as np
 from tools.quadrature import Quadrature
 
 
-def reduce_Lambda__m2n2k2(target, t, tpm, degree):
+def reduce_Lambda__m2n2k2(cf_t, tpm, degree):
     """Reduce target at time `t` to m2n2k1 outer space of degree ``degree`` on partial mesh ``tpm``."""
 
     elements = tpm.composition
@@ -14,18 +14,18 @@ def reduce_Lambda__m2n2k2(target, t, tpm, degree):
         element = elements[e]
         etype = element.etype
         if etype in ("orthogonal rectangle", "unique msepy curvilinear quadrilateral"):
-            cochain[e] = ___rd222_msepy_quadrilateral___(element, target, t, degree)
+            cochain[e] = ___rd222_msepy_quadrilateral___(element, cf_t, degree)
         else:
             raise NotImplementedError()
     return cochain
 
 
-def ___rd222_msepy_quadrilateral___(element, target, t, degree):
+def ___rd222_msepy_quadrilateral___(element, cf_t, degree):
     """"""
     xi, et, volume, quad_weights = _preparation_m2n2k2(degree)
     x, y = element.ct.mapping(xi, et)
     J = element.ct.Jacobian(xi, et)
-    u = target[t](x, y)[0]
+    u = cf_t(x, y)[0]
 
     if isinstance(J, (int, float)):
         cochain_local = (
@@ -48,15 +48,12 @@ def ___rd222_msepy_quadrilateral___(element, target, t, degree):
 
 
 _cache_rd222_dp_ = {}
+from msehtt.static.mesh.great.elements.types.orthogonal_rectangle import MseHttGreatMeshOrthogonalRectangleElement
 
 
 def _preparation_m2n2k2(degree):
     """"""
-    if isinstance(degree, int):
-        p = (degree, degree)
-        btype = 'Lobatto'
-    else:
-        raise NotImplementedError()
+    p, btype = MseHttGreatMeshOrthogonalRectangleElement.degree_parser(degree)
 
     key = str(p) + btype
     if key in _cache_rd222_dp_:

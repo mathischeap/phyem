@@ -21,7 +21,7 @@ def pde_canonical_pH(n=3, p=3, periodic=False):
     q = n + 1 - p
 
     if periodic:
-        m = manifold(n, is_periodic=True)
+        m = manifold(n, periodic=True)
     else:
         m = manifold(n)
     mesh(m)

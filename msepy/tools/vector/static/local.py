@@ -241,7 +241,6 @@ class MsePyStaticLocalVector(Frozen):
 
         elif self._dtype == 'callable':
 
-
             def ___neg_callable___(i):
                 return - self[i]
 

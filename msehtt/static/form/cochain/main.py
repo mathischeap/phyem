@@ -3,19 +3,9 @@
 """
 from tools.frozen import Frozen
 from src.config import _setting
-from src.spaces.main import _degree_str_maker
 from msehtt.static.form.cochain.instant import MseHttTimeInstantCochain
-from msehtt.tools.gathering_matrix import MseHttGatheringMatrix
-
-
-___cache_msehtt_form_gm___ = {}
-
-
-def ___clean_cache_msehtt_form_gm___():
-    """"""
-    keys = list(___cache_msehtt_form_gm___.keys())
-    for key in keys:
-        del ___cache_msehtt_form_gm___[key]
+from msehtt.static.form.cochain.vector.static import MseHttStaticCochainVector
+from msehtt.static.form.cochain.vector.dynamic import MseHttDynamicCochainVector
 
 
 class MseHttCochain(Frozen):
@@ -161,16 +151,11 @@ class MseHttCochain(Frozen):
         rf = self._f
         if rf._is_base():
             if self._gm is None:
-                key = self._f.space.__repr__() + _degree_str_maker(self._f.degree)
-                if key in ___cache_msehtt_form_gm___:
-                    pass
-                else:
-                    gm = self._f.space.gathering_matrix(self._f._tpm, self._f.degree)
-                    assert len(gm) == len(self._f.tgm.elements), \
-                        (f"Even if a form has no business with some great elements, the indices of those"
-                         f"great elements still should be in the gm with the values to be None or an empty array.")
-                    ___cache_msehtt_form_gm___[key] = MseHttGatheringMatrix(gm)
-                self._gm = ___cache_msehtt_form_gm___[key]
+                gm = self._f.space.gathering_matrix(self._f.degree)
+                assert len(gm) == len(self._f.tgm.elements), \
+                    (f"Even if a form has no business with some great elements, the indices of those"
+                     f"great elements still should be in the gm with the values to be None or an empty array.")
+                self._gm = gm
                 assert self._gm.num_rank_elements == len(self._f.tgm.elements), f'Must be!'
                 for i in self._f.tgm.elements:
                     assert i in self._gm, f"must be!"
@@ -182,9 +167,9 @@ class MseHttCochain(Frozen):
         """"""
         assert isinstance(t, (int, float)), f"t={t} is wrong."
         if t in self:
-            return MseHttStaticCochainVector(self._f, t, self[t].local, self.gathering_matrix)
+            return MseHttStaticCochainVector(self._f, t, self[t].___cochain_caller___, self.gathering_matrix)
         else:
-            # this one is usually used to receive a cochain. Thus, the data is None (empty)
+            # This one is usually used to receive a cochain late on. Thus, the data is None (empty)
             return MseHttStaticCochainVector(self._f, t, None, self.gathering_matrix)
 
     @property

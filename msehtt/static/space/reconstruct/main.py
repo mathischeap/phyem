@@ -14,10 +14,10 @@ class MseHttSpaceReconstruct(Frozen):
         self._space = space
         self._freeze()
 
-    def __call__(self, tpm, degree, cochain, *meshgrid, ravel=False):
+    def __call__(self, degree, cochain, *meshgrid, ravel=False):
         """reconstruct at ``meshgrid``."""
         indicator = self._space.indicator
         if indicator == 'Lambda':
-            return MseHttSpaceReconstructLambda(self._space)(tpm, degree, cochain, *meshgrid, ravel=ravel)
+            return MseHttSpaceReconstructLambda(self._space)(degree, cochain, *meshgrid, ravel=ravel)
         else:
             raise NotImplementedError()

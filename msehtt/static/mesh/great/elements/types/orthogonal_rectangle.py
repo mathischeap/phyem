@@ -40,15 +40,21 @@ class MseHttGreatMeshOrthogonalRectangleElement(MseHttGreatMeshBaseElement):
         origin_x, origin_y = parameters['origin']
         delta_x, delta_y = parameters['delta']
         self._metric_signature = f"OR:x%.5f" % delta_x + "y%.5f" % delta_y
-        self._space_dim = 2
-        self._element_dim = 2
         super().__init__()
-        self._m = 2                          # this element works in 2d space
-        self._n = 2                          # this element itself is 2d
         self._index = element_index
         self._parameters = parameters
         self._map = _map
         self._ct = MseHttGreatMeshOrthogonalRectangleElementCooTrans(self, origin_x, origin_y, delta_x, delta_y)
+
+    @classmethod
+    def m(cls):
+        """the dimensions of the space"""
+        return 2
+
+    @classmethod
+    def n(cls):
+        """the dimensions of the element"""
+        return 2
 
     @classmethod
     def _etype(cls):
@@ -70,7 +76,7 @@ class MseHttGreatMeshOrthogonalRectangleElement(MseHttGreatMeshBaseElement):
         ones = np.ones_like(linspace)
 
         return {
-            'mn': (self.m, self.n),
+            'mn': (self.m(), self.n()),
             0: self.ct.mapping(-ones, linspace),   # face #0
             1: self.ct.mapping(ones, linspace),    # face #1
             2: self.ct.mapping(linspace, -ones),   # face #2
@@ -93,6 +99,34 @@ class MseHttGreatMeshOrthogonalRectangleElement(MseHttGreatMeshBaseElement):
         if self._faces is None:
             self._faces = MseHttGreatMeshOrthogonalRectangleElementFaces(self)
         return self._faces
+
+    @classmethod
+    def degree_parser(cls, degree):
+        """"""
+        if isinstance(degree, int):
+            p = (degree, degree)
+            dtype = 'Lobatto'
+        else:
+            raise NotImplementedError()
+        return p, dtype
+
+    @classmethod
+    def _form_face_dof_direction_topology(cls):
+        m2n2k1_outer = {
+            0: '-',   # on the x- faces, material leave the element is negative.
+            1: '+',   # on the x+ faces, material leave the element is positive.
+            2: '-',   # on the y- faces, material leave the element is negative.
+            3: '+',   # on the y+ faces, material leave the element is positive.
+        }
+
+        m2n2k1_inner = {
+            0: '-',  # on the x- faces, positive direction is from 2 to 0, i.e., reversed
+            1: '+',  # on the x+ faces, positive direction is from 1 to 3
+            2: '+',  # on the y- faces, positive direction is from 0 to 1
+            3: '-',  # on the y+ faces, positive direction is from 3 to 2, i.e., reversed
+        }
+
+        return {'m2n2k1_outer': m2n2k1_outer, 'm2n2k1_inner': m2n2k1_inner}
 
 
 # ============ ELEMENT CT =====================================================================================
@@ -148,7 +182,7 @@ class MseHttGreatMeshOrthogonalRectangleElementCooTrans(Frozen):
         return self._ct_helper.inverse_metric_matrix(xi, et)
 
 
-___ct_helper_pool___ = {}
+_cache_ct_helper_pool_ = {}
 
 
 def ___ct_helper_parser___(ratio_x, ratio_y):
@@ -156,11 +190,11 @@ def ___ct_helper_parser___(ratio_x, ratio_y):
     ratio_x = round(ratio_x, 8)
     ratio_y = round(ratio_y, 8)
     key = (ratio_x, ratio_y)
-    if key in ___ct_helper_pool___:
+    if key in _cache_ct_helper_pool_:
         pass
     else:
-        ___ct_helper_pool___[key] = ___OrthogonalRectangle___(ratio_x, ratio_y)
-    return ___ct_helper_pool___[key]
+        _cache_ct_helper_pool_[key] = ___OrthogonalRectangle___(ratio_x, ratio_y)
+    return _cache_ct_helper_pool_[key]
 
 
 # noinspection PyUnusedLocal

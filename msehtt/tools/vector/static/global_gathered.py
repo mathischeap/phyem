@@ -1,10 +1,6 @@
 # -*- coding: utf-8 -*-
 r"""
 """
-import sys
-
-if './' not in sys.path:
-    sys.path.append('./')
 from tools.frozen import Frozen
 import numpy as np
 from msehtt.tools.gathering_matrix import MseHttGatheringMatrix

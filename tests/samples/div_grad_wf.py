@@ -46,7 +46,7 @@ def _outer_periodic_Poisson(n, degree):
 
     """
     ph.config.set_embedding_space_dim(n)
-    manifold = ph.manifold(n, is_periodic=True)
+    manifold = ph.manifold(n, periodic=True)
 
     mesh = ph.mesh(manifold)
 
@@ -103,7 +103,7 @@ def _outer_Poisson(n, degree):
 
     """
     ph.config.set_embedding_space_dim(n)
-    manifold = ph.manifold(n, is_periodic=False)
+    manifold = ph.manifold(n, periodic=False)
 
     mesh = ph.mesh(manifold)
 
@@ -163,7 +163,7 @@ def _inner_Poisson(n, degree):
     f = - div u
     """
     ph.config.set_embedding_space_dim(n)
-    manifold = ph.manifold(n, is_periodic=False)
+    manifold = ph.manifold(n, periodic=False)
 
     mesh = ph.mesh(manifold)
 

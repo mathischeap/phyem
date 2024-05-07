@@ -6,25 +6,11 @@ from msepy.tools.polynomials import Lobatto_polynomials_of_degree
 from tools.miscellaneous.ndarray_cache import add_to_ndarray_cache, ndarray_key_comparer
 
 
-def basis_function_Lambda__m2n2k0(etype, degree, xi_1d, eta_1d):
-    """"""
-    if etype in ('unique msepy curvilinear quadrilateral', 'orthogonal rectangle'):
-        local_numbering = ___bf220_msepy_quadrilateral___(degree, xi_1d, eta_1d)
-    else:
-        raise NotImplementedError()
-    return local_numbering
-
-
 _cache_bf220_mq_ = {}
 
 
-def ___bf220_msepy_quadrilateral___(degree, xi_1d, eta_1d):
+def ___bf220_msepy_quadrilateral___(p, btype, xi_1d, eta_1d):
     """"""
-    if isinstance(degree, int):
-        p = (degree, degree)
-        btype = 'Lobatto'
-    else:
-        raise NotImplementedError()
 
     key = str(p[0]) + '-' + str(p[1]) + '-' + btype
     cached, data = ndarray_key_comparer(_cache_bf220_mq_, [xi_1d, eta_1d], check_str=key)

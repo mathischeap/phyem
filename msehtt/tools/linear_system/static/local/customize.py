@@ -1,21 +1,20 @@
 # -*- coding: utf-8 -*-
 r"""
 """
-import sys
-
-if './' not in sys.path:
-    sys.path.append('./')
 from tools.frozen import Frozen
 
 
-class ClassName(Frozen):
+class MseHttStaticLinearSystemCustomize(Frozen):
     """"""
 
-    def __init__(self):
+    def __init__(self, sls):
         """"""
+        self._sls = sls
         self._freeze()
 
-
-if __name__ == '__main__':
-    # mpiexec -n 4 python 
-    pass
+    def set_dof(self, global_dof, value):
+        """"""
+        A = self._sls.A._mA
+        b = self._sls.b._vb
+        A.customize.identify_row(global_dof)
+        b.customize.set_value(global_dof, value)

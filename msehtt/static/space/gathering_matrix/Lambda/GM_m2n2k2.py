@@ -4,10 +4,18 @@
 
 from src.config import RANK, MASTER_RANK, COMM, SIZE
 import numpy as np
+from msehtt.tools.gathering_matrix import MseHttGatheringMatrix
+
+from src.spaces.main import _degree_str_maker
+_cache_ = {}
 
 
 def gathering_matrix_Lambda__m2n2k2(tpm, degree):
     """Do the numbering for the 0-form on a 2d mesh in 2d space."""
+    key = tpm.__repr__() + _degree_str_maker(degree)
+    if key in _cache_:
+        return _cache_[key]
+
     tgm = tpm._tgm
     # do the numbering in the master rank only
     if RANK == MASTER_RANK:
@@ -42,15 +50,17 @@ def gathering_matrix_Lambda__m2n2k2(tpm, degree):
 
     # distribute to ranks ----------------
     rank_numbering = COMM.scatter(rank_numbering, root=MASTER_RANK)
-    return rank_numbering
+    _cache_[key] = MseHttGatheringMatrix(rank_numbering)
+    return _cache_[key]
+
+
+from msehtt.static.mesh.great.elements.types.orthogonal_rectangle import MseHttGreatMeshOrthogonalRectangleElement
 
 
 def ___gm222_msepy_quadrilateral___(current, degree):
     """"""
-    if isinstance(degree, int):
-        px, py = degree, degree
-    else:
-        raise NotImplementedError(f"cannot parse degree={degree} for 2d msepy quadrilateral element.")
+    p, _ = MseHttGreatMeshOrthogonalRectangleElement.degree_parser(degree)
+    px, py = p
     numbering = np.arange(current, current + px * py)
     current += px * py
     return numbering, current

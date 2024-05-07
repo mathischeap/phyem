@@ -69,6 +69,11 @@ def manifold(
     return Manifold(ndim, sym_repr=sym_repr, lin_repr=lin_repr, periodic=periodic)
 
 
+def find_manifold(manifold_sym_repr):
+    """"""
+    return _global_manifolds[manifold_sym_repr]
+
+
 class Manifold(Frozen):
 
     def __init__(

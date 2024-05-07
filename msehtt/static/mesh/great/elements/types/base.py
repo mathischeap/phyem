@@ -3,6 +3,17 @@
 """
 import numpy as np
 from tools.frozen import Frozen
+from msehtt.static.space.basis_function.Lambda.bf_m2n2k0 import ___bf220_msepy_quadrilateral___
+from msehtt.static.space.basis_function.Lambda.bf_m2n2k1 import ___bf221o_outer_msepy_quadrilateral___
+from msehtt.static.space.basis_function.Lambda.bf_m2n2k1 import ___bf221i_inner_msepy_quadrilateral___
+from msehtt.static.space.basis_function.Lambda.bf_m2n2k2 import ___bf222_msepy_quadrilateral___
+
+from msehtt.static.space.local_numbering.Lambda.ln_m2n2k1 import local_numbering_Lambda__m2n2k1_outer
+from msehtt.static.space.local_numbering.Lambda.ln_m2n2k1 import local_numbering_Lambda__m2n2k1_inner
+
+
+from msehtt.static.space.find.local_dofs_on_face.Lambda.m2n2k1 import find_local_dofs_on_face__m2n2k1_outer
+from msehtt.static.space.find.local_dofs_on_face.Lambda.m2n2k1 import find_local_dofs_on_face__m2n2k1_inner
 
 
 class MseHttGreatMeshBaseElement(Frozen):
@@ -14,9 +25,8 @@ class MseHttGreatMeshBaseElement(Frozen):
         self._map = None
         self._parameters = None
         self._ct = None
-        self._m = None   # the dimensions of the space
-        self._n = None   # the dimensions of the element
         self._faces = None
+        self._dof_reverse_info = {}
         self._freeze()
 
     @property
@@ -24,15 +34,15 @@ class MseHttGreatMeshBaseElement(Frozen):
         """The index of this element. Must be unique all over the great mesh."""
         return self._index
 
-    @property
-    def m(self):
+    @classmethod
+    def m(cls):
         """the dimensions of the space"""
-        return self._m
+        raise NotImplementedError()
 
-    @property
-    def n(self):
+    @classmethod
+    def n(cls):
         """the dimensions of the element"""
-        return self._n
+        raise NotImplementedError()
 
     @property
     def etype(self):
@@ -60,6 +70,91 @@ class MseHttGreatMeshBaseElement(Frozen):
         """
         return self._map
 
+    def local_numbering(self, indicator, degree):
+        """"""
+        p = self.degree_parser(degree)[0]
+        if indicator == 'm2n2k1_outer':
+            return local_numbering_Lambda__m2n2k1_outer(self.etype, p)
+        elif indicator == 'm2n2k1_inner':
+            return local_numbering_Lambda__m2n2k1_inner(self.etype, p)
+        else:
+            raise NotImplementedError()
+
+    def find_local_dofs_on_face(self, indicator, degree, face_index, component_wise=False):
+        """"""
+        p = self.degree_parser(degree)[0]
+        if indicator == 'm2n2k1_outer':
+            return find_local_dofs_on_face__m2n2k1_outer(self.etype, p, face_index, component_wise=component_wise)
+        elif indicator == 'm2n2k1_inner':
+            return find_local_dofs_on_face__m2n2k1_inner(self.etype, p, face_index, component_wise=component_wise)
+        else:
+            raise NotImplementedError()
+
+    def bf(self, indicator, degree, xi_1d, et_1d):
+        """"""
+        p, btype = self.degree_parser(degree)
+        if self.etype in ('orthogonal rectangle', 'unique msepy curvilinear quadrilateral'):
+            if indicator == 'm2n2k0':
+                xi_et_sg, bf = ___bf220_msepy_quadrilateral___(p, btype, xi_1d, et_1d)
+            elif indicator == 'm2n2k1_outer':
+                xi_et_sg, bf = ___bf221o_outer_msepy_quadrilateral___(p, btype, xi_1d, et_1d)
+            elif indicator == 'm2n2k1_inner':
+                xi_et_sg, bf = ___bf221i_inner_msepy_quadrilateral___(p, btype, xi_1d, et_1d)
+            elif indicator == 'm2n2k2':
+                xi_et_sg, bf = ___bf222_msepy_quadrilateral___(p, btype, xi_1d, et_1d)
+            else:
+                raise NotImplementedError()
+        else:
+            raise NotImplementedError()
+
+        if indicator in self.dof_reverse_info:
+            if indicator == 'm2n2k1_outer':
+                bf0 = bf[0].copy()
+                bf1 = bf[1].copy()
+                face_indices = self.dof_reverse_info['m2n2k1_outer']
+                for fi in face_indices:
+                    component, local_dofs = find_local_dofs_on_face__m2n2k1_outer(
+                        self.etype, p, fi, component_wise=True)
+                    if component == 0:
+                        bf0[local_dofs, :] = - bf[0][local_dofs, :]
+                    elif component == 1:
+                        bf1[local_dofs, :] = - bf[1][local_dofs, :]
+                    else:
+                        raise Exception()
+                return xi_et_sg, [bf0, bf1]
+            if indicator == 'm2n2k1_inner':
+                bf0 = bf[0].copy()
+                bf1 = bf[1].copy()
+                face_indices = self.dof_reverse_info['m2n2k1_inner']
+                for fi in face_indices:
+                    component, local_dofs = find_local_dofs_on_face__m2n2k1_inner(
+                        self.etype, p, fi, component_wise=True)
+                    if component == 0:
+                        bf0[local_dofs, :] = - bf[0][local_dofs, :]
+                    elif component == 1:
+                        bf1[local_dofs, :] = - bf[1][local_dofs, :]
+                    else:
+                        raise Exception()
+                return xi_et_sg, [bf0, bf1]
+            else:
+                raise NotImplementedError()
+        else:
+            return xi_et_sg, bf
+
+    @property
+    def dof_reverse_info(self):
+        """
+
+        Returns
+        -------
+        {
+            'm2n2k1_inner': 0,  # face id, dofs on this face need a minus.
+            'm2n2k1_outer': [2, 3],  # face id, dofs on these faces need a minus.
+        }
+
+        """
+        return self._dof_reverse_info
+
     @property
     def ct(self):
         return self._ct
@@ -75,6 +170,16 @@ class MseHttGreatMeshBaseElement(Frozen):
         A face can be 2-d (face of 3d element) or 1-d (face of 2d element).
         """
         raise NotImplementedError()
+
+    @classmethod
+    def degree_parser(cls, degree):
+        """"""
+        raise NotImplementedError()
+
+    @classmethod
+    def _form_face_dof_direction_topology(cls):
+        """"""
+        return None
 
 
 # ============ ELEMENT CT =====================================================================================
@@ -160,7 +265,7 @@ class MseHttGreatMeshBaseElementCooTrans(Frozen):
     def ___inverse_Jacobian_matrix___(self, *xi_et_sg):
         """"""
         jm = self.Jacobian_matrix(*xi_et_sg)
-        m, n = self._element.m, self._element.n
+        m, n = self._element.m(), self._element.n()
 
         if m == n == 1:
 
@@ -226,7 +331,7 @@ class MseHttGreatMeshBaseElementCooTrans(Frozen):
     def ___Jacobian___(self, *xi_et_sg):
         """"""
         jm = self.Jacobian_matrix(*xi_et_sg)
-        m, n = self._element.m, self._element.n
+        m, n = self._element.m(), self._element.n()
 
         if m == n == 1:
 
@@ -265,7 +370,7 @@ class MseHttGreatMeshBaseElementCooTrans(Frozen):
 
     def ___metric___(self, *xi_et_sg):
         """"""
-        m, n = self._element.m, self._element.n
+        m, n = self._element.m(), self._element.n()
         if m == n:
             return self.Jacobian(*xi_et_sg) ** 2
         else:
@@ -291,7 +396,7 @@ class MseHttGreatMeshBaseElementCooTrans(Frozen):
     def ___inverse_Jacobian___(self, *xi_et_sg):
         """"""
         ijm = self.inverse_Jacobian_matrix(*xi_et_sg)
-        m, n = self._element.m, self._element.n
+        m, n = self._element.m(), self._element.n()
 
         if m == n == 1:
 
@@ -329,7 +434,7 @@ class MseHttGreatMeshBaseElementCooTrans(Frozen):
     def ___metric_matrix___(self, *xi_et_sg):
         """"""
         jm = self.Jacobian_matrix(*xi_et_sg)
-        m, n = self._element.m, self._element.n
+        m, n = self._element.m(), self._element.n()
         G = [[None for _ in range(n)] for __ in range(n)]
         for i in range(n):
             for j in range(i, n):
@@ -357,7 +462,7 @@ class MseHttGreatMeshBaseElementCooTrans(Frozen):
     def ___inverse_metric_matrix___(self, *xi_et_sg):
         """"""
         ijm = self.inverse_Jacobian_matrix(*xi_et_sg)
-        m, n = self._element.m, self._element.n
+        m, n = self._element.m(), self._element.n()
         iG = [[None for _ in range(m)] for __ in range(m)]
         for i in range(m):
             for j in range(i, m):
@@ -400,7 +505,7 @@ class _FaceCoordinateTransformationBase(Frozen):
         """"""
         if self.is_plane():
             if self.___c_ounv___ is None:
-                if self._element.m == self._element.n == 2:
+                if self._element.m() == self._element.n() == 2:
                     c_ounv = self.outward_unit_normal_vector(np.array([0]))
                     if isinstance(c_ounv[0], np.ndarray):
                         c_ounv0 = c_ounv[0][0]
@@ -410,6 +515,8 @@ class _FaceCoordinateTransformationBase(Frozen):
                         c_ounv1 = c_ounv[1][0]
                     else:
                         c_ounv1 = c_ounv[1]
+                    c_ounv0 = round(c_ounv0, 8)  # remove the round-off error
+                    c_ounv1 = round(c_ounv1, 8)  # remove the round-off error
                     self.___c_ounv___ = (c_ounv0, c_ounv1)
                 else:
                     raise NotImplementedError()

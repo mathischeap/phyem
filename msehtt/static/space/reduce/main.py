@@ -14,10 +14,10 @@ class MseHttSpaceReduce(Frozen):
         self._space = space
         self._freeze()
 
-    def __call__(self, target, t, tpm, degree):
+    def __call__(self, cf_t, degree):
         """Reduce target at time `t` to space of degree ``degree`` on partial mesh ``tpm`` """
         indicator = self._space.indicator
         if indicator == 'Lambda':
-            return MseHttSpaceReduceLambda(self._space)(target, t, tpm, degree)
+            return MseHttSpaceReduceLambda(self._space)(cf_t, degree)
         else:
             raise NotImplementedError()

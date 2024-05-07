@@ -606,7 +606,7 @@ def _inner_simpler_pattern_examiner_diagonal_bundle_valued_forms(factor, f0, f1,
 
 
 def _dp_simpler_pattern_examiner_scalar_valued_forms(factor, f0, f1, extra_info):
-    """ """
+    """"""
     lin_d = _global_operator_lin_repr_setting['d']
 
     if factor.__class__ is ConstantScalar0Form:
@@ -731,3 +731,35 @@ def _dp_simpler_pattern_examiner_scalar_valued_forms(factor, f0, f1, extra_info)
 
     else:
         raise NotImplementedError(f'Not implemented for factor={factor}')
+
+
+def _dp_simpler_pattern_examiner_scalar_valued_forms_restrict(factor, f0, f1, extra_info, restrict_manifold):
+    """"""
+
+    if factor.__class__ is ConstantScalar0Form:
+        # --- <tr star | tr > ---------------------------------------------------------------------------------
+        lin_tr = _global_operator_lin_repr_setting['trace']
+        lin_hodge = _global_operator_lin_repr_setting['Hodge']
+        lin = lin_tr + _non_root_lin_sep[0] + lin_hodge
+        if f0._lin_repr[:len(lin)] == lin and \
+                f0._lin_repr[-len(_non_root_lin_sep[1]):] == _non_root_lin_sep[1] and \
+                f1._lin_repr[:len(lin_tr)] == lin_tr:
+
+            bf0_lr = f0._lin_repr[len(lin):-len(_non_root_lin_sep[1])]
+            bf1_lr = f1._lin_repr[len(lin_tr):]
+
+            if bf0_lr in _global_root_forms_lin_dict and bf1_lr in _global_root_forms_lin_dict:
+                bf0 = _global_root_forms_lin_dict[bf0_lr]
+                bf1 = _global_root_forms_lin_dict[bf1_lr]
+                # >>>>>>>>>>>>>>>>>>>> ['<tr star | tr >'] <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+                return _simple_patterns['<tr star | tr > - restrict'], {
+                    'rsf0': bf0,   # root-scalar-form-0
+                    'rsf1': bf1,   # root-scalar-form-1
+                    'manifold': restrict_manifold,
+                }
+
+        return '', None
+
+    else:
+        raise NotImplementedError(f'Not implemented for factor={factor}')
+

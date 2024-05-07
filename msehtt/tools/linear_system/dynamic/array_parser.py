@@ -10,7 +10,6 @@ from src.config import _root_form_ap_vec_setting
 _root_form_ap_lin_repr = _root_form_ap_vec_setting['lin']
 _len_rf_ap_lin_repr = len(_root_form_ap_lin_repr)
 
-import msehtt.tools.linear_system.dynamic._arr_par as PARSER
 
 root_array_lin_repr = _global_lin_repr_setting['array']
 _front, _back = root_array_lin_repr
@@ -18,23 +17,10 @@ _len_front = len(_front)
 _len_back = len(_back)
 _len_transpose_text = len(_transpose_text)
 
-_local_config = {
-    'indicator_check': False,
-}
-
 
 def msehtt_root_array_parser(dls, array_lin_repr):
     """"""
-    if _local_config['indicator_check']:
-        pass
-    else:
-        PARSER._indicator_check()
-        _local_config['indicator_check'] = True
-
-    if PARSER._setting_['base'] == {}:
-        PARSER._setting_['base'] = dls._base
-    else:
-        assert PARSER._setting_['base'] is dls._base, f"parser base changed!"
+    PARSER = dls._base['PARSER']
 
     if array_lin_repr[-_len_transpose_text:] == _transpose_text:
         transpose = True
@@ -52,4 +38,36 @@ def msehtt_root_array_parser(dls, array_lin_repr):
         # we are parsing a vector representing a root form.
         root_form_vec_lin_repr = array_lin_repr[:-_len_rf_ap_lin_repr]
         x, text, time_indicator = PARSER._parse_root_form(root_form_vec_lin_repr)
-        # return x, text, time_indicator
+        return x, text, time_indicator
+
+    else:
+
+        indicators = array_lin_repr.split(_sep)  # these section represents all info of this root-array.
+        type_indicator = indicators[0]           # this first one indicates the type
+        info_indicators = indicators[1:]         # the _auxiliaries indicate the details.
+
+        if type_indicator == PARSER._find_indicator(
+                _VarSetting_mass_matrix):
+            A, _ti = PARSER.Parse__M_matrix(*info_indicators)
+
+        elif type_indicator == PARSER._find_indicator(
+                _VarSetting_d_matrix):
+            A, _ti = PARSER.Parse__E_matrix(*info_indicators)
+
+        elif type_indicator == PARSER._find_indicator(
+                _VarSetting_d_matrix_transpose):
+            A, _ti = PARSER.Parse__E_matrix(*info_indicators)
+            A = A.T
+
+        # --------------------------------------------------------------------
+        else:
+            raise NotImplementedError(
+                f"I cannot parse array: {type_indicator} with parameters: {info_indicators}."
+            )
+
+        text = PARSER._indicator_templates[type_indicator]['symbol']
+
+        if transpose:
+            return A.T, text + r"^{\mathsf{T}}", _ti
+        else:
+            return A, text, _ti

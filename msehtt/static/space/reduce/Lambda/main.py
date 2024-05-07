@@ -13,7 +13,7 @@ class MseHttSpaceReduceLambda(Frozen):
         self._space = space
         self._freeze()
 
-    def __call__(self, target, t, tpm, degree):
+    def __call__(self, cf_t, degree):
         """"""
         m = self._space.m
         n = self._space.n
@@ -23,6 +23,7 @@ class MseHttSpaceReduceLambda(Frozen):
         path = self.__repr__().split('main.')[0][1:] + f"Rd_{indicator}"
         module = import_module(path)
         if hasattr(module, 'reduce_Lambda__' + indicator):
-            return getattr(module, 'reduce_Lambda__' + indicator)(target, t, tpm, degree)
+            return getattr(module, 'reduce_Lambda__' + indicator)(cf_t, self._space.tpm, degree)
         else:
-            return getattr(module, 'reduce_Lambda__' + indicator + f"_{orientation}")(target, t, tpm, degree)
+            return getattr(module, 'reduce_Lambda__' + indicator + f"_{orientation}")(
+                cf_t, self._space.tpm, degree)

@@ -1,0 +1,23 @@
+# -*- coding: utf-8 -*-
+"""
+"""
+from tools.frozen import Frozen
+from msehtt.static.space.incidence_matrix.Lambda.main import MseHttSpaceLambdaIncidenceMatrix
+
+
+class MseHttSpaceIncidenceMatrix(Frozen):
+    """"""
+
+    def __init__(self, space):
+        """"""
+        self._space = space
+        self._freeze()
+
+    def __call__(self, degree):
+        """"""
+        indicator = self._space.indicator
+        if indicator == 'Lambda':
+            im, im_cache_key = MseHttSpaceLambdaIncidenceMatrix(self._space)(degree)
+        else:
+            raise NotImplementedError()
+        return im, im_cache_key

@@ -5,9 +5,20 @@ base = {
     'manifolds': dict(),  # keys: abstract manifold sym_repr
     'meshes': dict(),     # keys: abstract mesh sym_repr
     'spaces': dict(),  # keys: abstract space sym_repr, values: MsePy spaces
-    'forms': dict(),  # keys: abstract root form pure_lin_repr, values: root-forms,
-    'the_great_mesh': None,   # all forms will point to this space.
+    'forms': dict(),   # keys: abstract root form pure_lin_repr, values: root-forms,
+    'the_great_mesh': None,   # all forms/meshes will also point to this great mesh.
+    'PARSER': None,           # the parser that will study this base
 }
+
+
+__all__ = [
+    'PARSER',
+]
+
+
+import msehtt.static.implementation_array_parser as PARSER
+PARSER._setting_['base'] = base
+base['PARSER'] = PARSER
 
 
 from msehtt.static.manifold.main import MseHttManifold
@@ -21,11 +32,16 @@ from src.wf.mp.nonlinear_system import MatrixProxyNoneLinearSystem
 
 
 def _check_config():
-    """Check the configuration is compatible or not."""
+    """Check whether the configuration is compatible or not. And if necessary, prepare the data!"""
 
 
 def _clear_self():
     """Clear self to make sure the previous implementation does not mess things up!"""
+    base['manifolds'] = dict()
+    base['meshes'] = dict()
+    base['spaces'] = dict()
+    base['forms'] = dict()
+    base['the_great_mesh'] = None
 
 
 def _parse_manifolds(abstract_manifolds):
@@ -70,6 +86,17 @@ def _parse_spaces(abstract_spaces):
             else:
                 space = MseHttSpace(ab_sp)
                 space_dict[ab_sp_sym_repr] = space
+
+                the_msehtt_partial_mesh = None
+                for mesh_repr in base['meshes']:
+                    if mesh_repr == space.abstract.mesh._sym_repr:
+                        the_msehtt_partial_mesh = base['meshes'][mesh_repr]
+                        break
+                    else:
+                        pass
+
+                assert the_msehtt_partial_mesh is not None, f"we must have found a msehtt partial mesh!"
+                space._tpm = the_msehtt_partial_mesh
 
     base['spaces'] = space_dict
 
@@ -177,11 +204,9 @@ def _config(obj=None):
 
 from msehtt.tools.gathering_matrix import ___clean_cache_msehtt_gm___
 from msehtt.static.mesh.great.elements.types.base import ___clean_cache_msehtt_element_ct___
-from msehtt.static.form.cochain.main import ___clean_cache_msehtt_form_gm___
 
 
 def clean_cache():
     """"""
     ___clean_cache_msehtt_gm___()
     ___clean_cache_msehtt_element_ct___()
-    ___clean_cache_msehtt_form_gm___()

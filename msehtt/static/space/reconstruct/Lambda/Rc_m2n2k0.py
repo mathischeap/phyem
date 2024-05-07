@@ -25,13 +25,10 @@ def reconstruct_Lambda__m2n2k0(tpm, degree, cochain, xi, et, ravel=False):
     return (x, y), (u, )
 
 
-from msehtt.static.space.basis_function.Lambda.bf_m2n2k0 import ___bf220_msepy_quadrilateral___ as _220_bfs
-
-
 def ___rc220_msepy_quadrilateral___(element, degree, local_cochain, xi, et, ravel=False):
     """"""
     shape: list = [len(xi), len(et)]
-    xi_et, bfs = _220_bfs(degree, xi, et)
+    xi_et, bfs = element.bf('m2n2k0', degree, xi, et)
     xy = element.ct.mapping(*xi_et)
     x, y = xy
     v = np.einsum('ij, i -> j', bfs[0], local_cochain, optimize='optimal')

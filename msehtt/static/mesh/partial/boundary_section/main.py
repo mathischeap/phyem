@@ -78,7 +78,7 @@ class MseHttBoundarySectionPartialMesh(Frozen):
             for element_index___face_id in self:
                 element_index, face_id = element_index___face_id
                 element = self._tgm.elements[element_index]
-                mn = (element.m, element.n)
+                mn = (element.m(), element.n())
                 if mn not in mn_pool:
                     mn_pool.append(mn)
                 else:
@@ -98,5 +98,4 @@ class MseHttBoundarySectionPartialMesh(Frozen):
                 self._mn = None
 
             self._mn = COMM.bcast(self._mn, root=MASTER_RANK)
-
         return self._mn

@@ -2,11 +2,10 @@
 """
 """
 from tools.frozen import Frozen
+from msehtt.static.space.norm.Lambda.main import MseHttSpaceNormLambda
 
-from msehtt.static.space.local_numbering.Lambda.main import MseHttSpaceLocalNumberingLambda
 
-
-class MseHttSpaceLocalNumbering(Frozen):
+class MseHttSpaceNorm(Frozen):
     """"""
 
     def __init__(self, space):
@@ -14,10 +13,10 @@ class MseHttSpaceLocalNumbering(Frozen):
         self._space = space
         self._freeze()
 
-    def __call__(self, etype, degree):
+    def __call__(self, degree, cochain, norm_type='L2'):
         """"""
         indicator = self._space.indicator
         if indicator == 'Lambda':
-            return MseHttSpaceLocalNumberingLambda(self._space)(etype, degree)
+            return MseHttSpaceNormLambda(self._space)(degree, cochain, norm_type=norm_type)
         else:
             raise NotImplementedError()

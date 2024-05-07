@@ -4,6 +4,7 @@ r"""
 from tools.frozen import Frozen
 from typing import Dict
 from src.form.main import Form
+from msehtt.tools.matrix.static.local import MseHttStaticLocalMatrix
 from msehtt.static.form.cf import MseHttStaticFormCF
 from msehtt.static.form.addons.static import MseHttFormStaticCopy
 from msehtt.static.form.cochain.main import MseHttCochain
@@ -32,6 +33,7 @@ class MseHttForm(Frozen):
 
         self._cf = None
         self._cochain = None
+        self._im = None
         self._freeze()
 
     @property
@@ -133,16 +135,38 @@ class MseHttForm(Frozen):
             self._cochain = MseHttCochain(self)
         return self._cochain
 
-    def reduce(self, target, t):
+    def reduce(self, cf_at_t):
         """"""
-        return self._space.reduce(target, t, self.tpm, self.degree)
+        return self._space.reduce(cf_at_t, self.degree)
 
     def reconstruct(self, cochain, *meshgrid, ravel=False):
         """"""
-        return self._space.reconstruct(self.tpm, self.degree, cochain, *meshgrid, ravel=ravel)
+        return self._space.reconstruct(self.degree, cochain, *meshgrid, ravel=ravel)
+
+    def error(self, cf, cochain, error_type='L2'):
+        """"""
+        return self._space.error(cf, cochain, self.degree, error_type=error_type)
 
     def visualize(self, t):
         if self._is_base():
             return MseHttFormVisualize(self, t)
         else:
             return self._base.visualize(t)
+
+    @property
+    def incidence_matrix(self):
+        if self._im is None:
+            gm0 = self.space.gathering_matrix._next(self.degree)
+            gm1 = self.cochain.gathering_matrix
+            E, cache_key_dict = self.space.incidence_matrix(self.degree)
+            self._im = MseHttStaticLocalMatrix(
+                E,
+                gm0,
+                gm1,
+                cache_key=cache_key_dict
+            )
+        return self._im
+
+    def norm(self, cochain, norm_type='L2'):
+        """"""
+        return self.space.norm(self.degree, cochain, norm_type=norm_type)
