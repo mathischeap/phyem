@@ -348,8 +348,9 @@ def _VarPar_astA_x_B_ip_tC(gA, B, tC):
 def _VarPar_A_x_astB_ip_tC(A, gB, tC):
     """<A x *B, @C>"""
     sym, lin = _VarSetting_A_x_astB_ip_tC[:2]
+    sym = sym.replace(r'{B}', gB._sym_repr)
 
-    sym += r"_{" + gB._sym_repr + r"}"
+    # sym += r"_{" + gB._sym_repr + r"}"
     lin = lin.replace('{A}', A._pure_lin_repr)
     lin = lin.replace('{B}', gB._pure_lin_repr)
     lin = lin.replace('{C}', tC._pure_lin_repr)

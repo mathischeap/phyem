@@ -351,8 +351,8 @@ def _check_stop_criterion_(BETA, atol, ITER, maxiter):
     else:
 
         beta = BETA[-1]
-        judge_1 = beta < atol  # judge 1: reach absolute tolerance.
-        judge_2 = ITER >= maxiter  # judge 2: reach max iteration number
+        judge_1 = beta < atol        # judge 1: reach absolute tolerance.
+        judge_2 = ITER >= maxiter    # judge 2: reach max iteration number
 
         # judge 3: divergence
         if (not judge_1) and len(BETA) > 1 and BETA[-1] > BETA[-2]:  # error grows by much
@@ -375,11 +375,11 @@ def _check_stop_criterion_(BETA, atol, ITER, maxiter):
             judge_4 = False
 
     # -------------------------------------------------------------------------------
-    if judge_1 or judge_2 or judge_3 or judge_4:
+    if any([judge_1, judge_2, judge_3, judge_4]):
 
         stop_iteration = True
 
-        if judge_1:  # reach atol
+        if judge_1:    # reach atol
             info = 0
             JUDGE = 1
             JUDGE_explanation = 'reach absolute tol'

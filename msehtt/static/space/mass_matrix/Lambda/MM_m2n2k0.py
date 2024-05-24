@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-"""
+r"""
 """
 from tools.quadrature import quadrature
 from src.spaces.main import _degree_str_maker

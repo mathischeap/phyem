@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 r"""
 """
-from src.config import COMM, MPI
+from src.config import RANK
 import matplotlib.pyplot as plt
 from tools.frozen import Frozen
 from msehtt.tools.gathering_matrix import MseHttGatheringMatrix
@@ -69,11 +69,17 @@ class MseHttStaticLocalMatrix(Frozen):
             self._cache_key = self._dict_cache_key_caller
         elif callable(cache_key):
             self._cache_key = cache_key
+        elif cache_key == 'zero':
+            self._cache_key = self.___zero_cache_key___
         else:
             raise NotImplementedError()
 
         for i in self:
             _ = self._cache_key(i)  # make sure cache key is valid for all rank great elements.
+
+    def ___zero_cache_key___(self, i):
+        """"""
+        return str((self._gm_row.num_local_dofs(i), self._gm_col.num_local_dofs(i)))
 
     def _unique_cache_key(self, i):
         """"""
@@ -119,7 +125,7 @@ class MseHttStaticLocalMatrix(Frozen):
             data = self.customize[i]
         else:
             cache_key = self._cache_key(i)
-            if cache_key == 'unique':
+            if 'unique' in cache_key:
                 data = self._get_meta_data(i)
             else:
                 if cache_key in self._cache:
@@ -185,6 +191,33 @@ class MseHttStaticLocalMatrix(Frozen):
 
         return self.__class__(data_caller, self._gm_col, self._gm_row, cache_key=self._cache_key)
 
+    def __rmul__(self, other):
+        """other * self"""
+        if isinstance(other, (int, float)):
+
+            def data_caller(i):
+                return other * self[i]
+
+            return self.__class__(data_caller, self._gm_row, self._gm_col, cache_key=self._cache_key)
+
+        else:
+            raise NotImplementedError()
+
+    def __add__(self, other):
+        """self + other"""
+        if other.__class__ is self.__class__:
+            def data_caller(i):
+                return self[i] + other[i]
+
+            def cache_key_caller(i):
+                key1 = self._cache_key(i)
+                key2 = other._cache_key(i)
+                if key1 == 'unique' or key2 == 'unique':
+                    return 'unique'
+                else:
+                    return key1 + '.' + key2
+            return self.__class__(data_caller, self._gm_row, self._gm_col, cache_key=cache_key_caller)
+
     def __matmul__(self, other):
         """"""
         if other.__class__ is MseHttTimeInstantCochain:
@@ -193,7 +226,8 @@ class MseHttStaticLocalMatrix(Frozen):
                 M = self[e]
                 v = other[e]
                 f[e] = M @ v
-            return f
+            return MseHttStaticLocalVector(f, self._gm_row)
+
         elif other.__class__ is self.__class__:
 
             def data_caller(i):
@@ -213,6 +247,13 @@ class MseHttStaticLocalMatrix(Frozen):
             return self.__class__(data_caller, self._gm_row, other._gm_col, cache_key=cache_key_caller)
 
         elif other.__class__ is MseHttStaticCochainVector:
+
+            def data_caller(i):
+                return self[i] @ other[i]
+
+            return MseHttStaticLocalVector(data_caller, self._gm_row)
+
+        elif other.__class__ is MseHttStaticLocalVector:
 
             def data_caller(i):
                 return self[i] @ other[i]
@@ -253,6 +294,36 @@ class _Static_LocalMatrix_Customize(Frozen):
         else:
             raise NotImplementedError()
 
+    def zero_row(self, i):
+        """identify global row #i: M[i,:] = 0 and M[i, i] = 1, where M means the assembled matrix.
+
+        Parameters
+        ----------
+        i
+
+        Returns
+        -------
+
+        """
+        gm = self._mat._gm_row
+        if isinstance(i, (int, float)) or i.__class__.__name__ in ('int32', 'int64'):
+            pass
+        else:
+            raise Exception(f"can just deal with one dof! now i.__class__ is {i.__class__.__name__}")
+
+        if i < 0:
+            i += gm.num_global_dofs
+        else:
+            pass
+        assert i == int(i) and 0 <= i < gm.num_global_dofs, f"i = {i} is wrong."
+        i = int(i)
+        elements_local_rows = gm.find_rank_locations_of_global_dofs(i)[i]
+        for element_local_dof in elements_local_rows:
+            rank_element, local_dof = element_local_dof
+            data = self._mat[rank_element].tolil()
+            data[local_dof, :] = 0
+            self._customizations[rank_element] = data.tocsr()
+
     def identify_row(self, i):
         """identify global row #i: M[i,:] = 0 and M[i, i] = 1, where M means the assembled matrix.
 
@@ -264,19 +335,24 @@ class _Static_LocalMatrix_Customize(Frozen):
         -------
 
         """
-        assert isinstance(i, (int, float)), f"can just deal with one dof!"
+        gm = self._mat._gm_row
+        if isinstance(i, (int, float)) or i.__class__.__name__ in ('int32', 'int64'):
+            pass
+        else:
+            raise Exception(f"can just deal with one dof! now i.__class__ is {i.__class__.__name__}")
+
         if i < 0:
-            i += self._mat._gm_row.num_global_dofs
+            i += gm.num_global_dofs
         else:
             pass
-        assert i == int(i) and 0 <= i < self._mat._gm_row.num_global_dofs, f"i = {i} is wrong."
+
+        assert i == int(i) and 0 <= i < gm.num_global_dofs, f"i = {i} is wrong."
         i = int(i)
-        elements_local_rows = self._mat._gm_row.find_rank_locations_of_global_dofs(i)[i]
-        num_rank_locations = len(elements_local_rows)
-        num_global_locations = COMM.allreduce(num_rank_locations, op=MPI.SUM)
+        elements_local_rows = gm.find_rank_locations_of_global_dofs(i)[i]
+        num_global_locations = gm.num_global_locations(i)
         if num_global_locations == 1:
             # this dof only appear at one place, so we just do it on that row!
-            if num_rank_locations == 1:  # in the rank where the place is
+            if len(elements_local_rows) == 1:  # in the rank where the place is
                 rank_element, local_dof = elements_local_rows[0]
                 data = self._mat[rank_element].tolil()
                 data[local_dof, :] = 0
@@ -285,7 +361,37 @@ class _Static_LocalMatrix_Customize(Frozen):
             else:  # in all other ranks, do nothing.
                 pass
         else:
-            raise NotImplementedError()
+            representative_rank, element = gm.find_representative_location(i)
+            if RANK == representative_rank:
+                representative_local_dof = 1
+                for element_local_dof in elements_local_rows:
+                    _element, _local_dof = element_local_dof
+                    if (_element == element) and representative_local_dof:
+                        representative_local_dof = 0
+                        data = self._mat[_element].tolil()
+                        data[_local_dof, :] = 0
+                        data[_local_dof, _local_dof] = 1
+                        self._customizations[_element] = data.tocsr()
+                    else:
+                        data = self._mat[_element].tolil()
+                        data[_local_dof, :] = 0
+                        self._customizations[_element] = data.tocsr()
+            else:
+                for element_local_dof in elements_local_rows:
+                    _element, _local_dof = element_local_dof
+                    data = self._mat[_element].tolil()
+                    data[_local_dof, :] = 0
+                    self._customizations[_element] = data.tocsr()
+
+    def identify_rows(self, global_dofs):
+        """"""
+        for i in global_dofs:
+            self.identify_row(i)
+
+    def zero_rows(self, global_dofs):
+        """"""
+        for i in global_dofs:
+            self.zero_row(i)
 
 
 def bmat(A_2d_list):
@@ -368,7 +474,7 @@ class _MseHttStaticLocalMatrixBmat(Frozen):
                 if Arc is None:
                     pass
                 else:
-                    if i in Arc.customize:  # important! do not use adjust!
+                    if i in Arc.customize:
                         return 'unique'
                     else:
                         key = Arc._cache_key(i)
@@ -379,7 +485,7 @@ class _MseHttStaticLocalMatrixBmat(Frozen):
                                 key
                             )
 
-        return ''.join(keys)
+        return '.'.join(keys)
 
 
 from numpy import diff

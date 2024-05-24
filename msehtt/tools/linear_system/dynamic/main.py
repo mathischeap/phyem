@@ -11,6 +11,8 @@ from src.config import _abstract_array_factor_sep, _abstract_array_connector
 from src.form.parameters import constant_scalar, ConstantScalar0Form
 from src.form.parameters import _factor_parser
 
+from src.wf.mp.linear_system_bc import _EssentialBoundaryCondition
+
 from msehtt.tools.matrix.static.local import MseHttStaticLocalMatrix
 from msehtt.tools.vector.static.local import MseHttStaticLocalVector
 from msehtt.static.form.cochain.vector.static import MseHttStaticCochainVector
@@ -23,6 +25,8 @@ _cs1 = constant_scalar(1)
 
 from msehtt.tools.linear_system.dynamic.array_parser import msehtt_root_array_parser
 from msehtt.tools.linear_system.static.local.main import MseHttStaticLocalLinearSystem
+
+from msehtt.tools.linear_system.dynamic.config import MseHttDynamicLinearSystem_Config
 
 
 class MseHttDynamicLinearSystem(Frozen):
@@ -39,6 +43,7 @@ class MseHttDynamicLinearSystem(Frozen):
         self._A = None
         self._x = None
         self._b = None
+        self._config = None
         self._freeze()
 
     @property
@@ -52,6 +57,13 @@ class MseHttDynamicLinearSystem(Frozen):
         self._x = self._parse_vector_block(self._ls.x)
         self._b = self._parse_vector_block(self._ls.b)
         return self
+
+    @property
+    def config(self):
+        """config for example bc of self."""
+        if self._config is None:
+            self._config = MseHttDynamicLinearSystem_Config(self)
+        return self._config
 
     @property
     def shape(self):
@@ -217,12 +229,62 @@ class MseHttDynamicLinearSystem(Frozen):
          ) = self._get_raw_Axb(*args, **kwargs)
 
         # static_A, static_x and static_b are used to make a static linear system
-        return MseHttStaticLocalLinearSystem(
+        static_linear_system = MseHttStaticLocalLinearSystem(
             static_A, static_x, static_b,
             _pr_texts=[A_texts, x_texts, b_texts],
             _time_indicating_text=[A_time_indicating, x_time_indicating, b_time_indicating],
             _str_args=_str_args,
         )
+
+        # -- below we apply the essential bc ------------------------------------------------------------------------
+
+        if self._bc is None:
+            pass
+        else:
+            for section in self._bc:
+                bcs_on_section = self._bc[section]
+                for bc in bcs_on_section:
+                    if bc.__class__ is _EssentialBoundaryCondition:
+                        the_matching_config = None
+                        configurations = self.config._configurations
+                        for config in configurations[::-1]:
+                            if config['type'] == 'essential bc':
+                                if config['place'].abstract.manifold._sym_repr == section:
+                                    config_root_form = config['root_form']
+                                    ith_unknown = bc._i
+                                    unknown = static_linear_system.x._x[ith_unknown]
+                                    f = unknown._f
+                                    if f._is_base():
+                                        pass
+                                    else:
+                                        f = f._base
+
+                                    if config_root_form is f:
+                                        the_matching_config = config
+                                        break
+                                    else:
+                                        pass
+                                else:
+                                    pass
+                            else:
+                                pass
+                        assert the_matching_config is not None, f"configuration not found for essential bc {bc}."
+                        # ------------- type ('essential bc', 1) bc -------------------------------------------------
+                        if the_matching_config['category'] == 1:
+                            place = the_matching_config['place']
+                            condition = the_matching_config['condition']
+                            ith_unknown = bc._i
+                            unknown = static_linear_system.x._x[ith_unknown]
+                            time = unknown._time
+                            static_linear_system.customize.apply_essential_bc(ith_unknown, place, condition, time)
+                        # ===========================================================================================
+                        else:
+                            raise NotImplementedError()
+                    else:
+                        pass
+
+        # ----------------- RETURN ----------------------------------------------------------------------------------
+        return static_linear_system
 
     def _get_raw_Axb(self, *args, **kwargs):
         """Get raw Ax=b including natural bc etc."""
@@ -310,7 +372,7 @@ class MseHttDynamicLinearSystem(Frozen):
                 if Aij is None:
                     # noinspection PyTypeChecker
                     static_A[i][j] = MseHttStaticLocalMatrix(
-                        0, row_gms[i], col_gms[j]
+                        0, row_gms[i], col_gms[j], cache_key='zero',
                     )
                 else:
                     pass
@@ -448,13 +510,12 @@ class DynamicBlockEntry(Frozen):
                 else:
                     local_shape = ''
                 # ***********************************************************************************
-
                 texts_list.append(
                     str_sign + factor_str + r'\left[' + str(local_shape) + r'\right]'
                 )
             else:
                 raise Exception()
-            # ===============================================================================
+            # =======================================================================================
 
             if factor == 1:
                 if sign == '-':
@@ -464,7 +525,7 @@ class DynamicBlockEntry(Frozen):
 
             else:
                 if sign == '-':
-                    factor_term = - factor * term
+                    factor_term = (- factor) * term
                 else:
                     factor_term = factor * term
 

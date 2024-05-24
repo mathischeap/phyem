@@ -9,6 +9,7 @@ from msehtt.static.space.mass_matrix.main import MseHttSpaceMassMatrix
 from msehtt.static.space.error.main import MseHttSpaceError
 from msehtt.static.space.incidence_matrix.main import MseHttSpaceIncidenceMatrix
 from msehtt.static.space.norm.main import MseHttSpaceNorm
+from msehtt.static.space.reconstruction_matrix.main import MseHttSpaceReconstructionMatrix
 
 
 class MseHttSpace(Frozen):
@@ -26,6 +27,7 @@ class MseHttSpace(Frozen):
         self._im = None
         self._error = None
         self._norm = None
+        self._rm = None
         self._freeze()
 
     @property
@@ -64,6 +66,20 @@ class MseHttSpace(Frozen):
         return self.indicator, self.m, self.n
 
     @property
+    def str_indicator(self):
+        """"""
+        idc, m, n = self._imn_
+        if idc == 'Lambda':
+            k = self.abstract.k
+            if m == n == 2 and k == 1:
+                orientation = self.abstract.orientation
+                return f"m{m}n{n}k{k}_{orientation}"
+            else:
+                return f"m{m}n{n}k{k}"
+        else:
+            raise NotImplementedError(idc)
+
+    @property
     def orientation(self):
         """The orientation I am."""
         return self.abstract.orientation
@@ -82,36 +98,49 @@ class MseHttSpace(Frozen):
 
     @property
     def reduce(self):
+        """"""
         if self._rd is None:
             self._rd = MseHttSpaceReduce(self)
         return self._rd
 
     @property
     def reconstruct(self):
+        """"""
         if self._rc is None:
             self._rc = MseHttSpaceReconstruct(self)
         return self._rc
 
     @property
     def mass_matrix(self):
+        """"""
         if self._mm is None:
             self._mm = MseHttSpaceMassMatrix(self)
         return self._mm
 
     @property
     def error(self):
+        """"""
         if self._error is None:
             self._error = MseHttSpaceError(self)
         return self._error
 
     @property
     def incidence_matrix(self):
+        """"""
         if self._im is None:
             self._im = MseHttSpaceIncidenceMatrix(self)
         return self._im
 
     @property
     def norm(self):
+        """"""
         if self._norm is None:
             self._norm = MseHttSpaceNorm(self)
         return self._norm
+
+    @property
+    def reconstruction_matrix(self):
+        """"""
+        if self._rm is None:
+            self._rm = MseHttSpaceReconstructionMatrix(self)
+        return self._rm

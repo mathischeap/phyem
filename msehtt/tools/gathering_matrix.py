@@ -71,7 +71,7 @@ def ___msehtt_gm_chaining_method_0___(gms):
     return cgm
 
 
-def ___msett_gm_chaining___(gms, method=0):
+def ___msehtt_gm_chaining___(gms, method=0):
     """"""
     assert len(gms) >= 2, f"make sense only when chaining more than 1 gm."
     # ---- check element consistence in all ranks --------------------------------------
@@ -118,7 +118,7 @@ class MseHttGatheringMatrix(Frozen):
                 if self._signature in ___cache_msehtt_gm_chaining___:
                     cgm = ___cache_msehtt_gm_chaining___[self._signature]
                 else:
-                    cgm = ___msett_gm_chaining___(gms, method=0)
+                    cgm = ___msehtt_gm_chaining___(gms, method=0)
                     ___cache_msehtt_gm_chaining___[self._signature] = cgm
             self._gm = cgm
 
@@ -128,6 +128,10 @@ class MseHttGatheringMatrix(Frozen):
             ___cache_msehtt_gm_find___[self._signature] = {}
         self._find_cache_ = ___cache_msehtt_gm_find___[self._signature]
         self._check_gm_and_gms()
+        self._total_find_cache_ = None
+        self._total_find_key_ = -1
+        self._representative_cache = {}
+        self._global_location_cache = {}
         self._freeze()
 
     def __repr__(self):
@@ -246,6 +250,13 @@ class MseHttGatheringMatrix(Frozen):
 
     def __eq__(self, other):
         """Check if two gathering matrices are equal."""
+        # --- this may not be very safe, but it is faster -----------------
+        if self is other:
+            return True
+        else:
+            pass
+        # =================================================================
+
         if other.__class__ is not self.__class__:
             rank_true_or_false = False
         else:
@@ -308,13 +319,27 @@ class MseHttGatheringMatrix(Frozen):
         And the global dof #100 is not in this local rank.
 
         """
+
         if isinstance(global_dofs, (int, float)):
             if global_dofs < 0:
                 global_dofs += self.num_global_dofs
                 global_dofs = int(global_dofs)
             else:
                 pass
-            global_dofs = [global_dofs,]
+
+            if global_dofs in self._find_cache_:
+                return {
+                    global_dofs: self._find_cache_[global_dofs]
+                }
+            else:
+                global_dofs = (global_dofs,)
+        else:
+            pass
+
+        hash_key = hash(tuple(global_dofs))
+
+        if hash_key == self._total_find_key_:
+            return self._total_find_cache_
         else:
             pass
 
@@ -323,11 +348,7 @@ class MseHttGatheringMatrix(Frozen):
             if gd in self._find_cache_:
                 location_dict[gd] = self._find_cache_[gd]
             else:
-                assert isinstance(gd, (int, float)), f"dof #{gd} wrong, it must be int."
-                if isinstance(gd, float):
-                    assert gd % 1 == 0, f"dof #{gd} wrong. It must be int."
-                else:
-                    pass
+                assert gd % 1 == 0, f"dof #{gd} ({gd.__class__.__name__}) wrong, it must be int."
                 assert gd >= 0, f"dof #{gd} wrong. It must be non-negative int."
                 temp = list()
                 for e in self:
@@ -341,11 +362,82 @@ class MseHttGatheringMatrix(Frozen):
                 location_dict[gd] = tuple(temp)
                 self._find_cache_[gd] = location_dict[gd]
 
+        self._total_find_key_ = hash_key
+        self._total_find_cache_ = location_dict
         return location_dict
 
-    def assemble(self, data):
+    def find_representative_location(self, i):
+        """"""
+        if i in self._representative_cache:
+            return self._representative_cache[i]
+        else:
+            pass
+
+        elements_local_rows = self.find_rank_locations_of_global_dofs(i)[i]
+        num_rank_locations = len(elements_local_rows)
+
+        if num_rank_locations == 0:
+            element = None
+        else:
+            element = elements_local_rows[0][0]
+        elements = COMM.allgather(element)
+
+        representative_element = None
+        for representative_element in elements:
+            if representative_element is not None:
+                break
+
+        if num_rank_locations == 0:
+            I_am_in = 0
+        else:
+            I_am_in = 0
+            for element_local_dof in elements_local_rows:
+                _element, _local_dof = element_local_dof
+                if _element == representative_element:
+                    I_am_in = 1
+                    break
+                else:
+                    pass
+
+        who_are_in = COMM.allgather(I_am_in)
+        representative_rank = who_are_in.index(1)
+
+        self._representative_cache[i] = (representative_rank, representative_element)
+        return representative_rank, representative_element
+
+    def num_global_locations(self, i):
+        """"""
+        if i in self._global_location_cache:
+            pass
+        else:
+            elements_local_rows = self.find_rank_locations_of_global_dofs(i)[i]
+            num_rank_locations = len(elements_local_rows)
+            self._global_location_cache[i] = COMM.allreduce(num_rank_locations, op=MPI.SUM)
+        return self._global_location_cache[i]
+
+    def assemble(self, data, mode='replace'):
         """Assemble a data structure in a _1d array."""
-        raise NotImplementedError()
+        if mode == 'replace':  # will return the same (complete) global vector in all ranks.
+            # we first collect the data to master rank ------------------------
+            DATA = COMM.gather(data, root=MASTER_RANK)
+            # we then collect the gm to master rank ----------------------------
+            GM = COMM.gather(self._gm, root=MASTER_RANK)
+
+            vec = np.zeros(self.num_global_dofs)
+            if RANK == MASTER_RANK:
+                for Data, Gm in zip(DATA, GM):
+                    for i in Gm:
+                        gm = Gm[i]
+                        dt = Data[i]
+                        assert len(gm) == len(dt), \
+                            f"data length in element #{i} does not match that of gm."
+                        vec[gm] = dt
+            else:
+                pass
+            COMM.Bcast(vec, root=MASTER_RANK)
+            return vec
+        else:
+            raise NotImplementedError(f"not implemented for assemble mode={mode}.")
 
     def split(self, data_dict):
         """Split the data_dict into multiple ones according to self._gms."""
@@ -364,6 +456,7 @@ class MseHttGatheringMatrix(Frozen):
                     num_local_dofs = self._gms[j].num_local_dofs(i)
                     end = start + num_local_dofs
                     x_j[i] = all_values[start:end]
-                assert end == len(all_values), f"must make use of all data of element #{i}."
+                assert end == len(all_values), \
+                    f"must make use of all data of element #{i}."
 
             return x_individuals

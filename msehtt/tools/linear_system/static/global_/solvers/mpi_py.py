@@ -447,7 +447,7 @@ def lgmres(
     COST_total = Time_end - Time_start
     message = f" mpi_v0_LGMRES = [SYSTEM-SHAPE: {A.shape}] [ITER={ITER}] " \
         f"[residual=%.2e] costs %.2f, " \
-        f"convergence info={info}, m={_m_}, k={_k_}, maxiter={maxiter}, " \
+        f"convergence info={info}, inner_m={_m_}, outer_k={_k_}, maxiter={maxiter}, " \
         f"stop_judge={JUDGE}: {JUDGE_explanation}]" % (beta, COST_total)
 
     return x0, message, info

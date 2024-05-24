@@ -19,3 +19,8 @@ class MseHttStaticCochainVector(MseHttStaticLocalVector):
 
         assert self._dtype != 'None', f"I have no data."
         self._f[self._time].cochain = self.data_dict
+
+    def __repr__(self):
+        """"""
+        super_repr = super().__repr__().split('object')[1]
+        return f"<static-cochain-vector of {self._f.abstract._sym_repr} @ {self._time}" + super_repr

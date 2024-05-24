@@ -76,6 +76,13 @@ class T2dVector(TimeSpaceFunctionBase):
         """return functions evaluated at time `t`."""
         return partial(self, t)
 
+    def __matmul__(self, other):
+        """"""
+        if isinstance(other, (int, float)):
+            return self[other]
+        else:
+            raise NotImplementedError()
+
     def visualize(self, mesh_or_bounds, t, sampling_factor=1):
         """Return a visualize class for a mesh at t=`t`.
 

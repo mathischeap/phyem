@@ -2,7 +2,7 @@
 """
 """
 from tools.frozen import Frozen
-from src.config import RANK, MASTER_RANK, COMM
+from src.config import RANK, MASTER_RANK, COMM, MPI, SIZE
 from msehtt.static.mesh.partial.boundary_section.visualize.main import MseHttBoundarySectionPartialMeshVisualize
 
 
@@ -30,9 +30,16 @@ class MseHttBoundarySectionPartialMesh(Frozen):
             the_face_instance = element.faces[face_id]
             self._face_dict[(element_index, face_id)] = the_face_instance
 
+        self._num_global_faces = COMM.allreduce(len(self), op=MPI.SUM)
         self._visualize = None
         self._mn = None
+        self._find_cache_ = {}  # cache all!
         self._freeze()
+
+    def info(self):
+        """info self."""
+        print(f"msehtt-boundary-section > {self._tpm.abstract._sym_repr}: "
+              f"{self._num_global_faces} faces > distributed in {SIZE} ranks.")
 
     def __repr__(self):
         super_repr = super().__repr__().split('object')[1]
@@ -99,3 +106,70 @@ class MseHttBoundarySectionPartialMesh(Frozen):
 
             self._mn = COMM.bcast(self._mn, root=MASTER_RANK)
         return self._mn
+
+    def find_dofs(self, f, local=True):
+        """"""
+        if f._is_base():
+            key = f.__repr__()
+        else:
+            key = f._base.__repr__()
+        key += str(local)
+
+        if key in self._find_cache_:
+            return self._find_cache_[key]
+        else:
+            pass
+
+        tgm = f.tgm
+        assert tgm is self._tgm, f"the great mesh does not match."
+        elements = tgm.elements
+        degree = f.degree
+        space_indicator = f.space.str_indicator
+        local_wise_dofs: dict = {}
+        for element_index__face_id in self:
+            element_index, face_id = element_index__face_id
+            if element_index not in local_wise_dofs:
+                local_wise_dofs[element_index] = list()
+            else:
+                pass
+            element = elements[element_index]
+            local_dofs = element.find_local_dofs_on_face(space_indicator, degree, face_id, component_wise=False)
+            local_wise_dofs[element_index].extend(local_dofs)
+
+        for i in local_wise_dofs:
+            local_wise_dofs[i] = list(set(local_wise_dofs[i]))
+            local_wise_dofs[i].sort()
+
+        if local:
+            # if local is True, we return rank-wise element-wise output, for example:
+            # local_wise_dofs =
+            # {
+            #    14: [5, 11, 17, 23, 29]
+            #    ....
+            # }
+            # this means 14 is a rank element, and the local numbering [5, 11, 17, 23, 29] of form f in great element
+            # 14 is on the boundary section.
+            #
+            # Thus, element #14 will not appear in the output of any other ranks.
+            self._find_cache_[key] = local_wise_dofs
+            return local_wise_dofs
+
+        else:
+            # While if local is False, then we collect the global numbering of all found dofs, gather them and bcast
+            # to all ranks. This means we will have the same output (of all found global dofs) for all ranks.
+            gm = f.cochain.gathering_matrix
+            global_wise_dofs = set()
+            for i in local_wise_dofs:
+                global_wise_dofs.update(gm[i][local_wise_dofs[i]])
+            global_wise_dofs = COMM.gather(global_wise_dofs, root=MASTER_RANK)
+            if RANK == MASTER_RANK:
+                DOFS = set()
+                for dofs in global_wise_dofs:
+                    DOFS.update(dofs)
+                DOFS = list(DOFS)
+                DOFS.sort()
+            else:
+                DOFS = None
+
+            self._find_cache_[key] = COMM.bcast(DOFS, root=MASTER_RANK)
+            return self._find_cache_[key]

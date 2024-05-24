@@ -46,6 +46,7 @@ def msehtt_root_array_parser(dls, array_lin_repr):
         type_indicator = indicators[0]           # this first one indicates the type
         info_indicators = indicators[1:]         # the _auxiliaries indicate the details.
 
+        # ------------ basic ----------------------------------------------------------------------
         if type_indicator == PARSER._find_indicator(
                 _VarSetting_mass_matrix):
             A, _ti = PARSER.Parse__M_matrix(*info_indicators)
@@ -59,7 +60,37 @@ def msehtt_root_array_parser(dls, array_lin_repr):
             A, _ti = PARSER.Parse__E_matrix(*info_indicators)
             A = A.T
 
-        # --------------------------------------------------------------------
+        elif type_indicator == PARSER._find_indicator(
+                _VarSetting_boundary_dp_vector):
+            A, _ti = PARSER.Parse__trStar_rf0_dp_tr_s1_vector(dls, *info_indicators)
+
+        # ------------ (A x B, C) ----------------------------------------------------------------
+        elif type_indicator == PARSER._find_indicator(
+                       _VarSetting_astA_x_astB_ip_tC):
+            A, _ti = PARSER.Parse__astA_x_astB_ip_tC(*info_indicators)
+
+        elif type_indicator == PARSER._find_indicator(
+                       _VarSetting_astA_x_B_ip_tC):
+            A, _ti = PARSER.Parse__astA_x_B_ip_tC(*info_indicators)
+
+        elif type_indicator == PARSER._find_indicator(
+                       _VarSetting_A_x_astB_ip_tC):
+            A, _ti = PARSER.Parse__A_x_astB_ip_tC(*info_indicators)
+
+        # ------------ (A x B | C) ----------------------------------------------------------------
+        elif type_indicator == PARSER._find_indicator(
+                       _VarSetting_astA_x_astB__dp__tC):
+            A, _ti = PARSER.Parse__astA_x_astB__dp__tC(*info_indicators)
+
+        elif type_indicator == PARSER._find_indicator(
+                       _VarSetting_astA_x_B__dp__tC):
+            A, _ti = PARSER.Parse__astA_x_B__dp__tC(*info_indicators)
+
+        elif type_indicator == PARSER._find_indicator(
+                       _VarSetting_A_x_astB__dp__tC):
+            A, _ti = PARSER.Parse__A_x_astB__dp__tC(*info_indicators)
+
+        # ===========================================================================================
         else:
             raise NotImplementedError(
                 f"I cannot parse array: {type_indicator} with parameters: {info_indicators}."

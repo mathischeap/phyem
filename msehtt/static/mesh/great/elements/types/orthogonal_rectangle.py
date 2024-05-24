@@ -1,9 +1,14 @@
 # -*- coding: utf-8 -*-
-"""
+r"""
 """
 from tools.frozen import Frozen
 import numpy as np
 from msehtt.static.mesh.great.elements.types.base import MseHttGreatMeshBaseElement
+
+from msehtt.static.space.reconstruct.Lambda.Rc_m2n2k2 import ___rc222_msepy_quadrilateral___
+from msehtt.static.space.reconstruct.Lambda.Rc_m2n2k1 import ___rc221i_msepy_quadrilateral___
+from msehtt.static.space.reconstruct.Lambda.Rc_m2n2k1 import ___rc221o_msepy_quadrilateral___
+from msehtt.static.space.reconstruct.Lambda.Rc_m2n2k0 import ___rc220_msepy_quadrilateral___
 
 
 class MseHttGreatMeshOrthogonalRectangleElement(MseHttGreatMeshBaseElement):
@@ -127,6 +132,63 @@ class MseHttGreatMeshOrthogonalRectangleElement(MseHttGreatMeshBaseElement):
         }
 
         return {'m2n2k1_outer': m2n2k1_outer, 'm2n2k1_inner': m2n2k1_inner}
+
+    def _generate_vtk_data_for_form(self, indicator, element_cochain, degree, data_density):
+        """"""
+        linspace = np.linspace(-1, 1, data_density)
+        if indicator == 'm2n2k2':  # must be Lambda
+            dtype = '2d-scalar'
+            rc = ___rc222_msepy_quadrilateral___(self, degree, element_cochain, linspace, linspace, ravel=False)
+        elif indicator == 'm2n2k1_outer':   # must be Lambda
+            dtype = '2d-vector'
+            rc = ___rc221o_msepy_quadrilateral___(self, degree, element_cochain, linspace, linspace, ravel=False)
+        elif indicator == 'm2n2k1_inner':   # must be Lambda
+            dtype = '2d-vector'
+            rc = ___rc221i_msepy_quadrilateral___(self, degree, element_cochain, linspace, linspace, ravel=False)
+        elif indicator == 'm2n2k0':  # must be Lambda
+            dtype = '2d-scalar'
+            rc = ___rc220_msepy_quadrilateral___(self, degree, element_cochain, linspace, linspace, ravel=False)
+        else:
+            raise NotImplementedError()
+
+        data_dict = {}
+
+        if dtype == '2d-scalar':
+            X, Y, V = rc
+            for i in range(data_density):
+                for j in range(data_density):
+                    x = X[i][j]
+                    y = Y[i][j]
+                    v = V[i][j]
+                    key = "%.7f-%.7f" % (x, y)
+                    data_dict[key] = (x, y, v)
+
+        elif dtype == '2d-vector':
+            X, Y, U, V = rc
+            for i in range(data_density):
+                for j in range(data_density):
+                    x = X[i][j]
+                    y = Y[i][j]
+                    u = U[i][j]
+                    v = V[i][j]
+                    key = "%.7f-%.7f" % (x, y)
+                    data_dict[key] = (x, y, u, v)
+        else:
+            raise NotImplementedError()
+
+        cell_list = list()
+        for i in range(data_density - 1):
+            for j in range(data_density - 1):
+                cell_list.append((
+                    [
+                        "%.7f-%.7f" % (X[i][j], Y[i][j]),
+                        "%.7f-%.7f" % (X[i + 1][j], Y[i + 1][j]),
+                        "%.7f-%.7f" % (X[i + 1][j + 1], Y[i + 1][j + 1]),
+                        "%.7f-%.7f" % (X[i][j + 1], Y[i][j + 1]),
+                    ], 4, 9)
+                )
+
+        return data_dict, cell_list, dtype
 
 
 # ============ ELEMENT CT =====================================================================================
@@ -262,6 +324,7 @@ class ___OrthogonalRectangle___(Frozen):
 
 
 # ============ FACES =====================================================================================
+
 class MseHttGreatMeshOrthogonalRectangleElementFaces(Frozen):
     """"""
     def __init__(self, element):
@@ -319,8 +382,9 @@ from msehtt.static.mesh.great.elements.types.base import _FaceCoordinateTransfor
 
 
 class MseHttGreatMeshOrthogonalRectangleElementFaceCT(_FaceCoordinateTransformationBase):
-    """"""
+    r""""""
     def __init__(self, face):
+        r""""""
         super().__init__(face)
         self._melt()
         fid = face._id
@@ -328,12 +392,12 @@ class MseHttGreatMeshOrthogonalRectangleElementFaceCT(_FaceCoordinateTransformat
         self._freeze()
 
     def __repr__(self):
-        """repr"""
+        r"""repr"""
         side = '+' if self._start_end == 1 else '-'
         return f"<Face CT of {side}side along {self._axis}axis of {self._element}>"
 
     def mapping(self, xi):
-        """"""
+        r""""""
         m, n = self._axis, self._start_end
         ones = np.ones_like(xi)
         if m == 0:  # x-direction
@@ -354,7 +418,7 @@ class MseHttGreatMeshOrthogonalRectangleElementFaceCT(_FaceCoordinateTransformat
             raise Exception()
 
     def Jacobian_matrix(self, xi):
-        """"""
+        r""""""
         m, n = self._axis, self._start_end
 
         ones = np.ones_like(xi)
@@ -382,7 +446,7 @@ class MseHttGreatMeshOrthogonalRectangleElementFaceCT(_FaceCoordinateTransformat
             raise Exception()
 
     def outward_unit_normal_vector(self, xi):
-        """The outward unit norm vector (vec{n})."""
+        r"""The outward unit norm vector (vec{n})."""
         JM = self.Jacobian_matrix(xi)
         x, y = JM
         m, n = self._axis, self._start_end
@@ -396,5 +460,5 @@ class MseHttGreatMeshOrthogonalRectangleElementFaceCT(_FaceCoordinateTransformat
         return vx / magnitude, vy / magnitude
 
     def is_plane(self):
-        """"""
+        r""""""
         return True

@@ -179,6 +179,7 @@ msepy.config(boundary_perp)(
         7: [0, 1, 0, 1],
     }
 )
+
 #     manifold, {
 #         0: [1, 0, 1, 0],
 #         1: [0, 0, 1, 1],
@@ -270,25 +271,25 @@ for step in range(1, steps+1):
     s_nls.customize.set_no_evaluation(-1)
     s_nls.solve([u, w, P])
 
-    if step % 10 == 0:
-        u[None].visualize(
-            saveto=[
-                results_dir + f'ux_{int(step)}.png',
-                results_dir + f'uy_{int(step)}.png',
-            ]
-        )
+    # if step % 10 == 0:
+    u[None].visualize(
+        saveto=[
+            results_dir + f'ux_{int(step)}.png',
+            results_dir + f'uy_{int(step)}.png',
+        ]
+    )
 
-        P[None].visualize(
-            plot_type='contourf',
-            num_levels=50,
-            saveto=results_dir+f'P_{int(step)}.png'
-        )
+    P[None].visualize(
+        plot_type='contourf',
+        num_levels=50,
+        saveto=results_dir+f'P_{int(step)}.png'
+    )
 
-        w[None].visualize(
-            plot_type='contourf',
-            levels=np.linspace(-15, 15, 50),
-            saveto=results_dir+f'w_{int(step)}.png'
-        )
+    w[None].visualize(
+        plot_type='contourf',
+        levels=np.linspace(-15, 15, 50),
+        saveto=results_dir+f'w_{int(step)}.png'
+    )
 
     u_norm_residual = u.norm_residual()
     msepy.info(rf"N={N}", s_nls.solve.message, f"u residual: {u_norm_residual}")

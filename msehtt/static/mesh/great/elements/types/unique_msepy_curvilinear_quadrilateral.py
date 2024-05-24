@@ -6,6 +6,11 @@ import numpy as np
 from msehtt.static.mesh.great.elements.types.base import MseHttGreatMeshBaseElement
 from msehtt.static.mesh.great.elements.types.base import MseHttGreatMeshBaseElementCooTrans
 
+from msehtt.static.space.reconstruct.Lambda.Rc_m2n2k2 import ___rc222_msepy_quadrilateral___
+from msehtt.static.space.reconstruct.Lambda.Rc_m2n2k1 import ___rc221i_msepy_quadrilateral___
+from msehtt.static.space.reconstruct.Lambda.Rc_m2n2k1 import ___rc221o_msepy_quadrilateral___
+from msehtt.static.space.reconstruct.Lambda.Rc_m2n2k0 import ___rc220_msepy_quadrilateral___
+
 
 class MseHttGreatMeshUniqueMsepyCurvilinearQuadrilateralElement(MseHttGreatMeshBaseElement):
     """
@@ -147,6 +152,63 @@ class MseHttGreatMeshUniqueMsepyCurvilinearQuadrilateralElement(MseHttGreatMeshB
 
         return {'m2n2k1_outer': m2n2k1_outer, 'm2n2k1_inner': m2n2k1_inner}
 
+    def _generate_vtk_data_for_form(self, indicator, element_cochain, degree, data_density):
+        """"""
+        linspace = np.linspace(-1, 1, data_density)
+        if indicator == 'm2n2k2':  # must be Lambda
+            dtype = '2d-scalar'
+            rc = ___rc222_msepy_quadrilateral___(self, degree, element_cochain, linspace, linspace, ravel=False)
+        elif indicator == 'm2n2k1_outer':   # must be Lambda
+            dtype = '2d-vector'
+            rc = ___rc221o_msepy_quadrilateral___(self, degree, element_cochain, linspace, linspace, ravel=False)
+        elif indicator == 'm2n2k1_inner':   # must be Lambda
+            dtype = '2d-vector'
+            rc = ___rc221i_msepy_quadrilateral___(self, degree, element_cochain, linspace, linspace, ravel=False)
+        elif indicator == 'm2n2k0':  # must be Lambda
+            dtype = '2d-scalar'
+            rc = ___rc220_msepy_quadrilateral___(self, degree, element_cochain, linspace, linspace, ravel=False)
+        else:
+            raise NotImplementedError()
+
+        data_dict = {}
+
+        if dtype == '2d-scalar':
+            X, Y, V = rc
+            for i in range(data_density):
+                for j in range(data_density):
+                    x = X[i][j]
+                    y = Y[i][j]
+                    v = V[i][j]
+                    key = "%.7f-%.7f" % (x, y)
+                    data_dict[key] = (x, y, v)
+
+        elif dtype == '2d-vector':
+            X, Y, U, V = rc
+            for i in range(data_density):
+                for j in range(data_density):
+                    x = X[i][j]
+                    y = Y[i][j]
+                    u = U[i][j]
+                    v = V[i][j]
+                    key = "%.7f-%.7f" % (x, y)
+                    data_dict[key] = (x, y, u, v)
+        else:
+            raise NotImplementedError()
+
+        cell_list = list()
+        for i in range(data_density - 1):
+            for j in range(data_density - 1):
+                cell_list.append((
+                    [
+                        "%.7f-%.7f" % (X[i][j], Y[i][j]),
+                        "%.7f-%.7f" % (X[i + 1][j], Y[i + 1][j]),
+                        "%.7f-%.7f" % (X[i + 1][j + 1], Y[i + 1][j + 1]),
+                        "%.7f-%.7f" % (X[i][j + 1], Y[i][j + 1]),
+                    ], 4, 9)
+                )
+
+        return data_dict, cell_list, dtype
+
 
 # ============ ELEMENT CT =====================================================================================
 class MseHttGreatMeshUniqueMsepyCurvilinearQuadrilateralElementCooTrans(MseHttGreatMeshBaseElementCooTrans):
@@ -247,15 +309,16 @@ from msehtt.static.mesh.great.elements.types.orthogonal_rectangle import MseHttG
 class MseHttGreatMeshUniqueMsepyCurvilinearQuadrilateralElementFaceCT(
     MseHttGreatMeshOrthogonalRectangleElementFaceCT
 ):
-    """"""
+    r""""""
     def __init__(self, face):
+        r""""""
         super().__init__(face)
         self._melt()
         self.___is_place___ = None
         self._freeze()
 
     def is_plane(self):
-        """"""
+        r""""""
         if self.___is_place___ is None:
             xi = np.linspace(-1, 1, 23)
             ounv = self.outward_unit_normal_vector(xi)

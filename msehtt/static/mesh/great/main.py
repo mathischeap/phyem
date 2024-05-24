@@ -29,6 +29,7 @@ class MseHttGreatMesh(Frozen):
         self._freeze()
 
     def __repr__(self):
+        """"""
         super_repr = super().__repr__().split('object')[1]
         return f"<{self.__class__.__name__}" + super_repr
 
@@ -42,6 +43,7 @@ class MseHttGreatMesh(Frozen):
 
     @property
     def visualize(self):
+        """"""
         if self._visualize is None:
             self._visualize = MseHttGreatMeshVisualize(self)
         return self._visualize

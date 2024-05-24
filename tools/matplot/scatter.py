@@ -3,6 +3,7 @@
 """
 import matplotlib
 import matplotlib.pyplot as plt
+import numpy as np
 
 matplotlib.use('TkAgg')
 plt.rcParams.update({
@@ -13,7 +14,7 @@ plt.rcParams.update({
 def scatter(
         x, y, z,
         usetex=True, saveto=None, figsize=(8, 6), colormap='bwr', pad_inches=0.1, marker='s',
-        title=None,
+        title=None, xlabel=None, ylabel=None, label_size=13, color_range=None,
 ):
     """
 
@@ -32,6 +33,10 @@ def scatter(
     pad_inches
     marker
     title
+    xlabel
+    ylabel
+    label_size
+    color_range
 
     Returns
     -------
@@ -71,8 +76,38 @@ def scatter(
         X.extend(x[patch_id].ravel())
         Y.extend(y[patch_id].ravel())
         Z.extend(z[patch_id].ravel())
+
+    if color_range is None:
+        colorbar_extend = 'neither'
+    else:
+        lower_bound, upper_bound = color_range
+        Z = np.array(Z)
+        if np.max(Z) > upper_bound:
+            Z[Z > upper_bound] = upper_bound
+            colorbar_extend_upper = True
+        else:
+            colorbar_extend_upper = False
+        if np.min(Z) < lower_bound:
+            Z[Z < lower_bound] = lower_bound
+            colorbar_extend_lower = True
+        else:
+            colorbar_extend_lower = False
+        if colorbar_extend_upper and colorbar_extend_lower:
+            colorbar_extend = 'both'
+        elif colorbar_extend_upper:
+            colorbar_extend = 'max'
+        elif colorbar_extend_lower:
+            colorbar_extend = 'min'
+        else:
+            colorbar_extend = 'neither'
+
     plt.scatter(X, Y, c=Z, cmap=colormap, marker=marker)
-    plt.colorbar()
+    plt.colorbar(extend=colorbar_extend)
+
+    if xlabel is not None:
+        plt.xlabel(xlabel, fontsize=label_size)
+    if ylabel is not None:
+        plt.ylabel(ylabel, fontsize=label_size)
     # --------------- title -----------------------------------------------------
     if title is None or title is False:
         pass
@@ -84,7 +119,7 @@ def scatter(
     # ---------------- save the figure ------------------------------------------------------------1
     plt.tight_layout()
     if saveto is not None and saveto != '':
-        plt.savefig(saveto, bbox_inches='tight', pad_inches=pad_inches)
+        plt.savefig(saveto, bbox_inches='tight', pad_inches=pad_inches, dpi=250)
         plt.close()
     else:
         from src.config import _setting

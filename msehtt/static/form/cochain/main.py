@@ -49,16 +49,20 @@ class MseHttCochain(Frozen):
                 pass
             else:
                 if auto_cleaning is True:
-                    left_cochain_amount = 10
-                elif isinstance(auto_cleaning, int):
-                    assert auto_cleaning >= 2, f"auto_cleaning wrong for cochain."
+                    left_cochain_amount = 5
+                elif isinstance(auto_cleaning, (int, float)):
                     left_cochain_amount = auto_cleaning
                 else:
-                    raise Exception
+                    raise Exception()
+                left_cochain_amount = int(left_cochain_amount)
+                assert left_cochain_amount >= 2, f"auto_cleaning must left more than one cochains."
+
                 if len(self) > 2 * left_cochain_amount:
                     self.clean(- left_cochain_amount)
                 else:
                     pass
+
+                assert len(self) <= 2 * left_cochain_amount, f'must be!'
             # =================================================================================
             t = self._parse_t(t)
             _cochain_at_time = MseHttTimeInstantCochain(self._f, t)
@@ -111,7 +115,8 @@ class MseHttCochain(Frozen):
             if len(new_tcd) == 0:
                 self._newest_t = None
             else:
-                self._newest_t = max(list(self._newest_t.keys()))
+                self._newest_t = max(list(self._tcd.keys()))
+
         else:
             rf._base.cochain.clean(what=what)
 
@@ -161,7 +166,7 @@ class MseHttCochain(Frozen):
                     assert i in self._gm, f"must be!"
             return self._gm
         else:
-            return rf.cochain.gathering_matrix
+            return rf._base.cochain.gathering_matrix
 
     def static_vec(self, t):
         """"""

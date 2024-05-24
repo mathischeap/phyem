@@ -55,7 +55,7 @@ linear_system.customize.set_dof(-1, phi[0].cochain.of_dof(-1))
 # linear_system.customize.set_dof(-1, 1)
 
 # gm = linear_system.global_gathering_matrices[0]
-#
+
 # for i in gm:
 #     print(i, gm[i])
 
@@ -74,5 +74,5 @@ x = Axb.solve('spsolve')[0]
 linear_system.x.update(x)
 # phi[0].visualize.quick()
 # u[0].visualize.quick()
-print(u[0].error())
-print(phi[0].error())
+assert u[0].error() < 0.005
+assert phi[0].error() < 0.001

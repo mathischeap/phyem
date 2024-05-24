@@ -42,6 +42,13 @@ class T3dTensor(TimeSpaceFunctionBase):
         """return functions evaluated at time `t`."""
         return partial(self, t)
 
+    def __matmul__(self, other):
+        """"""
+        if isinstance(other, (int, float)):
+            return self[other]
+        else:
+            raise NotImplementedError()
+
     @property
     def ndim(self):
         return 3

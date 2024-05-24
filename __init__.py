@@ -49,6 +49,8 @@ __all__ = [
 
     "find_manifold",
 
+    'vtk',  # save an object or some objects to a vtk file.
+
 ]
 
 import src.config as config
@@ -96,3 +98,5 @@ import tools.os_ as os
 import tools.film as film
 
 import tools
+
+from tools.vtk_.main import vtk

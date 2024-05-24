@@ -144,5 +144,6 @@ class ManufacturedSolutionMHD2Ideal1(Frozen):
 if __name__ == '__main__':
     # python tests/samples/manuSolution_MHD2.py
     ic = ManufacturedSolutionMHD2Ideal1()
-    ic.E.visualize([0, 2*pi], 0.151231)
-    # ic.f.visualize([0, 2*pi], 0.151231)
+    # ic.E.visualize([0, 2*pi], 0.151231)
+    ic.m.visualize([0, 2*pi], 0.151231)
+    ic.f.visualize([0, 2*pi], 0.151231)

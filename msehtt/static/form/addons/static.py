@@ -14,6 +14,18 @@ class MseHttFormStaticCopy(Frozen):
         self._field = None
         self._freeze()
 
+    def __repr__(self):
+        super_repr = super().__repr__().split('object')[1]
+        return self._f.__repr__().split('at')[0] + f'@ {self._t}' + super_repr
+
+    @property
+    def tpm(self):
+        return self._f.tpm
+
+    @property
+    def tgm(self):
+        return self._f.tgm
+
     @property
     def cochain(self):
         return self._f.cochain[self._t]
@@ -40,6 +52,7 @@ class MseHttFormStaticCopy(Frozen):
 
     @property
     def visualize(self):
+        """"""
         return self._f.visualize(self._t)
 
     def norm(self, norm_type='L2'):
@@ -48,10 +61,17 @@ class MseHttFormStaticCopy(Frozen):
         Parameters
         ----------
         norm_type :
-            ``L2_norm``: ((self, self)_{tpm})**0.5
+            ``L2_norm``: ((self, self)_{tpm}) ** 0.5
 
         Returns
         -------
 
         """
         return self._f.norm(self.cochain, norm_type=norm_type)
+
+    def __eq__(self, other):
+        """"""
+        if other.__class__ is not self.__class__:
+            return False
+        else:
+            return (self._f is other._f) and (self._t == other._t)

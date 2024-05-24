@@ -16,12 +16,15 @@ N = 3
 K = 15
 c = 0.1
 
+time = 1
+
 ls = ph.samples.wf_div_grad(n=2, degree=N, orientation='outer', periodic=False)[0]
 # ls.pr()
 
 msehtt, obj = ph.fem.apply('msehtt-s', locals())
 tgm = msehtt.tgm()
-msehtt.config(tgm)('crazy', element_layout=K, c=c, bounds=([0.25, 1.25], [0.25, 1.25]), periodic=False)
+msehtt.config(tgm)('crazy', element_layout=K, c=c, bounds=([0, 1], [0, 1]), periodic=False)
+# msehtt.config(tgm)('backward_step', element_layout=K)
 
 msehtt_mesh = msehtt.base['meshes'][r'\mathfrak{M}']
 msehtt.config(msehtt_mesh)(tgm, including='all')
@@ -39,11 +42,63 @@ msehtt.config(boundary_p)(
     including={
         'type': 'boundary_section',
         'partial elements': msehtt_mesh,
-        'ounv': ([1, 0], [-1, 0], [0, 1], [0, -1])    # outward unit norm vector.
+        'ounv': ([-1, 0], [0, -1])    # outward unit norm vector.
     }
 )
-boundary_p.visualize()
+# boundary_p.visualize()
+
+msehtt.config(boundary_u)(
+    tgm,
+    including={
+        'type': 'boundary_section',
+        'partial elements': msehtt_mesh,
+        'ounv': ([1, 0], [0, 1], )    # outward unit norm vector.
+    }
+)
+# boundary_u.visualize()
 
 phi = msehtt.base['forms'][r'potential']
 u = msehtt.base['forms'][r'velocity']
 f = msehtt.base['forms'][r'source']
+
+
+def phi_func(t, x, y):
+    """"""
+    return - np.sin(2 * np.pi * x) * np.sin(2 * np.pi * y) + t
+
+
+phi_scalar = ph.vc.scalar(phi_func)
+
+phi.cf = phi_scalar
+# phi[time].reduce()
+# phi[0].visualize.quick()
+
+u.cf = - phi.cf.codifferential()
+f.cf = - u.cf.exterior_derivative()
+f[time].reduce()
+# f[0].visualize.quick()
+
+msehtt_ls = obj['ls'].apply()
+# msehtt_ls.pr()
+# print(msehtt_ls)
+# print(u.cf.field)
+
+msehtt_ls.config(['natural bc', 1], boundary_p, phi_scalar, root_form=phi)    # natural bc
+msehtt_ls.config(('essential bc', 1), boundary_u, u.cf.field, root_form=u)  # essential bc
+
+linear_system = msehtt_ls(time)
+
+Axb = linear_system.assemble()
+x, message, info = Axb.solve('direct')
+# print(message)
+# print(x)
+linear_system.x.update(x)
+
+assert phi[time].error() < 0.0005
+# phi[time].visualize()
+
+assert u[time].error() < 0.002
+# u[time].visualize.quick()
+
+ph.vtk('poisson_forms', phi[time], u[time], f[time])
+ph.os.remove('poisson_forms.vtu')

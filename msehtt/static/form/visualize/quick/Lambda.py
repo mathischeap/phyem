@@ -6,7 +6,7 @@ from src.config import RANK, MASTER_RANK, COMM, SIZE
 from tools.matplot.scatter import scatter
 
 
-def quick_visualizer_m2n2k0(f, t, ddf=1):
+def quick_visualizer_m2n2k0(f, t, ddf=1, **kwargs):
     """"""
     total_num_elements = f.tpm.composition.num_global_elements
     density = 5000 * ddf
@@ -41,10 +41,10 @@ def quick_visualizer_m2n2k0(f, t, ddf=1):
         Y.update(y[i])
         U.update(u[i])
 
-    return scatter(X, Y, U)
+    return scatter(X, Y, U, xlabel='$x$', ylabel='$y$', **kwargs)
 
 
-def quick_visualizer_m2n2k1(f, t, ddf=1):
+def quick_visualizer_m2n2k1(f, t, ddf=1, title=None, **kwargs):
     """"""
     total_num_elements = f.tpm.composition.num_global_elements
     density = 5000 * ddf
@@ -82,11 +82,11 @@ def quick_visualizer_m2n2k1(f, t, ddf=1):
         V.update(v[i])
 
     return (
-        scatter(X, Y, U, title='$x$-component'),
-        scatter(X, Y, V, title='$y$-component'),
+        scatter(X, Y, U, title=title + ' $x$-component', xlabel='$x$', ylabel='$y$', **kwargs),
+        scatter(X, Y, V, title=title + ' $y$-component', xlabel='$x$', ylabel='$y$', **kwargs),
     )
 
 
-def quick_visualizer_m2n2k2(f, t, ddf=1):
+def quick_visualizer_m2n2k2(f, t, ddf=1, **kwargs):
     """"""
-    return quick_visualizer_m2n2k0(f, t, ddf=ddf)
+    return quick_visualizer_m2n2k0(f, t, ddf=ddf, **kwargs)

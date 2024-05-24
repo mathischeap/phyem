@@ -9,6 +9,8 @@ from msehtt.static.form.cf import MseHttStaticFormCF
 from msehtt.static.form.addons.static import MseHttFormStaticCopy
 from msehtt.static.form.cochain.main import MseHttCochain
 from msehtt.static.form.visualize.main import MseHttFormVisualize
+from msehtt.static.form.bi.main import MseHttStaticForm_Boundary_Integrate
+from msehtt.static.form.numeric.main import MseHtt_Form_Numeric
 
 
 class MseHttForm(Frozen):
@@ -34,6 +36,8 @@ class MseHttForm(Frozen):
         self._cf = None
         self._cochain = None
         self._im = None
+        self._bi = None
+        self._numeric = None
         self._freeze()
 
     @property
@@ -170,3 +174,24 @@ class MseHttForm(Frozen):
     def norm(self, cochain, norm_type='L2'):
         """"""
         return self.space.norm(self.degree, cochain, norm_type=norm_type)
+
+    @property
+    def bi(self):
+        """boundary integrate."""
+        if self._bi is None:
+            self._bi = MseHttStaticForm_Boundary_Integrate(self)
+        return self._bi
+
+    def reconstruction_matrix(self, *meshgrid):
+        """Return the reconstruction matrix for all rank elements."""
+        return self.space.reconstruction_matrix(self.degree, *meshgrid)
+
+    @property
+    def numeric(self):
+        """"""
+        if self._is_base():
+            if self._numeric is None:
+                self._numeric = MseHtt_Form_Numeric(self)
+            return self._numeric
+        else:
+            return self._base.numeric

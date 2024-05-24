@@ -11,7 +11,7 @@ def reconstruct_Lambda__m2n2k0(tpm, degree, cochain, xi, et, ravel=False):
     assert np.min(xi) >= -1 and np.max(xi) <= 1, f"xi must be in [-1, 1]"
     assert np.min(et) >= -1 and np.max(et) <= 1, f"eta must be in [-1, 1]"
     elements = tpm.composition
-    x, y, u, v = {}, {}, {}, {}
+    x, y, u = {}, {}, {}
     for e in elements:
         element = elements[e]
         etype = element.etype

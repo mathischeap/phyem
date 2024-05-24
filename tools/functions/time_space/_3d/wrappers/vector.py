@@ -45,6 +45,13 @@ class T3dVector(TimeSpaceFunctionBase):
         """return functions evaluated at time `t`."""
         return partial(self, t)
 
+    def __matmul__(self, other):
+        """"""
+        if isinstance(other, (int, float)):
+            return self[other]
+        else:
+            raise NotImplementedError()
+
     def visualize(self, mesh, t):
         """Return a visualize class for a mesh at t=`t`.
 

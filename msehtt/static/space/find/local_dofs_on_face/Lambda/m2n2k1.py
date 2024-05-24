@@ -1,8 +1,10 @@
-"""
-
+# -*- coding: utf-8 -*-
+r"""
 """
 import numpy as np
 
+
+# ---------------- OUTER ------------------------------------------------------------------------------
 
 def find_local_dofs_on_face__m2n2k1_outer(etype, p, face_index, component_wise=False):
     """"""
@@ -49,6 +51,8 @@ def __m2n2k1_outer_msepy_quadrilateral_(p, face_index, component_wise=False):
         return _cache_221o_[key]
 
 
+# ---------------- OUTER ------------------------------------------------------------------------------
+
 def find_local_dofs_on_face__m2n2k1_inner(etype, p, face_index, component_wise=False):
     """"""
     if etype in ('unique msepy curvilinear quadrilateral', 'orthogonal rectangle'):
@@ -70,13 +74,13 @@ def __m2n2k1_inner_msepy_quadrilateral_(p, face_index, component_wise=False):
     else:
         ln_dx, ln_dy = _ln_m2n2k1_inner_msepy_quadrilateral_(p)
 
-        if face_index == 0:                    # x- face, dy edges
+        if face_index == 0:                         # x- face, dy edges
             local_numbering = ln_dy[0, :].copy()
-        elif face_index == 1:                  # x+ face, dy edges
+        elif face_index == 1:                       # x+ face, dy edges
             local_numbering = ln_dy[-1, :].copy()
-        elif face_index == 2:                  # y- face, dx edges
+        elif face_index == 2:                       # y- face, dx edges
             local_numbering = ln_dx[:, 0].copy()
-        elif face_index == 3:                  # y+ face, dx edges
+        elif face_index == 3:                       # y+ face, dx edges
             local_numbering = ln_dx[:, -1].copy()
         else:
             raise NotImplementedError()

@@ -22,6 +22,15 @@ class MseHttMeshPartial(Frozen):
         self._composition = None
         self._freeze()
 
+    def info(self):
+        """info self."""
+        try:
+            composition = self.composition
+        except EmptyCompositionError:
+            print(f"Mesh not-configured: {self.abstract._sym_repr}.")
+        else:
+            composition.info()
+
     @property
     def abstract(self):
         """return the abstract mesh instance."""
@@ -47,12 +56,16 @@ class MseHttMeshPartial(Frozen):
         """Call the visualization scheme of the composition."""
         return self.composition.visualize
 
+    def find_dofs(self, f, local=True):
+        r"""Find the dofs of f on this partial mesh. If local is True, we return the results element-wise."""
+        return self.composition.find_dofs(f, local=local)
+
     def __repr__(self):
         super_repr = super().__repr__().split('object')[1]
         return f"<{self.__class__.__name__} " + self._abstract._sym_repr + super_repr
 
     def _config(self, tgm, including):
-        """"""
+        r""""""
         assert self._tgm is None, f"tgm must be set."
         assert self._composition is None, f"components are not set!"
         self._tgm = tgm
@@ -131,7 +144,7 @@ class MseHttMeshPartial(Frozen):
         self._perform_configuration(including)
 
     def _perform_configuration(self, including):
-        """Really do the configuration."""
+        r"""Really do the configuration."""
         _type = including['type']
         if _type == 'local great elements':
             # CONFIGURATION 1 ===========================================================================

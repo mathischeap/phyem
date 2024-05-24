@@ -2,11 +2,12 @@
 r"""
 """
 import numpy as np
-from src.config import COMM, MPI
+from src.config import COMM, RANK, MASTER_RANK
 from tools.frozen import Frozen
 from msehtt.tools.gathering_matrix import MseHttGatheringMatrix
 
 from msehtt.tools.vector.static.global_distributed import MseHttGlobalVectorDistributed
+from msehtt.tools.vector.static.global_gathered import MseHttGlobalVectorGathered
 
 
 class MseHttStaticLocalVectorAssemble(Frozen):
@@ -17,16 +18,54 @@ class MseHttStaticLocalVectorAssemble(Frozen):
         self._v = v
         self._freeze()
 
-    def __call__(self):
+    def __getitem__(self, e):
         """"""
-        gm = self._v._gm
-        v = np.zeros(gm.num_global_dofs)
+        return self._v[e]
 
+    def __iter__(self):
+        """"""
         for i in self._v:
-            Vi = self._v[i]  # all adjustments and customizations take effect.
-            v[gm[i]] += Vi  # must do this to be consistent with the matrix assembling.
+            yield i
 
-        return MseHttGlobalVectorDistributed(v, gm)
+    def __call__(self, vtype='distributed', mode='sum'):
+        """"""
+
+        if vtype == 'distributed':
+            if mode == 'sum':
+                gm = self._v._gm
+                v = np.zeros(gm.num_global_dofs)
+                for i in self:
+                    v[gm[i]] += self[i]  # must do this to be consistent with the matrix assembling.
+                return MseHttGlobalVectorDistributed(v, gm)
+            else:
+                raise NotImplementedError(f"mode={mode} not implemented for {vtype} assembling")
+
+        elif vtype == 'gathered':
+            if mode == 'replace':
+                v = {}
+                for i in self:
+                    v[i] = self[i]
+                v = COMM.gather(v, root=MASTER_RANK)
+                gm = COMM.gather(self._v._gm._gm, root=MASTER_RANK)
+                if RANK == MASTER_RANK:
+                    V = {}
+                    GM = {}
+                    for _, __ in zip(v, gm):
+                        V.update(_)
+                        GM.update(__)
+                    v = np.zeros(self._v._gm.num_global_dofs)
+                    for i in V:
+                        v[GM[i]] = V[i]
+                else:
+                    v = np.zeros(self._v._gm.num_global_dofs)
+                COMM.Bcast(v, root=MASTER_RANK)
+                return MseHttGlobalVectorGathered(v, self._v._gm)
+
+            else:
+                raise NotImplementedError(f"mode={mode} not implemented for {vtype} assembling")
+
+        else:
+            raise NotImplementedError()
 
 
 class EmptyDataError(Exception):
@@ -66,14 +105,17 @@ class MseHttStaticLocalVector(Frozen):
                 assert isinstance(data[i], np.ndarray), f"each local vector must be 1d array."
                 if data[i].ndim == 1:
                     pass
-                elif data[i].shape[1] == 1:
+                elif data[i].ndim == 2 and data[i].shape[1] == 1:
                     data[i] = data[i][:, 0]
                 else:
                     raise Exception()
                 assert len(data[i]) == self._gm.num_local_dofs(i), f"num values in element #{i} is wrong."
             for i in self._gm:
                 if self._gm.num_local_dofs(i) > 0:
-                    assert i in data, f"data missing for element #{i}."
+                    if i in data:
+                        assert data[i].shape == (self._gm.num_local_dofs(i),)
+                    else:
+                        pass
                 else:
                     pass
             self._data = data
@@ -82,7 +124,7 @@ class MseHttStaticLocalVector(Frozen):
             self._dtype = "realtime"
             self._data = data
         else:
-            raise Exception(f"msepy static local vector data type wrong.")
+            raise Exception(f"msepy static local vector data type wrong: {data.__class__}.")
         self._customize = None
 
     @property
@@ -168,6 +210,36 @@ class MseHttStaticLocalVector(Frozen):
             pass
         return self._gm.split(data_dict)
 
+    def __rmul__(self, other):
+        """other * self"""
+        if isinstance(other, (int, float)):
+            def data_caller(i):
+                return other * self[i]
+            return self.__class__(data_caller, self._gm)
+        else:
+            raise NotImplementedError()
+
+    def __add__(self, other):
+        """self + other"""
+        if (other.__class__ is self.__class__) or issubclass(other.__class__, self.__class__):
+            assert self._gm == other._gm, f"gathering matrix does not match."
+
+            data_dict = {}
+
+            for e in self._gm:
+                data_dict[e] = self[e] + other[e]
+
+            return self.__class__(data_dict, self._gm)
+        else:
+            raise NotImplementedError(other.__class__)
+
+    def __neg__(self):
+        """-self"""
+        def data_caller(i):
+            return - self[i]
+
+        return self.__class__(data_caller, self._gm)
+
 
 class _MseHtt_StaticVector_Customize(Frozen):
     """"""
@@ -191,19 +263,25 @@ class _MseHtt_StaticVector_Customize(Frozen):
 
     def set_value(self, global_dof, value):
         """"""
-        assert isinstance(global_dof, (int, float)), f"can just deal with one dof!"
+        gm = self._sv._gm
+        if isinstance(global_dof, (int, float)):
+            pass
+        elif global_dof.__class__.__name__ in ('int32', 'int64'):
+            pass
+        else:
+            raise Exception(f"cannot deal with dof = {global_dof} of class {global_dof.__class__}!")
+
         if global_dof < 0:
-            global_dof += self._sv._gm.num_global_dofs
+            global_dof += gm.num_global_dofs
         else:
             pass
-        assert global_dof == int(global_dof) and 0 <= global_dof < self._sv._gm.num_global_dofs, \
+        assert global_dof == int(global_dof) and 0 <= global_dof < gm.num_global_dofs, \
             f"global_dof = {global_dof} is wrong."
         global_dof = int(global_dof)
-        elements_local_rows = self._sv._gm.find_rank_locations_of_global_dofs(global_dof)[global_dof]
-        num_rank_locations = len(elements_local_rows)
-        num_global_locations = COMM.allreduce(num_rank_locations, op=MPI.SUM)
+        elements_local_rows = gm.find_rank_locations_of_global_dofs(global_dof)[global_dof]
+        num_global_locations = gm.num_global_locations(global_dof)
         if num_global_locations == 1:
-            if num_rank_locations == 1:  # in the rank where the place is
+            if len(elements_local_rows) == 1:  # in the rank where the place is
                 rank_element, local_dof = elements_local_rows[0]
                 data = self._sv[rank_element].copy()
                 data[local_dof] = value
@@ -211,13 +289,50 @@ class _MseHtt_StaticVector_Customize(Frozen):
             else:
                 pass
         else:
-            raise NotImplementedError()
+            representative_rank, element = gm.find_representative_location(global_dof)
+            if RANK == representative_rank:
+                representative_local_dof = 1
+                for element_local_dof in elements_local_rows:
+                    _element, _local_dof = element_local_dof
+                    if (_element == element) and representative_local_dof:
+                        representative_local_dof = 0
+                        data = self._sv[_element].copy()
+                        data[_local_dof] = value
+                        self._customizations[_element] = data
+                    else:
+                        data = self._sv[_element].copy()
+                        data[_local_dof] = 0
+                        self._customizations[_element] = data
+            else:
+                for element_local_dof in elements_local_rows:
+                    _element, _local_dof = element_local_dof
+                    data = self._sv[_element].copy()
+                    data[_local_dof] = 0
+                    self._customizations[_element] = data
+
+    def set_values(self, global_dofs, global_cochain):
+        """"""
+        if isinstance(global_cochain, (int, float)):
+            for global_dof in global_dofs:
+                self.set_value(global_dof, global_cochain)
+
+        else:
+            assert len(global_dofs) == len(global_cochain), f"dofs, cochain length dis-match."
+            for global_dof, cochain in zip(global_dofs, global_cochain):
+                self.set_value(global_dof, cochain)
 
 
 def concatenate(v_1d_list, gm):
     """"""
-    shape = len(v_1d_list)
+    if gm.__class__ is MseHttGatheringMatrix:
+        pass
+    elif isinstance(gm, (list, tuple)) and all([_.__class__ is MseHttGatheringMatrix for _ in gm]):
+        gm = MseHttGatheringMatrix(gm)
+    else:
+        raise NotImplementedError()
+
     gms = gm._gms
+    shape = len(v_1d_list)
     assert len(gms) == shape, f"composite wrong."
     vs = list()
     for i, vi in enumerate(v_1d_list):

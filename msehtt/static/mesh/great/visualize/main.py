@@ -15,17 +15,18 @@ class MseHttGreatMeshVisualize(Frozen):
         self._freeze()
 
     def __call__(self, *args, **kwargs):
-        """Use the default visualizer to visualize the great mesh."""
+        r"""Use the default visualizer to visualize the great mesh."""
         return self.matplot(*args, **kwargs)
 
     @property
     def matplot(self):
+        r""""""
         if self._matplot is None:
             self._matplot = MseHttGreatMeshVisualizeMatplot(self._tgm)
         return self._matplot
 
     def _generate_element_outline_data(self, ddf=1):
-        """"""
+        r""""""
         outline_data = {}
         for i in self._tgm.elements:
             element = self._tgm.elements[i]

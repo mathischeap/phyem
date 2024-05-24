@@ -7,9 +7,13 @@ import numpy as np
 if './' not in sys.path:
     sys.path.append('./')
 from tools.frozen import Frozen
+from msehtt.tools.vector.static.local import MseHttStaticLocalVector
+from msehtt.tools.vector.static.local import concatenate
 from msehtt.tools.vector.static.global_gathered import MseHttGlobalVectorGathered
 import msehtt.tools.linear_system.static.global_.solvers.mpi_py as _mpi_py
 import msehtt.tools.linear_system.static.global_.solvers.scipy_ as _scipy
+
+from msehtt.static.form.main import MseHttForm
 
 
 class MseHttLinearSystemSolve(Frozen):
@@ -76,7 +80,27 @@ class MseHttLinearSystemSolve(Frozen):
             x0 = MseHttGlobalVectorGathered(V, gm=self._Axb.gm_col)
 
         else:
-            raise NotImplementedError()
+            if not isinstance(x0, (list, tuple)):
+                x0 = [x0, ]
+            else:
+                pass
+
+            gms = list()
+            X0_ = list()
+
+            for x0i in x0:
+                if x0i.__class__ is MseHttForm:
+                    # we receive a msehtt root form: we use its newest cochain to replace its place in x0.
+                    gms.append(x0i.cochain.gathering_matrix)
+                    if x0i.cochain.newest is None:  # if it has no cochain yet. We make it all zero.
+                        vec = MseHttStaticLocalVector(0, x0i.cochain.gathering_matrix)
+                    else:  # otherwise, we use its newest cochain.
+                        vec = x0i.cochain.static_vec(x0i.cochain.newest)
+                    X0_.append(vec)
+                else:
+                    raise NotImplementedError()
+
+            x0 = concatenate(X0_, gms).assemble(vtype='gathered', mode='replace')
 
         assert x0.__class__ is MseHttGlobalVectorGathered, f"x0 type wrong."
         assert x0.shape == (self._Axb.shape[1],),  f"x0 shape wrong."

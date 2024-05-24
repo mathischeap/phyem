@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-"""
+r"""
 """
 import numpy as np
 from tools.frozen import Frozen
@@ -11,9 +11,9 @@ from msehtt.static.space.basis_function.Lambda.bf_m2n2k2 import ___bf222_msepy_q
 from msehtt.static.space.local_numbering.Lambda.ln_m2n2k1 import local_numbering_Lambda__m2n2k1_outer
 from msehtt.static.space.local_numbering.Lambda.ln_m2n2k1 import local_numbering_Lambda__m2n2k1_inner
 
-
 from msehtt.static.space.find.local_dofs_on_face.Lambda.m2n2k1 import find_local_dofs_on_face__m2n2k1_outer
 from msehtt.static.space.find.local_dofs_on_face.Lambda.m2n2k1 import find_local_dofs_on_face__m2n2k1_inner
+from msehtt.static.space.find.local_dofs_on_face.Lambda.m2n2k0 import find_local_dofs_on_face__m2n2k0
 
 
 class MseHttGreatMeshBaseElement(Frozen):
@@ -87,8 +87,10 @@ class MseHttGreatMeshBaseElement(Frozen):
             return find_local_dofs_on_face__m2n2k1_outer(self.etype, p, face_index, component_wise=component_wise)
         elif indicator == 'm2n2k1_inner':
             return find_local_dofs_on_face__m2n2k1_inner(self.etype, p, face_index, component_wise=component_wise)
+        elif indicator == 'm2n2k0':
+            return find_local_dofs_on_face__m2n2k0(self.etype, p, face_index)
         else:
-            raise NotImplementedError()
+            raise NotImplementedError(indicator)
 
     def bf(self, indicator, degree, xi_1d, et_1d):
         """"""
@@ -122,7 +124,8 @@ class MseHttGreatMeshBaseElement(Frozen):
                     else:
                         raise Exception()
                 return xi_et_sg, [bf0, bf1]
-            if indicator == 'm2n2k1_inner':
+
+            elif indicator == 'm2n2k1_inner':
                 bf0 = bf[0].copy()
                 bf1 = bf[1].copy()
                 face_indices = self.dof_reverse_info['m2n2k1_inner']
@@ -136,8 +139,10 @@ class MseHttGreatMeshBaseElement(Frozen):
                     else:
                         raise Exception()
                 return xi_et_sg, [bf0, bf1]
+
             else:
                 raise NotImplementedError()
+
         else:
             return xi_et_sg, bf
 
@@ -180,6 +185,10 @@ class MseHttGreatMeshBaseElement(Frozen):
     def _form_face_dof_direction_topology(cls):
         """"""
         return None
+
+    def _generate_vtk_data_for_form(self, indicator, element_cochain, degree, data_density):
+        """"""
+        raise NotImplementedError()
 
 
 # ============ ELEMENT CT =====================================================================================

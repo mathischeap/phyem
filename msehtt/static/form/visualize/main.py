@@ -2,8 +2,8 @@
 """
 """
 from tools.frozen import Frozen
-from msehtt.static.form.visualize.vtk_.main import MseHttFormVisualizeVtk
 from msehtt.static.form.visualize.quick.main import MseHttFormVisualizeQuick
+from tools.vtk_.msehtt_form_static_copy import ___ph_vtk_msehtt_static_copy___
 
 
 class MseHttFormVisualize(Frozen):
@@ -13,22 +13,19 @@ class MseHttFormVisualize(Frozen):
         """"""
         self._f = f
         self._t = t
-        self._vtk = None
         self._quick = None
         self._freeze()
 
-    def __call__(self, saveto, ddf=1):
+    def __call__(self, *args, **kwargs):
         """"""
-        return self.vtk_(saveto, ddf=ddf)
-
-    @property
-    def vtk_(self):
-        if self._vtk is None:
-            self._vtk = MseHttFormVisualizeVtk(self._f, self._t)
-        return self._vtk
+        return self.quick(*args, **kwargs)
 
     @property
     def quick(self):
         if self._quick is None:
             self._quick = MseHttFormVisualizeQuick(self._f, self._t)
         return self._quick
+
+    def vtk(self, filename, ddf=1):
+        """"""
+        ___ph_vtk_msehtt_static_copy___(filename, self._f[self._t], ddf=ddf)

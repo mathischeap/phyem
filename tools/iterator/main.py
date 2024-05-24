@@ -113,10 +113,15 @@ class Iterator(Frozen):
         """"""
         self.RDF.loc[len(self.RDF)] = outputs[2:]
 
-    def test(self, *args):
+    def test(self, test_range):
         """Do a test run of `times` iterations."""
-        results = self._solver_(*args)
-        print(f"test with arguments {args} leads to results: {results}.")
+        for args in test_range:
+            if hasattr(args, '__iter__'):
+                results = self._solver_(*args)
+            else:
+                results = self._solver_(args)
+            if RANK == MASTER_RANK:
+                print(f"test with arguments {args} leads to results: {results}.\n", flush=True)
 
     def run(self, *ranges):
         """To run the iterator.

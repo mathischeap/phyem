@@ -270,7 +270,7 @@ _VarSetting_astA_x_B_ip_tC = [
 ]
 
 _VarSetting_A_x_astB_ip_tC = [
-    r"\boldsymbol{C}",
+    r"\mathsf{M}_{\left(\circ\times {B}, \mathsf{t}\right)}^{\left[\mathsf{t},\circ\right]}",
     _sep.join(["_Xip", "[{A}]", "[{B}]", "[{C}]"]),
 ]
 

@@ -3,7 +3,7 @@
 """
 from tools.frozen import Frozen
 from msehtt.static.mesh.partial.elements.visualize.main import MseHttElementsPartialMeshVisualize
-from src.config import RANK, MASTER_RANK, COMM
+from src.config import RANK, MASTER_RANK, COMM, SIZE
 
 
 class MseHttElementsPartialMesh(Frozen):
@@ -19,6 +19,11 @@ class MseHttElementsPartialMesh(Frozen):
         self._visualize = None
         self._merge_element_indices()
         self._freeze()
+
+    def info(self):
+        """info self."""
+        print(f"msehtt-partial-elements > {self._tpm.abstract._sym_repr}: "
+              f"{self._num_global_elements} elements > distributed in {SIZE} ranks.")
 
     def __repr__(self):
         super_repr = super().__repr__().split('object')[1]

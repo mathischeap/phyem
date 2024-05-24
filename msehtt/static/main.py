@@ -7,7 +7,8 @@ base = {
     'spaces': dict(),  # keys: abstract space sym_repr, values: MsePy spaces
     'forms': dict(),   # keys: abstract root form pure_lin_repr, values: root-forms,
     'the_great_mesh': None,   # all forms/meshes will also point to this great mesh.
-    'PARSER': None,           # the parser that will study this base
+    'PARSER': None,           # the linear parser that will study this base
+    'NOC-PARSER': None,       # the nonlinear parser that will study this base
 }
 
 
@@ -20,6 +21,9 @@ import msehtt.static.implementation_array_parser as PARSER
 PARSER._setting_['base'] = base
 base['PARSER'] = PARSER
 
+import msehtt.static.implementation_nop_parser as NOC_PARSER
+NOC_PARSER._setting_['base'] = base
+base['NOC-PARSER'] = NOC_PARSER
 
 from msehtt.static.manifold.main import MseHttManifold
 from msehtt.static.mesh.partial.main import MseHttMeshPartial
@@ -31,8 +35,19 @@ from src.wf.mp.linear_system import MatrixProxyLinearSystem
 from src.wf.mp.nonlinear_system import MatrixProxyNoneLinearSystem
 
 
+from src.config import RANK, MASTER_RANK
+
+
 def _check_config():
     """Check whether the configuration is compatible or not. And if necessary, prepare the data!"""
+
+
+if RANK == MASTER_RANK:
+    _info_cache = {
+        'start_time': -1.,
+        'info_count': 0,
+        'info_time': -1.,
+    }
 
 
 def _clear_self():
@@ -42,6 +57,11 @@ def _clear_self():
     base['spaces'] = dict()
     base['forms'] = dict()
     base['the_great_mesh'] = None
+
+    if RANK == MASTER_RANK:
+        _info_cache['start_time'] = -1.
+        _info_cache['info_count'] = 0
+        _info_cache['info_time'] = -1.
 
 
 def _parse_manifolds(abstract_manifolds):
@@ -149,7 +169,7 @@ def ___link_all_forms____():
     the_great_mesh = base['the_great_mesh']
     partial_meshes = base['meshes']  # all the partial meshes
     spaces = base['spaces']          # all the msehtt spaces
-    manifolds = base['manifolds']     # all the msehtt manifolds
+    manifolds = base['manifolds']    # all the msehtt manifolds
     forms = base['forms']            # all the forms
 
     for f_sym in forms:
@@ -210,3 +230,62 @@ def clean_cache():
     """"""
     ___clean_cache_msehtt_gm___()
     ___clean_cache_msehtt_element_ct___()
+
+
+from time import time
+from tools.miscellaneous.timer import MyTimer
+
+
+def info(*others_2b_printed):
+    """We print the info, as much as possible, of the current msepy implementation."""
+    # -- first we print the newest time of the cochain (if there is) of each form.
+    if RANK != MASTER_RANK:
+        return
+    else:
+        pass
+
+    count = _info_cache['info_count']
+    old_time = _info_cache['info_time']
+    if _info_cache['start_time'] == -1.:
+        _info_cache['start_time'] = time()
+    else:
+        pass
+    start_time = _info_cache['start_time']
+    if old_time == -1:
+        old_time = time()
+    else:
+        pass
+    new_time = time()
+    total_cost = new_time - start_time
+    print(f'==msehtt== [{count}] {MyTimer.current_time()} -after- %.2f(s)'
+          f', total: {MyTimer.seconds2dhms(total_cost)} <----' % (new_time - old_time))
+    print(f"~) Form with newest cochain @ --------- ")
+    forms = base['forms']
+    for form_sym in forms:
+        form = forms[form_sym]
+        if form._is_base():
+            newest_time = form.cochain.newest
+            if newest_time is not None:
+                print('{:>20} @ {:<30}'.format(form.abstract._pure_lin_repr, newest_time))
+        else:
+            pass
+    print(f"\n~) Existing time sequences --------- ")
+    from src.time_sequence import _global_abstract_time_sequence
+    for ats_lin in _global_abstract_time_sequence:
+        ats = _global_abstract_time_sequence[ats_lin]
+        ats.info()
+
+    print(f"\n~) Meshes:")
+    meshes = base['meshes']
+    for mesh_repr in meshes:
+        mesh = meshes[mesh_repr]
+        mesh.info()
+
+    print(f"\n~) Others: ~~~~")
+    for i, other in enumerate(others_2b_printed):
+        print(f"  {i}) -> {other}\n")
+
+    print('\n\n', flush=True)
+    _info_cache['info_count'] = count + 1
+    _info_cache['info_time'] = new_time
+    return
