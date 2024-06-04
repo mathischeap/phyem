@@ -5,6 +5,8 @@ from tools.frozen import Frozen
 from msehtt.static.mesh.partial.elements.visualize.main import MseHttElementsPartialMeshVisualize
 from src.config import RANK, MASTER_RANK, COMM, SIZE
 
+from msehtt.static.mesh.partial.elements.cfl import MseHtt_PartialMesh_Elements_CFL_condition
+
 
 class MseHttElementsPartialMesh(Frozen):
     """The partial mesh that contains only great elements (all or partial)."""
@@ -18,6 +20,8 @@ class MseHttElementsPartialMesh(Frozen):
         self._range = local_element_range
         self._visualize = None
         self._merge_element_indices()
+        self._mn = None
+        self._cfl = None
         self._freeze()
 
     def info(self):
@@ -29,6 +33,11 @@ class MseHttElementsPartialMesh(Frozen):
         super_repr = super().__repr__().split('object')[1]
         return f"<{self.__class__.__name__} " + self._tpm._abstract._sym_repr + super_repr
 
+    @property
+    def cfl(self):
+        if self._cfl is None:
+            self._cfl = MseHtt_PartialMesh_Elements_CFL_condition(self)
+        return self._cfl
     @property
     def visualize(self):
         if self._visualize is None:
@@ -99,3 +108,40 @@ class MseHttElementsPartialMesh(Frozen):
                 )
 
         return local_boundary_faces_information
+
+    @property
+    def mn(self):
+        """The `m` and `n` of the elements I am on. All the elements across all ranks will take into account.
+        So if the elements in a local rank are of one (m, n), (m, n) could be different in other ranks. So
+        self.mn will return a tuple if two pairs of (m, n).
+
+        For example, if self.mn = (2, 2), then all the elements I am on are 2d (n=2) elements in 2d (m=2) space.
+
+        If self.mn == ((3, 2), (2, 2)), then some of the elements I am on are 2d (n=2) elements in 3d (m=2) space,
+        and some other elements are 2d (n=2) element in 2d (m=2) space. Of course, this is not very likely.
+        """
+        if self._mn is None:
+            mn_pool = list()
+            for element_index in self:
+                element = self[element_index]
+                mn = (element.m(), element.n())
+                if mn not in mn_pool:
+                    mn_pool.append(mn)
+                else:
+                    pass
+            mn_pool = COMM.gather(mn_pool, root=MASTER_RANK)
+            if RANK == MASTER_RANK:
+                total_mn_pool = set()
+                for _ in mn_pool:
+                    total_mn_pool.update(_)
+                total_mn_pool = list(total_mn_pool)
+
+                if len(total_mn_pool) == 1:
+                    self._mn = total_mn_pool[0]
+                else:
+                    self._mn = tuple(total_mn_pool)
+            else:
+                self._mn = None
+
+            self._mn = COMM.bcast(self._mn, root=MASTER_RANK)
+        return self._mn

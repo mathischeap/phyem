@@ -17,8 +17,8 @@ ph.config.set_embedding_space_dim(2)
 ph.config.set_high_accuracy(True)
 ph.config.set_pr_cache(False)
 
-N = 3
-edf = 5
+N = 2
+edf = 3
 
 Re = 1000
 t = 8
@@ -165,7 +165,7 @@ msehtt, obj = ph.fem.apply('msehtt-s', locals())
 tgm = msehtt.tgm()
 msehtt.config(tgm)(
     'cylinder_channel',
-    element_layout=3,
+    element_layout=edf,
     r=0.05, dl=0.2, dr=2, h=0.41, hl=0.2
 )
 # tgm.visualize()
@@ -258,19 +258,17 @@ bc_p = u.numeric.tsp.L2_energy()
 msehtt_nls.config(['natural bc', 1], boundary_p, bc_p, root_form=P)  # natural bc
 
 
-for step in range(1, 1+1):
+for step in range(1, total_steps+1):
     system = msehtt_nls(k=step)
     system.solve(
         [u, w, P],
-        # atol=1e-6,
-        # inner_solver_scheme='lgmres',
-        # inner_solver_kwargs={'inner_m': 225, 'outer_k': 25, 'atol': 1e-5, 'maxiter': 5}
+        atol=1e-6,
+        inner_solver_scheme='gmres',
+        inner_solver_kwargs={'restart': 300, 'atol': 1e-6, 'maxiter': 20}
     )
     msehtt.info(rf"N={N}", system.solve.message)
 
     # if step % 100 == 0:
-    # u[None].visualize.quick()
     ph.vtk(results_dir + f'step_{step}', u[None], w[None], P[None])
-
     # else:
     #     pass

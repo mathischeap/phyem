@@ -68,6 +68,22 @@ class MseHttStaticNonlinearSystemCustomize_LinearPart(Frozen):
         self._nls = nls
         self._freeze()
 
+    def left_matmul_A_block(self, i, j, M):
+        """If Aij = A[i][j], we will make A[i][j] become M @ Aij.
+
+        Parameters
+        ----------
+        i
+        j
+        M
+
+        Returns
+        -------
+
+        """
+        A = self._nls._A
+        A[i][j] = M @ A[i][j]
+
     def set_local_dof(self, ith_unknown, element_label, local_dof_index, value):
         """"""
         gm = self._nls._row_gms[ith_unknown]

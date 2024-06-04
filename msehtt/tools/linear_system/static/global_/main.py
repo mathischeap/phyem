@@ -84,6 +84,10 @@ class MseHttLinearSystem(Frozen):
         return self.A.rank
 
     @property
+    def rank_nnz(self):
+        return self.A.rank_nnz
+
+    @property
     def num_singularities(self):
         return self.A.num_singularities
 

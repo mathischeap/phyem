@@ -163,7 +163,7 @@ class MseHttStaticLocalLinearSystem(Frozen):
         """spy plot the A matrix of local element #e."""
         return self.A.spy(e, **kwargs)
 
-    def assemble(self, cache=None):
+    def assemble(self, cache=None, preconditioner=False, threshold=None):
         """
 
         Parameters
@@ -173,15 +173,24 @@ class MseHttStaticLocalLinearSystem(Frozen):
             it sees the same `cache` it will return the cached A matrix from the cache.
 
             This is very helpful, for example, when the A matrix does not change in all iterations.
+        preconditioner :
+        threshold :
 
         Returns
         -------
 
         """
-        A = self.A._mA.assemble(cache=cache)
+        A = self.A._mA.assemble(cache=cache, threshold=threshold)
         b = self.b._vb.assemble()
-        ALS = MseHttLinearSystem(A, b)
-        return ALS
+        if preconditioner is False:
+            pass
+        elif preconditioner == 'Jacobian':
+            diag = A.diagonal()
+            A = diag @ A
+            b = diag @ b
+        else:
+            raise NotImplementedError(f"preconditioner={preconditioner}")
+        return MseHttLinearSystem(A, b)
 
     @property
     def customize(self):

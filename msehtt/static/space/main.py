@@ -80,6 +80,24 @@ class MseHttSpace(Frozen):
             raise NotImplementedError(idc)
 
     @property
+    def d_space_str_indicator(self):
+        """"""
+        _, m, n = self._imn_
+        indicator = self.str_indicator
+
+        if m == n == 3:
+            if indicator == 'm3n3k0':
+                return 'm3n3k1'
+            elif indicator == 'm3n3k1':
+                return 'm3n3k2'
+            elif indicator == 'm3n3k2':
+                return 'm3n3k3'
+            else:
+                raise NotImplementedError(f"m3n3 for what? {indicator}")
+        else:
+            raise NotImplementedError(indicator)
+
+    @property
     def orientation(self):
         """The orientation I am."""
         return self.abstract.orientation

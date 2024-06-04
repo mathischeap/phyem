@@ -4,7 +4,9 @@ r"""
 from tools.frozen import Frozen
 import matplotlib.pyplot as plt
 from numpy import linalg as np_linalg
-from src.config import COMM, RANK, MASTER_RANK
+from src.config import COMM, RANK, MASTER_RANK, MPI
+import numpy as np
+from scipy.sparse import dia_matrix
 
 from scipy.sparse import isspmatrix_csc, isspmatrix_csr
 from msehtt.tools.gathering_matrix import MseHttGatheringMatrix
@@ -111,6 +113,13 @@ class MseHttGlobalMatrix(Frozen):
         return fig
 
     @property
+    def rank_nnz(self):
+        """The nnz of the rank M. Note that the nnz of the total matrix is not equal to reduce(rank_nnz, op=MPI.SUM)
+        because some entries are shared by multiple ranks.
+        """
+        return self._M.nnz
+
+    @property
     def condition_number(self):
         """The condition number of this static assembled matrix."""
         M = self.gather(root=MASTER_RANK)
@@ -134,3 +143,21 @@ class MseHttGlobalMatrix(Frozen):
     def num_singularities(self):
         """The amount of singular modes in this static assembled matrix."""
         return self.shape[0] - self.rank
+
+    def diagonal(self, k=0):
+        """Returns the kth diagonal of the matrix."""
+        diag = self._M.diagonal(k=k)
+        DIAG = np.zeros_like(diag, dtype=float)
+        COMM.Allreduce(diag, DIAG, op=MPI.SUM)
+        DIAG[DIAG < 1] = 1
+        DIAG = np.reciprocal(DIAG)
+        M = len(DIAG)
+        return dia_matrix((DIAG, 0), shape=(M, M))
+
+    def __rmatmul__(self, other):
+        """other @ self"""
+        if other.__class__ is dia_matrix:
+            M = other @ self._M
+            return self.__class__(M, self._gm_row, self._gm_col)
+        else:
+            raise Exception()

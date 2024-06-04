@@ -52,6 +52,11 @@ class MseHttMeshPartial(Frozen):
             return self._composition
 
     @property
+    def cfl(self):
+        """About the CFL condition."""
+        return self.composition.cfl
+
+    @property
     def visualize(self):
         """Call the visualization scheme of the composition."""
         return self.composition.visualize

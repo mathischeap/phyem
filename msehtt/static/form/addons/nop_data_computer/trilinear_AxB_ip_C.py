@@ -64,10 +64,15 @@ class AxB_ip_C(MseHttTrilinearBase):
         if self._tpm.abstract.m == self._tpm.abstract.n == 2:
             indicator = 'm2n2'
             quad = quadrature((quad_degree, quad_degree), category='Gauss')
-            quad_nodes = quad.quad_nodes
-            qw_ravel = quad.quad_weights_ravel
+        elif self._tpm.abstract.m == self._tpm.abstract.n == 3:
+            indicator = 'm3n3'
+            quad = quadrature((quad_degree, quad_degree, quad_degree), category='Gauss')
         else:
             raise NotImplementedError()
+
+        quad_nodes = quad.quad_nodes
+        qw_ravel = quad.quad_weights_ravel
+
         metric_coo = [_.ravel('F') for _ in np.meshgrid(*quad_nodes, indexing='ij')]
 
         rmA = self._A.reconstruction_matrix(*quad_nodes)
@@ -84,6 +89,7 @@ class AxB_ip_C(MseHttTrilinearBase):
             metric_signature = element.metric_signature
             if isinstance(metric_signature, str) and metric_signature in _cache_:
                 _3d_data[e] = _cache_[metric_signature]
+
             else:
                 detJ = element.ct.Jacobian(*metric_coo)
                 if indicator == 'm2n2=(1, 2, 2)':  # on 2d manifold in 2d space, A is scalar, B, C are vector.
@@ -112,6 +118,32 @@ class AxB_ip_C(MseHttTrilinearBase):
                     ) - np.einsum(
                         'li, lj, lk, l -> ijk', wy, u, c, qw_ravel * detJ, optimize='optimal'
                     )
+
+                elif indicator == 'm3n3=(3, 3, 3)':
+                    # A, B, C are all vectors.
+                    # A = [wx wy, wz]^T    B = [u v w]^T   C= [a b c]^T
+                    # A x B = [wy*w - wz*v   wz*u - wx*w   wx*v - wy*u]^T = [A0 B0 C0]^T
+                    # (A x B) dot C = A0*a + B0*b + C0*c
+                    wx, wy, wz = rmA[0][e], rmA[1][e], rmA[2][e]
+                    u, v, w = rmB[0][e], rmB[1][e], rmB[2][e]
+                    a, b, c = rmC[0][e], rmC[1][e], rmC[2][e]
+                    A0a = np.einsum(
+                        'li, lj, lk, l -> ijk', wy, w, a, qw_ravel * detJ, optimize='optimal'
+                    ) - np.einsum(
+                        'li, lj, lk, l -> ijk', wz, v, a, qw_ravel * detJ, optimize='optimal'
+                    )
+                    B0b = np.einsum(
+                        'li, lj, lk, l -> ijk', wz, u, b, qw_ravel * detJ, optimize='optimal'
+                    ) - np.einsum(
+                        'li, lj, lk, l -> ijk', wx, w, b, qw_ravel * detJ, optimize='optimal'
+                    )
+                    C0c = np.einsum(
+                        'li, lj, lk, l -> ijk', wx, v, c, qw_ravel * detJ, optimize='optimal'
+                    ) - np.einsum(
+                        'li, lj, lk, l -> ijk', wy, u, c, qw_ravel * detJ, optimize='optimal'
+                    )
+
+                    element_3d_data = A0a + B0b + C0c
 
                 else:
                     raise NotImplementedError(indicator)

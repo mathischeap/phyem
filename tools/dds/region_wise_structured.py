@@ -1,9 +1,11 @@
 # -*- coding: utf-8 -*-
 r"""
 """
+import pickle
 import numpy as np
 from tools.frozen import Frozen
 from tools.matplot.contour import contour, contourf
+from src.config import RANK, MASTER_RANK
 
 
 class DDSRegionWiseStructured(Frozen):
@@ -32,6 +34,7 @@ class DDSRegionWiseStructured(Frozen):
 
     def __init__(self, coo_dict_list, val_dict_list):
         """"""
+        assert RANK == MASTER_RANK, f"only use this class in the master rank please."
         space_dim = len(coo_dict_list)
         val_shape = _find_shape(val_dict_list)
         assert len(val_shape) == 1, f"put all values in a 1d list or tuple."
@@ -58,6 +61,28 @@ class DDSRegionWiseStructured(Frozen):
     def __repr__(self):
         super_repr = super().__repr__().split('object')[1]
         return rf"<DDR-RWS {self.ndim}d {self.dtype}" + super_repr
+
+    def saveto(self, filename):
+        """"""
+        data_dict = {
+            'key': 'dds-rws',
+            'coo_dict_list': self._coo_dict_list,
+            'val_dict_list': self._val_dict_list,
+        }
+        with open(filename, 'wb') as output:
+            pickle.dump(data_dict, output, pickle.HIGHEST_PROTOCOL)
+        output.close()
+
+    @classmethod
+    def read(cls, filename):
+        """"""
+        with open(filename, 'rb') as inputs:
+            data = pickle.load(inputs)
+        inputs.close()
+        assert data['key'] == 'dds-rws', f'I am reading a wrong file.'
+        coo_dict_list = data['coo_dict_list']
+        val_dict_list = data['val_dict_list']
+        return DDSRegionWiseStructured(coo_dict_list, val_dict_list)
 
     # -- properties --------------------------------------------------------------------------
     @property
@@ -232,6 +257,59 @@ class DDSRegionWiseStructured(Frozen):
                 raise NotImplementedError
         else:
             raise NotImplementedError()
+
+    def streamfunction(self, shift=0):
+        """"""
+        if self.classification == '2d vector':
+
+            X, Y = self._coo_dict_list
+            U, V = self._val_dict_list
+
+            starting_x, starting_y, starting_sf = None, None, None
+            starting_u, starting_v = None, None
+
+            sf_dict = dict()
+
+            corner_pool = list()
+            # for e in X:
+            for e in [0, ]:
+                x = X[e]
+                y = Y[e]
+                u, v = U[e], V[e]
+                if starting_x is None and starting_y is None:
+                    starting_x = x[0, 0]
+                    starting_y = y[0, 0]
+                    starting_u = u[0, 0]
+                    starting_v = v[0, 0]
+                    starting_sf = 0
+                else:
+                    starting_x, starting_y, starting_sf, \
+                        starting_u, starting_v = self._renew_starting_point_(
+                        corner_pool, x, y
+                    )
+
+                sf_dict[e] = self._compute_sf_in_region_(
+                    x, y, u, v,
+                    starting_u, starting_v,
+                    starting_x, starting_y,
+                    starting_sf
+                )
+
+        else:
+            raise Exception(self.classification)
+
+    def _renew_starting_point_(self, corner_pool, x, y):
+        """"""
+        return None, None, None, None, None
+
+    def _compute_sf_in_region_(
+            self,
+            x, y, u, v,
+            starting_u, starting_v,
+            starting_x, starting_y,
+            starting_sf
+    ):
+        """"""
 
 
 def _find_shape(list_of_dict):

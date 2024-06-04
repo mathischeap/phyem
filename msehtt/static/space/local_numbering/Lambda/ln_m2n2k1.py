@@ -4,6 +4,8 @@ r"""
 from numpy import arange
 
 
+# -------------- OUTER ------------------------------------------------------------------------
+
 def local_numbering_Lambda__m2n2k1_outer(etype, p):
     """Do the numbering for the outer 1-form on a 2d mesh in 2d space."""
     if etype in ('unique msepy curvilinear quadrilateral', 'orthogonal rectangle'):
@@ -32,6 +34,8 @@ def _ln_m2n2k1_outer_msepy_quadrilateral_(p):
     _cache_1_[p] = local_numbering_dy, local_numbering_dx
     return local_numbering_dy, local_numbering_dx
 
+
+# ------------ INNER -------------------------------------------------------------------------
 
 def local_numbering_Lambda__m2n2k1_inner(etype, p):
     """Do the numbering for the outer 1-form on a 2d mesh in 2d space."""

@@ -3,6 +3,7 @@
 """
 from tools.frozen import Frozen
 from msehtt.static.mesh.partial.elements.visualize.matplot import MseHttElementsPartialMeshVisualizeMatplot
+from msehtt.static.mesh.partial.elements.visualize.vtk_ import ___vtk_m3n3_partial_mesh_elements___
 
 
 class MseHttElementsPartialMeshVisualize(Frozen):
@@ -15,7 +16,11 @@ class MseHttElementsPartialMeshVisualize(Frozen):
         self._freeze()
 
     def __call__(self, *args, **kwargs):
-        return self.matplot(*args, **kwargs)
+        mn = self._elements.mn
+        if mn == (3, 3):
+            ___vtk_m3n3_partial_mesh_elements___(self._elements, *args, **kwargs)
+        else:
+            return self.matplot(*args, **kwargs)
 
     @property
     def matplot(self):

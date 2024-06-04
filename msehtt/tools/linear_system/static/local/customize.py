@@ -2,6 +2,7 @@
 r"""
 """
 from tools.frozen import Frozen
+from msehtt.tools.vector.static.local import concatenate
 
 
 class MseHttStaticLinearSystemCustomize(Frozen):
@@ -53,3 +54,14 @@ class MseHttStaticLinearSystemCustomize(Frozen):
                 A.customize.identify_rows(global_dofs)
 
         b.customize.set_values(global_dofs, global_cochain)
+
+    def left_matmul_A_block(self, i, j, M):
+        """"""
+        A = self._sls.A._A
+        A[i][j] = M @ A[i][j]
+
+    def left_matmul_b_block(self, i, M):
+        """"""
+        b = self._sls.b._b
+        b[i] = M @ b[i]
+        self._sls.b._vb = concatenate(b, self._sls.A._mA._gm_row)

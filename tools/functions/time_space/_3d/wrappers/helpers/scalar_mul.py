@@ -24,6 +24,7 @@ class t3d_ScalarMultiply(Frozen):
                 raise Exception
 
         else:
+            self._number = False
             self._v0_ = v0
             self._v1_ = v1
         self._freeze()

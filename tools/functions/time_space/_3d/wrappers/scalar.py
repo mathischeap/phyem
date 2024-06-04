@@ -1,6 +1,8 @@
 # -*- coding: utf-8 -*-
 r"""
 """
+import numpy as np
+
 from tools.functions.time_space.base import TimeSpaceFunctionBase
 
 from tools.numerical.time_space._3d.partial_derivative_as_functions import \
@@ -15,11 +17,21 @@ from tools.functions.time_space._3d.wrappers.helpers.scalar_sub import t3d_Scala
 from tools.functions.time_space._3d.wrappers.helpers.scalar_neg import t3d_ScalarNeg
 
 
+# noinspection PyUnusedLocal
+def ___0_func___(t, x, y, z):
+    """"""
+    return np.zeros_like(x)
+
 class T3dScalar(TimeSpaceFunctionBase):
     """"""
 
     def __init__(self, s):
         """"""
+        if isinstance(s, (int, float)) and s == 0:
+            s = ___0_func___
+        else:
+            pass
+
         self._s_ = s
         self.__NPD__ = None
         self._freeze()

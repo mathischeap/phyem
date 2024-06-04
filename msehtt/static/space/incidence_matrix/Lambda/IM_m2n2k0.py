@@ -13,6 +13,8 @@ _cache_E220_ = {}
 from src.spaces.main import _degree_str_maker
 
 
+# ---------------- OUTER ------------------------------------------------------
+
 def incidence_matrix_Lambda__m2n2k0_outer(tpm, degree):
     """"""
     key = tpm.__repr__() + 'o' + _degree_str_maker(degree)
@@ -76,6 +78,8 @@ def _im220o_msepy_quadrilateral_(element, degree):
     else:
         raise NotImplementedError()
 
+
+# ---------------- INNER ------------------------------------------------------
 
 def incidence_matrix_Lambda__m2n2k0_inner(tpm, degree):
     """"""

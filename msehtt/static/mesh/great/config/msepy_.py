@@ -109,30 +109,60 @@ class MseHttMsePyConfig(Frozen):
                     break
                 else:
                     pass
-            if metric_signature is None:
-                # unique element
-                element_type_dict[i] = 'unique msepy curvilinear quadrilateral'
-                element_parameter_dict[i] = {
-                    'region': element._region,
-                    'origin': element.ct._origin,
-                    'delta': element.ct._delta,
-                }
-            elif metric_signature[:7] == 'Linear:' and m == 2:
-                # orthogonal rectangle element
-                rct = regions[element._region]._ct
-                _origin = element.ct._origin
-                _delta = element.ct._delta
-                end = (_origin[0] + _delta[0], _origin[1] + _delta[1])
-                origin = rct.mapping(*_origin)
-                end = rct.mapping(*end)
-                delta = (end[0] - origin[0], end[1] - origin[1])
-                element_type_dict[i] = 'orthogonal rectangle'
-                element_parameter_dict[i] = {
-                    'origin': origin,
-                    'delta': delta,
-                }
+
+            if m == 2:
+                if metric_signature is None:
+                    # unique element
+                    element_type_dict[i] = 'unique msepy curvilinear quadrilateral'
+                    element_parameter_dict[i] = {
+                        'region': element._region,
+                        'origin': element.ct._origin,
+                        'delta': element.ct._delta,
+                    }
+
+                elif metric_signature[:7] == 'Linear:':
+                    # orthogonal rectangle element
+                    rct = regions[element._region]._ct
+                    _origin = element.ct._origin
+                    _delta = element.ct._delta
+                    end = (_origin[0] + _delta[0], _origin[1] + _delta[1])
+                    origin = rct.mapping(*_origin)
+                    end = rct.mapping(*end)
+                    delta = (end[0] - origin[0], end[1] - origin[1])
+                    element_type_dict[i] = 'orthogonal rectangle'
+                    element_parameter_dict[i] = {
+                        'origin': origin,
+                        'delta': delta,
+                    }
+
+                else:
+                    raise NotImplementedError(metric_signature)
+
+            elif m == 3:
+                if metric_signature is None:
+                    raise NotImplementedError('unique msepy curvilinear hexahedron not implemented')
+
+                elif metric_signature[:7] == 'Linear:':
+                    # orthogonal hexahedron element
+                    rct = regions[element._region]._ct
+                    _origin = element.ct._origin
+                    _delta = element.ct._delta
+                    end = (_origin[0] + _delta[0], _origin[1] + _delta[1], _origin[2] + _delta[2])
+                    origin = rct.mapping(*_origin)
+                    end = rct.mapping(*end)
+                    delta = (end[0] - origin[0], end[1] - origin[1], end[2] - origin[2])
+                    element_type_dict[i] = 'orthogonal hexahedron'
+                    element_parameter_dict[i] = {
+                        'origin': origin,
+                        'delta': delta,
+                    }
+
+                else:
+                    raise NotImplementedError(metric_signature)
+
             else:
-                raise NotImplementedError()
+                raise NotImplementedError(f"not implemented for elements of space dimensions m={m}, "
+                                          f"element map={element_map_array[i]}")
 
             element_map_dict[i] = list(element_map_array[i])
 
@@ -144,10 +174,10 @@ class MseHttMsePyConfig(Frozen):
         num_elements, m = msepy_element_map.shape
         if m == 4:
             return self._generate_element_map_dict_2d(msepy_mesh)
-        elif m == 8:
+        elif m == 6:
             return self._generate_element_map_dict_3d(msepy_mesh)
         else:
-            raise Exception()
+            raise Exception(num_elements, m)
 
     @staticmethod
     def _generate_element_map_dict_2d(msepy_mesh):

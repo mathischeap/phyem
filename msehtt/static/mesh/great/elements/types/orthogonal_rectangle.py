@@ -133,6 +133,31 @@ class MseHttGreatMeshOrthogonalRectangleElement(MseHttGreatMeshBaseElement):
 
         return {'m2n2k1_outer': m2n2k1_outer, 'm2n2k1_inner': m2n2k1_inner}
 
+    def _generate_element_vtk_data_(self, xi, et):
+        """"""
+        assert xi.ndim == et.ndim == 1
+        sx, sy = xi.size, et.size
+        meshgrid = np.meshgrid(xi, et, indexing='ij')
+        X, Y = self.ct.mapping(*meshgrid)
+        coo_dict = {}
+        for j in range(sy):
+            for i in range(sx):
+                x, y = X[i, j], Y[i, j]
+                key = f"%.7f-%.7f" % (x, y)
+                coo_dict[key] = (x, y)
+        cell_list = list()
+        for j in range(sy - 1):
+            for i in range(sx - 1):
+                cell_list.append((
+                    [
+                        f"%.7f-%.7f" % (X[i, j], Y[i, j]),
+                        f"%.7f-%.7f" % (X[i+1, j], Y[i+1, j]),
+                        f"%.7f-%.7f" % (X[i, j+1], Y[i, j+1]),
+                        f"%.7f-%.7f" % (X[i+1, j+1], Y[i+1, j+1]),
+                    ], 4, 8)  # for this element, VTK_PIXEL cell (No. 8)!
+                )
+        return coo_dict, cell_list
+
     def _generate_vtk_data_for_form(self, indicator, element_cochain, degree, data_density):
         """"""
         linspace = np.linspace(-1, 1, data_density)

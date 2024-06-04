@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 r"""
 """
+import numpy as np
 from tools.frozen import Frozen
 from typing import Dict
 from src.form.main import Form
@@ -38,6 +39,7 @@ class MseHttForm(Frozen):
         self._im = None
         self._bi = None
         self._numeric = None
+        self._export = None
         self._freeze()
 
     @property
@@ -195,3 +197,49 @@ class MseHttForm(Frozen):
             return self._numeric
         else:
             return self._base.numeric
+
+    def norm_residual(self, from_time=None, to_time=None, norm_type='L2'):
+        """By default, use L2-norm."""
+        if to_time is None or from_time is None:
+            all_cochain_times = list(self.cochain._tcd.keys())
+            all_cochain_times.sort()
+
+            if to_time is None:
+                if len(all_cochain_times) == 0:
+                    to_time = None
+                else:
+                    to_time = all_cochain_times[-1]
+            else:
+                pass
+
+            if from_time is None:
+                if len(all_cochain_times) == 0:
+                    from_time = None
+                elif len(all_cochain_times) == 1:
+                    from_time = all_cochain_times[-1]
+                else:
+                    from_time = all_cochain_times[-2]
+            else:
+                pass
+
+        else:
+            pass
+
+        if from_time is None:
+            assert to_time is None, f"cochain must be of no cochain."
+            return np.nan  # we return np.nan.
+        else:
+            assert isinstance(from_time, (int, float)), f"from_time = {from_time} is wrong."
+            assert isinstance(to_time, (int, float)), f"to_time = {to_time} is wrong."
+            from_time = self.cochain._parse_t(from_time)
+            to_time = self.cochain._parse_t(to_time)
+
+            if from_time == to_time:
+                return np.nan  # return nan since it is not a residual
+
+            else:
+                from_cochain = self.cochain[from_time]
+                to_cochain = self.cochain[to_time]
+                diff_cochain = to_cochain - from_cochain
+                norm = self.space.norm(self.degree, diff_cochain, norm_type=norm_type)
+                return norm

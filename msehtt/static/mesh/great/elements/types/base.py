@@ -8,12 +8,21 @@ from msehtt.static.space.basis_function.Lambda.bf_m2n2k1 import ___bf221o_outer_
 from msehtt.static.space.basis_function.Lambda.bf_m2n2k1 import ___bf221i_inner_msepy_quadrilateral___
 from msehtt.static.space.basis_function.Lambda.bf_m2n2k2 import ___bf222_msepy_quadrilateral___
 
+from msehtt.static.space.basis_function.Lambda.bf_m3n3k0 import ___bf330_msepy_quadrilateral___
+from msehtt.static.space.basis_function.Lambda.bf_m3n3k1 import ___bf331_msepy_quadrilateral___
+from msehtt.static.space.basis_function.Lambda.bf_m3n3k2 import ___bf332_msepy_quadrilateral___
+from msehtt.static.space.basis_function.Lambda.bf_m3n3k3 import ___bf333_msepy_quadrilateral___
+
 from msehtt.static.space.local_numbering.Lambda.ln_m2n2k1 import local_numbering_Lambda__m2n2k1_outer
 from msehtt.static.space.local_numbering.Lambda.ln_m2n2k1 import local_numbering_Lambda__m2n2k1_inner
 
 from msehtt.static.space.find.local_dofs_on_face.Lambda.m2n2k1 import find_local_dofs_on_face__m2n2k1_outer
 from msehtt.static.space.find.local_dofs_on_face.Lambda.m2n2k1 import find_local_dofs_on_face__m2n2k1_inner
 from msehtt.static.space.find.local_dofs_on_face.Lambda.m2n2k0 import find_local_dofs_on_face__m2n2k0
+
+from msehtt.static.space.find.local_dofs_on_face.Lambda.m3n3k0 import find_local_dofs_on_face__m3n3k0
+from msehtt.static.space.find.local_dofs_on_face.Lambda.m3n3k1 import find_local_dofs_on_face__m3n3k1
+from msehtt.static.space.find.local_dofs_on_face.Lambda.m3n3k2 import find_local_dofs_on_face__m3n3k2
 
 
 class MseHttGreatMeshBaseElement(Frozen):
@@ -89,21 +98,38 @@ class MseHttGreatMeshBaseElement(Frozen):
             return find_local_dofs_on_face__m2n2k1_inner(self.etype, p, face_index, component_wise=component_wise)
         elif indicator == 'm2n2k0':
             return find_local_dofs_on_face__m2n2k0(self.etype, p, face_index)
+        elif indicator == 'm3n3k0':
+            return find_local_dofs_on_face__m3n3k0(self.etype, p, face_index)
+        elif indicator == 'm3n3k1':
+            return find_local_dofs_on_face__m3n3k1(self.etype, p, face_index, component_wise=component_wise)
+        elif indicator == 'm3n3k2':
+            return find_local_dofs_on_face__m3n3k2(self.etype, p, face_index, component_wise=component_wise)
         else:
             raise NotImplementedError(indicator)
 
-    def bf(self, indicator, degree, xi_1d, et_1d):
+    def bf(self, indicator, degree, *grid_mesh):
         """"""
         p, btype = self.degree_parser(degree)
         if self.etype in ('orthogonal rectangle', 'unique msepy curvilinear quadrilateral'):
             if indicator == 'm2n2k0':
-                xi_et_sg, bf = ___bf220_msepy_quadrilateral___(p, btype, xi_1d, et_1d)
+                xi_et_sg, bf = ___bf220_msepy_quadrilateral___(p, btype, *grid_mesh)
             elif indicator == 'm2n2k1_outer':
-                xi_et_sg, bf = ___bf221o_outer_msepy_quadrilateral___(p, btype, xi_1d, et_1d)
+                xi_et_sg, bf = ___bf221o_outer_msepy_quadrilateral___(p, btype, *grid_mesh)
             elif indicator == 'm2n2k1_inner':
-                xi_et_sg, bf = ___bf221i_inner_msepy_quadrilateral___(p, btype, xi_1d, et_1d)
+                xi_et_sg, bf = ___bf221i_inner_msepy_quadrilateral___(p, btype, *grid_mesh)
             elif indicator == 'm2n2k2':
-                xi_et_sg, bf = ___bf222_msepy_quadrilateral___(p, btype, xi_1d, et_1d)
+                xi_et_sg, bf = ___bf222_msepy_quadrilateral___(p, btype, *grid_mesh)
+            else:
+                raise NotImplementedError()
+        elif self.etype in ('orthogonal hexahedron', ):
+            if indicator == 'm3n3k0':
+                xi_et_sg, bf = ___bf330_msepy_quadrilateral___(p, btype, *grid_mesh)
+            elif indicator == 'm3n3k1':
+                xi_et_sg, bf = ___bf331_msepy_quadrilateral___(p, btype, *grid_mesh)
+            elif indicator == 'm3n3k2':
+                xi_et_sg, bf = ___bf332_msepy_quadrilateral___(p, btype, *grid_mesh)
+            elif indicator == 'm3n3k3':
+                xi_et_sg, bf = ___bf333_msepy_quadrilateral___(p, btype, *grid_mesh)
             else:
                 raise NotImplementedError()
         else:
@@ -152,10 +178,12 @@ class MseHttGreatMeshBaseElement(Frozen):
 
         Returns
         -------
-        {
-            'm2n2k1_inner': 0,  # face id, dofs on this face need a minus.
-            'm2n2k1_outer': [2, 3],  # face id, dofs on these faces need a minus.
-        }
+        dof_reverse_info : dict
+            For example:
+                {
+                    'm2n2k1_inner': 0,  # face id, dofs on this face need a minus.
+                    'm2n2k1_outer': [2, 3],  # face id, dofs on these faces need a minus.
+                }
 
         """
         return self._dof_reverse_info
@@ -164,7 +192,6 @@ class MseHttGreatMeshBaseElement(Frozen):
     def ct(self):
         return self._ct
 
-    @property
     def _generate_outline_data(self, ddf=1):
         raise NotImplementedError()
 
@@ -501,7 +528,7 @@ class _FaceCoordinateTransformationBase(Frozen):
         """"""
         raise NotImplementedError()
 
-    def outward_unit_normal_vector(self, *xi_et):
+    def outward_unit_normal_vector(self, *xi_et_sg):
         """The outward unit norm vector (vec{n})."""
         raise NotImplementedError()
 
@@ -514,7 +541,7 @@ class _FaceCoordinateTransformationBase(Frozen):
         """"""
         if self.is_plane():
             if self.___c_ounv___ is None:
-                if self._element.m() == self._element.n() == 2:
+                if self._element.m() == self._element.n() == 2:  # mn=(2, 2); 2d element in 2d space
                     c_ounv = self.outward_unit_normal_vector(np.array([0]))
                     if isinstance(c_ounv[0], np.ndarray):
                         c_ounv0 = c_ounv[0][0]
@@ -527,6 +554,26 @@ class _FaceCoordinateTransformationBase(Frozen):
                     c_ounv0 = round(c_ounv0, 8)  # remove the round-off error
                     c_ounv1 = round(c_ounv1, 8)  # remove the round-off error
                     self.___c_ounv___ = (c_ounv0, c_ounv1)
+
+                elif self._element.m() == self._element.n() == 3:  # mn=(3, 3); 3d element in 3d space
+                    c_ounv = self.outward_unit_normal_vector(np.array([0]), np.array([0]), np.array([0]))
+                    if isinstance(c_ounv[0], np.ndarray):
+                        c_ounv0 = c_ounv[0][0]
+                    else:
+                        c_ounv0 = c_ounv[0]
+                    if isinstance(c_ounv[1], np.ndarray):
+                        c_ounv1 = c_ounv[1][0]
+                    else:
+                        c_ounv1 = c_ounv[1]
+                    if isinstance(c_ounv[2], np.ndarray):
+                        c_ounv2 = c_ounv[2][0]
+                    else:
+                        c_ounv2 = c_ounv[2]
+                    c_ounv0 = round(c_ounv0, 8)  # remove the round-off error
+                    c_ounv1 = round(c_ounv1, 8)  # remove the round-off error
+                    c_ounv2 = round(c_ounv2, 8)  # remove the round-off error
+                    self.___c_ounv___ = (c_ounv0, c_ounv1, c_ounv2)
+
                 else:
                     raise NotImplementedError()
 

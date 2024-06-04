@@ -91,7 +91,6 @@ class MsePyMeshVisualize(Frozen):
                 Lines[i].append(coo_lines)
 
             elif len(nodes) == 2:   # mesh ndim == 2
-
                 nodes0, nodes1 = nodes
 
                 axis0_rst = np.meshgrid(linspace, nodes1, indexing='ij')

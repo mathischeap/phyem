@@ -289,3 +289,24 @@ def info(*others_2b_printed):
     _info_cache['info_count'] = count + 1
     _info_cache['info_time'] = new_time
     return
+
+
+from src.spaces.main import _degree_str_maker
+
+
+def array(indicator, *args, **kwargs):
+    """Manually make an array."""
+    if indicator == 'mass matrix':
+        PARSER = base['PARSER']
+        if (len(args) == 1) and (kwargs == {}):  # in this case, we must receive a msehtt static form.
+            form = args[0]
+            assert form.__class__ is MseHttForm, f"we must have received a msehtt static form."
+            space = form.space.abstract._pure_lin_repr
+            degree = _degree_str_maker(form.degree)
+            M, time_caller = PARSER.Parse__M_matrix(space, degree, degree)
+            return M, time_caller
+        else:
+            raise NotImplementedError()
+
+    else:
+        raise NotImplementedError(f"CANNOT parse {indicator} array!")

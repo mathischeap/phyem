@@ -19,12 +19,17 @@ __all__ = [
     "ConditionsFlowAroundCylinder2",
     "ConditionsNormalDipoleCollision2",
     "ConditionsLidDrivenCavity2",
+    "ConditionsLidDrivenCavity3",
 
     "ConditionsLidDrivenCavity_2dMHD_1",
+    "ManufacturedSolutionMHD3_0",
+    "ManufacturedSolutionMHD3_1",
 
     "ManufacturedSolutionNS3Conservation1",
 
     "ManufacturedSolutionLSingularity",
+
+    "MHD3_Helicity_Conservation_test1",
 ]
 
 from tests.samples.canonical_pH_pde import pde_canonical_pH
@@ -37,13 +42,19 @@ from tests.samples.iniCond_loop_advection import InitialCondition_LoopAdvection
 from tests.samples.conditions_flow_around_cylinder_2d import ConditionsFlowAroundCylinder2
 from tests.samples.conditions_normal_dipole_collision import ConditionsNormalDipoleCollision2
 from tests.samples.conditions_lid_driven_cavity import ConditionsLidDrivenCavity2
+from tests.samples.conditions_lid_driven_cavity import ConditionsLidDrivenCavity3
 
 from tests.samples.conditions_lid_driven_cavity_MHD import ConditionsLidDrivenCavity_2dMHD_1
 
 from tests.samples.manuSolution_Eigen2 import Eigen2
 from tests.samples.manuSolution_MHD2 import ManufacturedSolutionMHD2Ideal1
+from tests.samples.manuSolution_MHD3 import ManufacturedSolutionMHD3_0
+from tests.samples.manuSolution_MHD3 import ManufacturedSolutionMHD3_1
+
 from tests.samples.manuSolution_NS2 import ManufacturedSolutionNS2TGV
 
 from tests.samples.manuSolution_NS3 import ManufacturedSolutionNS3Conservation1
 
 from tests.samples.manuSolution_L_singularity import ManufacturedSolutionLSingularity
+
+from tests.samples.condition_MHD3_Hu_helicity_test import MHD3_Helicity_Conservation_test1

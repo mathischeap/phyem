@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 r"""
 """
+import numpy as np
 
 from tools.functions.time_space.base import TimeSpaceFunctionBase
 from functools import partial
@@ -13,6 +14,11 @@ from tools.functions.time_space._3d.wrappers.helpers.scalar_sub import t3d_Scala
 from tools.functions.time_space._3d.wrappers.helpers.scalar_mul import t3d_ScalarMultiply
 from tools.functions.time_space._3d.wrappers.helpers.scalar_add import t3d_ScalarAdd
 from tools.functions.time_space._3d.wrappers.helpers.scalar_neg import t3d_ScalarNeg
+
+
+# noinspection PyUnusedLocal
+def ___0_func___(t, x, y, z):
+    return np.zeros_like(x)
 
 
 class T3dVector(TimeSpaceFunctionBase):
@@ -28,6 +34,19 @@ class T3dVector(TimeSpaceFunctionBase):
         v1
         v2
         """
+        if isinstance(v0, (int, float)) and v0 == 0:
+            v0 = ___0_func___
+        else:
+            pass
+        if isinstance(v1, (int, float)) and v1 == 0:
+            v1 = ___0_func___
+        else:
+            pass
+        if isinstance(v2, (int, float)) and v2 == 0:
+            v2 = ___0_func___
+        else:
+            pass
+
         self._v0_ = v0
         self._v1_ = v1
         self._v2_ = v2

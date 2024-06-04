@@ -118,7 +118,7 @@ def _find_space_through_pure_lin_repr(_target_space_lin_repr):
             break
         else:
             pass
-    assert the_msepy_space is not None, f"Find no msepy space."
+    assert the_msepy_space is not None, f"Find no msehtt static space."
     return the_msepy_space
 
 
@@ -144,24 +144,34 @@ def _parse_root_form(root_form_vec_lin_repr):
     return dynamic_cochain_vec, rf.abstract.ap()._sym_repr, rf.cochain._ati_time_caller
 
 
+_cache_M_ = {}
+
+
 def Parse__M_matrix(space, degree0, degree1):
     """"""
     degree0 = _str_degree_parser(degree0)
     degree1 = _str_degree_parser(degree1)
     space = _find_space_through_pure_lin_repr(space)
-    if degree0 == degree1:
-        degree = degree0
-        gm = space.gathering_matrix(degree)
-        m, cache_key_dict = space.mass_matrix(degree)
-        M = MseHttStaticLocalMatrix(  # make a new copy every single time.
-            m,
-            gm,
-            gm,
-            cache_key=cache_key_dict
-        )
-        return M, None  # time_indicator is None, mean M is same at all time.
+    key = (space, degree0, degree1)
+    if key in _cache_M_:
+        return _cache_M_[key]
     else:
-        raise NotImplementedError()
+        if degree0 == degree1:
+            degree = degree0
+            gm = space.gathering_matrix(degree)
+            m, cache_key_dict = space.mass_matrix(degree)
+            M = MseHttStaticLocalMatrix(  # make a new copy every single time.
+                m,
+                gm,
+                gm,
+                cache_key=cache_key_dict
+            )
+            RETURN = M, None  # time_indicator is None, mean M is same at all time.
+        else:
+            raise NotImplementedError()
+
+        _cache_M_[key] = RETURN
+        return RETURN
 
 
 def Parse__E_matrix(space, degree):

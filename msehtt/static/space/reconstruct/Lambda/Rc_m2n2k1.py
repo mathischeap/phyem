@@ -4,6 +4,8 @@
 import numpy as np
 
 
+# ----------- INNER -------------------------------------------------------------------------------
+
 def reconstruct_Lambda__m2n2k1_inner(tpm, degree, cochain, xi, et, ravel=False):
     """"""
     assert isinstance(xi, np.ndarray) and xi.ndim == 1, f"xi must be 1d array."
@@ -31,7 +33,7 @@ def ___rc221i_msepy_quadrilateral___(element, degree, local_cochain, xi, et, rav
     px, py = p
     shape: list = [len(xi), len(et)]
     xi_et, bfs = element.bf('m2n2k1_inner', degree, xi, et)
-    num_components = ((px+1) * py, px * (py+1))
+    num_components = (px * (py+1), (px+1) * py)
     local_0 = local_cochain[:num_components[0]]
     local_1 = local_cochain[num_components[0]:]
 
@@ -66,6 +68,8 @@ def ___rc221i_msepy_quadrilateral___(element, degree, local_cochain, xi, et, rav
 
     return x, y, v0, v1
 
+
+# ----------- OUTER -------------------------------------------------------------------------------
 
 def reconstruct_Lambda__m2n2k1_outer(tpm, degree, cochain, xi, et, ravel=False):
     """"""

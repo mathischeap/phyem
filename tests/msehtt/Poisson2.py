@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-"""
+r"""
 mpiexec -n 4 python tests/msehtt/Poisson2.py
 """
 
@@ -102,3 +102,11 @@ assert u[time].error() < 0.002
 
 ph.vtk('poisson_forms', phi[time], u[time], f[time])
 ph.os.remove('poisson_forms.vtu')
+
+u[time].export.rws('u_rws')
+
+dds = ph.read('u_rws')
+
+if dds is not None:
+    # dds.visualize()
+    dds.streamfunction()

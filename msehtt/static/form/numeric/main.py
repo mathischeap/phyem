@@ -6,6 +6,7 @@ from scipy.interpolate import NearestNDInterpolator
 
 from tools.frozen import Frozen
 from msehtt.static.form.numeric.tsp import MseHtt_Form_Numeric_TimeSpaceProperties
+from msehtt.static.form.numeric.export import MseHtt_Form_Numeric_Export
 
 
 class MseHtt_Form_Numeric(Frozen):
@@ -17,6 +18,7 @@ class MseHtt_Form_Numeric(Frozen):
         self._tsp = None
         self._cache_t_ = id(self)
         self._cache_itp_ = None
+        self._export = None
         self._freeze()
 
     @property
@@ -25,8 +27,14 @@ class MseHtt_Form_Numeric(Frozen):
             self._tsp = MseHtt_Form_Numeric_TimeSpaceProperties(self._f)
         return self._tsp
 
+    @property
+    def export(self):
+        if self._export is None:
+            self._export = MseHtt_Form_Numeric_Export(self._f)
+        return self._export
+
     # ----------- methods --------------------------------------------------------------
-    def _interpolate_(self, t=None, ddf=1):
+    def _interpolate_(self, t=None, ddf=1, data_only=False):
         """Use the solution of self._f at time `t` to make interpolations.
 
         Note that the output interpolation is rank-wise, so it only returns reasonable results when coordinates
@@ -40,10 +48,13 @@ class MseHtt_Form_Numeric(Frozen):
 
         assert t is not None, f"I must have a t!"
 
-        if t == self._cache_t_:
-            return self._cache_itp_
+        if data_only:
+            pass
         else:
-            self._cache_t_ = t
+            if t == self._cache_t_:
+                return self._cache_itp_
+            else:
+                self._cache_t_ = t
 
         density = int(17 * ddf)
         if density < 7:
@@ -60,6 +71,8 @@ class MseHtt_Form_Numeric(Frozen):
 
         if ndim == 2:
             rc = form_at_t.reconstruct(linspace, linspace, ravel=True)
+        elif ndim == 3:
+            rc = form_at_t.reconstruct(linspace, linspace, linspace, ravel=True)
         else:
             raise NotImplementedError()
 
@@ -68,6 +81,10 @@ class MseHtt_Form_Numeric(Frozen):
             dtype = '2d-scalar'
         elif space_indicator in ('m2n2k1_inner', 'm2n2k1_outer'):
             dtype = '2d-vector'
+        elif space_indicator in ('m3n3k0', 'm3n3k3'):
+            dtype = '3d-scalar'
+        elif space_indicator in ('m3n3k1', 'm3n3k2'):
+            dtype = '3d-vector'
         else:
             raise NotImplementedError()
 
@@ -75,39 +92,83 @@ class MseHtt_Form_Numeric(Frozen):
             xy, v = rc
             x, y = xy
             v = v[0]
-            X = list()
-            Y = list()
+            X, Y = list(), list()
             V = list()
             for e in x:
                 X.extend(x[e])
                 Y.extend(y[e])
                 V.extend(v[e])
-            interp = NearestNDInterpolator(
-                list(zip(X, Y)), V
-            )
-            self._cache_itp_ = ['2d-scalar', (interp, )]
-            # do not remove (.,) since it shows we are getting something representing a scalar.
+            if data_only:
+                return dtype, (X, Y), (V,)
+            else:
+                interp = NearestNDInterpolator(
+                    list(zip(X, Y)), V
+                )
+                self._cache_itp_ = ['2d-scalar', (interp, )]
+                # do not remove (.,) since it shows we are getting something representing a scalar.
 
         elif dtype == '2d-vector':
             xy, uv = rc
             x, y = xy
             u, v = uv
-            X = list()
-            Y = list()
-            U = list()
-            V = list()
+            X, Y = list(), list()
+            U, V = list(), list()
             for e in x:
                 X.extend(x[e])
                 Y.extend(y[e])
                 U.extend(u[e])
                 V.extend(v[e])
-            interp_u = NearestNDInterpolator(
-                list(zip(X, Y)), U
-            )
-            interp_v = NearestNDInterpolator(
-                list(zip(X, Y)), V
-            )
-            self._cache_itp_ = ['2d-vector', (interp_u, interp_v)]
+            if data_only:
+                return dtype, (X, Y), (U, V)
+            else:
+                interp_u = NearestNDInterpolator(
+                    list(zip(X, Y)), U
+                )
+                interp_v = NearestNDInterpolator(
+                    list(zip(X, Y)), V
+                )
+                self._cache_itp_ = ['2d-vector', (interp_u, interp_v)]
+
+        elif dtype == '3d-scalar':
+            xyz, v = rc
+            x, y, z = xyz
+            v = v[0]
+            X, Y, Z = list(), list(), list()
+            V = list()
+            for e in x:
+                X.extend(x[e])
+                Y.extend(y[e])
+                Z.extend(z[e])
+                V.extend(v[e])
+            if data_only:
+                return dtype, (X, Y, Z), (V,)
+            else:
+                interp = NearestNDInterpolator(
+                    list(zip(X, Y, Z)), V
+                )
+                self._cache_itp_ = ['3d-scalar', (interp, )]
+                # do not remove (.,) since it shows we are getting something representing a scalar.
+
+        elif dtype == '3d-vector':
+            xyz, uvw = rc
+            x, y, z = xyz
+            u, v, w = uvw
+            X, Y, Z = list(), list(), list()
+            U, V, W = list(), list(), list()
+            for e in x:
+                X.extend(x[e])
+                Y.extend(y[e])
+                Z.extend(z[e])
+                U.extend(u[e])
+                V.extend(v[e])
+                W.extend(w[e])
+            if data_only:
+                return dtype, (X, Y, Z), (U, V, W)
+            else:
+                interp_u = NearestNDInterpolator(list(zip(X, Y, Z)), U)
+                interp_v = NearestNDInterpolator(list(zip(X, Y, Z)), V)
+                interp_w = NearestNDInterpolator(list(zip(X, Y, Z)), W)
+                self._cache_itp_ = ['3d-vector', (interp_u, interp_v, interp_w)]
 
         else:
             raise NotImplementedError()

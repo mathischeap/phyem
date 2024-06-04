@@ -140,13 +140,21 @@ def cross_product(s1, s2):
         elif m == n == 3:
             k1 = s1.k
             k2 = s2.k
+            o1 = s1.orientation
+            o2 = s2.orientation
 
-            if k1 == 1 and k2 == 1 and s1.orientation == 'outer' and s2.orientation == 'inner':
+            if k1 == 1 and k2 == 1 and o1 == 'outer' and o2 == 'inner':
                 return new('Lambda', 1, mesh=s1.mesh, orientation='inner')
-            elif k1 == 2 and k2 == 2 and s1.orientation == 'inner' and s2.orientation == 'outer':
+            elif k1 == 2 and k2 == 2 and o1 == 'inner' and o2 == 'outer':
                 return new('Lambda', 2, mesh=s1.mesh, orientation='outer')
+            elif (k1 == 1 and o1 == 'outer') and (k2 == 2 and o2 == 'outer'):
+                return new('Lambda', 2, mesh=s1.mesh, orientation='outer')
+            elif (k1 == 2 and o1 == 'inner') and (k2 == 1 and o2 == 'inner'):
+                return new('Lambda', 1, mesh=s1.mesh, orientation='inner')
+            elif (k1 == 2 and o1 == 'outer') and (k2 == 1 and o2 == 'inner'):
+                return new('Lambda', 2, mesh=s1.mesh, orientation='inner')
             else:
-                raise NotImplementedError()
+                raise NotImplementedError(f"{o1}-{k1} cross-product {o2}-{k2}")
 
     else:
         raise NotImplementedError()

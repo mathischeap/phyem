@@ -7,6 +7,8 @@ from msehtt.static.mesh.great.elements.types.orthogonal_rectangle import MseHttG
 from msehtt.static.mesh.great.elements.types.unique_msepy_curvilinear_quadrilateral import (
     MseHttGreatMeshUniqueMsepyCurvilinearQuadrilateralElement)
 
+from msehtt.static.mesh.great.elements.types.orthogonal_hexahedron import MseHttGreatMeshOrthogonalHexahedronElement
+
 
 class MseHttGreatMeshElementDistributor(Frozen):
     """"""
@@ -31,6 +33,10 @@ class MseHttGreatMeshElementDistributor(Frozen):
     def implemented_element_types(cls):
         """"""
         return {
+            # m2n2 elements:
             'unique msepy curvilinear quadrilateral': MseHttGreatMeshUniqueMsepyCurvilinearQuadrilateralElement,
-            'orthogonal rectangle': MseHttGreatMeshOrthogonalRectangleElement
+            'orthogonal rectangle': MseHttGreatMeshOrthogonalRectangleElement,
+
+            # m2n3 elements:
+            'orthogonal hexahedron': MseHttGreatMeshOrthogonalHexahedronElement
         }

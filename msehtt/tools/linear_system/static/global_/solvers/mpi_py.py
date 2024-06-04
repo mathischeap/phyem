@@ -306,6 +306,9 @@ def lgmres(
             pass
         BETA.append(beta)
 
+        # if RANK == MASTER_RANK:
+        #     print(beta, flush=True)
+
         JUDGE, stop_iteration, info, JUDGE_explanation = _check_stop_criterion_(
             BETA, atol, ITER, maxiter)
 

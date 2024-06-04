@@ -22,7 +22,7 @@ def ___ph_vtk_msehtt_static_copy___(filename, *forms, ddf=1):
     # ndim = tpm.abstract.n
     # num_global_elements = elements._num_global_elements
 
-    data_density = int(7 * ddf)
+    data_density = int(5 * ddf)
     if data_density < 3:
         data_density = 3
     elif data_density > 50:
@@ -104,6 +104,15 @@ def ___ph_vtk_msehtt_static_copy___(filename, *forms, ddf=1):
                 for key in numbering_dict:
                     index = numbering_dict[key]
                     X[index], Y[index] = form_vtk_data[key][:2]
+
+            elif DTYPE in ('3d-scalar', '3d-vector'):
+                X = np.zeros(number_points)
+                Y = np.zeros(number_points)
+                Z = np.zeros(number_points)
+                for key in numbering_dict:
+                    index = numbering_dict[key]
+                    X[index], Y[index], Z[index] = form_vtk_data[key][:3]
+
             else:
                 raise NotImplementedError()
 
@@ -142,6 +151,23 @@ def ___ph_vtk_msehtt_static_copy___(filename, *forms, ddf=1):
                 u[index], v[index] = form_vtk_data[key][2:4]
             vector = {name: (u, v, w)}
             pointData.update(vector)
+        elif DTYPE == '3d-scalar':
+            scalar = np.zeros_like(X)
+            for key in numbering_dict:
+                index = numbering_dict[key]
+                scalar[index] = form_vtk_data[key][3]
+            scalar = {name: scalar}
+            pointData.update(scalar)
+        elif DTYPE == '3d-vector':
+            u = np.zeros_like(X)
+            v = np.zeros_like(X)
+            w = np.zeros_like(X)
+            for key in numbering_dict:
+                index = numbering_dict[key]
+                u[index], v[index], w[index] = form_vtk_data[key][3:6]
+            vector = {name: (u, v, w)}
+            pointData.update(vector)
+
         else:
             raise NotImplementedError()
         # ==============================================================================================

@@ -5,6 +5,7 @@ import numpy as np
 from src.config import RANK, MASTER_RANK, COMM
 from tools.frozen import Frozen
 from scipy.sparse import isspmatrix_csc
+from scipy.sparse import dia_matrix
 from msehtt.tools.gathering_matrix import MseHttGatheringMatrix
 
 
@@ -69,3 +70,11 @@ class MseHttGlobalVectorDistributed(Frozen):
             return sum(all_V)
         else:
             return None
+
+    def __rmatmul__(self, other):
+        """other @ self"""
+        if other.__class__ is dia_matrix:
+            V = other @ self._V
+            return self.__class__(V, self._gm)
+        else:
+            raise Exception()

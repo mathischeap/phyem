@@ -80,6 +80,7 @@ class MatrixProxy(Frozen):
     """"""
 
     def __init__(self, wf):
+        """"""
         ap = wf.ap()  # make an algebraic proxy in real time.
         if ap._fully_resolved:
             assert ap.linearity in ('linear', 'nonlinear'), \
@@ -226,6 +227,7 @@ class MatrixProxy(Frozen):
 
                             components = term._components[:-1]
                             transposes = term._transposes[:-1]
+
                             factor = term._factor
 
                             bm_aa = AbstractArray(
@@ -249,6 +251,7 @@ class MatrixProxy(Frozen):
                 else:
                     self._l_mvs.append((bm, bb))
                 self._lbv = remaining_bv
+
             else:
                 if bm._is_empty():
                     pass
@@ -276,8 +279,7 @@ class MatrixProxy(Frozen):
         return self.___total_indexing_length___
 
     def __getitem__(self, index):
-        """
-        To retrieve a linear term: do 'a-b' or 'a-b,c', where a, b, c are str(integer)-s.
+        """To retrieve a linear term: do 'a-b' or 'a-b,c', where a, b, c are str(integer)-s.
 
         when index = 'a-b'
         `a` refer to the `ath` block.
@@ -575,6 +577,7 @@ class MatrixProxy(Frozen):
 
     @property
     def bc(self):
+        """"""
         return self._bc
 
     def _pr_temporal_advancing(self, *args, **kwargs):

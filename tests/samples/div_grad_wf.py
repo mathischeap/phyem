@@ -1,7 +1,5 @@
 # -*- coding: utf-8 -*-
-"""
-Yi Zhang
-Created at 3:47 PM on 5/9/2023
+r"""
 """
 import __init__ as ph
 from src.form.operators import trace, Hodge
@@ -184,7 +182,7 @@ def _inner_Poisson(n, degree):
     pde = ph.pde(expression, locals())
     pde._indi_dict = None  # clear this local expression
     pde.unknowns = [u, phi]
-    # pde.pr(vc=True)
+    # pde.pr(vc=False)
 
     pde.bc.partition(r"\Gamma_\phi", r"\Gamma_u")
     pde.bc.define_bc(

@@ -19,3 +19,6 @@ import tests.msehtt.Poisson2
 
 # noinspection PyUnresolvedReferences
 import tests.msehtt.Poisson2_periodic
+
+# noinspection PyUnresolvedReferences
+import tests.msehtt.Poisson3_periodic

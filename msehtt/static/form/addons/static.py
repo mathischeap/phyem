@@ -2,6 +2,10 @@
 r"""
 """
 from tools.frozen import Frozen
+from msehtt.static.form.export.main import MseHtt_Static_Form_Export
+from msehtt.static.space.error.Lambda.Er_m3n3k1 import error__m3n3k1
+from msehtt.static.space.error.Lambda.Er_m3n3k2 import error__m3n3k2
+from msehtt.static.space.error.Lambda.Er_m3n3k3 import error__m3n3k3
 
 
 class MseHttFormStaticCopy(Frozen):
@@ -48,7 +52,28 @@ class MseHttFormStaticCopy(Frozen):
 
     def error(self, error_type='L2'):
         """"""
-        return self._f.error(self.cf, self.cochain, error_type=error_type)
+        if error_type == 'L2':
+            return self._f.error(self.cf, self.cochain, error_type=error_type)
+
+        elif error_type == 'H1':
+            self_L2_error = self.error(error_type='L2')
+            d_cf = self._f.cf.exterior_derivative()[self._t]
+            d_cochain = self.cochain.coboundary()
+            d_space_str_indicator = self._f.space.d_space_str_indicator
+
+            if d_space_str_indicator == 'm3n3k1':
+                d_L2_error = error__m3n3k1(self.tpm, d_cf, d_cochain, self._f.degree, error_type='L2')
+            elif d_space_str_indicator == 'm3n3k2':
+                d_L2_error = error__m3n3k2(self.tpm, d_cf, d_cochain, self._f.degree, error_type='L2')
+            elif d_space_str_indicator == 'm3n3k3':
+                d_L2_error = error__m3n3k3(self.tpm, d_cf, d_cochain, self._f.degree, error_type='L2')
+            else:
+                raise NotImplementedError()
+
+            return (self_L2_error ** 2 + d_L2_error ** 2) ** 0.5
+
+        else:
+            raise NotImplementedError(f"error_type={error_type} not implemented.")
 
     @property
     def visualize(self):
@@ -75,3 +100,7 @@ class MseHttFormStaticCopy(Frozen):
             return False
         else:
             return (self._f is other._f) and (self._t == other._t)
+
+    @property
+    def export(self):
+        return MseHtt_Static_Form_Export(self._f, self._t)

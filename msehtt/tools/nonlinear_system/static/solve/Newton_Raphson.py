@@ -48,8 +48,10 @@ class MseHttNonlinearSystemNewtonRaphsonSolve(Frozen):
 
     def __call__(
             self,
-            x0, atol=1e-8, maxiter=5,        # args for the outer Newton method.
-            # for the inner solver
+            x0, atol=1e-4, maxiter=5,        # args for the outer Newton method.
+            preconditioner=False,
+            threshold=None,
+            # for the inner solver below ------------------------------------------------
             inner_solver_scheme='spsolve',
             inner_solver_kwargs=None          # args for the inner linear solver.
     ):
@@ -64,6 +66,8 @@ class MseHttNonlinearSystemNewtonRaphsonSolve(Frozen):
             Outer Newton iterations stop when norm(dx) < atol.
         maxiter :
             Outer Newton iterations stop when ITER > maxiter.
+        preconditioner :
+        threshold :
         inner_solver_scheme :
         inner_solver_kwargs :
 
@@ -246,7 +250,7 @@ class MseHttNonlinearSystemNewtonRaphsonSolve(Frozen):
                     pass
             # ================================================================================
 
-            als = ls.assemble()
+            als = ls.assemble(preconditioner=preconditioner, threshold=threshold)
             if inner_solver_scheme in ('spsolve', 'direct'):
                 solve_x0 = None
             else:

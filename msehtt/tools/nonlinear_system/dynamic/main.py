@@ -147,6 +147,7 @@ class MseHttDynamicNonLinearSystem(Frozen):
         self._nonlinear_texts = texts
 
     # ----------------- PR -------------------------------------------------------------------------------
+
     def _pr_nonlinear_text(self):
         """"""
         nonlinear_text = ''

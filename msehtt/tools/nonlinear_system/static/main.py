@@ -19,6 +19,7 @@ from msehtt.static.form.main import MseHttForm
 
 from msehtt.tools.nonlinear_system.static.customize import MseHttStaticNonlinearSystemCustomize
 from msehtt.tools.nonlinear_system.static.solve.main import MseHttStaticNonlinearSystemSolve
+from msehtt.tools.linear_system.static.local.main import MseHttStaticLocalLinearSystem
 
 from src.wf.mp.linear_system_bc import _EssentialBoundaryCondition
 
@@ -74,7 +75,10 @@ class MseHttStaticNonLinearSystem(Frozen):
         self._customize = None
         self.___global_row_gm___ = None
         self.___global_col_gm___ = None
-        self.___take_care_of_essential_bc___()
+        if self.bc is None:
+            pass
+        else:
+            self.___take_care_of_essential_bc___()
         self._freeze()
 
     # --------------------- properties ----------------------------------------------------------
@@ -110,6 +114,11 @@ class MseHttStaticNonLinearSystem(Frozen):
         if self._solve is None:
             self._solve = MseHttStaticNonlinearSystemSolve(self)
         return self._solve
+
+    @property
+    def linear(self):
+        """Make a static local linear system."""
+        return MseHttStaticLocalLinearSystem(self._A, self._x, self._b)
 
     # ------------- gathering matrices -----------------------------------------------------------
 

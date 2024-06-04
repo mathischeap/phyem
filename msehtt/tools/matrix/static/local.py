@@ -1,6 +1,8 @@
 # -*- coding: utf-8 -*-
 r"""
 """
+import numpy as np
+
 from src.config import RANK
 import matplotlib.pyplot as plt
 from tools.frozen import Frozen
@@ -9,11 +11,12 @@ from scipy.sparse import isspmatrix_csr, isspmatrix_csc, csc_matrix, csr_matrix
 from msehtt.static.form.cochain.instant import MseHttTimeInstantCochain
 from msehtt.static.form.cochain.vector.static import MseHttStaticCochainVector
 from msehtt.tools.vector.static.local import MseHttStaticLocalVector
+from scipy.sparse import linalg as sp_spa_linalg
 
 
 class MseHttStaticLocalMatrix(Frozen):
     """"""
-    def __init__(self, data, gm_row, gm_col, cache_key=None):
+    def __init__(self, data, gm_row, gm_col, cache_key=None, special_indicator=None):
         """"""
         assert gm_row.__class__ is MseHttGatheringMatrix, f"gm row class wrong."
         assert gm_col.__class__ is MseHttGatheringMatrix, f"gm col class wrong."
@@ -24,7 +27,8 @@ class MseHttStaticLocalMatrix(Frozen):
         self._gm_col = gm_col
         self._receive_data(data)
         self._parse_cache_key(cache_key)
-        self._assemble = MseHttStaticLocalMatrixAssemble(self)
+        self.___special_indicator___ = special_indicator
+        self._assemble = None
         self._freeze()
 
     def _receive_data(self, data):
@@ -48,6 +52,7 @@ class MseHttStaticLocalMatrix(Frozen):
                 else:
                     pass
             self._data = data
+
         elif isinstance(data, (int, float)) and data == 0:
             self._dtype = 'dict'
             self._data = {}
@@ -103,6 +108,8 @@ class MseHttStaticLocalMatrix(Frozen):
     @property
     def assemble(self):
         """assemble self."""
+        if self._assemble is None:
+            self._assemble = MseHttStaticLocalMatrixAssemble(self)
         return self._assemble
 
     def _get_meta_data(self, i):
@@ -136,7 +143,7 @@ class MseHttStaticLocalMatrix(Frozen):
         assert isspmatrix_csr(data) or isspmatrix_csc(data), f"must be csc or csr!"
         return data
 
-    def spy(self, i, markerfacecolor='k', markeredgecolor='g', markersize=6):
+    def spy(self, i, markerfacecolor='k', markeredgecolor='g', markersize=6, threshold=None):
         """spy the local A of rank element #i.
 
         Parameters
@@ -145,12 +152,18 @@ class MseHttStaticLocalMatrix(Frozen):
         markerfacecolor
         markeredgecolor
         markersize
+        threshold
 
         Returns
         -------
 
         """
-        M = self[i]
+        M = self[i].toarray()
+        if threshold is None:
+            pass
+        else:
+            M[np.abs(M) < threshold] = 0
+
         fig = plt.figure()
         plt.spy(
             M,
@@ -183,6 +196,17 @@ class MseHttStaticLocalMatrix(Frozen):
 
         return self.__class__(data_caller, self._gm_row, self._gm_col, cache_key=self._cache_key)
 
+    def inv(self):
+        """"""
+        def ___inv_caller___(e):
+            M = self[e].tocsc()
+            return sp_spa_linalg.inv(M)
+
+        return self.__class__(
+            ___inv_caller___, self._gm_col, self._gm_row, cache_key=self._cache_key,
+            special_indicator=f'inverse matrix of {self.__repr__()}'
+        )
+
     @property
     def T(self):
         """"""
@@ -206,6 +230,7 @@ class MseHttStaticLocalMatrix(Frozen):
     def __add__(self, other):
         """self + other"""
         if other.__class__ is self.__class__:
+
             def data_caller(i):
                 return self[i] + other[i]
 
@@ -216,6 +241,7 @@ class MseHttStaticLocalMatrix(Frozen):
                     return 'unique'
                 else:
                     return key1 + '.' + key2
+
             return self.__class__(data_caller, self._gm_row, self._gm_col, cache_key=cache_key_caller)
 
     def __matmul__(self, other):
@@ -503,16 +529,17 @@ class MseHttStaticLocalMatrixAssemble(Frozen):
         self._M = M
         self._freeze()
 
-    def __call__(self, format='csc', cache=None):
+    def __call__(self, format='csc', cache=None, threshold=None):
         """
 
         Parameters
         ----------
-        format
+        format :
         cache :
             We can manually cache the assembled matrix by set ``cache`` to be a string. When next time
             it sees the same `cache` it will return the cached matrix from the cache, i.e.,
             ``_msepy_assembled_StaticMatrix_cache``.
+        threshold :
 
         Returns
         -------
@@ -543,6 +570,11 @@ class MseHttStaticLocalMatrixAssemble(Frozen):
             indices = Mi.indices
             indptr = Mi.indptr
             data = Mi.data
+            if threshold is None:
+                pass
+            else:
+                data[np.abs(data) < threshold] = 0.
+
             nums: list = list(diff(indptr))
             row = []
             col = []

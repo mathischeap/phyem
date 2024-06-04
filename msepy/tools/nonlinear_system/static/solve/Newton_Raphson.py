@@ -367,7 +367,7 @@ def _check_stop_criterion_(BETA, atol, ITER, maxiter):
         if (not judge_1) and (len(BETA) > 1) and (beta < BETA[-2]):
             beta_old = BETA[-2]
             progress = beta_old - beta
-            if progress / beta_old < 0.0001:  # slow converging
+            if progress / beta_old < 0.000001:  # slow converging
                 judge_4 = True
             else:
                 judge_4 = False

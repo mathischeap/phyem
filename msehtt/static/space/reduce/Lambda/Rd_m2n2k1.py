@@ -5,6 +5,8 @@ import numpy as np
 from tools.quadrature import Quadrature
 
 
+# ----------------- INNER ---------------------------------------------------------------------------------
+
 def reduce_Lambda__m2n2k1_inner(cf_t, tpm, degree):
     """Reduce target at time `t` to m2n2k1 outer space of degree ``degree`` on partial mesh ``tpm``."""
 
@@ -77,6 +79,8 @@ def ___221i_msepy_quadrilateral___(element, cf_t, degree):
 
     return np.concatenate([cochain_dx, cochain_dy])
 
+
+# ----------------- OUTER ---------------------------------------------------------------------------------
 
 def reduce_Lambda__m2n2k1_outer(cf_t, tpm, degree):
     """Reduce target at time `t` to m2n2k1 outer space of degree ``degree`` on partial mesh ``tpm``."""

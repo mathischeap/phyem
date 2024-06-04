@@ -14,12 +14,14 @@ class MseHttGreatMeshElements(Frozen):
         self._tgm = tgm
         self._elements_dict = elements_dict
         self._parse_statistics()
+        self._mn = None
         if element_face_topology_mismatch:
             self._parse_form_face_dof_topology_mismatch()
+            self._element_face_topology_mismatch = True
         else:
             # When we are sure that there is no mismatch, we can skip it. For example, when we build the
             # great mesh from a msepy mesh, then there is no mismatch for sure.
-            pass
+            self._element_face_topology_mismatch = False
         self._freeze()
 
     def __repr__(self):
@@ -97,6 +99,11 @@ class MseHttGreatMeshElements(Frozen):
                     node0 = min(face_nodes)
                     node1 = max(face_nodes)
                     undirected_face_indices = (node0, node1)
+                elif element_n == 3:  # 3d elements
+                    face_node_indices = element_face_setting[face_id]
+                    face_nodes = [map_[_] for _ in face_node_indices]
+                    face_nodes.sort()
+                    undirected_face_indices = tuple(face_nodes)
                 else:
                     raise NotImplementedError()
                 if undirected_face_indices in all_element_faces:
@@ -114,7 +121,7 @@ class MseHttGreatMeshElements(Frozen):
                     indices_reverse = (indices[1], indices[0])
                     boundary_element_face_undirected_indices.extend([indices, indices_reverse])
                 else:
-                    raise NotImplementedError()
+                    boundary_element_face_undirected_indices.append(indices)
             else:
                 pass
 
@@ -129,18 +136,34 @@ class MseHttGreatMeshElements(Frozen):
                 if element_n == 2:  # 2d element: only have two face nodes.
                     face_start_index, face_end_index = element_face_setting[face_id]
                     face_nodes = (map_[face_start_index], map_[face_end_index])
+                    if face_nodes in boundary_element_face_undirected_indices:
+                        boundary_faces.append(
+                            {
+                                'element index': i,        # this face is on the element indexed ``i``.
+                                'face id': face_id,        # this face is of this face id in element indexed ``i``.
+                                'local node indices': element_face_setting[face_id],   # face nodes local indices
+                                'global node numbering': face_nodes,                    # face node global numbering.
+                            }
+                        )
+                    else:
+                        pass
                 else:
-                    raise NotImplementedError()
-                if face_nodes in boundary_element_face_undirected_indices:
-                    boundary_faces.append(
-                        {
-                            'element index': i,        # this face is on the element indexed ``i``.
-                            'face id': face_id,        # this face is of this face id in element indexed ``i``.
-                            'local node indices': element_face_setting[face_id],   # face nodes local indices
-                            'global node numbering': face_nodes,                    # face node global numbering.
-                        }
-                    )
-
+                    face_node_indices = element_face_setting[face_id]
+                    face_nodes = [map_[_] for _ in face_node_indices]
+                    face_nodes.sort()
+                    face_nodes = tuple(face_nodes)
+                    if face_nodes in boundary_element_face_undirected_indices:
+                        boundary_faces.append(
+                            {
+                                'element index': i,        # this face is on the element indexed ``i``.
+                                'face id': face_id,        # this face is of this face id in element indexed ``i``.
+                                'local node indices': face_node_indices,   # face nodes local indices
+                                'global node numbering': tuple([map_[_] for _ in face_node_indices]),
+                                # face node global numbering.
+                            }
+                        )
+                    else:
+                        pass
         # =========================================================================================
         return boundary_faces
 
@@ -188,6 +211,43 @@ class MseHttGreatMeshElements(Frozen):
             statistics = None
 
         self._statistics = COMM.bcast(statistics, root=MASTER_RANK)
+
+    @property
+    def mn(self):
+        """The `m` and `n` of the elements I have. All the elements across all ranks will take into account.
+        So if the elements in a local rank are of one (m, n), (m, n) could be different in other ranks. So
+        self.mn will return a tuple if two pairs of (m, n).
+
+        For example, if self.mn = (2, 2), then all the elements I have are 2d (n=2) elements in 2d (m=2) space.
+
+        If self.mn == ((3, 2), (2, 2)), then some of the elements I have are 2d (n=2) elements in 3d (m=2) space,
+        and some other elements are 2d (n=2) element in 2d (m=2) space. Of course, this is not very likely.
+        """
+        if self._mn is None:
+            mn_pool = list()
+            for element_index in self:
+                element = self[element_index]
+                mn = (element.m(), element.n())
+                if mn not in mn_pool:
+                    mn_pool.append(mn)
+                else:
+                    pass
+            mn_pool = COMM.gather(mn_pool, root=MASTER_RANK)
+            if RANK == MASTER_RANK:
+                total_mn_pool = set()
+                for _ in mn_pool:
+                    total_mn_pool.update(_)
+                total_mn_pool = list(total_mn_pool)
+
+                if len(total_mn_pool) == 1:
+                    self._mn = total_mn_pool[0]
+                else:
+                    self._mn = tuple(total_mn_pool)
+            else:
+                self._mn = None
+
+            self._mn = COMM.bcast(self._mn, root=MASTER_RANK)
+        return self._mn
 
     def _parse_form_face_dof_topology_mismatch(self):
         """"""
