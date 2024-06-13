@@ -105,12 +105,16 @@ def _outer_Poisson(n, degree):
 
     mesh = ph.mesh(manifold)
 
+    Lambda_0 = ph.space.new('Lambda', 0, orientation='outer')
     Lambda_n = ph.space.new('Lambda', n, orientation='outer')
     Lambda_nm1 = ph.space.new('Lambda', n-1, orientation='outer')
 
     phi = Lambda_n.make_form(rf'\varphi^{n}', 'potential')
     u = Lambda_nm1.make_form(rf'u^{n-1}', 'velocity')
     f = Lambda_n.make_form(rf'f^{n}', 'source')
+
+    p0 = Lambda_0.make_form(f"p^0", 'helper0')
+    p1 = Lambda_nm1.make_form(f"p^1", 'helper1')
 
     d_u = u.exterior_derivative()
     ds_phi = phi.codifferential()

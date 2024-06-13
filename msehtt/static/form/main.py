@@ -8,6 +8,7 @@ from src.form.main import Form
 from msehtt.tools.matrix.static.local import MseHttStaticLocalMatrix
 from msehtt.static.form.cf import MseHttStaticFormCF
 from msehtt.static.form.addons.static import MseHttFormStaticCopy
+from msehtt.static.form.addons.ic import MseHtt_From_InterpolateCopy
 from msehtt.static.form.cochain.main import MseHttCochain
 from msehtt.static.form.visualize.main import MseHttFormVisualize
 from msehtt.static.form.bi.main import MseHttStaticForm_Boundary_Integrate
@@ -40,6 +41,7 @@ class MseHttForm(Frozen):
         self._bi = None
         self._numeric = None
         self._export = None
+        self._project = None
         self._freeze()
 
     @property
@@ -131,6 +133,32 @@ class MseHttForm(Frozen):
                 return MseHttFormStaticCopy(self, t)
             else:
                 return MseHttFormStaticCopy(self._base, t)
+        else:
+            raise Exception(f"cannot accept t={t}.")
+
+    def __call__(self, t, extrapolate=False):
+        """"""
+        if isinstance(t, str):
+            # when use str, we are looking for the form at a time step.
+            from src.time_sequence import _global_abstract_time_sequence
+            if len(_global_abstract_time_sequence) == 1:
+                ts_indicator = list(_global_abstract_time_sequence.keys())[0]
+                ts = _global_abstract_time_sequence[ts_indicator]
+                abstract_time_instant = ts[t]
+                t = abstract_time_instant()()
+            else:
+                raise Exception(f"multiple time sequences exist. "
+                                f"I don't know which one you are referring to")
+        else:
+            pass
+
+        t = self.cochain._parse_t(t)
+
+        if isinstance(t, (int, float)):
+            if self._is_base():
+                return MseHtt_From_InterpolateCopy(self, t, extrapolate=extrapolate)
+            else:
+                return MseHtt_From_InterpolateCopy(self._base, t, extrapolate=extrapolate)
         else:
             raise Exception(f"cannot accept t={t}.")
 

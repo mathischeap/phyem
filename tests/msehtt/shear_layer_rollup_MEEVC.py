@@ -167,3 +167,8 @@ for step in range(1, total_steps+1):
         w[None].visualize.quick(saveto=results_dir + f'w{step}.png')
     else:
         pass
+
+    # dds = u.numeric.rws(None)
+    # if dds is not None:
+    #     sf = dds.streamfunction()
+    #     sf.visualize()

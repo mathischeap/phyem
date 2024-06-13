@@ -80,6 +80,7 @@ class MseHtt_PartialMesh_Elements_CFL_condition(Frozen):
                 cell_list += (cfl,)
                 CELL_LIST.append(cell_list)
                 COO_DICT.update(coo_dict)
+
             else:
                 raise NotImplementedError()
 

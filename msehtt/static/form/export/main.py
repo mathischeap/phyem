@@ -2,7 +2,6 @@
 r"""
 """
 from tools.frozen import Frozen
-from msehtt.static.form.export.rws import MseHtt_Static_Form_Export_RWS
 
 
 class MseHtt_Static_Form_Export(Frozen):
@@ -15,8 +14,13 @@ class MseHtt_Static_Form_Export(Frozen):
         self._rws = None
         self._freeze()
 
-    @property
-    def rws(self):
-        if self._rws is None:
-            self._rws = MseHtt_Static_Form_Export_RWS(self._f, self._t)
-        return self._rws
+    def rws(self, filename, ddf=1):
+        dds = self._f.numeric.rws(self._t, ddf=ddf)
+        if dds is None:
+            pass
+        else:
+            dds.saveto(filename)
+
+    def vtk(self, filename, ddf=1):
+        from tools.vtk_.msehtt_form_static_copy import ___ph_vtk_msehtt_static_copy___
+        ___ph_vtk_msehtt_static_copy___(filename, self._f[self._t], ddf=ddf)

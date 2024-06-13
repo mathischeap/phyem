@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-"""
+r"""
 """
 from tools.frozen import Frozen
 from src.config import _setting
@@ -9,7 +9,7 @@ from msehtt.static.form.cochain.vector.dynamic import MseHttDynamicCochainVector
 
 
 class MseHttCochain(Frozen):
-    """"""
+    r""""""
 
     def __init__(self, f):
         """"""

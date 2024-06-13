@@ -38,6 +38,7 @@ class MseHttElementsPartialMesh(Frozen):
         if self._cfl is None:
             self._cfl = MseHtt_PartialMesh_Elements_CFL_condition(self)
         return self._cfl
+
     @property
     def visualize(self):
         if self._visualize is None:

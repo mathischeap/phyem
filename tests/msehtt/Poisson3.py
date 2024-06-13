@@ -111,7 +111,7 @@ linear_system.x.update(x)
 assert phi[time].error() < 0.004
 assert u[time].error() < 0.04
 
-print(u[time].error(), u[time].error('H1'))
+# print(u[time].error(), u[time].error('H1'))
 
 # phi.numeric.export.scatter('phi', ddf=2)
 #

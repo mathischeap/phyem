@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-"""
+r"""
 """
 from src.config import _nonlinear_ap_test_form_repr
 from src.wf.term.ap import TermNonLinearOperatorAlgebraicProxy

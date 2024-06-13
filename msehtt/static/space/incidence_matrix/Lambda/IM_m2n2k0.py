@@ -39,7 +39,7 @@ _cache_msepy_o_ = {}
 
 
 def _im220o_msepy_quadrilateral_(element, degree):
-    """"""
+    """Outer 0-form: rot."""
     p = element.degree_parser(degree)[0]
     if p in _cache_msepy_o_:
         E, cache_key = _cache_msepy_o_[p]
@@ -104,7 +104,7 @@ _cache_msepy_i_ = {}
 
 
 def _im220i_msepy_quadrilateral_(element, degree):
-    """"""
+    """Inner 0-form: grad"""
     p = element.degree_parser(degree)[0]
     if p in _cache_msepy_i_:
         E, cache_key = _cache_msepy_i_[p]

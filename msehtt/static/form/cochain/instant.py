@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-"""
+r"""
 """
 import numpy as np
 
@@ -140,12 +140,19 @@ class MseHttTimeInstantCochain(Frozen):
             for e in self:
                 data_dict[e] = self[e] + other[e]
             return MseHttStaticLocalVector(data_dict, self._gm)
-        elif other.__class__ is self.__class__:
 
+        elif other.__class__ is self.__class__:
             data_dict = {}
             for e in self:
                 data_dict[e] = self[e] + other[e]
             return MseHttStaticLocalVector(data_dict, self._gm)
+
+        elif other.__class__ is MseHttStaticLocalVector:
+            data_dict = {}
+            for e in self:
+                data_dict[e] = self[e] + other[e]
+            return MseHttStaticLocalVector(data_dict, self._gm)
+
         else:
             raise NotImplementedError(other.__class__)
 

@@ -21,6 +21,7 @@ time = 1
 ls = ph.samples.wf_div_grad(n=2, degree=N, orientation='outer', periodic=False)[0]
 # ls.pr()
 
+
 msehtt, obj = ph.fem.apply('msehtt-s', locals())
 tgm = msehtt.tgm()
 msehtt.config(tgm)('crazy', element_layout=K, c=c, bounds=([0, 1], [0, 1]), periodic=False)
@@ -76,6 +77,10 @@ phi.cf = phi_scalar
 u.cf = - phi.cf.codifferential()
 f.cf = - u.cf.exterior_derivative()
 f[time].reduce()
+f[0].reduce()
+
+# f[time/2].cochain = f(time/2).cochain
+# f[time/2].visualize()
 # f[0].visualize.quick()
 
 msehtt_ls = obj['ls'].apply()
@@ -104,9 +109,22 @@ ph.vtk('poisson_forms', phi[time], u[time], f[time])
 ph.os.remove('poisson_forms.vtu')
 
 u[time].export.rws('u_rws')
-
 dds = ph.read('u_rws')
 
 if dds is not None:
     # dds.visualize()
-    dds.streamfunction()
+    # sf = dds.streamfunction()
+    # sf.visualize()
+    ph.os.remove('u_rws')
+
+p0x, p0y = u[time].project.to('m2n2k0')
+
+p0 = msehtt.base['forms'][r'helper0']
+p1 = msehtt.base['forms'][r'helper1']
+
+p0[time].cochain = p0x
+# p0[time].visualize()
+
+p1[time].cochain = p0[time].cochain.coboundary()
+tsp = p1.numeric.tsp.components()[0]
+tsp = - tsp

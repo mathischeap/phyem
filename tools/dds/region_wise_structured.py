@@ -260,56 +260,156 @@ class DDSRegionWiseStructured(Frozen):
 
     def streamfunction(self, shift=0):
         """"""
+        sf_dict = dict()
         if self.classification == '2d vector':
-
             X, Y = self._coo_dict_list
             U, V = self._val_dict_list
-
-            starting_x, starting_y, starting_sf = None, None, None
-            starting_u, starting_v = None, None
-
-            sf_dict = dict()
-
-            corner_pool = list()
-            # for e in X:
-            for e in [0, ]:
-                x = X[e]
-                y = Y[e]
+            starting_corner = None
+            starting_sf = None
+            corner_pool = dict()
+            element_range = list(X.keys())
+            element_range.sort()
+            for e in element_range:
+                x, y = X[e], Y[e]
                 u, v = U[e], V[e]
-                if starting_x is None and starting_y is None:
-                    starting_x = x[0, 0]
-                    starting_y = y[0, 0]
-                    starting_u = u[0, 0]
-                    starting_v = v[0, 0]
-                    starting_sf = 0
+                if starting_corner is None and starting_sf is None:
+                    starting_corner, starting_sf = (0, 0), 0
                 else:
-                    starting_x, starting_y, starting_sf, \
-                        starting_u, starting_v = self._renew_starting_point_(
+                    starting_corner, starting_sf = self._renew_starting_point_(
                         corner_pool, x, y
                     )
-
-                sf_dict[e] = self._compute_sf_in_region_(
+                element_sf = self._compute_sf_in_region_(
                     x, y, u, v,
-                    starting_u, starting_v,
-                    starting_x, starting_y,
-                    starting_sf
+                    starting_corner, starting_sf
                 )
-
+                corner_pool.update(
+                    self._find_corner_xy_sf_(x, y, element_sf)
+                )
+                sf_dict[e] = element_sf
         else:
             raise Exception(self.classification)
 
-    def _renew_starting_point_(self, corner_pool, x, y):
+        if shift != 0:
+            for e in sf_dict:
+                sf_dict[e] += shift
+        else:
+            pass
+
+        return self.__class__(self._coo_dict_list, [sf_dict, ])
+
+    @staticmethod
+    def _renew_starting_point_(corner_pool, x, y):
         """"""
-        return None, None, None, None, None
+        xm_ym = '%.7f-%.7f' % (x[0, 0], y[0, 0])
+        if xm_ym in corner_pool:
+            return (0, 0), corner_pool[xm_ym]
+
+        xp_ym = '%.7f-%.7f' % (x[-1, 0], y[-1, 0])
+        if xp_ym in corner_pool:
+            return (-1, 0), corner_pool[xp_ym]
+
+        xm_yp = '%.7f-%.7f' % (x[0, -1], y[0, -1])
+        if xm_yp in corner_pool:
+            return (0, -1), corner_pool[xm_yp]
+
+        xp_yp = '%.7f-%.7f' % (x[-1, -1], y[-1, -1])
+        if xp_yp in corner_pool:
+            return (-1, -1), corner_pool[xp_yp]
+
+    @staticmethod
+    def _find_corner_xy_sf_(x, y, sf):
+        """"""
+        corner_sf_pool = {
+            '%.7f-%.7f' % (x[0, 0], y[0, 0]): sf[0, 0],
+            '%.7f-%.7f' % (x[-1, 0], y[-1, 0]): sf[-1, 0],
+            '%.7f-%.7f' % (x[0, -1], y[0, -1]): sf[0, -1],
+            '%.7f-%.7f' % (x[-1, -1], y[-1, -1]): sf[-1, -1]
+        }
+        return corner_sf_pool
 
     def _compute_sf_in_region_(
             self,
             x, y, u, v,
-            starting_u, starting_v,
-            starting_x, starting_y,
-            starting_sf
+            starting_corner, starting_sf
     ):
         """"""
+        sp0, sp1 = x.shape
+        sf = np.ones_like(x)
+        if starting_corner == (0, 0):
+            sf[0, 0] = starting_sf
+            for i in range(1, sp0):
+                sf_start = sf[i-1, 0]
+
+                sx, sy = x[i-1, 0], y[i-1, 0]
+                ex, ey = x[i, 0], y[i, 0]
+
+                dx = ex - sx
+                dy = ey - sy
+
+                su, sv = u[i-1, 0], v[i-1, 0]
+                eu, ev = u[i, 0], v[i, 0]
+
+                mu = (su + eu) / 2
+                mv = (sv + ev) / 2
+
+                d_sf_0 = mu * dy
+                d_sf_1 = - mv * dx
+
+                sf_end = sf_start + d_sf_0 + d_sf_1
+
+                sf[i, 0] = sf_end
+
+            # col [1:]
+            for j in range(1, sp1):
+                # node [j, 0]
+                sf_start = sf[0, j-1]
+
+                sx, sy = x[0, j-1], y[0, j-1]
+                ex, ey = x[0, j], y[0, j]
+
+                dx = ex - sx
+                dy = ey - sy
+
+                su, sv = u[0, j-1], v[0, j-1]
+                eu, ev = u[0, j], v[0, j]
+
+                mu = (su + eu) / 2
+                mv = (sv + ev) / 2
+
+                d_sf_0 = mu * dy
+                d_sf_1 = - mv * dx
+
+                sf_end = sf_start + d_sf_0 + d_sf_1
+
+                sf[0, j] = sf_end
+
+                # row [1:]
+                for i in range(1, sp0):
+                    sf_start = sf[i-1, j]
+
+                    sx, sy = x[i-1, j], y[i-1, j]
+                    ex, ey = x[i, j], y[i, j]
+
+                    dx = ex - sx
+                    dy = ey - sy
+
+                    su, sv = u[i-1, j], v[i-1, j]
+                    eu, ev = u[i, j], v[i, j]
+
+                    mu = (su + eu) / 2
+                    mv = (sv + ev) / 2
+
+                    d_sf_0 = mu * dy
+                    d_sf_1 = - mv * dx
+
+                    sf_end = sf_start + d_sf_0 + d_sf_1
+
+                    sf[i, j] = sf_end
+
+            return sf
+
+        else:
+            raise NotImplementedError(starting_corner)
 
 
 def _find_shape(list_of_dict):

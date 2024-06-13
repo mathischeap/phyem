@@ -3,10 +3,11 @@
 """
 import numpy as np
 from scipy.interpolate import NearestNDInterpolator
+from src.config import RANK, MASTER_RANK, COMM
 
 from tools.frozen import Frozen
 from msehtt.static.form.numeric.tsp import MseHtt_Form_Numeric_TimeSpaceProperties
-from msehtt.static.form.numeric.export import MseHtt_Form_Numeric_Export
+from tools.dds.region_wise_structured import DDSRegionWiseStructured
 
 
 class MseHtt_Form_Numeric(Frozen):
@@ -27,11 +28,57 @@ class MseHtt_Form_Numeric(Frozen):
             self._tsp = MseHtt_Form_Numeric_TimeSpaceProperties(self._f)
         return self._tsp
 
+    def rws(self, t, ddf=1):
+        """Return a dds-rws instance in the master rank."""
+        density = int(9 * ddf)
+        if density < 3:
+            density = 3
+        elif density > 35:
+            density = 35
+        else:
+            pass
+        linspace = np.linspace(-1, 1, density)
+        xyz, value = self._f[t].reconstruct(linspace, linspace, ravel=False)
+        XYZ = list()
+        VAL = list()
+        for _ in xyz:
+            XYZ.append(self._merge_dict_(_, root=MASTER_RANK))
+        for _ in value:
+            VAL.append(self._merge_dict_(_, root=MASTER_RANK))
+
+        if RANK == MASTER_RANK:
+            return DDSRegionWiseStructured(XYZ, VAL)
+        else:
+            pass
+
+    @staticmethod
+    def _merge_dict_(data, root=MASTER_RANK):
+        """"""
+        assert isinstance(data, dict)
+        DATA = COMM.gather(data, root=root)
+        if RANK == root:
+            data = {}
+            for _ in DATA:
+                data.update(_)
+            return data
+        else:
+            return None
+
     @property
-    def export(self):
-        if self._export is None:
-            self._export = MseHtt_Form_Numeric_Export(self._f)
-        return self._export
+    def dtype(self):
+        """"""
+        space_indicator = self._f.space.str_indicator
+        if space_indicator in ('m2n2k2', 'm2n2k0'):
+            dtype = '2d-scalar'
+        elif space_indicator in ('m2n2k1_inner', 'm2n2k1_outer'):
+            dtype = '2d-vector'
+        elif space_indicator in ('m3n3k0', 'm3n3k3'):
+            dtype = '3d-scalar'
+        elif space_indicator in ('m3n3k1', 'm3n3k2'):
+            dtype = '3d-vector'
+        else:
+            raise NotImplementedError()
+        return dtype
 
     # ----------- methods --------------------------------------------------------------
     def _interpolate_(self, t=None, ddf=1, data_only=False):
@@ -76,17 +123,7 @@ class MseHtt_Form_Numeric(Frozen):
         else:
             raise NotImplementedError()
 
-        space_indicator = self._f.space.str_indicator
-        if space_indicator in ('m2n2k2', 'm2n2k0'):
-            dtype = '2d-scalar'
-        elif space_indicator in ('m2n2k1_inner', 'm2n2k1_outer'):
-            dtype = '2d-vector'
-        elif space_indicator in ('m3n3k0', 'm3n3k3'):
-            dtype = '3d-scalar'
-        elif space_indicator in ('m3n3k1', 'm3n3k2'):
-            dtype = '3d-vector'
-        else:
-            raise NotImplementedError()
+        dtype = self.dtype
 
         if dtype == '2d-scalar':
             xy, v = rc

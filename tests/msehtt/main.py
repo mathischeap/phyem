@@ -15,7 +15,13 @@ import tests.msehtt.solvers
 import tests.msehtt.msepy2_base
 
 # noinspection PyUnresolvedReferences
+import tests.msehtt.msepy3_base
+
+# noinspection PyUnresolvedReferences
 import tests.msehtt.Poisson2
+
+# noinspection PyUnresolvedReferences
+import tests.msehtt.Poisson3
 
 # noinspection PyUnresolvedReferences
 import tests.msehtt.Poisson2_periodic

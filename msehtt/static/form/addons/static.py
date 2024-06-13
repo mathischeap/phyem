@@ -3,9 +3,13 @@ r"""
 """
 from tools.frozen import Frozen
 from msehtt.static.form.export.main import MseHtt_Static_Form_Export
+from msehtt.static.form.project.main import MseHtt_Static_Form_Project
+
 from msehtt.static.space.error.Lambda.Er_m3n3k1 import error__m3n3k1
 from msehtt.static.space.error.Lambda.Er_m3n3k2 import error__m3n3k2
 from msehtt.static.space.error.Lambda.Er_m3n3k3 import error__m3n3k3
+from msehtt.static.space.error.Lambda.Er_m2n2k1 import error__m2n2k1_inner, error__m2n2k1_outer
+from msehtt.static.space.error.Lambda.Er_m2n2k2 import error__m2n2k2
 
 
 class MseHttFormStaticCopy(Frozen):
@@ -67,6 +71,12 @@ class MseHttFormStaticCopy(Frozen):
                 d_L2_error = error__m3n3k2(self.tpm, d_cf, d_cochain, self._f.degree, error_type='L2')
             elif d_space_str_indicator == 'm3n3k3':
                 d_L2_error = error__m3n3k3(self.tpm, d_cf, d_cochain, self._f.degree, error_type='L2')
+            elif d_space_str_indicator == 'm2n2k1_inner':
+                d_L2_error = error__m2n2k1_inner(self.tpm, d_cf, d_cochain, self._f.degree, error_type='L2')
+            elif d_space_str_indicator == 'm2n2k1_outer':
+                d_L2_error = error__m2n2k1_outer(self.tpm, d_cf, d_cochain, self._f.degree, error_type='L2')
+            elif d_space_str_indicator == 'm2n2k2':
+                d_L2_error = error__m2n2k2(self.tpm, d_cf, d_cochain, self._f.degree, error_type='L2')
             else:
                 raise NotImplementedError()
 
@@ -104,3 +114,7 @@ class MseHttFormStaticCopy(Frozen):
     @property
     def export(self):
         return MseHtt_Static_Form_Export(self._f, self._t)
+
+    @property
+    def project(self):
+        return MseHtt_Static_Form_Project(self._f, self._t)
