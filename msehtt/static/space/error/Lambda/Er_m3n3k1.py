@@ -34,7 +34,7 @@ def error__m3n3k1(tpm, cf, cochain, degree, error_type):
         raise NotImplementedError(f"error_type = {error_type}.")
 
 
-from msehtt.static.space.reconstruct.Lambda.Rc_m3n3k1 import ___rc331_msepy_quadrilateral___
+from msehtt.static.space.reconstruct.Lambda.Rc_m3n3k1 import ___rc331_orthogonal_hexahedron___
 
 
 def _er331_msepy_quadrilateral_(element, cf, local_cochain, degree, error_type):
@@ -42,7 +42,7 @@ def _er331_msepy_quadrilateral_(element, cf, local_cochain, degree, error_type):
     p = element.degree_parser(degree)[0]
     p = (p[0] + 2, p[1] + 2, p[2] + 2)
     nodes, weights = quadrature(p, 'Gauss').quad
-    x, y, z, u, v, w = ___rc331_msepy_quadrilateral___(element, degree, local_cochain, *nodes, ravel=False)
+    x, y, z, u, v, w = ___rc331_orthogonal_hexahedron___(element, degree, local_cochain, *nodes, ravel=False)
     exact_u, exact_v, exact_w = cf(x, y, z)
     meshgrid = np.meshgrid(*nodes, indexing='ij')
     J = element.ct.Jacobian(*meshgrid)

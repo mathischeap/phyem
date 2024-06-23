@@ -28,17 +28,19 @@ class MseHtt_Form_Numeric(Frozen):
             self._tsp = MseHtt_Form_Numeric_TimeSpaceProperties(self._f)
         return self._tsp
 
-    def rws(self, t, ddf=1):
+    def rws(self, t, ddf=1, component_wise=False):
         """Return a dds-rws instance in the master rank."""
-        density = int(9 * ddf)
-        if density < 3:
-            density = 3
-        elif density > 35:
-            density = 35
+        density = int(13 * ddf)
+        if density < 5:
+            density = 5
+        elif density > 39:
+            density = 39
         else:
             pass
         linspace = np.linspace(-1, 1, density)
-        xyz, value = self._f[t].reconstruct(linspace, linspace, ravel=False)
+        n = self._f.space.n
+        linspace = [linspace for _ in range(n)]
+        xyz, value = self._f[t].reconstruct(*linspace, ravel=False)
         XYZ = list()
         VAL = list()
         for _ in xyz:
@@ -47,7 +49,15 @@ class MseHtt_Form_Numeric(Frozen):
             VAL.append(self._merge_dict_(_, root=MASTER_RANK))
 
         if RANK == MASTER_RANK:
-            return DDSRegionWiseStructured(XYZ, VAL)
+            if component_wise:
+                dds_rws_list = list()
+                for val in VAL:
+                    dds_rws_list.append(
+                        DDSRegionWiseStructured(XYZ, [val, ])
+                    )
+                return dds_rws_list
+            else:
+                return DDSRegionWiseStructured(XYZ, VAL)
         else:
             pass
 

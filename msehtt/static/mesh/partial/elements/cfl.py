@@ -7,6 +7,20 @@ from pyevtk.hl import unstructuredGridToVTK
 
 from tools.frozen import Frozen
 from msehtt.static.form.addons.static import MseHttFormStaticCopy
+from tools.dds.region_wise_structured import DDSRegionWiseStructured
+
+
+def _merge_dict_(data, root=MASTER_RANK):
+    """"""
+    assert isinstance(data, dict)
+    DATA = COMM.gather(data, root=root)
+    if RANK == root:
+        data = {}
+        for _ in DATA:
+            data.update(_)
+        return data
+    else:
+        return None
 
 
 class MseHtt_PartialMesh_Elements_CFL_condition(Frozen):
@@ -23,29 +37,99 @@ class MseHtt_PartialMesh_Elements_CFL_condition(Frozen):
 
     def __call__(self, filename, form, dt):
         """"""
-        self._visualize(filename, form, dt)
+        self.export_rws(filename, form, dt)
 
-    def _visualize(self, filename, form, dt):
+    def export_vtk(self, filename, form, dt):
         if self.mn == (2, 2):
-            self._visualize_m2n2_(filename, form, dt)
+            self._export_vtk_m2n2_(filename, form, dt)
         else:
-            raise NotImplementedError()
+            raise NotImplementedError(f"cfl export_vtk not implemented for mn == {self.mn}")
 
-    def _visualize_m2n2_(self, filename, form, dt, ddf=1):
+    def export_rws(self, filename, form, dt):
+        """"""
+        if self.mn == (2, 2):
+            self._export_rws_m2n2_(filename, form, dt)
+        else:
+            raise NotImplementedError(f"cfl export_rws not implemented for mn == {self.mn}")
+
+    def _export_rws_m2n2_(self, filename, form, dt, ddf=1):
         """"""
         assert form.__class__ is MseHttFormStaticCopy, \
-            f"Must be a form static copy."
+            f"Must export cfl vtk from a form static copy."
 
         space_indicator = form._f.space.str_indicator
-        if space_indicator == 'm2n2k1_outer':
+        if space_indicator in ('m2n2k1_outer', 'm2n2k1_inner'):
             pass
         else:
-            raise NotImplementedError(space_indicator)
-        density = int(8 * ddf)
-        if density < 4:
-            density = 4
-        elif density > 18:
-            density = 18
+            raise NotImplementedError(f"cannot compute cfl number for form of {space_indicator}")
+        density = int(33 * ddf)
+        if density < 17:
+            density = 17
+        elif density > 99:
+            density = 99
+        else:
+            pass
+
+        linspace = np.linspace(-1, 1, density)
+        linspace = (linspace[1:] + linspace[:-1]) / 2
+        _, UV = form.reconstruct(linspace, linspace, ravel=True)
+        U, V = UV
+
+        element_cfl_dict = {}
+        for e in U:
+            element = self._elements[e]
+            etype = element.etype
+
+            if etype == 'orthogonal rectangle':
+                hx, hy = element._parameters['delta']
+
+                u = max(np.abs(U[e]))
+                v = max(np.abs(V[e]))
+
+                cfl_x = u * dt / hx
+                cfl_y = v * dt / hy
+
+                cfl = max([cfl_x, cfl_y])
+
+            else:
+                raise NotImplementedError()
+
+            element_cfl_dict[e] = cfl
+
+        _a_ = np.array([-1, 1])
+        coo_rct = form.reconstruct(_a_, _a_, ravel=False)[0]
+        x, y = coo_rct
+
+        element_cfl_dict = _merge_dict_(element_cfl_dict, root=MASTER_RANK)
+        x = _merge_dict_(x, root=MASTER_RANK)
+        y = _merge_dict_(y, root=MASTER_RANK)
+        if RANK != MASTER_RANK:
+            return
+        else:
+            pass
+
+        for e in element_cfl_dict:
+            cfl = element_cfl_dict[e]
+            element_cfl_dict[e] = np.ones_like(x[e]) * cfl
+
+        dds_rws = DDSRegionWiseStructured([x, y], [element_cfl_dict, ])
+        dds_rws.saveto(filename)
+
+    def _export_vtk_m2n2_(self, filename, form, dt, ddf=1):
+        """"""
+        assert form.__class__ is MseHttFormStaticCopy, \
+            f"Must export cfl vtk from a form static copy."
+
+        space_indicator = form._f.space.str_indicator
+        if space_indicator in ('m2n2k1_outer', 'm2n2k1_inner'):
+            pass
+        else:
+            raise NotImplementedError(f"cannot compute cfl number for form of {space_indicator}")
+        density = int(33 * ddf)
+        if density < 17:
+            density = 17
+        elif density > 99:
+            density = 99
         else:
             pass
         _a_ = np.array([-1, 1])

@@ -62,6 +62,8 @@ class DDSRegionWiseStructured(Frozen):
         super_repr = super().__repr__().split('object')[1]
         return rf"<DDR-RWS {self.ndim}d {self.dtype}" + super_repr
 
+    # --------- save & read ------------------------------------------------------------------------------
+
     def saveto(self, filename):
         """"""
         data_dict = {
@@ -119,7 +121,53 @@ class DDSRegionWiseStructured(Frozen):
         else:
             raise NotImplementedError()
 
-    # -- visualization --------------------------------------------------------------------------
+    # --------- COMPUTATION ---------------------------------------------------------------------------------------
+    def maximum(self, absolute=True, component_wise=True):
+        """"""
+        MAX_COMPONENTS = list()
+        for val_dict in self._val_dict_list:
+            max_component = list()
+            for region_key in val_dict:
+                if absolute:
+                    max_component.append(
+                        np.max(np.abs(val_dict[region_key]))
+                    )
+                else:
+                    raise NotImplementedError()
+            MAX_COMPONENTS.append(np.max(max_component))
+        if component_wise:
+            return MAX_COMPONENTS
+        else:
+            raise NotImplementedError()
+
+    def L2_norm(self, volume=None, component_wise=True):
+        """"""
+        if volume is None:  # study volume from coo
+            INTEGRAL = list()
+            for val_dict in self._val_dict_list:
+                component_integral = 0
+                for region_key in val_dict:
+                    h = list()
+                    for coo_dict in self._coo_dict_list:
+                        coo = coo_dict[region_key]
+                        MAX, MIn = np.max(coo), np.min(coo)
+                        shape = coo.shape[0]
+                        dh = (MAX - MIn) / shape
+                        h.append(dh)
+                    volume = np.prod(h)
+                    region_values = val_dict[region_key]
+                    region_integral = np.sum((region_values ** 2) * volume)
+                    component_integral += region_integral
+                INTEGRAL.append(component_integral ** 0.5)
+
+            if component_wise:
+                return INTEGRAL
+            else:
+                raise NotImplementedError()
+        else:
+            raise NotImplementedError()
+
+    # -- visualization -----------------------------------------------------------------------------------------
     def visualize(self, magnitude=False, saveto=None, **kwargs):
         """"""
         if self.classification == '2d scalar':
@@ -129,7 +177,7 @@ class DDSRegionWiseStructured(Frozen):
             return self._2d_vector_field(magnitude=magnitude, saveto=saveto, **kwargs)
 
         else:
-            raise NotImplementedError
+            raise NotImplementedError(f"not implemented for dds-rws of type: {self.classification}")
 
     def _2d_scalar_field(self, plot_type='contourf', magnitude=False, saveto=None, **kwargs):
         """"""
@@ -166,7 +214,7 @@ class DDSRegionWiseStructured(Frozen):
 
         return fig0, fig1
 
-    # -- Operations --------------------------------------------------------------------------
+    # -- Operations ----------------------------------------------------------------------------------------
     def __sub__(self, other):
         """self - other"""
         assert other.__class__ == self.__class__, f"type wrong"
@@ -258,6 +306,7 @@ class DDSRegionWiseStructured(Frozen):
         else:
             raise NotImplementedError()
 
+    # ---------------- STREAM FUNCTION ---------------------------------------------------------------------------
     def streamfunction(self, shift=0):
         """"""
         sf_dict = dict()
@@ -287,7 +336,7 @@ class DDSRegionWiseStructured(Frozen):
                 )
                 sf_dict[e] = element_sf
         else:
-            raise Exception(self.classification)
+            raise Exception(self.classification + 'has not streamfunction.')
 
         if shift != 0:
             for e in sf_dict:
@@ -411,6 +460,8 @@ class DDSRegionWiseStructured(Frozen):
         else:
             raise NotImplementedError(starting_corner)
 
+
+# ================================================================================================================
 
 def _find_shape(list_of_dict):
     """"""

@@ -114,14 +114,14 @@ class MseHttGlobalMatrix(Frozen):
 
     @property
     def rank_nnz(self):
-        """The nnz of the rank M. Note that the nnz of the total matrix is not equal to reduce(rank_nnz, op=MPI.SUM)
+        r"""The nnz of the rank M. Note that the nnz of the total matrix is not equal to reduce(rank_nnz, op=MPI.SUM)
         because some entries are shared by multiple ranks.
         """
         return self._M.nnz
 
     @property
     def condition_number(self):
-        """The condition number of this static assembled matrix."""
+        r"""The condition number of this static assembled matrix."""
         M = self.gather(root=MASTER_RANK)
         if RANK == MASTER_RANK:
             cn = np_linalg.cond(M.toarray())
@@ -131,7 +131,7 @@ class MseHttGlobalMatrix(Frozen):
 
     @property
     def rank(self):
-        """compute the rank of this static assembled matrix"""
+        r"""compute the rank of this static assembled matrix"""
         M = self.gather(root=MASTER_RANK)
         if RANK == MASTER_RANK:
             rank = np_linalg.matrix_rank(M.toarray())
@@ -141,11 +141,11 @@ class MseHttGlobalMatrix(Frozen):
 
     @property
     def num_singularities(self):
-        """The amount of singular modes in this static assembled matrix."""
+        r"""The amount of singular modes in this static assembled matrix."""
         return self.shape[0] - self.rank
 
     def diagonal(self, k=0):
-        """Returns the kth diagonal of the matrix."""
+        r"""Returns the kth diagonal of the matrix."""
         diag = self._M.diagonal(k=k)
         DIAG = np.zeros_like(diag, dtype=float)
         COMM.Allreduce(diag, DIAG, op=MPI.SUM)

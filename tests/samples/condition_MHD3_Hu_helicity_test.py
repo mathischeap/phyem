@@ -74,6 +74,9 @@ class MHD3_Helicity_Conservation_test1(Frozen):
 
 if __name__ == '__main__':
     condition = MHD3_Helicity_Conservation_test1()
+
+    c = 1
+
     from scipy.integrate import nquad
 
     u = condition.u_initial_condition
@@ -86,12 +89,12 @@ if __name__ == '__main__':
 
     us = partial(us._s_, 0)
 
-    u_energy = nquad(us, [[0, 1], [0, 1], [0, 1]])[0]
+    u_energy = 0.5 * nquad(us, [[0, 1], [0, 1], [0, 1]])[0]
     # print(u_energy)
 
     Bs = partial(Bs._s_, 0)
 
-    B_energy = nquad(Bs, [[0, 1], [0, 1], [0, 1]])[0]
+    B_energy = 0.5 * c * nquad(Bs, [[0, 1], [0, 1], [0, 1]])[0]
     # print(B_energy)
 
     print(u_energy + B_energy)

@@ -19,7 +19,7 @@ def reconstruct_Lambda__m3n3k1(tpm, degree, cochain, xi, et, sg, ravel=False):
         etype = element.etype
         local_cochain = cochain[e]
         if etype in ("orthogonal hexahedron", ):
-            x[e], y[e], z[e], u[e], v[e], w[e] = ___rc331_msepy_quadrilateral___(
+            x[e], y[e], z[e], u[e], v[e], w[e] = ___rc331_orthogonal_hexahedron___(
                 element, degree, local_cochain, xi, et, sg, ravel=ravel
             )
         else:
@@ -27,7 +27,7 @@ def reconstruct_Lambda__m3n3k1(tpm, degree, cochain, xi, et, sg, ravel=False):
     return (x, y, z), (u, v, w)
 
 
-def ___rc331_msepy_quadrilateral___(element, degree, local_cochain, xi, et, sg, ravel=False):
+def ___rc331_orthogonal_hexahedron___(element, degree, local_cochain, xi, et, sg, ravel=False):
     """"""
     p, _ = element.degree_parser(degree)
     px, py, pz = p

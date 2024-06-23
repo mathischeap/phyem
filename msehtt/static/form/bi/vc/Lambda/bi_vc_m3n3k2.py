@@ -95,7 +95,7 @@ def ___bi_vc_332_orthogonal_hexahedral___(element, degree, face, tvc):
     onv = face.ct.outward_unit_normal_vector(*nodes)
     nx, ny, nz = onv
     trStar_vc = tvc(*xyz)[0]
-    trace_1f = u * nx + v * ny + w * nz  # <~ | trace-outer-f>
+    trace_2f = u * nx + v * ny + w * nz  # <~ | trace-outer-2-f>
     area = face.area / 4
-    face_boundary_integration_vec = np.sum(trStar_vc * trace_1f * weights * area, axis=1)
+    face_boundary_integration_vec = np.sum(trStar_vc * trace_2f * weights * area, axis=1)
     return num_test_form_local_dofs, local_dofs, face_boundary_integration_vec

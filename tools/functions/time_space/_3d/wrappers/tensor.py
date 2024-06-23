@@ -126,8 +126,3 @@ class T3dTensor(TimeSpaceFunctionBase):
         return self.__class__(pt00_pt, pt01_pt, pt02_pt,
                               pt10_pt, pt11_pt, pt12_pt,
                               pt20_pt, pt21_pt, pt22_pt)
-
-
-if __name__ == '__main__':
-    # mpiexec -n 4 python 
-    pass

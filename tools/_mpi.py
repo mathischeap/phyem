@@ -5,7 +5,7 @@ from src.config import MASTER_RANK, RANK, COMM
 
 
 def merge_dict(*dictionaries, root=MASTER_RANK):
-    """"""
+    r""""""
     merged_dictionaries = list()
     for d in dictionaries:
         D = COMM.gather(d, root=root)

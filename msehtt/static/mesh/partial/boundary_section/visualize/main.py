@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-"""
+r"""
 """
 from tools.frozen import Frozen
 from msehtt.static.mesh.partial.boundary_section.visualize.matplot import (

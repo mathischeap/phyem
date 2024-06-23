@@ -440,12 +440,12 @@ class MseHttStaticNonLinearSystem(Frozen):
                         f = unknown._f
                         time = unknown._time
                         global_dofs = place.find_dofs(f, local=False)
-                        self.customize.fixed_global_dofs_for_unknown(ith_unknown, global_dofs)
                         local_cochain = f.reduce(condition @ time)
                         gm = f.cochain.gathering_matrix
                         global_cochain = gm.assemble(local_cochain, mode='replace')
                         global_cochain = global_cochain[global_dofs]
                         if ith_unknown in self._nonlinear_terms:
+                            self.customize.fixed_global_dofs_for_unknown(ith_unknown, global_dofs)
                             self.customize.set_x0_for_unknown(ith_unknown, global_dofs, global_cochain)
                         else:
                             # we can apply this essential bc through making changes in the linear part.

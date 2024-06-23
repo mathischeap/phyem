@@ -108,7 +108,7 @@ class TransfiniteMapping(Frozen):
         return y
 
     def dx_dr(self, r, s):
-        """ """
+        """"""
         gamma2_xt, gamma2_yt = self.gamma[1](s)
         gamma4_xt, gamma_4yt = self.gamma[3](s)
         dgamma1_xds, dgamma1_yds = self.d_gamma[0](r)
@@ -119,7 +119,7 @@ class TransfiniteMapping(Frozen):
         return dx_dxi_result
     
     def dx_ds(self, r, s):
-        """ """
+        """"""
         gamma1_xs, gamma1_ys = self.gamma[0](r)
         gamma3_xs, gamma3_ys = self.gamma[2](r)
         dgamma2_xdt, dgamma2_ydt = self.d_gamma[1](s)
@@ -130,7 +130,7 @@ class TransfiniteMapping(Frozen):
         return dx_deta_result
     
     def dy_dr(self, r, s):
-        """ """
+        """"""
         gamma2_xt, gamma2_yt = self.gamma[1](s)
         gamma4_xt, gamma4_yt = self.gamma[3](s)
         dgamma1_xds, dgamma1_yds = self.d_gamma[0](r)
@@ -141,7 +141,7 @@ class TransfiniteMapping(Frozen):
         return dy_dxi_result
     
     def dy_ds(self, r, s):
-        """ """
+        """"""
         gamma1_xs, gamma1_ys = self.gamma[0](r)
         gamma3_xs, gamma3_ys = self.gamma[2](r)
         dgamma2_xdt, dgamma2_ydt = self.d_gamma[1](s)

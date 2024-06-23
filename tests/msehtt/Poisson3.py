@@ -100,14 +100,14 @@ msehtt_ls.config(('essential bc', 1), boundary_u, u.cf.field, root_form=u)    # 
 
 linear_system = msehtt_ls(time)
 # linear_system.spy(0)
-linear_system.customize.left_matmul_A_block(1, 0, invM3)
-linear_system.customize.left_matmul_b_block(1, invM3)
+# linear_system.customize.left_matmul_A_block(1, 0, invM3)
+# linear_system.customize.left_matmul_b_block(1, invM3)
 # linear_system.spy(0)
 Axb = linear_system.assemble(threshold=1e-8)
 # print(Axb.A.rank_nnz)
 x, message, info = Axb.solve('direct')
 linear_system.x.update(x)
-# print(u[time].error())
+# print(u[time].error(), phi[time].error())
 assert phi[time].error() < 0.004
 assert u[time].error() < 0.04
 

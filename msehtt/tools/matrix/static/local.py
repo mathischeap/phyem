@@ -140,7 +140,8 @@ class MseHttStaticLocalMatrix(Frozen):
                 else:
                     data = self._get_meta_data(i)
                     self._cache[cache_key] = data
-        assert isspmatrix_csr(data) or isspmatrix_csc(data), f"must be csc or csr!"
+        assert isspmatrix_csr(data) or isspmatrix_csc(data), \
+            f"must be csc or csr! Now it is {data.__class__}"
         return data
 
     def spy(self, i, markerfacecolor='k', markeredgecolor='g', markersize=6, threshold=None):
@@ -200,7 +201,8 @@ class MseHttStaticLocalMatrix(Frozen):
         """"""
         def ___inv_caller___(e):
             M = self[e].tocsc()
-            return sp_spa_linalg.inv(M)
+            invM = sp_spa_linalg.inv(M)
+            return csr_matrix(invM)
 
         return self.__class__(
             ___inv_caller___, self._gm_col, self._gm_row, cache_key=self._cache_key,

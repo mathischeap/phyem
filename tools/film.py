@@ -15,7 +15,7 @@ from tools.miscellaneous.random_ import string_digits
 
 # noinspection PyUnresolvedReferences
 def images(image_folder, video_name=None, duration=5, clean_images=False, sort_key=None):
-    """Make a move from images in the folder named `image_folder`.
+    r"""Make a move from images in the folder named `image_folder`.
 
     Each image will be a frame of the video. Images must be named in an increasing sequence
     start with 0 or any other positive integer. They will be played in an increasing sequence as

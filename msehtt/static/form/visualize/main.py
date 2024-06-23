@@ -31,7 +31,7 @@ class MseHttFormVisualize(Frozen):
         ___ph_vtk_msehtt_static_copy___(filename, self._f[self._t], ddf=ddf)
 
     def matplot(self, ddf=1, **kwargs):
-        """"""
+        r"""We use the matplot of dds-rws to do this."""
         rws = self._f.numeric.rws(self._t, ddf=ddf)
         if rws is None:
             pass

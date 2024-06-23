@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-"""
+r"""
 """
 from tools.frozen import Frozen
 from src.config import RANK, MASTER_RANK, COMM
@@ -114,6 +114,7 @@ class MseHttBoundarySectionPartialMeshVisualizeMatplot(Frozen):
         ax.xaxis._axinfo["grid"]['color'] = (1, 1, 1, 0)
         ax.yaxis._axinfo["grid"]['color'] = (1, 1, 1, 0)
         ax.zaxis._axinfo["grid"]['color'] = (1, 1, 1, 0)
+
         ax.tick_params(labelsize=12)
         ax.set_xlabel(r'$x$', fontsize=14)
         ax.set_ylabel(r'$y$', fontsize=14)

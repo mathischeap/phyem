@@ -37,16 +37,17 @@ class MseHttBoundarySectionPartialMesh(Frozen):
         self._freeze()
 
     def info(self):
-        """info self."""
+        r"""info self."""
         print(f"msehtt-boundary-section > {self._tpm.abstract._sym_repr}: "
               f"{self._num_global_faces} faces > distributed in {SIZE} ranks.")
 
     def __repr__(self):
+        r""""""
         super_repr = super().__repr__().split('object')[1]
         return f"<{self.__class__.__name__} " + self._tpm._abstract._sym_repr + super_repr
 
     def __len__(self):
-        """how many local element faces?"""
+        r"""how many local element faces?"""
         return len(self._face_dict)
 
     def __contains__(self, element_index__face_id):

@@ -13,7 +13,7 @@ class LinerSystemSolverDivergenceError(Exception):
 def gmres(
         A, b, x0,
         atol=1e-5,
-        restart=75, maxiter=25
+        restart=75, maxiter=30
 ):
     """
 
@@ -162,7 +162,8 @@ def gmres(
 
             if j < restart - 1:
                 # noinspection PyUnboundLocalVariable
-                COMM.Bcast([v_jp1, MPI.DOUBLE], root=MASTER_RANK)
+                # COMM.Bcast([v_jp1, MPI.DOUBLE], root=MASTER_RANK)
+                COMM.Bcast(v_jp1, root=MASTER_RANK)
                 if RANK == MASTER_RANK:
                     Vm[j+1] = v_jp1
                 else:
@@ -203,7 +204,7 @@ def gmres(
 def lgmres(
         A, b, x0,
         atol=1e-5,
-        inner_m=75, outer_k=15, maxiter=25,
+        inner_m=75, outer_k=15, maxiter=30,
 ):
     """
 
@@ -393,7 +394,8 @@ def lgmres(
 
             if j < restart - 1:
                 # noinspection PyUnboundLocalVariable
-                COMM.Bcast([v_jp1, MPI.DOUBLE], root=MASTER_RANK)
+                # COMM.Bcast([v_jp1, MPI.DOUBLE], root=MASTER_RANK)
+                COMM.Bcast(v_jp1, root=MASTER_RANK)
                 if RANK == MASTER_RANK:
                     Vm[j + 1] = v_jp1
                 else:
@@ -428,7 +430,8 @@ def lgmres(
             ym = np.empty((shape0,), dtype=float)
             # Important: renew ``ym`` every single iteration.
 
-        COMM.Bcast([ym, MPI.DOUBLE], root=MASTER_RANK)
+        # COMM.Bcast([ym, MPI.DOUBLE], root=MASTER_RANK)
+        COMM.Bcast(ym, root=MASTER_RANK)
 
         if ITER >= _k_ > 0:
             del ZZZ[ITER-_k_]

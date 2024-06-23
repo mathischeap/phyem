@@ -14,14 +14,14 @@ def find_local_dofs_on_face__m3n3k1(etype, p, face_index, component_wise=False):
 
 
 from msehtt.static.space.local_numbering.Lambda.ln_m3n3k1 import _ln_m3n3k1_msepy_quadrilateral_
-_cache_331_ = {}
+_cache_331_ln_ = {}
 
 
 def __m3n3k1_msepy_hexahedral_(p, face_index, component_wise=False):
     """"""
     key = f"{p}{face_index}{component_wise}"
-    if key in _cache_331_:
-        return _cache_331_[key]
+    if key in _cache_331_ln_:
+        pass
     else:
         ln_dx, ln_dy, ln_dz = _ln_m3n3k1_msepy_quadrilateral_(p)
 
@@ -51,6 +51,6 @@ def __m3n3k1_msepy_hexahedral_(p, face_index, component_wise=False):
             else:
                 raise Exception()
 
-            _cache_331_[key] = np.concatenate((local_numbering_d0.ravel('F'), local_numbering_d1.ravel('F')))
+            _cache_331_ln_[key] = np.concatenate((local_numbering_d0.ravel('F'), local_numbering_d1.ravel('F')))
 
-        return _cache_331_[key]
+    return _cache_331_ln_[key]

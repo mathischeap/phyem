@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-"""
+r"""
 """
 import numpy as np
 from tools.quadrature import quadrature
@@ -80,11 +80,11 @@ def ___bi_vc_331_orthogonal_hexahedral___(element, degree, face, tvc):
     else:
         raise Exception()
 
-    v = ___rm331_msepy_hexahedral___(element, degree, *rm_nodes)
+    VAL = ___rm331_msepy_hexahedral___(element, degree, *rm_nodes)
     xyz = np.meshgrid(*rm_nodes, indexing='ij')
     xyz = [_.ravel('F') for _ in xyz]
     xyz = face.ct.mapping(*xyz)
-    u, v, w = v
+    u, v, w = VAL
     u = u.T
     v = v.T
     w = w.T
@@ -95,12 +95,12 @@ def ___bi_vc_331_orthogonal_hexahedral___(element, degree, face, tvc):
     onv = face.ct.outward_unit_normal_vector(*nodes)
     nx, ny, nz = onv      # n = (nx, ny, nz)
     U, V, W = tvc(*xyz)   # u = (U, V, W)
-    trStar_vc = (
+    tr_perp_Star_vc = (   # trace-perp
         V * nz - W * ny,
         W * nx - U * nz,
         U * ny - V * nx
     )
-    trStar_vc__dot__trace_1f = trStar_vc[0] * u + trStar_vc[1] * v + trStar_vc[2] * w
+    tr_perp_Star_vc__dot___trace_parallel_1f = tr_perp_Star_vc[0] * u + tr_perp_Star_vc[1] * v + tr_perp_Star_vc[2] * w
     area = face.area / 4
-    face_boundary_integration_vec = np.sum(trStar_vc__dot__trace_1f * weights * area, axis=1)
+    face_boundary_integration_vec = np.sum(tr_perp_Star_vc__dot___trace_parallel_1f * weights * area, axis=1)
     return num_test_form_local_dofs, local_dofs, face_boundary_integration_vec

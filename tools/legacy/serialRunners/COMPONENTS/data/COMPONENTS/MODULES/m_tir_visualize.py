@@ -157,6 +157,8 @@ class MITRVisualize:
         # ___ pre-parameterize the plot_________________________________________________
         if saveto is not None:
             matplotlib.use('Agg')
+        else:
+            matplotlib.use('TkAgg')
 
         plt.rcParams.update({
             "text.usetex": usetex,
@@ -167,7 +169,7 @@ class MITRVisualize:
         if usetex:
             plt.rcParams['text.latex.preamble'] = r"\usepackage{amsmath}"
 
-        plt.figure(figsize=figsize)
+        fig, ax = plt.subplots(figsize=figsize)
         plt.gcf().subplots_adjust(left=left)
         plt.gcf().subplots_adjust(bottom=bottom)
         # __ find the range of x_data___________________________________________________
@@ -270,8 +272,13 @@ class MITRVisualize:
                 plt.xlabel(str(hcp)+'/'+x_name, fontsize=label_size)
         if ylabel is not None:
             plt.ylabel(ylabel, fontsize=label_size)
+
         if xticks is not None:
-            plt.xticks(xticks)
+            if isinstance(xticks, dict):  # we are configuring the minor ticks and their labels.
+                xtick_para = xticks
+                ax.set_xticks(xtick_para['xticks'], labels=xtick_para['labels'], minor=xtick_para['minor'])
+            else:
+                plt.xticks(xticks)
         if yticks is not None:
             plt.yticks(yticks)
 

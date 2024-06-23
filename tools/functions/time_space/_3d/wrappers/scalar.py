@@ -22,14 +22,17 @@ def ___0_func___(t, x, y, z):
     """"""
     return np.zeros_like(x)
 
+
 class T3dScalar(TimeSpaceFunctionBase):
     """"""
 
     def __init__(self, s):
         """"""
         if isinstance(s, (int, float)) and s == 0:
+            self.___is_zero___ = True
             s = ___0_func___
         else:
+            self.___is_zero___ = False
             pass
 
         self._s_ = s
@@ -86,14 +89,14 @@ class T3dScalar(TimeSpaceFunctionBase):
     @property
     def gradient(self):
         """"""
-
-        px = self._NPD_('x')
-        py = self._NPD_('y')
-        pz = self._NPD_('z')
-
         from tools.functions.time_space._3d.wrappers.vector import T3dVector
-
-        return T3dVector(px, py, pz)
+        if self.___is_zero___:
+            return T3dVector(0, 0, 0)
+        else:
+            px = self._NPD_('x')
+            py = self._NPD_('y')
+            pz = self._NPD_('z')
+            return T3dVector(px, py, pz)
 
     def convection_by(self, u):
         """We compute (u cdot nabla) of self.
@@ -144,10 +147,12 @@ class T3dScalar(TimeSpaceFunctionBase):
 
     def __neg__(self):
         """"""
+        if self.___is_zero___:
+            return self
+        else:
+            neg = t3d_ScalarNeg(self._s_)
 
-        neg = t3d_ScalarNeg(self._s_)
-
-        return self.__class__(neg)
+            return self.__class__(neg)
 
     def __mul__(self, other):
         """"""

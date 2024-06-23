@@ -52,6 +52,7 @@ class MseHttSpaceGatheringMatrix(Frozen):
                     return getattr(module, 'gathering_matrix_Lambda__m2n2k2')(self._space.tpm, degree)
                 else:
                     raise NotImplementedError(self_indicator)
+
             elif m == n == 3:
                 self_indicator = f"m{m}n{n}k{k}"
                 if self_indicator == "m3n3k0":

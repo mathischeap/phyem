@@ -43,6 +43,10 @@ class MseHttFormStaticCopy(Frozen):
         """"""
         self._f.cochain._set(self._t, cc)
 
+    def coboundary(self):
+        """Return the coboundary of self's cochain, it is a dict of local cochain vector."""
+        return self.cochain.coboundary()
+
     def reduce(self):
         """"""
         self.cochain = self._f.reduce(self.cf)
@@ -118,3 +122,26 @@ class MseHttFormStaticCopy(Frozen):
     @property
     def project(self):
         return MseHtt_Static_Form_Project(self._f, self._t)
+
+    @property
+    def numeric(self):
+        return ___MseHtt_Static_Form_Copy_Numeric___(self._f, self._t)
+
+
+class ___MseHtt_Static_Form_Copy_Numeric___(Frozen):
+    """"""
+    def __init__(self, f, t):
+        """"""
+        self._f = f
+        self._t = t
+        self._freeze()
+
+    def rws(self, ddf=1, component_wise=False):
+        return self._f.numeric.rws(self._t, ddf=ddf, component_wise=component_wise)
+
+    @property
+    def dtype(self):
+        return self._f.numeric.dtype
+
+    def _interpolate_(self, ddf=1, data_only=False):
+        return self._f.numeric._interpolate_(self._t, ddf=ddf, data_only=data_only)

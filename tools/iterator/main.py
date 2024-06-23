@@ -23,7 +23,7 @@ class Iterator(Frozen):
             monitoring_factor=0.6,
             name=None,
     ):
-        """
+        r"""
 
         Parameters
         ----------
@@ -67,26 +67,28 @@ class Iterator(Frozen):
 
     @property
     def monitor(self):
-        """The monitor of this iterator."""
+        r"""The monitor of this iterator."""
         return self._monitor_
 
     @property
     def RDF(self):
-        """(pandas.DataFrame) Result DataFrame."""
+        r"""(pandas.DataFrame) Result DataFrame."""
         return self._RDF
 
     @property
     def exit_code(self):
-        """Return the exit code of the solver for the last run."""
+        r"""Return the exit code of the solver for the last run."""
         return self._exit_code_
 
     @exit_code.setter
     def exit_code(self, exit_code):
+        r""""""
         # noinspection PyAttributeOutsideInit
         self._exit_code_ = exit_code
 
     @staticmethod
     def _exit_code_explanations(exit_code):
+        r""""""
         explanations = {
             0: 'continue',
             1: 'normal stop'
@@ -95,11 +97,12 @@ class Iterator(Frozen):
 
     @property
     def message(self):
-        """List(str) Return the messages of the solver for the last run."""
+        r"""List(str) Return the messages of the solver for the last run."""
         return self._message_
 
     @message.setter
     def message(self, message):
+        r""""""
         if isinstance(message, str):
             message = [message, ]
         assert isinstance(message, (list, tuple)), "message must be str or list or tuple."
@@ -110,21 +113,27 @@ class Iterator(Frozen):
         self._message_ = message
 
     def _append_outputs_to_RDF(self, outputs):
-        """"""
+        r""""""
         self.RDF.loc[len(self.RDF)] = outputs[2:]
 
     def test(self, test_range):
-        """Do a test run of `times` iterations."""
+        r"""Do a test run of `times` iterations."""
         for args in test_range:
+            t_start = time()
             if hasattr(args, '__iter__'):
                 results = self._solver_(*args)
             else:
                 results = self._solver_(args)
-            if RANK == MASTER_RANK:
-                print(f"test with arguments {args} leads to results: {results}.\n", flush=True)
+            t_cost = time() - t_start
 
-    def run(self, *ranges):
-        """To run the iterator.
+            if RANK == MASTER_RANK:
+                print(f"=~= (TESTING) input: <{args}> leads to outputs: (cost %.3f) seconds" % t_cost)
+                for i, res in enumerate(results):
+                    print(f"  {i})-> {self._solver_ret[i]}: {res}")
+                print('\n', flush=True)
+
+    def run(self, *ranges, pbar=True):
+        r"""To run the iterator.
 
         To make it work properly, we have to make sure the solver return exactly the same
         outputs in all cores. Otherwise, cores may stop after different time steps. This very
@@ -163,10 +172,13 @@ class Iterator(Frozen):
                 desc = '...' + desc[-22:]
             else:
                 pass
-            pbar = tqdm(
-                total=num_iterations,
-                desc='<' + desc + '>',
-            )
+            if pbar:
+                progress_bar = tqdm(
+                    total=num_iterations,
+                    desc='<' + desc + '>',
+                )
+            else:
+                pass
         else:
             pass
 
@@ -185,8 +197,11 @@ class Iterator(Frozen):
                 self._cpu_load = psutil.cpu_percent(None)
                 self._append_outputs_to_RDF(outputs)
                 self.monitor._measure_end()
-                # noinspection PyUnboundLocalVariable
-                pbar.update(1)
+                if pbar:
+                    # noinspection PyUnboundLocalVariable
+                    progress_bar.update(1)
+                else:
+                    pass
             else:
                 pass
 
@@ -200,7 +215,10 @@ class Iterator(Frozen):
 
         # --- after iteration ------------------------------------------------------------------------
         if RANK == MASTER_RANK:
-            pbar.close()
+            if pbar:
+                progress_bar.close()
+            else:
+                pass
             print(flush=True)
-            self.monitor.save()  # save to `.csv`
+            self.monitor.save(over=True)  # save to `.csv`
             self.monitor.report(over=True)  # make graphic report.
