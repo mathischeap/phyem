@@ -7,6 +7,8 @@ from tools.frozen import Frozen
 from tools.matplot.contour import contour, contourf
 from src.config import RANK, MASTER_RANK
 
+from scipy.interpolate import LinearNDInterpolator
+
 
 class DDSRegionWiseStructured(Frozen):
     """We organize data set in a region-wise (as keys of dictionaries) approach. For example, if
@@ -36,23 +38,29 @@ class DDSRegionWiseStructured(Frozen):
         """"""
         assert RANK == MASTER_RANK, f"only use this class in the master rank please."
         space_dim = len(coo_dict_list)
+
+        assert isinstance(coo_dict_list[0], dict), f"put coordinates in a dict please."
+        regions = coo_dict_list[0].keys()
+        for i, coo_dict in enumerate(coo_dict_list):
+            assert coo_dict.keys() == regions, f"regions do not match."
+
+        for region in regions:
+            region_data_shape = coo_dict_list[0][region].shape
+            for coo in coo_dict_list[1:]:
+                region_coo = coo[region]
+                assert region_coo.shape == region_data_shape, \
+                    f"coo shape does not match in region {region}."
+
+            for j, component in enumerate(val_dict_list):
+                component_region_shape = component[region].shape
+                assert component_region_shape == region_data_shape, \
+                    f"{j}th component has wrong data shape in region {region}."
+
         val_shape = _find_shape(val_dict_list)
         assert len(val_shape) == 1, f"put all values in a 1d list or tuple."
         val_shape = val_shape[0]
-        data_shape = None
-        for i, coo_dict in enumerate(coo_dict_list):
-            for region in coo_dict:
-                xyz = coo_dict[region]
-                assert isinstance(xyz, np.ndarray), f"coordinate must be put in ndarray."
-                if data_shape is None:
-                    data_shape = xyz.shape
-                else:
-                    assert data_shape == xyz.shape, f"#{i}th coordinate in region {region} does not match."
-
         self._space_dim = space_dim    # we are in n-d space.
         self._value_shape = val_shape  # the shape of the val list; implies it is a scalar, vector or something else.
-        self._data_shape = data_shape  # the shape of all ndarray in coo or val.
-        assert len(data_shape) == space_dim, f'put data into a structured way, so n-d data in n-d space.'
         self._coo_dict_list = coo_dict_list
         self._val_dict_list = val_dict_list
         self._dtype = None
@@ -220,7 +228,6 @@ class DDSRegionWiseStructured(Frozen):
         assert other.__class__ == self.__class__, f"type wrong"
         assert self._space_dim == other._space_dim, f"space ndim wrong"
         assert self._value_shape == other._value_shape, f"value shape wrong"
-        assert self._data_shape == other._data_shape, f"data shape wrong"
 
         for i in range(self._space_dim):
             xyz_self = self._coo_dict_list[i]
@@ -243,7 +250,6 @@ class DDSRegionWiseStructured(Frozen):
         assert other.__class__ == self.__class__, f"type wrong"
         assert self._space_dim == other._space_dim, f"space ndim wrong"
         assert self._value_shape == other._value_shape, f"value shape wrong"
-        assert self._data_shape == other._data_shape, f"data shape wrong"
 
         for i in range(self._space_dim):
             xyz_self = self._coo_dict_list[i]
@@ -272,6 +278,16 @@ class DDSRegionWiseStructured(Frozen):
             return self.__class__(self._coo_dict_list, value_dict)
         else:
             raise NotImplementedError()
+
+    @property
+    def square(self):
+        """"""
+        value_dict = [dict() for _ in range(self._value_shape)]
+        for _ in range(self._value_shape):
+            self_v = self._val_dict_list[_]
+            for region in self_v:
+                value_dict[_][region] = self_v[region] ** 2
+        return self.__class__(self._coo_dict_list, value_dict)
 
     def x(self, other):
         """cross-product."""
@@ -305,6 +321,36 @@ class DDSRegionWiseStructured(Frozen):
                 raise NotImplementedError
         else:
             raise NotImplementedError()
+
+    # ------------------------------------------------------------------------------------------------------------
+    def __iter__(self):
+        """Go through all region names."""
+        for region in self._coo_dict_list[0]:
+            yield region
+
+    # ------------------ INTERPOLATE -----------------------------------------------------------------------------
+    def interpolate(self, method='linear', component_wise=False):
+        """"""
+        xyz = [[] for _ in range(self._space_dim)]
+        for region_name in self:
+            for i, component in enumerate(self._coo_dict_list):
+                coo = component[region_name].ravel('F')
+                xyz[i].extend(coo)
+        values = [[] for _ in range(self._value_shape)]
+        for region_name in self:
+            for i, component in enumerate(self._val_dict_list):
+                val = component[region_name].ravel('F')
+                values[i].extend(val)
+        xyz = np.array(xyz).T
+        if component_wise:
+            raise NotImplementedError()
+        else:
+            values = np.array(values).T
+            if method == 'linear':
+                itp = LinearNDInterpolator(xyz, values)
+            else:
+                raise NotImplementedError()
+            return itp
 
     # ---------------- STREAM FUNCTION ---------------------------------------------------------------------------
     def streamfunction(self, shift=0):

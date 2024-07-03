@@ -61,7 +61,7 @@ class MseHttTrilinearBase(Frozen):
                 return MseHttDynamicLocalNonlinearOperator(
                     self._3d_data,
                     self._A, self._B, self._C,
-                    direct_derivative_contribution=True,  # since A, B, C are all different.
+                    multi_linear=True,  # since A, B, C are all different.
                 )
             else:
                 raise NotImplementedError()

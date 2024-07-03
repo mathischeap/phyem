@@ -20,12 +20,12 @@ ph.config.set_embedding_space_dim(2)
 ph.config.set_high_accuracy(True)
 ph.config.set_pr_cache(False)
 
-N = 3
+N = 2
 t = 10
-steps_per_second = 800
+steps_per_second = 400
 total_steps = int(t * steps_per_second)
 _dt_ = 1 / steps_per_second
-Re = 800
+Re = 1
 
 
 manifold = ph.manifold(2, periodic=False)
@@ -166,9 +166,7 @@ tgm = msehtt.tgm()
 outlet_element_layout_x = (
         [1 for _ in range(10)] +
         [2 for _ in range(10)] +
-        [3 for _ in range(15)] +
-        [4 for _ in range(20)] +
-        [5 for _ in range(25)]
+        [3 for _ in range(15)]
 )
 
 msehtt.config(tgm)(
@@ -177,9 +175,9 @@ msehtt.config(tgm)(
         0: [outlet_element_layout_x, 12],
         1: [outlet_element_layout_x, 12],
         2: [15, 12],
-    }, x1=0.5, x2=10
+    }, x1=0.5, x2=2
 )
-tgm.visualize()
+# tgm.visualize()
 
 msehtt_mesh = msehtt.base['meshes'][r'\mathfrak{M}']
 msehtt.config(msehtt_mesh)(tgm, including='all')
@@ -268,15 +266,16 @@ msehtt.info()
 
 msehtt_nls = obj['nls'].apply()
 
-msehtt_nls.config(('essential bc', 1), boundary_u, bc_velocity)  # essential bc
+msehtt_nls.config(('essential bc', 1), boundary_u, bc_velocity, root_form=u)  # essential bc
 bc_p = u.numeric.tsp.L2_energy()
-msehtt_nls.config(['natural bc', 1], boundary_p, bc_p)  # natural bc
+msehtt_nls.config(['natural bc', 1], boundary_p, bc_p, root_form=P)  # natural bc
 
 
-for step in range(1, total_steps+1):
+for step in range(1, 100+1):
     system = msehtt_nls(k=step)
     system.solve(
         [u, w, P],
+        scheme='Picard',
         # atol=1e-6,
         # inner_solver_scheme='lgmres',
         # inner_solver_kwargs={'inner_m': 225, 'outer_k': 25, 'atol': 1e-5, 'maxiter': 5}

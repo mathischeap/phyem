@@ -4,6 +4,7 @@
 import pickle
 from src.config import MASTER_RANK, RANK
 from tools.dds.region_wise_structured import DDSRegionWiseStructured
+from tools.dds.region_wise_structured_group import DDS_RegionWiseStructured_Group
 
 
 def read(filename, root=MASTER_RANK):
@@ -16,6 +17,8 @@ def read(filename, root=MASTER_RANK):
             key = obj['key']
             if key == 'dds-rws':  # dds-rws data, in the master core only.
                 return DDSRegionWiseStructured.read(filename)
+            elif key == 'dds-rws-grouped':  # dds-rws-grouped data, in the master core only.
+                return DDS_RegionWiseStructured_Group.read(filename)
             else:
                 raise NotImplementedError(key)
         else:

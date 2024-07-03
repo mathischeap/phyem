@@ -13,7 +13,17 @@ class MseHttStaticNonlinearSystemCustomize(Frozen):
         self._nls = nls
         self._nonlinear_customizations = list()
         self._linear = MseHttStaticNonlinearSystemCustomize_LinearPart(nls)
+        self.___customizations_on_hold___ = list()
         self._freeze()
+
+    @property
+    def customizations_on_hold(self):
+        return self.___customizations_on_hold___
+
+    def add_customizations_on_hold(self, indicator, kwargs):
+        self.___customizations_on_hold___.append(
+            (indicator, kwargs)
+        )
 
     @property
     def linear(self):
@@ -29,6 +39,18 @@ class MseHttStaticNonlinearSystemCustomize(Frozen):
                     'customization_indicator': 'fixed_global_dofs_for_unknown',
                     'ith_unknown': ith_unknown,
                     'global_dofs': global_dofs,
+                    'take-effect': 0,
+                }
+            )
+        elif customization_indicator == 'set_global_dofs_for_unknown':
+            assert kwargs == {}, f"set_global_dofs_for_unknown customization accepts no kwargs."
+            ith_unknown, global_dofs, global_cochain = args
+            self._nonlinear_customizations.append(
+                {
+                    'customization_indicator': 'set_global_dofs_for_unknown',
+                    'ith_unknown': ith_unknown,
+                    'global_dofs': global_dofs,
+                    'global_cochain': global_cochain,
                     'take-effect': 0,
                 }
             )
@@ -53,6 +75,12 @@ class MseHttStaticNonlinearSystemCustomize(Frozen):
             'fixed_global_dofs_for_unknown', ith_unknown, global_dofs
         )
 
+    def set_global_dofs_for_unknown(self, ith_unknown, global_dofs, global_cochain):
+        """"""
+        self.___check_nonlinear_customization___(
+            'set_global_dofs_for_unknown', ith_unknown, global_dofs, global_cochain
+        )
+
     def set_x0_for_unknown(self, ith_unknown, global_dofs, global_cochain):
         """"""
         self.___check_nonlinear_customization___(
@@ -69,7 +97,7 @@ class MseHttStaticNonlinearSystemCustomize_LinearPart(Frozen):
         self._freeze()
 
     def left_matmul_A_block(self, i, j, M):
-        """If Aij = A[i][j], we will make A[i][j] become M @ Aij.
+        r"""If Aij = A[i][j], we will make A[i][j] become M @ Aij.
 
         Parameters
         ----------
@@ -85,7 +113,7 @@ class MseHttStaticNonlinearSystemCustomize_LinearPart(Frozen):
         A[i][j] = M @ A[i][j]
 
     def set_local_dof(self, ith_unknown, element_label, local_dof_index, value):
-        """"""
+        r""""""
         gm = self._nls._row_gms[ith_unknown]
 
         if element_label in gm:
@@ -110,7 +138,7 @@ class MseHttStaticNonlinearSystemCustomize_LinearPart(Frozen):
         bi.customize.set_value(unknown_global_numbering, value)
 
     def apply_essential_bc_for_unknown(self, ith_unknown, global_dofs, global_cochain):
-        """"""
+        r""""""
         A = self._nls._A
         b = self._nls._b
 

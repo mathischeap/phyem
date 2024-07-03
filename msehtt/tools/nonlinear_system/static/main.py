@@ -445,8 +445,14 @@ class MseHttStaticNonLinearSystem(Frozen):
                         global_cochain = gm.assemble(local_cochain, mode='replace')
                         global_cochain = global_cochain[global_dofs]
                         if ith_unknown in self._nonlinear_terms:
-                            self.customize.fixed_global_dofs_for_unknown(ith_unknown, global_dofs)
-                            self.customize.set_x0_for_unknown(ith_unknown, global_dofs, global_cochain)
+                            self.customize.add_customizations_on_hold(
+                                'nonlinear_part_essential_bc',
+                                {
+                                    'ith_unknown': ith_unknown,
+                                    'global_dofs': global_dofs,
+                                    'global_cochain': global_cochain
+                                }
+                            )
                         else:
                             # we can apply this essential bc through making changes in the linear part.
                             self.customize.linear.apply_essential_bc_for_unknown(

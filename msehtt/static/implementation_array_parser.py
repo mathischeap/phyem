@@ -3,6 +3,7 @@ r"""
 """
 from tools.frozen import Frozen
 from src.spaces.main import _str_degree_parser
+from src.spaces.main import _degree_str_maker
 from src.spaces.main import _sep
 from src.config import _form_evaluate_at_repr_setting
 _rf_evaluate_at_lin_repr = _form_evaluate_at_repr_setting['lin']
@@ -109,17 +110,17 @@ def _find_from_bracket_ABC(default_repr, *ABC, key_words=("{A}", "{B}", "{C}")):
 def _find_space_through_pure_lin_repr(_target_space_lin_repr):
     """"""
     spaces = _base_spaces()
-    the_msepy_space = None
+    the_msehtt_space = None
     for space_lin_repr in spaces:
-        msepy_space = spaces[space_lin_repr]
-        abs_space_pure_lin_repr = msepy_space.abstract._pure_lin_repr
+        msehtt_space = spaces[space_lin_repr]
+        abs_space_pure_lin_repr = msehtt_space.abstract._pure_lin_repr
         if abs_space_pure_lin_repr == _target_space_lin_repr:
-            the_msepy_space = msepy_space
+            the_msehtt_space = msehtt_space
             break
         else:
             pass
-    assert the_msepy_space is not None, f"Find no msehtt static space."
-    return the_msepy_space
+    assert the_msehtt_space is not None, f"Find no msehtt static space."
+    return the_msehtt_space
 
 
 def _parse_root_form(root_form_vec_lin_repr):
@@ -164,7 +165,8 @@ def Parse__M_matrix(space, degree0, degree1):
                 m,
                 gm,
                 gm,
-                cache_key=cache_key_dict
+                cache_key=cache_key_dict,
+                signature=space.__repr__() + '+MM+' + _degree_str_maker(degree),
             )
             RETURN = M, None  # time_indicator is None, mean M is same at all time.
         else:
@@ -185,7 +187,8 @@ def Parse__E_matrix(space, degree):
         e,
         gm0,
         gm1,
-        cache_key=cache_key_dict
+        cache_key=cache_key_dict,
+        signature=space.__repr__() + '+EE+' + _degree_str_maker(degree),
     )
     return E, None  # time_indicator is None, mean E is same at all time.
 

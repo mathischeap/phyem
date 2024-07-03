@@ -17,7 +17,7 @@ class MseHtt_Form_Numeric(Frozen):
         """"""
         self._f = f
         self._tsp = None
-        self._cache_t_ = id(self)
+        self._cache_key_ = id(self)
         self._cache_itp_ = None
         self._export = None
         self._freeze()
@@ -28,9 +28,9 @@ class MseHtt_Form_Numeric(Frozen):
             self._tsp = MseHtt_Form_Numeric_TimeSpaceProperties(self._f)
         return self._tsp
 
-    def rws(self, t, ddf=1, component_wise=False):
+    def rws(self, t, ddf=1, component_wise=False, data_only=False):
         """Return a dds-rws instance in the master rank."""
-        density = int(13 * ddf)
+        density = int(7 * ddf)
         if density < 5:
             density = 5
         elif density > 39:
@@ -49,17 +49,31 @@ class MseHtt_Form_Numeric(Frozen):
             VAL.append(self._merge_dict_(_, root=MASTER_RANK))
 
         if RANK == MASTER_RANK:
-            if component_wise:
-                dds_rws_list = list()
-                for val in VAL:
-                    dds_rws_list.append(
-                        DDSRegionWiseStructured(XYZ, [val, ])
-                    )
-                return dds_rws_list
+            if data_only:
+                if component_wise:
+                    dds_rws_list = list()
+                    for val in VAL:
+                        dds_rws_list.append(
+                            [val, ]
+                        )
+                    return XYZ, dds_rws_list
+                else:
+                    return XYZ, VAL
             else:
-                return DDSRegionWiseStructured(XYZ, VAL)
+                if component_wise:
+                    dds_rws_list = list()
+                    for val in VAL:
+                        dds_rws_list.append(
+                            DDSRegionWiseStructured(XYZ, [val, ])
+                        )
+                    return dds_rws_list
+                else:
+                    return DDSRegionWiseStructured(XYZ, VAL)
         else:
-            pass
+            if data_only:
+                return None, None
+            else:
+                return None
 
     @staticmethod
     def _merge_dict_(data, root=MASTER_RANK):
@@ -91,7 +105,7 @@ class MseHtt_Form_Numeric(Frozen):
         return dtype
 
     # ----------- methods --------------------------------------------------------------
-    def _interpolate_(self, t=None, ddf=1, data_only=False):
+    def _interpolate_(self, t=None, ddf=1, data_only=False, component_wise=False):
         """Use the solution of self._f at time `t` to make interpolations.
 
         Note that the output interpolation is rank-wise, so it only returns reasonable results when coordinates
@@ -108,18 +122,20 @@ class MseHtt_Form_Numeric(Frozen):
         if data_only:
             pass
         else:
-            if t == self._cache_t_:
+            key = f"{t}{ddf}{component_wise}"
+            if key == self._cache_key_:
                 return self._cache_itp_
             else:
-                self._cache_t_ = t
+                self._cache_key_ = key
 
-        density = int(17 * ddf)
+        density = int(13 * ddf)
         if density < 7:
             density = 7
         elif density > 31:
             density = 31
         else:
             pass
+
         linspace = np.linspace(-1, 1, density + 1)
         linspace = (linspace[1:] + linspace[:-1]) / 2
 
@@ -148,11 +164,12 @@ class MseHtt_Form_Numeric(Frozen):
             if data_only:
                 return dtype, (X, Y), (V,)
             else:
-                interp = NearestNDInterpolator(
-                    list(zip(X, Y)), V
-                )
-                self._cache_itp_ = ['2d-scalar', (interp, )]
-                # do not remove (.,) since it shows we are getting something representing a scalar.
+                interp = NearestNDInterpolator(list(zip(X, Y)), V)
+                if component_wise:
+                    self._cache_itp_ = ['2d-scalar', (interp, )]
+                    # do not remove (.,) since it shows we are getting something representing a scalar.
+                else:
+                    self._cache_itp_ = ['2d-scalar', interp]
 
         elif dtype == '2d-vector':
             xy, uv = rc
@@ -168,13 +185,14 @@ class MseHtt_Form_Numeric(Frozen):
             if data_only:
                 return dtype, (X, Y), (U, V)
             else:
-                interp_u = NearestNDInterpolator(
-                    list(zip(X, Y)), U
-                )
-                interp_v = NearestNDInterpolator(
-                    list(zip(X, Y)), V
-                )
-                self._cache_itp_ = ['2d-vector', (interp_u, interp_v)]
+                coo = np.array([X, Y]).T
+                if component_wise:
+                    interp_u = NearestNDInterpolator(coo, U)
+                    interp_v = NearestNDInterpolator(coo, V)
+                    self._cache_itp_ = ['2d-vector', (interp_u, interp_v)]
+                else:
+                    itp = NearestNDInterpolator(coo, np.array([U, V]).T)
+                    self._cache_itp_ = ['2d-vector', itp]
 
         elif dtype == '3d-scalar':
             xyz, v = rc
@@ -190,11 +208,12 @@ class MseHtt_Form_Numeric(Frozen):
             if data_only:
                 return dtype, (X, Y, Z), (V,)
             else:
-                interp = NearestNDInterpolator(
-                    list(zip(X, Y, Z)), V
-                )
-                self._cache_itp_ = ['3d-scalar', (interp, )]
-                # do not remove (.,) since it shows we are getting something representing a scalar.
+                interp = NearestNDInterpolator(list(zip(X, Y, Z)), V)
+                if component_wise:
+                    self._cache_itp_ = ['3d-scalar', (interp, )]
+                    # do not remove (.,) since it shows we are getting something representing a scalar.
+                else:
+                    self._cache_itp_ = ['3d-scalar', interp]
 
         elif dtype == '3d-vector':
             xyz, uvw = rc
@@ -212,10 +231,15 @@ class MseHtt_Form_Numeric(Frozen):
             if data_only:
                 return dtype, (X, Y, Z), (U, V, W)
             else:
-                interp_u = NearestNDInterpolator(list(zip(X, Y, Z)), U)
-                interp_v = NearestNDInterpolator(list(zip(X, Y, Z)), V)
-                interp_w = NearestNDInterpolator(list(zip(X, Y, Z)), W)
-                self._cache_itp_ = ['3d-vector', (interp_u, interp_v, interp_w)]
+                coo = np.array([X, Y, Z]).T
+                if component_wise:
+                    interp_u = NearestNDInterpolator(coo, U)
+                    interp_v = NearestNDInterpolator(coo, V)
+                    interp_w = NearestNDInterpolator(coo, W)
+                    self._cache_itp_ = ['3d-vector', (interp_u, interp_v, interp_w)]
+                else:
+                    itp = NearestNDInterpolator(coo, np.array([U, V, W]).T)
+                    self._cache_itp_ = ['3d-vector', itp]
 
         else:
             raise NotImplementedError()

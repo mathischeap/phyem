@@ -57,6 +57,11 @@ class MseHttMeshPartial(Frozen):
         return self.composition.cfl
 
     @property
+    def rws(self):
+        """About the rws-grouped data saving or exporting."""
+        return self.composition.rws
+
+    @property
     def visualize(self):
         """Call the visualization scheme of the composition."""
         return self.composition.visualize

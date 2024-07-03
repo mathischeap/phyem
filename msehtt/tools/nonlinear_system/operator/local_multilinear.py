@@ -13,7 +13,7 @@ from msehtt.static.form.cochain.instant import MseHttTimeInstantCochain
 from msehtt.static.form.cochain.vector.static import MseHttStaticCochainVector, MseHttStaticLocalVector
 
 
-class MseHttStaticLocalNonlinearOperator(Frozen):
+class MseHttStatic_Local_Multi_Linear_NonlinearOperator(Frozen):
     """"""
 
     def __init__(self, local_static_NOD, particular_correspondence, direct_derivative_contribution=False):
@@ -192,8 +192,9 @@ class MseHttStaticLocalNonlinearOperator(Frozen):
             # c * self; c is a number
             helper = _RmulFactorHelper(self, other)
             # noinspection PyTypeChecker
-            return MseHttStaticLocalNonlinearOperator(
-                helper, self._correspondence, direct_derivative_contribution=self._direct_derivative_contribution
+            return MseHttStatic_Local_Multi_Linear_NonlinearOperator(
+                helper, self._correspondence,
+                direct_derivative_contribution=self._direct_derivative_contribution
             )
 
         else:

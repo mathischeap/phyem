@@ -218,7 +218,7 @@ class MseHttDynamicNonLinearSystem(Frozen):
     def _nonlinear_term_call(self, i, j, *args, **kwargs):
         """call the nonlinear term[i][j] (a dynamic object) to make it a static local object."""
         term = self._nonlinear_terms[i][j]
-        term.test_form = self.test_forms[i]
+        term.test_form = self.test_forms[i]   # set the test-form for the nonlinear term. This is important.
         static_local_nonlinear_term = term(*args, **kwargs)
         factor = self._nonlinear_factors[i][j]
         real_number_factor = factor(*args, **kwargs)

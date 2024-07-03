@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-"""
+r"""
 """
 import numpy as np
 from time import time
@@ -55,7 +55,7 @@ class MseHttNonlinearSystemNewtonRaphsonSolve(Frozen):
             inner_solver_scheme='spsolve',
             inner_solver_kwargs=None          # args for the inner linear solver.
     ):
-        """
+        r"""
 
         Parameters
         ----------
@@ -102,6 +102,7 @@ class MseHttNonlinearSystemNewtonRaphsonSolve(Frozen):
 
             # ----------------------------------------------------------------------
             if indicator == 'set_x0_for_unknown':
+                assert nonlinear_customization['take-effect'] == 0  # it takes no effect yet.
                 nonlinear_customization['take-effect'] = 1   # it takes fully effect here!
                 ith_unknown = nonlinear_customization['ith_unknown']
                 global_dofs = nonlinear_customization['global_dofs']
@@ -232,7 +233,11 @@ class MseHttNonlinearSystemNewtonRaphsonSolve(Frozen):
 
                 # ------------------------------------------------------------
                 if indicator == "fixed_global_dofs_for_unknown":
-                    nonlinear_customization['take-effect'] = 1
+                    if ITER == 1:
+                        assert nonlinear_customization['take-effect'] == 0
+                        nonlinear_customization['take-effect'] = 1
+                    else:
+                        assert nonlinear_customization['take-effect'] == 1
                     ith_unknown = nonlinear_customization['ith_unknown']
                     global_dofs = nonlinear_customization['global_dofs']
                     A = ls.A._A

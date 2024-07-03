@@ -74,7 +74,10 @@ class MseHttLinearSystemSolve(Frozen):
         else:
             pass
 
-        if x0 == 0:  # the initial guess is a zero-vector.
+        if x0.__class__ is MseHttGlobalVectorGathered:
+            pass
+
+        elif x0 == 0:  # the initial guess is a zero-vector.
             shape = self._Axb.shape
             V = np.zeros(shape[1])
             x0 = MseHttGlobalVectorGathered(V, gm=self._Axb.gm_col)

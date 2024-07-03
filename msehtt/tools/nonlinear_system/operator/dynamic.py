@@ -1,15 +1,16 @@
 # -*- coding: utf-8 -*-
-"""
+r"""
 """
 import numpy as np
 from tools.frozen import Frozen
-from msehtt.tools.nonlinear_system.operator.local import MseHttStaticLocalNonlinearOperator
+from msehtt.tools.nonlinear_system.operator.local_multilinear import MseHttStatic_Local_Multi_Linear_NonlinearOperator
+from msehtt.tools.nonlinear_system.operator.local_wrapper import MseHttStatic_Local_Wrapper_NonlinearOperator
 
 
 class MseHttDynamicLocalNonlinearOperator(Frozen):
     """"""
 
-    def __init__(self, data, *correspondence, direct_derivative_contribution=False):
+    def __init__(self, data, *correspondence, multi_linear=False):
         """"""
         if data.__class__ is dict:
             for i in data:
@@ -21,8 +22,8 @@ class MseHttDynamicLocalNonlinearOperator(Frozen):
             raise NotImplementedError(f"MsePyDynamicLocalMatrix cannot take {data}.")
 
         self._correspondence = correspondence
-        assert isinstance(direct_derivative_contribution, bool), f"direct_derivative_contribution must be bool."
-        self._direct_derivative_contribution = direct_derivative_contribution
+        assert isinstance(multi_linear, bool), f"multi_linear must be bool."
+        self._multi_linear = multi_linear
         self._ndim = len(correspondence)
         self._tf = None
         self._freeze()
@@ -44,16 +45,22 @@ class MseHttDynamicLocalNonlinearOperator(Frozen):
 
         # make the static msepy mda.
         if self._dtype == 'static':
-            static = MseHttStaticLocalNonlinearOperator(
+            assert self._multi_linear is True, f"static nonlinear term must be multi-linear."
+            static = MseHttStatic_Local_Multi_Linear_NonlinearOperator(
                 self._data,
                 particular_forms,
-                direct_derivative_contribution=self._direct_derivative_contribution
+                direct_derivative_contribution=self._multi_linear,
+            )
+        elif self._dtype == 'wrapper':
+            static = MseHttStatic_Local_Wrapper_NonlinearOperator(
+                self._data,
+                particular_forms,
             )
         else:
             raise NotImplementedError(f"data type = {self._dtype} is wrong!")
 
         # check and return
-        assert isinstance(static, MseHttStaticLocalNonlinearOperator), f"must return a static one!"
+        assert isinstance(static, MseHttStatic_Local_Multi_Linear_NonlinearOperator), f"must return a static one!"
         return static
 
     def _time_caller(self, *args, **kwargs):

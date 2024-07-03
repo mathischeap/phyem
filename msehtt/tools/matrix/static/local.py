@@ -16,7 +16,7 @@ from scipy.sparse import linalg as sp_spa_linalg
 
 class MseHttStaticLocalMatrix(Frozen):
     """"""
-    def __init__(self, data, gm_row, gm_col, cache_key=None, special_indicator=None):
+    def __init__(self, data, gm_row, gm_col, cache_key=None, special_indicator=None, signature=None):
         """"""
         assert gm_row.__class__ is MseHttGatheringMatrix, f"gm row class wrong."
         assert gm_col.__class__ is MseHttGatheringMatrix, f"gm col class wrong."
@@ -29,6 +29,7 @@ class MseHttStaticLocalMatrix(Frozen):
         self._parse_cache_key(cache_key)
         self.___special_indicator___ = special_indicator
         self._assemble = None
+        self._signature = self._parse_signature(signature, cache_key)
         self._freeze()
 
     def _receive_data(self, data):
@@ -96,6 +97,17 @@ class MseHttStaticLocalMatrix(Frozen):
             return self.___cache_key_dict___[i]
         else:
             return str((self._gm_row.num_local_dofs(i), self._gm_col.num_local_dofs(i)))
+
+    def _parse_signature(self, signature, cache_key):
+        """"""
+        if signature is None:
+            if isinstance(cache_key, str) and cache_key == 'zero':
+                return self._gm_row._signature + self._gm_col._signature
+            else:
+                return '[unique]'
+        else:
+            assert isinstance(signature, str), f"local matrix signature must be str, now it is {signature}."
+            return signature
 
     @property
     def customize(self):
@@ -194,8 +206,15 @@ class MseHttStaticLocalMatrix(Frozen):
         """"""
         def data_caller(e):
             return - self[e]
+        if 'unique' in self._signature:
+            signature = '[unique]'
+        else:
+            signature = '-' + self._signature
 
-        return self.__class__(data_caller, self._gm_row, self._gm_col, cache_key=self._cache_key)
+        return self.__class__(
+            data_caller, self._gm_row, self._gm_col, cache_key=self._cache_key,
+            signature=signature
+        )
 
     def inv(self):
         """"""
@@ -204,9 +223,15 @@ class MseHttStaticLocalMatrix(Frozen):
             invM = sp_spa_linalg.inv(M)
             return csr_matrix(invM)
 
+        if 'unique' in self._signature:
+            signature = '[unique]'
+        else:
+            signature = 'inv' + self._signature
+
         return self.__class__(
             ___inv_caller___, self._gm_col, self._gm_row, cache_key=self._cache_key,
-            special_indicator=f'inverse matrix of {self.__repr__()}'
+            special_indicator=f'inverse matrix of {self.__repr__()}',
+            signature=signature
         )
 
     @property
@@ -215,7 +240,15 @@ class MseHttStaticLocalMatrix(Frozen):
         def data_caller(e):
             return (self[e]).T
 
-        return self.__class__(data_caller, self._gm_col, self._gm_row, cache_key=self._cache_key)
+        if 'unique' in self._signature:
+            signature = '[unique]'
+        else:
+            signature = self._signature + '^T '
+
+        return self.__class__(
+            data_caller, self._gm_col, self._gm_row, cache_key=self._cache_key,
+            signature=signature
+        )
 
     def __rmul__(self, other):
         """other * self"""
@@ -224,7 +257,15 @@ class MseHttStaticLocalMatrix(Frozen):
             def data_caller(i):
                 return other * self[i]
 
-            return self.__class__(data_caller, self._gm_row, self._gm_col, cache_key=self._cache_key)
+            if 'unique' in self._signature:
+                signature = '[unique]'
+            else:
+                signature = '%.8f*' % other + self._signature
+
+            return self.__class__(
+                data_caller, self._gm_row, self._gm_col, cache_key=self._cache_key,
+                signature=signature
+            )
 
         else:
             raise NotImplementedError()
@@ -244,7 +285,15 @@ class MseHttStaticLocalMatrix(Frozen):
                 else:
                     return key1 + '.' + key2
 
-            return self.__class__(data_caller, self._gm_row, self._gm_col, cache_key=cache_key_caller)
+            if 'unique' in self._signature or 'unique' in other._signature:
+                signature = '[unique]'
+            else:
+                signature = self._signature + other._signature
+
+            return self.__class__(
+                data_caller, self._gm_row, self._gm_col, cache_key=cache_key_caller,
+                signature=signature,
+            )
 
     def __matmul__(self, other):
         """"""
@@ -272,7 +321,15 @@ class MseHttStaticLocalMatrix(Frozen):
                     else:
                         return key1 + key2
 
-            return self.__class__(data_caller, self._gm_row, other._gm_col, cache_key=cache_key_caller)
+            if 'unique' in self._signature or 'unique' in other._signature:
+                signature = '[unique]'
+            else:
+                signature = self._signature + other._signature
+
+            return self.__class__(
+                data_caller, self._gm_row, other._gm_col, cache_key=cache_key_caller,
+                signature=signature,
+            )
 
         elif other.__class__ is MseHttStaticCochainVector:
 
@@ -547,15 +604,18 @@ class MseHttStaticLocalMatrixAssemble(Frozen):
         -------
 
         """
-        if cache is not None:
-            assert isinstance(cache, str), f"cache must a string."
-            if cache in ___cache_msehtt_assembled_StaticMatrix___:
-                return ___cache_msehtt_assembled_StaticMatrix___[cache]
-            else:
-                pass
-
-        else:
+        if cache is None:
             pass
+        else:
+            assert isinstance(cache, str), f"cache must a string."
+            cache_key = format + cache + str(threshold)
+            if cache == 'unique':
+                pass
+            else:
+                if cache_key in ___cache_msehtt_assembled_StaticMatrix___:
+                    return ___cache_msehtt_assembled_StaticMatrix___[cache_key]
+                else:
+                    pass
 
         gm_row = self._M._gm_row
         gm_col = self._M._gm_col
@@ -612,8 +672,14 @@ class MseHttStaticLocalMatrixAssemble(Frozen):
 
         A = SPA_MATRIX((DAT, (ROW, COL)), shape=(dep, wid))
         A = MseHttGlobalMatrix(A, gm_row, gm_col)
-        if isinstance(cache, str):
-            ___cache_msehtt_assembled_StaticMatrix___[cache] = A
-        else:
+
+        if cache is None:
             pass
+        else:
+            if cache == 'unique':
+                pass
+            else:
+                # noinspection PyUnboundLocalVariable
+                ___cache_msehtt_assembled_StaticMatrix___[cache_key] = A
+
         return A

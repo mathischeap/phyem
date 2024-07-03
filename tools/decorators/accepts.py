@@ -196,3 +196,13 @@ def accepts(*types):
         new_f.__name__ = f.__name__
         return new_f
     return check_accepts
+
+
+if __name__ == '__main__':
+    # python tools/decorators/accepts.py
+
+    @accepts(str)
+    def test(a):
+        print(a)
+
+    test('abc')

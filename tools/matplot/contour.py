@@ -51,8 +51,12 @@ def contour(
         colors=None,
 
         show_colorbar=True,
+        colorbar_only=False,
         colorbar_label=None, colorbar_orientation='vertical', colorbar_aspect=20,
         colorbar_labelsize=12.5, colorbar_extend='both',
+
+        colorbar_ticks=None,
+        colorbar_tick_labels=None,
 
         ticksize=12,
         xticks=None, yticks=None,
@@ -61,15 +65,19 @@ def contour(
         labelsize=15,
         xlabel=r'$x$',
         ylabel=r'$y$',
+
         title=None,
+        title_fontsize=15,
+
         saveto=None,
-        colorbar_only=False,
         pad_inches=0,
         dpi=150,
         plot_type='contour',
         intermediate=False,
         magnitude=False,
         top_right_bounds=False,
+
+        aspect=None,
 ):
     """
 
@@ -108,6 +116,8 @@ def contour(
 
         If not 'neither', make pointed end(s) for out-of- range values. These are set for a
         given colormap using the colormap set_under and set_over methods.
+    colorbar_ticks
+    colorbar_tick_labels
 
     ticksize
     xticks
@@ -119,6 +129,7 @@ def contour(
     xlabel
     ylabel
     title
+    title_fontsize
     saveto
     plot_type:
         {'contour', 'contourf'}
@@ -128,6 +139,8 @@ def contour(
     intermediate
     magnitude
     top_right_bounds
+
+    aspect
 
     Returns
     -------
@@ -219,9 +232,10 @@ def contour(
     if title is None or title is False:
         pass
     elif isinstance(title, str):
-        plt.title(title)
+        plt.title(title, fontsize=title_fontsize)
     else:
         raise Exception(f"title must be a string.")
+    
     # -------------------------------- color bar ---------------------------------
     if show_colorbar:
         mappable = cm.ScalarMappable()
@@ -231,10 +245,24 @@ def contour(
                           aspect=colorbar_aspect,
                           orientation=colorbar_orientation)
 
+        if colorbar_ticks is None:
+            pass
+        else:
+            if colorbar_tick_labels is None:
+                cb.set_ticks(ticks=colorbar_ticks)
+            else:
+                # we can customize the colorbar ticks.
+                cb.set_ticks(ticks=colorbar_ticks, labels=colorbar_tick_labels)
+
         if colorbar_label is not None:
             cb.set_label(colorbar_label, labelpad=10, size=15)
 
         cb.ax.tick_params(labelsize=colorbar_labelsize)
+
+    if aspect is None:
+        pass
+    else:
+        ax.set_aspect(aspect)
 
     # ---------------------- save to ---------------------------------------------
     if colorbar_only:

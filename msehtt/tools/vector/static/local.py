@@ -233,6 +233,20 @@ class MseHttStaticLocalVector(Frozen):
         else:
             raise NotImplementedError(other.__class__)
 
+    def __sub__(self, other):
+        """self - other"""
+        if (other.__class__ is self.__class__) or issubclass(other.__class__, self.__class__):
+            assert self._gm == other._gm, f"gathering matrix does not match."
+
+            data_dict = {}
+
+            for e in self._gm:
+                data_dict[e] = self[e] - other[e]
+
+            return self.__class__(data_dict, self._gm)
+        else:
+            raise NotImplementedError(other.__class__)
+
     def __neg__(self):
         """-self"""
         def data_caller(i):
@@ -341,7 +355,7 @@ def concatenate(v_1d_list, gm):
                 MseHttStaticLocalVector(0, gms[i])
             )
         else:
-            assert issubclass(vi.__class__, MseHttStaticLocalVector) and vi._gm is gms[i], f"gm wrong!"
+            assert vi._gm is gms[i], f"vi wrong: {vi.__class__}"
             vs.append(
                 vi
             )

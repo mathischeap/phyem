@@ -50,6 +50,7 @@ __all__ = [
     "find_manifold",
 
     'vtk',  # save an object or some objects to a vtk file.
+    'rws',  # save an object or some objects to a dds-rws-grouped file.
 
 ]
 
@@ -100,3 +101,4 @@ import tools.film as film
 import tools
 
 from tools.vtk_.main import vtk
+from tools.dds.saving_api import _rws_grouped_saving as rws

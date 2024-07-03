@@ -136,12 +136,12 @@ class ___MseHtt_Static_Form_Copy_Numeric___(Frozen):
         self._t = t
         self._freeze()
 
-    def rws(self, ddf=1, component_wise=False):
-        return self._f.numeric.rws(self._t, ddf=ddf, component_wise=component_wise)
+    def rws(self, ddf=1, component_wise=False, **kwargs):
+        return self._f.numeric.rws(self._t, ddf=ddf, component_wise=component_wise, **kwargs)
 
     @property
     def dtype(self):
         return self._f.numeric.dtype
 
-    def _interpolate_(self, ddf=1, data_only=False):
-        return self._f.numeric._interpolate_(self._t, ddf=ddf, data_only=data_only)
+    def interpolate(self, ddf=1, data_only=False, component_wise=False):
+        return self._f.numeric._interpolate_(self._t, ddf=ddf, data_only=data_only, component_wise=component_wise)

@@ -60,7 +60,7 @@ class MseHtt_Form_Numeric_TimeSpaceProperties(Frozen):
     def ___newest_energy___(self, t, *xyz):
         """"""
         _ = t  # t has no effect since we will always use the newest t of the cochain.
-        dtype, V = self._f.numeric._interpolate_()
+        dtype, V = self._f.numeric._interpolate_(component_wise=True)
 
         if dtype == '2d-scalar':
             return 0.5 * V[0](*xyz) ** 2
@@ -84,5 +84,5 @@ class _ComponentHelper_(Frozen):
     def __call__(self, t, *xyz):
         """"""
         _ = t
-        itp = self._itp_func_(t=None)[1]  # [1] since [0] is the dtype.
+        itp = self._itp_func_(t=None, component_wise=True)[1]  # [1] since [0] is the dtype.
         return itp[self._ith_component](*xyz)
