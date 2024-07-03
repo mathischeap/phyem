@@ -5,7 +5,7 @@ from tools.frozen import Frozen
 
 
 class MseHttDynamicLinearSystem_Config(Frozen):
-    """"""
+    r""""""
 
     def __init__(self, dls):
         """"""
@@ -14,7 +14,7 @@ class MseHttDynamicLinearSystem_Config(Frozen):
         self._freeze()
 
     def __call__(self, bc_type, *args, **kwargs):
-        """"""
+        r""""""
         # ----------- put bc_type info into tuple -----------------------------------------------
         if isinstance(bc_type, list):
             bc_type = tuple(bc_type)
@@ -30,7 +30,7 @@ class MseHttDynamicLinearSystem_Config(Frozen):
             raise NotImplementedError()
 
     def _conf__natural_bc___1_(self, place, condition, root_form):
-        """"""
+        r""""""
         self._configurations.append(
             {
                 'type': 'natural bc',     # natural bc, < tr-star-rf | x >
@@ -42,7 +42,7 @@ class MseHttDynamicLinearSystem_Config(Frozen):
         )
 
     def _config__essential_bc___1_(self, place, condition, root_form):
-        """"""
+        r""""""
         self._configurations.append(
             {
                 'type': 'essential bc',

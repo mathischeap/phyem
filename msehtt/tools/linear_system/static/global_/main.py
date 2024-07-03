@@ -12,7 +12,7 @@ from msehtt.tools.linear_system.static.global_.solve import MseHttLinearSystemSo
 
 
 class MseHttLinearSystem(Frozen):
-    """"""
+    r""""""
 
     def __init__(self, A, b):
         """"""

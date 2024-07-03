@@ -15,7 +15,7 @@ def gmres(
         atol=1e-5,
         restart=75, maxiter=30
 ):
-    """
+    r"""
 
     Parameters
     ----------

@@ -19,7 +19,7 @@ _len_transpose_text = len(_transpose_text)
 
 
 def msehtt_root_array_parser(dls, array_lin_repr):
-    """"""
+    r""""""
     PARSER = dls._base['PARSER']
 
     if array_lin_repr[-_len_transpose_text:] == _transpose_text:

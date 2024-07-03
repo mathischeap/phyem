@@ -9,7 +9,7 @@ from src.config import RANK, MASTER_RANK, COMM, MPI
 
 
 def spsolve(A, b):  # I receive shells of A and b in order to have the freedom to clean the original data.
-    """direct solver."""
+    r"""direct solver."""
     t_start = time()
     # --- x ------------------------------
     M = A.gather(root=MASTER_RANK)
