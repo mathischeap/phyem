@@ -24,7 +24,10 @@ def _merge_dict_(data, root=MASTER_RANK):
 
 
 class MseHtt_PartialMesh_Elements_CFL_condition(Frozen):
-    """"""
+    """With this property, we can compute cfl number based on a form on this partial mesh of elements.
+
+    The cfl results can be saved as a vtk file or a rws data structure or else.
+    """
 
     def __init__(self, elements):
         """"""

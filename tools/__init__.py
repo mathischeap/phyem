@@ -10,6 +10,8 @@ __all__ = [
     'ParallelMatrix3dInputRunner',
 
     'genpiecewise',
+
+    "csv",
 ]
 
 from tools.matplot.quiver import quiver
@@ -20,3 +22,5 @@ from tools.miscellaneous.numpy_styple import NumpyStyleDocstringReader
 from tools.runner import ParallelMatrix3dInputRunner
 
 from tools.gen_piece_wise import genpiecewise
+
+from tools.miscellaneous.csv.main import CsvFiler as csv

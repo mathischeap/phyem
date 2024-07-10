@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-"""
+r"""
 """
 import numpy as np
 from msepy.tools.polynomials import Lobatto_polynomials_of_degree

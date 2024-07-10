@@ -21,6 +21,7 @@ def __matplot__(
         title=None, title_size=20, title_pad=12,
         # labels
         xlabel=None, ylabel=None, label_size=16,
+        xlabel_pad=None, ylabel_pad=None,
         # ticks
         tick_style: [] = "sci", xticks=None, yticks=None, tick_direction='in',
         tick_size=16, tick_pad=6, minor_tick_length=4, major_tick_length=8,
@@ -74,6 +75,8 @@ def __matplot__(
     xlabel
     ylabel
     label_size
+    xlabel_pad
+    ylabel_pad
     tick_style : {'sci', 'scientific', 'plain'}
     xticks
     yticks
@@ -110,7 +113,7 @@ def __matplot__(
     })
 
     if usetex:
-        plt.rcParams['text.latex.preamble'] = r"\usepackage{amsmath}"
+        plt.rcParams['text.latex.preamble'] = r"\usepackage{amsmath, amssymb}"
 
     _, ax = plt.subplots(figsize=figsize)
     plt.gcf().subplots_adjust(left=left)
@@ -227,9 +230,16 @@ def __matplot__(
         ax.scatter(*scatter, **scatter_kwargs)
 
     if xlabel is not None:
-        plt.xlabel(xlabel, fontsize=label_size)
+        if xlabel_pad is None:
+            plt.xlabel(xlabel, fontsize=label_size)
+        else:
+            plt.xlabel(xlabel, fontsize=label_size, labelpad=xlabel_pad)
+
     if ylabel is not None:
-        plt.ylabel(ylabel, fontsize=label_size)
+        if ylabel_pad is None:
+            plt.ylabel(ylabel, fontsize=label_size)
+        else:
+            plt.ylabel(ylabel, fontsize=label_size, labelpad=ylabel_pad)
 
     if title is None:
         pass

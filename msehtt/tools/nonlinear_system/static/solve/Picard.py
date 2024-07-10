@@ -127,6 +127,9 @@ class MseHtt_NonlinearSystem_Picard(Frozen):
                 rhs[i] = self._nls._b[i]  # b[i] cannot be None
                 if f[i] is None:
                     pass
+                elif isinstance(f[i], MseHttStaticLocalVector):
+                    assert f[i]._gm == self._nls._row_gms[i], f"must be"
+                    rhs[i] -= f[i]
                 else:
                     rhs[i] -= MseHttStaticLocalVector(f[i], self._nls._row_gms[i])
 

@@ -119,6 +119,9 @@ class Iterator(Frozen):
     def test(self, test_range):
         r"""Do a test run of `times` iterations."""
         for args in test_range:
+            if RANK == MASTER_RANK:
+                print(f"=~= (TESTING) starts with input: <{args}>", flush=True)
+
             t_start = time()
             if hasattr(args, '__iter__'):
                 results = self._solver_(*args)
@@ -127,7 +130,7 @@ class Iterator(Frozen):
             t_cost = time() - t_start
 
             if RANK == MASTER_RANK:
-                print(f"=~= (TESTING) input: <{args}> leads to outputs: (cost %.3f) seconds" % t_cost)
+                print(f" ... leads to outputs: (cost %.3f) seconds\n" % t_cost)
                 for i, res in enumerate(results):
                     print(f"  {i})-> {self._solver_ret[i]}: {res}")
                 print('\n', flush=True)

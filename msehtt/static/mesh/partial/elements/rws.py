@@ -8,7 +8,10 @@ from tools.dds.region_wise_structured_group import DDS_RegionWiseStructured_Grou
 
 
 class MseHtt_PartialMesh_Elements_ExportTo_DDS_RWS_Grouped(Frozen):
-    """"""
+    """With this property for partial mesh of elements, we can export objects (for example, forms) to
+    grouped_rws data structure.
+
+    """
 
     def __init__(self, elements):
         """"""

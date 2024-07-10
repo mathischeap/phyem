@@ -271,7 +271,7 @@ bc_p = u.numeric.tsp.L2_energy()
 msehtt_nls.config(['natural bc', 1], boundary_p, bc_p, root_form=P)  # natural bc
 
 
-for step in range(1, 100+1):
+for step in range(1, 20+1):
     system = msehtt_nls(k=step)
     system.solve(
         [u, w, P],

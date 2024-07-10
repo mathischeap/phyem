@@ -62,6 +62,11 @@ class MseHttMeshPartial(Frozen):
         return self.composition.rws
 
     @property
+    def compute(self):
+        """Compute something (other than cfl number) on this partial mesh."""
+        return self.composition.compute
+
+    @property
     def visualize(self):
         """Call the visualization scheme of the composition."""
         return self.composition.visualize

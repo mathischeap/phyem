@@ -77,6 +77,7 @@ class DDS_RegionWiseStructured_Group(Frozen):
     @classmethod
     def read(cls, filename):
         """"""
+        assert RANK == MASTER_RANK, f"Can only read dds-rws-grouped in the master rank!"
         with open(filename, 'rb') as inputs:
             data = pickle.load(inputs)
         inputs.close()

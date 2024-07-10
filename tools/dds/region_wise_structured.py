@@ -86,6 +86,7 @@ class DDSRegionWiseStructured(Frozen):
     @classmethod
     def read(cls, filename):
         """"""
+        assert RANK == MASTER_RANK, f"Can only read dds-rws in the master rank!"
         with open(filename, 'rb') as inputs:
             data = pickle.load(inputs)
         inputs.close()
@@ -278,6 +279,33 @@ class DDSRegionWiseStructured(Frozen):
             return self.__class__(self._coo_dict_list, value_dict)
         else:
             raise NotImplementedError()
+
+    def dot(self, other):
+        """"""
+        if other.__class__ is self.__class__:
+            assert self._value_shape == other._value_shape
+            value_dict = dict()
+            for region in self._val_dict_list[0]:
+                region_value = 0
+                for i in range(self._value_shape):
+                    region_value += self._val_dict_list[i][region] * other._val_dict_list[i][region]
+                value_dict[region] = region_value
+            return self.__class__(self._coo_dict_list, [value_dict,])
+
+        else:
+            raise NotImplementedError(f"dds-rws dot between {self} and {other} not implemented.")
+
+    def __pow__(self, power):
+        if isinstance(power, (int, float)):
+            value_dict = [dict() for _ in range(self._value_shape)]
+            for _ in range(self._value_shape):
+                self_v = self._val_dict_list[_]
+                for region in self_v:
+                    value_dict[_][region] = self_v[region] ** power
+            return self.__class__(self._coo_dict_list, value_dict)
+
+        else:
+            raise NotImplementedError(f"dds-rws to the power of {power} is not implemented.")
 
     @property
     def square(self):

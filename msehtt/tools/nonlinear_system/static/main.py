@@ -487,12 +487,26 @@ class MseHttStaticNonLinearSystem(Frozen):
                     if sign == '+':
                         pass
                     else:
-                        static_vector = - static_vector
+                        if isinstance(static_vector.__class__, dict):
+                            neg_static_vector = dict()
+                            for e in static_vector:
+                                neg_static_vector[e] = - static_vector[e]
+                            static_vector = neg_static_vector
+                        else:
+                            static_vector = - static_vector
 
                     if nfi is None:
                         nfi = static_vector
+
                     else:
-                        nfi += static_vector
+                        if isinstance(nfi, dict) or isinstance(static_vector, dict):
+                            add_nfi = {}
+                            assert len(nfi) == len(static_vector), f"must be"
+                            for e in nfi:
+                                add_nfi[e] = nfi[e] + static_vector[e]
+                            nfi = add_nfi
+                        else:
+                            nfi += static_vector
             else:
                 pass
 
@@ -539,10 +553,18 @@ class MseHttStaticNonLinearSystem(Frozen):
             if fi is None:
                 pass
             else:
-                fi_2b_added = MseHttStaticLocalVector(
-                    fi,
-                    self._row_gms[i]
-                )
+                if isinstance(fi, dict):
+                    fi_2b_added = MseHttStaticLocalVector(
+                        fi,
+                        self._row_gms[i]
+                    )
+                elif isinstance(fi, MseHttStaticLocalVector):
+                    assert fi._gm == self._row_gms[i], f'must be!'
+                    fi_2b_added = fi
+
+                else:
+                    raise Exception()
+
                 if f[i] is None:
                     f[i] = fi_2b_added
                 else:

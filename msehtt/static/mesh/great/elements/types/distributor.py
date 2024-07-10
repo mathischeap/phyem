@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-"""
+r"""
 """
 
 from tools.frozen import Frozen
@@ -37,6 +37,6 @@ class MseHttGreatMeshElementDistributor(Frozen):
             'unique msepy curvilinear quadrilateral': MseHttGreatMeshUniqueMsepyCurvilinearQuadrilateralElement,
             'orthogonal rectangle': MseHttGreatMeshOrthogonalRectangleElement,
 
-            # m2n3 elements:
+            # m3n3 elements:
             'orthogonal hexahedron': MseHttGreatMeshOrthogonalHexahedronElement
         }

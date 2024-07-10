@@ -27,6 +27,11 @@ class MseHttFormStaticCopy(Frozen):
         return self._f.__repr__().split('at')[0] + f'@ {self._t}' + super_repr
 
     @property
+    def degree(self):
+        """The degree of the general form."""
+        return self._f.degree
+
+    @property
     def tpm(self):
         return self._f.tpm
 

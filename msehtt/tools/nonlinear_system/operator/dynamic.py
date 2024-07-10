@@ -5,6 +5,7 @@ import numpy as np
 from tools.frozen import Frozen
 from msehtt.tools.nonlinear_system.operator.local_multilinear import MseHttStatic_Local_Multi_Linear_NonlinearOperator
 from msehtt.tools.nonlinear_system.operator.local_wrapper import MseHttStatic_Local_Wrapper_NonlinearOperator
+from msehtt.tools.nonlinear_system.operator.local_wrapper import MseHttStatic_Local_Wrapper_NonlinearOperator_DataMaker
 
 
 class MseHttDynamicLocalNonlinearOperator(Frozen):
@@ -17,6 +18,9 @@ class MseHttDynamicLocalNonlinearOperator(Frozen):
                 assert data[i].__class__ is np.ndarray, f"when providing a dict, it must be a dict of nd array."
             # we receive a dictionary of n-d array
             self._dtype = 'static'
+            self._data = data
+        elif issubclass(data.__class__, MseHttStatic_Local_Wrapper_NonlinearOperator_DataMaker):
+            self._dtype = 'wrapper'
             self._data = data
         else:
             raise NotImplementedError(f"MsePyDynamicLocalMatrix cannot take {data}.")
@@ -59,8 +63,6 @@ class MseHttDynamicLocalNonlinearOperator(Frozen):
         else:
             raise NotImplementedError(f"data type = {self._dtype} is wrong!")
 
-        # check and return
-        assert isinstance(static, MseHttStatic_Local_Multi_Linear_NonlinearOperator), f"must return a static one!"
         return static
 
     def _time_caller(self, *args, **kwargs):

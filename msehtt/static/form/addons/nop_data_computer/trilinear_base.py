@@ -10,6 +10,7 @@ from msehtt.tools.vector.dynamic import MseHttDynamicLocalVector
 from msehtt.tools.matrix.static.local import MseHttStaticLocalMatrix
 from msehtt.tools.vector.static.local import MseHttStaticLocalVector
 from msehtt.tools.nonlinear_system.operator.dynamic import MseHttDynamicLocalNonlinearOperator
+from msehtt.tools.nonlinear_system.operator.local_wrapper import MseHttStatic_Local_Wrapper_NonlinearOperator_DataMaker
 
 
 class MseHttTrilinearBase(Frozen):
@@ -63,11 +64,56 @@ class MseHttTrilinearBase(Frozen):
                     self._A, self._B, self._C,
                     multi_linear=True,  # since A, B, C are all different.
                 )
+                # # when use Picard iterator, we can use below wrapper.
+                # return MseHttDynamicLocalNonlinearOperator(
+                #     _DM_(self._A, self._B, self._C, self._3d_data),
+                #     self._A, self._B, self._C,
+                #     multi_linear=False,
+                # )
+
             else:
                 raise NotImplementedError()
 
         else:
             raise NotImplementedError()
+
+
+class _DM_(MseHttStatic_Local_Wrapper_NonlinearOperator_DataMaker):
+    """"""
+    def __init__(self, A, B, C, _3d_data):
+        """"""
+        super().__init__([A, B, C])
+        self._melt()
+        self._3d_data = _3d_data
+        self._freeze()
+
+    def reduce_to_vector(self, provided_cochains):
+        """"""
+        assert provided_cochains.count(None) == 1, f"must be"
+        remaining_index = provided_cochains.index(None)
+        if remaining_index == 0:
+            operands = 'ijk, j, k -> i'
+            input0, input1 = provided_cochains[1], provided_cochains[2]
+            tf = self.correspondence[0]
+        elif remaining_index == 1:
+            operands = 'ijk, i, k -> j'
+            input0, input1 = provided_cochains[0], provided_cochains[2]
+            tf = self.correspondence[1]
+        elif remaining_index == 2:
+            operands = 'ijk, i, j -> k'
+            input0, input1 = provided_cochains[0], provided_cochains[1]
+            tf = self.correspondence[2]
+        else:
+            raise Exception()
+        local_vectors = {}
+        for e in self._3d_data:  # all local elements
+            local_vectors[e] = np.einsum(
+                    operands,
+                    self._3d_data[e], input0[e], input1[e],
+                    optimize='optimal',
+            )
+
+        return MseHttStaticLocalVector(local_vectors, tf.cochain.gathering_matrix)
 
 
 class _OneDimVectorCaller(Frozen):

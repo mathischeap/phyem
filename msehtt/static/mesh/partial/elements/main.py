@@ -7,6 +7,7 @@ from src.config import RANK, MASTER_RANK, COMM, SIZE
 
 from msehtt.static.mesh.partial.elements.cfl import MseHtt_PartialMesh_Elements_CFL_condition
 from msehtt.static.mesh.partial.elements.rws import MseHtt_PartialMesh_Elements_ExportTo_DDS_RWS_Grouped
+from msehtt.static.mesh.partial.elements.compute import PartialMesh_Elements_Compute
 
 
 class MseHttElementsPartialMesh(Frozen):
@@ -24,6 +25,7 @@ class MseHttElementsPartialMesh(Frozen):
         self._mn = None
         self._cfl = None
         self._rws = None
+        self._compute = None
         self._freeze()
 
     def info(self):
@@ -50,7 +52,15 @@ class MseHttElementsPartialMesh(Frozen):
         return self._rws
 
     @property
+    def compute(self):
+        r"""Compute something (other than cfl number) based on this partial mesh of elements."""
+        if self._compute is None:
+            self._compute = PartialMesh_Elements_Compute(self)
+        return self._compute
+
+    @property
     def visualize(self):
+        """To visualize this partial mesh of elements."""
         if self._visualize is None:
             self._visualize = MseHttElementsPartialMeshVisualize(self)
         return self._visualize

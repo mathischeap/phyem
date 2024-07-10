@@ -62,17 +62,24 @@ class MseHttGreatMeshVisualizeMatplot(Frozen):
     def _plot_2d_great_mesh_in_2d_space(
             cls,
             line_data,
-            figsize=(10, 6),
+            figsize=(8, 6),
             aspect='equal',
             usetex=True,
+
             labelsize=12,
+
             ticksize=12,
+            xticks=None, yticks=None,
+            minor_tick_length=4, major_tick_length=8,
+
             xlim=None, ylim=None,
             saveto=None,
             linewidth=0.75,
             color='k',
             title=None,  # None or custom
             data_only=False,
+
+            pad_inches=0,
     ):
         """
 
@@ -84,6 +91,10 @@ class MseHttGreatMeshVisualizeMatplot(Frozen):
         usetex
         labelsize
         ticksize
+        xticks
+        yticks
+        minor_tick_length
+        major_tick_length
         xlim
         ylim
         saveto
@@ -91,6 +102,7 @@ class MseHttGreatMeshVisualizeMatplot(Frozen):
         color
         title : {str, bool, None}, optional
         data_only
+        pad_inches
 
         Returns
         -------
@@ -106,6 +118,13 @@ class MseHttGreatMeshVisualizeMatplot(Frozen):
         plt.xlabel(r"$x$", fontsize=labelsize)
         plt.ylabel(r"$y$", fontsize=labelsize)
         plt.tick_params(axis='both', which='both', labelsize=ticksize)
+        if xticks is not None:
+            plt.xticks(xticks)
+        if yticks is not None:
+            plt.yticks(yticks)
+        ax.tick_params(labelsize=ticksize)
+        plt.tick_params(axis='both', which='minor', direction='out', length=minor_tick_length)
+        plt.tick_params(axis='both', which='major', direction='out', length=major_tick_length)
 
         if xlim is not None:
             plt.xlim(xlim)
@@ -138,7 +157,7 @@ class MseHttGreatMeshVisualizeMatplot(Frozen):
 
         # save -----------------------------------------------------------
         if saveto is not None and saveto != '':
-            plt.savefig(saveto, bbox_inches='tight')
+            plt.savefig(saveto, bbox_inches='tight', pad_inches=pad_inches)
         else:
             from src.config import _setting, _pr_cache
             if _setting['pr_cache']:
