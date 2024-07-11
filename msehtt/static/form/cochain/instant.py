@@ -96,7 +96,10 @@ class MseHttTimeInstantCochain(Frozen):
         return d_cochain
 
     def of_dof(self, global_dof):
-        """Find the cochain for global_dof #global_dof."""
+        """Find the cochain for global_dof #global_dof.
+
+        Return the same cochain in all ranks no matter whether the global dof is in an element of the rank.
+        """
         elements__local_numbering = self._gm.find_rank_locations_of_global_dofs(global_dof)
         elements__local_numbering = elements__local_numbering[list(elements__local_numbering.keys())[0]]
         cochain = list()
@@ -120,7 +123,10 @@ class MseHttTimeInstantCochain(Frozen):
         return COCHAIN[0]
 
     def of_local_dof(self, element_index, local_numbering):
-        """"""
+        """Return local cochain for a local dof indicated by element index and local numbering.
+
+        Return the same cochain in all ranks no matter whether the local dof is in the rank.
+        """
         if element_index in self:
             cochain = self[element_index][local_numbering]
         else:

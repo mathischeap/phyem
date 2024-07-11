@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-"""
+r"""
 """
 from src.config import RANK, MASTER_RANK, COMM
 from tools.quadrature import quadrature

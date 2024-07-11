@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-"""
+r"""
 """
 import numpy as np
 from tools.quadrature import Quadrature
@@ -22,7 +22,7 @@ def reduce_Lambda__m2n2k1_inner(cf_t, tpm, degree):
     return cochain
 
 
-def ___221i_msepy_quadrilateral___(element, cf_t, degree):
+def ___221i_raw_msepy_quadrilateral___(element, cf_t, degree):
     """"""
     xi, et, edge_size_d, quad_weights = _msepy_data_preparation('x', degree)
     x, y = element.ct.mapping(xi, et)
@@ -60,7 +60,12 @@ def ___221i_msepy_quadrilateral___(element, cf_t, degree):
             optimize='optimal'
         )
     )
+    return cochain_dx, cochain_dy
 
+
+def ___221i_msepy_quadrilateral___(element, cf_t, degree):
+    """"""
+    cochain_dx, cochain_dy = ___221i_raw_msepy_quadrilateral___(element, cf_t, degree)
     if 'm2n2k1_inner' in element.dof_reverse_info:
         face_indices = element.dof_reverse_info['m2n2k1_inner']
 
@@ -97,8 +102,8 @@ def reduce_Lambda__m2n2k1_outer(cf_t, tpm, degree):
     return cochain
 
 
-def ___221o_msepy_quadrilateral___(element, cf_t, degree):
-    """"""
+def ___221o_raw_msepy_quadrilateral___(element, cf_t, degree):
+    r""""""
     xi, et, edge_size_d, quad_weights = _msepy_data_preparation('x', degree)
     x, y = element.ct.mapping(xi, et)
     J = element.ct.Jacobian_matrix(xi, et)
@@ -136,6 +141,12 @@ def ___221o_msepy_quadrilateral___(element, cf_t, degree):
         )
     )
 
+    return cochain_dy, cochain_dx
+
+
+def ___221o_msepy_quadrilateral___(element, cf_t, degree):
+    r""""""
+    cochain_dy, cochain_dx = ___221o_raw_msepy_quadrilateral___(element, cf_t, degree)
     if 'm2n2k1_outer' in element.dof_reverse_info:
         face_indices = element.dof_reverse_info['m2n2k1_outer']
 

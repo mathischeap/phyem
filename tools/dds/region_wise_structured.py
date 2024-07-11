@@ -43,6 +43,7 @@ class DDSRegionWiseStructured(Frozen):
         regions = coo_dict_list[0].keys()
         for i, coo_dict in enumerate(coo_dict_list):
             assert coo_dict.keys() == regions, f"regions do not match."
+        self._regions = regions
 
         for region in regions:
             region_data_shape = coo_dict_list[0][region].shape
@@ -69,6 +70,33 @@ class DDSRegionWiseStructured(Frozen):
     def __repr__(self):
         super_repr = super().__repr__().split('object')[1]
         return rf"<DDR-RWS {self.ndim}d {self.dtype}" + super_repr
+
+    def ___check_coo_equality___(self, other):
+        r"""We check if self._coo_dict_list is same as other._coo_dict_list."""
+        assert other.__class__ is self.__class__, f"I need a dds-rws to compare, now I get {other.__class__}."
+
+        if self._space_dim != other._space_dim:
+            return False
+
+        if self._regions != other._regions:
+            return False
+
+        if all([self._coo_dict_list[i] is other._coo_dict_list[i] for i in range(self._space_dim)]):
+            return True
+
+        for i in range(self._space_dim):
+            sc = self._coo_dict_list[i]
+            oc = other._coo_dict_list[i]
+            for r in self._regions:
+                sd = sc[r]
+                od = oc[r]
+
+                if np.allclose(sd, od):
+                    pass
+                else:
+                    return False
+
+        return True
 
     # --------- save & read ------------------------------------------------------------------------------
 
@@ -226,8 +254,7 @@ class DDSRegionWiseStructured(Frozen):
     # -- Operations ----------------------------------------------------------------------------------------
     def __sub__(self, other):
         """self - other"""
-        assert other.__class__ == self.__class__, f"type wrong"
-        assert self._space_dim == other._space_dim, f"space ndim wrong"
+        assert self.___check_coo_equality___(other)
         assert self._value_shape == other._value_shape, f"value shape wrong"
 
         for i in range(self._space_dim):
@@ -248,8 +275,7 @@ class DDSRegionWiseStructured(Frozen):
 
     def __add__(self, other):
         """self + other"""
-        assert other.__class__ == self.__class__, f"type wrong"
-        assert self._space_dim == other._space_dim, f"space ndim wrong"
+        assert self.___check_coo_equality___(other)
         assert self._value_shape == other._value_shape, f"value shape wrong"
 
         for i in range(self._space_dim):
@@ -283,6 +309,7 @@ class DDSRegionWiseStructured(Frozen):
     def dot(self, other):
         """"""
         if other.__class__ is self.__class__:
+            assert self.___check_coo_equality___(other)
             assert self._value_shape == other._value_shape
             value_dict = dict()
             for region in self._val_dict_list[0]:
@@ -323,6 +350,8 @@ class DDSRegionWiseStructured(Frozen):
 
     def cross_product(self, other):
         """cross-product."""
+        assert self.___check_coo_equality___(other)
+
         if self.classification == '2d vector':
 
             if other.classification == '2d vector':

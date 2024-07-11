@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-"""
+r"""
 """
 import numpy as np
 from tools.quadrature import quadrature
@@ -16,13 +16,13 @@ def reduce_Lambda__m3n3k1(cf_t, tpm, degree):
         element = elements[e]
         etype = element.etype
         if etype in ("orthogonal hexahedron", ):
-            cochain[e] = ___331_msepy_quadrilateral___(element, cf_t, degree)
+            cochain[e] = ___331_msepy_orthogonal___(element, cf_t, degree)
         else:
             raise NotImplementedError()
     return cochain
 
 
-def ___331_msepy_quadrilateral___(element, cf_t, degree):
+def ___331_raw_msepy_orthogonal___(element, cf_t, degree):
     """"""
     xi, et, sg, edge_size_d, quad_weights = _msepy_data_preparation('x', degree)
     x, y, z = element.ct.mapping(xi, et, sg)
@@ -75,6 +75,11 @@ def ___331_msepy_quadrilateral___(element, cf_t, degree):
         )
     )
 
+    return cochain_dx, cochain_dy, cochain_dz
+
+
+def ___331_msepy_orthogonal___(element, cf_t, degree):
+    cochain_dx, cochain_dy, cochain_dz = ___331_raw_msepy_orthogonal___(element, cf_t, degree)
     if 'm3n3k1' in element.dof_reverse_info:
         face_indices = element.dof_reverse_info['m3n3k1']
 
