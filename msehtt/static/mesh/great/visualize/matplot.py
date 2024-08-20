@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-"""
+r"""
 """
 from tools.frozen import Frozen
 from src.config import RANK, MASTER_RANK, COMM
@@ -54,7 +54,11 @@ class MseHttGreatMeshVisualizeMatplot(Frozen):
             mn.add(data[i]['mn'])
 
         if len(mn) == 1 and list(mn)[0] == (2, 2):  # all elements are 2d elements in 2d spaces.
-            return self._plot_2d_great_mesh_in_2d_space(data, **kwargs)
+            return self._plot_2d_great_mesh_in_2d_space(
+                data,
+                element_distribution=self._tgm._element_distribution,
+                **kwargs
+            )
         else:
             raise NotImplementedError()
 
@@ -62,6 +66,8 @@ class MseHttGreatMeshVisualizeMatplot(Frozen):
     def _plot_2d_great_mesh_in_2d_space(
             cls,
             line_data,
+            element_distribution=None,
+
             figsize=(8, 6),
             aspect='equal',
             usetex=True,
@@ -80,6 +86,8 @@ class MseHttGreatMeshVisualizeMatplot(Frozen):
             data_only=False,
 
             pad_inches=0,
+
+            rank_wise_colored=False,
     ):
         """
 
@@ -126,20 +134,43 @@ class MseHttGreatMeshVisualizeMatplot(Frozen):
         plt.tick_params(axis='both', which='minor', direction='out', length=minor_tick_length)
         plt.tick_params(axis='both', which='major', direction='out', length=major_tick_length)
 
+        colors = matplotlib.colormaps['tab20']
+
         if xlim is not None:
             plt.xlim(xlim)
         if ylim is not None:
             plt.ylim(ylim)
 
-        for i in line_data:  # region # i
+        for i in line_data:  # element # i
+
             lines = line_data[i]
+            X_list = list()
+            Y_list = list()
+
+            cx, cy = None, None
             for line_index in lines:
                 if line_index == 'mn':
                     pass
+                elif line_index == 'center':
+                    cx, cy = lines[line_index]
                 else:
                     line_xy_coo = lines[line_index]
                     x, y = line_xy_coo
                     plt.plot(x, y, linewidth=linewidth, color=color)
+                    X_list.append(x)
+                    Y_list.append(y)
+
+            if rank_wise_colored:
+                in_rank = -1
+                for rank in element_distribution:
+                    rank_elements = element_distribution[rank]
+                    if i in rank_elements:
+                        in_rank = rank
+                        break
+                    else:
+                        pass
+                fill_color = colors(in_rank)
+                plt.scatter(cx, cy, color=fill_color)
 
         # deal with title -----------------------------------------------
         if title is None:

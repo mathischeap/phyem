@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-"""
+r"""
 """
 from tools.frozen import Frozen
 import numpy as np
@@ -102,6 +102,7 @@ class MseHttGreatMeshUniqueMsepyCurvilinearQuadrilateralElement(MseHttGreatMeshB
 
         return {
             'mn': (self.m(), self.n()),
+            'center': self.ct.mapping(0, 0),
             0: self.ct.mapping(-ones, linspace),   # face #0
             1: self.ct.mapping(ones, linspace),    # face #1
             2: self.ct.mapping(linspace, -ones),   # face #2
@@ -124,6 +125,26 @@ class MseHttGreatMeshUniqueMsepyCurvilinearQuadrilateralElement(MseHttGreatMeshB
             self._faces = MseHttGreatMeshUniqueMsepyCurvilinearQuadrilateralElementFaces(self)
         return self._faces
 
+    def ___face_representative_str___(self):
+        r""""""
+        x = np.array([-1, 1, 0, 0])
+        y = np.array([0, 0, -1, 1])
+        x, y = self.ct.mapping(x, y)
+        return {
+            0: r"%.7f-%.7f" % (x[0], y[0]),
+            1: r"%.7f-%.7f" % (x[1], y[1]),
+            2: r"%.7f-%.7f" % (x[2], y[2]),
+            3: r"%.7f-%.7f" % (x[3], y[3]),
+        }
+
+    @property
+    def edges(self):
+        raise Exception(f"msepy curvilinear quadrilateral element has no edges.")
+
+    def ___edge_representative_str___(self):
+        r""""""
+        raise Exception(f"msepy curvilinear quadrilateral element has no edges.")
+
     @classmethod
     def degree_parser(cls, degree):
         """"""
@@ -134,23 +155,23 @@ class MseHttGreatMeshUniqueMsepyCurvilinearQuadrilateralElement(MseHttGreatMeshB
             raise NotImplementedError()
         return p, dtype
 
-    @classmethod
-    def _form_face_dof_direction_topology(cls):
-        m2n2k1_outer = {
-            0: '-',   # on the x- faces, material leave the element is negative.
-            1: '+',   # on the x+ faces, material leave the element is positive.
-            2: '-',   # on the y- faces, material leave the element is negative.
-            3: '+',   # on the y+ faces, material leave the element is positive.
-        }
-
-        m2n2k1_inner = {
-            0: '-',  # on the x- faces, positive direction is from 2 to 0, i.e., reversed
-            1: '+',  # on the x+ faces, positive direction is from 1 to 3
-            2: '+',  # on the y- faces, positive direction is from 0 to 1
-            3: '-',  # on the y+ faces, positive direction is from 3 to 2, i.e., reversed
-        }
-
-        return {'m2n2k1_outer': m2n2k1_outer, 'm2n2k1_inner': m2n2k1_inner}
+    # @classmethod
+    # def _form_face_dof_direction_topology(cls):
+    #     m2n2k1_outer = {
+    #         0: '-',   # on the x- faces, material leave the element is negative.
+    #         1: '+',   # on the x+ faces, material leave the element is positive.
+    #         2: '-',   # on the y- faces, material leave the element is negative.
+    #         3: '+',   # on the y+ faces, material leave the element is positive.
+    #     }
+    #
+    #     m2n2k1_inner = {
+    #         0: '-',  # on the x- faces, positive direction is from 2 to 0, i.e., reversed
+    #         1: '+',  # on the x+ faces, positive direction is from 1 to 3
+    #         2: '+',  # on the y- faces, positive direction is from 0 to 1
+    #         3: '-',  # on the y+ faces, positive direction is from 3 to 2, i.e., reversed
+    #     }
+    #
+    #     return {'m2n2k1_outer': m2n2k1_outer, 'm2n2k1_inner': m2n2k1_inner}
 
     def _generate_vtk_data_for_form(self, indicator, element_cochain, degree, data_density):
         """"""
@@ -227,9 +248,8 @@ class MseHttGreatMeshUniqueMsepyCurvilinearQuadrilateralElementCooTrans(MseHttGr
 
     def ___Jacobian_matrix___(self, xi, et):
         """"""
-        xi_et_sg = (xi, et)
         md_ref_coo = list()
-        for j, _ in enumerate(xi_et_sg):
+        for j, _ in enumerate((xi, et)):
             _ = (_ + 1) * 0.5 * self._element._delta[j] + self._element._origin[j]
             md_ref_coo.append(_)
 
@@ -237,12 +257,12 @@ class MseHttGreatMeshUniqueMsepyCurvilinearQuadrilateralElementCooTrans(MseHttGr
             *md_ref_coo, regions=self._element._region
         )[self._element._region]
 
-        s0 = len(jm)
-        s1 = len(jm[0])
-
-        JM = tuple([[0 for _ in range(s0)] for _ in range(s1)])
-        for i in range(s0):
-            for j in range(s1):
+        JM = tuple([
+            [0, 0],
+            [0, 0],
+        ])
+        for i in range(2):
+            for j in range(2):
                 jm_ij = jm[i][j]
                 jm_ij *= self._element._delta[j] / 2
                 JM[i][j] = jm_ij

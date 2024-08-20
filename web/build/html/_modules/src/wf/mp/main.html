@@ -230,7 +230,7 @@
 </li>
 <li class="toctree-l2 has-children"><a class="reference internal" href="../../../../gallery/Navier_Stokes/index.html">🌊 Navier-Stokes equations</a><input class="toctree-checkbox" id="toctree-checkbox-7" name="toctree-checkbox-7" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-7"><i class="fa-solid fa-chevron-down"></i></label><ul>
 <li class="toctree-l3"><a class="reference internal" href="../../../../gallery/Navier_Stokes/backward_facing_step/index.html">Backward facing step flow</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../../../../gallery/Navier_Stokes/lid_driven_cavity/index.html">Lid-driven Cavity</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../gallery/Navier_Stokes/lid_driven_cavity/index.html">Lid-driven cavity</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../../gallery/Navier_Stokes/normal_dipole_collision/index.html">Normal dipole collision</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../../gallery/Navier_Stokes/shear_layer_rollup/index.html">Shear layer rollup</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../../gallery/Navier_Stokes/Taylor_Green_vortex/index.html">Taylor-Green vortex</a></li>
@@ -474,6 +474,7 @@ document.write(`
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;&quot;&quot;&quot;</span>
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">wf</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;&quot;&quot;&quot;</span>
         <span class="n">ap</span> <span class="o">=</span> <span class="n">wf</span><span class="o">.</span><span class="n">ap</span><span class="p">()</span>  <span class="c1"># make an algebraic proxy in real time.</span>
         <span class="k">if</span> <span class="n">ap</span><span class="o">.</span><span class="n">_fully_resolved</span><span class="p">:</span>
             <span class="k">assert</span> <span class="n">ap</span><span class="o">.</span><span class="n">linearity</span> <span class="ow">in</span> <span class="p">(</span><span class="s1">&#39;linear&#39;</span><span class="p">,</span> <span class="s1">&#39;nonlinear&#39;</span><span class="p">),</span> \
@@ -620,6 +621,7 @@ document.write(`
 
                             <span class="n">components</span> <span class="o">=</span> <span class="n">term</span><span class="o">.</span><span class="n">_components</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
                             <span class="n">transposes</span> <span class="o">=</span> <span class="n">term</span><span class="o">.</span><span class="n">_transposes</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+
                             <span class="n">factor</span> <span class="o">=</span> <span class="n">term</span><span class="o">.</span><span class="n">_factor</span>
 
                             <span class="n">bm_aa</span> <span class="o">=</span> <span class="n">AbstractArray</span><span class="p">(</span>
@@ -643,6 +645,7 @@ document.write(`
                 <span class="k">else</span><span class="p">:</span>
                     <span class="bp">self</span><span class="o">.</span><span class="n">_l_mvs</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">bm</span><span class="p">,</span> <span class="n">bb</span><span class="p">))</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">_lbv</span> <span class="o">=</span> <span class="n">remaining_bv</span>
+
             <span class="k">else</span><span class="p">:</span>
                 <span class="k">if</span> <span class="n">bm</span><span class="o">.</span><span class="n">_is_empty</span><span class="p">():</span>
                     <span class="k">pass</span>
@@ -670,8 +673,7 @@ document.write(`
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">___total_indexing_length___</span>
 
     <span class="k">def</span> <span class="fm">__getitem__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">index</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        To retrieve a linear term: do &#39;a-b&#39; or &#39;a-b,c&#39;, where a, b, c are str(integer)-s.</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;To retrieve a linear term: do &#39;a-b&#39; or &#39;a-b,c&#39;, where a, b, c are str(integer)-s.</span>
 
 <span class="sd">        when index = &#39;a-b&#39;</span>
 <span class="sd">        `a` refer to the `ath` block.</span>
@@ -978,6 +980,7 @@ document.write(`
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">bc</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_bc</span>
 
     <span class="k">def</span> <span class="nf">_pr_temporal_advancing</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
@@ -1035,7 +1038,7 @@ By Andrea Brugnoli, Ramy Rashad, Stefano Stramigioli, Yi Zhang and more
   <div class="footer-item">
     
 <div class="extra_footer">
-  <div>Last updated on February 03, 2024, 17:15:14, 中国标准时间</div>
+  <div>Last updated on July 11, 2024, 18:22:03, China Standard Time</div>
 </div>
   </div>
   

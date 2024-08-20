@@ -2,6 +2,9 @@
 r"""
 """
 from tools.frozen import Frozen
+
+from msehtt.static.form.addons.ic import MseHtt_From_InterpolateCopy
+
 from msehtt.static.form.export.main import MseHtt_Static_Form_Export
 from msehtt.static.form.project.main import MseHtt_Static_Form_Project
 
@@ -46,6 +49,11 @@ class MseHttFormStaticCopy(Frozen):
     @cochain.setter
     def cochain(self, cc):
         """"""
+        if cc.__class__ is MseHtt_From_InterpolateCopy:
+            # we can direct take the cochain of an interpolation form.
+            cc = cc.cochain
+        else:
+            pass
         self._f.cochain._set(self._t, cc)
 
     def coboundary(self):

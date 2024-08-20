@@ -8,7 +8,7 @@ def num_local_dofs__Lambda__m3n3k1(etype, p):
     if etype in ('orthogonal hexahedron', ):
         local_numbering = _num_local_dofs__m3n3k1_msepy_hexahedral_(p)
     else:
-        raise NotImplementedError()
+        raise NotImplementedError(f"{__name__} not implemented for etype={etype}")
     return local_numbering
 
 

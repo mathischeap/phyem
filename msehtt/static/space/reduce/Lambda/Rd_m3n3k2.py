@@ -18,7 +18,7 @@ def reduce_Lambda__m3n3k2(cf_t, tpm, degree):
         if etype in ("orthogonal hexahedron", ):
             cochain[e] = ___332_msepy_orthogonal___(element, cf_t, degree)
         else:
-            raise NotImplementedError()
+            raise NotImplementedError(f"{__name__} not implemented for etype={etype}")
     return cochain
 
 

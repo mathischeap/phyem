@@ -66,6 +66,9 @@ doctest/
 doctrees/
 conf.py
 
+make.bat
+Makefile
+
 # Translations
 *.mo
 *.pot

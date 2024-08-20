@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-"""
+r"""
 """
 
 from src.config import RANK, MASTER_RANK, COMM, SIZE
@@ -32,7 +32,7 @@ def gathering_matrix_Lambda__m3n3k3(tpm, degree):
                         current, degree,
                     )
                 else:
-                    raise NotImplementedError()
+                    raise NotImplementedError(f"{__name__} not implemented for etype={etype}")
             else:
                 global_numbering[e] = None
 

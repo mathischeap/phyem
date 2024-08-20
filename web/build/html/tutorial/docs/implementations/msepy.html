@@ -732,10 +732,10 @@ solution <span class="math notranslate nohighlight">\(\tilde{\beta}_{\mathrm{ana
 </pre></div>
 </div>
 <p>Note that <code class="docutils literal notranslate"><span class="pre">a[None]</span></code> automatically gives a static copy of <code class="docutils literal notranslate"><span class="pre">a</span></code> at its most recent time. For example, when
-<code class="docutils literal notranslate"><span class="pre">k=10</span></code>, i.e., <span class="math notranslate nohighlight">\(t=t^{10}=0.2\)</span> (recall that the overall computation time is 1 and it is divided into
-50 time steps), <code class="docutils literal notranslate"><span class="pre">a[None]</span></code> is equivalent to <code class="docutils literal notranslate"><span class="pre">a[0.2]</span></code>. And then method <code class="docutils literal notranslate"><span class="pre">error</span></code> computes the <span class="math notranslate nohighlight">\(L^2\)</span>-error of
+<code class="docutils literal notranslate"><span class="pre">k=45</span></code>, i.e., <span class="math notranslate nohighlight">\(t=t^{45}=0.9\)</span> (recall that the overall computation time is 1 and it is divided into
+50 time steps), <code class="docutils literal notranslate"><span class="pre">a[None]</span></code> is equivalent to <code class="docutils literal notranslate"><span class="pre">a[0.9]</span></code>. And then method <code class="docutils literal notranslate"><span class="pre">error</span></code> computes the <span class="math notranslate nohighlight">\(L^2\)</span>-error of
 it. To check it, do</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">a</span><span class="p">[</span><span class="mf">0.2</span><span class="p">]</span><span class="o">.</span><span class="n">error</span><span class="p">()</span> <span class="o">==</span> <span class="n">a_errors</span><span class="p">[</span><span class="mi">10</span><span class="p">]</span>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">a</span><span class="p">[</span><span class="mf">0.9</span><span class="p">]</span><span class="o">.</span><span class="n">error</span><span class="p">()</span> <span class="o">==</span> <span class="n">a_errors</span><span class="p">[</span><span class="mi">45</span><span class="p">]</span>
 <span class="go">True</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="nb">len</span><span class="p">(</span><span class="n">a_errors</span><span class="p">)</span>
 <span class="go">51</span>
@@ -865,7 +865,7 @@ By Andrea Brugnoli, Ramy Rashad, Stefano Stramigioli, Yi Zhang and more
   <div class="footer-item">
     
 <div class="extra_footer">
-  <div>Last updated on March 15, 2024, 22:55:00, 中国标准时间</div>
+  <div>Last updated on 八月 20, 2024, 15:30:52, China Standard Time</div>
 </div>
   </div>
   

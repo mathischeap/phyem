@@ -9,7 +9,7 @@ def local_numbering_Lambda__m3n3k3(etype, p):
     if etype in ('orthogonal hexahedron', ):
         local_numbering = _ln_m3n3k3_msepy_quadrilateral_(p)
     else:
-        raise NotImplementedError()
+        raise NotImplementedError(f"{__name__} not implemented for etype={etype}")
     return local_numbering
 
 

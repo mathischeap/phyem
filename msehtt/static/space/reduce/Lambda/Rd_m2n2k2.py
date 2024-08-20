@@ -2,7 +2,7 @@
 r"""
 """
 import numpy as np
-from tools.quadrature import Quadrature
+from tools.quadrature import quadrature
 
 
 def reduce_Lambda__m2n2k2(cf_t, tpm, degree):
@@ -13,10 +13,13 @@ def reduce_Lambda__m2n2k2(cf_t, tpm, degree):
     for e in elements:
         element = elements[e]
         etype = element.etype
-        if etype in ("orthogonal rectangle", "unique msepy curvilinear quadrilateral"):
+        if etype in ("orthogonal rectangle", "unique msepy curvilinear quadrilateral",
+                     5, "unique msepy curvilinear triangle",
+                     9, 'unique curvilinear quad'):
             cochain[e] = ___rd222_msepy_quadrilateral___(element, cf_t, degree)
         else:
-            raise NotImplementedError()
+            raise NotImplementedError(f"{__name__} not implemented for etype={etype}")
+
     return cochain
 
 
@@ -59,10 +62,10 @@ def _preparation_m2n2k2(degree):
     if key in _cache_rd222_dp_:
         return _cache_rd222_dp_[key]
 
-    quad_degree = [p[0] + 2, p[1] + 2]
-    nodes = [Quadrature(_, category=btype).quad[0] for _ in p]
+    quad_degree = (p[0] + 2, p[1] + 2)
+    nodes = [quadrature(_, category=btype).quad[0] for _ in p]
     num_basis = p[0] * p[1]
-    quad_nodes, quad_weights = Quadrature(quad_degree).quad
+    quad_nodes, quad_weights = quadrature(quad_degree, category='Gauss').quad
     magic_factor = 0.25
     xi = np.zeros((num_basis, quad_degree[0] + 1, quad_degree[1] + 1))
     et = np.zeros((num_basis, quad_degree[0] + 1, quad_degree[1] + 1))

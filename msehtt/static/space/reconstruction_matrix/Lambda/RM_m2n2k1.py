@@ -22,7 +22,7 @@ def rm__m2n2k1_outer(tpm, degree, xi, et):
         if etype in ("orthogonal rectangle", "unique msepy curvilinear quadrilateral"):
             RM_u[e], RM_v[e] = ___rm221o_msepy_quadrilateral___(element, degree, xi, et)
         else:
-            raise NotImplementedError()
+            raise NotImplementedError(f"{__name__} not implemented for etype={etype}")
 
     return RM_u, RM_v
 

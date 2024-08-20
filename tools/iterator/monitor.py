@@ -11,7 +11,6 @@ from tools.miscellaneous.timer import MyTimer
 from time import time, sleep
 import numpy as np
 import matplotlib.pyplot as plt
-from matplotlib import cm
 import matplotlib
 
 
@@ -164,7 +163,7 @@ class IteratorMonitor(Frozen):
         num_subplots = RDF.shape[1] + 6
         # We plot 4 extra: 't iteration', 't accumulation', solver message, and machine load
 
-        colors = cm.get_cmap('Dark2', num_subplots - 6)
+        colors = matplotlib.colormaps['Dark2']
         r_num_subplots = int(np.ceil(num_subplots/2))
         x_len, y_len = 18, 4.5*r_num_subplots
         fig = plt.figure(figsize=(x_len, y_len))
@@ -400,29 +399,31 @@ class IteratorMonitor(Frozen):
                                  va='top', wrap=True)
 
             else:
+                color_index = i - 6
+                cmap_index = color_index % 8
                 if 't' in RDF:
                     if di == 't':
                         if len(indices) <= 10:
-                            plt.plot(indices, RDF[di], '-o', color=colors(i-6), linewidth=1.5)
+                            plt.plot(indices, RDF[di], '-o', color=colors(cmap_index), linewidth=1.5)
                         else:
-                            plt.plot(indices, RDF[di], color=colors(i-6), linewidth=1.5)
+                            plt.plot(indices, RDF[di], color=colors(cmap_index), linewidth=1.5)
                         plt.xlim([min(indices), max(indices)])
                         plt.xlabel('iterations')
                         if len(indices) <= 5:
                             ax.set_xticks(indices)
                     else:
                         if len(indices) <= 10:
-                            plt.plot(RDF['t'], RDF[di], '-o', color=colors(i-6), linewidth=1.5)
+                            plt.plot(RDF['t'], RDF[di], '-o', color=colors(cmap_index), linewidth=1.5)
                         else:
-                            plt.plot(RDF['t'], RDF[di], color=colors(i-6), linewidth=1.5)
+                            plt.plot(RDF['t'], RDF[di], color=colors(cmap_index), linewidth=1.5)
                         a, b = min(RDF['t']), max(RDF['t'])
                         if isinstance(a, (int, float)) and isinstance(b, (int, float)) and a < b:
                             plt.xlim([a, b])
                 else:
                     if len(indices) <= 10:
-                        plt.plot(indices, RDF[di], '-o', color=colors(i-6), linewidth=1.5)
+                        plt.plot(indices, RDF[di], '-o', color=colors(cmap_index), linewidth=1.5)
                     else:
-                        plt.plot(indices, RDF[di], color=colors(i-6), linewidth=1.5)
+                        plt.plot(indices, RDF[di], color=colors(cmap_index), linewidth=1.5)
                     plt.xlim([min(indices), max(indices)])
                     plt.xlabel('iterations')
                     if len(indices) <= 5:

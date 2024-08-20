@@ -27,7 +27,7 @@ def incidence_matrix_Lambda__m3n3k0(tpm, degree):
         if etype in ('orthogonal hexahedron', ):
             E[e], cache_key_dict[e] = _im330_msepy_quadrilateral_(element, degree)
         else:
-            raise NotImplementedError()
+            raise NotImplementedError(f"{__name__} not implemented for etype={etype}")
     _cache_E330_[key] = E, cache_key_dict
     return E, cache_key_dict
 

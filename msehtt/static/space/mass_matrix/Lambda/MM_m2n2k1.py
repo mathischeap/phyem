@@ -9,6 +9,8 @@ _unique_str_ = 'unique'
 
 
 # ================= OUTER =============================================================
+
+
 _cache_mm221o_ = {}
 
 
@@ -27,7 +29,7 @@ def mass_matrix_Lambda__m2n2k1_outer(tpm, degree):
         elif etype == 'unique msepy curvilinear quadrilateral':
             M[e], cache_key_dict[e] = ___mm221o_msepy_unique_quadrilateral___(element, degree)
         else:
-            raise NotImplementedError()
+            raise NotImplementedError(f"{__name__} not implemented for etype={etype}")
     _cache_mm221o_[key] = M, cache_key_dict
     return M, cache_key_dict
 
@@ -128,6 +130,8 @@ def ___mm221o_msepy_unique_quadrilateral___(element, degree):
 
 
 # ================= INNER =============================================================
+
+
 _cache_mm221i_ = {}
 
 
@@ -146,7 +150,7 @@ def mass_matrix_Lambda__m2n2k1_inner(tpm, degree):
         elif etype == 'unique msepy curvilinear quadrilateral':
             M[e], cache_key_dict[e] = ___mm221i_msepy_unique_quadrilateral___(element, degree)
         else:
-            raise NotImplementedError()
+            raise NotImplementedError(f"{__name__} not implemented for etype={etype}")
     _cache_mm221i_[key] = M, cache_key_dict
     return M, cache_key_dict
 

@@ -6,6 +6,7 @@ from src.spaces.main import _degree_str_maker
 import numpy as np
 from scipy.sparse import csr_matrix
 
+
 _cache_mm333_ = {}
 
 
@@ -22,7 +23,7 @@ def mass_matrix_Lambda__m3n3k3(tpm, degree):
         if etype == 'orthogonal hexahedron':
             M[e], cache_key_dict[e] = ___mm333_orthogonal_hexahedron___(element, degree)
         else:
-            raise NotImplementedError()
+            raise NotImplementedError(f"{__name__} not implemented for etype={etype}")
     _cache_mm333_[key] = M, cache_key_dict
     return M, cache_key_dict
 

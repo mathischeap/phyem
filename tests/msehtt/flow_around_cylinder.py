@@ -263,8 +263,8 @@ for step in range(1, total_steps+1):
     system.solve(
         [u, w, P],
         atol=1e-6,
-        inner_solver_scheme='gmres',
-        inner_solver_kwargs={'restart': 300, 'atol': 1e-6, 'maxiter': 20}
+        # inner_solver_scheme='gmres',
+        # inner_solver_kwargs={'restart': 300, 'atol': 1e-6, 'maxiter': 20}
     )
     msehtt.info(rf"N={N}", system.solve.message)
 

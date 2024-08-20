@@ -105,7 +105,7 @@ class MseHttCochain(Frozen):
                     raise NotImplementedError(f"cannot clean {what}!")
 
             elif what == 'all':
-                raise NotImplementedError(f"cannot clean {what}!")
+                new_tcd = {}
 
             else:
                 raise NotImplementedError(f"cannot clean {what}!")
@@ -149,6 +149,15 @@ class MseHttCochain(Frozen):
             return len(self._tcd)
         else:
             return len(self._f._base.cochain._tcd)
+
+    def __iter__(self):
+        """iteration over all time instants in tcd."""
+        if self._f._is_base():
+            for t in self._tcd:
+                yield t
+        else:
+            for t in self._f._base.cochain._tcd:
+                yield t
 
     @property
     def gathering_matrix(self):

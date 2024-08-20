@@ -4,9 +4,13 @@ r"""
 import numpy as np
 
 from tools.frozen import Frozen
-from src.config import COMM
+from src.config import COMM, MASTER_RANK, RANK
 from msehtt.static.form.cochain.vector.static import MseHttStaticCochainVector
 from msehtt.tools.vector.static.local import MseHttStaticLocalVector
+
+
+from msehtt.static.space.num_local_dofs.Lambda.num_local_dofs_m2n2k1 import num_local_dofs__Lambda__m2n2k1_inner
+from msehtt.static.space.num_local_dofs.Lambda.num_local_dofs_m2n2k1 import num_local_dofs__Lambda__m2n2k1_outer
 
 
 class MseHttTimeInstantCochain(Frozen):
@@ -83,6 +87,27 @@ class MseHttTimeInstantCochain(Frozen):
         """Check whether element indexed ``e`` is a rank element."""
         return e in self._gm
 
+    def components(self, e):
+        """Return component wise of cochain in element e."""
+        indicator = self._f.space.str_indicator
+        element = self._f.tpm.composition[e]
+        etype = element.etype
+        p = element.degree_parser(self._f.degree)[0]
+        if indicator == 'm2n2k1_inner':
+            num_local_dofs = num_local_dofs__Lambda__m2n2k1_inner(etype, p)[1]
+        elif indicator == 'm2n2k1_outer':
+            num_local_dofs = num_local_dofs__Lambda__m2n2k1_outer(etype, p)[1]
+        else:
+            raise NotImplementedError(f"num_local_dofs for {indicator} space is not implemented.")
+        total_local_cochain = self[e]
+        start = 0
+        local_cochain_components = []
+        for num_dofs_component in num_local_dofs:
+            end = start + num_dofs_component
+            local_cochain_components.append(total_local_cochain[start:end])
+            start = end
+        return local_cochain_components
+
     def ___cochain_caller___(self, e):
         """"""
         return self[e]
@@ -137,6 +162,21 @@ class MseHttTimeInstantCochain(Frozen):
                 return ch
             else:
                 pass
+
+    def _merge_to(self, root=MASTER_RANK):
+        r""""""
+        local_dict = {}
+        for e in self:
+            local_dict[e] = self[e]
+        local_dict = COMM.gather(local_dict, root=root)
+        if RANK == root:
+            _LOCAL_DICT_ = {}
+            for _ in local_dict:
+                _LOCAL_DICT_.update(_)
+            local_dict = _LOCAL_DICT_
+        else:
+            pass
+        return local_dict
 
     def __add__(self, other):
         """"""

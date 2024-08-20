@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-"""
+r"""
 """
 import numpy as np
 from scipy.sparse import csr_matrix
@@ -27,7 +27,7 @@ def incidence_matrix_Lambda__m3n3k1(tpm, degree):
         if etype in ('orthogonal hexahedron', ):
             E[e], cache_key_dict[e] = _im331_msepy_quadrilateral_(element, degree)
         else:
-            raise NotImplementedError()
+            raise NotImplementedError(f"{__name__} not implemented for etype={etype}")
     _cache_E331_[key] = E, cache_key_dict
     return E, cache_key_dict
 

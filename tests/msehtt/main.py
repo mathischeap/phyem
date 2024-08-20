@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-"""
+r"""
 mpiexec -n 1 python tests/msehtt/main.py
 mpiexec -n 4 python tests/msehtt/main.py
 """

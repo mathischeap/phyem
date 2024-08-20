@@ -21,14 +21,14 @@ ph.config.set_high_accuracy(True)
 ph.config.set_pr_cache(True)
 
 N = 2
-element_layout = [18, 6]
+element_layout = [16, 6]
 
 # t_max = 1
 # steps = 200
 t0 = 0
 Re = 100
 
-manifold = ph.manifold(2, is_periodic=False)
+manifold = ph.manifold(2, periodic=False)
 mesh = ph.mesh(manifold)
 
 Out0 = ph.space.new('Lambda', 0, orientation='outer')
@@ -140,17 +140,17 @@ wf = wf.derive.rearrange(
 
 term = wf.terms['0-1']
 term.add_extra_info(
-    {'known-cross-product-form': w @ ts['k-1']}
+    {'known-forms': w @ ts['k-1']}
 )
 
 term = wf.terms['0-2']
 term.add_extra_info(
-    {'known-cross-product-form': u @ ts['k-1']}
+    {'known-forms': u @ ts['k-1']}
 )
 
 term = wf.terms['0-7']
 term.add_extra_info(
-    {'known-cross-product-form': [w @ ts['k-1'], u @ ts['k-1']]}
+    {'known-forms': [w @ ts['k-1'], u @ ts['k-1']]}
 )
 wf.pr()
 
@@ -231,9 +231,9 @@ def time_step_function():
             pass
 
     if _['big_step']:
-        return 1/100
+        return 1/1000
     else:
-        return 1/200
+        return 1/2000
 
 
 ts.specify('function', t0, time_step_function)
@@ -280,15 +280,15 @@ else:
 nls = obj['nls'].apply()
 nls.bc.config(boundary_perp)(bc_velocity)  # essential
 
-bc_P = u.numeric.function.local_energy_with_time_shift()
+bc_P = u.numeric.tsp.L2_energy()
 nls.bc.config(boundary_P)(bc_P)  # essential
 
 
-for step in range(1, 1000):
+for step in range(1, 10000):
 
     s_nls = nls(k=step)
     # s_nls.customize.set_no_evaluation(-1)  # no need to do this since we have pressure boundary now.
-    s_nls.solve([u, w, P])
+    s_nls.solve([u, w, P], atol=1e-10)
 
     u[None].visualize(
         plot_type='quiver',
@@ -299,6 +299,12 @@ for step in range(1, 1000):
         plot_type='contourf',
         num_levels=50,
         saveto=results_dir+f'P_{int(step)}.png'
+    )
+
+    w[None].visualize(
+        plot_type='contourf',
+        num_levels=50,
+        saveto=results_dir+f'w_{int(step)}.png'
     )
 
     msepy.info(rf"N={N}", s_nls.solve.message)

@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-"""We config the msehtt great mesh as a msepy mesh.
+r"""We config the msehtt great mesh as a msepy mesh.
 """
 import inspect
 import numpy as np
@@ -16,23 +16,26 @@ from msepy.manifold.regions.standard.ct import UniqueRegionException
 
 
 class MseHttMsePyConfig(Frozen):
-    """"""
+    r""""""
 
     def __init__(self, tgm, domain_indicator):
-        """"""
+        r""""""
         assert RANK == MASTER_RANK, f"Do msepy only in the master rank."
         self._tgm = tgm
         distributor = PredefinedMsePyManifoldDistributor()
         self._msepy_domain_class_or_function = distributor(domain_indicator)
         self._freeze()
 
-    def __call__(self, element_layout, **kwargs):
-        """"""
+    def __call__(self, element_layout, msepy_mesh_manifold_only=False, **kwargs):
+        r""""""
         class_or_function = self._msepy_domain_class_or_function
 
         m = get_embedding_space_dim()
 
-        the_great_abstract_manifold = Manifold(m)
+        if 'periodic' in kwargs:
+            the_great_abstract_manifold = Manifold(m, periodic=kwargs['periodic'])
+        else:
+            the_great_abstract_manifold = Manifold(m)
 
         msepy_manifold = MsePyManifold(the_great_abstract_manifold)
 
@@ -75,6 +78,11 @@ class MseHttMsePyConfig(Frozen):
 
         elements = msepy_mesh.elements
         regions = msepy_manifold.regions
+
+        if msepy_mesh_manifold_only:
+            return msepy_manifold, msepy_mesh
+        else:
+            pass
 
         if elements._element_mtype_dict is None:
             element_mtype_dict = dict()
@@ -164,9 +172,9 @@ class MseHttMsePyConfig(Frozen):
                 raise NotImplementedError(f"not implemented for elements of space dimensions m={m}, "
                                           f"element map={element_map_array[i]}")
 
-            element_map_dict[i] = list(element_map_array[i])
+            element_map_dict[i] = [int(_) for _ in element_map_array[i]]
 
-        return element_type_dict, element_parameter_dict, element_map_dict, msepy_manifold
+        return element_type_dict, element_parameter_dict, element_map_dict, msepy_manifold, msepy_mesh
 
     def _generate_element_map_dict(self, msepy_mesh):
         """"""

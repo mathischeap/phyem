@@ -11,7 +11,6 @@ Aerodynamics, AE
 TU Delft
 """
 import numpy as np
-from tabulate import tabulate
 from tools.frozen import Frozen
 from tools.decorators.all import accepts
 
@@ -25,34 +24,7 @@ class M_TIR_Tabulate(Frozen):
         """ """
         self._tir_ = M3irTir
         self._freeze()
-    
-    @accepts('self', str)
-    def LaTeX(self, opn, digits=7):
-        """ 
-        We convert the output of method `array` into LaTeX codes still stored in a
-        dict with the same keys.
-        
-        <unittest> <unittests_P_Solvers> <test_No4_M3IR>.
-        
-        Parameters
-        ----------
-        opn : 
-            `output name`.
-        digits : int
-            How many digits shown in tha LaTeX table.
-        
-        Returns
-        -------
-        X : dict
-            A dict corresponding to the output dictionary of `self.array`.
-        
-        """
-        d = self.array(opn)
-        X = {}
-        for key in d:
-            X[key] = tabulate(d[key], tablefmt="latex", floatfmt=".{}f".format(digits))
-        return X
-        
+
     @accepts('self', str)
     def array(self, opn):
         """ 

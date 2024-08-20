@@ -19,7 +19,7 @@ def error__m3n3k2(tpm, cf, cochain, degree, error_type):
 
             error.append(element_error)
         else:
-            raise NotImplementedError()
+            raise NotImplementedError(f"{__name__} not implemented for etype={etype}")
 
     if error_type == 'L2':
         error = sum(error)

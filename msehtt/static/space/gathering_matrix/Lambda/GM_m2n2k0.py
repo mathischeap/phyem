@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-"""
+r"""
 """
 
 from src.config import RANK, MASTER_RANK, COMM, SIZE
@@ -36,8 +36,19 @@ def gathering_matrix_Lambda__m2n2k0(tpm, degree):
                     global_numbering[e], current = ___gm220_msepy_quadrilateral___(
                         map_, edge_numbering_pool, node_numbering_pool, current, degree,
                     )
+
+                elif etype in (5, "unique msepy curvilinear triangle"):
+                    global_numbering[e], current = ___gm220_vtu_5___(
+                        map_, edge_numbering_pool, node_numbering_pool, current, degree,
+                    )
+
+                elif etype in (9, 'unique curvilinear quad'):
+                    global_numbering[e], current = ___gm220_quad_9___(
+                        map_, edge_numbering_pool, node_numbering_pool, current, degree,
+                    )
+
                 else:
-                    raise NotImplementedError()
+                    raise NotImplementedError(f"{__name__} not implemented for etype={etype}")
             else:
                 global_numbering[e] = None
 
@@ -167,5 +178,236 @@ def ___gm220_msepy_quadrilateral___(map_, edge_numbering_pool, node_numbering_po
     numbering[-1, -1] = number
 
     numbering = numbering.ravel('F')
+    assert -1 not in numbering, f"at least one dof is not numbered."
+    return numbering, current
+
+
+from msehtt.static.mesh.great.elements.types.vtu_9_quad import Vtu9Quad
+
+
+def ___gm220_quad_9___(map_, edge_numbering_pool, node_numbering_pool, current, degree):
+    """"""
+    p, _ = Vtu9Quad.degree_parser(degree)
+    px, py = p
+
+    numbering = -np.ones((px+1, py+1), dtype=int)
+
+    # (x-, y-) corner ---------------------------------
+    corner = map_[0]
+    if corner in node_numbering_pool:
+        number = node_numbering_pool[corner]
+    else:
+        number = current
+        current += 1
+        node_numbering_pool[corner] = number
+    numbering[0, 0] = number
+
+    # y- edge : West -----------------------
+    edge__ = (map_[0], map_[1])
+    edge_r = (map_[1], map_[0])
+    if edge__ in edge_numbering_pool:
+        number = edge_numbering_pool[edge__]
+    elif edge_r in edge_numbering_pool:
+        number = edge_numbering_pool[edge_r]
+    else:
+        number = np.arange(current, current + px - 1)
+        current += px - 1
+        edge_numbering_pool[edge__] = number
+    numbering[1:-1, 0] = number
+
+    # (x+, y-) corner ---------------------------------
+    corner = map_[1]
+    if corner in node_numbering_pool:
+        number = node_numbering_pool[corner]
+    else:
+        number = current
+        current += 1
+        node_numbering_pool[corner] = number
+    numbering[-1, 0] = number
+
+    # x- edge : North face -----------------------
+    edge__ = (map_[0], map_[3])
+    edge_r = (map_[3], map_[0])
+    if edge__ in edge_numbering_pool:
+        number = edge_numbering_pool[edge__]
+    elif edge_r in edge_numbering_pool:
+        number = edge_numbering_pool[edge_r]
+    else:
+        number = np.arange(current, current + py - 1)
+        current += py - 1
+        edge_numbering_pool[edge__] = number
+    numbering[0, 1:-1] = number
+
+    # internal nodes --------------------
+    number = np.arange(current, current + (px-1)*(py-1)).reshape(((px-1), (py-1)), order='F')
+    current += (px - 1) * (py - 1)
+    numbering[1:-1, 1:-1] = number
+
+    # x+ edge: South face -----------------------
+    edge__ = (map_[1], map_[2])
+    edge_r = (map_[2], map_[1])
+    if edge__ in edge_numbering_pool:
+        number = edge_numbering_pool[edge__]
+    elif edge_r in edge_numbering_pool:
+        number = edge_numbering_pool[edge_r]
+    else:
+        number = np.arange(current, current + py - 1)
+        current += py - 1
+        edge_numbering_pool[edge__] = number
+    numbering[-1, 1:-1] = number
+
+    # (x-, y+) corner ---------------------------------
+    corner = map_[3]
+    if corner in node_numbering_pool:
+        number = node_numbering_pool[corner]
+    else:
+        number = current
+        current += 1
+        node_numbering_pool[corner] = number
+    numbering[0, -1] = number
+
+    # y+ edge : East -----------------------
+    edge__ = (map_[3], map_[2])
+    edge_r = (map_[2], map_[3])
+    if edge__ in edge_numbering_pool:
+        number = edge_numbering_pool[edge__]
+    elif edge_r in edge_numbering_pool:
+        number = edge_numbering_pool[edge_r]
+    else:
+        number = np.arange(current, current + px - 1)
+        current += px - 1
+        edge_numbering_pool[edge__] = number
+    numbering[1:-1, -1] = number
+
+    # (x+, y+) corner ---------------------------------
+    corner = map_[2]
+    if corner in node_numbering_pool:
+        number = node_numbering_pool[corner]
+    else:
+        number = current
+        current += 1
+        node_numbering_pool[corner] = number
+    numbering[-1, -1] = number
+
+    numbering = numbering.ravel('F')
+    assert -1 not in numbering, f"at least one dof is not numbered."
+    return numbering, current
+
+
+from msehtt.static.mesh.great.elements.types.vtu_5_triangle import Vtu5Triangle
+
+
+def ___gm220_vtu_5___(map_, edge_numbering_pool, node_numbering_pool, current, degree):
+    """
+    -----------------------> et
+    |
+    |     0         0         0
+    |     ---------------------
+    |     |         |         |
+    |   1 -----------3--------- 5
+    |     |         |         |
+    |   2 -----------4--------- 6
+    |
+    v
+
+    xi
+
+    Thus, the north edge is mapped into a node.
+
+    Parameters
+    ----------
+    map_
+    edge_numbering_pool
+    node_numbering_pool
+    current
+    degree
+
+    Returns
+    -------
+
+    """
+    p, _ = Vtu5Triangle.degree_parser(degree)
+    px, py = p
+    assert px == py, f"must be px == py for triangle element."
+
+    numbering = -np.ones((px+1, py+1), dtype=int)
+
+    # node 0 ---------------------------------
+    corner = map_[0]
+    if corner in node_numbering_pool:
+        number = node_numbering_pool[corner]
+    else:
+        number = current
+        current += 1
+        node_numbering_pool[corner] = number
+    numbering[0, :] = number
+
+    # edge 0 -----------------------
+    edge__ = (map_[0], map_[1])
+    edge_r = (map_[1], map_[0])
+    if edge__ in edge_numbering_pool:
+        number = edge_numbering_pool[edge__]
+    elif edge_r in edge_numbering_pool:
+        number = edge_numbering_pool[edge_r]
+    else:
+        number = np.arange(current, current + px - 1)
+        current += px - 1
+        edge_numbering_pool[edge__] = number
+    numbering[1:-1, 0] = number
+
+    # node 1 ---------------------------------
+    corner = map_[1]
+    if corner in node_numbering_pool:
+        number = node_numbering_pool[corner]
+    else:
+        number = current
+        current += 1
+        node_numbering_pool[corner] = number
+    numbering[-1, 0] = number
+
+    # internal nodes --------------------
+    number = np.arange(current, current + (px-1)*(py-1)).reshape(((px-1), (py-1)), order='F')
+    current += (px - 1) * (py - 1)
+    numbering[1:-1, 1:-1] = number
+
+    # edge 1 -----------------------
+    edge__ = (map_[1], map_[2])
+    edge_r = (map_[2], map_[1])
+    if edge__ in edge_numbering_pool:
+        number = edge_numbering_pool[edge__]
+    elif edge_r in edge_numbering_pool:
+        number = edge_numbering_pool[edge_r]
+    else:
+        number = np.arange(current, current + py - 1)
+        current += py - 1
+        edge_numbering_pool[edge__] = number
+    numbering[-1, 1:-1] = number
+
+    # edge 2 -----------------------
+    edge__ = (map_[0], map_[2])
+    edge_r = (map_[2], map_[0])
+    if edge__ in edge_numbering_pool:
+        number = edge_numbering_pool[edge__]
+    elif edge_r in edge_numbering_pool:
+        number = edge_numbering_pool[edge_r]
+    else:
+        number = np.arange(current, current + px - 1)
+        current += px - 1
+        edge_numbering_pool[edge__] = number
+    numbering[1:-1, -1] = number
+
+    # node 2 ---------------------------------
+    corner = map_[2]
+    if corner in node_numbering_pool:
+        number = node_numbering_pool[corner]
+    else:
+        number = current
+        current += 1
+        node_numbering_pool[corner] = number
+    numbering[-1, -1] = number
+
+    numbering = np.concatenate(
+        [np.array([numbering[0, 0], ]), numbering[1:, :].ravel('F')]
+    )
     assert -1 not in numbering, f"at least one dof is not numbered."
     return numbering, current

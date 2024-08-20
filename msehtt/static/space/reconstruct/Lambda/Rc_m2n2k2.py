@@ -16,12 +16,13 @@ def reconstruct_Lambda__m2n2k2(tpm, degree, cochain, xi, et, ravel=False):
         element = elements[e]
         etype = element.etype
         local_cochain = cochain[e]
-        if etype in ("orthogonal rectangle", "unique msepy curvilinear quadrilateral"):
+        if etype in ("orthogonal rectangle", "unique msepy curvilinear quadrilateral",
+                     5, 'unique msepy curvilinear triangle', 9):
             x[e], y[e], u[e] = ___rc222_msepy_quadrilateral___(
                 element, degree, local_cochain, xi, et, ravel=ravel
             )
         else:
-            raise NotImplementedError()
+            raise NotImplementedError(f"{__name__} not implemented for etype={etype}")
     return (x, y), (u, )
 
 

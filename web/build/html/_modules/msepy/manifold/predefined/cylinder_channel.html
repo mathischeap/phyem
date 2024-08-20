@@ -230,7 +230,7 @@
 </li>
 <li class="toctree-l2 has-children"><a class="reference internal" href="../../../../gallery/Navier_Stokes/index.html">🌊 Navier-Stokes equations</a><input class="toctree-checkbox" id="toctree-checkbox-7" name="toctree-checkbox-7" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-7"><i class="fa-solid fa-chevron-down"></i></label><ul>
 <li class="toctree-l3"><a class="reference internal" href="../../../../gallery/Navier_Stokes/backward_facing_step/index.html">Backward facing step flow</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../../../../gallery/Navier_Stokes/lid_driven_cavity/index.html">Lid-driven Cavity</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../gallery/Navier_Stokes/lid_driven_cavity/index.html">Lid-driven cavity</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../../gallery/Navier_Stokes/normal_dipole_collision/index.html">Normal dipole collision</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../../gallery/Navier_Stokes/shear_layer_rollup/index.html">Shear layer rollup</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../../gallery/Navier_Stokes/Taylor_Green_vortex/index.html">Taylor-Green vortex</a></li>
@@ -391,6 +391,7 @@ document.write(`
                   
   <h1>Source code for msepy.manifold.predefined.cylinder_channel</h1><div class="highlight"><pre>
 <span></span><span class="c1"># -*- coding: utf-8 -*-</span>
+<span class="c1"># noinspection PyUnresolvedReferences,PyRedeclaration</span>
 <span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">.. testsetup:: *</span>
 
@@ -621,13 +622,15 @@ document.write(`
 <span class="sd">                  |</span>
 <span class="sd">    ______________|______________________________________</span>
 <span class="sd">    |             |                                     |</span>
-<span class="sd">    |            _|_                                    |</span>
+<span class="sd">    |hu          _|_                                    |</span>
 <span class="sd">    |           / |r\                                   |</span>
-<span class="sd">    |h         |  .--|----------------------------------|----------&gt; x</span>
+<span class="sd">    |----------|  .--|----------------------------------|----------&gt; x</span>
 <span class="sd">    |           \___/                                   |</span>
-<span class="sd">    |                                                   |</span>
-<span class="sd">    |______dl________________________dr_________________|</span>
+<span class="sd">    |hl           |                                     |</span>
+<span class="sd">    |______dl_____|__________________dr_________________|</span>
 
+
+<span class="sd">    hl + hu = h</span>
 
 <span class="sd">    Regions are distributed as:</span>
 
@@ -642,7 +645,7 @@ document.write(`
 <span class="sd">    |_______|__________|_____________________|</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">mf</span><span class="p">,</span> <span class="n">r</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">dl</span><span class="o">=</span><span class="mi">8</span><span class="p">,</span> <span class="n">dr</span><span class="o">=</span><span class="mi">25</span><span class="p">,</span> <span class="n">h</span><span class="o">=</span><span class="mi">6</span><span class="p">,</span> <span class="n">w</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">periodic</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">mf</span><span class="p">,</span> <span class="n">r</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">dl</span><span class="o">=</span><span class="mi">8</span><span class="p">,</span> <span class="n">dr</span><span class="o">=</span><span class="mi">25</span><span class="p">,</span> <span class="n">h</span><span class="o">=</span><span class="mi">6</span><span class="p">,</span> <span class="n">w</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">periodic</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">hl</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
@@ -652,8 +655,11 @@ document.write(`
 <span class="sd">        dr</span>
 <span class="sd">        h</span>
 <span class="sd">        w</span>
-<span class="sd">        periodic</span>
-
+<span class="sd">        periodic : bool</span>
+<span class="sd">            Only make sense in 3d.</span>
+<span class="sd">        hl :</span>
+<span class="sd">            ``hl + hu = h``</span>
+<span class="sd">            if ``hl`` is None, ``hl = 0.5 * h``.</span>
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
 
@@ -664,9 +670,14 @@ document.write(`
         <span class="bp">self</span><span class="o">.</span><span class="n">_dr</span> <span class="o">=</span> <span class="n">dr</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_h</span> <span class="o">=</span> <span class="n">h</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_w</span> <span class="o">=</span> <span class="n">w</span>
+        <span class="k">if</span> <span class="n">hl</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">hl</span> <span class="o">=</span> <span class="mf">0.5</span> <span class="o">*</span> <span class="n">h</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">pass</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_hl</span> <span class="o">=</span> <span class="n">hl</span>
+        <span class="n">hu</span> <span class="o">=</span> <span class="n">h</span> <span class="o">-</span> <span class="n">hl</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_periodic</span> <span class="o">=</span> <span class="n">periodic</span>
 
-        <span class="k">assert</span> <span class="n">dl</span> <span class="o">&gt;</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">r</span> <span class="ow">and</span> <span class="p">(</span><span class="n">h</span><span class="o">/</span><span class="mi">2</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">r</span> <span class="ow">and</span> <span class="n">dr</span> <span class="o">&gt;</span> <span class="mi">5</span> <span class="o">*</span> <span class="n">r</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;shape wrong!&quot;</span>
         <span class="k">assert</span> <span class="n">mf</span><span class="o">.</span><span class="n">esd</span> <span class="o">==</span> <span class="n">mf</span><span class="o">.</span><span class="n">ndim</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;_cylinder_channel mesh only works for manifold.ndim == embedding space dimensions.&quot;</span>
         <span class="k">assert</span> <span class="n">mf</span><span class="o">.</span><span class="n">esd</span> <span class="ow">in</span> <span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">),</span> <span class="sa">f</span><span class="s2">&quot;_cylinder_channel mesh only works in 2-, 3-dimensions.&quot;</span>
         <span class="n">esd</span> <span class="o">=</span> <span class="n">mf</span><span class="o">.</span><span class="n">esd</span>
@@ -718,9 +729,9 @@ document.write(`
 
         <span class="k">if</span> <span class="n">esd</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
             <span class="n">tf1</span> <span class="o">=</span> <span class="n">_Transfinite2</span><span class="p">(</span>
-                <span class="p">[</span><span class="s1">&#39;straight line&#39;</span><span class="p">,</span> <span class="p">[(</span><span class="o">-</span><span class="n">hr</span><span class="p">,</span> <span class="o">-</span><span class="n">h</span><span class="o">/</span><span class="mi">2</span><span class="p">),</span> <span class="p">(</span><span class="o">-</span><span class="n">hr</span><span class="p">,</span> <span class="o">-</span><span class="n">hr</span><span class="p">)]],</span>
-                <span class="p">[</span><span class="s1">&#39;straight line&#39;</span><span class="p">,</span> <span class="p">[(</span><span class="n">hr</span><span class="p">,</span> <span class="o">-</span><span class="n">h</span><span class="o">/</span><span class="mi">2</span><span class="p">),</span> <span class="p">(</span><span class="n">hr</span><span class="p">,</span> <span class="o">-</span><span class="n">hr</span><span class="p">)]],</span>
-                <span class="p">[</span><span class="s1">&#39;straight line&#39;</span><span class="p">,</span> <span class="p">[(</span><span class="o">-</span><span class="n">hr</span><span class="p">,</span> <span class="o">-</span><span class="n">h</span><span class="o">/</span><span class="mi">2</span><span class="p">),</span> <span class="p">(</span><span class="n">hr</span><span class="p">,</span> <span class="o">-</span><span class="n">h</span><span class="o">/</span><span class="mi">2</span><span class="p">)]],</span>
+                <span class="p">[</span><span class="s1">&#39;straight line&#39;</span><span class="p">,</span> <span class="p">[(</span><span class="o">-</span><span class="n">hr</span><span class="p">,</span> <span class="o">-</span><span class="n">hl</span><span class="p">),</span> <span class="p">(</span><span class="o">-</span><span class="n">hr</span><span class="p">,</span> <span class="o">-</span><span class="n">hr</span><span class="p">)]],</span>
+                <span class="p">[</span><span class="s1">&#39;straight line&#39;</span><span class="p">,</span> <span class="p">[(</span><span class="n">hr</span><span class="p">,</span> <span class="o">-</span><span class="n">hl</span><span class="p">),</span> <span class="p">(</span><span class="n">hr</span><span class="p">,</span> <span class="o">-</span><span class="n">hr</span><span class="p">)]],</span>
+                <span class="p">[</span><span class="s1">&#39;straight line&#39;</span><span class="p">,</span> <span class="p">[(</span><span class="o">-</span><span class="n">hr</span><span class="p">,</span> <span class="o">-</span><span class="n">hl</span><span class="p">),</span> <span class="p">(</span><span class="n">hr</span><span class="p">,</span> <span class="o">-</span><span class="n">hl</span><span class="p">)]],</span>
                 <span class="p">[</span><span class="s1">&#39;anticlockwise arc&#39;</span><span class="p">,</span> <span class="p">[(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="p">(</span><span class="o">-</span><span class="n">hr</span><span class="p">,</span> <span class="o">-</span><span class="n">hr</span><span class="p">),</span> <span class="p">(</span><span class="n">hr</span><span class="p">,</span> <span class="o">-</span><span class="n">hr</span><span class="p">)]],</span>
             <span class="p">)</span>
             <span class="n">tf3</span> <span class="o">=</span> <span class="n">_Transfinite2</span><span class="p">(</span>
@@ -736,19 +747,19 @@ document.write(`
                 <span class="p">[</span><span class="s1">&#39;straight line&#39;</span><span class="p">,</span> <span class="p">[(</span><span class="n">hr</span><span class="p">,</span> <span class="n">hr</span><span class="p">),</span> <span class="p">(</span><span class="n">dr</span><span class="p">,</span> <span class="n">hr</span><span class="p">)]],</span>
             <span class="p">)</span>
             <span class="n">tf6</span> <span class="o">=</span> <span class="n">_Transfinite2</span><span class="p">(</span>
-                <span class="p">[</span><span class="s1">&#39;straight line&#39;</span><span class="p">,</span> <span class="p">[(</span><span class="o">-</span><span class="n">hr</span><span class="p">,</span> <span class="n">hr</span><span class="p">),</span> <span class="p">(</span><span class="o">-</span><span class="n">hr</span><span class="p">,</span> <span class="n">h</span><span class="o">/</span><span class="mi">2</span><span class="p">)]],</span>
-                <span class="p">[</span><span class="s1">&#39;straight line&#39;</span><span class="p">,</span> <span class="p">[(</span><span class="n">hr</span><span class="p">,</span> <span class="n">hr</span><span class="p">),</span> <span class="p">(</span><span class="n">hr</span><span class="p">,</span> <span class="n">h</span><span class="o">/</span><span class="mi">2</span><span class="p">)]],</span>
+                <span class="p">[</span><span class="s1">&#39;straight line&#39;</span><span class="p">,</span> <span class="p">[(</span><span class="o">-</span><span class="n">hr</span><span class="p">,</span> <span class="n">hr</span><span class="p">),</span> <span class="p">(</span><span class="o">-</span><span class="n">hr</span><span class="p">,</span> <span class="n">hu</span><span class="p">)]],</span>
+                <span class="p">[</span><span class="s1">&#39;straight line&#39;</span><span class="p">,</span> <span class="p">[(</span><span class="n">hr</span><span class="p">,</span> <span class="n">hr</span><span class="p">),</span> <span class="p">(</span><span class="n">hr</span><span class="p">,</span> <span class="n">hu</span><span class="p">)]],</span>
                 <span class="p">[</span><span class="s1">&#39;clockwise arc&#39;</span><span class="p">,</span> <span class="p">[(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="p">(</span><span class="o">-</span><span class="n">hr</span><span class="p">,</span> <span class="n">hr</span><span class="p">),</span> <span class="p">(</span><span class="n">hr</span><span class="p">,</span> <span class="n">hr</span><span class="p">)]],</span>
-                <span class="p">[</span><span class="s1">&#39;straight line&#39;</span><span class="p">,</span> <span class="p">[(</span><span class="o">-</span><span class="n">hr</span><span class="p">,</span> <span class="n">h</span><span class="o">/</span><span class="mi">2</span><span class="p">),</span> <span class="p">(</span><span class="n">hr</span><span class="p">,</span> <span class="n">h</span><span class="o">/</span><span class="mi">2</span><span class="p">)]],</span>
+                <span class="p">[</span><span class="s1">&#39;straight line&#39;</span><span class="p">,</span> <span class="p">[(</span><span class="o">-</span><span class="n">hr</span><span class="p">,</span> <span class="n">hu</span><span class="p">),</span> <span class="p">(</span><span class="n">hr</span><span class="p">,</span> <span class="n">hu</span><span class="p">)]],</span>
             <span class="p">)</span>
-            <span class="n">rm0</span> <span class="o">=</span> <span class="n">_LinearTransformation</span><span class="p">(</span><span class="o">-</span><span class="n">dl</span><span class="p">,</span> <span class="o">-</span><span class="n">hr</span><span class="p">,</span> <span class="o">-</span><span class="n">h</span><span class="o">/</span><span class="mi">2</span><span class="p">,</span> <span class="o">-</span><span class="n">hr</span><span class="p">)</span>
+            <span class="n">rm0</span> <span class="o">=</span> <span class="n">_LinearTransformation</span><span class="p">(</span><span class="o">-</span><span class="n">dl</span><span class="p">,</span> <span class="o">-</span><span class="n">hr</span><span class="p">,</span> <span class="o">-</span><span class="n">hl</span><span class="p">,</span> <span class="o">-</span><span class="n">hr</span><span class="p">)</span>
             <span class="n">rm1</span> <span class="o">=</span> <span class="n">tf1</span>
-            <span class="n">rm2</span> <span class="o">=</span> <span class="n">_LinearTransformation</span><span class="p">(</span><span class="n">hr</span><span class="p">,</span> <span class="n">dr</span><span class="p">,</span> <span class="o">-</span><span class="n">h</span><span class="o">/</span><span class="mi">2</span><span class="p">,</span> <span class="o">-</span><span class="n">hr</span><span class="p">)</span>
+            <span class="n">rm2</span> <span class="o">=</span> <span class="n">_LinearTransformation</span><span class="p">(</span><span class="n">hr</span><span class="p">,</span> <span class="n">dr</span><span class="p">,</span> <span class="o">-</span><span class="n">hl</span><span class="p">,</span> <span class="o">-</span><span class="n">hr</span><span class="p">)</span>
             <span class="n">rm3</span> <span class="o">=</span> <span class="n">tf3</span>
             <span class="n">rm4</span> <span class="o">=</span> <span class="n">tf4</span>
-            <span class="n">rm5</span> <span class="o">=</span> <span class="n">_LinearTransformation</span><span class="p">(</span><span class="o">-</span><span class="n">dl</span><span class="p">,</span> <span class="o">-</span><span class="n">hr</span><span class="p">,</span> <span class="n">hr</span><span class="p">,</span> <span class="n">h</span><span class="o">/</span><span class="mi">2</span><span class="p">)</span>
+            <span class="n">rm5</span> <span class="o">=</span> <span class="n">_LinearTransformation</span><span class="p">(</span><span class="o">-</span><span class="n">dl</span><span class="p">,</span> <span class="o">-</span><span class="n">hr</span><span class="p">,</span> <span class="n">hr</span><span class="p">,</span> <span class="n">hu</span><span class="p">)</span>
             <span class="n">rm6</span> <span class="o">=</span> <span class="n">tf6</span>
-            <span class="n">rm7</span> <span class="o">=</span> <span class="n">_LinearTransformation</span><span class="p">(</span><span class="n">hr</span><span class="p">,</span> <span class="n">dr</span><span class="p">,</span> <span class="n">hr</span><span class="p">,</span> <span class="n">h</span><span class="o">/</span><span class="mi">2</span><span class="p">)</span>
+            <span class="n">rm7</span> <span class="o">=</span> <span class="n">_LinearTransformation</span><span class="p">(</span><span class="n">hr</span><span class="p">,</span> <span class="n">dr</span><span class="p">,</span> <span class="n">hr</span><span class="p">,</span> <span class="n">hu</span><span class="p">)</span>
         <span class="k">elif</span> <span class="n">esd</span> <span class="o">==</span> <span class="mi">3</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">()</span>
         <span class="k">else</span><span class="p">:</span>
@@ -902,7 +913,7 @@ By Andrea Brugnoli, Ramy Rashad, Stefano Stramigioli, Yi Zhang and more
   <div class="footer-item">
     
 <div class="extra_footer">
-  <div>Last updated on February 03, 2024, 17:15:14, 中国标准时间</div>
+  <div>Last updated on July 11, 2024, 18:22:03, China Standard Time</div>
 </div>
   </div>
   

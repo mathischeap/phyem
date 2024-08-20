@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-"""
+r"""
 """
 from tools.frozen import Frozen
 from src.config import RANK, MASTER_RANK, COMM, MPI, SIZE
@@ -109,7 +109,8 @@ class MseHttBoundarySectionPartialMesh(Frozen):
         return self._mn
 
     def find_dofs(self, f, local=True):
-        """"""
+        r"""Find dofs of form `f` on this boundary section.
+        """
         if f._is_base():
             key = f.__repr__()
         else:
@@ -142,7 +143,7 @@ class MseHttBoundarySectionPartialMesh(Frozen):
             local_wise_dofs[i].sort()
 
         if local:
-            # if local is True, we return rank-wise element-wise output, for example:
+            # if local is True, we return a-local-rank-wise element-wise output, for example:
             # local_wise_dofs =
             # {
             #    14: [5, 11, 17, 23, 29]

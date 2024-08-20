@@ -23,7 +23,7 @@ def reconstruct_Lambda__m3n3k3(tpm, degree, cochain, xi, et, sg, ravel=False):
                 element, degree, local_cochain, xi, et, sg, ravel=ravel
             )
         else:
-            raise NotImplementedError()
+            raise NotImplementedError(f"{__name__} not implemented for etype={etype}")
     return (x, y, z), (u, )
 
 

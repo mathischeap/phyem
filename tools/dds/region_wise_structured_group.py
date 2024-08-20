@@ -25,6 +25,21 @@ class DDS_RegionWiseStructured_Group(Frozen):
         self._space_dim = space_dim    # we are in n-d space.
         self._coo_dict_list = coo_dict_list
 
+        if isinstance(val_dict_list_group, (list, tuple)):
+            names = [str(_) for _ in range(len(val_dict_list_group))]
+        elif isinstance(val_dict_list_group, dict):
+            names = []
+            GROUP = []
+            for key in val_dict_list_group:
+                assert isinstance(key, str), f"variable name={key} wrong, must be str!"
+                names.append(key)
+                GROUP.append(val_dict_list_group[key])
+            val_dict_list_group = GROUP
+        else:
+            raise NotImplementedError()
+
+        assert len(names) == len(set(names)), f"names={names} have repeated names."
+
         self._value_shapes = list()
         for i, val_dict_list in enumerate(val_dict_list_group):
             val_shape = _find_shape(val_dict_list)
@@ -53,6 +68,7 @@ class DDS_RegionWiseStructured_Group(Frozen):
         self._val_dict_list_group = val_dict_list_group
         self._dtype = None
         self._individuals_ = {}
+        self._value_names = names
         for i, _ in enumerate(val_dict_list_group):
             self._individuals_[i] = None
         self._freeze()
@@ -112,12 +128,20 @@ class DDS_RegionWiseStructured_Group(Frozen):
     # ------------- wrap of dds-rws -----------------------------------------------------------
     def __getitem__(self, i):
         """get the ith variable as a dds-rws."""
-        assert i in self._individuals_, f"I have {len(self._individuals_)} variables. i={i} is illegal."
-        if self._individuals_[i] is None:
-            # noinspection PyTypeChecker
-            self._individuals_[i] = DDSRegionWiseStructured(
-                self._coo_dict_list, self._val_dict_list_group[i]
-            )
+        if i in self._individuals_:   # variable index
+            if self._individuals_[i] is None:
+                # noinspection PyTypeChecker
+                self._individuals_[i] = DDSRegionWiseStructured(
+                    self._coo_dict_list, self._val_dict_list_group[i]
+                )
+            else:
+                pass
+            return self._individuals_[i]
+
+        elif isinstance(i, str):  # variable name
+            assert i in self._value_names, f"variable name = {i} not exist."
+            index = self._value_names.index(i)
+            return self.__getitem__(index)
+
         else:
-            pass
-        return self._individuals_[i]
+            raise Exception()

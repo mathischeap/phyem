@@ -106,9 +106,9 @@ class MsePyMeshCoordinateTransformation(Frozen):
             reference_origin = eim._reference_origin
             reference_regions = eim._reference_regions
 
-            elements: Dict[int] = dict()  # Dict keys: region index
-            origin: Dict[int] = dict()    # Dict keys: region index
-            delta: Dict[int] = dict()     # Dict keys: region index
+            elements: Dict = dict()  # Dict keys: region index
+            origin: Dict = dict()    # Dict keys: region index
+            delta: Dict = dict()     # Dict keys: region index
             for i, re in enumerate(reference_elements):
                 region = reference_regions[i]
                 if region not in origin:

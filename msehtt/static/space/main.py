@@ -13,7 +13,7 @@ from msehtt.static.space.reconstruction_matrix.main import MseHttSpaceReconstruc
 
 
 class MseHttSpace(Frozen):
-    """"""
+    r""""""
 
     def __init__(self, abstract_space):
         """"""

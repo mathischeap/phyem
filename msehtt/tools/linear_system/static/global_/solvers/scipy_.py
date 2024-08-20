@@ -8,12 +8,17 @@ from tools.miscellaneous.timer import MyTimer
 from src.config import RANK, MASTER_RANK, COMM, MPI
 
 
-def spsolve(A, b):  # I receive shells of A and b in order to have the freedom to clean the original data.
+def spsolve(A, b, clean=False):  # I receive shells of A and b in order to have the freedom to clean the original data.
     r"""direct solver."""
     t_start = time()
     # --- x ------------------------------
     M = A.gather(root=MASTER_RANK)
     V = b.gather(root=MASTER_RANK)
+    if clean:
+        A.clean()
+        b.clean()
+    else:
+        pass
     if RANK == MASTER_RANK:
         x = spspalinalg.spsolve(M, V)
     else:

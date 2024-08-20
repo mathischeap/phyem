@@ -88,12 +88,12 @@ class MseHttGreatMeshOrthogonalHexahedronElement(MseHttGreatMeshBaseElement):
     def face_setting(cls):
         """To show the nodes of faces and the positive direction."""
         return {
-            0: (0, 2, 4, 6),   # face #0: x- face,
-            1: (1, 3, 5, 7),   # face #1: x+ face,
-            2: (0, 1, 4, 5),   # face #2: y- face,
-            3: (2, 3, 6, 7),   # face #3: y+ face,
-            4: (0, 1, 2, 3),   # face #2: z- face,
-            5: (4, 5, 6, 7),   # face #3: z+ face,
+            0: (0, 2, 4, 6),   # face #0: x- face, Upper
+            1: (1, 3, 5, 7),   # face #1: x+ face, Down
+            2: (0, 1, 4, 5),   # face #2: y- face, Left
+            3: (2, 3, 6, 7),   # face #3: y+ face, Right
+            4: (0, 1, 2, 3),   # face #2: z- face, Back
+            5: (4, 5, 6, 7),   # face #3: z+ face, Front
         }
 
     @property
@@ -119,6 +119,7 @@ class MseHttGreatMeshOrthogonalHexahedronElement(MseHttGreatMeshBaseElement):
 
         return {
             'mn': (self.m(), self.n()),
+            'center': self.ct.mapping(0, 0, 0),
             0: self.ct.mapping(-ones, linspace[0], linspace[1]),   # face #0, x-
             1: self.ct.mapping(ones, linspace[0], linspace[1]),    # face #1, x+
             2: self.ct.mapping(linspace[0], -ones, linspace[1]),   # face #2, y-

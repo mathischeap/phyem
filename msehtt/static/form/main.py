@@ -5,6 +5,8 @@ import numpy as np
 from tools.frozen import Frozen
 from typing import Dict
 from src.form.main import Form
+from src.config import RANK, MASTER_RANK, SIZE, COMM
+import pickle
 from msehtt.tools.matrix.static.local import MseHttStaticLocalMatrix
 from msehtt.static.form.cf import MseHttStaticFormCF
 from msehtt.static.form.addons.static import MseHttFormStaticCopy
@@ -108,6 +110,65 @@ class MseHttForm(Frozen):
             self.cf.field = _cf
         else:
             self._base.cf = _cf
+
+    def saveto(self, filename):
+        """save me to a file.
+
+        Basically, we only save the cochains of all available times.
+        """
+        if self._is_base():
+            pass
+        else:
+            self._base.saveto(filename)
+            return
+
+        name = 'msehtt-form: ' + self.abstract._sym_repr + ' = ' + self.abstract._lin_repr
+        cochain = {}
+        for t in self.cochain._tcd:
+            sf = self[t]
+            total_cochain = sf.cochain._merge_to(root=MASTER_RANK)
+            cochain[t] = total_cochain
+        if RANK == MASTER_RANK:
+            form_para_dict = {
+                'key': 'msehtt-static-form',
+                'name': name,
+                'cochain': cochain
+            }
+            with open(filename, 'wb') as output:
+                pickle.dump(form_para_dict, output, pickle.HIGHEST_PROTOCOL)
+            output.close()
+        else:
+            pass
+
+    def read(self, filename):
+        """Read to my cochain from a file whose key is equal to 'msehtt-static-form'.
+
+        Since I am only reading to my cochain, it returns no new object, it cannot be called
+        from `ph.read`. Please call me from a particular form.
+
+        """
+        for rank in range(SIZE):
+            if RANK == rank:
+                with open(filename, 'rb') as inputs:
+                    obj = pickle.load(inputs)
+                inputs.close()
+                assert obj['key'] == 'msehtt-static-form'
+                local_cochain = {}
+                cochain = obj['cochain']
+                for t in cochain:
+                    total_t_cochain = cochain[t]
+                    local_t_cochain = {}
+                    for e in self.cochain.gathering_matrix:
+                        local_t_cochain[e] = total_t_cochain[e]
+                    local_cochain[t] = local_t_cochain
+                del obj
+            else:
+                pass
+            COMM.barrier()  # make sure the file is read one rank by one rank.
+
+        # noinspection PyUnboundLocalVariable
+        for t in local_cochain:
+            self.cochain._set(t, local_cochain[t])
 
     def __getitem__(self, t):
         """"""

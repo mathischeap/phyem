@@ -9,8 +9,6 @@ Contributors
 
 🧩💡 `Andrea Brugnoli <https://www.researchgate.net/profile/Andrea-Brugnoli-3>`_
 
-🧩 Pengyu Xiang
-
 🧩💡 `Ramy Rashad <https://ramyrashad.com/>`_
 
 🧩💡 `Stefano Stramigioli <https://people.utwente.nl/s.stramigioli>`_

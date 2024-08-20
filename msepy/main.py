@@ -300,11 +300,11 @@ We then go through all time steps by iterating over all :math:`k\in\left\lbrace1
 ...     b_errors.append(b_L2_error)              # append the error to the list
 
 Note that ``a[None]`` automatically gives a static copy of ``a`` at its most recent time. For example, when
-``k=10``, i.e., :math:`t=t^{10}=0.2` (recall that the overall computation time is 1 and it is divided into
-50 time steps), ``a[None]`` is equivalent to ``a[0.2]``. And then method ``error`` computes the :math:`L^2`-error of
+``k=45``, i.e., :math:`t=t^{45}=0.9` (recall that the overall computation time is 1 and it is divided into
+50 time steps), ``a[None]`` is equivalent to ``a[0.9]``. And then method ``error`` computes the :math:`L^2`-error of
 it. To check it, do
 
->>> a[0.2].error() == a_errors[10]
+>>> a[0.9].error() == a_errors[45]
 True
 >>> len(a_errors)
 51

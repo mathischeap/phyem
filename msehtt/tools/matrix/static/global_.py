@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 r"""
 """
+
 from tools.frozen import Frozen
 import matplotlib.pyplot as plt
 from numpy import linalg as np_linalg
@@ -9,6 +10,7 @@ import numpy as np
 from scipy.sparse import dia_matrix
 
 from scipy.sparse import isspmatrix_csc, isspmatrix_csr
+# from scipy.sparse import csc_matrix, csr_matrix
 from msehtt.tools.gathering_matrix import MseHttGatheringMatrix
 
 
@@ -83,6 +85,18 @@ class MseHttGlobalMatrix(Frozen):
             return sum(all_M)
         else:
             return None
+
+    def clean(self):
+        r"""Replace the data by None (or empty sparse matrix?)."""
+        # if self._dtype == 'csc':
+        #     # noinspection PyUnresolvedReferences
+        #     self._M = csc_matrix(self.shape)
+        # elif self._dtype == 'csr':
+        #     # noinspection PyUnresolvedReferences
+        #     self._M = csr_matrix(self.shape)
+        # else:
+        #     raise Exception()
+        self._M = None
 
     def spy(self, markerfacecolor='k', markeredgecolor='g', markersize=6):
         """spy the assembled matrix.

@@ -230,7 +230,7 @@
 </li>
 <li class="toctree-l2 has-children"><a class="reference internal" href="../../../gallery/Navier_Stokes/index.html">🌊 Navier-Stokes equations</a><input class="toctree-checkbox" id="toctree-checkbox-7" name="toctree-checkbox-7" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-7"><i class="fa-solid fa-chevron-down"></i></label><ul>
 <li class="toctree-l3"><a class="reference internal" href="../../../gallery/Navier_Stokes/backward_facing_step/index.html">Backward facing step flow</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../../../gallery/Navier_Stokes/lid_driven_cavity/index.html">Lid-driven Cavity</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../gallery/Navier_Stokes/lid_driven_cavity/index.html">Lid-driven cavity</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../gallery/Navier_Stokes/normal_dipole_collision/index.html">Normal dipole collision</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../gallery/Navier_Stokes/shear_layer_rollup/index.html">Shear layer rollup</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../gallery/Navier_Stokes/Taylor_Green_vortex/index.html">Taylor-Green vortex</a></li>
@@ -514,6 +514,7 @@ document.write(`
 <span class="kn">from</span> <span class="nn">src.config</span> <span class="kn">import</span> <span class="n">_global_lin_repr_setting</span>
 <span class="kn">from</span> <span class="nn">src.config</span> <span class="kn">import</span> <span class="n">_parse_lin_repr</span>
 <span class="kn">from</span> <span class="nn">src.form.operators</span> <span class="kn">import</span> <span class="n">wedge</span><span class="p">,</span> <span class="n">time_derivative</span><span class="p">,</span> <span class="n">d</span><span class="p">,</span> <span class="n">codifferential</span><span class="p">,</span> <span class="n">cross_product</span><span class="p">,</span> <span class="n">tensor_product</span>
+<span class="kn">from</span> <span class="nn">src.form.operators</span> <span class="kn">import</span> <span class="n">convect</span>
 <span class="kn">from</span> <span class="nn">src.form.operators</span> <span class="kn">import</span> <span class="n">_project_to</span>
 <span class="kn">from</span> <span class="nn">src.config</span> <span class="kn">import</span> <span class="n">_check_sym_repr</span>
 <span class="kn">from</span> <span class="nn">src.form.parameters</span> <span class="kn">import</span> <span class="n">constant_scalar</span>
@@ -760,6 +761,10 @@ document.write(`
         <span class="k">return</span> <span class="n">d</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span></div>
 
 
+    <span class="k">def</span> <span class="nf">d</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">exterior_derivative</span><span class="p">()</span>
+
 <div class="viewcode-block" id="Form.codifferential">
 <a class="viewcode-back" href="../../../tutorial/docs/space_form.html#src.form.main.Form.codifferential">[docs]</a>
     <span class="k">def</span> <span class="nf">codifferential</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -773,6 +778,10 @@ document.write(`
 <span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;The cross product, :math:`\times`, between this form and another form.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="n">cross_product</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">)</span></div>
 
+
+    <span class="k">def</span> <span class="nf">convect</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Let self be u, other be w, we compute u dot(grad(w)).&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">convect</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">tensor_product</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;&quot;&quot;&quot;</span>
@@ -965,8 +974,51 @@ document.write(`
             <span class="k">if</span> <span class="n">which</span> <span class="o">==</span> <span class="s1">&#39;all&#39;</span><span class="p">:</span>
                 <span class="n">lin_repr</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_lin_repr</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="n">f</span><span class="o">.</span><span class="n">_lin_repr</span><span class="p">,</span> <span class="n">by</span><span class="o">.</span><span class="n">_lin_repr</span><span class="p">)</span>
                 <span class="n">sym_repr</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_sym_repr</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="n">f</span><span class="o">.</span><span class="n">_sym_repr</span><span class="p">,</span> <span class="n">by</span><span class="o">.</span><span class="n">_sym_repr</span><span class="p">)</span>
+
+            <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">which</span><span class="p">,</span> <span class="p">(</span><span class="nb">list</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">))</span> <span class="ow">and</span> <span class="nb">all</span><span class="p">([</span><span class="nb">isinstance</span><span class="p">(</span><span class="n">_</span><span class="p">,</span> <span class="nb">int</span><span class="p">)</span> <span class="ow">and</span> <span class="n">_</span> <span class="o">&gt;=</span> <span class="mi">0</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="n">which</span><span class="p">]):</span>
+                <span class="c1"># use 1, or [0,1] to indicate which targets to be replaced.</span>
+                <span class="n">lin_list</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_lin_repr</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="n">f</span><span class="o">.</span><span class="n">_lin_repr</span><span class="p">)</span>
+                <span class="n">sym_list</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_sym_repr</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="n">f</span><span class="o">.</span><span class="n">_sym_repr</span><span class="p">)</span>
+                <span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="n">lin_list</span><span class="p">)</span> <span class="o">==</span> <span class="nb">len</span><span class="p">(</span><span class="n">sym_list</span><span class="p">),</span> <span class="sa">f</span><span class="s1">&#39;must be!&#39;</span>
+
+                <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">lin_list</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>  <span class="c1"># no replace target found!</span>
+                    <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s1">&#39;found no target to replace.&#39;</span><span class="p">)</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="k">pass</span>
+                <span class="n">amount_places</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">lin_list</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span>
+                <span class="n">to_join_lin</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;&#39;</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">amount_places</span><span class="p">)]</span>
+                <span class="n">to_join_sym</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;&#39;</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">amount_places</span><span class="p">)]</span>
+                <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">which</span><span class="p">:</span>
+                    <span class="k">assert</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">amount_places</span><span class="p">,</span> <span class="p">(</span><span class="sa">f</span><span class="s2">&quot;cannot deal with `which=</span><span class="si">{</span><span class="n">which</span><span class="si">}</span><span class="s2">` for form replace, &quot;</span>
+                                               <span class="sa">f</span><span class="s2">&quot;not that many targets.)&quot;</span><span class="p">)</span>
+                    <span class="n">to_join_lin</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">by</span><span class="o">.</span><span class="n">_lin_repr</span>
+                    <span class="n">to_join_sym</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">by</span><span class="o">.</span><span class="n">_sym_repr</span>
+
+                <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">s</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">to_join_lin</span><span class="p">):</span>
+                    <span class="k">if</span> <span class="n">s</span> <span class="o">==</span> <span class="s1">&#39;&#39;</span><span class="p">:</span>
+                        <span class="n">to_join_lin</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">_lin_repr</span>
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="k">pass</span>
+
+                <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">s</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">to_join_sym</span><span class="p">):</span>
+                    <span class="k">if</span> <span class="n">s</span> <span class="o">==</span> <span class="s1">&#39;&#39;</span><span class="p">:</span>
+                        <span class="n">to_join_sym</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">_sym_repr</span>
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="k">pass</span>
+
+                <span class="n">final_lin_repr</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
+                <span class="n">final_sym_repr</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
+                <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">amount_places</span><span class="p">):</span>
+                    <span class="n">final_lin_repr</span> <span class="o">+=</span> <span class="n">lin_list</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">+</span> <span class="n">to_join_lin</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+                    <span class="n">final_sym_repr</span> <span class="o">+=</span> <span class="n">sym_list</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">+</span> <span class="n">to_join_sym</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+                <span class="n">final_lin_repr</span> <span class="o">+=</span> <span class="n">lin_list</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+                <span class="n">final_sym_repr</span> <span class="o">+=</span> <span class="n">sym_list</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+
+                <span class="n">sym_repr</span> <span class="o">=</span> <span class="n">final_sym_repr</span>
+                <span class="n">lin_repr</span> <span class="o">=</span> <span class="n">final_lin_repr</span>
+
             <span class="k">else</span><span class="p">:</span>
-                <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">()</span>
+                <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;cannot deal with `which=</span><span class="si">{</span><span class="n">which</span><span class="si">}</span><span class="s2">` for form replace.)&quot;</span><span class="p">)</span>
 
             <span class="k">return</span> <span class="n">Form</span><span class="p">(</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">space</span><span class="p">,</span>
@@ -1030,7 +1082,7 @@ By Andrea Brugnoli, Ramy Rashad, Stefano Stramigioli, Yi Zhang and more
   <div class="footer-item">
     
 <div class="extra_footer">
-  <div>Last updated on February 03, 2024, 17:15:14, 中国标准时间</div>
+  <div>Last updated on July 11, 2024, 18:22:03, China Standard Time</div>
 </div>
   </div>
   

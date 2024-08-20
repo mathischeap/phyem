@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-"""
+r"""
 """
 from numpy import testing
 from src.config import RANK, MASTER_RANK

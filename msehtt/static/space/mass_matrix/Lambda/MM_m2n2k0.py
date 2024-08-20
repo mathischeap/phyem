@@ -24,7 +24,7 @@ def mass_matrix_Lambda__m2n2k0(tpm, degree):
         elif etype == 'unique msepy curvilinear quadrilateral':
             M[e], cache_key_dict[e] = ___mm220_msepy_unique_quadrilateral___(element, degree)
         else:
-            raise NotImplementedError()
+            raise NotImplementedError(f"{__name__} not implemented for etype={etype}")
     _cache_mm220_[key] = M, cache_key_dict
     return M, cache_key_dict
 

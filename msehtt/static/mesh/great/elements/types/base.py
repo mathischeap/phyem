@@ -8,6 +8,10 @@ from msehtt.static.space.basis_function.Lambda.bf_m2n2k1 import ___bf221o_outer_
 from msehtt.static.space.basis_function.Lambda.bf_m2n2k1 import ___bf221i_inner_msepy_quadrilateral___
 from msehtt.static.space.basis_function.Lambda.bf_m2n2k2 import ___bf222_msepy_quadrilateral___
 
+from msehtt.static.space.basis_function.Lambda.bf_m2n2k0 import ___bf220_utv_5_triangle___
+from msehtt.static.space.basis_function.Lambda.bf_m2n2k1 import ___bf221i_inner_vtu_5___
+from msehtt.static.space.basis_function.Lambda.bf_m2n2k1 import ___bf221o_outer_vtu_5___
+
 from msehtt.static.space.basis_function.Lambda.bf_m3n3k0 import ___bf330_msepy_quadrilateral___
 from msehtt.static.space.basis_function.Lambda.bf_m3n3k1 import ___bf331_msepy_quadrilateral___
 from msehtt.static.space.basis_function.Lambda.bf_m3n3k2 import ___bf332_msepy_quadrilateral___
@@ -35,6 +39,7 @@ class MseHttGreatMeshBaseElement(Frozen):
         self._parameters = None
         self._ct = None
         self._faces = None
+        self._edges = None
         self._dof_reverse_info = {}
         self._freeze()
 
@@ -110,7 +115,9 @@ class MseHttGreatMeshBaseElement(Frozen):
     def bf(self, indicator, degree, *grid_mesh):
         """"""
         p, btype = self.degree_parser(degree)
-        if self.etype in ('orthogonal rectangle', 'unique msepy curvilinear quadrilateral'):
+
+        if self.etype in ('orthogonal rectangle', 'unique msepy curvilinear quadrilateral',
+                          9, 'unique curvilinear quad', ):
             if indicator == 'm2n2k0':
                 xi_et_sg, bf = ___bf220_msepy_quadrilateral___(p, btype, *grid_mesh)
             elif indicator == 'm2n2k1_outer':
@@ -121,6 +128,19 @@ class MseHttGreatMeshBaseElement(Frozen):
                 xi_et_sg, bf = ___bf222_msepy_quadrilateral___(p, btype, *grid_mesh)
             else:
                 raise NotImplementedError()
+
+        elif self.etype in (5, "unique msepy curvilinear triangle"):
+            if indicator == 'm2n2k0':
+                xi_et_sg, bf = ___bf220_utv_5_triangle___(p, btype, *grid_mesh)
+            elif indicator == 'm2n2k1_outer':
+                xi_et_sg, bf = ___bf221o_outer_vtu_5___(p, btype, *grid_mesh)
+            elif indicator == 'm2n2k1_inner':
+                xi_et_sg, bf = ___bf221i_inner_vtu_5___(p, btype, *grid_mesh)
+            elif indicator == 'm2n2k2':
+                xi_et_sg, bf = ___bf222_msepy_quadrilateral___(p, btype, *grid_mesh)  # same as in a rectangle
+            else:
+                raise NotImplementedError()
+
         elif self.etype in ('orthogonal hexahedron', ):
             if indicator == 'm3n3k0':
                 xi_et_sg, bf = ___bf330_msepy_quadrilateral___(p, btype, *grid_mesh)
@@ -132,10 +152,16 @@ class MseHttGreatMeshBaseElement(Frozen):
                 xi_et_sg, bf = ___bf333_msepy_quadrilateral___(p, btype, *grid_mesh)
             else:
                 raise NotImplementedError()
+
         else:
             raise NotImplementedError()
 
-        if indicator in self.dof_reverse_info:
+        if self._dof_reverse_info == {}:
+            return xi_et_sg, bf
+        else:
+            pass
+
+        if indicator in self._dof_reverse_info:
             if indicator == 'm2n2k1_outer':
                 bf0 = bf[0].copy()
                 bf1 = bf[1].copy()
@@ -167,7 +193,7 @@ class MseHttGreatMeshBaseElement(Frozen):
                 return xi_et_sg, [bf0, bf1]
 
             else:
-                raise NotImplementedError()
+                raise NotImplementedError(f"reverse dof not implemented for {indicator}-form")
 
         else:
             return xi_et_sg, bf
@@ -181,7 +207,7 @@ class MseHttGreatMeshBaseElement(Frozen):
         dof_reverse_info : dict
             For example:
                 {
-                    'm2n2k1_inner': 0,  # face id, dofs on this face need a minus.
+                    'm2n2k1_inner': [0],  # face id, dofs on this face need a minus.
                     'm2n2k1_outer': [2, 3],  # face id, dofs on these faces need a minus.
                 }
 
@@ -204,14 +230,38 @@ class MseHttGreatMeshBaseElement(Frozen):
         raise NotImplementedError()
 
     @classmethod
+    def edge_setting(cls):
+        """The edge setting; show nodes of each edge of the element and the positive direction.
+
+        An edge can be 1-d for 3d element. 2d element has no edge (only have face.)
+        """
+        raise NotImplementedError()
+
+    def ___face_representative_str___(self):
+        r""""""
+        raise NotImplementedError()
+
+    def ___edge_representative_str___(self):
+        r""""""
+        raise NotImplementedError()
+
+    @property
+    def faces(self):
+        raise NotImplementedError()
+
+    @property
+    def edges(self):
+        return NotImplementedError()
+
+    @classmethod
     def degree_parser(cls, degree):
         """"""
         raise NotImplementedError()
 
-    @classmethod
-    def _form_face_dof_direction_topology(cls):
-        """"""
-        return None
+    # @classmethod
+    # def _form_face_dof_direction_topology(cls):
+    #     """"""
+    #     return None
 
     def _generate_vtk_data_for_form(self, indicator, element_cochain, degree, data_density):
         """"""
@@ -219,6 +269,8 @@ class MseHttGreatMeshBaseElement(Frozen):
 
 
 # ============ ELEMENT CT =====================================================================================
+
+
 ___cache_msehtt_JM___ = {}
 ___cache_msehtt_Jacobian___ = {}
 ___cache_msehtt_inverseJacobian___ = {}
@@ -512,6 +564,8 @@ class MseHttGreatMeshBaseElementCooTrans(Frozen):
 
 
 # ======== FACE CT BASE =============================================================================
+
+
 class _FaceCoordinateTransformationBase(Frozen):
     """"""
     def __init__(self, face):

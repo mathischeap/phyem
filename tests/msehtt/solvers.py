@@ -85,7 +85,14 @@ np.testing.assert_array_almost_equal(
               0.94048189, 0.36495389, 0.54018445, 1.57663592])
 )
 
-x, message2, _ = solve('direct', x0=None)
+x, message3, _ = solve('spsolve', x0=None)
+np.testing.assert_array_almost_equal(
+    x,
+    np.array([-3.23891085, 3.44129703, 1.7765975, -2.7063454, -0.11510028,
+              0.94048189, 0.36495389, 0.54018445, 1.57663592])
+)
+
+x, message2, _ = solve('ppsp', x0=None, clean=True)
 np.testing.assert_array_almost_equal(
     x,
     np.array([-3.23891085, 3.44129703, 1.7765975, -2.7063454, -0.11510028,

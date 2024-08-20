@@ -12,6 +12,7 @@ from msehtt.tools.vector.static.local import concatenate
 from msehtt.tools.vector.static.global_gathered import MseHttGlobalVectorGathered
 import msehtt.tools.linear_system.static.global_.solvers.mpi_py as _mpi_py
 import msehtt.tools.linear_system.static.global_.solvers.scipy_ as _scipy
+import msehtt.tools.linear_system.static.global_.solvers.pypardiso_ as _pypardiso
 
 from msehtt.static.form.main import MseHttForm
 
@@ -24,6 +25,7 @@ class MseHttLinearSystemSolve(Frozen):
         self._Axb = Axb
         self._package_mpi_py = _mpi_py
         self._package_scipy = _scipy
+        self._package_pypardiso = _pypardiso
         self._freeze()
 
     @property
@@ -53,8 +55,11 @@ class MseHttLinearSystemSolve(Frozen):
     def _package_scheme_parser_(self, package_name, scheme_name):
         """"""
         if package_name is None:  # provide scheme_indicator
-            if scheme_name in ('direct', 'spsolve'):
+            if scheme_name in ('spsolve', 'direct'):
                 package_name = 'scipy'
+                scheme_name = 'spsolve'
+            elif scheme_name == 'ppsp':
+                package_name = 'pypardiso'
                 scheme_name = 'spsolve'
             elif scheme_name == 'gmres':
                 package_name = 'mpi_py'

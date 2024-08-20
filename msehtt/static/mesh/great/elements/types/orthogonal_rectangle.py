@@ -82,6 +82,7 @@ class MseHttGreatMeshOrthogonalRectangleElement(MseHttGreatMeshBaseElement):
 
         return {
             'mn': (self.m(), self.n()),
+            'center': self.ct.mapping(0, 0),
             0: self.ct.mapping(-ones, linspace),   # face #0
             1: self.ct.mapping(ones, linspace),    # face #1
             2: self.ct.mapping(linspace, -ones),   # face #2
@@ -92,10 +93,10 @@ class MseHttGreatMeshOrthogonalRectangleElement(MseHttGreatMeshBaseElement):
     def face_setting(cls):
         """To show the nodes of faces and the positive direction."""
         return {
-            0: (0, 2),   # face #0 is from node 0 -> node 2  (positive direction)
-            1: (1, 3),   # face #1 is from node 1 -> node 3  (positive direction)
-            2: (0, 1),   # face #2 is from node 0 -> node 1  (positive direction)
-            3: (2, 3),   # face #3 is from node 2 -> node 3  (positive direction)
+            0: (0, 2),   # face #0 is from node 0 -> node 2  (positive direction), North
+            1: (1, 3),   # face #1 is from node 1 -> node 3  (positive direction), South
+            2: (0, 1),   # face #2 is from node 0 -> node 1  (positive direction), West
+            3: (2, 3),   # face #3 is from node 2 -> node 3  (positive direction), East
         }
 
     @property
@@ -104,6 +105,26 @@ class MseHttGreatMeshOrthogonalRectangleElement(MseHttGreatMeshBaseElement):
         if self._faces is None:
             self._faces = MseHttGreatMeshOrthogonalRectangleElementFaces(self)
         return self._faces
+
+    @property
+    def edges(self):
+        raise Exception(f"orthogonal_rectangle element has no edges.")
+
+    def ___face_representative_str___(self):
+        r""""""
+        x = np.array([-1, 1, 0, 0])
+        y = np.array([0, 0, -1, 1])
+        x, y = self.ct.mapping(x, y)
+        return {
+            0: r"%.7f-%.7f" % (x[0], y[0]),
+            1: r"%.7f-%.7f" % (x[1], y[1]),
+            2: r"%.7f-%.7f" % (x[2], y[2]),
+            3: r"%.7f-%.7f" % (x[3], y[3]),
+        }
+
+    def ___edge_representative_str___(self):
+        r""""""
+        raise Exception(f"orthogonal_rectangle element has no edges.")
 
     @classmethod
     def degree_parser(cls, degree):
@@ -115,23 +136,23 @@ class MseHttGreatMeshOrthogonalRectangleElement(MseHttGreatMeshBaseElement):
             raise NotImplementedError()
         return p, dtype
 
-    @classmethod
-    def _form_face_dof_direction_topology(cls):
-        m2n2k1_outer = {
-            0: '-',   # on the x- faces, material leave the element is negative.
-            1: '+',   # on the x+ faces, material leave the element is positive.
-            2: '-',   # on the y- faces, material leave the element is negative.
-            3: '+',   # on the y+ faces, material leave the element is positive.
-        }
-
-        m2n2k1_inner = {
-            0: '-',  # on the x- faces, positive direction is from 2 to 0, i.e., reversed
-            1: '+',  # on the x+ faces, positive direction is from 1 to 3
-            2: '+',  # on the y- faces, positive direction is from 0 to 1
-            3: '-',  # on the y+ faces, positive direction is from 3 to 2, i.e., reversed
-        }
-
-        return {'m2n2k1_outer': m2n2k1_outer, 'm2n2k1_inner': m2n2k1_inner}
+    # @classmethod
+    # def _form_face_dof_direction_topology(cls):
+    #     m2n2k1_outer = {
+    #         0: '-',   # on the x- faces, material leave the element is negative.
+    #         1: '+',   # on the x+ faces, material leave the element is positive.
+    #         2: '-',   # on the y- faces, material leave the element is negative.
+    #         3: '+',   # on the y+ faces, material leave the element is positive.
+    #     }
+    #
+    #     m2n2k1_inner = {
+    #         0: '-',  # on the x- faces, positive direction is from 2 to 0, i.e., reversed
+    #         1: '+',  # on the x+ faces, positive direction is from 1 to 3
+    #         2: '+',  # on the y- faces, positive direction is from 0 to 1
+    #         3: '-',  # on the y+ faces, positive direction is from 3 to 2, i.e., reversed
+    #     }
+    #
+    #     return {'m2n2k1_outer': m2n2k1_outer, 'm2n2k1_inner': m2n2k1_inner}
 
     def _generate_element_vtk_data_(self, xi, et):
         """"""

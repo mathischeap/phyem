@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-"""
+r"""
 """
 
 from src.config import RANK, MASTER_RANK, COMM, SIZE
@@ -27,12 +27,14 @@ def gathering_matrix_Lambda__m2n2k2(tpm, degree):
             etype = global_type[e]
             # --------- call the element class to do the particular numbering -----------
             if e in tpm.composition.global_element_range:
-                if etype in ('unique msepy curvilinear quadrilateral', 'orthogonal rectangle'):
+                if etype in ('unique msepy curvilinear quadrilateral', 'orthogonal rectangle',
+                             5, "unique msepy curvilinear triangle", 9,
+                             'unique curvilinear quad',):
                     global_numbering[e], current = ___gm222_msepy_quadrilateral___(
                         current, degree,
                     )
                 else:
-                    raise NotImplementedError()
+                    raise NotImplementedError(f"{__name__} not implemented for etype={etype}")
             else:
                 global_numbering[e] = None
 

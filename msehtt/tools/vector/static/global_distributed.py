@@ -36,6 +36,7 @@ class MseHttGlobalVectorDistributed(Frozen):
             assert gm.__class__ is MseHttGatheringMatrix, f"gathering matrix must be {MseHttGatheringMatrix}."
         self._gm = gm
         self._dtype = 'vector-distributed'
+        self._shape_ = self._V.shape
         self._freeze()
 
     def __repr__(self):
@@ -46,7 +47,7 @@ class MseHttGlobalVectorDistributed(Frozen):
     @property
     def shape(self):
         """the shape of the vector, must be like (x,)."""
-        return self._V.shape
+        return self._shape_
 
     @property
     def dtype(self):
@@ -70,6 +71,10 @@ class MseHttGlobalVectorDistributed(Frozen):
             return sum(all_V)
         else:
             return None
+
+    def clean(self):
+        r"""replace the vector by None."""
+        self._V = None
 
     def __rmatmul__(self, other):
         """other @ self"""

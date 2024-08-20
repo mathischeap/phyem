@@ -230,7 +230,7 @@
 </li>
 <li class="toctree-l2 has-children"><a class="reference internal" href="../../../gallery/Navier_Stokes/index.html">🌊 Navier-Stokes equations</a><input class="toctree-checkbox" id="toctree-checkbox-7" name="toctree-checkbox-7" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-7"><i class="fa-solid fa-chevron-down"></i></label><ul>
 <li class="toctree-l3"><a class="reference internal" href="../../../gallery/Navier_Stokes/backward_facing_step/index.html">Backward facing step flow</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../../../gallery/Navier_Stokes/lid_driven_cavity/index.html">Lid-driven Cavity</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../gallery/Navier_Stokes/lid_driven_cavity/index.html">Lid-driven cavity</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../gallery/Navier_Stokes/normal_dipole_collision/index.html">Normal dipole collision</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../gallery/Navier_Stokes/shear_layer_rollup/index.html">Shear layer rollup</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../gallery/Navier_Stokes/Taylor_Green_vortex/index.html">Taylor-Green vortex</a></li>
@@ -701,29 +701,51 @@ document.write(`
 <span class="k">class</span> <span class="nc">WeakFormulation</span><span class="p">(</span><span class="n">Frozen</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;The Weak Formulation class.&quot;&quot;&quot;</span>
 
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">test_forms</span><span class="p">,</span> <span class="n">term_sign_dict</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">expression</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">interpreter</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">merge</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
+            <span class="bp">self</span><span class="p">,</span> <span class="n">test_forms</span><span class="p">,</span>
+            <span class="n">term_sign_dict</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+            <span class="n">expression</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+            <span class="n">interpreter</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+            <span class="n">wfs</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+            <span class="n">merge</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
-<span class="sd">        term_sign_dict</span>
 <span class="sd">        test_forms</span>
+<span class="sd">        term_sign_dict</span>
 <span class="sd">        expression</span>
+<span class="sd">        interpreter</span>
+<span class="sd">        wfs</span>
+<span class="sd">        merge</span>
+
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="n">term_sign_dict</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">assert</span> <span class="n">expression</span> <span class="ow">is</span> <span class="kc">None</span>
+            <span class="k">assert</span> <span class="n">wfs</span> <span class="ow">is</span> <span class="kc">None</span>
             <span class="k">assert</span> <span class="n">merge</span> <span class="ow">is</span> <span class="kc">None</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_parse_term_sign_dict</span><span class="p">(</span><span class="n">term_sign_dict</span><span class="p">,</span> <span class="n">test_forms</span><span class="p">)</span>
 
         <span class="k">elif</span> <span class="n">expression</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">assert</span> <span class="n">term_sign_dict</span> <span class="ow">is</span> <span class="kc">None</span>
+            <span class="k">assert</span> <span class="n">wfs</span> <span class="ow">is</span> <span class="kc">None</span>
             <span class="k">assert</span> <span class="n">merge</span> <span class="ow">is</span> <span class="kc">None</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_parse_expression</span><span class="p">(</span><span class="n">expression</span><span class="p">,</span> <span class="n">interpreter</span><span class="p">,</span> <span class="n">test_forms</span><span class="p">)</span>
 
         <span class="k">elif</span> <span class="n">merge</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>  <span class="c1"># merge multiple weak formulations</span>
             <span class="k">assert</span> <span class="n">term_sign_dict</span> <span class="ow">is</span> <span class="kc">None</span>
             <span class="k">assert</span> <span class="n">expression</span> <span class="ow">is</span> <span class="kc">None</span>
+            <span class="k">assert</span> <span class="n">wfs</span> <span class="ow">is</span> <span class="kc">None</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_initialize_through_merging</span><span class="p">(</span><span class="n">merge</span><span class="p">,</span> <span class="n">test_forms</span><span class="p">)</span>
+
+        <span class="k">elif</span> <span class="n">wfs</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="c1"># provided multiple weak forms, we merge them.</span>
+            <span class="k">assert</span> <span class="n">test_forms</span> <span class="ow">is</span> <span class="kc">None</span>
+            <span class="k">assert</span> <span class="n">term_sign_dict</span> <span class="ow">is</span> <span class="kc">None</span>
+            <span class="k">assert</span> <span class="n">expression</span> <span class="ow">is</span> <span class="kc">None</span>
+            <span class="k">assert</span> <span class="n">merge</span> <span class="ow">is</span> <span class="kc">None</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_merge_multiple_weak_formulations</span><span class="p">(</span><span class="n">wfs</span><span class="p">)</span>
 
         <span class="k">else</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">Exception</span><span class="p">()</span>
@@ -838,6 +860,29 @@ document.write(`
                     <span class="n">sign</span> <span class="o">=</span> <span class="n">sign_dict</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="n">j</span><span class="p">][</span><span class="n">k</span><span class="p">]</span>
                     <span class="k">assert</span> <span class="n">sign</span> <span class="ow">in</span> <span class="p">(</span><span class="s1">&#39;+&#39;</span><span class="p">,</span> <span class="s1">&#39;-&#39;</span><span class="p">),</span> <span class="sa">f</span><span class="s2">&quot;sign[</span><span class="si">{</span><span class="n">i</span><span class="si">}</span><span class="s2">][</span><span class="si">{</span><span class="n">j</span><span class="si">}</span><span class="s2">][</span><span class="si">{</span><span class="n">k</span><span class="si">}</span><span class="s2">] = </span><span class="si">{</span><span class="n">sign</span><span class="si">}</span><span class="s2"> illegal.&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_parse_term_sign_dict</span><span class="p">([</span><span class="n">term_dict</span><span class="p">,</span> <span class="n">sign_dict</span><span class="p">],</span> <span class="n">test_forms</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_merge_multiple_weak_formulations</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">wfs</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;&quot;&quot;&quot;</span>
+        <span class="n">test_forms</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">wf</span> <span class="ow">in</span> <span class="n">wfs</span><span class="p">:</span>
+            <span class="k">assert</span> <span class="n">wf</span><span class="o">.</span><span class="vm">__class__</span> <span class="ow">is</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span>
+            <span class="n">test_forms</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">wf</span><span class="o">.</span><span class="n">test_forms</span><span class="p">)</span>
+
+        <span class="n">term_dict</span><span class="p">,</span> <span class="n">sign_dict</span> <span class="o">=</span> <span class="p">{},</span> <span class="p">{}</span>
+
+        <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="k">for</span> <span class="n">wf</span> <span class="ow">in</span> <span class="n">wfs</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="n">wf</span><span class="o">.</span><span class="n">_term_dict</span><span class="p">:</span>
+
+                <span class="n">td</span> <span class="o">=</span> <span class="n">wf</span><span class="o">.</span><span class="n">_term_dict</span><span class="p">[</span><span class="n">j</span><span class="p">]</span>
+                <span class="n">sd</span> <span class="o">=</span> <span class="n">wf</span><span class="o">.</span><span class="n">_sign_dict</span><span class="p">[</span><span class="n">j</span><span class="p">]</span>
+
+                <span class="n">term_dict</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">td</span>
+                <span class="n">sign_dict</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">sd</span>
+
+                <span class="n">i</span> <span class="o">+=</span> <span class="mi">1</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_parse_term_sign_dict</span><span class="p">((</span><span class="n">term_dict</span><span class="p">,</span> <span class="n">sign_dict</span><span class="p">),</span> <span class="n">test_forms</span><span class="p">)</span>
 
     <span class="nd">@classmethod</span>
     <span class="k">def</span> <span class="nf">_parse_meshes</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">term_dict</span><span class="p">):</span>
@@ -1674,7 +1719,7 @@ By Andrea Brugnoli, Ramy Rashad, Stefano Stramigioli, Yi Zhang and more
   <div class="footer-item">
     
 <div class="extra_footer">
-  <div>Last updated on February 03, 2024, 17:15:14, 中国标准时间</div>
+  <div>Last updated on July 11, 2024, 18:22:03, China Standard Time</div>
 </div>
   </div>
   

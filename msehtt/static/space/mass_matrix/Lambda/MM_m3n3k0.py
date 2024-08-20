@@ -23,7 +23,7 @@ def mass_matrix_Lambda__m3n3k0(tpm, degree):
         if etype == 'orthogonal hexahedron':
             M[e], cache_key_dict[e] = ___mm330_orthogonal_hexahedron___(element, degree)
         else:
-            raise NotImplementedError()
+            raise NotImplementedError(f"{__name__} not implemented for etype={etype}")
     _cache_mm330_[key] = M, cache_key_dict
     return M, cache_key_dict
 

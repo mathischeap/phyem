@@ -23,7 +23,7 @@ N = 5
 K = 15
 c = 0.1
 
-manifold = ph.manifold(2, periodic=False)
+manifold = ph.manifold(2)
 mesh = ph.mesh(manifold)
 
 Out0 = ph.space.new('Lambda', 0, orientation='outer')

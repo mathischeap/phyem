@@ -22,7 +22,7 @@ def rm__m3n3k1(tpm, degree, xi, et, sg):
         if etype in ("orthogonal hexahedron", ):
             RM_u[e], RM_v[e], RM_w[e] = ___rm331_msepy_hexahedral___(element, degree, xi, et, sg)
         else:
-            raise NotImplementedError()
+            raise NotImplementedError(f"{__name__} not implemented for etype={etype}")
 
     return RM_u, RM_v, RM_w
 

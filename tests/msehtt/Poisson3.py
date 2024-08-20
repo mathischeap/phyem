@@ -105,7 +105,7 @@ linear_system = msehtt_ls(time)
 # linear_system.spy(0)
 Axb = linear_system.assemble(threshold=1e-8)
 # print(Axb.A.rank_nnz)
-x, message, info = Axb.solve('direct')
+x, message, info = Axb.solve('spsolve')
 linear_system.x.update(x)
 # print(u[time].error(), phi[time].error())
 assert phi[time].error() < 0.004

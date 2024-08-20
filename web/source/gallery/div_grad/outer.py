@@ -2,12 +2,7 @@
 r"""
 """
 
-import sys
-ph_dir = '../'  # customize it to your own dir containing phyem
-if ph_dir not in sys.path:
-    sys.path.append(ph_dir)
-
-import phyem as ph
+import __init__ as ph
 import numpy as np
 
 

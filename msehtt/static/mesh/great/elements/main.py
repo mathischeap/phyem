@@ -1,9 +1,16 @@
 # -*- coding: utf-8 -*-
 r"""
 """
+import numpy as np
+
 from tools.frozen import Frozen
-from src.config import RANK, MASTER_RANK, COMM, SIZE
+from src.config import RANK, MASTER_RANK, COMM, MPI
 from msehtt.static.mesh.great.elements.types.distributor import MseHttGreatMeshElementDistributor
+
+from random import random
+
+from tools.functions.time_space._2d.wrappers.vector import T2dVector
+# from tools.functions.time_space._2d.wrappers.tensor import T2dTensor
 
 
 class MseHttGreatMeshElements(Frozen):
@@ -15,9 +22,10 @@ class MseHttGreatMeshElements(Frozen):
         self._elements_dict = elements_dict
         self._parse_statistics()
         self._mn = None
+        self._periodic_face_pairing = None
         if element_face_topology_mismatch:
             self._parse_form_face_dof_topology_mismatch()
-            self._element_face_topology_mismatch = True
+            self._element_face_topology_mismatch = True   # This is an unstructured mesh.
         else:
             # When we are sure that there is no mismatch, we can skip it. For example, when we build the
             # great mesh from a msepy mesh, then there is no mismatch for sure.
@@ -27,6 +35,11 @@ class MseHttGreatMeshElements(Frozen):
     def __repr__(self):
         """"""
         return f"<elements of {self._tgm}>"
+
+    @property
+    def ___is_msehtt_great_mesh_elements___(self):
+        """Just a signature"""
+        return True
 
     @property
     def tgm(self):
@@ -249,153 +262,318 @@ class MseHttGreatMeshElements(Frozen):
             self._mn = COMM.bcast(self._mn, root=MASTER_RANK)
         return self._mn
 
-    def _parse_form_face_dof_topology_mismatch(self):
+    @property
+    def periodic_face_pairing(self):
         """"""
-        if RANK == MASTER_RANK:
-            implemented_element_types = MseHttGreatMeshElementDistributor.implemented_element_types()
-            global_element_type = self._tgm._global_element_type_dict
-            global_map = self._tgm._global_element_map_dict
-            involved_forms = None
-            for element_index in global_element_type:
-                etype = global_element_type[element_index]
-                element_class = implemented_element_types[etype]
-                topology = element_class._form_face_dof_direction_topology()
-                if involved_forms is None:
-                    involved_forms = list(topology.keys())
-                else:
-                    for key in topology:
-                        assert key in involved_forms, f"Some element miss topology info for form {key}."
-
-            paired = {}
-            for form_indicator in involved_forms:
-                paired[form_indicator] = {}
-
-            for element_index in global_element_type:
-                etype = global_element_type[element_index]
-                element_class = implemented_element_types[etype]
-                topology = element_class._form_face_dof_direction_topology()
-                face_setting = element_class.face_setting()
-                element_map = global_map[element_index]
-                for form_indicator in topology:
-                    the_pairing = paired[form_indicator]
-                    info = topology[form_indicator]
-                    # --------- m2n2k1_outer ------------------------------------------------------------
-                    if form_indicator == 'm2n2k1_outer':
-                        for face_index in info:
-                            sign = info[face_index]
-                            start, end = face_setting[face_index]
-                            global_start, global_end = element_map[start], element_map[end]
-                            if global_start < global_end:
-                                node0 = global_start
-                                node1 = global_end
-                            else:
-                                node0 = global_end
-                                node1 = global_start
-                            if (node0, node1) in the_pairing:
-                                pass
-                            else:
-                                the_pairing[(node0, node1)] = list()
-                            the_pairing[(node0, node1)].append((element_index, face_index, sign))
-                    # --------- m2n2k1_inner ------------------------------------------------------------
-                    elif form_indicator == 'm2n2k1_inner':
-                        for face_index in info:
-                            sign = info[face_index]
-                            start, end = face_setting[face_index]
-                            global_start, global_end = element_map[start], element_map[end]
-                            if global_start < global_end:
-                                node0 = global_start
-                                node1 = global_end
-                            else:
-                                node0 = global_end
-                                node1 = global_start
-                            if (node0, node1) in the_pairing:
-                                pass
-                            else:
-                                the_pairing[(node0, node1)] = list()
-                            the_pairing[(node0, node1)].append((element_index, face_index, sign))
-                    # ====================================================================================
-                    else:
-                        raise NotImplementedError()
-
-            # now we decide to apply '-' to which dofs according the information we have collected
-            reverse_places = {}
-
-            for form_indicator in paired:
-                form_reverse_places = list()
-                the_pairing = paired[form_indicator]
-                # --------- m2n2k1_outer ------------------------------------------------------------
-                if form_indicator == 'm2n2k1_outer':
-                    for face_nodes in the_pairing:
-                        element_faces = the_pairing[face_nodes]
-                        if len(element_faces) == 1:
-                            pass
-                        elif len(element_faces) == 2:
-                            face0, face1 = element_faces
-                            sign0, sign1 = face0[-1], face1[-1]
-                            if sign0 != sign1:  # one enter the element, the other leave the element, fine!
-                                pass
-                            else:
-                                reverse_dof_place = face0[:2]
-                                form_reverse_places.append(reverse_dof_place)
-                        else:
-                            raise Exception('A face cannot appear at more than two places (element).')
-                # --------- m2n2k1_inner ------------------------------------------------------------
-                elif form_indicator == 'm2n2k1_inner':
-                    for face_nodes in the_pairing:
-                        element_faces = the_pairing[face_nodes]
-                        if len(element_faces) == 1:
-                            pass
-                        elif len(element_faces) == 2:
-                            face0, face1 = element_faces
-                            sign0, sign1 = face0[-1], face1[-1]
-                            if sign0 != sign1:  # one enter the element, the other leave the element, fine!
-                                pass
-                            else:
-                                reverse_dof_place = face0[:2]
-                                form_reverse_places.append(reverse_dof_place)
-                        else:
-                            raise Exception('A face cannot appear at more than two places (element).')
-                # ====================================================================================
-                else:
-                    raise NotImplementedError()
-
-                reverse_places[form_indicator] = form_reverse_places
-
-            # now we distribute the reverse_places to ranks -----------------
-            form_indicators = list(reverse_places.keys())
+        if self._periodic_face_pairing is not None:
+            return self._periodic_face_pairing
         else:
-            form_indicators = None
+            pass
 
-        form_indicators = COMM.bcast(form_indicators, root=MASTER_RANK)
+        if self.mn == (2, 2):
+            self._periodic_face_pairing = self.___periodic_face_pairing_m2n2___()
+        else:
+            raise NotImplementedError(f"not implemented for (m,n) == {self.mn}")
 
-        for fid in form_indicators:
-            if RANK == MASTER_RANK:
-                # noinspection PyUnboundLocalVariable
-                places = reverse_places[fid]
-                to_be_distributed = [list() for _ in range(SIZE)]
-                for element_index__face_index in places:
-                    element_index = element_index__face_index[0]
-                    rank_of_element = -1
-                    for rank in self._tgm._element_distribution:
-                        if element_index in self._tgm._element_distribution[rank]:
-                            rank_of_element = rank
-                            break
-                        else:
-                            pass
-                    assert rank_of_element != -1, f"must have found a rank!"
-                    to_be_distributed[rank_of_element].append(element_index__face_index)
+        return self._periodic_face_pairing
 
-            else:
-                to_be_distributed = None
+    def ___periodic_face_pairing_m2n2___(self):
+        r""""""
+        face_coo_pool = {}
+        face_element_pool = {}
 
-            to_be_distributed = COMM.scatter(to_be_distributed, root=MASTER_RANK)
+        for e in self:
+            element = self[e]
+            face_representative_str = element.___face_representative_str___()
+            element_map = element._map
+            face_setting = element.face_setting()
 
-            for element_index__face_index in to_be_distributed:
-                element_index, face_index = element_index__face_index
-                assert element_index in self, f'must be!'
-                element = self[element_index]
-                if fid in element._dof_reverse_info:
+            for local_face_index in face_setting:
+                nodes = face_setting[local_face_index]
+                face_map = [element_map[_] for _ in nodes]
+                face_map.sort()
+                face_map = tuple(face_map)
+                coo = face_representative_str[local_face_index]
+                if face_map in face_coo_pool:
+                    if coo in face_coo_pool[face_map]:
+                        pass
+                    else:
+                        face_coo_pool[face_map].append(coo)
+                else:
+                    face_coo_pool[face_map] = [coo]
+
+                if face_map in face_element_pool:
+                    face_element_pool[face_map].append((e, local_face_index))
+                else:
+                    face_element_pool[face_map] = [(e, local_face_index)]
+
+        face_element_POOL = COMM.gather(face_element_pool, root=MASTER_RANK)
+        face_coo_POOL = COMM.gather(face_coo_pool, root=MASTER_RANK)
+        if RANK == MASTER_RANK:
+            POOL = face_element_POOL[0]
+            for pool in face_element_POOL[1:]:
+                for face_map in pool:
+                    if face_map in POOL:
+                        POOL[face_map].extend(pool[face_map])
+            face_element_POOL = POOL
+
+            POOL = face_coo_POOL[0]
+            for pool in face_coo_POOL[1:]:
+                for face_map in pool:
+                    if face_map in POOL:
+                        POOL[face_map].extend(pool[face_map])
+            face_coo_POOL = POOL
+
+            periodic_face_pairing_m2n2 = {}
+            for face_undirected in face_coo_POOL:
+                amount_coo = set(face_coo_POOL[face_undirected])
+                if len(amount_coo) == 1:
                     pass
                 else:
-                    element._dof_reverse_info[fid] = list()
-                element._dof_reverse_info[fid].append(face_index)
+                    periodic_face_pairing_m2n2[face_undirected] = face_element_POOL[face_undirected]
+
+        else:
+            periodic_face_pairing_m2n2 = None
+
+        periodic_face_pairing_m2n2 = COMM.bcast(periodic_face_pairing_m2n2, root=MASTER_RANK)
+        local_periodic_face_pairing_m2n2 = {}
+        for undirected_face in periodic_face_pairing_m2n2:
+            if undirected_face in face_element_pool:
+                local_periodic_face_pairing_m2n2[undirected_face] = periodic_face_pairing_m2n2[undirected_face]
+            else:
+                pass
+
+        return local_periodic_face_pairing_m2n2
+
+    @staticmethod
+    def ___random_m2n2___():
+        """"""
+        if RANK == MASTER_RANK:
+            _ = [random() for _ in range(6)]
+        else:
+            _ = None
+
+        _ = COMM.bcast(_, root=MASTER_RANK)
+        a, b, c, d, e, f = _
+
+        def test_field_1(t, x, y):
+            return 10 * np.sin(2 * np.pi * (x - a)) * np.sin(2 * np.pi * (y + f)) + t * 0 + 10
+
+        def test_field_2(t, x, y):
+            return 10 * np.cos(2 * np.pi * (x - b)) * np.sin(2 * np.pi * (y + c)) + t * 0 + 10
+
+        def test_field_3(t, x, y):
+            return 10 * np.sin(2 * np.pi * (x + d)) * np.sin(2 * np.pi * (y - e)) + t * 0 + 10
+
+        def test_field_4(t, x, y):
+            return 10 * np.cos(2 * np.pi * (x + e)) * np.cos(2 * np.pi * (y - f)) + t * 0 + 10
+
+        return test_field_1, test_field_2, test_field_3, test_field_4
+
+    def _parse_form_face_dof_topology_mismatch(self):
+        """"""
+        if self.mn == (2, 2):
+            self.___parse_form_face_dof_topology_mismatch_m2n2___()
+        else:
+            raise NotImplementedError(f"not implemented for mesh of (m, n) == {self.mn}.")
+
+    def ___parse_form_face_dof_topology_mismatch_m2n2___(self):
+        r""""""
+        periodic = len(self.periodic_face_pairing) != 0
+        periodic = COMM.allreduce(periodic, op=MPI.LOR)
+
+        if periodic:
+            # noinspection PyUnusedLocal
+            def test_field_1(t, x, y):
+                return np.ones_like(x)
+
+            # noinspection PyUnusedLocal
+            def test_field_2(t, x, y):
+                return - np.ones_like(x)
+
+            # noinspection PyUnusedLocal
+            def test_field_3(t, x, y):
+                return 0.5 * np.ones_like(x)
+
+            # noinspection PyUnusedLocal
+            def test_field_4(t, x, y):
+                return - 0.5 * np.ones_like(x)
+        else:
+            test_field_1, test_field_2, test_field_3, test_field_4 = self.___random_m2n2___()
+
+        vector = T2dVector(test_field_2, test_field_3)
+        # tensor = T2dTensor(test_field_1, test_field_2, test_field_3, test_field_4)
+
+        to_be_reversed = {
+            "m2n2k1_inner": self.___get_form_face_dof_topology_mismatch_m2n2k1_inner___(vector),
+            "m2n2k1_outer": self.___get_form_face_dof_topology_mismatch_m2n2k1_outer___(vector),
+        }
+
+        for form_indicator in to_be_reversed:
+            for position in to_be_reversed[form_indicator]:
+                element_index, face_index = position
+                if element_index in self:  # we find a local element.
+                    element = self[element_index]
+                    if form_indicator in element._dof_reverse_info:
+                        element._dof_reverse_info[form_indicator].append(face_index)
+                    else:
+                        element._dof_reverse_info[form_indicator] = [face_index]
+
+        for e in self:
+            element = self[e]
+            for indicator in element._dof_reverse_info:
+                element._dof_reverse_info[indicator].sort()
+
+    def ___get_form_face_dof_topology_mismatch_m2n2k1_inner___(self, vector):
+        # --------- m2n2 Lambda 1-form inner --------------------------------------------------
+        from msehtt.static.space.gathering_matrix.Lambda.GM_m2n2k1 import gathering_matrix_Lambda__m2n2k1_inner
+        gm_m2n2k1_inner = gathering_matrix_Lambda__m2n2k1_inner(self._tgm, 1, do_cache=False)
+        gm = gm_m2n2k1_inner._gm
+
+        from msehtt.static.space.reduce.Lambda.Rd_m2n2k1 import reduce_Lambda__m2n2k1_inner
+        referring_cochain = reduce_Lambda__m2n2k1_inner(vector[0], self, 1, raw=True)
+
+        face_cochain_indices = {
+            5: [0, 2, 1],  # when degree=1, edge #0 -> local dof #0, on edge #1 -> local dof #2, and so on
+            'unique msepy curvilinear triangle': [0, 2, 1],
+            'orthogonal rectangle': [2, 3, 0, 1],
+            'unique msepy curvilinear quadrilateral': [2, 3, 0, 1],
+            9: [2, 3, 0, 1],
+            'unique curvilinear quad': [2, 3, 0, 1],
+        }
+
+        priority = [9, 'unique curvilinear quad', 'unique msepy curvilinear triangle', 5]
+        # we will reverse dofs in element of etype later in this list.
+        # for example, a 9-typed element is paired to a 5-typed element, we
+        # always change sign of dofs in the 5-typed element.
+
+        return self.___get_form_face_dof_topology_mismatch_m2n2k1___(
+            gm, referring_cochain, face_cochain_indices, priority
+        )
+
+    def ___get_form_face_dof_topology_mismatch_m2n2k1_outer___(self, vector):
+        # --------- m2n2 Lambda 1-form inner --------------------------------------------------
+        from msehtt.static.space.gathering_matrix.Lambda.GM_m2n2k1 import gathering_matrix_Lambda__m2n2k1_outer
+        gm_m2n2k1_outer = gathering_matrix_Lambda__m2n2k1_outer(self._tgm, 1, do_cache=False)
+        gm = gm_m2n2k1_outer._gm
+
+        from msehtt.static.space.reduce.Lambda.Rd_m2n2k1 import reduce_Lambda__m2n2k1_outer
+        referring_cochain = reduce_Lambda__m2n2k1_outer(vector[0], self, 1, raw=True)
+
+        face_cochain_indices = {
+            5: [1, 0, 2],  # when degree=1, edge #0 -> local dof #1, on edge #1 -> local dof #0, and so on
+            'unique msepy curvilinear triangle': [1, 0, 2],
+            'orthogonal rectangle': [0, 1, 2, 3],
+            'unique msepy curvilinear quadrilateral': [0, 1, 2, 3],
+            9: [0, 1, 2, 3],
+            'unique curvilinear quad': [0, 1, 2, 3],
+        }
+
+        priority = [9, 'unique curvilinear quad', 'unique msepy curvilinear triangle', 5]
+        # we will reverse dofs in element of etype later in this list.
+        # for example, a 9-typed element is paired to a 5-typed element, we
+        # always change sign of dofs in the 5-typed element.
+
+        return self.___get_form_face_dof_topology_mismatch_m2n2k1___(
+            gm, referring_cochain, face_cochain_indices, priority
+        )
+
+    def ___get_form_face_dof_topology_mismatch_m2n2k1___(
+            self, gm, referring_cochain, face_cochain_indices, priority
+    ):
+
+        referring_cochain = COMM.gather(referring_cochain, root=MASTER_RANK)
+
+        if RANK == MASTER_RANK:
+            GEM = self.global_map
+            GET = self.global_etype
+
+            RC = {}
+            for _ in referring_cochain:
+                RC.update(_)
+            referring_cochain = RC
+
+            pool_position = {}
+            pool_value = {}
+            pool_gm = {}
+
+            all_element_types = MseHttGreatMeshElementDistributor.implemented_element_types()
+
+            for e in gm:
+                e_class = all_element_types[GET[e]]
+                etype = e_class._etype()  # for example, pixel in fact has class etype 'orthogonal rectangle'.
+                element_face_setting = e_class.face_setting()
+                element_map = GEM[e]
+                erc = referring_cochain[e]
+                gme = gm[e]
+
+                for face_index, cochain_index in enumerate(face_cochain_indices[etype]):
+
+                    position = (etype, e, face_index)
+                    value = float(erc[cochain_index])
+                    gm_face = gme[cochain_index]
+
+                    local_nodes = element_face_setting[face_index]
+                    face_nodes = [element_map[_] for _ in local_nodes]
+                    face_nodes.sort()
+                    face_nodes = tuple(face_nodes)
+
+                    if face_nodes in pool_position:
+                        pool_position[face_nodes].append(position)
+                    else:
+                        pool_position[face_nodes] = [position]
+
+                    if face_nodes in pool_value:
+                        pool_value[face_nodes].append(value)
+                    else:
+                        pool_value[face_nodes] = [value]
+
+                    if face_nodes in pool_gm:
+                        assert gm_face == pool_gm[face_nodes], \
+                            f"must be! to check the faces have the same numbering."
+                    else:
+                        pool_gm[face_nodes] = gm_face
+
+            reversing_dof_places = []
+
+            for undirected_face in pool_position:
+                positions = pool_position[undirected_face]
+                if len(positions) == 1:
+                    pass
+                elif len(positions) == 2:
+                    values = pool_value[undirected_face]
+                    v0, v1 = values
+                    if np.isclose(v0, v1):
+                        pass
+                    else:
+                        assert np.isclose(v0, -v1), f"must be, now v0={v0}, v1={v1}"
+                        pos0, pos1 = positions
+                        etype0, etype1 = pos0[0], pos1[0]
+                        if etype0 in priority:
+                            priority0 = priority.index(etype0)
+                        else:
+                            priority0 = -1
+                        if etype1 in priority:
+                            priority1 = priority.index(etype1)
+                        else:
+                            priority1 = -1
+
+                        assert not priority0 == priority1 == -1, \
+                            f'We must found an element to reverse dof on its face.'
+
+                        if priority0 >= priority1:
+                            touch = pos0
+                        else:
+                            touch = pos1
+
+                        reversing_dof_places.append(
+                            (touch[1], touch[2])
+                        )
+
+                else:
+                    raise Exception(positions)
+        else:
+            reversing_dof_places = None
+
+        reversing_dof_places = COMM.bcast(reversing_dof_places, root=MASTER_RANK)
+        return reversing_dof_places

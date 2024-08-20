@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-"""
+r"""
 """
 from tools.frozen import Frozen
 from msehtt.static.mesh.partial.elements.visualize.main import MseHttElementsPartialMeshVisualize
@@ -32,6 +32,11 @@ class MseHttElementsPartialMesh(Frozen):
         """info self."""
         print(f"msehtt-partial-elements > {self._tpm.abstract._sym_repr}: "
               f"{self._num_global_elements} elements > distributed in {SIZE} ranks.")
+
+    @property
+    def ___is_msehtt_partial_elements_mesh___(self):
+        r"""Just a signature"""
+        return True
 
     def __repr__(self):
         super_repr = super().__repr__().split('object')[1]
@@ -92,6 +97,17 @@ class MseHttElementsPartialMesh(Frozen):
                 self._global_element_indices.extend(_)
 
             num_global_elements = len(self._global_element_indices)
+
+            if all([isinstance(_, (int, float)) for _ in self._global_element_indices]):
+                min_index = min(self._global_element_indices)
+                max_index = max(self._global_element_indices)
+                if set(self._global_element_indices) == set(range(min_index, max_index+1)):
+                    self._global_element_indices = range(min_index, max_index+1)
+                else:
+                    pass
+            else:
+                pass
+
         else:
             num_global_elements = None
 

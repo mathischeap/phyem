@@ -449,6 +449,7 @@ document.write(`
     <span class="s2">&quot;pr_cache_folder_prefix&quot;</span><span class="p">:</span> <span class="s1">&#39;Pr_&#39;</span><span class="p">,</span>  <span class="c1"># we cache where in particular?</span>
     <span class="s2">&quot;pr_cache_current_folder&quot;</span><span class="p">:</span> <span class="s1">&#39;current&#39;</span><span class="p">,</span>  <span class="c1"># we cache where in particular?</span>
     <span class="s2">&quot;high_accuracy&quot;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>  <span class="c1"># influence sparsity of some matrices.</span>
+    <span class="s2">&quot;auto_cleaning&quot;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>  <span class="c1"># automatic memory saving</span>
 <span class="p">}</span>
 
 
@@ -513,6 +514,27 @@ document.write(`
     <span class="k">assert</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">_bool</span><span class="p">,</span> <span class="nb">bool</span><span class="p">),</span> <span class="sa">f</span><span class="s2">&quot;give me True or False&quot;</span>
     <span class="n">_setting</span><span class="p">[</span><span class="s1">&#39;pr_cache&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">_bool</span></div>
 
+
+
+<span class="k">def</span> <span class="nf">set_auto_cleaning</span><span class="p">(</span><span class="n">_bool_or_factor</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    _bool_or_factor</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">_bool_or_factor</span><span class="p">,</span> <span class="nb">bool</span><span class="p">):</span>
+        <span class="k">pass</span>
+    <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">_bool_or_factor</span><span class="p">,</span> <span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="nb">float</span><span class="p">)):</span>
+        <span class="n">_bool_or_factor</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">_bool_or_factor</span><span class="p">)</span>
+        <span class="k">assert</span> <span class="n">_bool_or_factor</span> <span class="o">&gt;=</span> <span class="mi">2</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;must set clean factor &gt;= 2.&quot;</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;clean factor to be a bool or a positive integer.&quot;</span><span class="p">)</span>
+    <span class="n">_setting</span><span class="p">[</span><span class="s1">&#39;auto_cleaning&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">_bool_or_factor</span>
 
 
 <span class="k">def</span> <span class="nf">_pr_cache</span><span class="p">(</span><span class="n">fig</span><span class="p">,</span> <span class="n">filename</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
@@ -772,6 +794,7 @@ document.write(`
     <span class="s1">&#39;multiply&#39;</span><span class="p">:</span> <span class="sa">r</span><span class="s1">&#39; \emph</span><span class="si">{multiply}</span><span class="s1"> &#39;</span><span class="p">,</span>
 
     <span class="s1">&#39;cross_product&#39;</span><span class="p">:</span> <span class="sa">r</span><span class="s2">&quot;$\times$&quot;</span><span class="p">,</span>
+    <span class="s1">&#39;convect&#39;</span><span class="p">:</span> <span class="sa">r</span><span class="s2">&quot;$\cdot\nabla$&quot;</span><span class="p">,</span>
     <span class="s1">&#39;tensor_product&#39;</span><span class="p">:</span> <span class="sa">r</span><span class="s2">&quot;$\otimes$&quot;</span><span class="p">,</span>
 
     <span class="s1">&#39;projection&#39;</span><span class="p">:</span> <span class="sa">r</span><span class="s1">&#39;$\pi$ &#39;</span>
@@ -794,6 +817,7 @@ document.write(`
 
     <span class="s1">&#39;cross_product&#39;</span><span class="p">:</span> <span class="sa">r</span><span class="s2">&quot;{\times}&quot;</span><span class="p">,</span>
     <span class="s1">&#39;tensor_product&#39;</span><span class="p">:</span> <span class="sa">r</span><span class="s2">&quot;{\otimes}&quot;</span><span class="p">,</span>
+    <span class="s1">&#39;convect&#39;</span><span class="p">:</span> <span class="sa">r</span><span class="s2">&quot;{\cdot\nabla}&quot;</span><span class="p">,</span>
 
     <span class="s1">&#39;projection&#39;</span><span class="p">:</span> <span class="sa">r</span><span class="s1">&#39;{\pi}&#39;</span>
 <span class="p">}</span>
@@ -806,6 +830,7 @@ document.write(`
 
     <span class="c1"># below, we have simple patterns only for root-sf.</span>
     <span class="s1">&#39;(rt,rt)&#39;</span><span class="p">:</span> <span class="s1">&#39;(rf, rf)&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;&lt;|&gt;&#39;</span><span class="p">:</span> <span class="sa">r</span><span class="s2">&quot;$\left&lt;\left. \mathrm</span><span class="si">{rf}</span><span class="s2"> \right| \mathrm</span><span class="si">{rf}</span><span class="s2"> \right&gt;$&quot;</span><span class="p">,</span>              <span class="c1"># &lt;A|B&gt;</span>
     <span class="s1">&#39;(d,)&#39;</span><span class="p">:</span> <span class="s1">&#39;(d rf, rf)&#39;</span><span class="p">,</span>
     <span class="s1">&#39;&lt;d,&gt;&#39;</span><span class="p">:</span> <span class="s1">&#39;&lt;d rf, dual-rf&gt;&#39;</span><span class="p">,</span>
     <span class="s1">&#39;(,d)&#39;</span><span class="p">:</span> <span class="s1">&#39;(rf, d rf)&#39;</span><span class="p">,</span>
@@ -813,12 +838,23 @@ document.write(`
 
     <span class="s1">&#39;(d,d)&#39;</span><span class="p">:</span> <span class="s1">&#39;(d rf, d rf)&#39;</span><span class="p">,</span>
 
+    <span class="s1">&#39;(d(*A),B)&#39;</span><span class="p">:</span> <span class="sa">r</span><span class="s2">&quot;$\left(\mathrm</span><span class="si">{d}</span><span class="s2">\left(\star A\right),B\right)$&quot;</span><span class="p">,</span>
+
     <span class="s1">&#39;(&lt;db&gt;,d&lt;b&gt;)&#39;</span><span class="p">:</span> <span class="s1">&#39;(root-diagonal-bf, d root-bf)&#39;</span><span class="p">,</span>
 
-    <span class="s1">&#39;&lt;tr star | tr &gt;&#39;</span><span class="p">:</span> <span class="s1">&#39;&lt;tr star rf | trace rf&gt;&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;&lt;tr star | tr &gt;&#39;</span><span class="p">:</span> <span class="sa">r</span><span class="s1">&#39;$\left\langle\right.$ tr star rf $|$ trace rf$\left.\right\rangle$&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;&lt;tr star | tr &gt; - restrict&#39;</span><span class="p">:</span> <span class="sa">r</span><span class="s1">&#39;$\left\langle\right.$ tr star rf $||$ trace rf$\left.\right\rangle$&#39;</span><span class="p">,</span>
 
-    <span class="s1">&#39;&lt;AxB|C&gt;&#39;</span><span class="p">:</span> <span class="sa">r</span><span class="s1">&#39;$\left&lt;\left.\mathrm</span><span class="si">{rf}</span><span class="s1"> \times \mathrm</span><span class="si">{rf}</span><span class="s1"> \right| \mathrm</span><span class="si">{rf}</span><span class="s1">\right&gt;$&#39;</span><span class="p">,</span>  <span class="c1"># nonlinear term. &lt;AxB|C&gt;</span>
-    <span class="s1">&#39;&lt;*x*|C&gt;&#39;</span><span class="p">:</span> <span class="sa">r</span><span class="s1">&#39;$\left&lt;\left.\mathrm</span><span class="si">{krf}</span><span class="s1"> \times \mathrm</span><span class="si">{krf}</span><span class="s1"> \right| \mathrm</span><span class="si">{rf}</span><span class="s1">\right&gt;$&#39;</span><span class="p">,</span>  <span class="c1"># nonlinear term. &lt;AxB|C&gt;</span>
+    <span class="s1">&#39;(A, trB)&#39;</span><span class="p">:</span> <span class="sa">r</span><span class="s2">&quot;$(A, \mathrm</span><span class="si">{tr}</span><span class="s2"> B)$&quot;</span><span class="p">,</span>
+    <span class="s1">&#39;(trB, A)&#39;</span><span class="p">:</span> <span class="sa">r</span><span class="s2">&quot;$(\mathrm</span><span class="si">{tr}</span><span class="s2"> B, A)$&quot;</span><span class="p">,</span>
+
+    <span class="s1">&#39;&lt;*x*|C&gt;&#39;</span><span class="p">:</span> <span class="sa">r</span><span class="s1">&#39;$\left&lt;\left.\mathrm</span><span class="si">{krf}</span><span class="s1"> \times \mathrm</span><span class="si">{krf}</span><span class="s1"> \right| \mathrm</span><span class="si">{rf}</span><span class="s1">\right&gt;$&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;&lt;Ax*|C&gt;&#39;</span><span class="p">:</span> <span class="sa">r</span><span class="s1">&#39;$\left&lt;\left.\mathrm</span><span class="si">{rf}</span><span class="s1"> \times \mathrm</span><span class="si">{krf}</span><span class="s1"> \right| \mathrm</span><span class="si">{rf}</span><span class="s1">\right&gt;$&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;&lt;*xB|C&gt;&#39;</span><span class="p">:</span> <span class="sa">r</span><span class="s1">&#39;$\left&lt;\left.\mathrm</span><span class="si">{krf}</span><span class="s1"> \times \mathrm</span><span class="si">{rf}</span><span class="s1"> \right| \mathrm</span><span class="si">{rf}</span><span class="s1">\right&gt;$&#39;</span><span class="p">,</span>
+
+    <span class="s1">&#39;&lt;*x*|d(C)&gt;&#39;</span><span class="p">:</span> <span class="sa">r</span><span class="s1">&#39;$\left&lt;\left.\mathrm</span><span class="si">{krf}</span><span class="s1"> \times \mathrm</span><span class="si">{krf}</span><span class="s1"> \right| \mathrm</span><span class="si">{d}</span><span class="s1">(\mathrm</span><span class="si">{rf}</span><span class="s1">)\right&gt;$&#39;</span><span class="p">,</span>
+
+    <span class="s1">&#39;(* .V *, C)&#39;</span><span class="p">:</span> <span class="sa">r</span><span class="s2">&quot;$\left(\mathrm</span><span class="si">{krf}</span><span class="s2"> \cdot\nabla \mathrm</span><span class="si">{krf}</span><span class="s2">, \mathrm</span><span class="si">{rf}</span><span class="s2">\right)$&quot;</span><span class="p">,</span>
 
     <span class="s1">&#39;&lt;AxB|CxD&gt;&#39;</span><span class="p">:</span> <span class="sa">r</span><span class="s2">&quot;$\left&lt;\left.\mathrm</span><span class="si">{rf}</span><span class="s2"> \times \mathrm</span><span class="si">{rf}</span><span class="s2"> \right| \mathrm</span><span class="si">{rf}</span><span class="s2"> \times \mathrm</span><span class="si">{rf}</span><span class="s2">\right&gt;$&quot;</span><span class="p">,</span>
     <span class="s1">&#39;&lt;*x*|*xD&gt;&#39;</span><span class="p">:</span> <span class="sa">r</span><span class="s2">&quot;$\left&lt;\left.\mathrm</span><span class="si">{krf}</span><span class="s2"> \times \mathrm</span><span class="si">{krf}</span><span class="s2"> \right| \mathrm</span><span class="si">{krf}</span><span class="s2"> \times \mathrm</span><span class="si">{rf}</span><span class="s2">\right&gt;$&quot;</span><span class="p">,</span>
@@ -829,7 +865,8 @@ document.write(`
     <span class="s1">&#39;(*x,)&#39;</span><span class="p">:</span> <span class="sa">r</span><span class="s1">&#39;(krf $\times$ rf, rf)&#39;</span><span class="p">,</span>
     <span class="s1">&#39;(x*,)&#39;</span><span class="p">:</span> <span class="sa">r</span><span class="s1">&#39;(rf $\times$ krf, rf)&#39;</span><span class="p">,</span>
 
-    <span class="s1">&#39;(*x*,*x)&#39;</span><span class="p">:</span> <span class="sa">r</span><span class="s2">&quot;(krf $\times$ krf, krf $\times$ rf)&quot;</span><span class="p">,</span>  <span class="c1"># vector , (A x B, C x D)</span>
+    <span class="s1">&#39;(*x*,*x)&#39;</span><span class="p">:</span> <span class="sa">r</span><span class="s2">&quot;(krf $\times$ krf, krf $\times$ rf)&quot;</span><span class="p">,</span>  <span class="c1"># vector , (*A x *B, *C x D)</span>
+    <span class="s1">&#39;(x*,*x)&#39;</span><span class="p">:</span> <span class="sa">r</span><span class="s2">&quot;(rf $\times$ krf, krf $\times$ rf)&quot;</span><span class="p">,</span>    <span class="c1"># matrix , (A x *B, *C x D)</span>
 
     <span class="s1">&#39;(*x,d)&#39;</span><span class="p">:</span> <span class="sa">r</span><span class="s2">&quot;(krf $\times$ rf, d rf)&quot;</span><span class="p">,</span>
     <span class="s1">&#39;(x*,d)&#39;</span><span class="p">:</span> <span class="sa">r</span><span class="s2">&quot;(rf $\times$ krf, d rf)&quot;</span><span class="p">,</span>
@@ -907,7 +944,7 @@ By Andrea Brugnoli, Ramy Rashad, Stefano Stramigioli, Yi Zhang and more
   <div class="footer-item">
     
 <div class="extra_footer">
-  <div>Last updated on March 15, 2024, 22:52:58, 中国标准时间</div>
+  <div>Last updated on July 11, 2024, 18:22:03, China Standard Time</div>
 </div>
   </div>
   

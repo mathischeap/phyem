@@ -481,7 +481,7 @@ computational domain (manifold) by calling <code class="docutils literal notrans
 <blockquote>
 <div><dl class="py function">
 <dt class="sig sig-object py" id="src.manifold.manifold">
-<span class="sig-name descname"><span class="pre">manifold</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ndim</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sym_repr</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lin_repr</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">is_periodic</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/src/manifold.html#manifold"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#src.manifold.manifold" title="Link to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">manifold</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ndim</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sym_repr</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lin_repr</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">periodic</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/src/manifold.html#manifold"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#src.manifold.manifold" title="Link to this definition">#</a></dt>
 <dd><p>Generate an abstract manifold. It is actually a wrapper of the <code class="docutils literal notranslate"><span class="pre">__init__</span></code> method of <a class="reference internal" href="#src.manifold.Manifold" title="src.manifold.Manifold"><code class="xref py py-class docutils literal notranslate"><span class="pre">Manifold</span></code></a>.</p>
 <dl class="field-list">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -494,7 +494,7 @@ representation. The default is <code class="docutils literal notranslate"><span 
 <dt><strong>lin_repr</strong><span class="classifier">{None, str}, optional</span></dt><dd><p>The linguistic representation of the manifold. If it is <code class="docutils literal notranslate"><span class="pre">None</span></code>, we will use a pre-set linguistic
 representation. The default is <code class="docutils literal notranslate"><span class="pre">None</span></code>.</p>
 </dd>
-<dt><strong>is_periodic</strong><span class="classifier">bool, optional</span></dt><dd><p>If this is set to <code class="docutils literal notranslate"><span class="pre">True</span></code>, the manifold is a periodic. Otherwise, it is not periodic.
+<dt><strong>periodic</strong><span class="classifier">bool, optional</span></dt><dd><p>If this is set to <code class="docutils literal notranslate"><span class="pre">True</span></code>, the manifold is a periodic. Otherwise, it is not periodic.
 The default is <code class="docutils literal notranslate"><span class="pre">True</span></code>.</p>
 </dd>
 </dl>
@@ -518,7 +518,7 @@ specify any exact parameters, for example size and shape, of it.</p>
 <blockquote>
 <div><dl class="py class">
 <dt class="sig sig-object py" id="src.manifold.Manifold">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">Manifold</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ndim</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sym_repr</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lin_repr</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">is_periodic</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/src/manifold.html#Manifold"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#src.manifold.Manifold" title="Link to this definition">#</a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">Manifold</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ndim</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sym_repr</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lin_repr</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">periodic</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/src/manifold.html#Manifold"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#src.manifold.Manifold" title="Link to this definition">#</a></dt>
 <dd><dl class="py property">
 <dt class="sig sig-object py" id="src.manifold.Manifold.m">
 <em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">m</span></span><a class="headerlink" href="#src.manifold.Manifold.m" title="Link to this definition">#</a></dt>
@@ -721,7 +721,7 @@ By Andrea Brugnoli, Ramy Rashad, Stefano Stramigioli, Yi Zhang and more
   <div class="footer-item">
     
 <div class="extra_footer">
-  <div>Last updated on March 15, 2024, 22:55:00, 中国标准时间</div>
+  <div>Last updated on 八月 20, 2024, 15:30:52, China Standard Time</div>
 </div>
   </div>
   

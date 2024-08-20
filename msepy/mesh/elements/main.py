@@ -33,6 +33,7 @@ class MsePyMeshElements(Frozen):
         self._ct = None
         self._element_mtype_dict = None
         self._periodic_pairs = None
+        self._element_vortices_numbering_ = None
         self._freeze()
 
     def _is_linear(self):
@@ -450,19 +451,22 @@ class MsePyMeshElements(Frozen):
         if self._periodic_pairs is not None:
             return self._periodic_pairs
 
-        if not self._mesh.manifold.abstract._is_periodic:
-            self._periodic_pairs = {}
-        else:
-            edge_centers = (
-                [np.array([-1]), np.array([0])],
-                [np.array([1]), np.array([0])],
-                [np.array([0]), np.array([-1])],
-                [np.array([0]), np.array([1])]
-            )
-            periodic_pairs = {}
-            for e in self:
-                _map = self.map[e]
-                for j, mp in enumerate(_map):
+        edge_centers = (
+            [np.array([-1]), np.array([0])],
+            [np.array([1]), np.array([0])],
+            [np.array([0]), np.array([-1])],
+            [np.array([0]), np.array([1])]
+        )
+        periodic_pairs = {}
+        for e in self:
+            _map = self.map[e]
+            for j, mp in enumerate(_map):
+
+                if mp == -1:
+                    pass
+                else:
+                    mp = int(mp)
+
                     self_edge_center = edge_centers[j]
 
                     if j == 0:
@@ -498,7 +502,10 @@ class MsePyMeshElements(Frozen):
                         elif e == mp:
                             raise Exception(f"a base element is periodic to itself, "
                                             f"not good, just make more elements.")
-            self._periodic_pairs = periodic_pairs
+                        else:
+                            raise Exception
+
+        self._periodic_pairs = periodic_pairs
         return self._periodic_pairs
 
 

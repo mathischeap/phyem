@@ -89,7 +89,7 @@ msehtt_ls = obj['ls'].apply()
 # print(u.cf.field)
 
 msehtt_ls.config(['natural bc', 1], boundary_p, phi_scalar, root_form=phi)    # natural bc
-msehtt_ls.config(('essential bc', 1), boundary_u, u.cf.field, root_form=u)  # essential bc
+msehtt_ls.config(('essential bc', 1), boundary_u, u.cf.field, root_form=u)    # essential bc
 
 linear_system = msehtt_ls(time)
 
@@ -105,17 +105,26 @@ assert phi[time].error() < 0.0005
 assert u[time].error() < 0.002
 # u[time].visualize.quick()
 
+phi.saveto('phi.mse')
+
+phi.cochain.clean('all')
+phi.read('phi.mse')
+assert time in phi.cochain
+
 ph.vtk('poisson_forms', phi[time], u[time], f[time])
 ph.os.remove('poisson_forms.vtu')
 
 u[time].export.rws('u_rws')
 dds = ph.read('u_rws')
 
-if dds is not None:
-    # dds.visualize()
-    # sf = dds.streamfunction()
-    # sf.visualize()
-    ph.os.remove('u_rws')
+ph.os.remove('phi.mse')
+
+# if dds is not None:
+#     dds.visualize()
+#     sf = dds.streamfunction()
+#     sf.visualize()
+
+ph.os.remove('u_rws')
 
 p0x, p0y = u[time].project.to('m2n2k0')
 

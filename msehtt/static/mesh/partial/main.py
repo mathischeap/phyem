@@ -32,6 +32,10 @@ class MseHttMeshPartial(Frozen):
             composition.info()
 
     @property
+    def ___is_msehtt_partial_mesh___(self):
+        return True
+
+    @property
     def abstract(self):
         """return the abstract mesh instance."""
         return self._abstract

@@ -24,7 +24,7 @@ class PredefinedMsePyManifoldDistributor(Frozen):
         return _the_mf_config
 
     @classmethod
-    def _predefined_manifolds(self):
+    def _predefined_manifolds(cls):
         return {
             'crazy': '_crazy',
             'crazy_multi': '_crazy_multi',

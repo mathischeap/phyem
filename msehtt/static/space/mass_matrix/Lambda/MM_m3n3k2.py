@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-"""
+r"""
 """
 from tools.quadrature import quadrature
 from src.spaces.main import _degree_str_maker
@@ -22,7 +22,7 @@ def mass_matrix_Lambda__m3n3k2(tpm, degree):
         if etype == 'orthogonal hexahedron':
             M[e], cache_key_dict[e] = ___mm332_orthogonal_hexahedron___(element, degree)
         else:
-            raise NotImplementedError()
+            raise NotImplementedError(f"{__name__} not implemented for etype={etype}")
     _cache_mm332_[key] = M, cache_key_dict
     return M, cache_key_dict
 

@@ -23,18 +23,19 @@ def _compute_error__m2n2k1_(tpm, cf, cochain, degree, error_type, orientation='o
     for e in elements:
         element = elements[e]
         etype = element.etype
-        if etype in ("orthogonal rectangle", "unique msepy curvilinear quadrilateral"):
-            if orientation == 'outer':
-                element_error = _er221_msepy_quadrilateral_(
-                    element, cf, cochain[e], degree, error_type, 'outer')
-            elif orientation == 'inner':
-                element_error = _er221_msepy_quadrilateral_(
-                    element, cf, cochain[e], degree, error_type, 'inner')
-            else:
-                raise Exception()
-            error.append(element_error)
+        if etype in ("orthogonal rectangle", "unique msepy curvilinear quadrilateral", 9,
+                     'unique curvilinear quad', ):
+            element_error = _er221_msepy_quadrilateral_(
+                element, cf, cochain[e], degree, error_type, orientation)
+
+        elif etype in (5, "unique msepy curvilinear triangle"):
+            element_error = _er221_vtu5_(
+                element, cf, cochain[e], degree, error_type, orientation)
+
         else:
-            raise NotImplementedError()
+            raise NotImplementedError(f"{__name__} not implemented for etype={etype}")
+
+        error.append(element_error)
 
     if error_type == 'L2':
         error = sum(error)
@@ -62,6 +63,38 @@ def _er221_msepy_quadrilateral_(element, cf, local_cochain, degree, error_type, 
         x, y, u, v = ___rc221o_msepy_quadrilateral___(element, degree, local_cochain, *nodes, ravel=False)
     elif orientation == 'inner':
         x, y, u, v = ___rc221i_msepy_quadrilateral___(element, degree, local_cochain, *nodes, ravel=False)
+    else:
+        raise NotImplementedError()
+    exact_u, exact_v = cf(x, y)
+    meshgrid = np.meshgrid(*nodes, indexing='ij')
+    J = element.ct.Jacobian(meshgrid[0], meshgrid[1])
+    if error_type == 'L2':
+
+        diff = (u - exact_u) ** 2 + (v - exact_v) ** 2
+        error = np.einsum(
+            'ij, i, j -> ',
+            J * diff, *weights,
+            optimize='optimal'
+        )
+        return error
+
+    else:
+        raise NotImplementedError(error_type)
+
+
+from msehtt.static.space.reconstruct.Lambda.Rc_m2n2k1 import ___rc221o_vtu_5___
+from msehtt.static.space.reconstruct.Lambda.Rc_m2n2k1 import ___rc221i_vtu_5___
+
+
+def _er221_vtu5_(element, cf, local_cochain, degree, error_type, orientation):
+    """"""
+    p = element.degree_parser(degree)[0]
+    p = (p[0] + 2, p[1] + 2)
+    nodes, weights = quadrature(p, 'Gauss').quad
+    if orientation == 'outer':
+        x, y, u, v = ___rc221o_vtu_5___(element, degree, local_cochain, *nodes, ravel=False)
+    elif orientation == 'inner':
+        x, y, u, v = ___rc221i_vtu_5___(element, degree, local_cochain, *nodes, ravel=False)
     else:
         raise NotImplementedError()
     exact_u, exact_v = cf(x, y)

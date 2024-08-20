@@ -7,7 +7,7 @@ from msehtt.static.space.reduce.Lambda.main import MseHttSpaceReduceLambda
 
 
 class MseHttSpaceReduce(Frozen):
-    """"""
+    r""""""
 
     def __init__(self, space):
         """"""

@@ -20,9 +20,9 @@ def angle(origin, pt):
     len1 = np.hypot(x1, y1)
     len2 = np.hypot(x2, y2)
     if y2 < 0:
-        return 2 * np.pi - np.arccos(inner_product / (len1 * len2))
+        return float(2 * np.pi - np.arccos(inner_product / (len1 * len2)))
     else:
-        return np.arccos(inner_product / (len1 * len2))
+        return float(np.arccos(inner_product / (len1 * len2)))
 
 
 if __name__ == "__main__":
