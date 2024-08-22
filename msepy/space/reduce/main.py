@@ -7,16 +7,16 @@ from msepy.space.reduce.bundle import MsePySpaceReduceBundle
 
 
 class MsePySpaceReduce(Frozen):
-    """"""
+    r""""""
 
     def __init__(self, space):
-        """"""
+        r""""""
         self._space = space
         self._reduce = None
         self._freeze()
 
     def __call__(self, cf, t, degree, **kwargs):
-        """"""
+        r""""""
         if self._reduce is None:
             indicator = self._space.abstract.indicator
             if indicator == 'Lambda':

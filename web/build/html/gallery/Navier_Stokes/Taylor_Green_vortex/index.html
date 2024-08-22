@@ -229,11 +229,7 @@
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="../../div_grad/index.html">🟢 div-grad</a></li>
-<li class="toctree-l2 has-children"><a class="reference internal" href="../../MHD/index.html">🧲 MHD</a><input class="toctree-checkbox" id="toctree-checkbox-6" name="toctree-checkbox-6" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-6"><i class="fa-solid fa-chevron-down"></i></label><ul>
-<li class="toctree-l3"><a class="reference internal" href="../../MHD/Orszag_Tang_vortex/index.html">Orszag-Tang Vortex</a></li>
-</ul>
-</li>
-<li class="toctree-l2 current active has-children"><a class="reference internal" href="../index.html">🌊 Navier-Stokes equations</a><input checked="" class="toctree-checkbox" id="toctree-checkbox-7" name="toctree-checkbox-7" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-7"><i class="fa-solid fa-chevron-down"></i></label><ul class="current">
+<li class="toctree-l2 current active has-children"><a class="reference internal" href="../index.html">🌊 Navier-Stokes equations</a><input checked="" class="toctree-checkbox" id="toctree-checkbox-6" name="toctree-checkbox-6" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-6"><i class="fa-solid fa-chevron-down"></i></label><ul class="current">
 <li class="toctree-l3"><a class="reference internal" href="../backward_facing_step/index.html">Backward facing step flow</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../lid_driven_cavity/index.html">Lid-driven cavity</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../normal_dipole_collision/index.html">Normal dipole collision</a></li>
@@ -445,7 +441,7 @@ document.write(`
   <section id="taylor-green-vortex">
 <span id="gallery-ns2-tgv"></span><h1>Taylor-Green vortex<a class="headerlink" href="#taylor-green-vortex" title="Link to this heading">#</a></h1>
 <p>The Taylor-Green vortex (TGV) is a series of analytical solutions of NS equations.
-In 2-dimensions, the TGV analytical solution is usually of the form,</p>
+In 2-dimensions, the TGV analytical solutions are usually of the form,</p>
 <div class="math notranslate nohighlight">
 \[\begin{split}\begin{aligned}
     u(x, y, t) &amp;= - \sin(\pi x) \cos(\pi y) e^{-2\pi^2 t /\mathrm{Re}},\\
@@ -453,7 +449,12 @@ In 2-dimensions, the TGV analytical solution is usually of the form,</p>
     p(x, y, t) &amp;= \frac{1}{4} \left(\cos(2\pi x) + \cos(2\pi y)\right)e^{-4\pi^2 t /\mathrm{Re}},\\
     \omega(x, y, t) &amp;= -2\pi \sin(\pi x)\sin(\pi y) e^{-2\pi^2 t /\mathrm{Re}}.
 \end{aligned}\end{split}\]</div>
-<p>The domain, either periodic or not, is given as <span class="math notranslate nohighlight">\(\Omega=[0,2]^2\)</span>.</p>
+<p>The domain, either periodic or not, is typically given as <span class="math notranslate nohighlight">\(\Omega=[0,2]^2\)</span>. The above analytical solutions
+are used for initial and boundary conditions. The simulation, for example, runs from <span class="math notranslate nohighlight">\(t=0\)</span> to <span class="math notranslate nohighlight">\(t=1\)</span> and
+errors are measured at <span class="math notranslate nohighlight">\(t=1\)</span>.</p>
+<p>For a <em>phyem</em> implementation of the shear layer rollup using the dual-field method introduced in
+<a class="reference external" href="https://doi.org/10.1016/j.jcp.2021.110868">[Dual-field NS, Zhang et al., JCP (2022)]</a>, click
+<a class="reference download internal" download="" href="../../../_downloads/e984c777ca13de32470ef0182238a7d0/TGV.py"><code class="xref download docutils literal notranslate"><span class="pre">phyem_df2_TGV.py</span></code></a></p>
 <div class="line-block">
 <div class="line"><br /></div>
 </div>
@@ -528,7 +529,7 @@ By Andrea Brugnoli, Ramy Rashad, Stefano Stramigioli, Yi Zhang and more
   <div class="footer-item">
     
 <div class="extra_footer">
-  <div>Last updated on 八月 20, 2024, 15:30:52, China Standard Time</div>
+  <div>Last updated on 八月 21, 2024, 15:44:30, China Standard Time</div>
 </div>
   </div>
   

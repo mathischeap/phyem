@@ -50,8 +50,6 @@
     <link rel="icon" href="../../_static/favicon.png"/>
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
-    <link rel="next" title="Orszag-Tang Vortex" href="Orszag_Tang_vortex/index.html" />
-    <link rel="prev" title="🟢 div-grad" href="../div_grad/index.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
   </head>
@@ -214,13 +212,13 @@
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../../tutorial/summary.html">Summary</a></li>
 </ul>
-<ul class="current nav bd-sidenav">
+<ul class="nav bd-sidenav">
 <li class="toctree-l1 has-children"><a class="reference internal" href="../../jupyter/index.html">Jupyter notebooks 🪐</a><input class="toctree-checkbox" id="toctree-checkbox-3" name="toctree-checkbox-3" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-3"><i class="fa-solid fa-chevron-down"></i></label><ul>
 <li class="toctree-l2"><a class="reference internal" href="../../jupyter/general/first_equation.html">Set up your first equations</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../jupyter/general/discretize_linear_pH_system.html">How to discretize equations</a></li>
 </ul>
 </li>
-<li class="toctree-l1 current active has-children"><a class="reference internal" href="../index.html">Gallery🖼</a><input checked="" class="toctree-checkbox" id="toctree-checkbox-4" name="toctree-checkbox-4" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-4"><i class="fa-solid fa-chevron-down"></i></label><ul class="current">
+<li class="toctree-l1 has-children"><a class="reference internal" href="../index.html">Gallery🖼</a><input class="toctree-checkbox" id="toctree-checkbox-4" name="toctree-checkbox-4" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-4"><i class="fa-solid fa-chevron-down"></i></label><ul>
 <li class="toctree-l2 has-children"><a class="reference internal" href="../msepy_domains_and_meshes/index.html"><em>msepy</em> domains and meshes</a><input class="toctree-checkbox" id="toctree-checkbox-5" name="toctree-checkbox-5" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-5"><i class="fa-solid fa-chevron-down"></i></label><ul>
 <li class="toctree-l3"><a class="reference internal" href="../msepy_domains_and_meshes/msepy/backward_step.html">Backward step</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../msepy_domains_and_meshes/msepy/crazy.html">Crazy domain and mesh</a></li>
@@ -229,11 +227,7 @@
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="../div_grad/index.html">🟢 div-grad</a></li>
-<li class="toctree-l2 current active has-children"><a class="current reference internal" href="#">🧲 MHD</a><input checked="" class="toctree-checkbox" id="toctree-checkbox-6" name="toctree-checkbox-6" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-6"><i class="fa-solid fa-chevron-down"></i></label><ul>
-<li class="toctree-l3"><a class="reference internal" href="Orszag_Tang_vortex/index.html">Orszag-Tang Vortex</a></li>
-</ul>
-</li>
-<li class="toctree-l2 has-children"><a class="reference internal" href="../Navier_Stokes/index.html">🌊 Navier-Stokes equations</a><input class="toctree-checkbox" id="toctree-checkbox-7" name="toctree-checkbox-7" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-7"><i class="fa-solid fa-chevron-down"></i></label><ul>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../Navier_Stokes/index.html">🌊 Navier-Stokes equations</a><input class="toctree-checkbox" id="toctree-checkbox-6" name="toctree-checkbox-6" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-6"><i class="fa-solid fa-chevron-down"></i></label><ul>
 <li class="toctree-l3"><a class="reference internal" href="../Navier_Stokes/backward_facing_step/index.html">Backward facing step flow</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../Navier_Stokes/lid_driven_cavity/index.html">Lid-driven cavity</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../Navier_Stokes/normal_dipole_collision/index.html">Normal dipole collision</a></li>
@@ -468,8 +462,7 @@ metals and has applications in numerous fields including geophysics, astrophysic
 Lipschitz boundary <span class="math notranslate nohighlight">\(\partial \Omega\)</span>, the <em>incompressible constant density magnetohydrodynamic</em>
 (or <em>simply incompressible MHD</em>) equations are given as</p>
 <div class="math notranslate nohighlight" id="equation-incompressiblemhd">
-<span class="eqno">(1)<a class="headerlink" href="#equation-incompressiblemhd" title="Link to this equation">#</a></span>\[\begin{split}\begin{equation}
-\begin{aligned}
+<span class="eqno">(1)<a class="headerlink" href="#equation-incompressiblemhd" title="Link to this equation">#</a></span>\[\begin{split}\begin{aligned}
     \rho \left[ \partial_t\boldsymbol{u}^* + \left(\boldsymbol{u}^* \cdot \nabla\right)\boldsymbol{u}^* \right]
     - \tilde{\mu} \Delta \boldsymbol{u}^*  - \boldsymbol{j}^* \times \boldsymbol{B}^* + \nabla p^*
     &amp;= \rho \boldsymbol{f}^*, \\
@@ -478,8 +471,7 @@ Lipschitz boundary <span class="math notranslate nohighlight">\(\partial \Omega\
     \boldsymbol{j}^* - \sigma \left(\boldsymbol{E}^* + \boldsymbol{u}^*\times\boldsymbol{B}^*\right) &amp;= \boldsymbol{0} , \\
     \boldsymbol{j}^* - \nabla\times \boldsymbol{H}^* &amp;= \boldsymbol{0} ,\\
     \boldsymbol{B}^* &amp;= \mu \boldsymbol{H}^*,
-\end{aligned}
-\end{equation}\end{split}\]</div>
+\end{aligned}\end{split}\]</div>
 <p>where</p>
 <ul class="simple">
 <li><p><span class="math notranslate nohighlight">\(\boldsymbol{u}^*\)</span> fluid velocity</p></li>
@@ -498,8 +490,7 @@ velocity <span class="math notranslate nohighlight">\(U\)</span>,
 and magnetic flux density <span class="math notranslate nohighlight">\(B\)</span>,
 a non-dimensional formulation of <a class="reference internal" href="#equation-incompressiblemhd">(1)</a> is</p>
 <div class="math notranslate nohighlight" id="equation-non-dimensional-mhd">
-<span class="eqno">(2)<a class="headerlink" href="#equation-non-dimensional-mhd" title="Link to this equation">#</a></span>\[\begin{split}\begin{equation}
-\begin{aligned}
+<span class="eqno">(2)<a class="headerlink" href="#equation-non-dimensional-mhd" title="Link to this equation">#</a></span>\[\begin{split}\begin{aligned}
     \partial_t\boldsymbol{u} + \left(\boldsymbol{u} \cdot \nabla\right)\boldsymbol{u}
     - \mathrm{R}_f^{-1} \Delta \boldsymbol{u}  - \mathrm{A}_l^{-2}\boldsymbol{j} \times \boldsymbol{B} + \nabla p
     &amp;= \boldsymbol{f}, \\
@@ -507,8 +498,7 @@ a non-dimensional formulation of <a class="reference internal" href="#equation-i
     \partial_t \boldsymbol{B} + \nabla\times \boldsymbol{E} &amp;= \boldsymbol{0}  ,\\
     \mathrm{R}_m^{-1}\boldsymbol{j} - \left(\boldsymbol{E} + \boldsymbol{u}\times\boldsymbol{B}\right) &amp;= \boldsymbol{0} , \\
     \boldsymbol{j} - \nabla\times \boldsymbol{B} &amp;= \boldsymbol{0} ,\\
-\end{aligned}
-\end{equation}\end{split}\]</div>
+\end{aligned}\end{split}\]</div>
 <p>where <span class="math notranslate nohighlight">\(\boldsymbol{u}\)</span>, <span class="math notranslate nohighlight">\(\boldsymbol{j}\)</span>, <span class="math notranslate nohighlight">\(\boldsymbol{B}\)</span>, <span class="math notranslate nohighlight">\(p\)</span>, <span class="math notranslate nohighlight">\(\boldsymbol{f}\)</span>, and
 <span class="math notranslate nohighlight">\(\boldsymbol{E}\)</span> are the non-dimensional variables, and
 <span class="math notranslate nohighlight">\(\mathrm{R}_f = \dfrac{\rho U L}{\tilde{\mu}} = \dfrac{U L}{\nu}\)</span>
@@ -521,8 +511,7 @@ being the kinematic viscosity) is the fluid Reynolds number,
 <span class="math notranslate nohighlight">\(P:=p+\frac{1}{2}\boldsymbol{u}\cdot \boldsymbol{u}\)</span>, <a class="reference internal" href="#equation-non-dimensional-mhd">(2)</a> can be written into the
 rotational form:</p>
 <div class="math notranslate nohighlight" id="equation-rotational-non-dimensional-mhd">
-<span class="eqno">(3)<a class="headerlink" href="#equation-rotational-non-dimensional-mhd" title="Link to this equation">#</a></span>\[\begin{split}\begin{equation}
-\begin{aligned}
+<span class="eqno">(3)<a class="headerlink" href="#equation-rotational-non-dimensional-mhd" title="Link to this equation">#</a></span>\[\begin{split}\begin{aligned}
     \partial_t\boldsymbol{u} + \boldsymbol{\omega}\times\boldsymbol{u}
     - \mathrm{R}_f^{-1} \Delta \boldsymbol{u}  - \mathrm{A}_l^{-2}\boldsymbol{j} \times \boldsymbol{B} + \nabla P
     &amp;= \boldsymbol{f}, \\
@@ -531,8 +520,7 @@ rotational form:</p>
     \partial_t \boldsymbol{B} + \nabla\times \boldsymbol{E} &amp;= \boldsymbol{0}  ,\\
     \mathrm{R}_m^{-1}\boldsymbol{j} - \left(\boldsymbol{E} + \boldsymbol{u}\times\boldsymbol{B}\right) &amp;= \boldsymbol{0} , \\
     \boldsymbol{j} - \nabla\times \boldsymbol{B} &amp;= \boldsymbol{0} .\\
-\end{aligned}
-\end{equation}\end{split}\]</div>
+\end{aligned}\end{split}\]</div>
 </section>
 <section id="numerical-examples">
 <h2>Numerical Examples<a class="headerlink" href="#numerical-examples" title="Link to this heading">#</a></h2>
@@ -560,24 +548,6 @@ rotational form:</p>
                 <footer class="prev-next-footer">
                   <!-- Previous / next buttons -->
 <div class="prev-next-area">
-    <a class="left-prev"
-       href="../div_grad/index.html"
-       title="previous page">
-      <i class="fa-solid fa-angle-left"></i>
-      <div class="prev-next-info">
-        <p class="prev-next-subtitle">previous</p>
-        <p class="prev-next-title">🟢 div-grad</p>
-      </div>
-    </a>
-    <a class="right-next"
-       href="Orszag_Tang_vortex/index.html"
-       title="next page">
-      <div class="prev-next-info">
-        <p class="prev-next-subtitle">next</p>
-        <p class="prev-next-title">Orszag-Tang Vortex</p>
-      </div>
-      <i class="fa-solid fa-angle-right"></i>
-    </a>
 </div>
                 </footer>
               
@@ -632,7 +602,7 @@ By Andrea Brugnoli, Ramy Rashad, Stefano Stramigioli, Yi Zhang and more
   <div class="footer-item">
     
 <div class="extra_footer">
-  <div>Last updated on 八月 20, 2024, 15:30:52, China Standard Time</div>
+  <div>Last updated on 八月 21, 2024, 15:44:30, China Standard Time</div>
 </div>
   </div>
   

@@ -20,7 +20,6 @@ specify any exact parameters, for example size and shape, of it.
     .. autoclass:: src.manifold.Manifold
         :members: m, n
 
-
 """
 import sys
 
@@ -44,7 +43,7 @@ def manifold(
         lin_repr=None,
         periodic=False
 ):
-    """Generate an abstract manifold. It is actually a wrapper of the ``__init__`` method of :class:`Manifold`.
+    r"""Generate an abstract manifold. It is actually a wrapper of the ``__init__`` method of :class:`Manifold`.
 
     Parameters
     ----------
@@ -70,7 +69,7 @@ def manifold(
 
 
 def find_manifold(manifold_sym_repr):
-    """"""
+    r""""""
     return _global_manifolds[manifold_sym_repr]
 
 
@@ -83,8 +82,7 @@ class Manifold(Frozen):
         periodic=False,   # means fully periodic
         # add other representations here.
     ):
-        """"""
-        
+        r""""""
         embedding_space_ndim = get_embedding_space_dim()
         assert ndim % 1 == 0 and 0 <= ndim <= embedding_space_ndim, \
             f"manifold ndim={ndim} is wrong. Is should be an integer and be in range [0, {embedding_space_ndim}]. " \
@@ -142,36 +140,40 @@ class Manifold(Frozen):
 
     @property
     def esd(self):
+        r""""""
         return get_embedding_space_dim()
 
     @property
     def m(self):
-        """The dimensions of the embedding space."""
+        r"""The dimensions of the embedding space."""
         return self.esd
 
     @property
     def ndim(self):
+        r""""""
         return self._ndim
 
     @property
     def n(self):
-        """The dimensions of the manifold."""
+        r"""The dimensions of the manifold."""
         return self.ndim
 
     @property
     def udg(self):
+        r""""""
         return self._udg
 
     def is_periodic(self):
-        """"""
+        r""""""
         return self._is_periodic
 
     def __repr__(self):
-        """"""
+        r""""""
         super_repr = super().__repr__().split('object')[-1]
         return f'<Manifold {self._sym_repr}' + super_repr  # this must be unique.
 
     def boundary(self, sym_repr=None):
+        r""""""
         if self._boundary is None:
             if self.ndim == 0:
                 return NullManifold('Null')
@@ -190,17 +192,19 @@ class Manifold(Frozen):
         return self._boundary
 
     def inclusion(self):
-        """"""
+        r""""""
         return self._inclusion
 
     def cap(self, other, sym_repr=None):
+        r""""""
         raise NotImplementedError()
 
     def interface(self, other, sym_repr=None):
+        r""""""
         raise NotImplementedError()
 
     def partition(self, *submanifolds_sym_repr, config_name=None):
-        """partition of the manifold."""
+        r"""partition of the manifold."""
         for sym_repr in submanifolds_sym_repr:
             assert isinstance(sym_repr, str), f"please put sym_repr of partitions in str."
         num_of_partitions = len(submanifolds_sym_repr)
@@ -259,21 +263,21 @@ class Manifold(Frozen):
             return partitions
 
     def _manifold_text(self):
-        """generate text for printing representations."""
+        r"""generate text for printing representations."""
         return rf'In ${self._sym_repr}\subset\mathbb' + '{R}^{' + str(get_embedding_space_dim()) + '}$, '
 
 
 class NullManifold(Frozen):
-    """"""
+    r""""""
 
     def __init__(self, ndim):
-        """"""
+        r""""""
         self._ndim = ndim
         self._freeze()
 
     @property
     def ndim(self):
-        """"""
+        r""""""
         return self._ndim
 
 

@@ -412,7 +412,6 @@ document.write(`
 <span class="sd">    .. autoclass:: src.manifold.Manifold</span>
 <span class="sd">        :members: m, n</span>
 
-
 <span class="sd">&quot;&quot;&quot;</span>
 <span class="kn">import</span> <span class="nn">sys</span>
 
@@ -438,7 +437,7 @@ document.write(`
         <span class="n">lin_repr</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
         <span class="n">periodic</span><span class="o">=</span><span class="kc">False</span>
 <span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Generate an abstract manifold. It is actually a wrapper of the ``__init__`` method of :class:`Manifold`.</span>
+<span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Generate an abstract manifold. It is actually a wrapper of the ``__init__`` method of :class:`Manifold`.</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
@@ -465,7 +464,7 @@ document.write(`
 
 
 <span class="k">def</span> <span class="nf">find_manifold</span><span class="p">(</span><span class="n">manifold_sym_repr</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;&quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="n">_global_manifolds</span><span class="p">[</span><span class="n">manifold_sym_repr</span><span class="p">]</span>
 
 
@@ -480,8 +479,7 @@ document.write(`
         <span class="n">periodic</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>   <span class="c1"># means fully periodic</span>
         <span class="c1"># add other representations here.</span>
     <span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;&quot;&quot;&quot;</span>
-        
+<span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;&quot;&quot;&quot;</span>
         <span class="n">embedding_space_ndim</span> <span class="o">=</span> <span class="n">get_embedding_space_dim</span><span class="p">()</span>
         <span class="k">assert</span> <span class="n">ndim</span> <span class="o">%</span> <span class="mi">1</span> <span class="o">==</span> <span class="mi">0</span> <span class="ow">and</span> <span class="mi">0</span> <span class="o">&lt;=</span> <span class="n">ndim</span> <span class="o">&lt;=</span> <span class="n">embedding_space_ndim</span><span class="p">,</span> \
             <span class="sa">f</span><span class="s2">&quot;manifold ndim=</span><span class="si">{</span><span class="n">ndim</span><span class="si">}</span><span class="s2"> is wrong. Is should be an integer and be in range [0, </span><span class="si">{</span><span class="n">embedding_space_ndim</span><span class="si">}</span><span class="s2">]. &quot;</span> \
@@ -539,36 +537,40 @@ document.write(`
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">esd</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="n">get_embedding_space_dim</span><span class="p">()</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">m</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;The dimensions of the embedding space.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;The dimensions of the embedding space.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">esd</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">ndim</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ndim</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">n</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;The dimensions of the manifold.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;The dimensions of the manifold.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">ndim</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">udg</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_udg</span>
 
     <span class="k">def</span> <span class="nf">is_periodic</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_is_periodic</span>
 
     <span class="k">def</span> <span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;&quot;&quot;&quot;</span>
         <span class="n">super_repr</span> <span class="o">=</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__repr__</span><span class="p">()</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;object&#39;</span><span class="p">)[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
         <span class="k">return</span> <span class="sa">f</span><span class="s1">&#39;&lt;Manifold </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_sym_repr</span><span class="si">}</span><span class="s1">&#39;</span> <span class="o">+</span> <span class="n">super_repr</span>  <span class="c1"># this must be unique.</span>
 
     <span class="k">def</span> <span class="nf">boundary</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">sym_repr</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;&quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_boundary</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">ndim</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
                 <span class="k">return</span> <span class="n">NullManifold</span><span class="p">(</span><span class="s1">&#39;Null&#39;</span><span class="p">)</span>
@@ -587,17 +589,19 @@ document.write(`
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_boundary</span>
 
     <span class="k">def</span> <span class="nf">inclusion</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_inclusion</span>
 
     <span class="k">def</span> <span class="nf">cap</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">,</span> <span class="n">sym_repr</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;&quot;&quot;&quot;</span>
         <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">()</span>
 
     <span class="k">def</span> <span class="nf">interface</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">,</span> <span class="n">sym_repr</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;&quot;&quot;&quot;</span>
         <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">()</span>
 
     <span class="k">def</span> <span class="nf">partition</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">submanifolds_sym_repr</span><span class="p">,</span> <span class="n">config_name</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;partition of the manifold.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;partition of the manifold.&quot;&quot;&quot;</span>
         <span class="k">for</span> <span class="n">sym_repr</span> <span class="ow">in</span> <span class="n">submanifolds_sym_repr</span><span class="p">:</span>
             <span class="k">assert</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">sym_repr</span><span class="p">,</span> <span class="nb">str</span><span class="p">),</span> <span class="sa">f</span><span class="s2">&quot;please put sym_repr of partitions in str.&quot;</span>
         <span class="n">num_of_partitions</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">submanifolds_sym_repr</span><span class="p">)</span>
@@ -656,7 +660,7 @@ document.write(`
             <span class="k">return</span> <span class="n">partitions</span>
 
     <span class="k">def</span> <span class="nf">_manifold_text</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;generate text for printing representations.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;generate text for printing representations.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="sa">rf</span><span class="s1">&#39;In $</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_sym_repr</span><span class="si">}</span><span class="s1">\subset\mathbb&#39;</span> <span class="o">+</span> <span class="s1">&#39;</span><span class="si">{R}</span><span class="s1">^{&#39;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">get_embedding_space_dim</span><span class="p">())</span> <span class="o">+</span> <span class="s1">&#39;}$, &#39;</span></div>
 
 
@@ -733,7 +737,7 @@ By Andrea Brugnoli, Ramy Rashad, Stefano Stramigioli, Yi Zhang and more
   <div class="footer-item">
     
 <div class="extra_footer">
-  <div>Last updated on 八月 20, 2024, 15:28:43, China Standard Time</div>
+  <div>Last updated on 八月 20, 2024, 17:11:56, China Standard Time</div>
 </div>
   </div>
   

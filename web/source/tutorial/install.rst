@@ -4,6 +4,8 @@
 Installation
 ============
 
+*phyem* is Python-shelled. You will need a basic level of Python skills to follow this instruction.
+
 .. _Download:
 
 Download
@@ -33,7 +35,7 @@ to clone the package to a local repository. Nevertheless, downloading a stable v
 Config
 ------
 
-The downloaded (and maybe unzipped) library is a folder named ``phyem``. We now call this folder the *package*.
+The downloaded (and unzipped) library is a folder named ``phyem``. We now call this folder the *package*.
 
 .. hint::
 
@@ -51,7 +53,7 @@ script or console, you can do
 
     >>> import sys
     >>> ph_dir = '~/my_packages/'
-    >>> sys.path.append(ph_dir)
+    >>> sys.path.insert(0, ph_dir)
 
 When this script is executed, the path :code:`~/my_packages/` will be added to system path temporally.
 Of course, if :code:`~/my_packages/` is a default system path, you can omit above three lines of code.
@@ -62,12 +64,13 @@ Then the *phyem* library can be imported by
     >>> import phyem as ph
     >>> print(ph)
 
-If above commands work, *phyem* is ready in your machine.
+If above commands work, *phyem* is installed in your machine.
 
 .. caution::
 
     *phyem* is dependent of other Python packages such as numpy, scipy, matplotlib and so on. Check
-    :code:`phyem/requirements.text` for the list of dependencies and install whatever you miss through
+    :code:`phyem/requirements.text` for the list of dependencies. They are all
+    regular Python packages. You can easily install whatever you miss through
     for example `pip <https://pypi.org/>`_.
 
 
@@ -75,7 +78,15 @@ If above commands work, *phyem* is ready in your machine.
 
 Test
 ----
+To test the installation of your *phyem*, you can do
 
+.. code-block::
+
+    >>> ph.test()
+
+This command calls all predefined testing functions to validate functionalities of *phyem* in your machine. If
+it raises error, most likely, it is because of a lack in the environment. Just track the exception and install
+the missed one(s). When it passes, you are ready to go ahead.
 
 |
 

@@ -15,8 +15,8 @@ Shear layer rollup
 It is seen that two vorticity layers gradually roll up due to the initial perturbation in the velocity field.
 
 For a *phyem* implementation of the shear layer rollup using the dual-field method introduced in
-`[Dual-field NS, Zhang et al.] <https://doi.org/10.1016/j.jcp.2021.110868>`_, click
-:download:`phyem_slr.py <../../../../../tests/msepy/dualNS2/shear_layer_rollup.py>`
+`[Dual-field NS, Zhang et al. JCP (2022)] <https://doi.org/10.1016/j.jcp.2021.110868>`_, click
+:download:`phyem_df2_slr.py <../../../../../tests/msepy/dualNS2/shear_layer_rollup.py>`
 
 |
 

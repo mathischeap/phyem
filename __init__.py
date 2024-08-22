@@ -6,11 +6,12 @@ import os
 absolute_path = os.path.dirname(__file__)
 import sys
 if absolute_path not in sys.path:
-    sys.path.append(absolute_path)
+    sys.path.insert(0, absolute_path)
 
 __version__ = '0.0.2'
 
 __all__ = [
+    'test',
     'config',
 
     'tools',
@@ -53,6 +54,15 @@ __all__ = [
     'rws',  # save an object or some objects to a dds-rws-grouped file.
 
 ]
+
+
+def test():
+    r"""Run the tests to valid your installation."""
+    print(f"TEST TASK 1: tests for `msepy` implementation ...\n")
+    # noinspection PyUnresolvedReferences
+    import tests.msepy.main   # this automatically run all tests for the implementation `msepy`
+    # so far, `msepy` is the only implementation released.
+
 
 import src.config as config
 

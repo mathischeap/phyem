@@ -23,13 +23,11 @@ Navier-Stokes equations are of the generic dimensionless form,
 .. math::
     :label: generic-NS
 
-    \begin{equation}
     \begin{aligned}
         \partial_t\boldsymbol{u} - \mathcal{C}(\boldsymbol{u}) - \mathrm{Re}^{-1}\mathcal{D}(\boldsymbol{u})
         +\nabla p &= \boldsymbol{f},\\
         \nabla\cdot\boldsymbol{u} &= 0,\\
     \end{aligned}
-    \end{equation}
 
 where :math:`\boldsymbol{u}` is the velocity field, :math:`p` is the static pressure,
 :math:`\boldsymbol{f}` is the body force,

@@ -203,12 +203,12 @@ def _pr_cache(fig, filename=None):
 
 
 def _set_matplot_block(block):
-    """"""
+    r""""""
     _setting['block'] = block
 
 
 def _clear_pr_cache():
-    """"""
+    r""""""
     _setting["pr_cache_counter"] = 0  # reset cache counting
     _setting["pr_cache_subfolder"] = ''  # clean cache_subfolder
 
@@ -248,7 +248,7 @@ def _clear_pr_cache():
 
 
 def _clear_all():
-    """clear all abstract objects.
+    r"""clear all abstract objects.
 
     Make sure that, when we add new global cache, put it here.
     """
@@ -322,7 +322,7 @@ _global_lin_repr_setting = {
 
 
 def _parse_lin_repr(obj, pure_lin_repr):
-    """"""
+    r""""""
     assert isinstance(pure_lin_repr, str) and len(pure_lin_repr) > 0, \
         f"linguistic_representation must be str of length > 0."
     assert all([_ not in r"{$\}" for _ in pure_lin_repr]), (
@@ -332,7 +332,7 @@ def _parse_lin_repr(obj, pure_lin_repr):
 
 
 def _parse_type_and_pure_lin_repr(lin_repr):
-    """"""
+    r""""""
     for what in _global_lin_repr_setting:
         key = _global_lin_repr_setting[what][0]
         lk = len(key)
@@ -483,7 +483,6 @@ _wf_term_default_simple_patterns = {   # use only str to represent a simple patt
     '(,tp):1K': r'(rf, rf $\otimes$ rf):1K',
     '(,tp):2K': r'(rf, rf $\otimes$ rf):2K',
     '(,tp)': r'(rf, rf $\otimes$ rf)',
-
 }
 
 _pde_test_form_lin_repr = 'th-test-form'

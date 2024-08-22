@@ -30,7 +30,6 @@ Below, different kinds of problems are solved as demonstrations,
     :maxdepth: 1
 
     div_grad/index
-    MHD/index
     Navier_Stokes/index
 
 

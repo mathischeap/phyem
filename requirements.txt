@@ -9,4 +9,3 @@ cryptography >= 36.0.1
 psutil >= 5.9.1
 pyevtk >= 1.5.0
 numdifftools >= 0.9.41
-pypardiso >= 0.4.6

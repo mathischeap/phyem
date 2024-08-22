@@ -13,6 +13,8 @@ import __init__ as ph
 
 def codifferential_test(n, k, orientation):
     """"""
+    print(f"codifferential tests for n={n}, k={k}, orientation={orientation}.\n")
+
     ph.config.set_embedding_space_dim(n)
     ph.config.set_high_accuracy(False)
     manifold = ph.manifold(n, periodic=True)

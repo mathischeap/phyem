@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-"""3D numerical."""
+r"""3D numerical."""
 from abc import ABC
 from tools.numerical.space._3d.partial_derivative import NumericalPartialDerivativeXYZ
 

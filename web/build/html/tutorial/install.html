@@ -227,11 +227,7 @@
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="../gallery/div_grad/index.html">🟢 div-grad</a></li>
-<li class="toctree-l2 has-children"><a class="reference internal" href="../gallery/MHD/index.html">🧲 MHD</a><input class="toctree-checkbox" id="toctree-checkbox-6" name="toctree-checkbox-6" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-6"><i class="fa-solid fa-chevron-down"></i></label><ul>
-<li class="toctree-l3"><a class="reference internal" href="../gallery/MHD/Orszag_Tang_vortex/index.html">Orszag-Tang Vortex</a></li>
-</ul>
-</li>
-<li class="toctree-l2 has-children"><a class="reference internal" href="../gallery/Navier_Stokes/index.html">🌊 Navier-Stokes equations</a><input class="toctree-checkbox" id="toctree-checkbox-7" name="toctree-checkbox-7" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-7"><i class="fa-solid fa-chevron-down"></i></label><ul>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../gallery/Navier_Stokes/index.html">🌊 Navier-Stokes equations</a><input class="toctree-checkbox" id="toctree-checkbox-6" name="toctree-checkbox-6" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-6"><i class="fa-solid fa-chevron-down"></i></label><ul>
 <li class="toctree-l3"><a class="reference internal" href="../gallery/Navier_Stokes/backward_facing_step/index.html">Backward facing step flow</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../gallery/Navier_Stokes/lid_driven_cavity/index.html">Lid-driven cavity</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../gallery/Navier_Stokes/normal_dipole_collision/index.html">Normal dipole collision</a></li>
@@ -454,6 +450,7 @@ document.write(`
                   
   <section id="installation">
 <span id="install"></span><h1>Installation<a class="headerlink" href="#installation" title="Link to this heading">#</a></h1>
+<p><em>phyem</em> is Python-shelled. You will need a basic level of Python skills to follow this instruction.</p>
 <section id="download">
 <span id="id1"></span><h2>Download<a class="headerlink" href="#download" title="Link to this heading">#</a></h2>
 <div class="admonition important">
@@ -473,7 +470,7 @@ command</p>
 </section>
 <section id="config">
 <span id="id3"></span><h2>Config<a class="headerlink" href="#config" title="Link to this heading">#</a></h2>
-<p>The downloaded (and maybe unzipped) library is a folder named <code class="docutils literal notranslate"><span class="pre">phyem</span></code>. We now call this folder the <em>package</em>.</p>
+<p>The downloaded (and unzipped) library is a folder named <code class="docutils literal notranslate"><span class="pre">phyem</span></code>. We now call this folder the <em>package</em>.</p>
 <div class="admonition hint">
 <p class="admonition-title">Hint</p>
 <p>To make <em>phyem</em> library importable, we can do either</p>
@@ -487,7 +484,7 @@ command</p>
 script or console, you can do</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">sys</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">ph_dir</span> <span class="o">=</span> <span class="s1">&#39;~/my_packages/&#39;</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">sys</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">ph_dir</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">sys</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">ph_dir</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>When this script is executed, the path <code class="code docutils literal notranslate"><span class="pre">~/my_packages/</span></code> will be added to system path temporally.
@@ -497,16 +494,24 @@ Then the <em>phyem</em> library can be imported by</p>
 <span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">ph</span><span class="p">)</span>
 </pre></div>
 </div>
-<p>If above commands work, <em>phyem</em> is ready in your machine.</p>
+<p>If above commands work, <em>phyem</em> is installed in your machine.</p>
 <div class="admonition caution">
 <p class="admonition-title">Caution</p>
 <p><em>phyem</em> is dependent of other Python packages such as numpy, scipy, matplotlib and so on. Check
-<code class="code docutils literal notranslate"><span class="pre">phyem/requirements.text</span></code> for the list of dependencies and install whatever you miss through
+<code class="code docutils literal notranslate"><span class="pre">phyem/requirements.text</span></code> for the list of dependencies. They are all
+regular Python packages. You can easily install whatever you miss through
 for example <a class="reference external" href="https://pypi.org/">pip</a>.</p>
 </div>
 </section>
 <section id="test">
 <span id="id4"></span><h2>Test<a class="headerlink" href="#test" title="Link to this heading">#</a></h2>
+<p>To test the installation of your <em>phyem</em>, you can do</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">ph</span><span class="o">.</span><span class="n">test</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>This command calls all predefined testing functions to validate functionalities of <em>phyem</em> in your machine. If
+it raises error, most likely, it is because of a lack in the environment. Just track the exception and install
+the missed one(s). When it passes, you are ready to go ahead.</p>
 <div class="line-block">
 <div class="line"><br /></div>
 </div>
@@ -598,7 +603,7 @@ By Andrea Brugnoli, Ramy Rashad, Stefano Stramigioli, Yi Zhang and more
   <div class="footer-item">
     
 <div class="extra_footer">
-  <div>Last updated on 八月 20, 2024, 15:30:52, China Standard Time</div>
+  <div>Last updated on 八月 21, 2024, 15:44:30, China Standard Time</div>
 </div>
   </div>
   

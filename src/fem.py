@@ -33,6 +33,7 @@ sent to ``apply`` (for example, through global variable dictionary ``local()``),
 no error (will just be ignored).
 
 """
+
 from src.manifold import Manifold
 from src.mesh import Mesh
 from src.spaces.base import SpaceBase
@@ -54,7 +55,7 @@ _implemented_finite_elements = {
 
 
 def apply(fe_name, obj_dict):
-    """
+    r"""
 
     Parameters
     ----------
@@ -94,7 +95,17 @@ def apply(fe_name, obj_dict):
 
 
 def _parse_obj(implementation, obj):
-    """"""
+    r"""
+
+    Parameters
+    ----------
+    implementation
+    obj
+
+    Returns
+    -------
+
+    """
     if obj.__class__ is Manifold:
         return implementation.base['manifolds'][obj._sym_repr]
     elif obj.__class__ is Mesh:

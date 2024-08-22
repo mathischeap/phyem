@@ -18,7 +18,7 @@ K = 16
 t_max = 8
 steps = 100 * t_max
 
-manifold = ph.manifold(2, is_periodic=True)
+manifold = ph.manifold(2, periodic=True)
 mesh = ph.mesh(manifold)
 
 Inn0 = ph.space.new('Lambda', 0, orientation='inner')

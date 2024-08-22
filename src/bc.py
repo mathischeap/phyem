@@ -12,9 +12,10 @@ from typing import Dict
 
 
 class BoundaryCondition(Frozen):
-    """"""
+    r""""""
+
     def __init__(self, mesh):
-        """"""
+        r""""""
         manifold = mesh.manifold
         self._boundary = manifold.boundary()
         self._manifold = manifold
@@ -29,11 +30,11 @@ class BoundaryCondition(Frozen):
         self._freeze()
 
     def partition(self, *sym_reprs, config_name=None):
-        """Define boundary sections by partition the mesh boundary into sections defined by `*sym_reprs`."""
+        r"""Define boundary sections by partition the mesh boundary into sections defined by `*sym_reprs`."""
         self._mesh.boundary_partition(*sym_reprs, config_name=config_name)
 
     def define_bc(self, bcs_dict):
-        """"""
+        r""""""
         assert isinstance(bcs_dict, dict), \
             f"pls put boundary conditions in a dict whose keys are the boundary " \
             f"sections, and values are the B.C.s on the corresponding sections."

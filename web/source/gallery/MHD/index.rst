@@ -22,7 +22,6 @@ Lipschitz boundary :math:`\partial \Omega`, the *incompressible constant density
 .. math::
     :label: incompressibleMHD
 
-    \begin{equation}
     \begin{aligned}
         \rho \left[ \partial_t\boldsymbol{u}^* + \left(\boldsymbol{u}^* \cdot \nabla\right)\boldsymbol{u}^* \right]
         - \tilde{\mu} \Delta \boldsymbol{u}^*  - \boldsymbol{j}^* \times \boldsymbol{B}^* + \nabla p^*
@@ -33,7 +32,6 @@ Lipschitz boundary :math:`\partial \Omega`, the *incompressible constant density
         \boldsymbol{j}^* - \nabla\times \boldsymbol{H}^* &= \boldsymbol{0} ,\\
         \boldsymbol{B}^* &= \mu \boldsymbol{H}^*,
     \end{aligned}
-    \end{equation}
 
 where
 
@@ -57,7 +55,6 @@ a non-dimensional formulation of :eq:`incompressibleMHD` is
 .. math::
     :label: non-dimensional-MHD
 
-    \begin{equation}
     \begin{aligned}
         \partial_t\boldsymbol{u} + \left(\boldsymbol{u} \cdot \nabla\right)\boldsymbol{u}
         - \mathrm{R}_f^{-1} \Delta \boldsymbol{u}  - \mathrm{A}_l^{-2}\boldsymbol{j} \times \boldsymbol{B} + \nabla p
@@ -67,7 +64,6 @@ a non-dimensional formulation of :eq:`incompressibleMHD` is
         \mathrm{R}_m^{-1}\boldsymbol{j} - \left(\boldsymbol{E} + \boldsymbol{u}\times\boldsymbol{B}\right) &= \boldsymbol{0} , \\
         \boldsymbol{j} - \nabla\times \boldsymbol{B} &= \boldsymbol{0} ,\\
     \end{aligned}
-    \end{equation}
 
 where :math:`\boldsymbol{u}`, :math:`\boldsymbol{j}`, :math:`\boldsymbol{B}`, :math:`p`, :math:`\boldsymbol{f}`, and
 :math:`\boldsymbol{E}` are the non-dimensional variables, and
@@ -86,7 +82,6 @@ rotational form:
 .. math::
     :label: rotational-non-dimensional-MHD
 
-    \begin{equation}
     \begin{aligned}
         \partial_t\boldsymbol{u} + \boldsymbol{\omega}\times\boldsymbol{u}
         - \mathrm{R}_f^{-1} \Delta \boldsymbol{u}  - \mathrm{A}_l^{-2}\boldsymbol{j} \times \boldsymbol{B} + \nabla P
@@ -97,7 +92,6 @@ rotational form:
         \mathrm{R}_m^{-1}\boldsymbol{j} - \left(\boldsymbol{E} + \boldsymbol{u}\times\boldsymbol{B}\right) &= \boldsymbol{0} , \\
         \boldsymbol{j} - \nabla\times \boldsymbol{B} &= \boldsymbol{0} .\\
     \end{aligned}
-    \end{equation}
 
 
 Numerical Examples

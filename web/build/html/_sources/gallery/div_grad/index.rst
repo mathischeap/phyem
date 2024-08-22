@@ -39,12 +39,12 @@ Here we demonstrate how to use *phyem*, the *msepy* implementation, to solve the
 In two-dimensions, the mixed formulation of the div-grad problem is
 
 .. math::
-    \begin{equation}\left\lbrace
+    \left\lbrace
     \begin{aligned}
         u ^1 &= \mathrm{d}^{\ast}\varphi^2 ,\\
         - \mathrm{d} u^1 &= f^2.
     \end{aligned}\right.
-    \end{equation}
+
 
 We use smooth manufactured solutions for this case. The exact solution for :math:`\varphi` is
 

@@ -50,7 +50,7 @@
     <link rel="icon" href="../../_static/favicon.png"/>
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
-    <link rel="next" title="🧲 MHD" href="../MHD/index.html" />
+    <link rel="next" title="🌊 Navier-Stokes equations" href="../Navier_Stokes/index.html" />
     <link rel="prev" title="Multi-crazy domain and mesh" href="../msepy_domains_and_meshes/msepy/multi_crazy.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
@@ -229,11 +229,7 @@
 </ul>
 </li>
 <li class="toctree-l2 current active"><a class="current reference internal" href="#">🟢 div-grad</a></li>
-<li class="toctree-l2 has-children"><a class="reference internal" href="../MHD/index.html">🧲 MHD</a><input class="toctree-checkbox" id="toctree-checkbox-6" name="toctree-checkbox-6" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-6"><i class="fa-solid fa-chevron-down"></i></label><ul>
-<li class="toctree-l3"><a class="reference internal" href="../MHD/Orszag_Tang_vortex/index.html">Orszag-Tang Vortex</a></li>
-</ul>
-</li>
-<li class="toctree-l2 has-children"><a class="reference internal" href="../Navier_Stokes/index.html">🌊 Navier-Stokes equations</a><input class="toctree-checkbox" id="toctree-checkbox-7" name="toctree-checkbox-7" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-7"><i class="fa-solid fa-chevron-down"></i></label><ul>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../Navier_Stokes/index.html">🌊 Navier-Stokes equations</a><input class="toctree-checkbox" id="toctree-checkbox-6" name="toctree-checkbox-6" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-6"><i class="fa-solid fa-chevron-down"></i></label><ul>
 <li class="toctree-l3"><a class="reference internal" href="../Navier_Stokes/backward_facing_step/index.html">Backward facing step flow</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../Navier_Stokes/lid_driven_cavity/index.html">Lid-driven cavity</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../Navier_Stokes/normal_dipole_collision/index.html">Normal dipole collision</a></li>
@@ -474,12 +470,11 @@ different domains.</p>
 <p>Here we demonstrate how to use <em>phyem</em>, the <em>msepy</em> implementation, to solve the two-dimensional div-grad problem.</p>
 <p>In two-dimensions, the mixed formulation of the div-grad problem is</p>
 <div class="math notranslate nohighlight">
-\[\begin{split}\begin{equation}\left\lbrace
+\[\begin{split}\left\lbrace
 \begin{aligned}
     u ^1 &amp;= \mathrm{d}^{\ast}\varphi^2 ,\\
     - \mathrm{d} u^1 &amp;= f^2.
-\end{aligned}\right.
-\end{equation}\end{split}\]</div>
+\end{aligned}\right.\end{split}\]</div>
 <p>We use smooth manufactured solutions for this case. The exact solution for <span class="math notranslate nohighlight">\(\varphi\)</span> is</p>
 <div class="math notranslate nohighlight">
 \[\varphi = - \sin(2\pi x) \sin(2\pi y).\]</div>
@@ -619,11 +614,11 @@ at polynomial degree 2,</p>
       </div>
     </a>
     <a class="right-next"
-       href="../MHD/index.html"
+       href="../Navier_Stokes/index.html"
        title="next page">
       <div class="prev-next-info">
         <p class="prev-next-subtitle">next</p>
-        <p class="prev-next-title">🧲 MHD</p>
+        <p class="prev-next-title">🌊 Navier-Stokes equations</p>
       </div>
       <i class="fa-solid fa-angle-right"></i>
     </a>
@@ -689,7 +684,7 @@ By Andrea Brugnoli, Ramy Rashad, Stefano Stramigioli, Yi Zhang and more
   <div class="footer-item">
     
 <div class="extra_footer">
-  <div>Last updated on 八月 20, 2024, 15:30:52, China Standard Time</div>
+  <div>Last updated on 八月 21, 2024, 15:44:30, China Standard Time</div>
 </div>
   </div>
   
