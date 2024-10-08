@@ -264,7 +264,16 @@ class MseHttGreatMeshElements(Frozen):
 
     @property
     def periodic_face_pairing(self):
-        """"""
+        """A dictionary shows the periodic pairing.
+
+        For example,
+            in 2d:
+
+                periodic_face_pairing = {
+
+                }
+
+        """
         if self._periodic_face_pairing is not None:
             return self._periodic_face_pairing
         else:
@@ -546,7 +555,7 @@ class MseHttGreatMeshElements(Frozen):
                     if np.isclose(v0, v1):
                         pass
                     else:
-                        assert np.isclose(v0, -v1), f"must be, now v0={v0}, v1={v1}"
+                        assert np.isclose(v0, -v1), f"must be v0 + v1 == 0, now v0={v0}, v1={v1}"
                         pos0, pos1 = positions
                         etype0, etype1 = pos0[0], pos1[0]
                         if etype0 in priority:
@@ -559,7 +568,11 @@ class MseHttGreatMeshElements(Frozen):
                             priority1 = -1
 
                         assert not priority0 == priority1 == -1, \
-                            f'We must found an element to reverse dof on its face.'
+                            (f'We must found an element to reverse dof on its face. '
+                             f'Something wrong in the paired elements? '
+                             f'The found element types are {etype0}, {etype1}. It cannot be that both element types '
+                             f'are structured elements (like `orthogonal rectangle` or '
+                             f'`unique msepy curvilinear quadrilateral`). Or we should renew the priority list.')
 
                         if priority0 >= priority1:
                             touch = pos0

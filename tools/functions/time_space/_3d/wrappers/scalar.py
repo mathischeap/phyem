@@ -26,8 +26,9 @@ def ___0_func___(t, x, y, z):
 class T3dScalar(TimeSpaceFunctionBase):
     """"""
 
-    def __init__(self, s):
+    def __init__(self, s, steady=False):
         """"""
+        super().__init__(steady)
         if isinstance(s, (int, float)) and s == 0:
             self.___is_zero___ = True
             s = ___0_func___

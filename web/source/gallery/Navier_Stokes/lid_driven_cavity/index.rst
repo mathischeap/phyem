@@ -23,7 +23,7 @@ and drives the viscous flow. The simulation stops when the flow becomes steady.
 
 For a *phyem* implementation of the normal dipole collision test case in Section 5.4 of
 `[MEEVC, Zhang et al., JCP (2024)] <https://linkinghub.elsevier.com/retrieve/pii/S0021999124003292>`_, click
-:download:`phyem_ldc.py <../../../../../tests/msepy/MEEVC2/lid_driven_cavity_2d.py>`
+:download:`phyem_ldc.py <../../../../../tests/msepy/MEEVC2/lid_driven_cavity_2d.py>`.
 
 |
 

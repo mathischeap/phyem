@@ -7,7 +7,7 @@ from msehtt.static.mesh.partial.boundary_section.visualize.main import MseHttBou
 
 
 class MseHttBoundarySectionPartialMesh(Frozen):
-    """A bunch of element faces of the great mesh."""
+    r"""A bunch of element faces of the great mesh."""
 
     def __init__(self, tpm, tgm, local_faces_list_of_tuples___element_index__plus__face_id):
         """
@@ -106,7 +106,11 @@ class MseHttBoundarySectionPartialMesh(Frozen):
                 self._mn = None
 
             self._mn = COMM.bcast(self._mn, root=MASTER_RANK)
-        return self._mn
+
+        if self._mn == ():
+            raise Exception(f"boundary section is empty!")
+        else:
+            return self._mn
 
     def find_dofs(self, f, local=True):
         r"""Find dofs of form `f` on this boundary section.

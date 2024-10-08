@@ -1,5 +1,4 @@
 
-
 .. _GALLERY-Gallery:
 
 Gallery🖼

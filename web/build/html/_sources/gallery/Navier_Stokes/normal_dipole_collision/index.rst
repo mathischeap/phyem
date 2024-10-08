@@ -15,7 +15,7 @@ The normal dipole collision flow is a 2-dimensional incompressible viscous flow.
 
 For a *phyem* implementation of the normal dipole collision test case in Section 5.3 of
 `[MEEVC, Zhang et al., JCP (2024)] <https://linkinghub.elsevier.com/retrieve/pii/S0021999124003292>`_, click
-:download:`phyem_ndc.py <../../../../../tests/msepy/MEEVC2/normal_dipole_collision.py>`
+:download:`phyem_ndc.py <../../../../../tests/msepy/MEEVC2/normal_dipole_collision.py>`.
 
 
 |

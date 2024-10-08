@@ -18,6 +18,7 @@ class MseHttGlobalVectorGathered(Frozen):
         else:
             assert gm.__class__ is MseHttGatheringMatrix, f"gathering matrix must be {MseHttGatheringMatrix}."
         self._dtype = 'vector-gathered'
+        self._gm = gm
         self._freeze()
 
     @property

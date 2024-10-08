@@ -14,7 +14,7 @@ class T2dTensor(TimeSpaceFunctionBase):
     """ Wrap four functions into a tensor class.
     """
 
-    def __init__(self, t00, t01, t10, t11):
+    def __init__(self, t00, t01, t10, t11, steady=False):
         """Initialize a tensor with 4 functions which take (t, x, y) as inputs.
 
         Parameters
@@ -24,6 +24,7 @@ class T2dTensor(TimeSpaceFunctionBase):
         t10
         t11
         """
+        super().__init__(steady)
         self._t00_ = t00
         self._t01_ = t01
         self._t10_ = t10

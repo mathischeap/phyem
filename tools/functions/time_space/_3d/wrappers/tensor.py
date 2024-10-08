@@ -11,8 +11,9 @@ from tools.numerical.time_space._3d.partial_derivative_as_functions import \
 class T3dTensor(TimeSpaceFunctionBase):
     """"""
 
-    def __init__(self, t00, t01, t02, t10, t11, t12, t20, t21, t22):
+    def __init__(self, t00, t01, t02, t10, t11, t12, t20, t21, t22, steady=False):
         """"""
+        super().__init__(steady)
         self._t00_ = t00
         self._t01_ = t01
         self._t02_ = t02

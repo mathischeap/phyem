@@ -175,3 +175,65 @@ class MseHttGlobalMatrix(Frozen):
             return self.__class__(M, self._gm_row, self._gm_col)
         else:
             raise Exception()
+
+    def ___find_essential_rows___(self):
+        """These rows only have a singler entry 1 at on the diagonal."""
+        local_essential_rows = list()
+        for i, Mi in enumerate(self._M):
+            assert isspmatrix_csr(Mi), f"must be"
+            if Mi.nnz == 1 and i == Mi.indices[0] and Mi.data[0] == 1.:
+                local_essential_rows.append(i)
+            else:
+                pass
+
+        local_essential_rows = COMM.gather(local_essential_rows, root=MASTER_RANK)
+        if RANK == MASTER_RANK:
+            LER = list()
+            for _ in local_essential_rows:
+                LER.extend(_)
+            del local_essential_rows
+
+            SET_LER = set(LER)
+
+            if len(SET_LER) == len(LER):
+                essential_rows = LER
+            else:
+                essential_rows = list()
+                for i in SET_LER:
+                    if LER.count(i) == 1:
+                        essential_rows.append(i)
+            essential_rows.sort()
+
+        else:
+            essential_rows = None
+        essential_rows = COMM.bcast(essential_rows, root=MASTER_RANK)
+        return essential_rows
+
+    def ___find_essential_dof_coefficients___(self, b):
+        r"""Consider Ax=b (self is A), we could find the solution of dofs with essential BC. We pick up all
+        these dofs such that we can use them for example to initialize a better first guess for iterative
+        solvers.
+
+        Parameters
+        ----------
+        b
+
+        Returns
+        -------
+
+        """
+        from msehtt.tools.vector.static.global_distributed import MseHttGlobalVectorDistributed
+        assert b.__class__ is MseHttGlobalVectorDistributed
+
+        essential_rows = self.___find_essential_rows___()
+
+        b_values = b._V[essential_rows]
+        B_values = COMM.gather(b_values, root=MASTER_RANK)
+        if RANK == MASTER_RANK:
+            b_values = sum(B_values)
+        else:
+            pass
+
+        COMM.Bcast(b_values, root=MASTER_RANK)
+
+        return essential_rows, b_values

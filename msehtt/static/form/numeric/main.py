@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-"""
+r"""
 """
 import numpy as np
 from scipy.interpolate import NearestNDInterpolator
@@ -22,12 +22,14 @@ class MseHtt_Form_Numeric(Frozen):
         self._export = None
         self._freeze()
 
+    # ----------------- properties --------------------------------------------------------------------------
     @property
     def tsp(self):
         if self._tsp is None:
             self._tsp = MseHtt_Form_Numeric_TimeSpaceProperties(self._f)
         return self._tsp
 
+    # ------ methods: data structure --------------------------------------------------------------------------
     def rws(self, t, ddf=1, component_wise=False, data_only=False):
         """Return a dds-rws instance in the master rank."""
         density = int(7 * ddf)
@@ -75,6 +77,7 @@ class MseHtt_Form_Numeric(Frozen):
             else:
                 return None
 
+    # --------- fundamental -----------------------------------------------------------------------------------
     @staticmethod
     def _merge_dict_(data, root=MASTER_RANK):
         """"""
@@ -104,7 +107,7 @@ class MseHtt_Form_Numeric(Frozen):
             raise NotImplementedError()
         return dtype
 
-    # ----------- methods --------------------------------------------------------------
+    # ----------- base method -----------------------------------------------------------------------------------
     def _interpolate_(self, t=None, ddf=1, data_only=False, component_wise=False):
         """Use the solution of self._f at time `t` to make interpolations.
 

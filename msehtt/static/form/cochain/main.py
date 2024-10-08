@@ -49,7 +49,7 @@ class MseHttCochain(Frozen):
                 pass
             else:
                 if auto_cleaning is True:
-                    left_cochain_amount = 5
+                    left_cochain_amount = 3
                 elif isinstance(auto_cleaning, (int, float)):
                     left_cochain_amount = auto_cleaning
                 else:
@@ -102,7 +102,7 @@ class MseHttCochain(Frozen):
                         for key in keys:
                             new_tcd[key] = self._tcd[key]
                 else:
-                    raise NotImplementedError(f"cannot clean {what}!")
+                    raise NotImplementedError(f"cannot clean {what}! Use a negative integer.")
 
             elif what == 'all':
                 new_tcd = {}

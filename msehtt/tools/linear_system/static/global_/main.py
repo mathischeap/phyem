@@ -15,7 +15,7 @@ class MseHttLinearSystem(Frozen):
     r""""""
 
     def __init__(self, A, b):
-        """"""
+        r""""""
         assert A.__class__ is MseHttGlobalMatrix, f"A must be {MseHttGlobalMatrix}."
         assert b.__class__ is MseHttGlobalVectorDistributed, f"b must be {MseHttGlobalVectorDistributed}."
         A_shape = A.shape
@@ -40,56 +40,62 @@ class MseHttLinearSystem(Frozen):
         self._freeze()
 
     def __repr__(self):
+        r""""""
         super_repr = super().__repr__().split('object')[1]
         return f"<msehtt static global linear system of shape {self.shape} at" + super_repr
 
     @property
     def A(self):
-        """A of Ax=b."""
+        r"""A of Ax=b."""
         return self._A
 
     @property
     def b(self):
-        """b of Ax=b."""
+        r"""b of Ax=b."""
         return self._b
 
     @property
     def shape(self):
-        """The shape of Ax=b, i.e. the shape of A."""
+        r"""The shape of Ax=b, i.e. the shape of A."""
         return self.A.shape
 
     @property
     def gm_row(self):
-        """The row gathering matrix."""
+        r"""The row gathering matrix."""
         return self._gm_row
 
     @property
     def gm_col(self):
-        """The column gathering matrix."""
+        r"""The column gathering matrix."""
         return self._gm_col
 
     @property
     def solve(self):
-        """the solving part."""
+        r"""the solving part."""
         if self._solve is None:
             self._solve = MseHttLinearSystemSolve(self)
         return self._solve
 
     @property
     def condition_number(self):
+        r""""""
         return self.A.condition_number
 
     @property
     def rank(self):
+        r""""""
         return self.A.rank
 
     @property
     def rank_nnz(self):
+        r""""""
         return self.A.rank_nnz
 
     @property
     def num_singularities(self):
+        r""""""
         return self.A.num_singularities
 
     def spy(self, **kwargs):
+        r""""""
         return self.A.spy(**kwargs)

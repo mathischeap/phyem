@@ -1,18 +1,10 @@
 # -*- coding: utf-8 -*-
-"""
-A wrapper of all serial_runners
-
-Yi Zhang (C)
-Created on Sat May  4 23:38:56 2019
-Aerodynamics, AE
-TU Delft
+r"""
 """
 from tools.frozen import Frozen
 from importlib import import_module
 from src.config import SIZE
 assert SIZE == 1, "Runners can only be run in single thread."
-
-
 
 
 class RunnerExplorer(Frozen):
@@ -46,8 +38,6 @@ class RunnerExplorer(Frozen):
     @classmethod
     def ___path___(cls):
         return 'TOOLS.__DEPRECATED__.serial_runners.INSTANCES.'
-
-
 
 
 if __name__ == "__main__":

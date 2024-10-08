@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 r"""
-python tests/msepy/dualNS2/shear_layer_rollup.py
+mpiexec -n 4 python tests/msehtt/dualNS_SLR.py
 """
 from numpy import pi
 import sys
@@ -67,8 +67,8 @@ expression_inner = [
 
 inner_pde = ph.pde(expression_inner, locals())
 inner_pde.unknowns = [ui, wi, Pi]
-inner_pde.pr()
-inner_pde.pr(vc=True)
+# inner_pde.pr()
+# inner_pde.pr(vc=True)
 
 expression_outer = [
     'duo_dt + wi_x_uo + d_wo - cd_Po = 0',
@@ -78,8 +78,8 @@ expression_outer = [
 
 outer_pde = ph.pde(expression_outer, locals())
 outer_pde.unknowns = [uo, wo, Po]
-outer_pde.pr()
-outer_pde.pr(vc=True)
+# outer_pde.pr()
+# outer_pde.pr(vc=True)
 
 inner_wf = inner_pde.test_with([Inn1, Inn2, Inn0], sym_repr=['v', 'w', 'q'])
 inner_wf = inner_wf.derive.integration_by_parts('0-2')
@@ -280,15 +280,17 @@ lso = mpo.ls()
 # lso.pr()
 
 # ------------- implementation ---------------------------------------------------
-msepy, obj = ph.fem.apply('msepy', locals())
-manifold = obj['manifold']
-msepy.config(manifold)(
-    'crazy', c=0., bounds=[[0., 2*pi], [0, 2*pi]], periodic=True,
-)
-_mesh = obj['mesh']
-msepy.config(_mesh)([K, K])
-ts.specify('constant', [0, t_max, 2*steps], 2)
+msehtt, obj = ph.fem.apply('msehtt-s', locals())
+tgm = msehtt.tgm()
+msehtt.config(tgm)('crazy', element_layout=[K, K], c=0, bounds=[[0., 2*pi], [0, 2*pi]], periodic=True)
+# tgm.visualize()
 
+msehtt_mesh = msehtt.base['meshes'][r'\mathfrak{M}']
+msehtt.config(msehtt_mesh)(tgm, including='all')
+# msehtt_mesh.visualize()
+
+ts.specify('constant', [0, t_max, 2*steps], 2)
+#
 initial_condition = ph.samples.InitialConditionShearLayerRollUp()
 Rn2.value = 0
 
@@ -312,7 +314,7 @@ LSo = obj['lso'].apply()
 s_ls0 = LS0()
 s_ls0.customize.set_dof(-1, 0)
 As_ls0 = s_ls0.assemble()
-results = As_ls0.solve()
+results = As_ls0.solve('spsolve')
 s_ls0.x.update(results[0])
 
 for k in range(1, steps+1):
@@ -320,14 +322,15 @@ for k in range(1, steps+1):
     s_lso = LSo(k=k)
     s_lso.customize.set_dof(-1, 0)
     As_lso = s_lso.assemble()
-    results = As_lso.solve()
+    results = As_lso.solve('spsolve')
     s_lso.x.update(results[0])
 
     s_lsi = LSi(k=k)
     s_lsi.customize.set_dof(-1, 0)
     As_lsi = s_lsi.assemble()
-    results = As_lsi.solve()
+    results = As_lsi.solve('spsolve')
     s_lsi.x.update(results[0])
 
-    msepy.info()
-    wi[None].visualize(wo[None], ui[None], uo[None], saveto=f'__phcache__/dualNS/SLR_msepy/solution_{int(k)}.vtk')
+    msehtt.info()
+    ph.vtk(f'__phcache__/dualNS/SLR_msehtt/solution_{int(k)}.vtk', wi[None], wo[None], ui[None], uo[None])
+#     wi[None].visualize(wo[None], ui[None], uo[None], saveto=f'__phcache__/dualNS/SLR_msepy/solution_{int(k)}.vtk')

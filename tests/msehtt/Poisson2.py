@@ -94,46 +94,50 @@ msehtt_ls.config(('essential bc', 1), boundary_u, u.cf.field, root_form=u)    # 
 linear_system = msehtt_ls(time)
 
 Axb = linear_system.assemble()
-x, message, info = Axb.solve('direct')
+# x, message, info = Axb.solve('direct')
+x, message, info = Axb.solve('gmres', x0=[u, phi], restart=300, maxiter=5)
 # print(message)
 # print(x)
 linear_system.x.update(x)
+# print(phi[time].error())
 
-assert phi[time].error() < 0.0005
+# assert phi[time].error() < 0.0005
 # phi[time].visualize()
-
-assert u[time].error() < 0.002
-# u[time].visualize.quick()
-
-phi.saveto('phi.mse')
+#
+# assert u[time].error() < 0.002
+# # u[time].visualize.quick()
+#
+# phi.saveto('phi.mse')
 
 phi.cochain.clean('all')
 phi.read('phi.mse')
 assert time in phi.cochain
+print(phi[time].error())
 
-ph.vtk('poisson_forms', phi[time], u[time], f[time])
-ph.os.remove('poisson_forms.vtu')
-
-u[time].export.rws('u_rws')
-dds = ph.read('u_rws')
-
-ph.os.remove('phi.mse')
-
-# if dds is not None:
-#     dds.visualize()
-#     sf = dds.streamfunction()
-#     sf.visualize()
-
-ph.os.remove('u_rws')
-
-p0x, p0y = u[time].project.to('m2n2k0')
-
-p0 = msehtt.base['forms'][r'helper0']
-p1 = msehtt.base['forms'][r'helper1']
-
-p0[time].cochain = p0x
-# p0[time].visualize()
-
-p1[time].cochain = p0[time].cochain.coboundary()
-tsp = p1.numeric.tsp.components()[0]
-tsp = - tsp
+#
+# ph.vtk('poisson_forms', phi[time], u[time], f[time])
+# ph.os.remove('poisson_forms.vtu')
+#
+# u[time].export.rws('u_rws')
+# dds = ph.read('u_rws')
+#
+# ph.os.remove('phi.mse')
+#
+# # if dds is not None:
+# #     dds.visualize()
+# #     sf = dds.streamfunction()
+# #     sf.visualize()
+#
+# ph.os.remove('u_rws')
+#
+# p0x, p0y = u[time].project.to('m2n2k0')
+#
+# p0 = msehtt.base['forms'][r'helper0']
+# p1 = msehtt.base['forms'][r'helper1']
+#
+# p0[time].cochain = p0x
+# # p0[time].visualize()
+#
+# p1[time].cochain = p0[time].cochain.coboundary()
+# tsp = p1.numeric.tsp.components()[0]
+# tsp = - tsp

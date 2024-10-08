@@ -258,17 +258,19 @@ bc_p = u.numeric.tsp.L2_energy()
 msehtt_nls.config(['natural bc', 1], boundary_p, bc_p, root_form=P)  # natural bc
 
 
-for step in range(1, total_steps+1):
+# for step in range(1, total_steps+1):
+for step in range(1, 11):
     system = msehtt_nls(k=step)
     system.solve(
         [u, w, P],
         atol=1e-6,
+        # scheme='Picard',
         # inner_solver_scheme='gmres',
-        # inner_solver_kwargs={'restart': 300, 'atol': 1e-6, 'maxiter': 20}
+        # inner_solver_kwargs={'restart': 500, 'atol': 1e-6, 'maxiter': 20}
     )
     msehtt.info(rf"N={N}", system.solve.message)
 
     # if step % 100 == 0:
-    ph.vtk(results_dir + f'step_{step}', u[None], w[None], P[None])
+    ph.vtk(results_dir + f'step_{step}.vtu', u[None], w[None], P[None])
     # else:
     #     pass

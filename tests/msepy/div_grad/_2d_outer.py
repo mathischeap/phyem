@@ -95,6 +95,9 @@ def div_grad_2d_general_bc_manufactured_test(degree, K, c=0.):
     # phi[0].visualize()
     # u[0].visualize()
 
+    du = u.d()
+    print(du[None].norm())
+
     return phi[0].error(), u[0].error()
 
 

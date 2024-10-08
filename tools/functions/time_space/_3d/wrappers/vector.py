@@ -25,7 +25,7 @@ class T3dVector(TimeSpaceFunctionBase):
     """ Wrap three functions into a vector class.
     """
 
-    def __init__(self, v0, v1, v2):
+    def __init__(self, v0, v1, v2, steady=False):
         """Initialize a vector with 3 functions which take (t, x, y, z) as inputs.
 
         Parameters
@@ -34,6 +34,7 @@ class T3dVector(TimeSpaceFunctionBase):
         v1
         v2
         """
+        super().__init__(steady)   # if it is steady, it is independent of t!
         if isinstance(v0, (int, float)) and v0 == 0:
             v0 = ___0_func___
         else:

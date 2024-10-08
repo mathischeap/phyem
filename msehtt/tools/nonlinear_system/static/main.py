@@ -75,6 +75,8 @@ class MseHttStaticNonLinearSystem(Frozen):
         self._customize = None
         self.___global_row_gm___ = None
         self.___global_col_gm___ = None
+
+        self.___essential_bc_record___ = []
         if self.bc is None:
             pass
         else:
@@ -431,7 +433,7 @@ class MseHttStaticNonLinearSystem(Frozen):
                         else:
                             pass
                     assert the_matching_config is not None, f"must found a matching configuration."
-                    # ------------- type ('essential bc', 1) bc -------------------------------------------------
+                    # ------------- type ('essential bc', 1) bc --------------------------------------
                     if the_matching_config['category'] == 1:
                         place = the_matching_config['place']
                         condition = the_matching_config['condition']
@@ -439,6 +441,11 @@ class MseHttStaticNonLinearSystem(Frozen):
                         unknown = self._x[ith_unknown]
                         f = unknown._f
                         time = unknown._time
+
+                        self.___essential_bc_record___.append(
+                            (place, condition, time, f, ith_unknown)
+                        )
+
                         global_dofs = place.find_dofs(f, local=False)
                         local_cochain = f.reduce(condition @ time)
                         gm = f.cochain.gathering_matrix
@@ -457,7 +464,7 @@ class MseHttStaticNonLinearSystem(Frozen):
                             # we can apply this essential bc through making changes in the linear part.
                             self.customize.linear.apply_essential_bc_for_unknown(
                                 ith_unknown, global_dofs, global_cochain)
-                    # ===========================================================================================
+                    # ==================================================================================
                     else:
                         raise NotImplementedError()
                 else:

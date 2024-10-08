@@ -118,11 +118,15 @@ class MITRVisualize:
         if styles is None:
             styles = ('-^', '-x', '-o', '-s', '-*', '-8', '->', '-p', 
                       '-H', '-h', '->', '-D', '-d', '-P', '-v') * 5
-        if colors is None:
-            color = cm.get_cmap(corlormap, line_groups)
-            colors = []
-            for j in range(line_groups):
-                colors.append(color(j))
+
+        if COLORS is None:
+            if colors is None:
+                color = cm.get_cmap(corlormap, line_groups)
+                colors = []
+                for j in range(line_groups):
+                    colors.append(color(j))
+        else:
+            pass
         
         if labels is None:
             labels = ()

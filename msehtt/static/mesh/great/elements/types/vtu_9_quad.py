@@ -45,20 +45,14 @@ class Vtu9Quad(MseHttGreatMeshBaseElement):
 
     def __init__(self, element_index, parameters, _map):
         """"""
-        a0, b, c0 = angles_of_triangle(parameters[0], parameters[1], parameters[2])
-        a1, c1, _ = angles_of_triangle(parameters[0], parameters[2], parameters[3])
+        a0, b, c0 = angles_of_triangle(parameters[0], parameters[1], parameters[2])   # in degree
+        a1, c1, _ = angles_of_triangle(parameters[0], parameters[2], parameters[3])   # in degree
         a = a0 + a1
         c = c0 + c1
 
-        # x0, y0 = parameters[0]
-        # x1, y1 = parameters[1]
-        # x2, y2 = parameters[2]
-        # x3, y3 = parameters[3]
-        # print(y2 - y0, x2 - x0)
-
         d = angle(parameters[0], parameters[2])
         dist = distance(parameters[0], parameters[2])
-        self._metric_signature = f"9:a%.3f" % a + "b%.3f" % b + "c%.3f" % c + "d%.3f" % d + "dis%.6f" % dist
+        self._metric_signature = f"9:a%.2f" % a + "b%.2f" % b + "c%.2f" % c + "d%.3f" % d + "dis%.5f" % dist
 
         super().__init__()
         self._index = element_index

@@ -29,7 +29,7 @@ class T2dVector(TimeSpaceFunctionBase):
     """ Wrap two functions into a vector class.
     """
 
-    def __init__(self, v0, v1):
+    def __init__(self, v0, v1, steady=False):
         """Initialize a vector with 2 functions which take (t, x, y) as inputs.
 
         Parameters
@@ -37,6 +37,7 @@ class T2dVector(TimeSpaceFunctionBase):
         v0
         v1
         """
+        super().__init__(steady)
         if v0 == 0:
             v0 = _0_function
         else:

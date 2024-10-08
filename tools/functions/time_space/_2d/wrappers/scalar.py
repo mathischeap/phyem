@@ -25,8 +25,9 @@ from scipy.interpolate import LinearNDInterpolator
 class T2dScalar(TimeSpaceFunctionBase):
     """"""
 
-    def __init__(self, s):
+    def __init__(self, s, steady=False):
         """"""
+        super().__init__(steady)
         self._s_ = s
         self.__NPD__ = None
         self._freeze()

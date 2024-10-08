@@ -22,7 +22,7 @@ errors are measured at :math:`t=1`.
 
 For a *phyem* implementation of the shear layer rollup using the dual-field method introduced in
 `[Dual-field NS, Zhang et al., JCP (2022)] <https://doi.org/10.1016/j.jcp.2021.110868>`_, click
-:download:`phyem_df2_TGV.py <../../../../../tests/msepy/dualNS2/TGV.py>`
+:download:`phyem_df2_TGV.py <../../../../../tests/msepy/dualNS2/TGV.py>`.
 
 |
 

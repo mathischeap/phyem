@@ -111,7 +111,7 @@ class MseHttForm(Frozen):
         else:
             self._base.cf = _cf
 
-    def saveto(self, filename):
+    def saveto(self, filename, what=None):
         """save me to a file.
 
         Basically, we only save the cochains of all available times.
@@ -119,20 +119,47 @@ class MseHttForm(Frozen):
         if self._is_base():
             pass
         else:
-            self._base.saveto(filename)
+            self._base.saveto(filename, what=what)
             return
+
+        element_signature_dict = {}
+        for e in self.tpm.composition:
+            element = self.tpm.composition[e]
+            element_signature_dict[element.signature] = e
+
+        if what is None:  # save all existing cochain
+            time_range = self.cochain._tcd.keys()
+        elif isinstance(what, int) and what > 0:  # save the newest `what` cochain
+            time_range = list(self.cochain._tcd.keys())
+            time_range.sort()
+            if len(time_range) <= what:
+                pass
+            else:
+                time_range = time_range[-what:]
+        else:
+            raise NotImplementedError(f"what={what} is cannot be saved. When `what` is a positive integer,"
+                                      f"we save the newest this amount of cochain. When `what` is None, we"
+                                      f"save all cochain.")
 
         name = 'msehtt-form: ' + self.abstract._sym_repr + ' = ' + self.abstract._lin_repr
         cochain = {}
-        for t in self.cochain._tcd:
+        for t in time_range:
             sf = self[t]
             total_cochain = sf.cochain._merge_to(root=MASTER_RANK)
             cochain[t] = total_cochain
+
+        element_signature_dict = COMM.gather(element_signature_dict, root=MASTER_RANK)
+
         if RANK == MASTER_RANK:
+            Element_Signature_Dict = {}
+            for _ in element_signature_dict:
+                Element_Signature_Dict.update(_)
+            del element_signature_dict
             form_para_dict = {
                 'key': 'msehtt-static-form',
                 'name': name,
-                'cochain': cochain
+                'cochain': cochain,
+                'element signature dict': Element_Signature_Dict
             }
             with open(filename, 'wb') as output:
                 pickle.dump(form_para_dict, output, pickle.HIGHEST_PROTOCOL)
@@ -147,6 +174,12 @@ class MseHttForm(Frozen):
         from `ph.read`. Please call me from a particular form.
 
         """
+
+        element_signature_dict = {}
+        for e in self.tpm.composition:
+            element = self.tpm.composition[e]
+            element_signature_dict[e] = element.signature
+
         for rank in range(SIZE):
             if RANK == rank:
                 with open(filename, 'rb') as inputs:
@@ -155,11 +188,16 @@ class MseHttForm(Frozen):
                 assert obj['key'] == 'msehtt-static-form'
                 local_cochain = {}
                 cochain = obj['cochain']
+                Element_Signature_Dict = obj['element signature dict']
                 for t in cochain:
                     total_t_cochain = cochain[t]
                     local_t_cochain = {}
                     for e in self.cochain.gathering_matrix:
-                        local_t_cochain[e] = total_t_cochain[e]
+                        element_signature = element_signature_dict[e]
+                        assert element_signature in Element_Signature_Dict, \
+                            f"Miss cochain for element indexed {e}: {self.tpm.composition[e]}"
+                        index_in_file = Element_Signature_Dict[element_signature]
+                        local_t_cochain[e] = total_t_cochain[index_in_file]
                     local_cochain[t] = local_t_cochain
                 del obj
             else:

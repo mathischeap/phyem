@@ -15,6 +15,7 @@ from msehtt.static.mesh.great.elements.types.orthogonal_hexahedron import MseHtt
 from msehtt.static.mesh.great.elements.types.vtu_5_triangle import Vtu5Triangle
 from msehtt.static.mesh.great.elements.types.vtu_8_pixel import Vtu8Pixel
 from msehtt.static.mesh.great.elements.types.vtu_9_quad import Vtu9Quad
+from msehtt.static.mesh.great.elements.types.vtu_11_voxel import Vtu_11_Voxel
 
 
 class MseHttGreatMeshElementDistributor(Frozen):
@@ -55,5 +56,6 @@ class MseHttGreatMeshElementDistributor(Frozen):
             5: Vtu5Triangle,
             8: Vtu8Pixel,
             9: Vtu9Quad,
+            11: Vtu_11_Voxel,
 
         }

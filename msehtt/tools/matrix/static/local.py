@@ -15,7 +15,7 @@ from scipy.sparse import linalg as sp_spa_linalg
 
 
 class MseHttStaticLocalMatrix(Frozen):
-    """"""
+    r""""""
     def __init__(self, data, gm_row, gm_col, cache_key=None, special_indicator=None, signature=None):
         """"""
         assert gm_row.__class__ is MseHttGatheringMatrix, f"gm row class wrong."
@@ -33,7 +33,7 @@ class MseHttStaticLocalMatrix(Frozen):
         self._freeze()
 
     def _receive_data(self, data):
-        """"""
+        r""""""
         if callable(data):
             self._dtype = 'realtime'
             self._data = data
@@ -65,7 +65,7 @@ class MseHttStaticLocalMatrix(Frozen):
         self._cache = {}
 
     def _parse_cache_key(self, cache_key):
-        """"""
+        r""""""
         if cache_key is None:
             self._cache_key = self._unique_cache_key
         elif cache_key == 'unique':
@@ -84,22 +84,23 @@ class MseHttStaticLocalMatrix(Frozen):
             _ = self._cache_key(i)  # make sure cache key is valid for all rank great elements.
 
     def ___zero_cache_key___(self, i):
-        """"""
+        r""""""
         return str((self._gm_row.num_local_dofs(i), self._gm_col.num_local_dofs(i)))
 
     def _unique_cache_key(self, i):
-        """"""
+        r""""""
         assert i in self, f"i={i} is out of range."
         return 'unique'
 
     def _dict_cache_key_caller(self, i):
+        r""""""
         if i in self.___cache_key_dict___:
             return self.___cache_key_dict___[i]
         else:
             return str((self._gm_row.num_local_dofs(i), self._gm_col.num_local_dofs(i)))
 
     def _parse_signature(self, signature, cache_key):
-        """"""
+        r""""""
         if signature is None:
             if isinstance(cache_key, str) and cache_key == 'zero':
                 return self._gm_row._signature + self._gm_col._signature
@@ -111,7 +112,7 @@ class MseHttStaticLocalMatrix(Frozen):
 
     @property
     def customize(self):
-        """"""
+        r""""""
         if self._customize is None:
             # noinspection PyAttributeOutsideInit
             self._customize = _Static_LocalMatrix_Customize(self)
@@ -119,13 +120,13 @@ class MseHttStaticLocalMatrix(Frozen):
 
     @property
     def assemble(self):
-        """assemble self."""
+        r"""assemble self."""
         if self._assemble is None:
             self._assemble = MseHttStaticLocalMatrixAssemble(self)
         return self._assemble
 
     def _get_meta_data(self, i):
-        """"""
+        r""""""
         if self._dtype == 'realtime':
             return self._data(i)
         elif self._dtype == 'dict':
@@ -138,7 +139,7 @@ class MseHttStaticLocalMatrix(Frozen):
             raise NotImplementedError()
 
     def __getitem__(self, i):
-        """"""
+        r""""""
         assert i in self, f"element #{i} is not a rank element."
         if i in self.customize:
             data = self.customize[i]
@@ -157,7 +158,7 @@ class MseHttStaticLocalMatrix(Frozen):
         return data
 
     def spy(self, i, markerfacecolor='k', markeredgecolor='g', markersize=6, threshold=None):
-        """spy the local A of rank element #i.
+        r"""spy the local A of rank element #i.
 
         Parameters
         ----------
@@ -190,20 +191,20 @@ class MseHttStaticLocalMatrix(Frozen):
         return fig
 
     def __contains__(self, i):
-        """"""
+        r""""""
         return i in self._gm_row
 
     def __len__(self):
-        """"""
+        r""""""
         return len(self._gm_row)
 
     def __iter__(self):
-        """"""
+        r""""""
         for i in self._gm_row:
             yield i
 
     def __neg__(self):
-        """"""
+        r""""""
         def data_caller(e):
             return - self[e]
         if 'unique' in self._signature:
@@ -217,7 +218,7 @@ class MseHttStaticLocalMatrix(Frozen):
         )
 
     def inv(self):
-        """"""
+        r""""""
         def ___inv_caller___(e):
             M = self[e].tocsc()
             invM = sp_spa_linalg.inv(M)
@@ -236,7 +237,7 @@ class MseHttStaticLocalMatrix(Frozen):
 
     @property
     def T(self):
-        """"""
+        r""""""
         def data_caller(e):
             return (self[e]).T
 
@@ -251,7 +252,7 @@ class MseHttStaticLocalMatrix(Frozen):
         )
 
     def __rmul__(self, other):
-        """other * self"""
+        r"""other * self"""
         if isinstance(other, (int, float)):
 
             def data_caller(i):
@@ -271,7 +272,7 @@ class MseHttStaticLocalMatrix(Frozen):
             raise NotImplementedError()
 
     def __add__(self, other):
-        """self + other"""
+        r"""self + other"""
         if other.__class__ is self.__class__:
 
             def data_caller(i):
@@ -296,7 +297,7 @@ class MseHttStaticLocalMatrix(Frozen):
             )
 
     def __matmul__(self, other):
-        """"""
+        r""""""
         if other.__class__ is MseHttTimeInstantCochain:
             f = {}
             for e in self:
@@ -350,27 +351,27 @@ class MseHttStaticLocalMatrix(Frozen):
 
 
 class _Static_LocalMatrix_Customize(Frozen):
-    """"""
+    r""""""
     def __init__(self, mat):
-        """"""
+        r""""""
         self._mat = mat
         self._customizations = {}
         self._freeze()
 
     def __len__(self):
-        """"""
+        r""""""
         return len(self._customizations)
 
     def __contains__(self, item):
-        """"""
+        r""""""
         return item in self._customizations
 
     def __getitem__(self, i):
-        """"""
+        r""""""
         return self._customizations[i]
 
     def clear(self, i=None):
-        """clear customizations for element #i.
+        r"""clear customizations for element #i.
 
         When `i` is None, clear for all elements.
         """
@@ -380,7 +381,7 @@ class _Static_LocalMatrix_Customize(Frozen):
             raise NotImplementedError()
 
     def zero_row(self, i):
-        """identify global row #i: M[i,:] = 0 and M[i, i] = 1, where M means the assembled matrix.
+        r"""identify global row #i: M[i,:] = 0 and M[i, i] = 1, where M means the assembled matrix.
 
         Parameters
         ----------
@@ -410,7 +411,7 @@ class _Static_LocalMatrix_Customize(Frozen):
             self._customizations[rank_element] = data.tocsr()
 
     def identify_row(self, i):
-        """identify global row #i: M[i,:] = 0 and M[i, i] = 1, where M means the assembled matrix.
+        r"""identify global row #i: M[i,:] = 0 and M[i, i] = 1, where M means the assembled matrix.
 
         Parameters
         ----------
@@ -469,18 +470,18 @@ class _Static_LocalMatrix_Customize(Frozen):
                     self._customizations[_element] = data.tocsr()
 
     def identify_rows(self, global_dofs):
-        """"""
+        r""""""
         for i in global_dofs:
             self.identify_row(i)
 
     def zero_rows(self, global_dofs):
-        """"""
+        r""""""
         for i in global_dofs:
             self.zero_row(i)
 
 
 def bmat(A_2d_list):
-    """"""
+    r""""""
     row_shape = len(A_2d_list)
     for Ai_ in A_2d_list:
         assert isinstance(Ai_, (list, tuple)), f"bmat must apply to 2d list or tuple."
@@ -525,15 +526,16 @@ from scipy.sparse import bmat as sp_bmat
 
 
 class _MseHttStaticLocalMatrixBmat(Frozen):
-    """"""
+    r""""""
 
     def __init__(self, A_2d_list, shape):
-        """"""
+        r""""""
         self._A = A_2d_list
         self._shape = shape
         self._freeze()
 
     def __call__(self, i):
+        r""""""
         row_shape, col_shape = self._shape
         data = [[None for _ in range(col_shape)] for _ in range(row_shape)]
         for r in range(row_shape):
@@ -549,7 +551,7 @@ class _MseHttStaticLocalMatrixBmat(Frozen):
         )
 
     def cache_key(self, i):
-        """Do this in real time."""
+        r"""Do this in real time."""
         row_shape, col_shape = self._shape
         keys = list()
         for r in range(row_shape):
@@ -581,15 +583,15 @@ ___cache_msehtt_assembled_StaticMatrix___ = {}
 
 
 class MseHttStaticLocalMatrixAssemble(Frozen):
-    """"""
+    r""""""
 
     def __init__(self, M):
-        """"""
+        r""""""
         self._M = M
         self._freeze()
 
     def __call__(self, format='csc', cache=None, threshold=None):
-        """
+        r"""
 
         Parameters
         ----------

@@ -41,10 +41,29 @@ class MseHttNonlinearSystemNewtonRaphsonSolve(Frozen):
                 else:
                     local_cochain = f.cochain[newest_time]
                 cochain.append(local_cochain)
-            self._x0 = cochain   # a list of 2d-array; the local cochains.
 
         else:
             raise NotImplementedError()
+
+        # for ebc in self._nls.___essential_bc_record___:
+        #     place, condition, time, f, ith_unknown = ebc
+        #     new_cochain_i = {}
+        #     # noinspection PyUnresolvedReferences
+        #     raw_cochain_i = cochain[ith_unknown]
+        #     local_dofs = place.find_dofs(f, local=True)
+        #     # noinspection PyTestUnpassedFixture
+        #     local_cochain = f.reduce(condition @ time)
+        #     for element in f.cochain.gathering_matrix:
+        #         if element in local_dofs:
+        #             local_vector = raw_cochain_i[element].copy()
+        #             element_local_dofs = local_dofs[element]
+        #             local_vector[element_local_dofs] = local_cochain[element][element_local_dofs]
+        #             new_cochain_i[element] = local_vector
+        #         else:
+        #             new_cochain_i[element] = raw_cochain_i[element]
+        #     cochain[ith_unknown] = new_cochain_i
+
+        self._x0 = cochain   # a list of the local cochains.
 
     def __call__(
             self,

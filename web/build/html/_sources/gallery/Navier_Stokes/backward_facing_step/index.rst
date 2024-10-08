@@ -32,7 +32,7 @@ total pressure to be
     A snapshot of the backward facing step flow.
 
 For a *phyem* implementation of the backward facing step flow, click
-:download:`phyem_bfs.py <../../../../../tests/msepy/MEEVC2/backward_facing_step.py>`
+:download:`phyem_bfs.py <../../../../../tests/msepy/MEEVC2/backward_facing_step.py>`.
 
 |
 

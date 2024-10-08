@@ -29,6 +29,20 @@ from msehtt.static.space.find.local_dofs_on_face.Lambda.m3n3k1 import find_local
 from msehtt.static.space.find.local_dofs_on_face.Lambda.m3n3k2 import find_local_dofs_on_face__m3n3k2
 
 
+___xi___ = np.linspace(-1, 1, 3)
+___et___ = np.linspace(-1, 1, 3)
+___xi2___, ___et2___ = np.meshgrid(___xi___, ___et___, indexing='ij')
+___xi2___ = ___xi2___.ravel('F')
+___et2___ = ___et2___.ravel('F')
+___xi___ = np.linspace(-1, 1, 3)
+___et___ = np.linspace(-1, 1, 3)
+___sg___ = np.linspace(-1, 1, 3)
+___xi3___, ___et3___, ___sg3___ = np.meshgrid(___xi___, ___et___, ___sg___, indexing='ij')
+___xi3___ = ___xi3___.ravel('F')
+___et3___ = ___et3___.ravel('F')
+___sg3___ = ___sg3___.ravel('F')
+
+
 class MseHttGreatMeshBaseElement(Frozen):
     """"""
 
@@ -74,6 +88,30 @@ class MseHttGreatMeshBaseElement(Frozen):
     @property
     def metric_signature(self):
         raise NotImplementedError()
+
+    @property
+    def signature(self):
+        """Each element has its unique signature. Even two elements have same metric, their signature are different.
+        This is mainly used to read data. For example, when we read cochain from a file, wo need to use signatures of
+        elements to make sure we are reading the correct data into the correct elements because sometimes, elements
+        may be numbered differently.
+        """
+        if self.m() == self.n() == 2:  # 2d element in 2d space
+            X, Y = self.ct.mapping(___xi2___, ___et2___)
+            signature = list()
+            for x, y in zip(X, Y):
+                signature.append("({:.4f},{:.4f})".format(x, y))
+            signature = ''.join(signature)
+        elif self.m() == self.n() == 3:  # 3d element in 3d space
+            X, Y, Z = self.ct.mapping(___xi3___, ___et3___, ___sg3___)
+            signature = list()
+            for x, y, z in zip(X, Y, Z):
+                signature.append("({:.3f},{:.3f},{:.3f})".format(x, y, z))
+            signature = ''.join(signature)
+        else:
+            raise NotImplementedError((self.m(), self.n()))
+
+        return str(self.etype) + signature
 
     @property
     def map_(self):

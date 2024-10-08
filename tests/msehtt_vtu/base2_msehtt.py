@@ -51,7 +51,7 @@ ph.space.finite(N)
 msehtt, obj = ph.fem.apply('msehtt-s', locals())
 tgm = msehtt.tgm()
 msehtt.config(tgm)('chaotic', element_layout=K, c=c, periodic=False)
-# tgm.visualize(rank_wise_colored=True)
+tgm.visualize(rank_wise_colored=True)
 
 msehtt_mesh = msehtt.base['meshes'][r'\mathfrak{M}']
 msehtt.config(msehtt_mesh)(tgm, including='all')

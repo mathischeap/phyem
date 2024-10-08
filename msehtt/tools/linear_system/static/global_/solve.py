@@ -82,33 +82,38 @@ class MseHttLinearSystemSolve(Frozen):
         if x0.__class__ is MseHttGlobalVectorGathered:
             pass
 
-        elif x0 == 0:  # the initial guess is a zero-vector.
-            shape = self._Axb.shape
-            V = np.zeros(shape[1])
-            x0 = MseHttGlobalVectorGathered(V, gm=self._Axb.gm_col)
-
         else:
-            if not isinstance(x0, (list, tuple)):
-                x0 = [x0, ]
+
+            if x0 == 0:  # the initial guess is a zero-vector.
+                shape = self._Axb.shape
+                V = np.zeros(shape[1])
+                x0 = MseHttGlobalVectorGathered(V, gm=self._Axb.gm_col)
+
             else:
-                pass
-
-            gms = list()
-            X0_ = list()
-
-            for x0i in x0:
-                if x0i.__class__ is MseHttForm:
-                    # we receive a msehtt root form: we use its newest cochain to replace its place in x0.
-                    gms.append(x0i.cochain.gathering_matrix)
-                    if x0i.cochain.newest is None:  # if it has no cochain yet. We make it all zero.
-                        vec = MseHttStaticLocalVector(0, x0i.cochain.gathering_matrix)
-                    else:  # otherwise, we use its newest cochain.
-                        vec = x0i.cochain.static_vec(x0i.cochain.newest)
-                    X0_.append(vec)
+                if not isinstance(x0, (list, tuple)):
+                    x0 = [x0, ]
                 else:
-                    raise NotImplementedError()
+                    pass
 
-            x0 = concatenate(X0_, gms).assemble(vtype='gathered', mode='replace')
+                gms = list()
+                X0_ = list()
+
+                for x0i in x0:
+                    if x0i.__class__ is MseHttForm:
+                        # we receive a msehtt root form: we use its newest cochain to replace its place in x0.
+                        gms.append(x0i.cochain.gathering_matrix)
+                        if x0i.cochain.newest is None:  # if it has no cochain yet. We make it all zero.
+                            vec = MseHttStaticLocalVector(0, x0i.cochain.gathering_matrix)
+                        else:  # otherwise, we use its newest cochain.
+                            vec = x0i.cochain.static_vec(x0i.cochain.newest)
+                        X0_.append(vec)
+                    else:
+                        raise NotImplementedError()
+
+                x0 = concatenate(X0_, gms).assemble(vtype='gathered', mode='replace')
+
+        essential_dofs, essential_values = self.A.___find_essential_dof_coefficients___(self.b)
+        x0._V[essential_dofs] = essential_values
 
         assert x0.__class__ is MseHttGlobalVectorGathered, f"x0 type wrong."
         assert x0.shape == (self._Axb.shape[1],),  f"x0 shape wrong."

@@ -144,6 +144,7 @@ def _inner_simpler_pattern_examiner_scalar_valued_forms(factor, f0, f1, extra_in
         amount0_Hodge = f0._lin_repr.count(Hodge_lin)
 
         if existing0 and amount0 == 1 and existing0_Hodge and amount0_Hodge == 1:
+            # "(*(a x b), c)"
             hodge_start = Hodge_lin + _non_root_lin_sep[0]
             hodge_end = _non_root_lin_sep[1]
             if f0._lin_repr[:len(hodge_start)] == hodge_start and f0._lin_repr[-len(hodge_end):] == hodge_end:
@@ -213,6 +214,12 @@ def _inner_simpler_pattern_examiner_scalar_valued_forms(factor, f0, f1, extra_in
 
                 if 'known-forms' in extra_info:
                     known_forms = extra_info['known-forms']
+
+                    if isinstance(known_forms, (list, tuple)) and len(known_forms) == 1:
+                        known_forms = known_forms[0]
+                    else:
+                        pass
+
                     if known_forms is f_a:
                         # >>>>>>>>>>>>>>>>>>>> ['(*x,)'] <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
                         return _simple_patterns['(*x,)'], {
@@ -242,7 +249,7 @@ def _inner_simpler_pattern_examiner_scalar_valued_forms(factor, f0, f1, extra_in
                             }
 
                     else:
-                        raise Exception
+                        raise Exception()
 
                 else:
                     # this term will be a nonlinear one! Take care it in the future!

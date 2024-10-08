@@ -41,7 +41,6 @@ class MseHttGreatMeshOrthogonalHexahedronElement(MseHttGreatMeshBaseElement):
     v  5                      7
     x
 
-
     """
 
     def __init__(self, element_index, parameters, _map):
