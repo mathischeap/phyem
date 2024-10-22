@@ -10,15 +10,15 @@ from tools.matplot.plot3d import plot3d
 
 
 class MsePyRootFormVisualizeMatplot(Frozen):
-    """"""
+    r""""""
     def __init__(self, rf):
-        """"""
+        r""""""
         self._f = rf
         self._mesh = rf.mesh
         self._freeze()
 
     def __call__(self, title=None, **kwargs):
-        """Call the default plotter coded in this module as well."""
+        r"""Call the default plotter coded in this module as well."""
         abs_sp = self._f.space.abstract
         m = abs_sp.m
         n = abs_sp.n
@@ -51,7 +51,7 @@ class MsePyRootFormVisualizeMatplot(Frozen):
             color='k',
             **kwargs
     ):
-        """"""
+        r""""""
         samples = 500 * sampling_factor
         samples = int((np.ceil(samples / self._mesh.elements._num))**(1/self._mesh.m))
         if samples > 100:
@@ -76,7 +76,7 @@ class MsePyRootFormVisualizeMatplot(Frozen):
         return fig
 
     def _Lambda_m1_n1_k1(self, *args, **kwargs):
-        """"""
+        r""""""
         return self._Lambda_m1_n1_k0(*args, **kwargs)
 
     def _Lambda_m2_n2_k0(
@@ -84,7 +84,7 @@ class MsePyRootFormVisualizeMatplot(Frozen):
             plot_type='contourf',
             **kwargs
     ):
-        """"""
+        r""""""
         samples = 20000 * sampling_factor
         samples = int((np.ceil(samples / self._mesh.elements._num))**(1/self._mesh.m))
         if samples > 75:
@@ -118,7 +118,7 @@ class MsePyRootFormVisualizeMatplot(Frozen):
             levels=None,
             **kwargs
     ):
-        """Plot a msepy scalar-valued 1-form on 2d manifold in 2d space.
+        r"""Plot a msepy scalar-valued 1-form on 2d manifold in 2d space.
 
         Parameters
         ----------

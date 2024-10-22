@@ -17,6 +17,11 @@ import msehtt.tools.linear_system.static.global_.solvers.pypardiso_ as _pypardis
 from msehtt.static.form.main import MseHttForm
 
 
+___local_setting___ = {
+    'safe first try': 7,
+}
+
+
 class MseHttLinearSystemSolve(Frozen):
     r""""""
 
@@ -112,8 +117,11 @@ class MseHttLinearSystemSolve(Frozen):
 
                 x0 = concatenate(X0_, gms).assemble(vtype='gathered', mode='replace')
 
-        essential_dofs, essential_values = self.A.___find_essential_dof_coefficients___(self.b)
-        x0._V[essential_dofs] = essential_values
+        sft = ___local_setting___['safe first try']
+        if sft > 0:
+            essential_dofs, essential_values = self.A.___find_essential_dof_coefficients___(self.b)
+            x0._V[essential_dofs] = essential_values
+            ___local_setting___['safe first try'] = sft - 1
 
         assert x0.__class__ is MseHttGlobalVectorGathered, f"x0 type wrong."
         assert x0.shape == (self._Axb.shape[1],),  f"x0 shape wrong."

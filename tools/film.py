@@ -6,7 +6,6 @@ import sys
 if './' not in sys.path:
     sys.path.append('./')
 
-import cv2
 import os
 from src.config import RANK, MASTER_RANK
 from tools.miscellaneous.timer import MyTimer
@@ -28,6 +27,7 @@ def images(image_folder, video_name=None, duration=5, clean_images=False, sort_k
     :param sort_key:
     :return:
     """
+    import cv2
     if RANK != MASTER_RANK:
         return
     all_files = os.listdir(image_folder)

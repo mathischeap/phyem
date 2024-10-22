@@ -128,7 +128,7 @@ def quiver(
 
             norm.autoscale(M)
             # cm = getattr(matplotlib.cm, colormap)
-            cm = matplotlib.cm.get_cmap(colormap)
+            cm = matplotlib.colormaps.get_cmap(colormap)
             sm = matplotlib.cm.ScalarMappable(cmap=cm, norm=norm)
             sm.set_array([])
             ax.quiver(X, Y, U, V, color=cm(norm(M)))

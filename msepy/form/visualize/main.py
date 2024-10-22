@@ -7,10 +7,10 @@ from msepy.form.visualize.vtk_ import MsePyRootFormVisualizeVTK
 
 
 class MsePyRootFormVisualize(Frozen):
-    """"""
+    r""""""
 
     def __init__(self, rf):
-        """"""
+        r""""""
         self._f = rf
         self._t = None
         self._matplot = None
@@ -18,11 +18,12 @@ class MsePyRootFormVisualize(Frozen):
         self._freeze()
 
     def __getitem__(self, t):
-        """"""
+        r""""""
         self._t = t
         return self
 
     def __call__(self, *args, **kwargs):
+        r""""""
         n = self._f.space.n
         if n == 3:
             assert 'data_only' not in kwargs and 'builder' not in kwargs, \
@@ -48,12 +49,14 @@ class MsePyRootFormVisualize(Frozen):
 
     @property
     def matplot(self):
+        r""""""
         if self._matplot is None:
             self._matplot = MsePyRootFormVisualizeMatplot(self._f)
         return self._matplot
 
     @property
     def vtk(self):
+        r""""""
         if self._vtk is None:
             self._vtk = MsePyRootFormVisualizeVTK(self._f)
         return self._vtk

@@ -11,7 +11,7 @@ import numpy as np
 # import pandas as pd
 import matplotlib.pyplot as plt
 import matplotlib
-from matplotlib import cm
+# from matplotlib import cm
 from typing import List
 plt.rcParams.update({
     "font.family": "DejaVu Sans",
@@ -121,7 +121,7 @@ class MITRVisualize:
 
         if COLORS is None:
             if colors is None:
-                color = cm.get_cmap(corlormap, line_groups)
+                color = matplotlib.colormaps.get_cmap(corlormap)
                 colors = []
                 for j in range(line_groups):
                     colors.append(color(j))

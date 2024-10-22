@@ -5,6 +5,7 @@ import pickle
 import numpy as np
 from tools.frozen import Frozen
 from tools.matplot.contour import contour, contourf
+from tools.matplot.quiver import quiver
 from src.config import RANK, MASTER_RANK
 
 from scipy.interpolate import LinearNDInterpolator
@@ -69,7 +70,7 @@ class DDSRegionWiseStructured(Frozen):
 
     def __repr__(self):
         super_repr = super().__repr__().split('object')[1]
-        return rf"<DDR-RWS {self.ndim}d {self.dtype}" + super_repr
+        return rf"<DDS-RWS {self.ndim}d {self.dtype}" + super_repr
 
     def ___check_coo_equality___(self, other):
         r"""We check if self._coo_dict_list is same as other._coo_dict_list."""
@@ -243,13 +244,27 @@ class DDSRegionWiseStructured(Frozen):
         if plot_type == 'contourf':
             fig0 = contourf(x, y, v0, magnitude=magnitude, **kwargs)
             fig1 = contourf(x, y, v1, magnitude=magnitude, **kwargs)
+            return fig0, fig1
         elif plot_type == 'contour':
             fig0 = contour(x, y, v0, magnitude=magnitude, **kwargs)
             fig1 = contour(x, y, v1, magnitude=magnitude, **kwargs)
+            return fig0, fig1
+        elif plot_type == 'quiver':
+            X, Y = kwargs['nodes']
+            KWARGS = {}
+            for _ in kwargs:
+                if _ in ['nodes', ]:
+                    pass
+                else:
+                    KWARGS[_] = kwargs[_]
+            itp = self.interpolate()
+            UV = itp(X, Y)
+            U = UV[:, 0].ravel()
+            V = UV[:, 1].ravel()
+            fig = quiver(X, Y, U, V, **KWARGS)
+            # print(U, V)
         else:
             raise Exception()
-
-        return fig0, fig1
 
     # -- Operations ----------------------------------------------------------------------------------------
     def __sub__(self, other):

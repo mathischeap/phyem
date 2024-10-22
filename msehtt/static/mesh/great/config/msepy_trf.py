@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-r"""We config the msehtt great mesh as a msepy mesh.
+r"""We config the msehtt great mesh as a msepy mesh + triangular refining.
 """
 import numpy as np
 from tools.frozen import Frozen

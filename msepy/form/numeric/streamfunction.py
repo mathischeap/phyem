@@ -7,14 +7,15 @@ from tools.dds.region_wise_structured import DDSRegionWiseStructured
 
 
 class MsePyRootFormNumericStreamFunction(Frozen):
-    """"""
+    r""""""
 
     def __init__(self, rf):
-        """"""
+        r""""""
         self._f = rf
         self._freeze()
 
     def ___parse_t___(self, t):
+        r""""""
         if t is None:
             t = self._f.cochain.newest
         else:
@@ -22,7 +23,7 @@ class MsePyRootFormNumericStreamFunction(Frozen):
         return t
 
     def ___decide_type___(self):
-        """"""
+        r""""""
         indicator = self._f.space.abstract.indicator
         if indicator == 'Lambda':
             space = self._f.space.abstract
@@ -37,11 +38,11 @@ class MsePyRootFormNumericStreamFunction(Frozen):
                 f"cannot compute streamfunction for {self._f.space} or not implemented.")
 
     def __call__(self, **kwargs):
-        """Use the default method (and data structure) to compute the streamfunction."""
+        r"""Use the default method (and data structure) to compute the streamfunction."""
         return self.rws(**kwargs)
 
     def rws(self, t=None, ddf=5):
-        """Express the stream-function at time `t` as region-wise structured.
+        r"""Express the stream-function at time `t` as region-wise structured.
 
         Parameters
         ----------
@@ -81,7 +82,7 @@ class MsePyRootFormNumericStreamFunction(Frozen):
                                          # for example, (0, 0) means the r-, s- corner of the region
             reference_streamfunction=0,  # start with this value
     ):
-        """"""
+        r""""""
         assert x.ndim == y.ndim == u.ndim == v.ndim == 2, f"data dimensions wrong."
         assert x.shape == y.shape == u.shape == v.shape, f"data shape wrong."
         sp0, sp1 = x.shape

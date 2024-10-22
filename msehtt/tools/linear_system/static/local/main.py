@@ -4,7 +4,7 @@ r"""
 import matplotlib.pyplot as plt
 import matplotlib
 import numpy as np
-from src.config import RANK, MASTER_RANK
+from src.config import RANK, MASTER_RANK, COMM, MPI
 
 from tools.frozen import Frozen
 from msehtt.tools.matrix.static.local import MseHttStaticLocalMatrix
@@ -16,6 +16,8 @@ from msehtt.tools.vector.static.local import concatenate
 
 from msehtt.tools.linear_system.static.global_.main import MseHttLinearSystem
 from msehtt.tools.linear_system.static.local.customize import MseHttStaticLinearSystemCustomize
+
+from msehtt.tools.linear_system.static.local.solve import MseHtt_Local_LinearSystem_Solve
 
 
 class MseHttStaticLocalLinearSystem(Frozen):
@@ -38,6 +40,7 @@ class MseHttStaticLocalLinearSystem(Frozen):
             self._str_args = _str_args
         else:
             pass
+        self._solve = None
         self._freeze()
 
     @property
@@ -159,9 +162,33 @@ class MseHttStaticLocalLinearSystem(Frozen):
         """
         return self._b
 
+    def __iter__(self):
+        """Go through all local elements."""
+        for i in self.A._mA:
+            yield i
+
     def spy(self, e, **kwargs):
         """spy plot the A matrix of local element #e."""
         return self.A.spy(e, **kwargs)
+
+    def condition_number(self, e):
+        """Return the condition of number of the local system in element #e."""
+        return self.A.condition_number(e)
+
+    def rank(self, e):
+        """Return the condition of number of the local system in element #e."""
+        return self.A.rank(e)
+
+    def num_singularities(self, e):
+        """Return the condition of number of the local system in element #e."""
+        return self.A.num_singularities(e)
+
+    @property
+    def solve(self):
+        """"""
+        if self._solve is None:
+            self._solve = MseHtt_Local_LinearSystem_Solve(self)
+        return self._solve
 
     def assemble(self, cache=None, preconditioner=False, threshold=None):
         """
@@ -323,7 +350,7 @@ class _AAA(Frozen):
 
     def __iter__(self):
         """go through all local elements."""
-        for i in range(self._ls.num_rank_elements):
+        for i in self._mA:
             yield i
 
     def __getitem__(self, i):
@@ -337,6 +364,30 @@ class _AAA(Frozen):
             return self._mA.spy(i, **kwargs)
         else:
             pass
+
+    def condition_number(self, i):
+        """Return the condition number of local A matrix of element #i in all RANKS."""
+        if i in self._mA._gm_row:
+            cn = self._mA.condition_number(i)
+        else:
+            cn = 0
+        return COMM.allreduce(cn, MPI.SUM)
+
+    def rank(self, i):
+        """Return the rank of local A matrix of element #i in all RANKS."""
+        if i in self._mA._gm_row:
+            rank = self._mA.rank(i)
+        else:
+            rank = 0
+        return COMM.allreduce(rank, MPI.SUM)
+
+    def num_singularities(self, i):
+        """Return the number of singular modes in local A matrix of element #i in all RANKS."""
+        if i in self._mA._gm_row:
+            ns = self._mA.num_singularities(i)
+        else:
+            ns = 0
+        return COMM.allreduce(ns, MPI.SUM)
 
 
 class _Xxx(Frozen):
@@ -361,21 +412,33 @@ class _Xxx(Frozen):
 
     def update(self, x):
         """# """
-        gm = self._vx._gm
+        if isinstance(x, dict):
+            self._vx._receive_data(x)
+            x_individuals = self._vx.split()
+            for i, x_i in enumerate(x_individuals):
+                self._x[i]._receive_data(x_i)
+                self._x[i].override()
 
-        _2dx = {}
+        elif isinstance(x, np.ndarray) and x.ndim == 1:
 
-        for i in gm:
-            gmi = gm[i]
-            _2dx[i] = x[gmi]
+            gm = self._vx._gm
 
-        self._vx._receive_data(_2dx)
+            _2dx = {}
 
-        x_individuals = self._vx.split()
+            for i in gm:
+                gmi = gm[i]
+                _2dx[i] = x[gmi]
 
-        for i, x_i in enumerate(x_individuals):
-            self._x[i]._receive_data(x_i)
-            self._x[i].override()
+            self._vx._receive_data(_2dx)
+
+            x_individuals = self._vx.split()
+
+            for i, x_i in enumerate(x_individuals):
+                self._x[i]._receive_data(x_i)
+                self._x[i].override()
+
+        else:
+            raise NotImplementedError(f"x.__class__ = {x.__class__} cannot be updated to unknowns.")
 
 
 class _Bbb(Frozen):
@@ -385,6 +448,11 @@ class _Bbb(Frozen):
         self._ls = ls
         self._b = b  # save the block-wise b
         self._vb = concatenate(b, ls.A._mA._gm_row)
+
+    def __iter__(self):
+        """go through all local elements indices"""
+        for i in self._vb:
+            yield i
 
     def __getitem__(self, i):
         """Get the local vector for rank element `#i`."""

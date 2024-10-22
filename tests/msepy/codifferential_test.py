@@ -132,6 +132,7 @@ def codifferential_test(n, k, orientation):
     ls0.x.update(results[0])
 
     ph.config.set_high_accuracy(True)
+
     return u[0].error()
 
 

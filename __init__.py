@@ -112,3 +112,14 @@ import tools
 
 from tools.vtk_.main import vtk
 from tools.dds.saving_api import _rws_grouped_saving as rws
+
+
+___exist_signature___ = 'phyem exist 0'
+
+
+def exist():
+    """"""
+    if config.RANK == config.MASTER_RANK:
+        print(___exist_signature___)
+    else:
+        pass

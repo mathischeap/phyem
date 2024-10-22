@@ -174,7 +174,7 @@ class MseHttStaticLocalVector(Frozen):
             return self._get_meta_data(i)
 
     def __iter__(self):
-        """iteration over all rank elements."""
+        """iteration over all rank (local) element indices."""
         for i in self._gm:
             yield i
 
@@ -334,6 +334,38 @@ class _MseHtt_StaticVector_Customize(Frozen):
             assert len(global_dofs) == len(global_cochain), f"dofs, cochain length dis-match."
             for global_dof, cochain in zip(global_dofs, global_cochain):
                 self.set_value(global_dof, cochain)
+
+    def set_value_through_local_dof(self, element_index, local_dof_index, value):
+        """We first try to find the global dof of this local dof, then apply the `set_value` method.
+
+        So, all positions that share this dof will be taken into consideration.
+
+        Returns
+        -------
+
+        """
+        raise NotImplementedError()
+
+    def set_local_value(self, element_index, local_dof_index, value):
+        """Unlike the `set_value_through_local_dof` method, this method only change the value in the
+        element #`element_index`. This is useful when we try to solve a problem element-wise.
+
+        Parameters
+        ----------
+        element_index
+        local_dof_index
+        value
+
+        Returns
+        -------
+
+        """
+        if element_index in self._sv:
+            data = self._sv[element_index].copy()
+            data[local_dof_index] = value
+            self._customizations[element_index] = data
+        else:
+            pass
 
 
 def concatenate(v_1d_list, gm):

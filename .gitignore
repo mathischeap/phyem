@@ -59,12 +59,16 @@ coverage.xml
 .ipynb_checkpoints/
 _notes/
 _app/
+_log/
 __phcache__/
 _local_tests/
 .doctrees/
 doctest/
 doctrees/
 conf.py
+
+_tm.py
+_r.py
 
 make.bat
 Makefile

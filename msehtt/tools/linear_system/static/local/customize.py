@@ -20,6 +20,17 @@ class MseHttStaticLinearSystemCustomize(Frozen):
         A.customize.identify_row(global_dof)
         b.customize.set_value(global_dof, value)
 
+    def set_element_only_local_dof(self, element_index, local_dof, value):
+        """Only change the local system of element #`element_index`.
+
+        This is useful, for example, when the problem is going to be solved element-wise.
+
+        """
+        A = self._sls.A._mA
+        b = self._sls.b._vb
+        A.customize.identify_local_dof(element_index, local_dof)
+        b.customize.set_local_value(element_index, local_dof, value)
+
     def apply_essential_bc(self, ith_unknown, place, condition, time):
         """Apply essential bc to ith unknown on ``place`` with exact solution to be ``condition`` @ ``time``.
 

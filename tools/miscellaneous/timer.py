@@ -18,8 +18,8 @@ class MyTimer(ABC):
         ct = ct.replace(' ', '_')
         ct = ct.replace('[', '')
         ct = ct.replace(']', '')
-        ct = ct.replace(':', '_')
-        ct = ct.replace('-', '_')
+        ct = ct.replace(':', '')
+        ct = ct.replace('-', '')
         return ct
 
     @classmethod

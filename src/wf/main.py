@@ -327,7 +327,7 @@ class WeakFormulation(Frozen):
         merge
 
         """
-        if term_sign_dict is not None:
+        if term_sign_dict is not None:  # initialize a weak formulation from term sign dict.
             assert expression is None
             assert wfs is None
             assert merge is None

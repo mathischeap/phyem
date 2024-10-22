@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-"""
+r"""
 """
 from numpy import isnan
 from tools.frozen import Frozen

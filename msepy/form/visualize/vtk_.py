@@ -11,7 +11,7 @@ class MsePyRootFormVisualizeVTK(Frozen):
     """"""
 
     def __init__(self, rf):
-        """"""
+        r""""""
         self._f = rf
         self._mesh = rf.mesh
         self._cache = {}
@@ -23,6 +23,7 @@ class MsePyRootFormVisualizeVTK(Frozen):
             saveto=None, sampling_factor=1,
             data_only=False, builder=True,   # cannot add **kwargs
     ):
+        r""""""
         if len(other_forms) == 0:  # save only this one form.
             if saveto is None:
                 saveto = self._f.name
@@ -79,7 +80,7 @@ class MsePyRootFormVisualizeVTK(Frozen):
             self, saveto, sampling_factor,
             data_only=False, builder=True
     ):
-        """"""
+        r""""""
         p = self._f.space[self._f.degree].p
         p = [int(i*sampling_factor*1.5) for i in p]
         for i, p_i in enumerate(p):
@@ -109,7 +110,7 @@ class MsePyRootFormVisualizeVTK(Frozen):
             self, saveto, sampling_factor,
             data_only=False, builder=True
     ):
-        """"""
+        r""""""
         p = self._f.space[self._f.degree].p
         p = [int(i*sampling_factor*1.5) for i in p]
         for i, p_i in enumerate(p):
@@ -135,18 +136,18 @@ class MsePyRootFormVisualizeVTK(Frozen):
             vtk_builder(saveto, point_data={self._f.name: v, })
 
     def _Lambda_m3_n3_k2(self, *args, **kwargs):
-        """"""
+        r""""""
         return self._Lambda_m3_n3_k1(*args, **kwargs)
 
     def _Lambda_m3_n3_k3(self, *args, **kwargs):
-        """"""
+        r""""""
         return self._Lambda_m3_n3_k0(*args, **kwargs)
 
     def _Lambda_m2_n2_k0(
               self, saveto, sampling_factor,
               data_only=False, builder=True
     ):
-        """"""
+        r""""""
         p = self._f.space[self._f.degree].p
         p = [int(i*sampling_factor*1.5) for i in p]
         for i, p_i in enumerate(p):
@@ -176,7 +177,7 @@ class MsePyRootFormVisualizeVTK(Frozen):
             self, saveto, sampling_factor,
             data_only=False, builder=True
     ):
-        """"""
+        r""""""
         p = self._f.space[self._f.degree].p
         p = [int(i*sampling_factor*1.5) for i in p]
         for i, p_i in enumerate(p):
@@ -202,5 +203,5 @@ class MsePyRootFormVisualizeVTK(Frozen):
             vtk_builder(saveto, point_data={self._f.name: v, })
 
     def _Lambda_m2_n2_k2(self, *args, **kwargs):
-        """"""
+        r""""""
         return self._Lambda_m2_n2_k0(*args, **kwargs)

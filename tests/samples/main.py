@@ -23,6 +23,7 @@ __all__ = [
 
     "ConditionsLidDrivenCavity_2dMHD_1",
     "ManufacturedSolutionMHD3_0",
+    "ManufacturedSolutionMHD3_1",
 
     "ManufacturedSolutionNS3Conservation1",
 
@@ -48,6 +49,7 @@ from tests.samples.conditions_lid_driven_cavity_MHD import ConditionsLidDrivenCa
 from tests.samples.manuSolution_Eigen2 import Eigen2
 from tests.samples.manuSolution_MHD2 import ManufacturedSolutionMHD2Ideal1
 from tests.samples.manuSolution_MHD3 import ManufacturedSolutionMHD3_0
+from tests.samples.manuSolution_MHD3 import ManufacturedSolutionMHD3_1
 
 from tests.samples.manuSolution_NS2 import ManufacturedSolutionNS2TGV
 

@@ -205,7 +205,6 @@ class MseHttTimeInstantCochain(Frozen):
     def __sub__(self, other):
         """self - other"""
         if other.__class__ is self.__class__:
-            assert other._f is self._f
             data_dict = {}
             for e in self:
                 data_dict[e] = self[e] - other[e]

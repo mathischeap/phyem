@@ -13,7 +13,9 @@ def spsolve(A, b, clean=False):  # I receive shells of A and b in order to have 
     t_start = time()
     # --- x ------------------------------
     M = A.gather(root=MASTER_RANK)
+    # COMM.barrier()
     V = b.gather(root=MASTER_RANK)
+    # COMM.barrier()
     if clean:
         A.clean()
         b.clean()
@@ -23,7 +25,10 @@ def spsolve(A, b, clean=False):  # I receive shells of A and b in order to have 
         x = spspalinalg.spsolve(M, V)
     else:
         x = np.zeros(b.shape, dtype=float)
+        # x = None
+    # COMM.barrier()
     COMM.Bcast([x, MPI.FLOAT], root=MASTER_RANK)
+    # x = COMM.bcast(x, root=MASTER_RANK)
     # ====================================
     t_cost = time() - t_start
     t_cost = MyTimer.seconds2dhms(t_cost)

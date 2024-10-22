@@ -9,7 +9,7 @@ from tools.frozen import Frozen
 from tools.miscellaneous.numpy_styple import NumpyStyleDocstringReader
 import inspect
 import psutil
-from src.config import RANK, MASTER_RANK
+from src.config import RANK, MASTER_RANK, COMM
 
 from tools.iterator.monitor import IteratorMonitor
 
@@ -50,7 +50,7 @@ class Iterator(Frozen):
         if initials is None:
             initials = list()
             for _ in range(self._num_outputs - 2):
-                initials.append(np.NAN)
+                initials.append(np.nan)
         else:
             pass
         assert len(initials) == self._num_outputs - 2, \
@@ -131,16 +131,15 @@ class Iterator(Frozen):
 
             if RANK == MASTER_RANK:
                 print(f" ... leads to outputs: (cost %.3f) seconds\n" % t_cost)
-                for i, res in enumerate(results):
-                    print(f"  {i})-> {self._solver_ret[i]}: {res}")
+                if not hasattr(results, '__iter__'):
+                    print(f"  Results: {results}")
+                else:
+                    for i, res in enumerate(results):
+                        print(f"  {i})-> {self._solver_ret[i]}: {res}")
                 print('\n', flush=True)
 
     def run(self, *ranges, pbar=True):
         r"""To run the iterator.
-
-        To make it work properly, we have to make sure the solver return exactly the same
-        outputs in all cores. Otherwise, cores may stop after different time steps. This very
-        cause some serious problems.
         """
         # ---- for each run, we initialize a new monitor and a new RDF.
         if RANK == MASTER_RANK:
@@ -192,6 +191,7 @@ class Iterator(Frozen):
                 psutil.cpu_percent(None)
                 self.monitor._measure_start()
 
+            COMM.barrier()
             outputs = self._solver_(*inputs)
             assert len(outputs) == self._num_outputs, f"amount of outputs wrong!"
             self.exit_code, self.message = outputs[:2]

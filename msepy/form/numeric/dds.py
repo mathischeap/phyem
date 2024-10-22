@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-"""Discrete Data Structure.
+r"""Discrete Data Structure.
 """
 from tools.frozen import Frozen
 import numpy as np

@@ -190,6 +190,36 @@ class MseHttStaticLocalMatrix(Frozen):
         plt.show()
         return fig
 
+    def condition_number(self, i):
+        """Compute the condition number of the local matrix in element #i.
+
+        `i` must be a local element index. Otherwise, it raises error. So only call it from the RANK where
+        you already know element #`i` is in.
+        """
+        M = self[i].toarray()
+        cn = np.linalg.cond(M)
+        return cn
+
+    def rank(self, i):
+        """Compute the rank of the local matrix in element #i.
+
+        `i` must be a local element index. Otherwise, it raises error. So only call it from the RANK where
+        you already know element #`i` is in.
+        """
+        M = self[i].toarray()
+        rank = np.linalg.matrix_rank(M)
+        return rank
+
+    def num_singularities(self, i):
+        """Compute the number of singularities of the local matrix in element #i.
+
+        `i` must be a local element index. Otherwise, it raises error. So only call it from the RANK where
+        you already know element #`i` is in.
+        """
+        rows = self[i].shape[0]
+        rank = self.rank(i)
+        return rows - rank
+
     def __contains__(self, i):
         r""""""
         return i in self._gm_row
@@ -468,6 +498,45 @@ class _Static_LocalMatrix_Customize(Frozen):
                     data = self._mat[_element].tolil()
                     data[_local_dof, :] = 0
                     self._customizations[_element] = data.tocsr()
+
+    def identify_row_through_local_dof(self, element_index, local_dof_index):
+        """Here, when we are provided a local dof, we will find
+        its global numbering and then identify the global row.
+
+        So if this local dof is shared by elements, all its positions will
+        be taken into consideration.
+
+        Parameters
+        ----------
+        element_index
+        local_dof_index
+
+        Returns
+        -------
+
+        """
+        raise NotImplementedError()
+
+    def identify_local_dof(self, element_index, local_dof_index):
+        """This is different to the `identify_row_through_local_dof` which
+        will search all positions of the local dofs. This method, it does not
+        care that if this dof is shared by multi-elements. It will only take
+        care the local matrix of this dof.
+
+        So, even a dof is shared by 4 or 8 elements, we only change the
+        element which we are inputting.
+
+        Returns
+        -------
+
+        """
+        if element_index in self._mat:
+            data = self._mat[element_index].tolil()
+            data[local_dof_index, :] = 0
+            data[local_dof_index, local_dof_index] = 1
+            self._customizations[element_index] = data.tocsr()
+        else:
+            pass
 
     def identify_rows(self, global_dofs):
         r""""""

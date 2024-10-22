@@ -93,7 +93,7 @@ class MseHttGreatMesh(Frozen):
 
         if isinstance(indicator, str) and indicator in PredefinedMsePyManifoldDistributor._predefined_manifolds():
 
-            if 'trf' in kwargs:
+            if 'trf' in kwargs:  # we do a triangular refining upon this msepy mesh
                 input_case = 'pre-defined + triangle-refining'
             else:
                 input_case = 'pre-defined'
@@ -103,7 +103,10 @@ class MseHttGreatMesh(Frozen):
 
         elif isinstance(indicator, str) and indicator in Predefined_Msehtt_Manifold_Distributor.defined_manifolds():
 
-            input_case = 'pre-defined-msehtt-static'
+            if 'trf' in kwargs:
+                raise NotImplementedError
+            else:
+                input_case = 'pre-defined-msehtt-static'
 
         else:
             raise NotImplementedError()
@@ -172,7 +175,7 @@ class MseHttGreatMesh(Frozen):
                 )
 
             elif input_case == 'pre-defined + triangle-refining':
-                # We config the great mesh through a predefined msepy mesh.
+                # We config the great mesh through a predefined msepy mesh. Plus triangular refining
                 config = MseHttMsePy_Trf_Config(self, indicator)
                 element_type_dict, element_parameter_dict, element_map_dict, msepy_manifold = (
                     config(element_layout, **kwargs)

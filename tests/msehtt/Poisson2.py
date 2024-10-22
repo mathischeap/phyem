@@ -95,6 +95,7 @@ linear_system = msehtt_ls(time)
 
 Axb = linear_system.assemble()
 # x, message, info = Axb.solve('direct')
+
 x, message, info = Axb.solve('gmres', x0=[u, phi], restart=300, maxiter=5)
 # print(message)
 # print(x)
@@ -108,10 +109,10 @@ linear_system.x.update(x)
 # # u[time].visualize.quick()
 #
 # phi.saveto('phi.mse')
-
-phi.cochain.clean('all')
-phi.read('phi.mse')
-assert time in phi.cochain
+#
+# phi.cochain.clean('all')
+# phi.read('phi.mse')
+# assert time in phi.cochain
 print(phi[time].error())
 
 #
