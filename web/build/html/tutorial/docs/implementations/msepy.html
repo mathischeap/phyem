@@ -664,9 +664,9 @@ the simulation. For example,</p>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">b</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">reduce</span><span class="p">()</span>                      <span class="c1"># reduce the analytic solution at t=0 to discrete space</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">a_L2_error_t0</span> <span class="o">=</span> <span class="n">a</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">error</span><span class="p">()</span>       <span class="c1"># compute the L2 error at t=0</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">b_L2_error_t0</span> <span class="o">=</span> <span class="n">b</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">error</span><span class="p">()</span>       <span class="c1"># compute the L2 error at t=0</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">a_L2_error_t0</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">float</span><span class="p">(</span><span class="n">a_L2_error_t0</span><span class="p">)</span>
 <span class="go">0.0056...</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">b_L2_error_t0</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">float</span><span class="p">(</span><span class="n">b_L2_error_t0</span><span class="p">)</span>
 <span class="go">0.0060...</span>
 </pre></div>
 </div>
@@ -731,7 +731,7 @@ solution <span class="math notranslate nohighlight">\(\tilde{\beta}_{\mathrm{ana
 <code class="docutils literal notranslate"><span class="pre">k=45</span></code>, i.e., <span class="math notranslate nohighlight">\(t=t^{45}=0.9\)</span> (recall that the overall computation time is 1 and it is divided into
 50 time steps), <code class="docutils literal notranslate"><span class="pre">a[None]</span></code> is equivalent to <code class="docutils literal notranslate"><span class="pre">a[0.9]</span></code>. And then method <code class="docutils literal notranslate"><span class="pre">error</span></code> computes the <span class="math notranslate nohighlight">\(L^2\)</span>-error of
 it. To check it, do</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">a</span><span class="p">[</span><span class="mf">0.9</span><span class="p">]</span><span class="o">.</span><span class="n">error</span><span class="p">()</span> <span class="o">==</span> <span class="n">a_errors</span><span class="p">[</span><span class="mi">45</span><span class="p">]</span>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="nb">bool</span><span class="p">(</span><span class="n">a</span><span class="p">[</span><span class="mf">0.9</span><span class="p">]</span><span class="o">.</span><span class="n">error</span><span class="p">()</span> <span class="o">==</span> <span class="n">a_errors</span><span class="p">[</span><span class="mi">45</span><span class="p">])</span>
 <span class="go">True</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="nb">len</span><span class="p">(</span><span class="n">a_errors</span><span class="p">)</span>
 <span class="go">51</span>
@@ -861,7 +861,7 @@ By Andrea Brugnoli, Ramy Rashad, Stefano Stramigioli, Yi Zhang and more
   <div class="footer-item">
     
 <div class="extra_footer">
-  <div>Last updated on 八月 22, 2024, 16:45:01, China Standard Time</div>
+  <div>Last updated on November 28, 2024, 11:42:27, China Standard Time</div>
 </div>
   </div>
   

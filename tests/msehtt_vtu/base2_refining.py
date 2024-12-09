@@ -50,7 +50,7 @@ ph.space.finite(N)
 # ------------- implementation ---------------------------------------------------
 msehtt, obj = ph.fem.apply('msehtt-s', locals())
 tgm = msehtt.tgm()
-msehtt.config(tgm)('crazy', element_layout=K, c=c, periodic=False, trf=0)
+msehtt.config(tgm)('crazy', element_layout=K, c=c, periodic=False, trf=1)
 # tgm.visualize()
 
 msehtt_mesh = msehtt.base['meshes'][r'\mathfrak{M}']
@@ -112,7 +112,7 @@ E = fo0.incidence_matrix
 fo1[1].cochain = E @ fo0[1].cochain
 fo1.cf = fo0.cf.exterior_derivative()
 error = fo1[1].error()
-# print(error)
+print(error)
 # assert error < 1e-3
 
 fo1[1].reduce()
@@ -120,7 +120,7 @@ E = fo1.incidence_matrix
 fo2[1].cochain = E @ fo1[1].cochain
 fo2.cf = fo1.cf.exterior_derivative()
 error = fo2[1].error()
-# print(error)
+print(error)
 # assert error < 1e-3
 
 fi0[1].reduce()
@@ -128,7 +128,7 @@ E = fi0.incidence_matrix
 fi1[1].cochain = E @ fi0[1].cochain
 fi1.cf = fi0.cf.exterior_derivative()
 error = fi1[1].error()
-# print(error)
+print(error)
 # assert error < 1e-3
 
 fi1[1].reduce()
@@ -136,5 +136,5 @@ E = fi1.incidence_matrix
 fi2[1].cochain = E @ fi1[1].cochain
 fi2.cf = fi1.cf.exterior_derivative()
 error = fi2[1].error()
-# print(error)
+print(error)
 # assert error < 1e-3

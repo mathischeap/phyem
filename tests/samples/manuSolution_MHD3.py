@@ -356,3 +356,8 @@ class ManufacturedSolutionMHD3_1(Frozen):
             self.u.time_derivative + self.omega.cross_product(self.u) + (1 / self.Rf) * self.omega.curl
             - self._c * (self.j.cross_product(self.B)) + self.P.gradient
         )
+
+    @property
+    def curl_f(self):
+        """curl of f (a vector in 3d), gives another vector in 3d."""
+        return self.f.curl

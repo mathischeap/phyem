@@ -32,6 +32,8 @@ class MseHttForm(Frozen):
         self._degree = abstract_root_form._degree
         self._abstract = abstract_root_form
 
+        self._name_ = None  # name of this form
+
         self._tgm = None  # the msehtt great mesh
         self._tpm = None  # the msehtt partial mesh
         self._space = None  # the msehtt space
@@ -111,6 +113,126 @@ class MseHttForm(Frozen):
         else:
             self._base.cf = _cf
 
+    @property
+    def name(self):
+        """"""
+        if self._is_base():
+            if self._name_ is None:
+                self._name_ = 'msehtt-form: ' + self.abstract._sym_repr + ' = ' + self.abstract._lin_repr
+            return self._name_
+        else:
+            if self._name_ is None:
+                base_name = self._base.name
+                ati = self._pAti_form['ati']
+                self._name_ = base_name + '@' + ati.__repr__()
+            return self._name_
+
+    def _read_cache_data(self, time_dict_data):
+        r"""Only send data to master rank. Send None in others."""
+        if RANK == MASTER_RANK:
+            assert isinstance(time_dict_data, dict), f"I can only read dict."
+            only_time_data_dict = {}
+            original_global_element_signature_dict = None
+            all_times = []
+            for key in time_dict_data:
+                if key == 'global_element_signature_dict':
+                    original_global_element_signature_dict = time_dict_data[key]
+                else:
+                    all_times.append(key)
+                    only_time_data_dict[key] = time_dict_data[key]
+            assert len(only_time_data_dict) > 0, f"I receive no time data"
+            assert original_global_element_signature_dict is not None, \
+                f"I found no original_global_element_signature_dict"
+        else:
+            all_times = None
+            assert time_dict_data is None, f"to other ranks, pls send None."
+
+        all_times = COMM.bcast(all_times, root=MASTER_RANK)
+        Element_signature_dict = COMM.gather(self.element_signature_dict, root=MASTER_RANK)
+
+        if RANK == MASTER_RANK:
+            LOCAL_COCHAIN = dict()
+            # noinspection PyUnboundLocalVariable
+            for t in only_time_data_dict:
+                original_cochain_t = only_time_data_dict[t]
+                LOCAL_COCHAIN_t = []
+                for rank in range(SIZE):
+                    element_signature_dict = Element_signature_dict[rank]
+                    local_cochain_t = {}
+                    for element_signature in element_signature_dict:
+                        current_e = element_signature_dict[element_signature]
+                        # noinspection PyUnboundLocalVariable
+                        original_e = original_global_element_signature_dict[element_signature]
+                        local_cochain_t[current_e] = original_cochain_t[original_e]
+                    LOCAL_COCHAIN_t.append(local_cochain_t)
+                LOCAL_COCHAIN[t] = LOCAL_COCHAIN_t
+        else:
+            pass
+
+        for t in all_times:
+            if RANK == MASTER_RANK:
+                # noinspection PyUnboundLocalVariable
+                local_cochain = COMM.scatter(LOCAL_COCHAIN[t], root=MASTER_RANK)
+            else:
+                # noinspection PyTypeChecker
+                local_cochain = COMM.scatter(None, root=MASTER_RANK)
+
+            self.cochain._set(t, local_cochain)
+
+    def _make_cache_data(self, t=None):
+        r"""Return all data in master rank, return None in others."""
+        if t is None:
+            times = [self.cochain.newest, ]  # do it for the newest time only
+        else:
+            raise NotImplementedError()
+
+        cache_data = {}
+        for t in times:
+            t = self.cochain._parse_t(t)  # round off the truncation error to make it clear.
+            data = self._collect_cache_data_at_t(t)
+            cache_data[t] = data
+
+        cache_data['global_element_signature_dict'] = self.global_element_signature_dict
+
+        if RANK == MASTER_RANK:
+            return cache_data
+        else:
+            return None
+
+    def _collect_cache_data_at_t(self, t):
+        r"""Return data in master rank, return None in others."""
+        if self._is_base():
+            pass
+        else:
+            return self._base._collect_cache_data_at_t(t)
+
+        sf = self[t]
+        total_cochain = sf.cochain._merge_to(root=MASTER_RANK)
+        return total_cochain
+
+    @property
+    def global_element_signature_dict(self):
+        r"""Only return it in Master Rank, in other ranks, return None"""
+        Element_signature_dict = COMM.gather(self.element_signature_dict, root=MASTER_RANK)
+
+        if RANK == MASTER_RANK:
+            Element_Signature_Dict = {}
+            for _ in Element_signature_dict:
+                Element_Signature_Dict.update(_)
+
+            return Element_Signature_Dict
+        else:
+            return None
+
+    @property
+    def element_signature_dict(self):
+        r"""Return local element signature dict. Keys are element signatures, values are element indices."""
+        element_signature_dict = {}
+        for e in self.tpm.composition:
+            element = self.tpm.composition[e]
+            element_signature_dict[element.signature] = e
+        return element_signature_dict
+
     def saveto(self, filename, what=None):
         """save me to a file.
 
@@ -141,7 +263,6 @@ class MseHttForm(Frozen):
                                       f"we save the newest this amount of cochain. When `what` is None, we"
                                       f"save all cochain.")
 
-        name = 'msehtt-form: ' + self.abstract._sym_repr + ' = ' + self.abstract._lin_repr
         cochain = {}
         for t in time_range:
             sf = self[t]
@@ -157,7 +278,7 @@ class MseHttForm(Frozen):
             del element_signature_dict
             form_para_dict = {
                 'key': 'msehtt-static-form',
-                'name': name,
+                'name': self.name,
                 'cochain': cochain,
                 'element signature dict': Element_Signature_Dict
             }

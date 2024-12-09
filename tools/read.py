@@ -8,7 +8,13 @@ from tools.dds.region_wise_structured_group import DDS_RegionWiseStructured_Grou
 
 
 def read(filename, root=MASTER_RANK):
-    """Read from objects. These objects can only be read into a single rank!"""
+    """Read objects from a file. These objects can only be read into a single rank!
+
+    The file can be resulted from "ph.save" or not. It first must return a dict. And then
+    we check if 'key' is a key of the dict. If it is, it means we are reading an object of a particular type.
+    So we will call that particular class according to this 'key' to read the file again, such that
+    we can return an instance of a correct type.
+    """
     if RANK == root:
         with open(filename, 'rb') as inputs:
             obj = pickle.load(inputs)

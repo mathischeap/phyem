@@ -9,7 +9,7 @@ from src.config import RANK, MASTER_RANK, SIZE, COMM
 class MseHttVtuInterface(Frozen):
     r""""""
 
-    def __init__(self, coo, connections, cell_types, distribution_method='Naive'):
+    def __init__(self, coo, connections, cell_types, periodic_setting=None, distribution_method='Naive'):
         r"""
 
         Parameters
@@ -17,6 +17,7 @@ class MseHttVtuInterface(Frozen):
         coo
         connections
         cell_types
+        periodic_setting
         distribution_method
 
         """
@@ -143,6 +144,13 @@ class MseHttVtuInterface(Frozen):
 
         else:
             pass
+
+        # --------- PERIODIC SETTING ---------------------------------------------
+        if periodic_setting is None:
+            pass
+        else:
+            raise NotImplementedError()
+        # ========================================================================
 
         self._coo = coo
         self._connections = connections

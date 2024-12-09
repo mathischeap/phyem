@@ -232,9 +232,9 @@ the simulation. For example,
 >>> b[0].reduce()                      # reduce the analytic solution at t=0 to discrete space
 >>> a_L2_error_t0 = a[0].error()       # compute the L2 error at t=0
 >>> b_L2_error_t0 = b[0].error()       # compute the L2 error at t=0
->>> a_L2_error_t0
+>>> float(a_L2_error_t0)
 0.0056...
->>> b_L2_error_t0
+>>> float(b_L2_error_t0)
 0.0060...
 
 .. note::
@@ -304,7 +304,7 @@ Note that ``a[None]`` automatically gives a static copy of ``a`` at its most rec
 50 time steps), ``a[None]`` is equivalent to ``a[0.9]``. And then method ``error`` computes the :math:`L^2`-error of
 it. To check it, do
 
->>> a[0.9].error() == a_errors[45]
+>>> bool(a[0.9].error() == a_errors[45])
 True
 >>> len(a_errors)
 51

@@ -21,7 +21,6 @@ time = 1
 ls = ph.samples.wf_div_grad(n=2, degree=N, orientation='outer', periodic=False)[0]
 # ls.pr()
 
-
 msehtt, obj = ph.fem.apply('msehtt-s', locals())
 tgm = msehtt.tgm()
 msehtt.config(tgm)('crazy', element_layout=K, c=c, bounds=([0, 1], [0, 1]), periodic=False)
@@ -94,18 +93,18 @@ msehtt_ls.config(('essential bc', 1), boundary_u, u.cf.field, root_form=u)    # 
 linear_system = msehtt_ls(time)
 
 Axb = linear_system.assemble()
-# x, message, info = Axb.solve('direct')
+x, message, info = Axb.solve('direct')
 
-x, message, info = Axb.solve('gmres', x0=[u, phi], restart=300, maxiter=5)
+# x, message, info = Axb.solve('gmres', x0=[u, phi], restart=300, maxiter=5)
 # print(message)
 # print(x)
 linear_system.x.update(x)
 # print(phi[time].error())
 
-# assert phi[time].error() < 0.0005
+assert phi[time].error() < 0.0005
 # phi[time].visualize()
 #
-# assert u[time].error() < 0.002
+assert u[time].error() < 0.002
 # # u[time].visualize.quick()
 #
 # phi.saveto('phi.mse')
@@ -113,7 +112,7 @@ linear_system.x.update(x)
 # phi.cochain.clean('all')
 # phi.read('phi.mse')
 # assert time in phi.cochain
-print(phi[time].error())
+# print(phi[time].error())
 
 #
 # ph.vtk('poisson_forms', phi[time], u[time], f[time])

@@ -512,7 +512,7 @@ We use the <a class="reference internal" href="../msepy_domains_and_meshes/msepy
 <h3>Examples<a class="headerlink" href="#examples" title="Link to this heading">#</a></h3>
 <p>Below, we use mimetic spectral elements of degree 2 on a uniform mesh of <span class="math notranslate nohighlight">\(4 * 4 * 4\)</span> <span class="math notranslate nohighlight">\((K=4)\)</span> elements.</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">errors4</span> <span class="o">=</span> <span class="n">div_grad_2d_periodic_manufactured_test</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">4</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">errors4</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>  
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">float</span><span class="p">(</span><span class="n">errors4</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>  
 <span class="go">0.01...</span>
 </pre></div>
 </div>
@@ -523,7 +523,7 @@ We use the <a class="reference internal" href="../msepy_domains_and_meshes/msepy
 <p>We can compute the convergence rate of the <span class="math notranslate nohighlight">\(L^2\)</span>-error of solution <span class="math notranslate nohighlight">\(\varphi_h^2\)</span> by</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">rate</span> <span class="o">=</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">log10</span><span class="p">(</span><span class="n">errors4</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span> <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">log10</span><span class="p">(</span><span class="n">errors8</span><span class="p">[</span><span class="mi">0</span><span class="p">]))</span> <span class="o">/</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">log10</span><span class="p">(</span><span class="mi">1</span><span class="o">/</span><span class="mi">4</span><span class="p">)</span> <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">log10</span><span class="p">(</span><span class="mi">1</span><span class="o">/</span><span class="mi">8</span><span class="p">))</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="nb">round</span><span class="p">(</span><span class="n">rate</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">float</span><span class="p">(</span><span class="nb">round</span><span class="p">(</span><span class="n">rate</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span>
 <span class="go">2.0</span>
 </pre></div>
 </div>
@@ -569,7 +569,7 @@ on faces <span class="math notranslate nohighlight">\(y=0\)</span> and <span cla
 (note that here we use a different mesh compared to the periodic test)
 at polynomial degree 2,</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">errors4</span> <span class="o">=</span> <span class="n">div_grad_2d_general_bc_manufactured_test</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">4</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">errors4</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>  
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">float</span><span class="p">(</span><span class="n">errors4</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>  
 <span class="go">0.06...</span>
 </pre></div>
 </div>
@@ -580,7 +580,7 @@ at polynomial degree 2,</p>
 <p>We can compute the convergence rate of the <span class="math notranslate nohighlight">\(L^2\)</span>-error of solution <span class="math notranslate nohighlight">\(\varphi_h^2\)</span> by</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">rate</span> <span class="o">=</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">log10</span><span class="p">(</span><span class="n">errors4</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span> <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">log10</span><span class="p">(</span><span class="n">errors8</span><span class="p">[</span><span class="mi">0</span><span class="p">]))</span> <span class="o">/</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">log10</span><span class="p">(</span><span class="mi">1</span><span class="o">/</span><span class="mi">4</span><span class="p">)</span> <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">log10</span><span class="p">(</span><span class="mi">1</span><span class="o">/</span><span class="mi">8</span><span class="p">))</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="nb">round</span><span class="p">(</span><span class="n">rate</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">float</span><span class="p">(</span><span class="nb">round</span><span class="p">(</span><span class="n">rate</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span>
 <span class="go">2.0</span>
 </pre></div>
 </div>
@@ -684,7 +684,7 @@ By Andrea Brugnoli, Ramy Rashad, Stefano Stramigioli, Yi Zhang and more
   <div class="footer-item">
     
 <div class="extra_footer">
-  <div>Last updated on 八月 22, 2024, 16:45:01, China Standard Time</div>
+  <div>Last updated on November 28, 2024, 11:42:27, China Standard Time</div>
 </div>
   </div>
   

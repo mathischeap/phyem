@@ -92,7 +92,7 @@ class MseHttGreatMeshBaseElement(Frozen):
     @property
     def signature(self):
         """Each element has its unique signature. Even two elements have same metric, their signature are different.
-        This is mainly used to read data. For example, when we read cochain from a file, wo need to use signatures of
+        This is mainly used to read data. For example, when we read cochain from a file, we need to use signatures of
         elements to make sure we are reading the correct data into the correct elements because sometimes, elements
         may be numbered differently.
         """

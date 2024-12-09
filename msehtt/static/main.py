@@ -48,6 +48,8 @@ if RANK == MASTER_RANK:
         'info_count': 0,
         'info_time': -1.,
     }
+else:
+    pass
 
 
 def _clear_self():
@@ -62,6 +64,8 @@ def _clear_self():
         _info_cache['start_time'] = -1.
         _info_cache['info_count'] = 0
         _info_cache['info_time'] = -1.
+    else:
+        pass
 
 
 def _parse_manifolds(abstract_manifolds):
@@ -204,16 +208,19 @@ def _parse(obj):
 
 
 class config:
+    r""""""
     def __init__(self, obj):
+        r""""""
         self._obj = obj
 
     def __call__(self, *args, **kwargs):
+        r""""""
         _config(self._obj)(*args, **kwargs)
 
 
 # noinspection PyUnresolvedReferences
 def _config(obj=None):
-    """"""
+    r""""""
     if obj is None or (isinstance(obj, str) and obj == 'tgm'):  # we are configuring the great mesh.
         obj = base['the_great_mesh']
     else:
@@ -227,7 +234,7 @@ from msehtt.static.mesh.great.elements.types.base import ___clean_cache_msehtt_e
 
 
 def clean_cache():
-    """"""
+    r""""""
     ___clean_cache_msehtt_gm___()
     ___clean_cache_msehtt_element_ct___()
 

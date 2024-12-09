@@ -13,8 +13,9 @@ ph.config.set_embedding_space_dim(2)
 ph.config.set_high_accuracy(True)
 ph.config.set_pr_cache(True)
 
-N = 2
-K = 16
+N = 3
+K = 24
+
 t_max = 8
 steps = 100 * t_max
 
@@ -284,8 +285,8 @@ manifold = obj['manifold']
 msepy.config(manifold)(
     'crazy', c=0., bounds=[[0., 2*pi], [0, 2*pi]], periodic=True,
 )
-mesh = obj['mesh']
-msepy.config(mesh)([K, K])
+_mesh = obj['mesh']
+msepy.config(_mesh)([K, K])
 ts.specify('constant', [0, t_max, 2*steps], 2)
 
 initial_condition = ph.samples.InitialConditionShearLayerRollUp()
@@ -304,11 +305,11 @@ wi[0].reduce()
 uo[0].reduce()
 ui[0].reduce()
 
-ls0 = obj['ls0'].apply()
-lsi = obj['lsi'].apply()
-lso = obj['lso'].apply()
+LS0 = obj['ls0'].apply()
+LSi = obj['lsi'].apply()
+LSo = obj['lso'].apply()
 
-s_ls0 = ls0()
+s_ls0 = LS0()
 s_ls0.customize.set_dof(-1, 0)
 As_ls0 = s_ls0.assemble()
 results = As_ls0.solve()
@@ -316,16 +317,17 @@ s_ls0.x.update(results[0])
 
 for k in range(1, steps+1):
 
-    s_lso = lso(k=k)
+    s_lso = LSo(k=k)
     s_lso.customize.set_dof(-1, 0)
     As_lso = s_lso.assemble()
     results = As_lso.solve()
     s_lso.x.update(results[0])
 
-    s_lsi = lsi(k=k)
+    s_lsi = LSi(k=k)
     s_lsi.customize.set_dof(-1, 0)
     As_lsi = s_lsi.assemble()
     results = As_lsi.solve()
     s_lsi.x.update(results[0])
 
-    wi[None].visualize(wo[None], ui, uo[None], saveto=f'__phcache__/omega_{int(k)}.vtk')
+    msepy.info()
+    wi[None].visualize(wo[None], ui[None], uo[None], saveto=f'__phcache__/dualNS/SLR_msepy/solution_{int(k)}.vtk')

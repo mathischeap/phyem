@@ -5,7 +5,9 @@ scipy >= 1.2.1
 tabulate >= 0.8.3
 tqdm >= 4.14.0
 opencv-python >= 4.5.5.64
-cryptography >= 36.0.1
 psutil >= 5.9.1
 pyevtk >= 1.5.0
 numdifftools >= 0.9.41
+sympy >= 1.13.3
+pypardiso >= 0.4.6
+msvc-runtime

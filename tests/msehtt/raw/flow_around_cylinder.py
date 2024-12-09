@@ -1,13 +1,10 @@
 # -*- coding: utf-8 -*-
-r"""A *phyem* implementation of the normal dipole collision test case in Section 5.3 of
-`[MEEVC, Zhang et al., arXiv, <https://arxiv.org/abs/2307.08166>]`_.
-
-By `Yi Zhang <https://mathischeap.com/>`_.
-
-mpiexec -n 4 python tests/msehtt/backward_facing_flow.py
-
+r"""
+mpiexec -n 4 python tests/msehtt/programs/flow_around_cylinder.py
 """
+
 import sys
+
 import numpy as np
 
 ph_dir = './'  # customize it to your dir containing phyem
@@ -21,12 +18,15 @@ ph.config.set_high_accuracy(True)
 ph.config.set_pr_cache(False)
 
 N = 2
-t = 10
-steps_per_second = 400
-total_steps = int(t * steps_per_second)
-_dt_ = 1 / steps_per_second
-Re = 1
+edf = 3
 
+Re = 1000
+t = 8
+steps_per_second = 800
+
+
+total_steps = t * steps_per_second
+_dt_ = 1 / steps_per_second
 
 manifold = ph.manifold(2, periodic=False)
 mesh = ph.mesh(manifold)
@@ -60,10 +60,10 @@ expression_outer = [
 pde = ph.pde(expression_outer, locals())
 pde.unknowns = [u, w, P]
 
-pde.bc.partition(r"\Gamma_u", r"\Gamma_P")
+pde.bc.partition(r"\Gamma_{\perp}", r"\Gamma_P")
 pde.bc.define_bc(
     {
-        r"\Gamma_u": ph.trace(u),       # essential BC: norm velocity.
+        r"\Gamma_{\perp}": ph.trace(u),       # essential BC: norm velocity.
         r"\Gamma_P": ph.trace(ph.Hodge(P)),   # natural BC: total pressure.
     }
 )
@@ -152,6 +152,7 @@ term = wf.terms['0-7']
 term.add_extra_info(
     {'known-forms': [w @ ts['k-1'], u @ ts['k-1']]}
 )
+
 # wf.pr()
 
 ph.space.finite(N)
@@ -159,23 +160,13 @@ mp = wf.mp()
 nls = mp.nls()   # nonlinear system
 # nls.pr()
 
-# ------------- implementation ---------------------------------------------------
+# ------------- implementation --------------------------------------------------------------
 msehtt, obj = ph.fem.apply('msehtt-s', locals())
 tgm = msehtt.tgm()
-
-outlet_element_layout_x = (
-        [1 for _ in range(10)] +
-        [2 for _ in range(10)] +
-        [3 for _ in range(15)]
-)
-
 msehtt.config(tgm)(
-    'backward_step',
-    element_layout={
-        0: [outlet_element_layout_x, 12],
-        1: [outlet_element_layout_x, 12],
-        2: [15, 12],
-    }, x1=0.5, x2=2
+    'cylinder_channel',
+    element_layout=edf,
+    r=0.05, dl=0.2, dr=2, h=0.41, hl=0.2
 )
 # tgm.visualize()
 
@@ -185,7 +176,7 @@ msehtt.config(msehtt_mesh)(tgm, including='all')
 total_boundary = msehtt.base['meshes'][r'\eth\mathfrak{M}']
 msehtt.config(total_boundary)(tgm, including=msehtt_mesh)
 
-boundary_u = msehtt.base['meshes'][r"\partial\mathfrak{M}\left(\Gamma_u\right)"]
+boundary_u = msehtt.base['meshes'][r"\partial\mathfrak{M}\left(\Gamma_{\perp}\right)"]
 boundary_p = msehtt.base['meshes'][r"\partial\mathfrak{M}\left(\Gamma_P\right)"]
 
 msehtt.config(boundary_p)(
@@ -208,10 +199,6 @@ msehtt.config(boundary_u)(
 )
 # boundary_u.visualize()
 
-# # for msh in msehtt.base['meshes']:
-# #     msh = msehtt.base['meshes'][msh]
-# #     msh.visualize()
-#
 ts.specify('constant', [0, t, total_steps*2], 2)
 
 Rn2.value = 1 / (2 * Re)
@@ -237,30 +224,30 @@ u[0].reduce()
 
 
 # noinspection PyUnusedLocal
-def bc_u0(x, y):
+def flux_in_outlet(t, y):
     """"""
-    return -64 * (y-0.375)**2 + 1
+    return (6 / 0.41**2) * np.sin(np.pi * t / 8) * (y+0.2) * (0.21 - y)
 
 
 # noinspection PyUnusedLocal
-def bc_u1(x, y):
+def flux_wall(t, y):
     """"""
-    return np.zeros_like(x)
+    return np.zeros_like(y)
 
 
 # noinspection PyUnusedLocal
 def bc_u(t, x, y):
     """"""
     return ph.tools.genpiecewise(
-        [x, y],
-        [x < 0.1, x >= 0.1],
-        [bc_u0, bc_u1]
+        [t, y],
+        [x < -0.15, np.logical_and(x >= -0.15, x <= 1), x > 1],
+        [flux_in_outlet, flux_wall, flux_in_outlet]
     )
 
 
 bc_velocity = ph.vc.vector(bc_u, 0)
 
-results_dir = './__phcache__/msehtt_backward_facing_step/'
+results_dir = './__phcache__/msehtt_flow_around_cylinder/'
 
 msehtt.info()
 
@@ -271,20 +258,20 @@ bc_p = u.numeric.tsp.L2_energy()
 msehtt_nls.config(['natural bc', 1], boundary_p, bc_p, root_form=P)  # natural bc
 
 
-for step in range(1, 20+1):
+# for step in range(1, total_steps+1):
+for step in range(1, 51):
     system = msehtt_nls(k=step)
     system.solve(
         [u, w, P],
-        scheme='Picard',
-        # atol=1e-6,
-        # inner_solver_scheme='lgmres',
-        # inner_solver_kwargs={'inner_m': 225, 'outer_k': 25, 'atol': 1e-5, 'maxiter': 5}
+        atol=1e-6,
+        # scheme='Picard',
+        # inner_solver_scheme='gmres',
+        # inner_solver_kwargs={'restart': 500, 'atol': 1e-6, 'maxiter': 20}
     )
     msehtt.info(rf"N={N}", system.solve.message)
 
+    # print(u[None].norm())
     # if step % 100 == 0:
-    # u[None].visualize.quick()
-    ph.vtk(results_dir + f'step_{step}', u[None], w[None], P[None])
-
+    ph.vtk(results_dir + f'step_{step}.vtu', u[None], w[None], P[None])
     # else:
     #     pass

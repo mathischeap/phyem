@@ -10,6 +10,8 @@ from msehtt.static.space.error.main import MseHttSpaceError
 from msehtt.static.space.incidence_matrix.main import MseHttSpaceIncidenceMatrix
 from msehtt.static.space.norm.main import MseHttSpaceNorm
 from msehtt.static.space.reconstruction_matrix.main import MseHttSpaceReconstructionMatrix
+from msehtt.static.space.reconstruct_element_face.main import MseHttSpace_REF
+from msehtt.static.space.integrate_matrix_over_sub_geometry.main import MseHttSpace_IntMatOverSubGeo
 
 
 class MseHttSpace(Frozen):
@@ -28,6 +30,8 @@ class MseHttSpace(Frozen):
         self._error = None
         self._norm = None
         self._rm = None
+        self._ref = None
+        self._int_mat_over_sub_geo = None
         self._freeze()
 
     @property
@@ -162,3 +166,17 @@ class MseHttSpace(Frozen):
         if self._rm is None:
             self._rm = MseHttSpaceReconstructionMatrix(self)
         return self._rm
+
+    @property
+    def ref(self):
+        r"""reconstruct along element face/edge"""
+        if self._ref is None:
+            self._ref = MseHttSpace_REF(self)
+        return self._ref
+
+    @property
+    def iMsg(self):
+        r"""integrate matrix over a sub geometry."""
+        if self._int_mat_over_sub_geo is None:
+            self._int_mat_over_sub_geo = MseHttSpace_IntMatOverSubGeo(self)
+        return self._int_mat_over_sub_geo

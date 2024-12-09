@@ -26,6 +26,7 @@ class MseHttCochain(Frozen):
     def _parse_t(t):
         """To make time safer."""
         assert t is not None, f"time is None!"
+        assert isinstance(t, (int, float)), f"time must be int or float."
         return round(t, 8)  # to make it safer.
 
     @property

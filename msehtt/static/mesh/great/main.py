@@ -87,8 +87,60 @@ class MseHttGreatMesh(Frozen):
         else:
             self._elements = MseHttGreatMeshElements(self, rank_element_dict)
 
-    def _config(self, indicator, element_layout=None, **kwargs):
-        """"""
+    def _config(self, indicator, element_layout=None, crack_config=None, ts=False, **kwargs):
+        """Note that, periodic setting should be done before this configuration. This configuration can
+        process crack and triangle/tetrahedron-split, but not periodic setting.
+
+        Parameters
+        ----------
+        indicator
+            case 1: `indicator` is str and `indicator` indicates a pre-defined msepy-manifold.
+                So, `indicator`, `element_layout` and `kwargs` will be used for initialize a msepy mesh first.
+                For example:
+                    msehtt.config(tgm)('crazy', element_layout=K, c=c, bounds=([0, 1], [0, 1]), periodic=False)
+                    msehtt.config(tgm)('crazy', element_layout=K, c=c, bounds=([0, 1], [0, 1]), periodic=True)
+                    msehtt.config(tgm)('backward_step', element_layout=K)
+                    msehtt.config(tgm)(
+                        'crazy',
+                        element_layout=K,
+                        c=c,
+                        bounds=([0.25, 1.25], [0.25, 1.25], [0.25, 1.25]),
+                        periodic=False
+                    )
+
+                This msepy mesh then is parsed as a msehtt mesh.
+
+                Furthermore, if `trf` in `kwargs`, we will do a `triangular refining` upon the msehtt mesh.
+                For example:
+                    msehtt.config(tgm)('crazy', element_layout=K, c=c, periodic=False, trf=1)
+                    msehtt.config(tgm)('crazy', element_layout=K, c=c, periodic=True, trf=1)
+
+            case 2: 'vtu_interface'
+                `indicator` is a instance of class `MseHttVtuInterface`. Then we will parse the mesh
+                from this `MseHttVtuInterface` object which actually is an interface to vtk mesh.
+
+            case 3: `indicator` is str and `indicator` indicates a pre-defined msehtt-manifold.
+                So, `indicator`, `element_layout` and `kwargs` will be used for initialize a msehtt mesh.
+                For example:
+                    msehtt.config(tgm)('chaotic', element_layout=K, c=c, periodic=False)
+
+                Furthermore, if if `trf` in `kwargs`, we will do a `triangular refining` upon this msepy mesh.
+                For example:
+                    msehtt.config(tgm)('chaotic', element_layout=K, c=c, periodic=False, trf=1)
+
+        element_layout:
+            `element_layout`; it is not always needed for particular configuration. But usually it is needed.
+        crack_config :
+            In ADDITION to configuration indicating, it will make cracks in the mesh.
+        ts
+            In ADDITION to configuration indicating, it will do ``triangle/tetrahedron-split``.
+        kwargs :
+            Other kwargs to be passed to particular configuration.
+
+        Returns
+        -------
+
+        """
         assert self._config_method == '', f"I must be not-configured yet!"
 
         if isinstance(indicator, str) and indicator in PredefinedMsePyManifoldDistributor._predefined_manifolds():
@@ -225,6 +277,20 @@ class MseHttGreatMesh(Frozen):
             else:
                 raise NotImplementedError(f"msehtt-great-mesh config not implemented for input_case={input_case}")
 
+        # --- check element map: node must be numbered (index must be int) -----------------
+        for e in element_map_dict:
+            e_map = element_map_dict[e]
+            assert all([isinstance(_, int) for _ in e_map]), \
+                f"element map must be of integers only. map of element:{e} is illegal."
+
+        if ts:  # triangle-split -> quadrilateral or tetrahedron split -> hexahedron-combination.
+            element_type_dict, element_parameter_dict, element_map_dict = self.___ts___(
+                element_type_dict, element_parameter_dict, element_map_dict
+            )
+        else:
+            pass
+
+        element_map_dict = self._make_crack(crack_config, element_map_dict)
         self._make_elements_(element_type_dict, element_parameter_dict, element_map_dict)
 
     @staticmethod
@@ -323,3 +389,226 @@ class MseHttGreatMesh(Frozen):
 
     def selfcheck(self):
         r"""do a self check!"""
+
+    def _make_crack(self, crack_config, element_map_dict):
+        """Define a crack along interface of elements."""
+        if crack_config is None:  # define no crack.
+            return element_map_dict
+        else:
+            raise NotImplementedError()
+
+    def ___ts___(self, element_type_dict, element_parameter_dict, element_map_dict):
+        r""""""
+        new_element_type_dict = {}
+        new_element_parameter_dict = {}
+        new_element_map_dict = {}
+        for e_index in element_type_dict:
+            e_type = element_type_dict[e_index]
+            e_para = element_parameter_dict[e_index]
+            e_map = element_map_dict[e_index]
+            if e_type == 5:  # vtk-5: triangle
+                A, B, C = e_para
+                Ax, Ay = A
+                Bx, By = B
+                Cx, Cy = C
+                D = ((Ax + Bx + Cx) / 3, (Ay + By + Cy) / 3)
+                E = ((Ax + Bx) / 2, (Ay + By) / 2)
+                F = ((Cx + Bx) / 2, (Cy + By) / 2)
+                G = ((Ax + Cx) / 2, (Ay + Cy) / 2)
+                _0_, _1_, _2_ = e_map
+                _01_ = [_0_, _1_]
+                _12_ = [_1_, _2_]
+                _02_ = [_0_, _2_]
+                _01_.sort()
+                _12_.sort()
+                _02_.sort()
+                _01_ = tuple(_01_)
+                _12_ = tuple(_12_)
+                _02_ = tuple(_02_)
+                _012_ = [_0_, _1_, _2_]
+                _012_.sort()
+                _012_ = tuple(_012_)
+                element_index = str(e_index)
+                e_i_0 = element_index + '-0'
+                e_i_1 = element_index + '-1'
+                e_i_2 = element_index + '-2'
+                new_element_type_dict[e_i_0] = 9
+                new_element_type_dict[e_i_1] = 9
+                new_element_type_dict[e_i_2] = 9
+                new_element_parameter_dict[e_i_0] = [A, E, D, G]
+                new_element_parameter_dict[e_i_1] = [B, F, D, E]
+                new_element_parameter_dict[e_i_2] = [C, G, D, F]
+                new_element_map_dict[e_i_0] = [_0_, _01_, _012_, _02_]
+                new_element_map_dict[e_i_1] = [_1_, _12_, _012_, _01_]
+                new_element_map_dict[e_i_2] = [_2_, _02_, _012_, _12_]
+            elif e_type == 9:  # vtk-9: quad
+                #         A           J
+                #           --------------------- D
+                #           |         |         |
+                #           |         |E        |
+                #         F |-------------------|H
+                #           |         |         |
+                #           |         |         |
+                #         B --------------------- C
+                #                     G
+                #
+                A, B, C, D = e_para
+                Ax, Ay = A
+                Bx, By = B
+                Cx, Cy = C
+                Dx, Dy = D
+                E = ((Ax + Bx + Cx + Dx) / 4, (Ay + By + Cy + Dy) / 4)
+                F = ((Ax + Bx) / 2, (Ay + By) / 2)
+                G = ((Bx + Cx) / 2, (By + Cy) / 2)
+                H = ((Cx + Dx) / 2, (Cy + Dy) / 2)
+                J = ((Dx + Ax) / 2, (Dy + Ay) / 2)
+                _0_, _1_, _2_, _3_ = e_map
+                _01_ = [_0_, _1_]
+                _12_ = [_1_, _2_]
+                _23_ = [_2_, _3_]
+                _30_ = [_3_, _0_]
+                _01_.sort()
+                _12_.sort()
+                _23_.sort()
+                _30_.sort()
+                _01_ = tuple(_01_)
+                _12_ = tuple(_12_)
+                _23_ = tuple(_23_)
+                _30_ = tuple(_30_)
+                _0123_ = [_0_, _1_, _2_, _3_]
+                _0123_.sort()
+                _0123_ = tuple(_0123_)
+                element_index = str(e_index)
+                e_i_0 = element_index + '-0'
+                e_i_1 = element_index + '-1'
+                e_i_2 = element_index + '-2'
+                e_i_3 = element_index + '-3'
+                new_element_type_dict[e_i_0] = 9
+                new_element_type_dict[e_i_1] = 9
+                new_element_type_dict[e_i_2] = 9
+                new_element_type_dict[e_i_3] = 9
+                new_element_parameter_dict[e_i_0] = [A, F, E, J]
+                new_element_parameter_dict[e_i_1] = [F, B, G, E]
+                new_element_parameter_dict[e_i_2] = [E, G, C, H]
+                new_element_parameter_dict[e_i_3] = [J, E, H, D]
+                new_element_map_dict[e_i_0] = [_0_, _01_, _0123_, _30_]
+                new_element_map_dict[e_i_1] = [_01_, _1_, _12_, _0123_]
+                new_element_map_dict[e_i_2] = [_0123_, _12_, _2_, _23_]
+                new_element_map_dict[e_i_3] = [_30_, _0123_, _23_, _3_]
+            elif e_type == 'orthogonal rectangle':  # orthogonal rectangle
+                #         A           J
+                #           --------------------- D
+                #           |         |         |
+                #           |         |E        |
+                #         F |-------------------|H
+                #           |         |         |
+                #           |         |         |
+                #         B --------------------- C
+                #                     G
+                #
+                origin_x, origin_y = e_para['origin']
+                delta_x, delta_y = e_para['delta']
+                A = (origin_x, origin_y)
+                C = (origin_x + delta_x, origin_y + delta_y)
+                B = (origin_x + delta_x, origin_y)
+                D = (origin_x, origin_y + delta_y)
+                Ax, Ay = A
+                Bx, By = B
+                Cx, Cy = C
+                Dx, Dy = D
+                E = ((Ax + Bx + Cx + Dx) / 4, (Ay + By + Cy + Dy) / 4)
+                F = ((Ax + Bx) / 2, (Ay + By) / 2)
+                G = ((Bx + Cx) / 2, (By + Cy) / 2)
+                H = ((Cx + Dx) / 2, (Cy + Dy) / 2)
+                J = ((Dx + Ax) / 2, (Dy + Ay) / 2)
+                _0_, _1_, _3_, _2_ = e_map
+                _01_ = [_0_, _1_]
+                _12_ = [_1_, _2_]
+                _23_ = [_2_, _3_]
+                _30_ = [_3_, _0_]
+                _01_.sort()
+                _12_.sort()
+                _23_.sort()
+                _30_.sort()
+                _01_ = tuple(_01_)
+                _12_ = tuple(_12_)
+                _23_ = tuple(_23_)
+                _30_ = tuple(_30_)
+                _0123_ = [_0_, _1_, _2_, _3_]
+                _0123_.sort()
+                _0123_ = tuple(_0123_)
+                element_index = str(e_index)
+                e_i_0 = element_index + '-0'
+                e_i_1 = element_index + '-1'
+                e_i_2 = element_index + '-2'
+                e_i_3 = element_index + '-3'
+                new_element_type_dict[e_i_0] = 9
+                new_element_type_dict[e_i_1] = 9
+                new_element_type_dict[e_i_2] = 9
+                new_element_type_dict[e_i_3] = 9
+                new_element_parameter_dict[e_i_0] = [A, F, E, J]
+                new_element_parameter_dict[e_i_1] = [F, B, G, E]
+                new_element_parameter_dict[e_i_2] = [E, G, C, H]
+                new_element_parameter_dict[e_i_3] = [J, E, H, D]
+                new_element_map_dict[e_i_0] = [_0_, _01_, _0123_, _30_]
+                new_element_map_dict[e_i_1] = [_01_, _1_, _12_, _0123_]
+                new_element_map_dict[e_i_2] = [_0123_, _12_, _2_, _23_]
+                new_element_map_dict[e_i_3] = [_30_, _0123_, _23_, _3_]
+            else:
+                raise NotImplementedError(f'triangle/tetrahedron-split does not work for etype:{e_type}.')
+
+        NEW_element_map_dict = COMM.gather(new_element_map_dict, root=MASTER_RANK)
+        NEW_element_type_dict = COMM.gather(new_element_type_dict, root=MASTER_RANK)
+
+        if RANK == MASTER_RANK:
+            int_nodes = []
+            for NEW in NEW_element_map_dict:
+                for e in NEW:
+                    _map = NEW[e]
+                    for node in _map:
+                        if isinstance(node, int):
+                            int_nodes.append(node)
+                        else:
+                            pass
+            i = max(int_nodes) + 1
+            new_node_pool = {}
+            element_distribution = {}
+            global_element_type_dict = {}
+            for rank, NEW in enumerate(NEW_element_map_dict):
+                global_element_type_dict.update(NEW_element_type_dict[rank])
+                element_distribution[rank] = list(NEW.keys())
+                for e in NEW:
+                    _map = NEW[e]
+                    for node in _map:
+                        if isinstance(node, tuple):
+                            if node in new_node_pool:
+                                pass
+                            else:
+                                new_node_pool[node] = i
+                                i += 1
+                        else:
+                            pass
+            del NEW_element_map_dict
+            self._element_distribution = element_distribution
+            self._global_element_type_dict = global_element_type_dict
+
+        else:
+            new_node_pool = {}
+
+        new_node_pool = COMM.bcast(new_node_pool, root=MASTER_RANK)
+        for e in new_element_map_dict:
+            _map = new_element_map_dict[e]
+            for i, node in enumerate(_map):
+                if isinstance(node, tuple):
+                    _map[i] = new_node_pool[node]
+                else:
+                    pass
+
+        element_map_dict = COMM.gather(new_element_map_dict, root=MASTER_RANK)
+        if RANK == MASTER_RANK:
+            _global_element_map_dict = {}
+            for DICT in element_map_dict:
+                _global_element_map_dict.update(DICT)
+            self._global_element_map_dict = _global_element_map_dict
+
+        return new_element_type_dict, new_element_parameter_dict, new_element_map_dict

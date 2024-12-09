@@ -2,9 +2,7 @@
 r"""
 mpiexec -n 4 python tests/msehtt/flow_around_cylinder.py
 """
-
 import sys
-
 import numpy as np
 
 ph_dir = './'  # customize it to your dir containing phyem
@@ -247,30 +245,26 @@ def bc_u(t, x, y):
 
 bc_velocity = ph.vc.vector(bc_u, 0)
 
-results_dir = './__phcache__/msehtt_flow_around_cylinder/'
-
-msehtt.info()
-
 msehtt_nls = obj['nls'].apply()
-
 msehtt_nls.config(('essential bc', 1), boundary_u, bc_velocity, root_form=u)  # essential bc
 bc_p = u.numeric.tsp.L2_energy()
 msehtt_nls.config(['natural bc', 1], boundary_p, bc_p, root_form=P)  # natural bc
 
+system = msehtt_nls(k=1)
+system.solve(  # Newton outer iterator + direct inner solver.
+    [u, w, P],
+    atol=1e-10,
+)
 
-# for step in range(1, total_steps+1):
-for step in range(1, 11):
-    system = msehtt_nls(k=step)
-    system.solve(
-        [u, w, P],
-        atol=1e-6,
-        # scheme='Picard',
-        # inner_solver_scheme='gmres',
-        # inner_solver_kwargs={'restart': 500, 'atol': 1e-6, 'maxiter': 20}
-    )
-    msehtt.info(rf"N={N}", system.solve.message)
+u_norm1 = u[None].norm()
 
-    # if step % 100 == 0:
-    ph.vtk(results_dir + f'step_{step}.vtu', u[None], w[None], P[None])
-    # else:
-    #     pass
+system = msehtt_nls(k=2)
+system.solve(  # Newton outer iterator + direct inner solver.
+    [u, w, P],
+    atol=1e-10,
+)
+
+u_norm2 = u[None].norm()
+
+np.testing.assert_almost_equal(u_norm1, 0.000472, decimal=6)
+np.testing.assert_almost_equal(u_norm2, 0.000944, decimal=6)

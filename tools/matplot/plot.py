@@ -14,7 +14,7 @@ def __matplot__(
         style=None, color=None, label=False,
         styles=None, colors=None, labels=None, mfcs=None,  # mfc: maker face color
         # config
-        usetex=True, saveto=None, pad_inches=0.1, corlormap='Dark2',
+        usetex=True, saveto=None, pad_inches=0.1, colormap='Dark2',
         # figure
         figsize=(5.5, 4), left=0.15, bottom=0.15,
         # title
@@ -65,7 +65,7 @@ def __matplot__(
     usetex
     saveto
     pad_inches
-    corlormap
+    colormap
     figsize
     left
     bottom
@@ -143,7 +143,7 @@ def __matplot__(
             pass
 
         if colors is None:
-            color = cm.get_cmap(corlormap, num_lines)
+            color = cm.get_cmap(colormap, num_lines)
             colors = []
             for j in range(num_lines):
                 colors.append(color(j))

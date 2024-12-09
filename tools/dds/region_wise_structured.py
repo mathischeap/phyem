@@ -262,7 +262,7 @@ class DDSRegionWiseStructured(Frozen):
             U = UV[:, 0].ravel()
             V = UV[:, 1].ravel()
             fig = quiver(X, Y, U, V, **KWARGS)
-            # print(U, V)
+            return fig
         else:
             raise Exception()
 

@@ -119,7 +119,7 @@ def _find_space_through_pure_lin_repr(_target_space_lin_repr):
             break
         else:
             pass
-    assert the_msehtt_space is not None, f"Find no msehtt static space."
+    assert the_msehtt_space is not None, f"Find no msehtt static space: {_target_space_lin_repr, spaces}."
     return the_msehtt_space
 
 

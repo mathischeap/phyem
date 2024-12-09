@@ -22,7 +22,7 @@ K = int(K)
 t_max = int(t_max)
 steps = int(steps)
 
-manifold = ph.manifold(3, is_periodic=True)
+manifold = ph.manifold(3, periodic=True)
 mesh = ph.mesh(manifold)
 
 Inn0 = ph.space.new('Lambda', 0, orientation='inner')

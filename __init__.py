@@ -25,7 +25,7 @@ __all__ = [
     'inner', 'wedge', 'Hodge',
     'd', 'exterior_derivative', 'trace',
     'codifferential',
-    'time_derivative',
+    'time_derivative', 'ddt',
 
     'pde',
     'ode',
@@ -53,6 +53,10 @@ __all__ = [
     'vtk',  # save an object or some objects to a vtk file.
     'rws',  # save an object or some objects to a dds-rws-grouped file.
 
+    'rref',
+
+    'reveal_phc',
+    'php',
 ]
 
 
@@ -85,6 +89,7 @@ from src.operators import inner, wedge, Hodge, trace
 from src.operators import d, exterior_derivative
 from src.operators import codifferential
 from src.operators import time_derivative
+from src.operators import time_derivative as ddt
 
 from src.pde import pde
 from src.ode.main import ode
@@ -123,3 +128,10 @@ def exist():
         print(___exist_signature___)
     else:
         pass
+
+
+from tools.miscellaneous.rref import rref
+
+from tools.iterator.cache_reader import print_cache_log as reveal_phc
+
+from tools.miscellaneous.php import php

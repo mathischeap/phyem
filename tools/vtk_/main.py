@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-r"""
+r"""Save objects to vtk file.
 """
 from msehtt.static.form.addons.static import MseHttFormStaticCopy
 from tools.vtk_.msehtt_form_static_copy import ___ph_vtk_msehtt_static_copy___
@@ -13,7 +13,7 @@ def vtk(filename, *args, **kwargs):
         elif filename[-4:] == '.vtk':
             filename = filename[:-4]
         else:
-            raise Exception()
+            raise Exception(f"extension name must be .vtu or .vtk")
     else:
         pass
 
