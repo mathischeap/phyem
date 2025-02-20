@@ -12,7 +12,7 @@ import __init__ as ph
 
 
 def codifferential_test(n, k, orientation):
-    """"""
+    r""""""
     print(f"codifferential tests for n={n}, k={k}, orientation={orientation}.\n")
 
     ph.config.set_embedding_space_dim(n)

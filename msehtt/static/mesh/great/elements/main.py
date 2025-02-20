@@ -30,6 +30,11 @@ class MseHttGreatMeshElements(Frozen):
             # When we are sure that there is no mismatch, we can skip it. For example, when we build the
             # great mesh from a msepy mesh, then there is no mismatch for sure.
             self._element_face_topology_mismatch = False
+        if RANK == MASTER_RANK:
+            self._global_neighbors_ = None
+        else:
+            pass
+
         self._freeze()
 
     def __repr__(self):
@@ -74,6 +79,70 @@ class MseHttGreatMeshElements(Frozen):
         """
         if RANK == MASTER_RANK:
             return self._tgm._global_element_map_dict
+        else:
+            return None
+
+    @property
+    def global_neighbors(self):
+        r"""In the master rank return a dict whose
+            keys are global element indices;
+            values are lists like
+                [100, 21, (472, 'N'), None]
+                which means
+                    at the other side of its face #0 is element indexed 100;
+                    at the other side of its face #1 is element indexed 21;
+                    at the other side of its face #2 is element indexed (472, 'N');
+                    at the other side of its face #3 is the domain boundary.
+
+        In other ranks, return None.
+        """
+        if RANK == MASTER_RANK:
+            if self._global_neighbors_ is not None:
+                return self._global_neighbors_
+            else:
+                pass
+
+            eMap = self._tgm._global_element_map_dict
+            eType = self._tgm._global_element_type_dict
+            element_classes = MseHttGreatMeshElementDistributor.implemented_element_types()
+
+            global_neighbors = {}
+            element_face_map_pool = {}
+            for e in eMap:
+                etype = eType[e]
+                element_class = element_classes[etype]
+                face_setting = element_class.face_setting()
+                global_neighbors[e] = [None for _ in range(len(face_setting))]
+                element_map = eMap[e]
+                for face_id in face_setting:
+                    face_nodes = face_setting[face_id]
+                    face_nodes_numbering = [element_map[_] for _ in face_nodes]
+                    face_nodes_numbering.sort()
+                    face_nodes_numbering = tuple(face_nodes_numbering)
+
+                    if face_nodes_numbering in element_face_map_pool:
+                        element_face_map_pool[face_nodes_numbering].append(
+                            (e, face_id)
+                        )
+                    else:
+                        element_face_map_pool[face_nodes_numbering] = [(e, face_id)]
+
+            for face_nodes_numbering in element_face_map_pool:
+                pairs = element_face_map_pool[face_nodes_numbering]
+                if len(pairs) == 1:  # this is a boundary element face
+                    pass
+                elif len(pairs) == 2:  # this is a face shared by elements.
+                    pos0, pos1 = pairs
+                    e0, fid0 = pos0
+                    e1, fid1 = pos1
+                    assert global_neighbors[e0][fid0] is None
+                    assert global_neighbors[e1][fid1] is None
+                    global_neighbors[e0][fid0] = e1
+                    global_neighbors[e1][fid1] = e0
+
+            self._global_neighbors_ = global_neighbors
+            return self._global_neighbors_
+
         else:
             return None
 
@@ -177,6 +246,7 @@ class MseHttGreatMeshElements(Frozen):
                         )
                     else:
                         pass
+
         # =========================================================================================
         return boundary_faces
 
@@ -434,6 +504,7 @@ class MseHttGreatMeshElements(Frozen):
                 element._dof_reverse_info[indicator].sort()
 
     def ___get_form_face_dof_topology_mismatch_m2n2k1_inner___(self, vector):
+        r""""""
         # --------- m2n2 Lambda 1-form inner --------------------------------------------------
         from msehtt.static.space.gathering_matrix.Lambda.GM_m2n2k1 import gathering_matrix_Lambda__m2n2k1_inner
         gm_m2n2k1_inner = gathering_matrix_Lambda__m2n2k1_inner(self._tgm, 1, do_cache=False)
@@ -445,13 +516,20 @@ class MseHttGreatMeshElements(Frozen):
         face_cochain_indices = {
             5: [0, 2, 1],  # when degree=1, edge #0 -> local dof #0, on edge #1 -> local dof #2, and so on
             'unique msepy curvilinear triangle': [0, 2, 1],
+            'unique curvilinear triangle': [0, 2, 1],
             'orthogonal rectangle': [2, 3, 0, 1],
             'unique msepy curvilinear quadrilateral': [2, 3, 0, 1],
             9: [2, 3, 0, 1],
             'unique curvilinear quad': [2, 3, 0, 1],
         }
 
-        priority = [9, 'unique curvilinear quad', 'unique msepy curvilinear triangle', 5]
+        priority = [
+            9,
+            'unique curvilinear quad',
+            'unique msepy curvilinear triangle',
+            5,
+            'unique curvilinear triangle',
+        ]
         # we will reverse dofs in element of etype later in this list.
         # for example, a 9-typed element is paired to a 5-typed element, we
         # always change sign of dofs in the 5-typed element.
@@ -461,6 +539,7 @@ class MseHttGreatMeshElements(Frozen):
         )
 
     def ___get_form_face_dof_topology_mismatch_m2n2k1_outer___(self, vector):
+        r""""""
         # --------- m2n2 Lambda 1-form inner --------------------------------------------------
         from msehtt.static.space.gathering_matrix.Lambda.GM_m2n2k1 import gathering_matrix_Lambda__m2n2k1_outer
         gm_m2n2k1_outer = gathering_matrix_Lambda__m2n2k1_outer(self._tgm, 1, do_cache=False)
@@ -472,13 +551,20 @@ class MseHttGreatMeshElements(Frozen):
         face_cochain_indices = {
             5: [1, 0, 2],  # when degree=1, edge #0 -> local dof #1, on edge #1 -> local dof #0, and so on
             'unique msepy curvilinear triangle': [1, 0, 2],
+            'unique curvilinear triangle': [1, 0, 2],
             'orthogonal rectangle': [0, 1, 2, 3],
             'unique msepy curvilinear quadrilateral': [0, 1, 2, 3],
             9: [0, 1, 2, 3],
             'unique curvilinear quad': [0, 1, 2, 3],
         }
 
-        priority = [9, 'unique curvilinear quad', 'unique msepy curvilinear triangle', 5]
+        priority = [
+            9,
+            'unique curvilinear quad',
+            'unique msepy curvilinear triangle',
+            5,
+            'unique curvilinear triangle',
+        ]
         # we will reverse dofs in element of etype later in this list.
         # for example, a 9-typed element is paired to a 5-typed element, we
         # always change sign of dofs in the 5-typed element.
@@ -490,7 +576,7 @@ class MseHttGreatMeshElements(Frozen):
     def ___get_form_face_dof_topology_mismatch_m2n2k1___(
             self, gm, referring_cochain, face_cochain_indices, priority
     ):
-
+        r""""""
         referring_cochain = COMM.gather(referring_cochain, root=MASTER_RANK)
 
         if RANK == MASTER_RANK:
@@ -584,7 +670,7 @@ class MseHttGreatMeshElements(Frozen):
                         )
 
                 else:
-                    raise Exception(positions)
+                    raise Exception(undirected_face, positions)
         else:
             reversing_dof_places = None
 

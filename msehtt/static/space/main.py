@@ -6,6 +6,7 @@ from msehtt.static.space.gathering_matrix.main import MseHttSpaceGatheringMatrix
 from msehtt.static.space.reduce.main import MseHttSpaceReduce
 from msehtt.static.space.reconstruct.main import MseHttSpaceReconstruct
 from msehtt.static.space.mass_matrix.main import MseHttSpaceMassMatrix
+from msehtt.static.space.local_dofs.main import MseHttSpace_Local_Dofs
 from msehtt.static.space.error.main import MseHttSpaceError
 from msehtt.static.space.incidence_matrix.main import MseHttSpaceIncidenceMatrix
 from msehtt.static.space.norm.main import MseHttSpaceNorm
@@ -19,19 +20,22 @@ class MseHttSpace(Frozen):
 
     def __init__(self, abstract_space):
         """"""
-        assert abstract_space._is_space(), f"I need a, abstract space"
+        assert abstract_space._is_space(), f"I need an abstract space"
         self._abstract = abstract_space
         self._tpm = None
+
         self._gm = None
         self._rd = None
         self._rc = None
         self._mm = None
         self._im = None
+        self._LDofs = None
         self._error = None
         self._norm = None
         self._rm = None
         self._ref = None
         self._int_mat_over_sub_geo = None
+
         self._freeze()
 
     @property
@@ -138,6 +142,13 @@ class MseHttSpace(Frozen):
         if self._mm is None:
             self._mm = MseHttSpaceMassMatrix(self)
         return self._mm
+
+    @property
+    def local_dofs(self):
+        r"""Information of local dofs in elements."""
+        if self._LDofs is None:
+            self._LDofs = MseHttSpace_Local_Dofs(self)
+        return self._LDofs
 
     @property
     def error(self):

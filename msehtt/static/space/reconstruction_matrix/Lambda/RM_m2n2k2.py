@@ -17,7 +17,11 @@ def rm__m2n2k2(tpm, degree, xi, et):
     for e in elements:
         element = elements[e]
         etype = element.etype
-        if etype in ("orthogonal rectangle", "unique msepy curvilinear quadrilateral"):
+        if etype in (
+                9,
+                "orthogonal rectangle",
+                "unique msepy curvilinear quadrilateral"
+        ):
             RM_u[e] = ___rm222_msepy_quadrilateral___(element, degree, xi, et)
         else:
             raise NotImplementedError(f"{__name__} not implemented for etype={etype}")

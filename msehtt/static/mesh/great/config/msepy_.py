@@ -236,7 +236,7 @@ class MseHttMsePyConfig(Frozen):
                     numbering_element = i
                     numbering_edge_id = ind[number_where]
                     attached_2_numbering_edge = mp[numbering_element][numbering_edge_id]
-                    # _____ element edge on domain boundary________________________
+                    # _____ element edge on domain boundary ________________________
                     if attached_2_numbering_edge == -1:
                         # the numbering edge is on domain boundary
                         axis, start_end = _dict_[number_where]
@@ -249,7 +249,7 @@ class MseHttMsePyConfig(Frozen):
                         else:
                             raise Exception()
                         current_num += num_dof_dict[number_where]
-                    # ___ element edge attached to another mesh element____________
+                    # ___ element edge attached to another mesh element ____________
                     else:
                         attached_element = attached_2_numbering_edge
                         attached_edge_id = edge_pair[numbering_edge_id]
@@ -267,7 +267,7 @@ class MseHttMsePyConfig(Frozen):
                             else:
                                 raise Exception()
                             current_num += num_dof_dict[number_where]
-                        # __another mesh element is numbered_______________________
+                        # __ another mesh element is numbered _______________________
                         else:  # we take the numbering from attached_edge
                             axis, start_end = _dict_[number_where]
                             attached_se = {0: -1, -1: 0}[start_end]
@@ -282,7 +282,7 @@ class MseHttMsePyConfig(Frozen):
                     gm[i, 1:-1, 1:-1] = np.arange(
                         current_num, current_num+(p[0]-1)*(p[1]-1)).reshape((p[0]-1, p[1]-1), order='F')
                     current_num += (p[0]-1)*(p[1]-1)
-                # ____ ELSE _____________________________________________
+                # ____ ELSE _______________________________________________________
                 else:
                     raise Exception(f"cannot reach here!")
 
@@ -630,7 +630,7 @@ class MseHttMsePyConfig(Frozen):
                     else:
                         gn[mesh_element_no, 1:-1, -1, -1] = np.arange(
                             current_num, current_num+p-1)
-            # __ ELSE: ERRORING ____________________________________________________
+            # __ ELSE ______________________________________________________________
             else:
                 raise Exception()
             # ----------------------------------------------------------------------

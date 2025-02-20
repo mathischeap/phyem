@@ -30,13 +30,23 @@ def reduce_Lambda__m2n2k1_inner(cf_t, obj, degree, raw=False):
     for e in elements:
         element = elements[e]
         etype = element.etype
-        if etype in ("orthogonal rectangle", "unique msepy curvilinear quadrilateral"):
+        if etype in (
+                "orthogonal rectangle",
+                "unique msepy curvilinear quadrilateral",
+        ):
             cochain[e] = ___221i_msepy_quadrilateral___(element, cf_t, degree)
 
-        elif etype in (9, 'unique curvilinear quad'):
+        elif etype in (
+                9,
+                'unique curvilinear quad',
+        ):
             cochain[e] = ___221i_vtu_9_reducing___(element, cf_t, degree, raw=raw)
 
-        elif etype in (5, 'unique msepy curvilinear triangle'):  # vtu triangle element
+        elif etype in (
+                5,
+                'unique curvilinear triangle',
+                'unique msepy curvilinear triangle',
+        ):  # triangle element
             cochain[e] = ___221i_vtu_5_reducing___(element, cf_t, degree, raw=raw)
 
         else:
@@ -212,13 +222,23 @@ def reduce_Lambda__m2n2k1_outer(cf_t, obj, degree, raw=False):
     for e in elements:
         element = elements[e]
         etype = element.etype
-        if etype in ("orthogonal rectangle", "unique msepy curvilinear quadrilateral"):
+        if etype in (
+                "orthogonal rectangle",
+                "unique msepy curvilinear quadrilateral",
+        ):
             cochain[e] = ___221o_msepy_quadrilateral___(element, cf_t, degree)
 
-        elif etype in (9, 'unique curvilinear quad'):
+        elif etype in (
+                9,
+                'unique curvilinear quad',
+        ):
             cochain[e] = ___221o_vtu_9_reducing___(element, cf_t, degree, raw=raw)
 
-        elif etype in (5, 'unique msepy curvilinear triangle'):  # vtu triangle element
+        elif etype in (
+                5,
+                'unique curvilinear triangle',
+                'unique msepy curvilinear triangle',
+        ):  # triangle element
             cochain[e] = ___221o_vtu_5_reducing___(element, cf_t, degree, raw=raw)
 
         else:

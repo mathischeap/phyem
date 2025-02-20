@@ -147,8 +147,8 @@ class MseHttGatheringMatrix(Frozen):
             return r'CHAIN-GM ::: ' + '-o-'.join(repr_list) + ' ::: ' + super_repr
 
     def _check_gm_and_gms(self):
-        """"""
-        assert isinstance(self._gm, dict), f"MseTT `_gm` must be a dict."
+        r""""""
+        assert isinstance(self._gm, dict), f"`gm` must be a dict."
         assert all([_.__class__ is self.__class__ for _ in self._gms]), \
             f"each of `gms` must be {self.__class__}."
 
@@ -166,7 +166,6 @@ class MseHttGatheringMatrix(Frozen):
                             pass
                         else:
                             raise Exception(f"same element appear in RANKS {i} and {j}.")
-
             else:
                 pass
 
@@ -207,18 +206,22 @@ class MseHttGatheringMatrix(Frozen):
 
     @property
     def num_global_dofs(self):
-        """total dofs across all ranks. Return the same value for in all ranks."""
+        r"""total dofs across all ranks. Return the same value in all ranks."""
         return self._num_global_dofs
 
     @property
     def num_rank_dofs(self):
-        """dofs in this rank."""
+        r"""How many dofs in this rank?"""
         if self._num_rank_dofs is None:
-            raise NotImplementedError()  # to be implemented!
+            all_local_dofs = set()
+            for e in self:
+                gm = self[e]
+                all_local_dofs.update(gm)
+            self._num_rank_dofs = len(all_local_dofs)
         return self._num_rank_dofs
 
     def num_local_dofs(self, i):
-        """the num local dofs in element #`i`."""
+        r"""the num local dofs in element #`i`."""
         return len(self._gm[i])
 
     @property
@@ -291,6 +294,12 @@ class MseHttGatheringMatrix(Frozen):
         """Each element in `elements` must be a local. So, no communication
         take place in this method.
 
+        Thus, this method should be called at the same time in all ranks with
+        the same input. And same results are returned in all ranks.
+
+        That is saying, even if an element is not in a rank, the corresponding
+        result will be returned in that rank as well.
+
         Parameters
         ----------
         elements
@@ -300,7 +309,27 @@ class MseHttGatheringMatrix(Frozen):
         -------
 
         """
-        raise NotImplementedError()
+        rank_results = {}
+        for e, l in zip(elements, local_indices):
+            if e in self:
+                gme = self[e]
+                global_dof = gme[l]
+                rank_results[(e, l)] = global_dof
+            else:
+                pass
+
+        global_results = COMM.gather(rank_results, root=MASTER_RANK)
+
+        if RANK == MASTER_RANK:
+            GLOBAL_RESULTS = {}
+            for gr in global_results:
+                GLOBAL_RESULTS.update(gr)
+        else:
+            GLOBAL_RESULTS = None
+
+        global_results = COMM.bcast(GLOBAL_RESULTS, root=MASTER_RANK)
+
+        return global_results
 
     def find_rank_locations_of_global_dofs(self, global_dofs):
         """find all the locations in this rank of global dofs. So this is a local
@@ -354,6 +383,7 @@ class MseHttGatheringMatrix(Frozen):
                 for e in self:
                     numbering = self[e]
                     if gd in numbering:
+                        # noinspection PyUnresolvedReferences
                         indices = list(np.where(numbering == gd)[0])
                         for i in indices:
                             temp.append((e, i))
@@ -367,7 +397,9 @@ class MseHttGatheringMatrix(Frozen):
         return location_dict
 
     def find_representative_location(self, i):
-        """"""
+        r"""For global dof #i that at shared by multiple elements,
+        we pick up one place as its representative place.
+        """
         if i in self._representative_cache:
             return self._representative_cache[i]
         else:
@@ -406,7 +438,7 @@ class MseHttGatheringMatrix(Frozen):
         return representative_rank, representative_element
 
     def num_global_locations(self, i):
-        """"""
+        r"""Return how many elements sharing the global dof #i."""
         if i in self._global_location_cache:
             pass
         else:

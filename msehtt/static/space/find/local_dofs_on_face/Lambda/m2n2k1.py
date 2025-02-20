@@ -8,7 +8,7 @@ import numpy as np
 
 
 def find_local_dofs_on_face__m2n2k1_outer(etype, p, face_index, component_wise=False):
-    """"""
+    r""""""
     if etype in ('unique msepy curvilinear quadrilateral', 'orthogonal rectangle',
                  9, 'unique curvilinear quad'):
         local_numbering = __m2n2k1_outer_msepy_quadrilateral_(p, face_index, component_wise=component_wise)
@@ -27,7 +27,7 @@ _cache_221o_ = {}
 
 
 def __m2n2k1_outer_msepy_quadrilateral_(p, face_index, component_wise=False):
-    """"""
+    r""""""
     key = f"{p}{face_index}{component_wise}"
     if key in _cache_221o_:
         return _cache_221o_[key]
@@ -63,7 +63,7 @@ _cache_221o_vtu5_ = {}
 
 
 def __m2n2k1_outer_vtu_5__(p, face_index, component_wise=False):
-    """
+    r"""
     -----------------------> et
     |
     |
@@ -115,7 +115,7 @@ def __m2n2k1_outer_vtu_5__(p, face_index, component_wise=False):
 
 
 def find_local_dofs_on_face__m2n2k1_inner(etype, p, face_index, component_wise=False):
-    """"""
+    r""""""
     if etype in ('unique msepy curvilinear quadrilateral', 'orthogonal rectangle',
                  9, 'unique curvilinear quad'):
         local_numbering = __m2n2k1_inner_msepy_quadrilateral_(p, face_index, component_wise=component_wise)
@@ -134,7 +134,7 @@ _cache_221i_ = {}
 
 
 def __m2n2k1_inner_msepy_quadrilateral_(p, face_index, component_wise=False):
-    """"""
+    r""""""
     key = f"{p}{face_index}{component_wise}"
     if key in _cache_221i_:
         return _cache_221i_[key]
@@ -170,7 +170,7 @@ _cache_221i_vtu5_ = {}
 
 
 def __m2n2k1_inner_vtu_5__(p, face_index, component_wise=False):
-    """
+    r"""
 
     -----------------------> et
     |

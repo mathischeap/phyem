@@ -265,6 +265,7 @@ def _d_ast_to_vc(space_indicator, *args):
                 return '+', 'rot'
             else:
                 raise Exception()
+
         elif m == n == 2 and k == 2:
             if ori == 'inner':
                 return '+', 'curl'
@@ -282,8 +283,10 @@ def _d_ast_to_vc(space_indicator, *args):
                 return '-', 'gradient'
             else:
                 raise Exception()
+
         else:
-            raise NotImplementedError()
+            raise NotImplementedError(
+                f"m={m}, n={n}, k={k}-form has no codifferential. Or not implemented yet.")
     else:
         raise NotImplementedError()
 

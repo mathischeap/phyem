@@ -69,12 +69,24 @@ class UniqueCurvilinearQuad(MseHttGreatMeshBaseElement):
     def _etype(cls):
         return 'unique curvilinear quad'
 
+    @classmethod
+    def _find_element_center_coo(cls, parameters):
+        r""""""
+        mp = parameters['mapping']
+        x, y = mp(0, 0)
+        return np.array([x, y])
+
+    @classmethod
+    def _find_mapping_(cls, parameters, x, y):
+        r""""""
+        return parameters['mapping'](x, y)
+
     @property
     def metric_signature(self):
         """return int when it is unique."""
         return id(self)
 
-    def _generate_outline_data(self, ddf=1):
+    def _generate_outline_data(self, ddf=1, internal_grid=0):
         """"""
         if ddf <= 0.1:
             ddf = 0.1
@@ -91,7 +103,7 @@ class UniqueCurvilinearQuad(MseHttGreatMeshBaseElement):
         linspace = np.linspace(-1, 1, samples)
         ones = np.ones_like(linspace)
 
-        return {
+        line_dict = {
             'mn': (self.m(), self.n()),
             'center': self.ct.mapping(0, 0),
             0: self.ct.mapping(-ones, linspace),   # face #0: North
@@ -99,6 +111,11 @@ class UniqueCurvilinearQuad(MseHttGreatMeshBaseElement):
             2: self.ct.mapping(linspace, -ones),   # face #2: West
             3: self.ct.mapping(linspace, ones),    # face #3: East
         }
+
+        if internal_grid == 0:
+            return line_dict
+        else:
+            raise NotImplementedError()
 
     @classmethod
     def face_setting(cls):
@@ -136,16 +153,6 @@ class UniqueCurvilinearQuad(MseHttGreatMeshBaseElement):
     def ___edge_representative_str___(self):
         r""""""
         raise Exception(f"U-C-Q (2d) element has no edges.")
-
-    @classmethod
-    def degree_parser(cls, degree):
-        """"""
-        if isinstance(degree, int):
-            p = (degree, degree)
-            dtype = 'Lobatto'
-        else:
-            raise NotImplementedError()
-        return p, dtype
 
 
 from msehtt.static.mesh.great.elements.types.base import MseHttGreatMeshBaseElementCooTrans

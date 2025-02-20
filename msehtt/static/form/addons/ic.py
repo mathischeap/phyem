@@ -52,4 +52,5 @@ class MseHtt_From_InterpolateCopy(Frozen):
 
     @property
     def cochain(self):
+        r""""""
         return self._cochain

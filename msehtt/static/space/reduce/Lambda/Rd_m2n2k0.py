@@ -13,11 +13,18 @@ def reduce_Lambda__m2n2k0(cf_t, tpm, degree):
     for e in elements:
         element = elements[e]
         etype = element.etype
-        if etype in ("orthogonal rectangle", "unique msepy curvilinear quadrilateral",
-                     9, 'unique curvilinear quad'):
+        if etype in (
+                9,
+                "orthogonal rectangle",
+                "unique msepy curvilinear quadrilateral",
+                'unique curvilinear quad',
+        ):
             cochain[e] = ___220_msepy_quadrilateral___(element, cf_t, degree)
 
-        elif etype in (5, "unique msepy curvilinear triangle"):
+        elif etype in (
+                5,
+                "unique msepy curvilinear triangle",
+        ):
             cochain[e] = ___220_vtu_5___(element, cf_t, degree)
 
         else:

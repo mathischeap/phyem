@@ -6,10 +6,10 @@ from msehtt.static.mesh.great.visualize.matplot import MseHttGreatMeshVisualizeM
 
 
 class MseHttGreatMeshVisualize(Frozen):
-    """"""
+    r""""""
 
     def __init__(self, tgm):
-        """"""
+        r""""""
         self._tgm = tgm
         self._matplot = None
         self._freeze()
@@ -25,10 +25,27 @@ class MseHttGreatMeshVisualize(Frozen):
             self._matplot = MseHttGreatMeshVisualizeMatplot(self._tgm)
         return self._matplot
 
-    def _generate_element_outline_data(self, ddf=1):
+    def _generate_element_outline_data(self, ddf=1, internal_grid=0):
         r""""""
         outline_data = {}
         for i in self._tgm.elements:
             element = self._tgm.elements[i]
-            outline_data[i] = element._generate_outline_data(ddf=ddf)
+            outline_data[i] = element._generate_outline_data(ddf=ddf, internal_grid=internal_grid)
         return outline_data
+
+    def _generate_element_quality_data(self):
+        r"""return a dict whose keys are element indices and values are the factor indicating the quality of
+        the elements.
+
+        When the factor is 0: the element is worst.
+        When the factor is 1: the element is best.
+
+        Returns
+        -------
+
+        """
+        quality_data = {}
+        for i in self._tgm.elements:
+            element = self._tgm.elements[i]
+            quality_data[i] = element._find_element_quality()
+        return quality_data

@@ -145,16 +145,6 @@ class MseHttGreatMeshUniqueMsepyCurvilinearQuadrilateralElement(MseHttGreatMeshB
         r""""""
         raise Exception(f"msepy curvilinear quadrilateral element has no edges.")
 
-    @classmethod
-    def degree_parser(cls, degree):
-        """"""
-        if isinstance(degree, int):
-            p = (degree, degree)
-            dtype = 'Lobatto'
-        else:
-            raise NotImplementedError()
-        return p, dtype
-
     # @classmethod
     # def _form_face_dof_direction_topology(cls):
     #     m2n2k1_outer = {

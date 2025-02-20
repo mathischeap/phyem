@@ -6,15 +6,15 @@ from importlib import import_module
 
 
 class MseHttSpaceGatheringMatrixLambda(Frozen):
-    """"""
+    r""""""
 
     def __init__(self, space):
-        """"""
+        r""""""
         self._space = space
         self._freeze()
 
     def __call__(self, degree):
-        """"""
+        r""""""
         m = self._space.m
         n = self._space.n
         k = self._space.abstract.k

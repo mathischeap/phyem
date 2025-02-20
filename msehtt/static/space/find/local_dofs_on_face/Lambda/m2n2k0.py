@@ -4,7 +4,7 @@ r"""
 
 
 def find_local_dofs_on_face__m2n2k0(etype, p, face_index):
-    """"""
+    r""""""
     if etype in ('unique msepy curvilinear quadrilateral', 'orthogonal rectangle',
                  9, 'unique curvilinear quad'):
         local_numbering = __m2n2k0_msepy_quadrilateral_(p, face_index)
@@ -21,7 +21,7 @@ _cache_220_ = {}
 
 
 def __m2n2k0_msepy_quadrilateral_(p, face_index):
-    """"""
+    r""""""
     key = f"{p}{face_index}"
     if key in _cache_220_:
         return _cache_220_[key]
@@ -42,7 +42,7 @@ def __m2n2k0_msepy_quadrilateral_(p, face_index):
 
 
 def __m2n2k0_vtu5__(p, face_index):
-    """
+    r"""
     -----------------------> et
     |
     |

@@ -5,9 +5,9 @@ from msehtt.static.mesh.great.elements.types.orthogonal_rectangle import MseHttG
 
 
 class Vtu8Pixel(MseHttGreatMeshOrthogonalRectangleElement):
-    """A pixel cell is actually an orthogonal rectangle cell."""
+    r"""A pixel cell is actually an orthogonal rectangle cell."""
     def __init__(self, element_index, parameters, _map):
-        """"""
+        r""""""
         x0, y0 = parameters[0]
         x1, y1 = parameters[1]
         x2, y2 = parameters[2]

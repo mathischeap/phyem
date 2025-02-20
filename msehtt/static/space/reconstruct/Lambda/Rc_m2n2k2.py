@@ -16,8 +16,14 @@ def reconstruct_Lambda__m2n2k2(tpm, degree, cochain, xi, et, ravel=False):
         element = elements[e]
         etype = element.etype
         local_cochain = cochain[e]
-        if etype in ("orthogonal rectangle", "unique msepy curvilinear quadrilateral",
-                     5, 'unique msepy curvilinear triangle', 9):
+        if etype in (
+                9,
+                5,
+                "orthogonal rectangle",
+                "unique msepy curvilinear quadrilateral",
+                'unique msepy curvilinear triangle',
+                "unique curvilinear quad",
+        ):
             x[e], y[e], u[e] = ___rc222_msepy_quadrilateral___(
                 element, degree, local_cochain, xi, et, ravel=ravel
             )

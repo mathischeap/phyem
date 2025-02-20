@@ -4,6 +4,7 @@ r"""
 from tools.frozen import Frozen
 from msehtt.static.manifold.predefined.chaotic import chaotic
 from msehtt.static.manifold.predefined.rectangle import rectangle
+from msehtt.static.manifold.predefined.quad import quad
 
 
 class Predefined_Msehtt_Manifold_Distributor(Frozen):
@@ -18,4 +19,5 @@ class Predefined_Msehtt_Manifold_Distributor(Frozen):
         return {
             'chaotic': chaotic,
             'rectangle': rectangle,
+            'quad': quad
         }

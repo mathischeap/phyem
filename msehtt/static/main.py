@@ -96,7 +96,7 @@ def _parse_meshes(abstract_meshes):
 
 
 def _parse_spaces(abstract_spaces):
-    """"""
+    r""""""
     space_dict = {}
     for ab_msh_sym_repr in abstract_spaces:
         ab_sps = abstract_spaces[ab_msh_sym_repr]
@@ -126,7 +126,7 @@ def _parse_spaces(abstract_spaces):
 
 
 def _parse_root_forms(abstract_rfs):
-    """"""
+    r""""""
     rf_dict = {}
     for rf_lin_repr in abstract_rfs:  # do it for all general root-forms
         rf = abstract_rfs[rf_lin_repr]
@@ -169,7 +169,7 @@ def _parse_root_forms(abstract_rfs):
 
 
 def ___link_all_forms____():
-    """"""
+    r""""""
     the_great_mesh = base['the_great_mesh']
     partial_meshes = base['meshes']  # all the partial meshes
     spaces = base['spaces']          # all the msehtt spaces
@@ -190,7 +190,7 @@ def ___link_all_forms____():
 
 
 def _parse(obj):
-    """The objects other than manifolds, meshes, spaces, root-forms that should be parsed for this
+    r"""The objects other than manifolds, meshes, spaces, root-forms that should be parsed for this
     particular fem setting.
     """
     if obj.__class__ is MatrixProxyLinearSystem:

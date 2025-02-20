@@ -42,9 +42,11 @@ class NumericalPartialDerivativeTx(ABC):
         self._t_ = t
 
     def _evaluate_func_for_t(self, t):
+        r""""""
         return self._func_(t, self._x_)
 
     def _evaluate_func_for_x(self, x):
+        r""""""
         return self._func_(self._t_, x)
 
     def partial(self, d_):

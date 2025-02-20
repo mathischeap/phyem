@@ -330,7 +330,7 @@ class _CylinderChannel(object):
         else:
             raise Exception()
 
-        hr = 0.5 * r * np.sqrt(2)
+        hr = float(0.5 * r * np.sqrt(2))
 
         if esd == 2:
             tf1 = _Transfinite2(

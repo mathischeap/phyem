@@ -18,12 +18,19 @@ def reconstruct_Lambda__m2n2k1_inner(tpm, degree, cochain, xi, et, ravel=False):
         element = elements[e]
         etype = element.etype
         local_cochain = cochain[e]
-        if etype in ("orthogonal rectangle", "unique msepy curvilinear quadrilateral",
-                     9, 'unique curvilinear quad'):
+        if etype in (
+                9,
+                "orthogonal rectangle",
+                "unique msepy curvilinear quadrilateral",
+                'unique curvilinear quad',
+        ):
             x[e], y[e], u[e], v[e] = ___rc221i_msepy_quadrilateral___(
                 element, degree, local_cochain, xi, et, ravel=ravel
             )
-        elif etype in (5, "unique msepy curvilinear triangle"):
+        elif etype in (
+                5,
+                "unique msepy curvilinear triangle",
+        ):
             x[e], y[e], u[e], v[e] = ___rc221i_vtu_5___(
                 element, degree, local_cochain, xi, et, ravel=ravel
             )
@@ -130,12 +137,19 @@ def reconstruct_Lambda__m2n2k1_outer(tpm, degree, cochain, xi, et, ravel=False):
         element = elements[e]
         etype = element.etype
         local_cochain = cochain[e]
-        if etype in ("orthogonal rectangle", "unique msepy curvilinear quadrilateral",
-                     9, 'unique curvilinear quad'):
+        if etype in (
+                9,
+                "orthogonal rectangle",
+                "unique msepy curvilinear quadrilateral",
+                'unique curvilinear quad',
+        ):
             x[e], y[e], u[e], v[e] = ___rc221o_msepy_quadrilateral___(
                 element, degree, local_cochain, xi, et, ravel=ravel
             )
-        elif etype in (5, "unique msepy curvilinear triangle"):
+        elif etype in (
+                5,
+                "unique msepy curvilinear triangle",
+        ):
             x[e], y[e], u[e], v[e] = ___rc221o_vtu_5___(
                 element, degree, local_cochain, xi, et, ravel=ravel
             )

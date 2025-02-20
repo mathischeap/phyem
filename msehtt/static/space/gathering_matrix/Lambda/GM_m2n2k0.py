@@ -32,17 +32,27 @@ def gathering_matrix_Lambda__m2n2k0(tpm, degree):
             map_ = global_map[e]
             # --------- call the element class to do the particular numbering -----------
             if e in tpm.composition.global_element_range:
-                if etype in ('unique msepy curvilinear quadrilateral', 'orthogonal rectangle'):
+                if etype in (
+                        'unique msepy curvilinear quadrilateral',
+                        'orthogonal rectangle',
+                ):
                     global_numbering[e], current = ___gm220_msepy_quadrilateral___(
                         map_, edge_numbering_pool, node_numbering_pool, current, degree,
                     )
 
-                elif etype in (5, "unique msepy curvilinear triangle"):
+                elif etype in (
+                        5,
+                        "unique curvilinear triangle",
+                        "unique msepy curvilinear triangle",
+                ):
                     global_numbering[e], current = ___gm220_vtu_5___(
                         map_, edge_numbering_pool, node_numbering_pool, current, degree,
                     )
 
-                elif etype in (9, 'unique curvilinear quad'):
+                elif etype in (
+                        9,
+                        'unique curvilinear quad',
+                ):
                     global_numbering[e], current = ___gm220_quad_9___(
                         map_, edge_numbering_pool, node_numbering_pool, current, degree,
                     )
@@ -97,6 +107,7 @@ def ___gm220_msepy_quadrilateral___(map_, edge_numbering_pool, node_numbering_po
         number = edge_numbering_pool[edge__]
     elif edge_r in edge_numbering_pool:
         number = edge_numbering_pool[edge_r]
+        number = number[::-1]
     else:
         number = np.arange(current, current + px - 1)
         current += px - 1
@@ -120,6 +131,7 @@ def ___gm220_msepy_quadrilateral___(map_, edge_numbering_pool, node_numbering_po
         number = edge_numbering_pool[edge__]
     elif edge_r in edge_numbering_pool:
         number = edge_numbering_pool[edge_r]
+        number = number[::-1]
     else:
         number = np.arange(current, current + py - 1)
         current += py - 1
@@ -138,6 +150,7 @@ def ___gm220_msepy_quadrilateral___(map_, edge_numbering_pool, node_numbering_po
         number = edge_numbering_pool[edge__]
     elif edge_r in edge_numbering_pool:
         number = edge_numbering_pool[edge_r]
+        number = number[::-1]
     else:
         number = np.arange(current, current + py - 1)
         current += py - 1
@@ -161,6 +174,7 @@ def ___gm220_msepy_quadrilateral___(map_, edge_numbering_pool, node_numbering_po
         number = edge_numbering_pool[edge__]
     elif edge_r in edge_numbering_pool:
         number = edge_numbering_pool[edge_r]
+        number = number[::-1]
     else:
         number = np.arange(current, current + px - 1)
         current += px - 1
@@ -209,6 +223,7 @@ def ___gm220_quad_9___(map_, edge_numbering_pool, node_numbering_pool, current, 
         number = edge_numbering_pool[edge__]
     elif edge_r in edge_numbering_pool:
         number = edge_numbering_pool[edge_r]
+        number = number[::-1]
     else:
         number = np.arange(current, current + px - 1)
         current += px - 1
@@ -232,6 +247,7 @@ def ___gm220_quad_9___(map_, edge_numbering_pool, node_numbering_pool, current, 
         number = edge_numbering_pool[edge__]
     elif edge_r in edge_numbering_pool:
         number = edge_numbering_pool[edge_r]
+        number = number[::-1]
     else:
         number = np.arange(current, current + py - 1)
         current += py - 1
@@ -250,6 +266,7 @@ def ___gm220_quad_9___(map_, edge_numbering_pool, node_numbering_pool, current, 
         number = edge_numbering_pool[edge__]
     elif edge_r in edge_numbering_pool:
         number = edge_numbering_pool[edge_r]
+        number = number[::-1]
     else:
         number = np.arange(current, current + py - 1)
         current += py - 1
@@ -273,6 +290,7 @@ def ___gm220_quad_9___(map_, edge_numbering_pool, node_numbering_pool, current, 
         number = edge_numbering_pool[edge__]
     elif edge_r in edge_numbering_pool:
         number = edge_numbering_pool[edge_r]
+        number = number[::-1]
     else:
         number = np.arange(current, current + px - 1)
         current += px - 1
@@ -349,6 +367,7 @@ def ___gm220_vtu_5___(map_, edge_numbering_pool, node_numbering_pool, current, d
         number = edge_numbering_pool[edge__]
     elif edge_r in edge_numbering_pool:
         number = edge_numbering_pool[edge_r]
+        number = number[::-1]
     else:
         number = np.arange(current, current + px - 1)
         current += px - 1
@@ -377,6 +396,7 @@ def ___gm220_vtu_5___(map_, edge_numbering_pool, node_numbering_pool, current, d
         number = edge_numbering_pool[edge__]
     elif edge_r in edge_numbering_pool:
         number = edge_numbering_pool[edge_r]
+        number = number[::-1]
     else:
         number = np.arange(current, current + py - 1)
         current += py - 1
@@ -390,6 +410,7 @@ def ___gm220_vtu_5___(map_, edge_numbering_pool, node_numbering_pool, current, d
         number = edge_numbering_pool[edge__]
     elif edge_r in edge_numbering_pool:
         number = edge_numbering_pool[edge_r]
+        number = number[::-1]
     else:
         number = np.arange(current, current + px - 1)
         current += px - 1

@@ -9,7 +9,9 @@ from tools.frozen import Frozen
 from tools.miscellaneous.numpy_styple import NumpyStyleDocstringReader
 import inspect
 import psutil
+import socket
 from src.config import RANK, MASTER_RANK, COMM
+from _monitor_wi import ___write_info___, ___write_picture___
 
 from tools.iterator.monitor import IteratorMonitor
 
@@ -60,7 +62,8 @@ class Iterator(Frozen):
         else:
             pass
         assert len(initials) == self._num_outputs - 2, \
-            f" len(initials) = {len(initials)} != (len(solver_ret) - 2)={self._num_outputs - 2}"
+            (f" len(initials) = {len(initials)} != (len(solver_ret) - 2)={self._num_outputs - 2}:"
+             f" Number of initial values are different from number of values returned.")
         self._initials = initials
         self._exit_code_ = 0
         self._message_ = ''
@@ -75,6 +78,10 @@ class Iterator(Frozen):
             self._cache_filename_ = None
             self._cache_time_ = time()
             self.___cache_time___ = None
+            self.___first_cache_time___ = None
+        else:
+            pass
+        self.___cache_num___ = None
 
         self._freeze()
 
@@ -132,6 +139,10 @@ class Iterator(Frozen):
     def test(self, test_range, show_info=True):
         r"""Do a test run of `times` iterations."""
         all_test_results = list()
+        if isinstance(test_range, (int, float, str)):
+            test_range = [test_range, ]
+        else:
+            pass
         for args in test_range:
             if show_info:
                 if RANK == MASTER_RANK:
@@ -166,7 +177,13 @@ class Iterator(Frozen):
 
         return all_test_results
 
-    def cache(self, *cache_objs, cache_filename=None, time=None):
+    def cache(
+            self,
+            *cache_objs,
+            cache_filename=None,
+            time=None,
+            num=None,
+    ):
         r"""
 
         Parameters
@@ -177,6 +194,9 @@ class Iterator(Frozen):
 
         cache_filename
         time
+        num
+            How many nearest data-structures (like cochain) of objs to be cached?
+            If `num` is None, then normally, we only cache the newest data.
 
         Returns
         -------
@@ -190,6 +210,7 @@ class Iterator(Frozen):
             f"cache_filename={cache_filename} illegal. It must be str of no '.' in it."
         cache_filename += '.phc'
         self._cache_objs_ = cache_objs
+
         if RANK == MASTER_RANK:
             self._cache_filename_ = cache_filename
             if os.path.isfile(self._cache_filename_):  # we find an existing phyem cache file
@@ -209,21 +230,40 @@ class Iterator(Frozen):
                 }
 
                 with open(cache_filename, 'wb') as output:
+                    # noinspection PyTypeChecker
                     pickle.dump(cache_dict, output, pickle.HIGHEST_PROTOCOL)
                 output.close()
 
             # We check the cache file
             self._check_cache(self._cache_filename_)
-            if time is None:    # default caching time: 1 hour
-                self.___cache_time___ = 3600
+            if time is None:    # default caching time: every about 3 hours
+                self.___cache_time___ = 10800
+                self.___first_cache_time___ = 300
             elif time == np.inf:
                 self.___cache_time___ = np.inf
+                self.___first_cache_time___ = np.inf
             else:
                 assert isinstance(time, (int, float)) and time > 0, \
                     f"time={time} wrong, must be positive number."
                 self.___cache_time___ = time
+                self.___first_cache_time___ = 0.1 * self.___cache_time___
+                if self.___first_cache_time___ > 300:
+                    self.___first_cache_time___ = 300
+                else:
+                    pass
+
         else:
             pass
+
+        if num is None:
+            pass
+        elif isinstance(num, int):
+            if num < 1:
+                raise Exception(f"at least cache nearest one data-structure.")
+            else:
+                self.___cache_num___ = ('nearest', num)
+        else:
+            raise NotImplementedError()
 
     def _check_cache(self, cache_filename):
         r"""Check whether the cache file is of the correct format.
@@ -267,7 +307,7 @@ class Iterator(Frozen):
         r"""`_make_cache_data` must return all necessary data in the master rank."""
         all_obj_data = list()
         for obj in self._cache_objs_:
-            data = obj._make_cache_data(t=None)   # only coding the newest t of objs.
+            data = obj._make_cache_data(t=self.___cache_num___)   # only coding the newest t of objs.
             all_obj_data.append(data)
         return all_obj_data
 
@@ -444,6 +484,7 @@ class Iterator(Frozen):
                 )
             else:
                 pass
+            cache_times, computing_times, first_caching = 0, 0, True
         else:
             pass
         caching = False
@@ -480,8 +521,7 @@ class Iterator(Frozen):
                         if RANK != MASTER_RANK:
                             # noinspection PyUnboundLocalVariable
                             outputs = [exit_cods, ''] + None_outputs
-                        else:
-                            pass
+                        sleep(0.01)
                     else:
                         keep_checking = False
                         caching = True
@@ -492,10 +532,13 @@ class Iterator(Frozen):
                         if RANK != MASTER_RANK:
                             del computed_inputs
                         else:
-                            pass
-                    sleep(0.01)
+                            # noinspection PyUnboundLocalVariable
+                            computing_times += 1
                 else:
                     outputs = self._solver_(*inputs)
+                    if RANK == MASTER_RANK:
+                        # noinspection PyUnboundLocalVariable
+                        computing_times += 1
 
             # noinspection PyUnboundLocalVariable
             assert len(outputs) == self._num_outputs, f"amount of outputs wrong!"
@@ -513,23 +556,66 @@ class Iterator(Frozen):
                     self._compress_computed_input_list(computed_inputs)
                     now = time()
                     cache_waiting_time = now - self._cache_time_
-                    do_cache = cache_waiting_time > self.___cache_time___  # every `___cache_time___` do a cache
+                    # noinspection PyUnboundLocalVariable
+                    if first_caching:
+                        do_cache = ((cache_waiting_time > self.___first_cache_time___)
+                                    and self.monitor._report_times >= 2)
+                        if do_cache:
+                            first_caching = False
+                        else:
+                            pass
+                    else:
+                        do_cache = cache_waiting_time > self.___cache_time___  # every `___cache_time___` do a cache
                 else:
                     do_cache = False
                 do_cache = COMM.bcast(do_cache, root=MASTER_RANK)
                 if do_cache:
                     obj_coding_data = self._coding_objs_()
                     if RANK == MASTER_RANK:
+                        # noinspection PyUnboundLocalVariable
+                        new_log = self._make_cache_log(Ik, cache_count, cache_res, computed_inputs)
                         if pbar:
                             pass
                         else:
-                            print("\n---------------------------------------------------------")
-                            print("\n=========================================================\n")
-                            print(desc + f'-> cache @' + MyTimer.current_time(), flush=True)
-                            print("\n=========================================================")
-                            print("\n---------------------------------------------------------\n\n")
+                            print("\n_________________________________________________________")
+                            print("=========================================================")
+                            print(desc + f'-> cache @' + MyTimer.current_time())
+                            print(new_log)
+                            print("=========================================================")
+                            print("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n\n", flush=True)
                         # noinspection PyUnboundLocalVariable
-                        log = self._make_cache_log(log, Ik, cache_count, cache_res, computed_inputs)
+                        log += '\n' + new_log
+                        # noinspection PyUnboundLocalVariable
+                        cache_times += 1
+                        if cache_times == 1 or ((cache_times - 1) % 4 == 0):
+                            info_str = str(self._solver_dir_)
+                            if len(info_str) > 25:
+                                info_str = '...' + info_str[-22:]
+                            else:
+                                pass
+                            if cache_times == 1:
+                                # noinspection PyUnboundLocalVariable
+                                ___write_info___(
+                                    f"### [{socket.gethostname()}] FIRST CACHE <- "
+                                    f"{computing_times} <- {info_str}"
+                                )
+                            else:
+                                # noinspection PyUnboundLocalVariable
+                                ___write_info___(
+                                    f"### [{socket.gethostname()}] (4) new CACHES <- "
+                                    f"{computing_times} <- {info_str}"
+                                )
+
+                            pic_report_path = f'{self.monitor.name}.png'
+                            if os.path.isfile(pic_report_path):
+                                ___write_picture___(pic_report_path)
+                            else:
+                                pass
+                            computing_times = 0
+                        else:
+                            pass
+
+                        cache_count += 1
                         # noinspection PyUnboundLocalVariable
                         cache_dict = {
                             'obj names': obj_names,
@@ -537,9 +623,10 @@ class Iterator(Frozen):
                             'RES': cache_res,
                             'cache data': obj_coding_data,
                             'log': log,
-                            'cache_count': cache_count + 1
+                            'cache_count': cache_count
                         }
                         with open(self._cache_filename_, 'wb') as cf:
+                            # noinspection PyTypeChecker
                             pickle.dump(cache_dict, cf, pickle.HIGHEST_PROTOCOL)
                         cf.close()
                         # noinspection PyUnboundLocalVariable
@@ -584,12 +671,12 @@ class Iterator(Frozen):
         else:
             pass
 
-    def _make_cache_log(self, log, Ik, cache_count, cache_res, computed_inputs):
+    def _make_cache_log(self, Ik, cache_count, cache_res, computed_inputs):
         r"""update the log string."""
         time_str = MyTimer.current_time()
         cache_count += 1
         amount_data = len(cache_res)
-        log += f'-----------------------------------------------------\n'
+        log = f'-----------------------------------------------------\n'
         log += f'CACHE::: {cache_count}th cache @{time_str}->newest input-key: {Ik}\n'
         log += f"PATH:::: {self.monitor.name}\n"
         log += f'OBJECTS:\n'
@@ -628,6 +715,4 @@ class Iterator(Frozen):
             log += f"        *ranges: {len_range} items\n"
             log += f"        *int: {len_int} items\n"
             log += f"        *str: {len_str} items\n"
-
-        log += '\n'
         return log

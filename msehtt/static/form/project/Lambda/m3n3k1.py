@@ -6,7 +6,7 @@ from msehtt.static.space.reconstruct.Lambda.Rc_m3n3k1 import ___rc331_orthogonal
 
 
 def to__m3n3k0(ff, ft):
-    """Into two 0-forms. Each refers to one of the components of the outer-1-form.
+    r"""Into two 0-forms. Each refers to one of the components of the outer-1-form.
 
     Returns
     -------
@@ -39,7 +39,7 @@ def to__m3n3k0(ff, ft):
 
 
 def ___to_330_orthogonal_hexahedron___(element, ff_local_cochain, degree):
-    """"""
+    r""""""
 
     p, btype = element.degree_parser(degree)
     nodes = [quadrature(_, btype).quad[0] for _ in p]

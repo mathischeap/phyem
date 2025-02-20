@@ -30,3 +30,18 @@ class GeoFunc2Parser(Frozen):
     def dgamma(self, r):
         """"""
         return self._gf.dgamma(r)
+
+
+___cache___ = {}
+
+
+def geo_func2_parser(geo_name, geo_parameters):
+    r"""we wrap the class into a function to make caching possible."""
+    key = geo_name + str(geo_parameters)
+
+    if key in ___cache___:
+        return ___cache___[key]
+    else:
+        geo = GeoFunc2Parser(geo_name, geo_parameters)
+        ___cache___[key] = geo
+        return geo

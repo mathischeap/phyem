@@ -540,7 +540,7 @@ iterator = ph.iterator(
 
 iterator.cache(u, w, P, B, j, time=np.inf)  # never make new cache file by setting time=inf.
 
-iterator.run(range(1, 12))
+iterator.run(range(1, 12), pbar=True)
 
 if ph.config.RANK == 0:
     import pandas as pd

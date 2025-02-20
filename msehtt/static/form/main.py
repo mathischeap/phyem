@@ -15,13 +15,14 @@ from msehtt.static.form.cochain.main import MseHttCochain
 from msehtt.static.form.visualize.main import MseHttFormVisualize
 from msehtt.static.form.bi.main import MseHttStaticForm_Boundary_Integrate
 from msehtt.static.form.numeric.main import MseHtt_Form_Numeric
+from msehtt.static.form.dofs.main import MseHtt_StaticForm_Dofs
 
 
 class MseHttForm(Frozen):
-    """"""
+    r""""""
 
     def __init__(self, abstract_root_form):
-        """"""
+        r""""""
         self._pAti_form: Dict = {
             'base_form': None,  # the base form
             'ats': None,  # abstract time sequence
@@ -46,30 +47,32 @@ class MseHttForm(Frozen):
         self._numeric = None
         self._export = None
         self._project = None
+        self._dofs = None
+
         self._freeze()
 
     @property
     def abstract(self):
-        """Return the abstract form."""
+        r"""Return the abstract form."""
         return self._abstract
 
     def __repr__(self):
-        """repr"""
+        r"""repr"""
         ab_rf_repr = self._abstract.__repr__().split(' at ')[0][1:]
         return "<MseHtt " + ab_rf_repr + super().__repr__().split(" object")[1]
 
     @property
     def degree(self):
-        """The degree of the form."""
+        r"""The degree of the form."""
         return self._degree
 
     def _is_base(self):
-        """Am I a base root-form (not abstracted at a time)?"""
+        r"""Am I a base root-form (not abstracted at a time)?"""
         return self._base is None
 
     @property
     def _base(self):
-        """The base root-form I have.
+        r"""The base root-form I have.
 
         if `self._is_base()`, return None. Else return the base form.
         """
@@ -77,27 +80,27 @@ class MseHttForm(Frozen):
 
     @property
     def tgm(self):
-        """Return the msehtt great mesh."""
+        r"""Return the msehtt great mesh."""
         return self._tgm
 
     @property
     def tpm(self):
-        """Return the msehtt partial mesh."""
+        r"""Return the msehtt partial mesh."""
         return self._tpm
 
     @property
     def space(self):
-        """Return the msehtt space."""
+        r"""Return the msehtt space."""
         return self._space
 
     @property
     def manifold(self):
-        """Return the msehtt manifold."""
+        r"""Return the msehtt manifold."""
         return self._manifold
 
     @property
     def cf(self):
-        """Continuous form."""
+        r"""Continuous form."""
         if self._is_base():
             if self._cf is None:
                 self._cf = MseHttStaticFormCF(self)
@@ -107,7 +110,7 @@ class MseHttForm(Frozen):
 
     @cf.setter
     def cf(self, _cf):
-        """"""
+        r""""""
         if self._is_base():
             self.cf.field = _cf
         else:
@@ -115,7 +118,7 @@ class MseHttForm(Frozen):
 
     @property
     def name(self):
-        """"""
+        r""""""
         if self._is_base():
             if self._name_ is None:
                 self._name_ = 'msehtt-form: ' + self.abstract._sym_repr + ' = ' + self.abstract._lin_repr
@@ -183,8 +186,23 @@ class MseHttForm(Frozen):
         r"""Return all data in master rank, return None in others."""
         if t is None:
             times = [self.cochain.newest, ]  # do it for the newest time only
+
+        elif (
+            isinstance(t, tuple) and
+            len(t) == 2 and
+            isinstance(t[0], str) and
+            t[0] == 'nearest' and
+            isinstance(t[1], int)
+        ):
+            # we receive a indicator saying we need to make cache data for several nearest data
+            # like t = ('nearest', 2)
+            if t[1] == 1:
+                times = [self.cochain.newest, ]
+            else:
+                raise NotImplementedError()
+
         else:
-            raise NotImplementedError()
+            raise NotImplementedError(f"t={t} cannot be parsed.")
 
         cache_data = {}
         for t in times:
@@ -259,9 +277,10 @@ class MseHttForm(Frozen):
             else:
                 time_range = time_range[-what:]
         else:
-            raise NotImplementedError(f"what={what} is cannot be saved. When `what` is a positive integer,"
-                                      f"we save the newest this amount of cochain. When `what` is None, we"
-                                      f"save all cochain.")
+            raise NotImplementedError(
+                f"what={what} is cannot be saved. When `what` is a positive integer,"
+                f"we save the newest this amount of cochain. When `what` is None, we"
+                f"save all cochain.")
 
         cochain = {}
         for t in time_range:
@@ -283,6 +302,7 @@ class MseHttForm(Frozen):
                 'element signature dict': Element_Signature_Dict
             }
             with open(filename, 'wb') as output:
+                # noinspection PyTypeChecker
                 pickle.dump(form_para_dict, output, pickle.HIGHEST_PROTOCOL)
             output.close()
         else:
@@ -491,3 +511,13 @@ class MseHttForm(Frozen):
                 diff_cochain = to_cochain - from_cochain
                 norm = self.space.norm(self.degree, diff_cochain, norm_type=norm_type)
                 return norm
+
+    @property
+    def dofs(self):
+        r"""A property that wraps all geometric properties of degrees of freedom."""
+        if self._is_base():
+            if self._dofs is None:
+                self._dofs = MseHtt_StaticForm_Dofs(self)
+            return self._dofs
+        else:
+            return self._base.dofs

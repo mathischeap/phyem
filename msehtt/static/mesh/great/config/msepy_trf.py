@@ -8,7 +8,7 @@ from msehtt.static.mesh.great.config.msepy_ import MseHttMsePyConfig
 
 # noinspection PyUnusedLocal
 def ___default_trf_1___(x, *args, **kwargs):
-    """"""
+    r""""""
     return np.ones_like(x)
 
 
@@ -17,7 +17,6 @@ class MseHttMsePy_Trf_Config(Frozen):
 
     def __init__(self, tgm, domain_indicator):
         r""""""
-
         self._msepy_config = MseHttMsePyConfig(tgm, domain_indicator)
         self._freeze()
 
@@ -27,26 +26,7 @@ class MseHttMsePy_Trf_Config(Frozen):
             self._msepy_config(element_layout, msepy_mesh_manifold_only=False, **kwargs)
         )
 
-        if isinstance(trf, int):           # do one-layer refining for all elements.
-
-            if trf == 0:  # no refinement -----
-                rff = ___default_trf_1___      # refining function
-                rft = [10, ]  # refining threshold, `10` will stop all refinement for `___default_trf_1___`.
-                rcm = 'center'  # refine-checking-method; which method to check whether an element needs refining.
-
-            else:
-                assert trf > 0, r"when trf is a int, we do `trf`-level refining for all elements. So `trf` must be > 0."
-                rff = ___default_trf_1___      # refining function
-                rft = [0 for _ in range(trf)]  # refining threshold
-                rcm = 'center'   # refine-checking-method; which method to check whether an element needs refining.
-
-        else:
-            raise NotImplementedError(f"trf={trf} is not implemented.")
-
-        # ------ check rft -------------------------------------------------------------
-        rft = np.array(rft)
-        assert rft.ndim == 1 and np.all(np.diff(rft) >= 0), \
-            f"refining threshold = {rft} is illegal, it must be an increasing 1d array."
+        rff, rft, rcm = _parse_trf(trf)
 
         # ------- parse the refining -----------------------------------------------------
         if msepy_mesh.elements._element_vortices_numbering_ is None:
@@ -63,6 +43,72 @@ class MseHttMsePy_Trf_Config(Frozen):
         )
 
         return Element_Type_Dict, Element_Parameter_Dict, Element_Map_Dict, msepy_manifold
+
+
+def _parse_trf(trf):
+    r"""
+
+    Parameters
+    ----------
+    trf
+
+    Returns
+    -------
+    rff :
+        refining function
+    rft :
+        refining threshold
+    rcm :
+        refine-checking-method; which method to check whether an element needs refining.
+
+        Can be one of:
+            'center': only check the value at the element center.
+
+    """
+
+    if isinstance(trf, int):           # do one-layer refining for all elements.
+
+        if trf == 0:  # no refinement -----
+            rff = ___default_trf_1___      # refining function
+            rft = [10, ]  # refining threshold, `10` will stop all refinement for `___default_trf_1___`.
+            rcm = 'center'  # refine-checking-method; which method to check whether an element needs refining.
+
+        else:
+            assert trf > 0, r"when trf is a int, we do `trf`-level refining for all elements. So `trf` must be > 0."
+            rff = ___default_trf_1___      # refining function
+            rft = [0 for _ in range(trf)]  # refining threshold
+            rcm = 'center'   # refine-checking-method; which method to check whether an element needs refining.
+
+    elif isinstance(trf, dict):
+        assert 'rff' in trf and 'rft' in trf, \
+            (f"When provided trf as a dict, "
+             f"trf must be a dict of keys 'rff' and 'rft' representing refining function "
+             f"and refining threshold.")
+        rff = trf['rff']
+        rft = trf['rft']
+        if 'rcm' in trf:
+            rcm = trf['rcm']
+        else:
+            rcm = 'center'
+        assert callable(rff), f'rff must be callable.'
+        if isinstance(rft, (int, float)):
+            rft = [rft, ]
+        else:
+            assert isinstance(rft, (list, tuple)) and all([isinstance(_, (int, float)) for _ in rft]), \
+                f"rft={rft} wrong, must be a list or tuple of all increasing numbers."
+            if len(rft) > 1:
+                assert all(np.diff(np.array(rft)) > 0), \
+                    f"rft={rft} wrong, must be a list or tuple of all increasing numbers."
+
+    else:
+        raise NotImplementedError(f"trf={trf} is not implemented.")
+
+    # ------ check rft -------------------------------------------------------------
+    rft = np.array(rft)
+    assert rft.ndim == 1 and np.all(np.diff(rft) >= 0), \
+        f"refining threshold = {rft} is illegal, it must be an increasing 1d array."
+
+    return rff, rft, rcm
 
 
 def _finalize_(bmm, element_map):
@@ -87,7 +133,7 @@ def _finalize_(bmm, element_map):
             msepy_element_index = e[0]
             msepy_element = bmm.elements[msepy_element_index]
 
-            if msepy_element.metric_signature is None:  # the msepy_element is a 2d unique-msepy-element
+            if msepy_element.metric_signature is None:  # the msepy_element is a 2d unique curvilinear triangle
                 # unique curvilinear triangle
                 Element_Type_Dict[e] = 'unique msepy curvilinear triangle'
                 Element_Parameter_Dict[e] = {
@@ -98,7 +144,7 @@ def _finalize_(bmm, element_map):
                 }
                 Element_Map_Dict[e] = element_map[e]
 
-            elif msepy_element.metric_signature[:7] == 'Linear:':  # msepy_element is a 2d rectangle-msepy-element
+            elif msepy_element.metric_signature[:7] == 'Linear:':  # msepy_element is a triangle
                 # vtu-5 triangle
                 X, Y = _parse_ref_vortices_of_triangle_element_(e)
                 X, Y = msepy_element.ct.mapping(np.array(X), np.array(Y))
@@ -208,7 +254,7 @@ def _refining_(bmm, rff, rft, rcm):
 
 
 def _make_element_map_(bmm, elements):
-    """"""
+    r""""""
     if bmm.ndim == 2:
         return _make_2d_element_map_(bmm, elements)
     else:
@@ -283,7 +329,7 @@ def _make_2d_element_map_(bmm, elements):
 
 
 def _find_refined_able_pairs_(bmm, elements):
-    """"""
+    r""""""
     if bmm.ndim == 2:
         return _find_refined_able_pairs_2d_(bmm, elements)
     else:
@@ -291,6 +337,7 @@ def _find_refined_able_pairs_(bmm, elements):
 
 
 def _find_refined_able_pairs_2d_(bmm, elements):
+    r""""""
     element_map = _make_element_map_(bmm, elements)
     msepy_map = bmm.elements.map
 
@@ -488,7 +535,7 @@ _cache_vortices_of_triangle_ = {}
 
 
 def _parse_ref_vortices_of_triangle_element_(triangle_element_indicator):
-    """
+    r"""
 
     Parameters
     ----------

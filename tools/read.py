@@ -10,10 +10,17 @@ from tools.dds.region_wise_structured_group import DDS_RegionWiseStructured_Grou
 def read(filename, root=MASTER_RANK):
     """Read objects from a file. These objects can only be read into a single rank!
 
-    The file can be resulted from "ph.save" or not. It first must return a dict. And then
-    we check if 'key' is a key of the dict. If it is, it means we are reading an object of a particular type.
+    The file can be resulted from "ph.save" (the standard saving interface) or not (a personal saving interface).
+
+    It first must return a dict. And then we check if 'key' is a key of the dict.
+    If it is, it means we are reading an object of a particular type.
     So we will call that particular class according to this 'key' to read the file again, such that
     we can return an instance of a correct type.
+
+    Some classes may have its own read method. In that case, mostly, we need first set up an instance then
+    read to that instance. But here, we call it by `ph.read` such that we can reconstruct an instance (or
+    some instances) from nothing. The output will be in a dict even if there is only one instance being read.
+
     """
     if RANK == root:
         with open(filename, 'rb') as inputs:

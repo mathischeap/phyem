@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-"""
+r"""
 """
 
 from msehtt.static.form.addons.nop_data_computer.trilinear_base import MseHttTrilinearBase
@@ -87,8 +87,32 @@ class AxB_ip_C(MseHttTrilinearBase):
         for e in elements:
             element = elements[e]
             metric_signature = element.metric_signature
-            if isinstance(metric_signature, str) and metric_signature in _cache_:
-                _3d_data[e] = _cache_[metric_signature]
+            etype = element.etype
+
+            if etype in (
+                    "orthogonal rectangle",
+                    "unique msepy curvilinear quadrilateral",
+                    "orthogonal hexahedron",
+            ):
+                cache_key = metric_signature
+
+            elif etype == 9:
+                reverse_info = element.dof_reverse_info
+                if 'm2n2k1_outer' in reverse_info:
+                    reverse_key_outer = str(reverse_info['m2n2k1_outer'])
+                else:
+                    reverse_key_outer = ''
+                if 'm2n2k1_inner' in reverse_info:
+                    reverse_key_inner = str(reverse_info['m2n2k1_inner'])
+                else:
+                    reverse_key_inner = ''
+                cache_key = metric_signature + '-' + reverse_key_outer + ':' + reverse_key_inner
+
+            else:
+                raise NotImplementedError()
+
+            if isinstance(cache_key, str) and cache_key in _cache_:
+                _3d_data[e] = _cache_[cache_key]
 
             else:
                 detJ = element.ct.Jacobian(*metric_coo)
@@ -149,8 +173,8 @@ class AxB_ip_C(MseHttTrilinearBase):
                     raise NotImplementedError(indicator)
 
                 _3d_data[e] = element_3d_data
-                if isinstance(metric_signature, str):
-                    _cache_[metric_signature] = element_3d_data
+                if isinstance(cache_key, str):
+                    _cache_[cache_key] = element_3d_data
                 else:
                     pass
 

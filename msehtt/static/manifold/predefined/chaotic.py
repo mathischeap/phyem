@@ -3,7 +3,7 @@ r"""
 """
 import numpy as np
 from tools.frozen import Frozen
-from numpy import sin, pi, cos, ones_like
+from numpy import ones_like, sin, pi, cos
 from random import randint
 from src.config import RANK, MASTER_RANK
 
@@ -19,24 +19,85 @@ ___invA___ = np.linalg.inv(___A___)
 
 
 def chaotic(bounds=([0, 1], [0, 1]), c=0, periodic=False):
-    r"""Mainly for test purpose."""
+    r"""A msehtt mesh generator.
+
+    Mainly for test purpose.
+
+    A msehtt mesh generator must return REGIONS, region_map, periodic_setting.
+
+    Returns
+    -------
+    REGIONS : dict
+        A dict whose keys are region indices (names) and values are region instances.
+
+        A region instance is an object that has two properties (ndim and etype) and
+        two methods (mapping and Jacobian_matrix).
+
+    region_map :
+        `region_map` is None or a dictionary.
+        When it is a dictionary, its keys are the same to those of `regions` and values
+        are list of region corners. For example, in 2d
+            region_map = {
+                0: [0, 1, 2, 3],
+                1: [1, 4, 5, 2],
+                2: ....
+            }
+
+        means the numbering for four corners of region #0 are 0, 1, 2, 3, and
+        the numbering for four corners of region #1 are 1, 4, 5, 3, and so on. Recall the following
+        topology of a reference msehtt region.
+
+          ^ s
+          |
+          |
+          |  node 3        face 2         node 2
+          |     -----------------------------
+          |     |                           |
+          |     |                           |
+          |     |                           |
+          |     | face 3                    | face 1
+          |     |                           |
+          |     |                           |
+          |     |                           |
+          |     |                           |
+          |     -----------------------------
+          |   node 0         face 0       node 1
+          |
+          |
+          ------------------------------------------> r
+
+    periodic_setting :
+        The indicator of periodic region faces.
+
+    """
     assert RANK == MASTER_RANK, f"only initialize chaotic mesh in the master rank"
 
     if len(bounds) == 2:
         return crazy2d(bounds=bounds, c=c, periodic=periodic)
     elif len(bounds) == 3:
-        return crazy3d(bounds=bounds, c=c, periodic=periodic)
+        raise NotImplementedError()
     else:
-        raise Exception
+        raise Exception()
 
 
 # ============ 2d =====================================================================
 
 
-def crazy2d(bounds=([0, 1], [0, 1]), c=0, periodic=False):
+def crazy2d(bounds=([0, 1], [0, 1]), c=0, periodic=False, shifting=True):
     r""""""
     if periodic:
-        raise NotImplementedError()
+        REGIONS, region_map, _ = crazy2d(bounds=bounds, c=c, periodic=False, shifting=False)
+
+        periodic_setting = {
+            (0, (0, 1)): (6, (3, 2)),
+            # above line  says the node0->node1 face of region 0 is periodic to node3->node2 face of region 6.
+            (1, (0, 1)): (7, (3, 2)),
+            (2, (0, 1)): (8, (3, 2)),
+            (0, (0, 3)): (2, (1, 2)),
+            (3, (0, 3)): (5, (1, 2)),
+            (6, (0, 3)): (8, (1, 2)),
+        }
+        return REGIONS, region_map, periodic_setting
     else:
         pass
 
@@ -67,21 +128,23 @@ def crazy2d(bounds=([0, 1], [0, 1]), c=0, periodic=False):
             xx = [X[i], X[i+1], X[i+1], X[i]]
             yy = [Y[j], Y[j], Y[j+1], Y[j+1]]
 
-            sft = shift[m]
-
-            if sft == 0:
-                pass
-            elif sft == 1:
-                xx = [xx[1], xx[2], xx[3], xx[0]]
-                yy = [yy[1], yy[2], yy[3], yy[0]]
-            elif sft == 2:
-                xx = [xx[2], xx[3], xx[0], xx[1]]
-                yy = [yy[2], yy[3], yy[0], yy[1]]
-            elif sft == 3:
-                xx = [xx[3], xx[0], xx[1], xx[2]]
-                yy = [yy[3], yy[0], yy[1], yy[2]]
+            if shifting:
+                sft = shift[m]
+                if sft == 0:
+                    pass
+                elif sft == 1:
+                    xx = [xx[1], xx[2], xx[3], xx[0]]
+                    yy = [yy[1], yy[2], yy[3], yy[0]]
+                elif sft == 2:
+                    xx = [xx[2], xx[3], xx[0], xx[1]]
+                    yy = [yy[2], yy[3], yy[0], yy[1]]
+                elif sft == 3:
+                    xx = [xx[3], xx[0], xx[1], xx[2]]
+                    yy = [yy[3], yy[0], yy[1], yy[2]]
+                else:
+                    raise Exception()
             else:
-                raise Exception()
+                pass
 
             regions[m]['x'] = xx
             regions[m]['y'] = yy
@@ -141,8 +204,9 @@ class _Single_Map_(Frozen):
         return x, y
 
     def Jacobian_matrix(self, r, s):
-        """"""
-
+        """Remember: not all element types will call this method. When c=0, element type=9, and this
+        method will not be called at all. In that case we can leave it empty.
+        """
         qr = self._a2 + self._a4 * s
         qs = self._a3 + self._a4 * r
 
@@ -173,44 +237,49 @@ class TotalMapping2D(Frozen):
     r""""""
 
     def __init__(self, a, b, c, d, deformation_factor):
-        """"""
+        """mapping for [a, b] * [c, d]."""
         self._abcd_ = (a, b, c, d)
         self._c = deformation_factor
         self._freeze()
 
-    def mapping(self, r, s):
-        r""""""
-        a, b, c, d = self._abcd_
+    def mapping(self, p, q):
+        r"""p in [a, b], q in [c, d]"""
         if self._c == 0:
-            x = (b - a) * r + a
-            y = (d - c) * s + c
+            x = p
+            y = q
         else:
-            x = (b - a) * (r + 0.5 * self._c * sin(2 * pi * r) * sin(2 * pi * s)) + a
-            y = (d - c) * (s + 0.5 * self._c * sin(2 * pi * r) * sin(2 * pi * s)) + c
+            a, b, c, d = self._abcd_
+            r = (p - a) / (b - a)
+            s = (q - c) / (d - c)
+            x = r + 0.5 * self._c * sin(2 * pi * r) * sin(2 * pi * s)
+            y = s + 0.5 * self._c * sin(2 * pi * r) * sin(2 * pi * s)
+            x += a
+            c += c
         return x, y
 
-    def Jacobian_matrix(self, r, s):
+    def Jacobian_matrix(self, p, q):
         """ r, s, t be in [0, 1]. """
-        a, b, c, d = self._abcd_
-
         if self._c == 0:
-            xr = (b - a) * ones_like(r)
-            xs = 0
-            yr = 0
-            ys = (d - c) * ones_like(r)
+            xp = ones_like(p)
+            xq = 0
+            yp = 0
+            yq = ones_like(q)
+
         else:
-            xr = (b - a) + (b - a) * 2 * pi * 0.5 * self._c * cos(2 * pi * r) * sin(2 * pi * s)
-            xs = (b - a) * 2 * pi * 0.5 * self._c * sin(2 * pi * r) * cos(2 * pi * s)
-            yr = (d - c) * 2 * pi * 0.5 * self._c * cos(2 * pi * r) * sin(2 * pi * s)
-            ys = (d - c) + (d - c) * 2 * pi * 0.5 * self._c * sin(2 * pi * r) * cos(2 * pi * s)
+            a, b, c, d = self._abcd_
 
-        return ((xr, xs),
-                (yr, ys))
+            r = (p - a) / (b - a)
+            s = (q - c) / (d - c)
 
+            xr = 1 + 0.5 * self._c * 2 * pi * cos(2 * pi * r) * sin(2 * pi * s)
+            xs = 0.5 * self._c * sin(2 * pi * r) * 2 * pi * cos(2 * pi * s)
+            yr = 0.5 * self._c * 2 * pi * cos(2 * pi * r) * sin(2 * pi * s)
+            ys = 1 + 0.5 * self._c * sin(2 * pi * r) * 2 * pi * cos(2 * pi * s)
 
-# ============ 3d =====================================================================
+            xp = xr / (b - a)
+            xq = xs / (d - c)
+            yp = yr / (b - a)
+            yq = ys / (d - c)
 
-
-def crazy3d(bounds=([0, 1], [0, 1], [0, 1]), c=0, periodic=False):
-    r""""""
-    raise NotImplementedError()
+        return ((xp, xq),
+                (yp, yq))

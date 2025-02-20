@@ -3,6 +3,8 @@ r"""
 """
 import numpy as np
 from tools.frozen import Frozen
+from src.spaces.main import _degree_str_maker
+
 from msehtt.static.space.basis_function.Lambda.bf_m2n2k0 import ___bf220_msepy_quadrilateral___
 from msehtt.static.space.basis_function.Lambda.bf_m2n2k1 import ___bf221o_outer_msepy_quadrilateral___
 from msehtt.static.space.basis_function.Lambda.bf_m2n2k1 import ___bf221i_inner_msepy_quadrilateral___
@@ -43,11 +45,14 @@ ___et3___ = ___et3___.ravel('F')
 ___sg3___ = ___sg3___.ravel('F')
 
 
+___degree_cache_pool___ = {}
+
+
 class MseHttGreatMeshBaseElement(Frozen):
-    """"""
+    r""""""
 
     def __init__(self):
-        """"""
+        r""""""
         self._index = None
         self._map = None
         self._parameters = None
@@ -59,39 +64,54 @@ class MseHttGreatMeshBaseElement(Frozen):
 
     @property
     def index(self):
-        """The index of this element. Must be unique all over the great mesh."""
+        r"""The index of this element. Must be unique all over the great mesh."""
         return self._index
 
     @classmethod
     def m(cls):
-        """the dimensions of the space"""
+        r"""the dimensions of the space"""
         raise NotImplementedError()
 
     @classmethod
     def n(cls):
-        """the dimensions of the element"""
+        r"""the dimensions of the element"""
+        raise NotImplementedError()
+
+    @classmethod
+    def _find_element_center_coo(cls, parameters):
+        r""""""
+        raise NotImplementedError(f"`_find_element_center_coo` method not coded for {cls}.")
+
+    @classmethod
+    def _find_mapping_(cls, parameters, x, y):
+        r"""A class method that compute ct.mapping with parameters. With this, we can do
+        some checks before the element is actually made.
+        """
         raise NotImplementedError()
 
     @property
     def etype(self):
-        """Return the indicator of the element type."""
+        r"""Return the indicator of the element type."""
         return self._etype()
 
     @classmethod
     def _etype(cls):
+        r""""""
         raise NotImplementedError()
 
     @property
     def parameters(self):
+        r""""""
         return self._parameters
 
     @property
     def metric_signature(self):
+        r""""""
         raise NotImplementedError()
 
     @property
     def signature(self):
-        """Each element has its unique signature. Even two elements have same metric, their signature are different.
+        r"""Each element has its unique signature. Even two elements have same metric, their signature are different.
         This is mainly used to read data. For example, when we read cochain from a file, we need to use signatures of
         elements to make sure we are reading the correct data into the correct elements because sometimes, elements
         may be numbered differently.
@@ -115,7 +135,7 @@ class MseHttGreatMeshBaseElement(Frozen):
 
     @property
     def map_(self):
-        """The numbering of the nodes of the element.
+        r"""The numbering of the nodes of the element.
 
         For example, for a rectangle element, element.map_ = [0, 100, 54 33]. This means the four nodes of
         this element are labeled 0, 100, 54 33 respectively.
@@ -123,7 +143,7 @@ class MseHttGreatMeshBaseElement(Frozen):
         return self._map
 
     def local_numbering(self, indicator, degree):
-        """"""
+        r""""""
         p = self.degree_parser(degree)[0]
         if indicator == 'm2n2k1_outer':
             return local_numbering_Lambda__m2n2k1_outer(self.etype, p)
@@ -133,7 +153,7 @@ class MseHttGreatMeshBaseElement(Frozen):
             raise NotImplementedError()
 
     def find_local_dofs_on_face(self, indicator, degree, face_index, component_wise=False):
-        """"""
+        r""""""
         p = self.degree_parser(degree)[0]
         if indicator == 'm2n2k1_outer':
             return find_local_dofs_on_face__m2n2k1_outer(self.etype, p, face_index, component_wise=component_wise)
@@ -151,11 +171,15 @@ class MseHttGreatMeshBaseElement(Frozen):
             raise NotImplementedError(indicator)
 
     def bf(self, indicator, degree, *grid_mesh):
-        """"""
+        r""""""
         p, btype = self.degree_parser(degree)
 
-        if self.etype in ('orthogonal rectangle', 'unique msepy curvilinear quadrilateral',
-                          9, 'unique curvilinear quad', ):
+        if self.etype in (
+                9,
+                'orthogonal rectangle',
+                'unique msepy curvilinear quadrilateral',
+                'unique curvilinear quad',
+        ):
             if indicator == 'm2n2k0':
                 xi_et_sg, bf = ___bf220_msepy_quadrilateral___(p, btype, *grid_mesh)
             elif indicator == 'm2n2k1_outer':
@@ -167,7 +191,10 @@ class MseHttGreatMeshBaseElement(Frozen):
             else:
                 raise NotImplementedError()
 
-        elif self.etype in (5, "unique msepy curvilinear triangle"):
+        elif self.etype in (
+                5,
+                "unique msepy curvilinear triangle"
+        ):
             if indicator == 'm2n2k0':
                 xi_et_sg, bf = ___bf220_utv_5_triangle___(p, btype, *grid_mesh)
             elif indicator == 'm2n2k1_outer':
@@ -192,7 +219,7 @@ class MseHttGreatMeshBaseElement(Frozen):
                 raise NotImplementedError()
 
         else:
-            raise NotImplementedError()
+            raise NotImplementedError(f"bf not implemented for etype={self.etype}")
 
         if self._dof_reverse_info == {}:
             return xi_et_sg, bf
@@ -238,7 +265,7 @@ class MseHttGreatMeshBaseElement(Frozen):
 
     @property
     def dof_reverse_info(self):
-        """
+        r"""
 
         Returns
         -------
@@ -254,14 +281,30 @@ class MseHttGreatMeshBaseElement(Frozen):
 
     @property
     def ct(self):
+        r""""""
         return self._ct
 
     def _generate_outline_data(self, ddf=1):
+        r""""""
         raise NotImplementedError()
+
+    def _find_element_quality(self):
+        r"""Return a factor indicating the quality of the elements.
+
+        When the factor is 0: the element is worst.
+        When the factor is 1: the element is best.
+
+        Returns
+        -------
+        quality: float
+            In [0, 1]. 0: Worst; 1: Best.
+
+        """
+        raise NotImplementedError(f"quality not implemented for element type: {self.etype}.")
 
     @classmethod
     def face_setting(cls):
-        """The face setting; show nodes of each face of the element and the positive direction.
+        r"""The face setting; show nodes of each face of the element and the positive direction.
 
         A face can be 2-d (face of 3d element) or 1-d (face of 2d element).
         """
@@ -269,7 +312,7 @@ class MseHttGreatMeshBaseElement(Frozen):
 
     @classmethod
     def edge_setting(cls):
-        """The edge setting; show nodes of each edge of the element and the positive direction.
+        r"""The edge setting; show nodes of each edge of the element and the positive direction.
 
         An edge can be 1-d for 3d element. 2d element has no edge (only have face.)
         """
@@ -285,24 +328,46 @@ class MseHttGreatMeshBaseElement(Frozen):
 
     @property
     def faces(self):
+        r""""""
         raise NotImplementedError()
 
     @property
     def edges(self):
+        r""""""
         return NotImplementedError()
 
     @classmethod
     def degree_parser(cls, degree):
-        """"""
-        raise NotImplementedError()
+        r""""""
+        key = cls.__name__ + ':' + _degree_str_maker(degree)
+        if key in ___degree_cache_pool___:
+            return ___degree_cache_pool___[key]
+        else:
+            if isinstance(degree, int):
+                assert degree >= 1, f'Must be'
+                if cls.m() == cls.n() == 2:
+                    p = (degree, degree)
+                elif cls.m() == cls.n() == 3:
+                    p = (degree, degree, degree)
+                else:
+                    raise NotImplementedError()
+                dtype = 'Lobatto'
+            else:
+                raise NotImplementedError()
+            ___degree_cache_pool___[key] = p, dtype
+            return p, dtype
 
     # @classmethod
     # def _form_face_dof_direction_topology(cls):
     #     """"""
     #     return None
 
+    def _generate_element_vtk_data_(self, *args):
+        r""""""
+        raise NotImplementedError()
+
     def _generate_vtk_data_for_form(self, indicator, element_cochain, degree, data_density):
-        """"""
+        r""""""
         raise NotImplementedError()
 
 
@@ -319,7 +384,7 @@ ___cache_msehtt_imm___ = {}
 
 
 def ___clean_cache_msehtt_element_ct___():
-    """"""
+    r""""""
     keys = list(___cache_msehtt_JM___.keys())
     for key in keys:
         del ___cache_msehtt_JM___[key]
@@ -347,23 +412,27 @@ from tools.miscellaneous.ndarray_cache import add_to_ndarray_cache, ndarray_key_
 
 
 class MseHttGreatMeshBaseElementCooTrans(Frozen):
-    """"""
+    r""""""
     def __init__(self, element, metric_signature):
+        r""""""
         self._element = element
         self._metric_signature = metric_signature
         self._freeze()
 
     def __repr__(self):
-        """"""
+        r""""""
         return f"<CT of {self._element.__repr__()}>"
 
     def mapping(self, *xi_et_sg):
+        r""""""
         raise NotImplementedError()
 
     def ___Jacobian_matrix___(self, *xi_et_sg):
+        r""""""
         raise NotImplementedError()
 
     def Jacobian_matrix(self, *xi_et_sg):
+        r""""""
         if isinstance(self._metric_signature, int):  # unique element, no cache
             return self.___Jacobian_matrix___(*xi_et_sg)
         else:
@@ -376,7 +445,7 @@ class MseHttGreatMeshBaseElementCooTrans(Frozen):
             return data
 
     def inverse_Jacobian_matrix(self, *xi_et_sg):
-        """"""
+        r""""""
         if isinstance(self._metric_signature, int):  # unique element, no cache
             return self.___inverse_Jacobian_matrix___(*xi_et_sg)
         else:
@@ -389,7 +458,7 @@ class MseHttGreatMeshBaseElementCooTrans(Frozen):
             return data
 
     def ___inverse_Jacobian_matrix___(self, *xi_et_sg):
-        """"""
+        r""""""
         jm = self.Jacobian_matrix(*xi_et_sg)
         m, n = self._element.m(), self._element.n()
 
@@ -442,7 +511,7 @@ class MseHttGreatMeshBaseElementCooTrans(Frozen):
         return ijm
 
     def Jacobian(self, *xi_et_sg):
-        """the Determinant of the Jacobian matrix. When Jacobian matrix is square, Jacobian = sqrt(g)."""
+        r"""the Determinant of the Jacobian matrix. When Jacobian matrix is square, Jacobian = sqrt(g)."""
         if isinstance(self._metric_signature, int):  # unique element, no cache
             return self.___Jacobian___(*xi_et_sg)
         else:
@@ -455,7 +524,7 @@ class MseHttGreatMeshBaseElementCooTrans(Frozen):
             return data
 
     def ___Jacobian___(self, *xi_et_sg):
-        """"""
+        r""""""
         jm = self.Jacobian_matrix(*xi_et_sg)
         m, n = self._element.m(), self._element.n()
 
@@ -480,7 +549,7 @@ class MseHttGreatMeshBaseElementCooTrans(Frozen):
         return Jacobian
 
     def metric(self, *xi_et_sg):
-        """ For square Jacobian matrix,
+        r"""For square Jacobian matrix,
         the metric ``g:= det(G):=(det(J))**2``, where ``G`` is the metric matrix, or metric tensor.
         """
         if isinstance(self._metric_signature, int):  # unique element, no cache
@@ -495,7 +564,7 @@ class MseHttGreatMeshBaseElementCooTrans(Frozen):
             return data
 
     def ___metric___(self, *xi_et_sg):
-        """"""
+        r""""""
         m, n = self._element.m(), self._element.n()
         if m == n:
             return self.Jacobian(*xi_et_sg) ** 2
@@ -503,7 +572,7 @@ class MseHttGreatMeshBaseElementCooTrans(Frozen):
             raise NotImplementedError()
 
     def inverse_Jacobian(self, *xi_et_sg):
-        """the Determinant of the inverse Jacobian matrix."""
+        r"""the Determinant of the inverse Jacobian matrix."""
         if isinstance(self._metric_signature, int):  # unique element, no cache
             return self.___inverse_Jacobian___(*xi_et_sg)
         else:
@@ -520,7 +589,7 @@ class MseHttGreatMeshBaseElementCooTrans(Frozen):
             return data
 
     def ___inverse_Jacobian___(self, *xi_et_sg):
-        """"""
+        r""""""
         ijm = self.inverse_Jacobian_matrix(*xi_et_sg)
         m, n = self._element.m(), self._element.n()
 
@@ -545,7 +614,7 @@ class MseHttGreatMeshBaseElementCooTrans(Frozen):
         return inverse_Jacobian
 
     def metric_matrix(self, *xi_et_sg):
-        """"""
+        r""""""
         if isinstance(self._metric_signature, int):  # unique element, no cache
             return self.___metric_matrix___(*xi_et_sg)
         else:
@@ -558,7 +627,7 @@ class MseHttGreatMeshBaseElementCooTrans(Frozen):
             return data
 
     def ___metric_matrix___(self, *xi_et_sg):
-        """"""
+        r""""""
         jm = self.Jacobian_matrix(*xi_et_sg)
         m, n = self._element.m(), self._element.n()
         G = [[None for _ in range(n)] for __ in range(n)]
@@ -573,7 +642,7 @@ class MseHttGreatMeshBaseElementCooTrans(Frozen):
         return G
 
     def inverse_metric_matrix(self, *xi_et_sg):
-        """"""
+        r""""""
         if isinstance(self._metric_signature, int):  # unique element, no cache
             return self.___inverse_metric_matrix___(*xi_et_sg)
         else:
@@ -586,7 +655,7 @@ class MseHttGreatMeshBaseElementCooTrans(Frozen):
             return data
 
     def ___inverse_metric_matrix___(self, *xi_et_sg):
-        """"""
+        r""""""
         ijm = self.inverse_Jacobian_matrix(*xi_et_sg)
         m, n = self._element.m(), self._element.n()
         iG = [[None for _ in range(m)] for __ in range(m)]
@@ -605,32 +674,33 @@ class MseHttGreatMeshBaseElementCooTrans(Frozen):
 
 
 class _FaceCoordinateTransformationBase(Frozen):
-    """"""
+    r""""""
     def __init__(self, face):
+        r""""""
         self._element = face._element
         self._face = face
         self.___c_ounv___ = None
         self._freeze()
 
     def mapping(self, *xi_et):
-        """"""
+        r""""""
         raise NotImplementedError()
 
     def Jacobian_matrix(self, *xi_et):
-        """"""
+        r""""""
         raise NotImplementedError()
 
     def outward_unit_normal_vector(self, *xi_et_sg):
-        """The outward unit norm vector (vec{n})."""
+        r"""The outward unit norm vector (vec{n})."""
         raise NotImplementedError()
 
     def is_plane(self):
-        """Return True if the face is plane; a straight line in 2d space or a plane surface in 3d space for example."""
+        r"""Return True if the face is plane; a straight line in 2d space or a plane surface in 3d space for example."""
         raise NotImplementedError()
 
     @property
     def constant_outward_unit_normal_vector(self):
-        """"""
+        r""""""
         if self.is_plane():
             if self.___c_ounv___ is None:
                 if self._element.m() == self._element.n() == 2:  # mn=(2, 2); 2d element in 2d space
@@ -672,4 +742,7 @@ class _FaceCoordinateTransformationBase(Frozen):
             return self.___c_ounv___
 
         else:
-            raise Exception(f'Face {self._face} is not plane. Thus it has no constant_outward_unit_normal_vector!')
+            raise Exception(
+                f'Face {self._face} is not plane. '
+                f'Thus it has no constant_outward_unit_normal_vector!'
+            )

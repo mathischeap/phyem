@@ -12,7 +12,7 @@ from msehtt.static.space.reconstruct.Lambda.Rc_m3n3k3 import ___rc333_msepy_quad
 
 
 class MseHttGreatMeshOrthogonalHexahedronElement(MseHttGreatMeshBaseElement):
-    """
+    r"""
     Local node numbering:
 
     back-face: z- face
@@ -73,6 +73,13 @@ class MseHttGreatMeshOrthogonalHexahedronElement(MseHttGreatMeshBaseElement):
     def _etype(cls):
         return 'orthogonal hexahedron'
 
+    @classmethod
+    def _find_element_center_coo(cls, parameters):
+        r""""""
+        origin_x, origin_y, origin_z = parameters['origin']
+        delta_x, delta_y, delta_z = parameters['delta']
+        return np.array([origin_x + delta_x / 2, origin_y + delta_y/2, origin_z + delta_z/2])
+
     def __repr__(self):
         """"""
         super_repr = super().__repr__().split('object')[1]
@@ -102,17 +109,8 @@ class MseHttGreatMeshOrthogonalHexahedronElement(MseHttGreatMeshBaseElement):
             self._faces = MseHtt_GreatMesh_OrthogonalHexahedron_Element_Faces(self)
         return self._faces
 
-    @classmethod
-    def degree_parser(cls, degree):
-        """"""
-        if isinstance(degree, int):
-            p = (degree, degree, degree)
-            dtype = 'Lobatto'
-        else:
-            raise NotImplementedError()
-        return p, dtype
-
     def _generate_outline_data(self, ddf=1):
+        r""""""
         linspace = np.array([-1, 1, 1, -1, -1]), np.array([-1, -1, 1, 1, -1])
         ones = np.ones(5)
 
@@ -128,7 +126,7 @@ class MseHttGreatMeshOrthogonalHexahedronElement(MseHttGreatMeshBaseElement):
         }
 
     def _generate_element_vtk_data_(self, xi, et, sg):
-        """"""
+        r""""""
         assert xi.ndim == et.ndim == sg.ndim == 1
         sx, sy, sz = xi.size, et.size, sg.size
         meshgrid = np.meshgrid(xi, et, sg, indexing='ij')
@@ -159,7 +157,7 @@ class MseHttGreatMeshOrthogonalHexahedronElement(MseHttGreatMeshBaseElement):
         return coo_dict, cell_list
 
     def _generate_vtk_data_for_form(self, indicator, element_cochain, degree, data_density):
-        """"""
+        r""""""
         linspace = np.linspace(-1, 1, data_density)
         if indicator == 'm3n3k0':  # must be Lambda
             dtype = '3d-scalar'
@@ -419,6 +417,7 @@ class MseHtt_GreatMesh_OrthogonalHexahedron_Element_Faces(Frozen):
 class MseHtt_GreatMesh_OrthogonalHexahedron_Element_OneFace(Frozen):
     """"""
     def __init__(self, element, face_id):
+        r""""""
         self._element = element
         self._id = face_id
         self._ct = MseHtt_GreatMesh_OrthogonalHexahedron_Element_OneFace_CT(self)

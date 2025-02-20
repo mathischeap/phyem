@@ -6,7 +6,7 @@ from msepy.tools.matrix.static.local import MsePyStaticLocalMatrix
 
 
 class MsePyRootFormMatrix(Frozen):
-    """"""
+    r""""""
 
     def __init__(self, rf):
         """"""

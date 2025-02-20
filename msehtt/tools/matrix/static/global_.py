@@ -138,6 +138,7 @@ class MseHttGlobalMatrix(Frozen):
         r"""The condition number of this static assembled matrix."""
         M = self.gather(root=MASTER_RANK)
         if RANK == MASTER_RANK:
+            # noinspection PyUnresolvedReferences
             cn = np_linalg.cond(M.toarray())
         else:
             cn = 0
@@ -148,6 +149,7 @@ class MseHttGlobalMatrix(Frozen):
         r"""compute the rank of this static assembled matrix"""
         M = self.gather(root=MASTER_RANK)
         if RANK == MASTER_RANK:
+            # noinspection PyUnresolvedReferences
             rank = np_linalg.matrix_rank(M.toarray())
         else:
             rank = 0

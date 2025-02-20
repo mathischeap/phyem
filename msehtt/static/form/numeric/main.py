@@ -11,10 +11,10 @@ from tools.dds.region_wise_structured import DDSRegionWiseStructured
 
 
 class MseHtt_Form_Numeric(Frozen):
-    """"""
+    r""""""
 
     def __init__(self, f):
-        """"""
+        r""""""
         self._f = f
         self._tsp = None
         self._cache_key_ = id(self)
@@ -25,13 +25,14 @@ class MseHtt_Form_Numeric(Frozen):
     # ----------------- properties --------------------------------------------------------------------------
     @property
     def tsp(self):
+        r""""""
         if self._tsp is None:
             self._tsp = MseHtt_Form_Numeric_TimeSpaceProperties(self._f)
         return self._tsp
 
     # ------ methods: data structure --------------------------------------------------------------------------
     def rws(self, t, ddf=1, component_wise=False, data_only=False):
-        """Return a dds-rws instance in the master rank."""
+        r"""Return a dds-rws instance in the master rank."""
         density = int(7 * ddf)
         if density < 5:
             density = 5
@@ -80,7 +81,7 @@ class MseHtt_Form_Numeric(Frozen):
     # --------- fundamental -----------------------------------------------------------------------------------
     @staticmethod
     def _merge_dict_(data, root=MASTER_RANK):
-        """"""
+        r""""""
         assert isinstance(data, dict)
         DATA = COMM.gather(data, root=root)
         if RANK == root:
@@ -93,7 +94,7 @@ class MseHtt_Form_Numeric(Frozen):
 
     @property
     def dtype(self):
-        """"""
+        r""""""
         space_indicator = self._f.space.str_indicator
         if space_indicator in ('m2n2k2', 'm2n2k0'):
             dtype = '2d-scalar'
@@ -109,7 +110,7 @@ class MseHtt_Form_Numeric(Frozen):
 
     # ----------- base method -----------------------------------------------------------------------------------
     def _interpolate_(self, t=None, ddf=1, data_only=False, component_wise=False):
-        """Use the solution of self._f at time `t` to make interpolations.
+        r"""Use the solution of self._f at time `t` to make interpolations.
 
         Note that the output interpolation is rank-wise, so it only returns reasonable results when coordinates
         are in elements of that rank.

@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 from tools.functions.space._2d.angle import angle
 import numpy as np
-from tools.decorators.all import accepts
 
 
 class ArcClockWise(object):
@@ -9,7 +8,6 @@ class ArcClockWise(object):
     fit two center and radius int arc (up half). The return arc is ALWAYS
     clock-wise!!
     """
-    @accepts('self', (tuple, list), (tuple, list), (tuple, list))
     def __init__(self, center, start_point, end_point):
         self.x0, self.y0 = center
         x1, y1 = start_point

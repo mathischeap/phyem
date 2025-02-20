@@ -23,12 +23,20 @@ def _compute_error__m2n2k1_(tpm, cf, cochain, degree, error_type, orientation='o
     for e in elements:
         element = elements[e]
         etype = element.etype
-        if etype in ("orthogonal rectangle", "unique msepy curvilinear quadrilateral", 9,
-                     'unique curvilinear quad', ):
+        if etype in (
+                9,
+                "orthogonal rectangle",
+                "unique msepy curvilinear quadrilateral",
+                'unique curvilinear quad',
+        ):
             element_error = _er221_msepy_quadrilateral_(
                 element, cf, cochain[e], degree, error_type, orientation)
 
-        elif etype in (5, "unique msepy curvilinear triangle"):
+        elif etype in (
+                5,
+                "unique msepy curvilinear triangle",
+                "unique curvilinear triangle",
+        ):
             element_error = _er221_vtu5_(
                 element, cf, cochain[e], degree, error_type, orientation)
 

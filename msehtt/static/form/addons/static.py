@@ -122,7 +122,7 @@ class MseHttFormStaticCopy(Frozen):
         return self._f.norm(self.cochain, norm_type=norm_type)
 
     def __eq__(self, other):
-        """"""
+        r""""""
         if other.__class__ is not self.__class__:
             return False
         else:
@@ -130,14 +130,17 @@ class MseHttFormStaticCopy(Frozen):
 
     @property
     def export(self):
+        r""""""
         return MseHtt_Static_Form_Export(self._f, self._t)
 
     @property
     def project(self):
+        r""""""
         return MseHtt_Static_Form_Project(self._f, self._t)
 
     @property
     def numeric(self):
+        r""""""
         return ___MseHtt_Static_Form_Copy_Numeric___(self._f, self._t)
 
 

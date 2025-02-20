@@ -6,7 +6,7 @@ from msehtt.static.space.reconstruct.Lambda.Rc_m2n2k1 import ___rc221o_msepy_qua
 
 
 def to__m2n2k0(ff, ft):
-    """Into two 0-forms. Each refers to one of the components of the outer-1-form.
+    r"""Into two 0-forms. Each refers to one of the components of the outer-1-form.
 
     Returns
     -------
@@ -26,7 +26,12 @@ def to__m2n2k0(ff, ft):
     for e in elements:
         element = elements[e]
         etype = element.etype
-        if etype in ("orthogonal rectangle", "unique msepy curvilinear quadrilateral"):
+        if etype in (
+                9,
+                "unique curvilinear quad",
+                "orthogonal rectangle",
+                "unique msepy curvilinear quadrilateral",
+        ):
             cochain_component_0[e], cochain_component_1[e] = ___to_220_msepy_quadrilateral___(
                 element, ff_cochain[e], degree
             )
@@ -36,7 +41,7 @@ def to__m2n2k0(ff, ft):
 
 
 def ___to_220_msepy_quadrilateral___(element, ff_local_cochain, degree):
-    """"""
+    r""""""
 
     p, btype = element.degree_parser(degree)
     nodes = [quadrature(_, btype).quad[0] for _ in p]

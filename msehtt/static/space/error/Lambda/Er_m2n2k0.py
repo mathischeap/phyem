@@ -13,8 +13,14 @@ def error__m2n2k0(tpm, cf, cochain, degree, error_type):
     for e in elements:
         element = elements[e]
         etype = element.etype
-        if etype in (5, "orthogonal rectangle", "unique msepy curvilinear quadrilateral",
-                     "unique msepy curvilinear triangle", 9, 'unique curvilinear quad'):
+        if etype in (
+            5,
+            9,
+            "orthogonal rectangle",
+            'unique curvilinear quad',
+            "unique msepy curvilinear quadrilateral",
+            "unique msepy curvilinear triangle",
+        ):
             element_error = _er220_msepy_quadrilateral_(
                 element, cf, cochain[e], degree, error_type)
             error.append(element_error)
@@ -30,6 +36,7 @@ def error__m2n2k0(tpm, cf, cochain, degree, error_type):
         else:
             L2_error = 0
         return COMM.bcast(L2_error, root=MASTER_RANK)
+
     else:
         raise NotImplementedError(f"error_type = {error_type}.")
 

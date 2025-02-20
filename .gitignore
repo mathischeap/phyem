@@ -60,6 +60,7 @@ coverage.xml
 _notes/
 _app/
 _log/
+_watching/
 __phcache__/
 _local_tests/
 .doctrees/
@@ -71,6 +72,8 @@ conf.py
 rci.py
 _tm.py
 _r.py
+_monitor.py
+_monitor_wi.py
 
 make.bat
 Makefile

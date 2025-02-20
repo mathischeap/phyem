@@ -6,8 +6,13 @@ from numpy import arange
 
 
 def local_numbering_Lambda__m2n2k0(etype, p):
-    """Do the numbering for the outer 1-form on a 2d mesh in 2d space."""
-    if etype in ('unique msepy curvilinear quadrilateral', 'orthogonal rectangle'):
+    r"""Do the numbering for the outer 1-form on a 2d mesh in 2d space."""
+    if etype in (
+            'unique msepy curvilinear quadrilateral',
+            'unique curvilinear quad',
+            'orthogonal rectangle',
+            9,
+    ):
         local_numbering = _ln_m2n2k0_msepy_quadrilateral_(p)
     elif etype == 5:
         local_numbering = _ln_m2n2k0_vtu_5_(p)
@@ -20,7 +25,7 @@ _cache_0_ = {}   # these cache will not be cleaned.
 
 
 def _ln_m2n2k0_msepy_quadrilateral_(p):
-    """"""
+    r""""""
     if p in _cache_0_:
         return _cache_0_[p]
     else:
@@ -36,7 +41,7 @@ _cache_5_ = {}
 
 
 def _ln_m2n2k0_vtu_5_(p):
-    """
+    r"""
     -----------------------> et
     |
     |     0         0         0

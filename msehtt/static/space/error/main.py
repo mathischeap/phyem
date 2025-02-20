@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-"""
+r"""
 """
 from tools.frozen import Frozen
 from msehtt.static.space.error.Lambda.main import MseHttSpaceLambdaError
@@ -17,6 +17,6 @@ class MseHttSpaceError(Frozen):
         """"""
         indicator = self._space.indicator
         if indicator == 'Lambda':
-            return MseHttSpaceLambdaError(self._space)(cf, cochain, degree, error_type)
+            return float(MseHttSpaceLambdaError(self._space)(cf, cochain, degree, error_type))
         else:
             raise NotImplementedError()

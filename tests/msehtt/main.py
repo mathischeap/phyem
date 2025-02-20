@@ -10,6 +10,11 @@ if './' not in sys.path:
 
 from __init__ import php
 
+php('>>> msehtt >>> tests.msehtt.numbering')
+from tests.msehtt.numbering import ph_test
+for i in range(6):
+    ph_test(i)
+
 php('>>> msehtt >>> tests.msehtt.solvers')
 # noinspection PyUnresolvedReferences
 import tests.msehtt.solvers
@@ -53,3 +58,11 @@ import tests.msehtt.dMHD_manu
 php('>>> msehtt >>> tests.msehtt.dMHD_manu_cache')
 # noinspection PyUnresolvedReferences
 import tests.msehtt.dMHD_manu_cache
+
+php('>>> msehtt >>> tests.msehtt.Poisson2di_UnstructuredQuad')
+# noinspection PyUnresolvedReferences
+import tests.msehtt.Poisson2di_UnstructuredQuad
+
+php('>>> msehtt >>> tests.msehtt.Poisson2do_UnstructuredQuad')
+# noinspection PyUnresolvedReferences
+import tests.msehtt.Poisson2do_UnstructuredQuad

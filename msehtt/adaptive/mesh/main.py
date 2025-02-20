@@ -1,21 +1,13 @@
 # -*- coding: utf-8 -*-
 r"""
 """
-import sys
-
-if './' not in sys.path:
-    sys.path.append('./')
 from tools.frozen import Frozen
 
 
-class ClassName(Frozen):
+class MseHtt_Adaptive_TopMesh(Frozen):
     """"""
 
-    def __init__(self):
+    def __init__(self, abstract_meshes):
         """"""
+        self._abstract_meshes = abstract_meshes
         self._freeze()
-
-
-if __name__ == '__main__':
-    # mpiexec -n 4 python 
-    pass

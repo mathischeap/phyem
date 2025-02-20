@@ -33,7 +33,7 @@ element_layout = [
     [1, 2, 4] + [8] * (K-6) + [4, 2, 1],
 ]
 
-from _app.workspace_dir import ph_dir
+from _app.workspace_dir import local_dir as ph_dir
 data_dir = ph_dir + f"/LDC_no_normal_B_bc_Rf{_rf_}Rm{_rm_}c{int(1/_c_)}_N{N}K{K}sps{steps_per_second}"
 manifold = ph.manifold(2, periodic=False)
 mesh = ph.mesh(manifold)

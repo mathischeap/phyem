@@ -15,15 +15,15 @@ matplotlib.use('TkAgg')
 
 
 class MseHttBoundarySectionPartialMeshVisualizeMatplot(Frozen):
-    """"""
+    r""""""
 
     def __init__(self, boundary_section):
-        """"""
+        r""""""
         self._boundary_section = boundary_section
         self._freeze()
 
     def __call__(self, *args, **kwargs):
-        """"""
+        r""""""
         if self._boundary_section.mn == (2, 2):
             return self._plot_boundary_section_of_2d_mesh_in_2d_space(*args, **kwargs)
         elif self._boundary_section.mn == (3, 3):
@@ -38,7 +38,7 @@ class MseHttBoundarySectionPartialMeshVisualizeMatplot(Frozen):
             saveto=None,
             title=None,   # set title = False to turn off the title.
     ):
-        """"""
+        r""""""
         fig = self._boundary_section._tgm.visualize.matplot(
             data_only=True, color='lightgray'
         )
@@ -89,7 +89,7 @@ class MseHttBoundarySectionPartialMeshVisualizeMatplot(Frozen):
             saveto=None,
             title=None,
     ):
-        """"""
+        r""""""
         all_outline_data = {}
 
         for element_index___face_id in self._boundary_section:

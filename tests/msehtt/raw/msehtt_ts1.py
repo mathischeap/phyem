@@ -17,7 +17,7 @@ ph.config.set_embedding_space_dim(2)
 ph.config.set_high_accuracy(True)
 ph.config.set_pr_cache(False)
 
-N = 3
+N = 4
 
 manifold = ph.manifold(2, periodic=False)
 mesh = ph.mesh(manifold)
@@ -41,7 +41,7 @@ i1 = Inn1.make_form(r'u^1', 'inner-form-1')
 o1 = Out1.make_form(r'\tilde{u}^1', 'outer-form-1')
 
 
-# ------- manually make a vtu interface file ---------------
+# ------- manually make a vtu interface file -------------------------------------
 
 
 from msehtt.static.mesh.great.config.vtu import MseHttVtuInterface
@@ -52,7 +52,8 @@ from src.config import MASTER_RANK, RANK, COMM
 
 
 if RANK == MASTER_RANK:
-    __ = [uniform(-0.1, 0.1) for _ in range(8)]
+    # __ = [uniform(-0.1, 0.1) for _ in range(8)]
+    __ = [0 for _ in range(8)]
 
 else:
     __ = None
@@ -76,6 +77,9 @@ coo = {
     13: (1.5, 0),
     14: (1.5, 0.5),
     15: (1.5, 1),
+    16: (2, 0),
+    17: (2, 0.5),
+    18: (2, 1),
 }
 
 connections = {
@@ -97,6 +101,8 @@ connections = {
     15: [9, 0, 7],
     'q0': [5, 6, 13, 14],
     'q1': [5, 14, 15, 4],
+    'q3': [13, 16, 17, 14],
+    'q4': [15, 14, 17, 18],
 }
 
 
@@ -105,22 +111,33 @@ for e in connections:
     cell_types[e] = 5
 cell_types['q0'] = 9
 cell_types['q1'] = 9
+cell_types['q3'] = 9
+cell_types['q4'] = 9
 
 
 if RANK == MASTER_RANK:
-    __ = [randint(0, 2) for _ in range(16)]
+    __ = [randint(0, 3) for _ in range(20)]
 else:
     __ = None
 __ = COMM.bcast(__, root=MASTER_RANK)
 
 CONNECTIONS = {}
-i = 0
-for e in connections:
+
+for i, e in enumerate(connections):
     nodes = connections[e]
-    if e in ['q0', 'q1']:
-        pass
+    rolling = __[i]
+    if e in ['q0', 'q1', 'q3', 'q4']:
+        if rolling == 0:
+            pass
+        elif rolling == 1:
+            nodes = [nodes[1], nodes[2], nodes[3], nodes[0]]
+        elif rolling == 2:
+            nodes = [nodes[2], nodes[3], nodes[0], nodes[1]]
+        elif rolling == 3:
+            nodes = [nodes[3], nodes[0], nodes[1], nodes[2]]
+        else:
+            raise Exception()
     else:
-        rolling = __[i]
         if rolling == 0:
             pass
         elif rolling == 1:
@@ -128,105 +145,105 @@ for e in connections:
         elif rolling == 2:
             nodes = [nodes[2], nodes[0], nodes[1]]
         else:
-            raise Exception
-        i += 1
+            pass
 
     CONNECTIONS[e] = nodes
 
 vif = MseHttVtuInterface(coo, CONNECTIONS, cell_types)
 
 ph.space.finite(N)
-# -------------------------------------------------------------
+
+# -----------------------------------------------------------------------------------
 
 msehtt, obj = ph.fem.apply('msehtt-s', locals())
 tgm = msehtt.tgm()
-msehtt.config(tgm)(vif, ts=True)
-# tgm.visualize()
+msehtt.config(tgm)(vif, ts=1)
+tgm.visualize(quality=False, internal_grid=0)
 
-msehtt_mesh = msehtt.base['meshes'][r'\mathfrak{M}']
-msehtt.config(msehtt_mesh)(tgm, including='all')
-# msehtt_mesh.visualize()
-
-fi0 = obj['i0']
-fi1 = obj['i1']
-fi2 = obj['i2']
-
-fo0 = obj['o0']
-fo1 = obj['o1']
-fo2 = obj['o2']
-
-
-def fx(t, x, y):
-    return np.sin(2 * np.pi * x) * np.cos(1.24 * np.pi * y) * np.exp(t)
-
-
-def fy(t, x, y):
-    return np.cos(1.77 * np.pi * x) * np.sin(2 * np.pi * y) * np.exp(t)
-
-
-def fw(t, x, y):
-    return np.cos(2 * np.pi * x) * np.cos(1.99 * np.pi * y) * np.exp(t)
-
-
-vector = ph.vc.vector(fx, fy)
-scalar = ph.vc.scalar(fw)
-
-fo0.cf = scalar
-fo0[0].reduce()
-fo1.cf = vector
-fo1[0].reduce()
-fo2.cf = scalar
-fo2[0].reduce()
-
-# fo0[0].visualize.matplot()
-# fo1[0].visualize()
-fo2[0].visualize.matplot()
-
+# msehtt_mesh = msehtt.base['meshes'][r'\mathfrak{M}']
+# msehtt.config(msehtt_mesh)(tgm, including='all')
+# # msehtt_mesh.visualize()
+#
+# fi0 = obj['i0']
+# fi1 = obj['i1']
+# fi2 = obj['i2']
+#
+# fo0 = obj['o0']
+# fo1 = obj['o1']
+# fo2 = obj['o2']
+#
+#
+# def fx(t, x, y):
+#     return np.sin(2 * np.pi * x) * np.cos(2 * np.pi * y) * np.exp(t)
+#
+#
+# def fy(t, x, y):
+#     return np.cos(2 * np.pi * x) * np.sin(2 * np.pi * y) * np.exp(t)
+#
+#
+# def fw(t, x, y):
+#     return np.cos(2 * np.pi * x) * np.cos(2 * np.pi * y) * np.exp(t)
+#
+#
+# vector = ph.vc.vector(fx, fy)
+# scalar = ph.vc.scalar(fw)
+#
+# fo0.cf = scalar
+# fo0[0].reduce()
+# fo1.cf = vector
+# fo1[0].reduce()
+# fo2.cf = scalar
+# fo2[0].reduce()
+#
+# # fo0[0].visualize.matplot()
+# # fo1[0].visualize()
+# # fo2[0].visualize.matplot()
+#
 # err0 = fo0[0].error()
 # err1 = fo1[0].error()
 # err2 = fo2[0].error()
-# assert max(err0, err1, err2) < 1e-4
+# print(err0, err1, err2)
 
-fi0.cf = scalar
-fi0[0].reduce()
-fi1.cf = vector
-fi1[0].reduce()
-fi2.cf = scalar
-fi2[0].reduce()
-
-# fi0[0].visualize()
-# fi1[0].visualize()
-fi2[0].visualize.matplot()
-
+# fi0.cf = scalar
+# fi0[0].reduce()
+# fi1.cf = vector
+# fi1[0].reduce()
+# fi2.cf = scalar
+# fi2[0].reduce()
+#
+# # fi0[0].visualize()
+# # fi1[0].visualize()
+# fi2[0].visualize.matplot()
+#
 # err0 = fi0[0].error()
 # err1 = fi1[0].error()
 # err2 = fi2[0].error()
-# assert max(err0, err1, err2) < 1e-4
+# print(err0, err1, err2)
 #
-# fo0[1].reduce()
-# E = fo0.incidence_matrix
-# fo1[1].cochain = E @ fo0[1].cochain
-# fo1.cf = fo0.cf.exterior_derivative()
-# error = fo1[1].error()
-# assert error < 1e-3
-#
-# fo1[1].reduce()
-# E = fo1.incidence_matrix
-# fo2[1].cochain = E @ fo1[1].cochain
-# fo2.cf = fo1.cf.exterior_derivative()
-# error = fo2[1].error()
-# assert error < 1e-3
-#
-# fi0[1].reduce()
-# E = fi0.incidence_matrix
-# fi1[1].cochain = E @ fi0[1].cochain
-# fi1.cf = fi0.cf.exterior_derivative()
-# error = fi1[1].error()
-# assert error < 1e-3
-#
-# fi1[1].reduce()
-# E = fi1.incidence_matrix
-# fi2[1].cochain = E @ fi1[1].cochain
-# fi2.cf = fi1.cf.exterior_derivative()
-# error = fi2[1].error()
-# assert error < 1e-3
+# # fo0[1].reduce()
+# # E = fo0.incidence_matrix
+# # fo1[1].cochain = E @ fo0[1].cochain
+# # fo1.cf = fo0.cf.exterior_derivative()
+# # error = fo1[1].error()
+# # assert error < 1e-3
+# #
+# # fo1[1].reduce()
+# # E = fo1.incidence_matrix
+# # fo2[1].cochain = E @ fo1[1].cochain
+# # fo2.cf = fo1.cf.exterior_derivative()
+# # error = fo2[1].error()
+# # assert error < 1e-3
+# #
+# # fi0[1].reduce()
+# # E = fi0.incidence_matrix
+# # fi1[1].cochain = E @ fi0[1].cochain
+# # fi1.cf = fi0.cf.exterior_derivative()
+# # error = fi1[1].error()
+# # assert error < 1e-3
+# #
+# # fi1[1].reduce()
+# # E = fi1.incidence_matrix
+# # fi2[1].cochain = E @ fi1[1].cochain
+# # fi2.cf = fi1.cf.exterior_derivative()
+# # error = fi2[1].error()
+# # assert error < 1e-3

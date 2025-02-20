@@ -8,6 +8,8 @@ from scipy.sparse import csr_matrix
 
 _cache_mm222_ = {}
 
+_unique_str_ = 'unique'
+
 
 def mass_matrix_Lambda__m2n2k2(tpm, degree):
     """"""
@@ -23,6 +25,8 @@ def mass_matrix_Lambda__m2n2k2(tpm, degree):
             M[e], cache_key_dict[e] = ___mm222_orthogonal_rectangle___(element, degree)
         elif etype == 'unique msepy curvilinear quadrilateral':
             M[e], cache_key_dict[e] = ___mm222_msepy_unique_quadrilateral___(element, degree)
+        elif etype == 9:
+            M[e], cache_key_dict[e] = ___mm222_quad_9___(element, degree)
         else:
             raise NotImplementedError(f"{__name__} not implemented for etype={etype}")
     _cache_mm222_[key] = M, cache_key_dict
@@ -75,5 +79,32 @@ def ___mm222_msepy_unique_quadrilateral___(element, degree):
         optimize='optimal'
     )
     M = csr_matrix(M)
-    cache_key = 'unique'
+    cache_key = _unique_str_
+    return M, cache_key
+
+
+def ___mm222_quad_9___(element, degree):
+    """"""
+    key = element.metric_signature + _degree_str_maker(degree)
+    if key in _cache_222_:
+        M, cache_key = _cache_222_[key]
+    else:
+        p, _ = element.degree_parser(degree)
+
+        quad_degree = (p[0]+1, p[1]+1)
+        quad = quadrature(quad_degree, 'Gauss')
+        quad_nodes = quad.quad_nodes
+        quad_weights = quad.quad_weights_ravel
+        xi_et, bf = element.bf('m2n2k2', degree, *quad_nodes)
+        detJM = element.ct.Jacobian(*xi_et)
+        M = np.einsum(
+            'm, im, jm -> ij',
+            quad_weights * np.reciprocal(detJM),
+            bf[0], bf[0],
+            optimize='optimal'
+        )
+        M = csr_matrix(M)
+        cache_key = key
+        _cache_222_[key] = M, cache_key
+
     return M, cache_key

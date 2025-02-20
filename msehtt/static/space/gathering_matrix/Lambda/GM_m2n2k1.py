@@ -56,17 +56,27 @@ def gathering_matrix_Lambda__m2n2k1_outer(tpm_or_tgm, degree, do_cache=True):
             map_ = global_map[e]
             # --------- call the element class to do the particular numbering -----------
             if e in ELEMENT_RANGE:
-                if etype in ('unique msepy curvilinear quadrilateral', 'orthogonal rectangle'):
+                if etype in (
+                        'unique msepy curvilinear quadrilateral',
+                        'orthogonal rectangle',
+                ):
                     global_numbering[e], current = ___gm_outer_msepy_quadrilateral___(
                         map_, edge_numbering_pool, current, degree,
                     )
 
-                elif etype in (5, 'unique msepy curvilinear triangle'):
+                elif etype in (
+                        5,
+                        'unique curvilinear triangle',
+                        'unique msepy curvilinear triangle',
+                ):
                     global_numbering[e], current = ___gm_outer_vtu_5___(
                         map_, edge_numbering_pool, current, degree,
                     )
 
-                elif etype in (9, 'unique curvilinear quad'):
+                elif etype in (
+                        9,
+                        'unique curvilinear quad',
+                ):
                     global_numbering[e], current = ___gm_outer_quad_9___(
                         map_, edge_numbering_pool, current, degree,
                     )
@@ -405,17 +415,27 @@ def gathering_matrix_Lambda__m2n2k1_inner(tpm_or_tgm, degree, do_cache=True):
             map_ = global_map[e]
             # --------- call the element class to do the particular numbering -----------
             if e in ELEMENT_RANGE:
-                if etype in ('unique msepy curvilinear quadrilateral', 'orthogonal rectangle'):
+                if etype in (
+                        'unique msepy curvilinear quadrilateral',
+                        'orthogonal rectangle',
+                ):
                     global_numbering[e], current = ___gm_inner_msepy_quadrilateral___(
                         map_, edge_numbering_pool, current, degree,
                     )
 
-                elif etype in (5, 'unique msepy curvilinear triangle'):
+                elif etype in (
+                        5,
+                        'unique curvilinear triangle',
+                        'unique msepy curvilinear triangle',
+                ):
                     global_numbering[e], current = ___gm_inner_vtu_5___(
                         map_, edge_numbering_pool, current, degree,
                     )
 
-                elif etype in (9, 'unique curvilinear quad'):
+                elif etype in (
+                        9,
+                        'unique curvilinear quad',
+                ):
                     global_numbering[e], current = ___gm_inner_quad_9___(
                         map_, edge_numbering_pool, current, degree,
                     )

@@ -161,6 +161,11 @@ class MseHttCochain(Frozen):
                 yield t
 
     @property
+    def num_global_dofs(self):
+        r"""Return the number of dofs across all elements in all ranks."""
+        return self.gathering_matrix.num_global_dofs
+
+    @property
     def gathering_matrix(self):
         """"""
         rf = self._f
@@ -168,7 +173,9 @@ class MseHttCochain(Frozen):
             if self._gm is None:
                 gm = self._f.space.gathering_matrix(self._f.degree)
                 assert len(gm) == len(self._f.tgm.elements), \
-                    (f"Even if a form has no business with some great elements, the indices of those"
+                    (f"len(gm) = {len(gm)}, len(self._f.tgm.elements)={len(self._f.tgm.elements)}. "
+                     f"They are different! So, wrong! Knowing that "
+                     f"even if a form has no business with some great elements, the indices of those"
                      f"great elements still should be in the gm with the values to be None or an empty array.")
                 self._gm = gm
                 assert self._gm.num_rank_elements == len(self._f.tgm.elements), f'Must be!'

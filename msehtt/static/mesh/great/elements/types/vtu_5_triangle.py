@@ -27,7 +27,7 @@ class Vtu5Triangle(MseHttGreatMeshBaseElement):
     | face 0 /    \ face 2         >>  face 1: positive direction: 1->2
     |       /      \               >>> face 2: positive direction: 0->2
     |      /        \
-    |     ------------
+    |     /__________\
     v     1   face 1  2
     xi
 
@@ -48,46 +48,80 @@ class Vtu5Triangle(MseHttGreatMeshBaseElement):
 
     @classmethod
     def m(cls):
-        """the dimensions of the space"""
+        r"""the dimensions of the space"""
         return 2
 
     @classmethod
     def n(cls):
-        """the dimensions of the element"""
+        r"""the dimensions of the element"""
         return 2
 
     @classmethod
     def _etype(cls):
-        """vtu cell type 5: triangle"""
+        r"""vtu cell type 5: triangle"""
         return 5
 
+    @classmethod
+    def _find_element_center_coo(cls, parameters):
+        r""""""
+        return np.sum(np.array(parameters), axis=0) / 3
+
     def __repr__(self):
-        """"""
+        r""""""
         super_repr = super().__repr__().split('object')[1]
         return f"<VTU-5 element indexed:{self._index}" + super_repr
 
     @property
     def metric_signature(self):
-        """"""
+        r""""""
         return self._metric_signature
 
-    def _generate_outline_data(self, ddf=None):
-        """"""
+    def _generate_outline_data(self, ddf=None, internal_grid=0):
+        r""""""
         x0, y0 = self._parameters[0]
         x1, y1 = self._parameters[1]
         x2, y2 = self._parameters[2]
-
-        return {
+        line_data_dict = {
             'mn': (self.m(), self.n()),
             'center': self.ct.mapping(0, 0),
             0: ([x0, x1], [y0, y1]),   # face #0; topologically west
             1: ([x1, x2], [y1, y2]),   # face #1; topologically south
-            2: ([x0, x2], [y0, y2]),   # face #2; topologically east
+            2: ([x2, x0], [y2, y0]),   # face #2; topologically east
         }
+        if internal_grid == 0:
+            return line_data_dict
+        else:
+            raise NotImplementedError()
+
+    def _find_element_quality(self):
+        r"""Return a factor indicating the quality of the elements.
+
+        When the factor is 0: the element is worst.
+        When the factor is 1: the element is best.
+
+        Returns
+        -------
+        quality: float
+            In [0, 1]. 0: Worst; 1: Best.
+
+        """
+        parameters = self.parameters
+        a, b, c = angles_of_triangle(*parameters)
+        quality = np.array([a - 90, b - 90, c - 90])
+        quality = np.sqrt(np.sum(quality.dot(quality)))
+        quality /= 180
+        quality = 1 - quality
+        if quality < 1e-8:
+            quality = 0
+        elif quality > 9.9999:
+            quality = 1
+        else:
+            pass
+        return quality
 
     @classmethod
     def face_setting(cls):
-        """To show the nodes of faces and the positive direction."""
+        r"""To show the nodes of faces and the positive direction."""
         return {
             0: (0, 1),   # face #0 is from node 0 -> node 1  (positive direction)
             1: (1, 2),   # face #1 is from node 1 -> node 2  (positive direction)
@@ -96,7 +130,7 @@ class Vtu5Triangle(MseHttGreatMeshBaseElement):
 
     @property
     def faces(self):
-        """The faces of this element."""
+        r"""The faces of this element."""
         if self._faces is None:
             self._faces = _VTU5_Triangle_Faces_(self)
         return self._faces
@@ -114,22 +148,12 @@ class Vtu5Triangle(MseHttGreatMeshBaseElement):
 
     @property
     def edges(self):
+        r""""""
         raise Exception(f"vtu triangle element has no edges.")
 
     def ___edge_representative_str___(self):
         r""""""
         raise Exception(f"vtu triangle element has no edges.")
-
-    @classmethod
-    def degree_parser(cls, degree):
-        """"""
-        if isinstance(degree, int):
-            assert degree >= 1, f'Must be'
-            p = (degree, degree)
-            dtype = 'Lobatto'
-        else:
-            raise NotImplementedError()
-        return p, dtype
 
 
 ___invA___ = np.array([
@@ -146,10 +170,10 @@ from msehtt.static.mesh.great.elements.types.base import MseHttGreatMeshBaseElem
 
 
 class Vtu5Triangle_CT(MseHttGreatMeshBaseElementCooTrans):
-    """"""
+    r""""""
 
     def __init__(self, vtu5e):
-        """"""
+        r""""""
         super().__init__(vtu5e, vtu5e.metric_signature)
 
         self._melt()
@@ -188,7 +212,7 @@ class Vtu5Triangle_CT(MseHttGreatMeshBaseElementCooTrans):
         self._freeze()
 
     def mapping(self, xi, et):
-        """"""
+        r""""""
         # [-1, 1]^2 -> a reference triangle.
         r = xi
         s = et * (xi + 1) / 2
@@ -198,7 +222,7 @@ class Vtu5Triangle_CT(MseHttGreatMeshBaseElementCooTrans):
         return x, y
 
     def ___Jacobian_matrix___(self, xi, et):
-        """"""
+        r""""""
         dx_dr = self._t00
         dx_ds = self._t01
 

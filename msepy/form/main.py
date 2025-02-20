@@ -27,10 +27,10 @@ from tools.miscellaneous.ndarray_cache import ndarray_key_comparer, add_to_ndarr
 
 
 class MsePyRootForm(Frozen):
-    """"""
+    r""""""
 
     def __init__(self, abstract_root_form):
-        """"""
+        r""""""
         self._abstract = abstract_root_form
         abstract_space = abstract_root_form.space
         self._space = abstract_space._objective
@@ -58,27 +58,27 @@ class MsePyRootForm(Frozen):
         self._freeze()
 
     def lift(self, msepy_mesh):
-        """"""
+        r""""""
         self.space._mesh = msepy_mesh
 
     def _saving_check(self):
-        """If you want to use `ph.save` to save instances of this class, it must have this method."""
+        r"""If you want to use `ph.save` to save instances of this class, it must have this method."""
         saving_key = self.abstract._pure_lin_repr  # the key used to represent self in the dict to be saved.
         saving_obj = self  # self only presents in one thread, so just save it.
         return saving_key, saving_obj
 
     @property
     def abstract(self):
-        """the abstract object this root-form is for."""
+        r"""the abstract object this root-form is for."""
         return self._abstract
 
     def __repr__(self):
-        """repr"""
+        r"""repr"""
         ab_rf_repr = self._abstract.__repr__().split(' at ')[0][1:]
         return "<MsePy " + ab_rf_repr + super().__repr__().split(" object")[1]
 
     def __getitem__(self, t):
-        """return the realtime copy of `self` at time `t`."""
+        r"""return the realtime copy of `self` at time `t`."""
         if t is None:
             t = self.cochain.newest  # newest time
         elif isinstance(t, str):
@@ -104,7 +104,7 @@ class MsePyRootForm(Frozen):
             raise Exception(f"cannot accept t={t}.")
 
     def ic(self, t):
-        """Interpolate copy at any time t."""
+        r"""Interpolate copy at any time t."""
         if t is None:
             t = self.cochain.newest  # newest time
         elif isinstance(t, str):
@@ -131,7 +131,7 @@ class MsePyRootForm(Frozen):
             raise Exception(f"cannot accept t={t}.")
 
     def __call__(self, ati=None, **kwargs):
-        """We first get a ``time`` from ati(*args, **kwargs), then return a static copy of self at ``time``.
+        r"""We first get a ``time`` from ati(*args, **kwargs), then return a static copy of self at ``time``.
 
         Parameters
         ----------
@@ -155,63 +155,65 @@ class MsePyRootForm(Frozen):
         return self[t]
 
     def _is_base(self):
-        """Am I a base root-form (not abstracted at a time)?"""
+        r"""Am I a base root-form (not abstracted at a time)?"""
         return self._base is None
 
     @property
     def _base(self):
-        """The base root-form I have."""
+        r"""The base root-form I have."""
         return self._pAti_form['base_form']
 
     @property
     def name(self):
-        """name of this form is the pure linguistic representation."""
+        r"""name of this form is the pure linguistic representation."""
         return self._abstract._pure_lin_repr
 
     @property
     def m(self):
+        r""""""
         return self.space.m  # esd
 
     @property
     def n(self):
+        r""""""
         return self.space.n  # mesh.ndim
 
     @property
     def space(self):
-        """The `MsePySpace` I am in."""
+        r"""The `MsePySpace` I am in."""
         return self._space
 
     @property
     def mesh(self):
-        """The objective mesh."""
+        r"""The objective mesh."""
         return self.space.mesh
 
     @property
     def degree(self):
-        """The degree of my space."""
+        r"""The degree of my space."""
         return self._degree
 
     @property
     def cf(self):
-        """Continuous form (a shell, the real `cf` is in `cf.field`) of this root-form."""
+        r"""Continuous form (a shell, the real `cf` is in `cf.field`) of this root-form."""
         if self._cf is None:
             self._cf = MsePyContinuousForm(self)
         return self._cf
 
     @cf.setter
     def cf(self, _cf):
-        """Setter of `cf`.
+        r"""Setter of `cf`.
 
         We actually set `cf.field`, use a shell `cf` to enabling extra checkers and so on.
         """
         self.cf.field = _cf
 
     def set_cf(self, cf):
-        """A more reasonable method name."""
+        r"""A more reasonable method name."""
         self.cf = cf
 
     def d(self):
-        """d(self)"""
+        r"""d(self)"""
         E = self.coboundary.incidence_matrix._data.toarray()
 
         def _d_cochain(t):
@@ -238,7 +240,7 @@ class MsePyRootForm(Frozen):
         return df
 
     def _copy(self):
-        """Make a copy of empty cochain; do not specify cochain."""
+        r"""Make a copy of empty cochain; do not specify cochain."""
         ab_space = self.abstract.space
         sym_repr = str(hash(random() + time()))      # random sym_repr <-- important, do not try to print its repr
         lin_repr = str(hash(random() + time() + 2))  # random lin_repr <-- important, do not try to print its repr
@@ -251,7 +253,7 @@ class MsePyRootForm(Frozen):
         return f
 
     def __sub__(self, other):
-        """self - other."""
+        r"""self - other."""
         if other.__class__ is self.__class__:
 
             assert other.mesh == self.mesh, f"meshes do not match"
@@ -284,7 +286,7 @@ class MsePyRootForm(Frozen):
             raise NotImplementedError(f"{other}")
 
     def __add__(self, other):
-        """self + other."""
+        r"""self + other."""
         if other.__class__ is self.__class__:
 
             assert other.mesh == self.mesh, f"meshes do not match"
@@ -318,13 +320,13 @@ class MsePyRootForm(Frozen):
 
     @property
     def cochain(self):
-        """The cochain class."""
+        r"""The cochain class."""
         if self._cochain is None:
             self._cochain = MsePyRootFormCochain(self)
         return self._cochain
 
     def reduce(self, t, update_cochain=True, target=None, **kwargs):
-        """reduce `self.cf` if ``targe`` is None else ``target``
+        r"""reduce `self.cf` if ``targe`` is None else ``target``
         at time `t` and decide whether update the cochain.
         """
         if target is None:
@@ -349,7 +351,7 @@ class MsePyRootForm(Frozen):
         return cochain_local
 
     def reconstruct(self, t, *meshgrid, **kwargs):
-        """Reconstruct self at time `t`."""
+        r"""Reconstruct self at time `t`."""
         if t is None:
             t = self.cochain.newest
         else:
@@ -359,12 +361,12 @@ class MsePyRootForm(Frozen):
         return self.space.reconstruct(local_cochain, degree, *meshgrid, **kwargs)
 
     def _evaluate_bf_on(self, *meshgrid):
-        """Evaluate the basis functions of this form (the space)."""
+        r"""Evaluate the basis functions of this form (the space)."""
         return self._space.basis_functions[self.degree](*meshgrid)
 
     @property
     def visualize(self):
-        """visualize."""
+        r"""visualize."""
         if self._visualize is None:
             self._visualize = MsePyRootFormVisualize(self)
         return self._visualize

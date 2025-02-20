@@ -48,6 +48,7 @@ from src.form.main import _global_root_forms_lin_dict   # [root-form_lin_repr] -
 import msepy.main as msepy                                # mimetic spectral elements, python implementation
 import msehtt.static.main as msehtt_static                # static version of msehtt
 import msehtt_ncf.static.main as msehtt_ncf_static        # static version of msehtt-ncf
+import msehtt.adaptive.main as msehtt_adaptive            # adaptive version of msehtt
 # ==========================================================================================================
 
 _implemented_finite_elements = {
@@ -56,6 +57,9 @@ _implemented_finite_elements = {
     'msehtt':        msehtt_static,  # default version of msehtt is the static one.
     'msehtt-s':      msehtt_static,  # shortcut of msehtt-static
     'msehtt-static': msehtt_static,  # static version of msehtt
+
+    'msehtt-a':        msehtt_adaptive,
+    'msehtt-adaptive': msehtt_adaptive,
 
     'msehtt-ncf':        msehtt_ncf_static,  # default version of msehtt-ncf is the static one
     'msehtt-ncf-s':      msehtt_ncf_static,  # shortcut of static version of msehtt-ncf

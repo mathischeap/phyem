@@ -302,7 +302,7 @@ def _im220i_vtu_9_(element, degree):
     if 'm2n2k1_inner' not in dof_reverse_info:
         return E, cache_key
     else:
-        face_indices = element.dof_reverse_info['m2n2k1_inner']
+        face_indices = dof_reverse_info['m2n2k1_inner']
         new_cache_key = cache_key + str(face_indices)
 
         if new_cache_key in _cache_vtu9_i_:
@@ -399,7 +399,7 @@ def _im220i_vtu_5_(element, degree):
     if 'm2n2k1_inner' not in dof_reverse_info:
         return E, cache_key
     else:
-        face_indices = element.dof_reverse_info['m2n2k1_inner']
+        face_indices = dof_reverse_info['m2n2k1_inner']
         new_cache_key = cache_key + str(face_indices)
 
         if new_cache_key in _cache_vtu5_i_:

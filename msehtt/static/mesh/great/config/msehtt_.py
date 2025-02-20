@@ -36,13 +36,12 @@ class MseHtt_Static_PreDefined_Config(Frozen):
         #   |     -----------------------------
         #   |   node 0         face 0       node 1
         #   |
-        #   |
         #   ------------------------------------------> r
         #
         # `regions` is a dictionary of region instances. A region instance can be of any class, but it must have
         # a property `ndim` saying its dimensions and a property called `etype` saying the element
         # made in this region can only be of which type.
-
+        #
         # `region_map` is None or a dictionary.
         # When it is a dictionary, its keys are the same to those of `regions` and values
         # are list of region corners. For example, in 2d
@@ -61,6 +60,8 @@ class MseHtt_Static_PreDefined_Config(Frozen):
             region = regions[i]
             assert hasattr(region, 'ndim') and hasattr(region, 'etype'), \
                 f"a valid msehtt region must have 'ndim' and 'etype' properties."
+            assert hasattr(region, 'mapping') and hasattr(region, 'Jacobian_matrix'), \
+                f"a valid msehtt region must have 'mapping' and 'Jacobian_matrix' methods."
 
         element_layout = _study_element_layout_(regions, element_layout)
 
@@ -71,7 +72,7 @@ class MseHtt_Static_PreDefined_Config(Frozen):
         else:
             pass
 
-        region_map = _parse_pbc(region_map, periodic_setting)
+        region_map = _parse_pbc(regions, region_map, periodic_setting)
 
         element_type_dict, element_parameter_dict, element_map_dict = _parse_elements_(
             regions, region_map, element_layout
@@ -224,14 +225,108 @@ def _parse_regions(regions):
     return region_map
 
 
-def _parse_pbc(region_map, periodic_setting):
+def _parse_pbc(regions, region_map, periodic_setting):
     """We renew the region_map with periodic setting.
     """
     if periodic_setting is None:
         return region_map
     else:
         # a region cannot be periodic to itself! this is important!
-        raise NotImplementedError()
+
+        ndim = list()
+        for region_index in regions:
+            region = regions[region_index]
+            ndim.append(region.ndim)
+        assert all([ndim[0] == n for n in ndim]), f"regions must of same dimensions."
+        ndim = ndim[0]
+        same_labeling = []
+        same_labeling_pool = set()
+        if ndim == 2:
+            for pos0 in periodic_setting:
+                pos1 = periodic_setting[pos0]
+                region0, face0 = pos0
+                region1, face1 = pos1
+                face0_start, face0_end = face0
+                face1_start, face1_end = face1
+
+                old_label_face0_stt = region_map[region0][face0_start]
+                old_label_face0_end = region_map[region0][face0_end]
+
+                old_label_face1_stt = region_map[region1][face1_start]
+                old_label_face1_end = region_map[region1][face1_end]
+
+                assert old_label_face0_stt != old_label_face1_stt, r"A region cannot periodic to itself"
+                assert old_label_face0_end != old_label_face1_end, r"A region cannot periodic to itself"
+
+                _ = [old_label_face0_stt, old_label_face1_stt]
+                _.sort()
+                same_labeling.append(_)
+                same_labeling_pool.update(_)
+                _ = [old_label_face0_end, old_label_face1_end]
+                _.sort()
+                same_labeling.append(_)
+                same_labeling_pool.update(_)
+
+        else:
+            raise NotImplementedError()
+
+        same_labeling_pool = list(same_labeling_pool)
+        same_labeling_pool.sort()
+
+        organized_same_labelling = {}
+        found_label = set()
+        for i in same_labeling_pool:
+            if i in found_label:
+                pass
+            else:
+                found_label.add(i)
+                SAME = {i}
+                for _ in range(3):  # do it for three times to find all links.
+                    for pair in same_labeling:
+                        p0, p1 = pair
+                        if p0 in SAME and p1 not in SAME:
+                            SAME.add(p1)
+                            found_label.add(p1)
+                        elif p1 in SAME and p0 not in SAME:
+                            SAME.add(p0)
+                            found_label.add(p0)
+                        else:
+                            pass
+                organized_same_labelling[i] = SAME
+
+        new_labelling = {}
+        for n, i in enumerate(organized_same_labelling):
+            new_labelling[str(n)] = organized_same_labelling[i]
+
+        for r in region_map:
+            _map = region_map[r]
+            for k, j in enumerate(_map):
+                if j in same_labeling_pool:
+                    new_label = ''
+                    for str_j in new_labelling:
+                        if j in new_labelling[str_j]:
+                            new_label = str_j
+                            break
+                        else:
+                            pass
+                    assert new_label != '', f"we must have found a str representation of j."
+                    _map[k] = new_label
+                else:
+                    pass
+
+        current = 0
+        renumbering = {}
+        for r in region_map:
+            _map = region_map[r]
+            for k, j in enumerate(_map):
+                if j not in renumbering:
+                    renumbering[j] = current
+                    current += 1
+                else:
+                    pass
+                _map[k] = renumbering[j]
+
+        return region_map
 
 
 def _parse_elements_(regions, region_map, element_layout):
@@ -287,23 +382,25 @@ def _parse_elements_(regions, region_map, element_layout):
                         (x2, y2),
                         (x3, y3),
                     )
+
                     element_map_dict_str[current] = [
                         ___parse_2d_element_map___(region_index, region_nodes, _) for _ in element_nodes
                     ]
+
                     if etype == 9:
                         element_parameter_dict[current] = [
                             region.mapping(*_) for _ in element_nodes
                         ]
+
                     elif etype == 'unique curvilinear quad':
-
                         element_CT = _RegionElementCT_2d_(region, x0, x1, y0, y2)
-
                         element_parameter_dict[current] = {
                             'mapping': element_CT.mapping,                  # [-1, 1]^2 into the element
                             'Jacobian_matrix': element_CT.Jacobian_matrix   # JM of mapping [-1, 1]^2 into the element
                         }
+
                     else:
-                        raise Exception
+                        raise Exception(f"2d msehtt mesh only hase quad or unique curvilinear quad elements.")
 
                     current += 1
 
@@ -313,7 +410,7 @@ def _parse_elements_(regions, region_map, element_layout):
 
         # =======================================================================================
         else:
-            raise Exception
+            raise Exception()
 
     element_map_dict = {}
     current = 0

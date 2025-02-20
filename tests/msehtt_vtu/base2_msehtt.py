@@ -19,8 +19,8 @@ ph.config.set_embedding_space_dim(2)
 ph.config.set_high_accuracy(True)
 ph.config.set_pr_cache(False)
 
-N = 5
-K = 5
+N = 2
+K = 10
 c = 0.
 
 manifold = ph.manifold(2)
@@ -51,7 +51,7 @@ ph.space.finite(N)
 msehtt, obj = ph.fem.apply('msehtt-s', locals())
 tgm = msehtt.tgm()
 msehtt.config(tgm)('chaotic', element_layout=K, c=c, periodic=False)
-tgm.visualize(rank_wise_colored=True)
+# tgm.visualize(rank_wise_colored=True)
 
 msehtt_mesh = msehtt.base['meshes'][r'\mathfrak{M}']
 msehtt.config(msehtt_mesh)(tgm, including='all')
@@ -59,7 +59,7 @@ msehtt.config(msehtt_mesh)(tgm, including='all')
 
 total_boundary = msehtt.base['meshes'][r'\eth\mathfrak{M}']
 msehtt.config(total_boundary)(tgm, including=msehtt_mesh)
-total_boundary.visualize()
+# total_boundary.visualize()
 
 
 fi0 = obj['i0']
@@ -114,28 +114,30 @@ fo1[1].cochain = E @ fo0[1].cochain
 fo1.cf = fo0.cf.exterior_derivative()
 error = fo1[1].error()
 print(error)
-# # assert error < 1e-3
-#
-# fo1[1].reduce()
-# E = fo1.incidence_matrix
-# fo2[1].cochain = E @ fo1[1].cochain
-# fo2.cf = fo1.cf.exterior_derivative()
-# error = fo2[1].error()
-# print(error)
-# # assert error < 1e-3
-#
-# fi0[1].reduce()
-# E = fi0.incidence_matrix
-# fi1[1].cochain = E @ fi0[1].cochain
-# fi1.cf = fi0.cf.exterior_derivative()
-# error = fi1[1].error()
-# print(error)
-# # assert error < 1e-3
-#
-# fi1[1].reduce()
-# E = fi1.incidence_matrix
-# fi2[1].cochain = E @ fi1[1].cochain
-# fi2.cf = fi1.cf.exterior_derivative()
-# error = fi2[1].error()
-# print(error)
-# # assert error < 1e-3
+# assert error < 1e-3
+
+fo1[1].reduce()
+E = fo1.incidence_matrix
+fo2[1].cochain = E @ fo1[1].cochain
+fo2.cf = fo1.cf.exterior_derivative()
+error = fo2[1].error()
+print(error)
+fo2[1].visualize()
+# assert error < 1e-3
+
+fi0[1].reduce()
+E = fi0.incidence_matrix
+fi1[1].cochain = E @ fi0[1].cochain
+fi1.cf = fi0.cf.exterior_derivative()
+error = fi1[1].error()
+print(error)
+# assert error < 1e-3
+
+fi1[1].reduce()
+E = fi1.incidence_matrix
+fi2[1].cochain = E @ fi1[1].cochain
+fi2.cf = fi1.cf.exterior_derivative()
+error = fi2[1].error()
+print(error)
+# assert error < 1e-3
+fi2[1].visualize()

@@ -8,7 +8,7 @@ from numpy import arange
 
 
 def local_numbering_Lambda__m2n2k1_outer(etype, p):
-    """Do the numbering for the outer 1-form on a 2d mesh in 2d space."""
+    r"""Do the numbering for the outer 1-form on a 2d mesh in 2d space."""
     if etype in ('unique msepy curvilinear quadrilateral', 'orthogonal rectangle'):
         local_numbering = _ln_m2n2k1_outer_msepy_quadrilateral_(p)
     elif etype == 5:
@@ -22,7 +22,7 @@ _cache_1_ = {}   # these cache will not be cleaned.
 
 
 def _ln_m2n2k1_outer_msepy_quadrilateral_(p):
-    """"""
+    r""""""
     if p in _cache_1_:
         return _cache_1_[p]
     else:
@@ -42,7 +42,7 @@ _cache_outer_vtu5_ = {}
 
 
 def _ln_m2n2k1_outer_vtu5_(p):
-    """
+    r"""
     -----------------------> et
     |
     |
@@ -87,7 +87,7 @@ def _ln_m2n2k1_outer_vtu5_(p):
 
 
 def local_numbering_Lambda__m2n2k1_inner(etype, p):
-    """Do the numbering for the outer 1-form on a 2d mesh in 2d space."""
+    r"""Do the numbering for the outer 1-form on a 2d mesh in 2d space."""
     if etype in ('unique msepy curvilinear quadrilateral', 'orthogonal rectangle'):
         local_numbering = _ln_m2n2k1_inner_msepy_quadrilateral_(p)
     elif etype == 5:
@@ -101,7 +101,7 @@ _cache_2_ = {}   # these cache will not be cleaned.
 
 
 def _ln_m2n2k1_inner_msepy_quadrilateral_(p):
-    """"""
+    r""""""
     if p in _cache_2_:
         return _cache_2_[p]
     else:
@@ -121,7 +121,7 @@ _cache_inner_vtu5_ = {}
 
 
 def _ln_m2n2k1_inner_vtu5_(p):
-    """
+    r"""
     -----------------------> et
     |
     |

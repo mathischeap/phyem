@@ -9,7 +9,7 @@ _one_array_ = np.array([1])
 # --------- OUTER ---------------------------------------------------------------------------------------
 
 def bi_vc__m2n2k0_outer(rf0, t, vc, boundary_section):
-    """ <tr-star-outer-rf1 | tr-outer-rf0> over boundary_section. ``vc`` represent rf1, not tr-star-outer-rf1!
+    r""" <tr-star-outer-rf1 | tr-outer-rf0> over boundary_section. ``vc`` represent rf1, not tr-star-outer-rf1!
 
     So, ``vc`` is a vector; `tr-star-outer-rf1` then becomes a scalar.
 
@@ -35,7 +35,11 @@ def bi_vc__m2n2k0_outer(rf0, t, vc, boundary_section):
         element = rf0.tgm.elements[element_index]
         etype = element.etype
         face = boundary_section[element_index__face_id]
-        if etype in ("orthogonal rectangle", "unique msepy curvilinear quadrilateral"):
+        if etype in (
+                "orthogonal rectangle",
+                "unique msepy curvilinear quadrilateral",
+                9,  # this is not a typo. For element type 9 (quad), we can use this method.
+        ):
             num_test_form_local_dofs, local_dofs, face_boundary_integration_vec = (
                 ___bi_vc_220o_msepy_quadrilateral___(element, degree, face, tvc))
         else:
@@ -56,7 +60,7 @@ from msehtt.static.space.find.local_dofs_on_face.Lambda.m2n2k0 import __m2n2k0_m
 
 
 def ___bi_vc_220o_msepy_quadrilateral___(element, degree, face, tvc):
-    """"""
+    r""""""
     p = element.degree_parser(degree)[0]
     num_test_form_local_dofs = (p[0]+1) * (p[1]+1)
     if isinstance(p, (int, float)):
@@ -99,8 +103,9 @@ def ___bi_vc_220o_msepy_quadrilateral___(element, degree, face, tvc):
 
 # --------- INNER ---------------------------------------------------------------------------------------
 
+
 def bi_vc__m2n2k0_inner(rf0, t, vc, boundary_section):
-    """ <tr-star-inner-rf1 | tr-inner-rf0> over boundary_section. ``vc`` represent rf1, not tr-star-inner-rf1!
+    r""" <tr-star-inner-rf1 | tr-inner-rf0> over boundary_section. ``vc`` represent rf1, not tr-star-inner-rf1!
 
     So, ``vc`` is a vector; `tr-star-inner-rf1` then becomes a scalar.
 
@@ -126,7 +131,11 @@ def bi_vc__m2n2k0_inner(rf0, t, vc, boundary_section):
         element = rf0.tgm.elements[element_index]
         etype = element.etype
         face = boundary_section[element_index__face_id]
-        if etype in ("orthogonal rectangle", "unique msepy curvilinear quadrilateral"):
+        if etype in (
+                "orthogonal rectangle",
+                "unique msepy curvilinear quadrilateral",
+                9,   # this is not a typo. For element type 9 (quad), we can use this method.
+        ):
             num_test_form_local_dofs, local_dofs, face_boundary_integration_vec = (
                 ___bi_vc_220i_msepy_quadrilateral___(element, degree, face, tvc))
         else:
@@ -143,7 +152,7 @@ def bi_vc__m2n2k0_inner(rf0, t, vc, boundary_section):
 
 
 def ___bi_vc_220i_msepy_quadrilateral___(element, degree, face, tvc):
-    """"""
+    r""""""
     p = element.degree_parser(degree)[0]
     num_test_form_local_dofs = (p[0]+1) * (p[1]+1)
     if isinstance(p, (int, float)):

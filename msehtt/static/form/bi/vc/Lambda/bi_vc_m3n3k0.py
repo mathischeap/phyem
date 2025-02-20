@@ -7,7 +7,7 @@ _one_array_ = np.array([1])
 
 
 def bi_vc__m3n3k0(rf0, t, vc, boundary_section):
-    """ <tr-star-rf1 | tr-rf0> over boundary_section. ``vc`` represent rf1, not tr-star-rf1!
+    r""" <tr-star-rf1 | tr-rf0> over boundary_section. ``vc`` represent rf1, not tr-star-rf1!
 
     Parameters
     ----------
@@ -51,7 +51,7 @@ from msehtt.static.space.num_local_dofs.Lambda.num_local_dofs_m3n3k0 import _num
 
 
 def ___bi_vc_330_orthogonal_hexahedral___(element, degree, face, tvc):
-    """"""
+    r""""""
     p = element.degree_parser(degree)[0]
     num_test_form_local_dofs = _num_local_dofs__m3n3k0_msepy_hexahedral_(p)[0]
 

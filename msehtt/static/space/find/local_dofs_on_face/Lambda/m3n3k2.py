@@ -5,7 +5,7 @@ import numpy as np
 
 
 def find_local_dofs_on_face__m3n3k2(etype, p, face_index, component_wise=False):
-    """"""
+    r""""""
     if etype in ('orthogonal hexahedron', ):
         local_numbering = __m3n3k2_msepy_hexahedral_(p, face_index, component_wise=component_wise)
     else:
@@ -18,7 +18,7 @@ _cache_332_ = {}
 
 
 def __m3n3k2_msepy_hexahedral_(p, face_index, component_wise=False):
-    """"""
+    r""""""
     key = f"{p}{face_index}{component_wise}"
     if key in _cache_332_:
         return _cache_332_[key]

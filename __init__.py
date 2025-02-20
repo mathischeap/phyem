@@ -55,8 +55,10 @@ __all__ = [
 
     'rref',
 
-    'reveal_phc',
-    'php',
+    'reveal_phc',   # to print a ph-cache file.
+    'php',   # ph print
+    'pk',    # a pickle wrapper for phyem
+
 ]
 
 
@@ -124,6 +126,8 @@ ___exist_signature___ = 'phyem exist 0'
 
 def exist():
     """"""
+    print(f"RANK#{config.RANK} ends smoothly.", flush=True)
+    config.COMM.barrier()
     if config.RANK == config.MASTER_RANK:
         print(___exist_signature___)
     else:
@@ -135,3 +139,5 @@ from tools.miscellaneous.rref import rref
 from tools.iterator.cache_reader import print_cache_log as reveal_phc
 
 from tools.miscellaneous.php import php
+
+import tools.miscellaneous.pickle_ as pk

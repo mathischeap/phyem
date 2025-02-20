@@ -4,7 +4,7 @@ r"""
 from tools.frozen import Frozen
 from numpy import ones_like
 from tools.functions.space._2d.transfinite import TransfiniteMapping
-from tools.functions.space._2d.geometrical_functions.parser import GeoFunc2Parser
+from tools.functions.space._2d.geometrical_functions.parser import geo_func2_parser
 
 
 class _LinearTransformation(Frozen):
@@ -96,10 +96,10 @@ class _Transfinite2(Frozen):
 
         """
 
-        geo_x0 = GeoFunc2Parser(*geo_x0)
-        geo_x1 = GeoFunc2Parser(*geo_x1)
-        geo_y0 = GeoFunc2Parser(*geo_y0)
-        geo_y1 = GeoFunc2Parser(*geo_y1)
+        geo_x0 = geo_func2_parser(*geo_x0)
+        geo_x1 = geo_func2_parser(*geo_x1)
+        geo_y0 = geo_func2_parser(*geo_y0)
+        geo_y1 = geo_func2_parser(*geo_y1)
 
         gamma = [
             geo_y0.gamma,

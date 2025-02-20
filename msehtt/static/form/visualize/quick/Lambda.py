@@ -7,7 +7,7 @@ from tools.matplot.scatter import scatter
 
 
 def quick_visualizer_m2n2k0(f, t, ddf=1, **kwargs):
-    """"""
+    r""""""
     total_num_elements = f.tpm.composition.num_global_elements
     density = 5000 * ddf
     if density < 500:
@@ -45,7 +45,7 @@ def quick_visualizer_m2n2k0(f, t, ddf=1, **kwargs):
 
 
 def quick_visualizer_m2n2k1(f, t, ddf=1, title=None, **kwargs):
-    """"""
+    r""""""
     total_num_elements = f.tpm.composition.num_global_elements
     density = 5000 * ddf
     if density < 500:
@@ -88,5 +88,5 @@ def quick_visualizer_m2n2k1(f, t, ddf=1, title=None, **kwargs):
 
 
 def quick_visualizer_m2n2k2(f, t, ddf=1, **kwargs):
-    """"""
+    r""""""
     return quick_visualizer_m2n2k0(f, t, ddf=ddf, **kwargs)

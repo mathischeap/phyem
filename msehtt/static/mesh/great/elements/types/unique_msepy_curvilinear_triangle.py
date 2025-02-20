@@ -124,8 +124,8 @@ class MseHtt_GreatMesh_Unique_Msepy_Curvilinear_Triangle_Element(MseHttGreatMesh
         return {
             'mn': (self.m(), self.n()),
             'center': self.ct.mapping(0, 0),
-            1: self.ct.mapping(ones, linspace),    # face #1
             0: self.ct.mapping(linspace, -ones),   # face #0
+            1: self.ct.mapping(ones, linspace),    # face #1
             2: self.ct.mapping(linspace, ones),    # face #2
         }
 
@@ -162,16 +162,6 @@ class MseHtt_GreatMesh_Unique_Msepy_Curvilinear_Triangle_Element(MseHttGreatMesh
     def ___edge_representative_str___(self):
         r""""""
         raise Exception(f"msepy curvilinear triangle element has no edges.")
-
-    @classmethod
-    def degree_parser(cls, degree):
-        """"""
-        if isinstance(degree, int):
-            p = (degree, degree)
-            dtype = 'Lobatto'
-        else:
-            raise NotImplementedError()
-        return p, dtype
 
 
 # ============ ELEMENT CT =====================================================================================

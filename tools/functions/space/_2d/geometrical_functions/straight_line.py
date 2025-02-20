@@ -1,10 +1,8 @@
 # -*- coding: utf-8 -*-
-from tools.decorators.all import accepts
 import numpy as np
 
 
 class StraightLine(object):
-    @accepts('self', (tuple, list), (tuple, list))
     def __init__(self, start_point, end_point):
         assert np.shape(start_point) == np.shape(end_point) == (2,)
         self.x1, self.y1 = start_point
