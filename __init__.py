@@ -59,6 +59,8 @@ __all__ = [
     'php',   # ph print
     'pk',    # a pickle wrapper for phyem
 
+    'geometries',
+
 ]
 
 
@@ -141,3 +143,5 @@ from tools.iterator.cache_reader import print_cache_log as reveal_phc
 from tools.miscellaneous.php import php
 
 import tools.miscellaneous.pickle_ as pk
+
+import tools.miscellaneous.geometries.main as geometries

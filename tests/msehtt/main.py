@@ -12,7 +12,7 @@ from __init__ import php
 
 php('>>> msehtt >>> tests.msehtt.numbering')
 from tests.msehtt.numbering import ph_test
-for i in range(6):
+for i in range(7):
     ph_test(i)
 
 php('>>> msehtt >>> tests.msehtt.solvers')

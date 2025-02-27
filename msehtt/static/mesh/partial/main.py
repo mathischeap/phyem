@@ -143,7 +143,7 @@ class MseHttMeshPartial(Frozen):
                 #  including={
                 #       'type': 'boundary_section',
                 #       'partial elements': mesh,           # mesh is a partial mesh of elements composition.
-                #       'except ounv': ([-1, 0], )                 # outward unit norm vectors.
+                #       'except ounv': ([-1, 0], )          # except outward unit norm vectors.
                 #   }
                 #
                 # This configures a boundary section which includes all boundary faces of ``mesh`` (must be an
@@ -190,7 +190,14 @@ class MseHttMeshPartial(Frozen):
                 assert the_partial_elements.__class__ is MseHttElementsPartialMesh, \
                     f"I need a {MseHttElementsPartialMesh}."
                 outward_unit_norm_vectors = including['ounv']
-                outward_unit_norm_vectors = [tuple(_) for _ in outward_unit_norm_vectors]
+
+                OUTWARD_UNIT_NORM_VECTORS = list()
+                for vector in outward_unit_norm_vectors:
+                    round_vector = list()
+                    for digit in vector:
+                        round_vector.append(round(digit, 6))
+                    OUTWARD_UNIT_NORM_VECTORS.append(tuple(round_vector))
+
                 local_boundary_faces_information = the_partial_elements._get_local_boundary_faces()
                 # local_boundary_faces_information = [(0, 0), (15, 3), (1143, 2), ...]
                 # (0, 0) means the 0th face of element #0
@@ -202,7 +209,7 @@ class MseHttMeshPartial(Frozen):
                     face = self._tgm.elements[element_index].faces[face_id]
                     if face.ct.is_plane():
                         c_ounv = face.ct.constant_outward_unit_normal_vector
-                        if c_ounv in outward_unit_norm_vectors:
+                        if c_ounv in OUTWARD_UNIT_NORM_VECTORS:
                             # this face is a valid boundary section face.
                             valid_rank_faces.append(rank___element_index__face_id)
                         else:
@@ -217,7 +224,14 @@ class MseHttMeshPartial(Frozen):
                 assert the_partial_elements.__class__ is MseHttElementsPartialMesh, \
                     f"I need a {MseHttElementsPartialMesh}."
                 outward_unit_norm_vectors = including['except ounv']
-                outward_unit_norm_vectors = [tuple(_) for _ in outward_unit_norm_vectors]
+
+                OUTWARD_UNIT_NORM_VECTORS = list()
+                for vector in outward_unit_norm_vectors:
+                    round_vector = list()
+                    for digit in vector:
+                        round_vector.append(round(digit, 6))
+                    OUTWARD_UNIT_NORM_VECTORS.append(tuple(round_vector))
+
                 local_boundary_faces_information = the_partial_elements._get_local_boundary_faces()
                 # local_boundary_faces_information = [(0, 0), (15, 3), (1143, 2), ...]
                 # (0, 0) means the 0th face of element #0
@@ -229,7 +243,7 @@ class MseHttMeshPartial(Frozen):
                     face = self._tgm.elements[element_index].faces[face_id]
                     if face.ct.is_plane():
                         c_ounv = face.ct.constant_outward_unit_normal_vector
-                        if c_ounv in outward_unit_norm_vectors:
+                        if c_ounv in OUTWARD_UNIT_NORM_VECTORS:
                             pass
                         else:
                             # this face is a valid boundary section face.

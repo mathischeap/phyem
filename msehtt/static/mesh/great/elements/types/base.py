@@ -713,8 +713,8 @@ class _FaceCoordinateTransformationBase(Frozen):
                         c_ounv1 = c_ounv[1][0]
                     else:
                         c_ounv1 = c_ounv[1]
-                    c_ounv0 = round(c_ounv0, 8)  # remove the round-off error
-                    c_ounv1 = round(c_ounv1, 8)  # remove the round-off error
+                    c_ounv0 = round(c_ounv0, 6)  # remove the round-off error
+                    c_ounv1 = round(c_ounv1, 6)  # remove the round-off error
                     self.___c_ounv___ = (c_ounv0, c_ounv1)
 
                 elif self._element.m() == self._element.n() == 3:  # mn=(3, 3); 3d element in 3d space
@@ -731,9 +731,9 @@ class _FaceCoordinateTransformationBase(Frozen):
                         c_ounv2 = c_ounv[2][0]
                     else:
                         c_ounv2 = c_ounv[2]
-                    c_ounv0 = round(c_ounv0, 8)  # remove the round-off error
-                    c_ounv1 = round(c_ounv1, 8)  # remove the round-off error
-                    c_ounv2 = round(c_ounv2, 8)  # remove the round-off error
+                    c_ounv0 = round(c_ounv0, 6)  # remove the round-off error
+                    c_ounv1 = round(c_ounv1, 6)  # remove the round-off error
+                    c_ounv2 = round(c_ounv2, 6)  # remove the round-off error
                     self.___c_ounv___ = (c_ounv0, c_ounv1, c_ounv2)
 
                 else:

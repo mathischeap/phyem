@@ -198,6 +198,37 @@ def ph_test(mesh_no):
             msehtt.config(tgm)(vif, ts=0)
         else:
             msehtt.config(tgm)(vif, ts=1)
+
+    elif mesh_no == 6:
+
+        type_dict = {
+            0: 9,
+            1: 9,
+            2: 9,
+            3: 9,
+        }
+
+        coo_dict = {
+            'A': (-1, 0),
+            'B': (0.11, -0.5),
+            'C': (1, 0),
+            'G': (-2, -2),
+            'H': (-1.5, -2.5),
+            'P': (1.3, -2.5),
+            'Q': (2, -1.5),
+            'M': (-1, 2),
+            'N': (0.87, 2.107),
+            'D': (0, 1.99),
+        }
+
+        map_dict = {
+            0: ['M', 'A', 'B', "D"],
+            3: ['D', 'B', 'C', 'N'],
+            1: ['A', 'G', 'H', 'B'],
+            2: ['B', 'P', 'Q', 'C'],
+        }
+        msehtt.config(tgm)({'indicator': 'tqr', 'args': (type_dict, coo_dict, map_dict)}, element_layout=4)
+
     else:
         raise NotImplementedError()
 
@@ -267,3 +298,4 @@ if __name__ == '__main__':
     ph_test(3)
     ph_test(4)
     ph_test(5)
+    ph_test(6)

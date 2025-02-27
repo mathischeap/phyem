@@ -22,6 +22,9 @@ from msehtt.static.mesh.great.elements.main import MseHttGreatMeshElements
 from msehtt.static.mesh.great.visualize.main import MseHttGreatMeshVisualize
 from msehtt.static.mesh.great.elements.types.distributor import MseHttGreatMeshElementDistributor
 
+from msehtt.static.mesh.great.config.tqr import TriQuadRegions
+from msehtt.static.mesh.great.config.tqr import MseHtt_TQR_config
+
 
 class MseHttGreatMesh(Frozen):
     r""""""
@@ -207,6 +210,10 @@ class MseHttGreatMesh(Frozen):
             case 4: 'meshpy'
                 We will call the api to meshpy library using `kwargs`.
 
+            case 5: Msehtt_PyConfig_QuadRegions
+                We provide an instance of class QuadRegions showing that the domain is made of a few quad
+                regions.
+
         element_layout :
             `element_layout`; it is not always needed for particular configuration. But usually it is needed.
 
@@ -265,8 +272,43 @@ class MseHttGreatMesh(Frozen):
                 else:
                     pass
 
+        elif indicator.__class__ is TriQuadRegions:  # quad regions as the indicator
+            input_case = 'tqr'
+
+        elif isinstance(indicator, (tuple, list)) and isinstance(indicator[0], str) and indicator[0] == 'tqr':
+            # Instead of giving a TriQuadRegions instance, we can make the TriQuadRegions instance here.
+            # If we receive a list or tuple whose first entry is 'tqr', then we make a TriQuadRegions instance
+            # using all other entries in the list or tuple.
+            indicator = TriQuadRegions(*indicator[1:])
+            input_case = 'tqr'
+
         else:
-            raise NotImplementedError()
+            if isinstance(indicator, dict):  # a standard input format for the indicator.
+
+                assert 'indicator' in indicator, f"key 'indicator' must be in indicator dict to guide the type."
+                assert 'args' in indicator, \
+                    f"key 'args' must be in the indicator dict carrying the mandatory arguments."
+                if 'kwargs' in indicator:
+                    assert isinstance(indicator['kwargs'], dict), f"Providing kwargs? put them in a dict."
+                    kwargs = indicator['kwargs']
+                    assert len(indicator) == 3, (f"standard config dict indicator must maximum only have three keys:"
+                                                 f" 'indicator', 'args', 'kwargs'.")
+                else:
+                    assert len(indicator) == 2, (f"standard config dict indicator must only have two keys:"
+                                                 f" 'indicator', 'args' when there is no kwargs.")
+                    kwargs = {}
+
+                if indicator['indicator'] == 'tqr':
+                    # provide a TriQuadRegions configuration through a dict indicator.
+                    indicator = TriQuadRegions(*indicator['args'], **kwargs)
+                    input_case = 'tqr'
+
+                else:
+                    raise NotImplementedError(f"standard config indicator ={indicator['indicator']} "
+                                              f"not understandable.")
+
+            else:
+                raise NotImplementedError(f"cannot parse the config method!")
 
         # =======================================================================================================
 
@@ -333,6 +375,14 @@ class MseHttGreatMesh(Frozen):
                 element_type_dict, element_parameter_dict, element_map_dict = config()
 
                 self._check_elements(element_type_dict, element_parameter_dict, element_map_dict)
+
+            elif input_case == 'tqr':
+                self._config_method = 'msehtt-static-tqr'
+                element_type_dict, element_parameter_dict, element_map_dict = (
+                    self._distribute_elements_to_ranks(
+                        None, None, None
+                    )
+                )
 
             else:
                 raise NotImplementedError()
@@ -447,6 +497,22 @@ class MseHttGreatMesh(Frozen):
                 self._global_element_map_dict = vif._global_element_map_dict
                 self._element_distribution = vif._element_distribution
 
+            elif input_case == 'tqr':
+                config = MseHtt_TQR_config(indicator)
+                element_type_dict, element_parameter_dict, element_map_dict = config(element_layout)
+
+                self._config_method = 'msehtt-static-tqr'
+                self._check_elements(element_type_dict, element_parameter_dict, element_map_dict)
+
+                self._global_element_type_dict = element_type_dict
+                self._global_element_map_dict = element_map_dict
+
+                element_type_dict, element_parameter_dict, element_map_dict = (
+                    self._distribute_elements_to_ranks(
+                        element_type_dict, element_parameter_dict, element_map_dict
+                    )
+                )
+
             else:
                 raise NotImplementedError(
                     f"msehtt-great-mesh config not implemented for input_case={input_case}")
@@ -470,16 +536,15 @@ class MseHttGreatMesh(Frozen):
             ts,
             element_type_dict, element_parameter_dict, element_map_dict
         )
-
         # =======================================================================================
-
         element_map_dict = self._make_crack(crack_config, element_map_dict)
         self._make_elements_(element_type_dict, element_parameter_dict, element_map_dict)
 
     @staticmethod
     def _check_elements(element_type_dict, element_parameter_dict, element_map_dict):
         r""""""
-        assert len(element_type_dict) > 0, f"I need at least one element, right?"
+        assert len(element_type_dict) > 0, (f"I need at least one element, right? Likely that there are "
+                                            f"more ranks than elements. Reduce SIZE.")
         assert len(element_type_dict) == len(element_parameter_dict) == len(element_map_dict), f"must be!"
         for i in element_type_dict:
             assert i in element_parameter_dict and i in element_map_dict, f"must be!"
@@ -911,6 +976,7 @@ class MseHttGreatMesh(Frozen):
                 face_nodes_numbering = tuple(face_nodes_numbering)
 
                 if face_nodes_numbering in element_face_map_pool:
+                    # noinspection PyUnresolvedReferences
                     element_face_map_pool[face_nodes_numbering].append(
                         (etype, e, face_id)
                     )
@@ -1008,6 +1074,33 @@ def ___Naive_element_distribution___(all_element_type_dict, all_element_paramete
                 remaining_elements.remove(e)
 
     assert len(remaining_elements) == 0 and len(distributed_elements) == num_total_elements, f"must be!"
+
+    empty_ranks = list()
+    for rank in element_distribution:
+        if len(element_distribution[rank]) == 0:
+            empty_ranks.append(rank)
+        else:
+            pass
+
+    if len(empty_ranks) > 0:  # there are empty ranks, try to resolve them.
+        for er in empty_ranks:
+            for rank in range(SIZE):
+                if len(element_distribution[rank]) > 1:
+                    element_distribution[er] = [element_distribution[rank].pop(), ]
+                    break
+                else:
+                    pass
+    else:
+        pass
+
+    NUM_TOTAL_ELEMENTS = 0
+    for rank in element_distribution:
+        NUM_TOTAL_ELEMENTS += len(element_distribution[rank])
+    assert NUM_TOTAL_ELEMENTS == num_total_elements, f"must be!"
+
+    for rank in element_distribution:
+        assert len(element_distribution[rank]) != 0, f"must no empty element rank."
+
     return element_distribution
 
 
