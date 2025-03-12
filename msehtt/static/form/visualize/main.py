@@ -18,7 +18,15 @@ class MseHttFormVisualize(Frozen):
 
     def __call__(self, *args, **kwargs):
         r""""""
-        return self.quick(*args, **kwargs)
+        space = self._f.space
+        m = space.m
+        n = space.n
+        if m == 2 and n == 2:
+            return self.matplot(*args, **kwargs)
+        elif m == 3 and n == 3:
+            self.vtk(*args, **kwargs)
+        else:
+            raise NotImplementedError()
 
     @property
     def quick(self):

@@ -26,5 +26,13 @@ def angle(origin, pt):
 
 
 if __name__ == "__main__":
+
+    print(
+        angle((0, 0), (1, 0)),
+        angle((0, 0), (0, 1)),
+        angle((0, 0), (-1, 0)),
+        angle((0, 0), (0, -1)),
+    )
+
     import doctest
     doctest.testmod()

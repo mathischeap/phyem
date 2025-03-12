@@ -1,7 +1,12 @@
 # -*- coding: utf-8 -*-
 r"""
 """
+import numpy as np
+
 from tools.frozen import Frozen
+from tools.quadrature import quadrature
+
+from src.config import COMM, MPI
 
 from msehtt.static.form.addons.ic import MseHtt_From_InterpolateCopy
 
@@ -76,8 +81,7 @@ class MseHttFormStaticCopy(Frozen):
         if error_type == 'L2':
             return self._f.error(self.cf, self.cochain, error_type=error_type)
 
-        elif error_type == 'H1':
-            self_L2_error = self.error(error_type='L2')
+        elif error_type == 'd_L2':   # the L2-error of d(self).
             d_cf = self._f.cf.exterior_derivative()[self._t]
             d_cochain = self.cochain.coboundary()
             d_space_str_indicator = self._f.space.d_space_str_indicator
@@ -97,10 +101,68 @@ class MseHttFormStaticCopy(Frozen):
             else:
                 raise NotImplementedError()
 
-            return (self_L2_error ** 2 + d_L2_error ** 2) ** 0.5
+            return float(d_L2_error)
+
+        elif error_type == 'H1':
+            self_L2_error = self.error(error_type='L2')
+            d_L2_error = self.error(error_type='d_L2')
+            return float((self_L2_error ** 2 + d_L2_error ** 2) ** 0.5)
 
         else:
             raise NotImplementedError(f"error_type={error_type} not implemented.")
+
+    def flux_over_boundary_section(self, boundary_section, quad_degree=5):
+        r"""
+
+        Parameters
+        ----------
+        boundary_section
+        quad_degree
+
+        Returns
+        -------
+        GLOBAL_FLUX:
+            The flux over the whole boundary section. We return the same global value in all ranks.
+
+        """
+        from msehtt.static.mesh.partial.boundary_section.main import MseHttBoundarySectionPartialMesh
+        if boundary_section.__class__ is MseHttBoundarySectionPartialMesh:
+            pass
+        elif hasattr(boundary_section, 'composition'):
+
+            if boundary_section.composition.__class__ is MseHttBoundarySectionPartialMesh:
+                boundary_section = boundary_section.composition
+            else:
+                raise Exception()
+        else:
+            raise Exception()
+
+        space = self._f.space
+
+        mn = (space.m, space.n)
+
+        if mn == (2, 2):
+            quad = quadrature(quad_degree, 'Gauss')
+            quad_nodes, quad_weights = quad.quad
+
+            RANK_FLUX = 0
+            for face_id in boundary_section:
+                element_index, face_index = face_id
+                _, _, U, V = space.RoF(
+                    self.degree, self.cochain[element_index], element_index, face_index, quad_nodes
+                )
+                face = boundary_section[face_id]
+                x, y = face.ct.outward_unit_normal_vector(quad_nodes)
+                node_flux = U * x + y * V
+                JM = face.ct.Jacobian_matrix(quad_nodes)
+                Jacobian = np.sqrt(JM[0] ** 2 + JM[1] ** 2)
+                flux = sum(node_flux * quad_weights * Jacobian)
+                RANK_FLUX += flux
+            GLOBAL_FLUX = COMM.allreduce(RANK_FLUX, op=MPI.SUM)
+            return GLOBAL_FLUX
+
+        else:
+            raise NotImplementedError(f"flux_over_boundary_section not implemented for mn={mn}.")
 
     @property
     def visualize(self):
@@ -161,3 +223,23 @@ class ___MseHtt_Static_Form_Copy_Numeric___(Frozen):
 
     def interpolate(self, ddf=1, data_only=False, component_wise=False):
         return self._f.numeric._interpolate_(self._t, ddf=ddf, data_only=data_only, component_wise=component_wise)
+
+    def value(self, *coo):
+        r"""Find the value of the form at this coordinate."""
+        elements = self._f.space.tpm.composition
+        in_elements_indexed = elements._find_in_which_elements_(*coo)
+        the_element_index = in_elements_indexed[0]
+        if the_element_index in elements:
+            # we only make the interpolator in one RANK.
+            dtype, itp = self.interpolate(component_wise=True)
+            if dtype == '2d-scalar':
+                w = itp[0]
+                x, y = coo
+                value = w(x, y)
+            else:
+                raise NotImplementedError(dtype)
+
+        else:
+            value = 0
+
+        return COMM.allreduce(value, op=MPI.SUM)

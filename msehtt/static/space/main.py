@@ -11,8 +11,68 @@ from msehtt.static.space.error.main import MseHttSpaceError
 from msehtt.static.space.incidence_matrix.main import MseHttSpaceIncidenceMatrix
 from msehtt.static.space.norm.main import MseHttSpaceNorm
 from msehtt.static.space.reconstruction_matrix.main import MseHttSpaceReconstructionMatrix
-from msehtt.static.space.reconstruct_element_face.main import MseHttSpace_REF
+from msehtt.static.space.reconstruction_matrix_for_element_face.main import MseHttSpace_RMef
 from msehtt.static.space.integrate_matrix_over_sub_geometry.main import MseHttSpace_IntMatOverSubGeo
+from msehtt.static.space.reconstruct_on_element_face.main import MseHttSpace_RConEF
+
+
+___global_IMPLEMENTATION_spaces___ = {}   # the space made in the implementation; no abstract space dependent.
+
+
+def _distribute_IMPLEMENTATION_space(indicator, m, n, **kwargs):
+    r""""""
+    cache_key = f"i{indicator}-m{m}-n{n}=KWARGS{kwargs}"
+    if cache_key in ___global_IMPLEMENTATION_spaces___:
+        return ___global_IMPLEMENTATION_spaces___[cache_key]
+    else:
+        new_IMPLEMENTATION_abstract_space = _IMPLEMENTATION_AbstractSpace_(indicator, m, n, **kwargs)
+        new_IMPLEMENTATION_space = MseHttSpace(new_IMPLEMENTATION_abstract_space)
+        ___global_IMPLEMENTATION_spaces___[cache_key] = new_IMPLEMENTATION_space
+        return new_IMPLEMENTATION_space
+
+
+class _IMPLEMENTATION_AbstractSpace_(Frozen):
+    r""""""
+    def __init__(self, indicator, m, n, **kwargs):
+        r""""""
+        self._indicator = indicator
+        self._m = m
+        self._n = n
+        if indicator == 'Lambda':
+            assert 'k' in kwargs, f"must have input 'k' for Lambda spaces."
+            self._k = kwargs['k']
+            assert 'orientation' in kwargs, f"must have input 'orientation' for Lambda spaces."
+            self._orientation = kwargs['orientation']
+        else:
+            raise NotImplementedError()
+        self._freeze()
+
+    def __repr__(self):
+        r""""""
+        ab_space_repr = super().__repr__().split(' at ')[1]
+        return '<IMPLEMENTATION-abstract-space at ' + ab_space_repr
+
+    @property
+    def indicator(self):
+        return self._indicator
+
+    @property
+    def m(self):
+        return self._m
+
+    @property
+    def n(self):
+        return self._n
+
+    @property
+    def k(self):
+        r"""Not always make sense."""
+        return self._k
+
+    @property
+    def orientation(self):
+        r"""Not always make sense."""
+        return self._orientation
 
 
 class MseHttSpace(Frozen):
@@ -20,7 +80,6 @@ class MseHttSpace(Frozen):
 
     def __init__(self, abstract_space):
         """"""
-        assert abstract_space._is_space(), f"I need an abstract space"
         self._abstract = abstract_space
         self._tpm = None
 
@@ -33,15 +92,49 @@ class MseHttSpace(Frozen):
         self._error = None
         self._norm = None
         self._rm = None
-        self._ref = None
+        self._RMef = None
+        self._RConEF = None
         self._int_mat_over_sub_geo = None
 
         self._freeze()
 
+    # ------------ IMPLEMENTATION FORM ---------------------------------------------------------------------
+
+    @property
+    def _IMPLEMENTATION_d_next_space_(self):
+        r""""""
+        d_next_space_indicator = self.d_space_str_indicator
+
+        if d_next_space_indicator == 'm2n2k1_inner':
+            indicator = 'Lambda'
+            m, n, k, orientation = 2, 2, 1, 'inner'
+            IMPLEMTATION_space = _distribute_IMPLEMENTATION_space(indicator, m, n, k=k, orientation=orientation)
+            IMPLEMTATION_space._tpm = self._tpm
+            return IMPLEMTATION_space
+
+        elif d_next_space_indicator == 'm2n2k1_outer':
+            indicator = 'Lambda'
+            m, n, k, orientation = 2, 2, 1, 'outer'
+            IMPLEMTATION_space = _distribute_IMPLEMENTATION_space(indicator, m, n, k=k, orientation=orientation)
+            IMPLEMTATION_space._tpm = self._tpm
+            return IMPLEMTATION_space
+
+        elif d_next_space_indicator in ('m2n2k2', 'm3n3k1', 'm3n3k2', 'm3n3k3'):
+            indicator = 'Lambda'
+            m, n, k, orientation = self.m, self.n, int(d_next_space_indicator[-1]), self.orientation
+            IMPLEMTATION_space = _distribute_IMPLEMENTATION_space(indicator, m, n, k=k, orientation=orientation)
+            IMPLEMTATION_space._tpm = self._tpm
+            return IMPLEMTATION_space
+
+        else:
+            raise NotImplementedError(d_next_space_indicator)
+
+    # ======================================================================================================
+
     @property
     def tpm(self):
         if self._tpm is None:
-            raise Exception(f"first set tpm!")
+            raise Exception(f"first set tpm: I am {self}!")
         return self._tpm
 
     @property
@@ -101,7 +194,24 @@ class MseHttSpace(Frozen):
             elif indicator == 'm3n3k2':
                 return 'm3n3k3'
             else:
-                raise NotImplementedError(f"m3n3 for what? {indicator}")
+                raise Exception(f"m3n3 for what? {indicator}")
+
+        elif m == n == 2:
+            if indicator == 'm2n2k0':
+                orientation = self.orientation
+                if orientation == 'inner':
+                    return 'm2n2k1_inner'
+                elif orientation == 'outer':
+                    return 'm2n2k1_outer'
+                else:
+                    raise Exception()
+            elif indicator == 'm2n2k1_inner':
+                return 'm2n2k2'
+            elif indicator == 'm2n2k1_outer':
+                return 'm2n2k2'
+            else:
+                raise Exception(f"m2n2 for what? {indicator}")
+
         else:
             raise NotImplementedError(indicator)
 
@@ -179,11 +289,18 @@ class MseHttSpace(Frozen):
         return self._rm
 
     @property
-    def ref(self):
-        r"""reconstruct along element face/edge"""
-        if self._ref is None:
-            self._ref = MseHttSpace_REF(self)
-        return self._ref
+    def RMef(self):
+        r"""reconstruction matrix for element face/edge"""
+        if self._RMef is None:
+            self._RMef = MseHttSpace_RMef(self)
+        return self._RMef
+
+    @property
+    def RoF(self):
+        r"""reconstruction matrix for element face/edge"""
+        if self._RConEF is None:
+            self._RConEF = MseHttSpace_RConEF(self)
+        return self._RConEF
 
     @property
     def iMsg(self):

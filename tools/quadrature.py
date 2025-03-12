@@ -4,6 +4,7 @@ r"""
 import numpy as np
 from functools import partial
 from scipy.special import legendre, roots_legendre
+from sympy.categories import Object
 
 _global_cache_0 = {}
 _global_cache_1 = {}
@@ -312,6 +313,36 @@ class Quadrature(object):
         print('WARNING : Newton did not converge to machine precision \nRelative error : ',
               x[-1] - x[-2])
         return x[-1]
+
+
+___cache_quad___ = {}
+
+
+def quad(quad_type, quad_degree):
+    r""""""
+    key = (quad_type, quad_degree)
+    if key in ___cache_quad___:
+        return ___cache_quad___[key]
+    else:
+        quad = Quad(quad_type, quad_degree)
+        ___cache_quad___[key] = quad
+        return quad
+
+
+class Quad(Object):
+    r""""""
+    def __init__(self, quad_type, quad_degree):
+        r""""""
+        self._qt = quad_type
+        self._qd = quad_degree
+
+    @property
+    def qtype(self):
+        return self._qt
+
+    @property
+    def degree(self):
+        return self._qd
 
 
 if __name__ == '__main__':

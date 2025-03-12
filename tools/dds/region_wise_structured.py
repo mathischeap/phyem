@@ -109,6 +109,7 @@ class DDSRegionWiseStructured(Frozen):
             'val_dict_list': self._val_dict_list,
         }
         with open(filename, 'wb') as output:
+            # noinspection PyTypeChecker
             pickle.dump(data_dict, output, pickle.HIGHEST_PROTOCOL)
         output.close()
 
@@ -236,18 +237,23 @@ class DDSRegionWiseStructured(Frozen):
         x, y = self._coo_dict_list
         v0, v1 = self._val_dict_list
 
-        if saveto is None:
-            pass
-        else:
-            raise NotImplementedError()
-
         if plot_type == 'contourf':
-            fig0 = contourf(x, y, v0, magnitude=magnitude, **kwargs)
-            fig1 = contourf(x, y, v1, magnitude=magnitude, **kwargs)
+            if saveto is None:
+                fig0 = contourf(x, y, v0, magnitude=magnitude, **kwargs)
+                fig1 = contourf(x, y, v1, magnitude=magnitude, **kwargs)
+            else:
+                st0, st1 = saveto
+                fig0 = contourf(x, y, v0, magnitude=magnitude, saveto=st0, **kwargs)
+                fig1 = contourf(x, y, v1, magnitude=magnitude, saveto=st1, **kwargs)
             return fig0, fig1
         elif plot_type == 'contour':
-            fig0 = contour(x, y, v0, magnitude=magnitude, **kwargs)
-            fig1 = contour(x, y, v1, magnitude=magnitude, **kwargs)
+            if saveto is None:
+                fig0 = contour(x, y, v0, magnitude=magnitude, **kwargs)
+                fig1 = contour(x, y, v1, magnitude=magnitude, **kwargs)
+            else:
+                st0, st1 = saveto
+                fig0 = contour(x, y, v0, magnitude=magnitude, saveto=st0, **kwargs)
+                fig1 = contour(x, y, v1, magnitude=magnitude, saveto=st1, **kwargs)
             return fig0, fig1
         elif plot_type == 'quiver':
             X, Y = kwargs['nodes']
@@ -261,7 +267,7 @@ class DDSRegionWiseStructured(Frozen):
             UV = itp(X, Y)
             U = UV[:, 0].ravel()
             V = UV[:, 1].ravel()
-            fig = quiver(X, Y, U, V, **KWARGS)
+            fig = quiver(X, Y, U, V, saveto=saveto, **KWARGS)
             return fig
         else:
             raise Exception()

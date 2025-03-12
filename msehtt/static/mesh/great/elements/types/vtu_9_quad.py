@@ -4,6 +4,8 @@ r"""
 import numpy as np
 from tools.frozen import Frozen
 
+from tools.miscellaneous.geometries.m2n2 import Point2, Polygon2, whether_point_in_polygon
+
 from tools.functions.space._2d.angle import angle
 from tools.functions.space._2d.angles_of_triangle import angles_of_triangle
 from tools.functions.space._2d.distance import distance
@@ -68,6 +70,7 @@ class Vtu9Quad(MseHttGreatMeshBaseElement):
         d = angle(parameters[0], parameters[2])
         dist = distance(parameters[0], parameters[2])
         self._metric_signature = f"9:a%.2f" % a + "b%.2f" % b + "c%.2f" % c + "d%.3f" % d + "dis%.5f" % dist
+        self._polygon = None
 
         super().__init__()
         self._index = element_index
@@ -306,6 +309,22 @@ class Vtu9Quad(MseHttGreatMeshBaseElement):
                 )
 
         return data_dict, cell_list, dtype
+
+    @property
+    def polygon(self):
+        r"""the `Polygon2` instance of this element."""
+        if self._polygon is None:
+            vertices = list()
+            for vertex in self.parameters:
+                vertices.append(Point2(*vertex))
+            self._polygon = Polygon2(*vertices)
+        return self._polygon
+
+    def _whether_coo_in_me_(self, x, y):
+        r""""""
+        assert isinstance(x, (int, float)) and isinstance(y, (int, float)), f"I must receive coordinates of a point."
+        point = Point2(x, y)
+        return whether_point_in_polygon(point, self.polygon)
 
 
 from msehtt.static.mesh.great.elements.types.base import MseHttGreatMeshBaseElementCooTrans

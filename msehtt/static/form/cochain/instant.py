@@ -13,15 +13,16 @@ from msehtt.static.space.num_local_dofs.Lambda.num_local_dofs_m2n2k1 import num_
 
 
 class MseHttTimeInstantCochain(Frozen):
-    """"""
+    """The cochain instance for ONE particular time!"""
 
     def __init__(self, f, t):
-        """"""
+        """The cochain at time `t`."""
         self._f = f
         self._t = t
         self._gm = self._f.cochain.gathering_matrix
         self._ctype = None
         self._cochain = None
+        self._E = None
         self._freeze()
 
     def __repr__(self):
@@ -111,13 +112,26 @@ class MseHttTimeInstantCochain(Frozen):
         """"""
         return self[e]
 
+    @property
+    def E(self):
+        r"""Incidence matrix."""
+        if self._E is None:
+            self._E = self._f.space.incidence_matrix(self._f.degree)[0]
+        return self._E
+
     def coboundary(self):
-        """exterior derivative; E acting on the cochain; a dict of E(cochain)."""
-        E = self._f.space.incidence_matrix(self._f.degree)[0]
+        """exterior derivative; E acting on the cochain; a dict of E(cochain).
+
+        Return a dictionary of the cochain of d(self) at time `t`.
+        """
         d_cochain = {}
         for e in self:
-            d_cochain[e] = E[e] @ self[e]
+            d_cochain[e] = self.E[e] @ self[e]
         return d_cochain
+
+    def ___coboundary_callable___(self, e):
+        r""""""
+        return self.E[e] @ self[e]
 
     def of_dof(self, global_dof):
         """Find the cochain for global_dof #global_dof.

@@ -5,9 +5,9 @@ phyem print.
 from src.config import RANK, MASTER_RANK
 
 
-def php(str, flush=True):
-    r""""""
+def php(str_, flush=True):
+    r"""Ph print: only to print the input from the master rank."""
     if RANK == MASTER_RANK:
-        print(str, flush=flush)
+        print(str_, flush=flush)
     else:
         pass

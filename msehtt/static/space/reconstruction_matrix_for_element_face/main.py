@@ -1,11 +1,11 @@
 # -*- coding: utf-8 -*-
-r"""Reconstruct along element face/edge.
+r"""Reconstruct matrix along element face/edge.
 """
 from tools.frozen import Frozen
-from msehtt.static.space.reconstruct_element_face.Lambda.main import MseHttSpace_REF_Lambda
+from msehtt.static.space.reconstruction_matrix_for_element_face.Lambda.main import MseHttSpace_RM_eF_Lambda
 
 
-class MseHttSpace_REF(Frozen):
+class MseHttSpace_RMef(Frozen):
     r""""""
 
     def __init__(self, space):
@@ -13,7 +13,7 @@ class MseHttSpace_REF(Frozen):
         self._space = space
         indicator = self._space.indicator
         if indicator == 'Lambda':  # vector-valued form spaces.
-            self._instance_for_space = MseHttSpace_REF_Lambda(space)
+            self._instance_for_space = MseHttSpace_RM_eF_Lambda(space)
         else:
             raise NotImplementedError(f'ref (reconstruction along element face/edge) is not implemented '
                                       f'for space-type={indicator}')

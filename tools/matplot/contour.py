@@ -78,6 +78,9 @@ def contour(
         top_right_bounds=False,
 
         aspect=None,
+        outline=None,
+        outline_linewidth=1.5,
+        outline_color='k',
 ):
     """
 
@@ -141,11 +144,38 @@ def contour(
     top_right_bounds
 
     aspect
+    outline :
+        The field outline.
+    outline_linewidth :
+    outline_color :
 
     Returns
     -------
 
     """
+
+    # -- OUTLINE of the field ---------------------------------------------------
+    if outline is None:
+        outline_plot_type = ''
+        outline_plot_info = {}
+    else:
+        from msehtt.static.mesh.partial.main import MseHttMeshPartial
+        if isinstance(outline, MseHttMeshPartial):
+            from msehtt.static.mesh.partial.elements.main import MseHttElementsPartialMesh
+            # ----------- msehtt partial mesh --------------------------------------------
+            composition = outline.composition
+            if isinstance(composition, MseHttElementsPartialMesh):
+                outline_plot_type = 'msehtt elements'
+                outline_plot_info = composition._outline_plot_info()
+
+            else:
+                raise NotImplementedError()
+
+        else:
+            raise NotImplementedError(f"cannot parse the outline of the field from object: {outline}.")
+
+    # ================================================================================================
+
     x = {0: x} if not isinstance(x, dict) else x
     y = {0: y} if not isinstance(y, dict) else y
     v = {0: v} if not isinstance(v, dict) else v
@@ -227,6 +257,22 @@ def contour(
             plt.contourf(x[patch], y[patch], VAL, levels=levels)
         else:
             raise Exception(f"plot_type={plot_type} is wrong. Should be one of ('contour', 'contourf')")
+
+    # ------ PLOT OUTLINE IF EXISTS ---------------------------------------------
+    if outline is None:
+        pass
+    else:
+        if outline_plot_type == 'msehtt elements':
+            for face_info in outline_plot_info:
+                # element_type, element_index, face_index = face_info
+                data = outline_plot_info[face_info]
+                if len(data) == 2 and np.ndim(data[0]) == 1 and np.ndim(data[1]) == 1 and len(data[0]) == len(data[1]):
+                    x, y = data
+                    plt.plot(x, y, c=outline_color, linewidth=outline_linewidth)
+                else:
+                    raise Exception()
+        else:
+            raise NotImplementedError()
 
     # --------------- title -----------------------------------------------------
     if title is None or title is False:

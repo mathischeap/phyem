@@ -244,7 +244,7 @@ def _d_to_vc(space_indicator, *args):
             else:
                 raise Exception()
         else:
-            raise NotImplementedError()
+            raise NotImplementedError(f"m={m}, n={n}, k={k}")
 
     else:
         raise NotImplementedError()

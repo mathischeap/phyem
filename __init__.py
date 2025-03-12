@@ -8,7 +8,7 @@ import sys
 if absolute_path not in sys.path:
     sys.path.insert(0, absolute_path)
 
-__version__ = '0.0.2'
+__version__ = '1.0.2'
 
 __all__ = [
     'test',

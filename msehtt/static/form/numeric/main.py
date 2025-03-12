@@ -115,6 +115,14 @@ class MseHtt_Form_Numeric(Frozen):
         Note that the output interpolation is rank-wise, so it only returns reasonable results when coordinates
         are in elements of that rank.
 
+        Parameters
+        ----------
+        t
+        ddf
+        data_only : bool
+            If True, we only return the interpolation results. Otherwise, we save the interpolation to cache.
+        component_wise
+
         """
         if t is None:
             t = self._f.cochain.newest

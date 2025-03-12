@@ -4,6 +4,7 @@ r"""
 import matplotlib.pyplot as plt
 import matplotlib
 from matplotlib import cm
+import numpy as np
 
 
 def __matplot__(
@@ -36,6 +37,11 @@ def __matplot__(
         legend_ncol=1,
         scatter=None,
         scatter_kwargs=None,
+
+        plot_order_triangle=None,
+        order_text_size=18,
+        plot_order_line=None,
+        order_linewidth=1,
 
 ):
     """
@@ -97,6 +103,10 @@ def __matplot__(
     y_scientific
     scatter
     scatter_kwargs
+    plot_order_triangle
+    order_text_size
+    plot_order_line
+    order_linewidth
 
     Returns
     -------
@@ -176,6 +186,12 @@ def __matplot__(
     plotter = getattr(plt, plot_type)
 
     if num_lines == 1:
+        if np.ndim(x) == 2:
+            x = x[0]
+            y = y[0]
+        else:
+            pass
+
         if label is not False:
             plotter(x, y, style, color=color, label=label, markersize=markersize, linewidth=linewidth)
         else:
@@ -200,6 +216,64 @@ def __matplot__(
                 for i in range(num_lines):
                     plotter(x[i], y[i], styles[i],
                             color=colors[i], markersize=markersize, label=labels[i], linewidth=linewidth, mfc=mfcs[i],)
+
+    # ------------- ORDER TRIANGLES ----------------------------------------------------------------------
+    if plot_order_triangle is None:
+        pass
+    else:
+        if num_lines == 1:
+            X_info = {0: x}
+            Y_info = {0: y}
+        else:
+            X_info = {}
+            Y_info = {}
+            for i in range(num_lines):
+                X_info[i] = x[i]
+                Y_info[i] = y[i]
+
+        order_triangle_information = ___make_order_triangles___(plot_type, X_info, Y_info, plot_order_triangle)
+
+        for i in order_triangle_information:
+            TI = order_triangle_information[i]
+            if TI is None:
+                pass
+            else:
+                c0, c1, c2, text_pos, order_n = TI
+                c0x, c0y = c0
+                c1x, c1y = c1
+                c2x, c2y = c2
+                plt.fill_between([c0x, c1x], [c0y, c1y], [c0y, c2y], color='grey', alpha=0.5)
+                if isinstance(order_n, int):
+                    plt.text(text_pos[0], text_pos[1], "${}$".format(order_n), fontsize=order_text_size)
+                else:
+                    plt.text(text_pos[0], text_pos[1], "${}$".format('%0.2f' % order_n), fontsize=order_text_size)
+
+    # --------- ORDER LINES --------------------------------------------------------------------------
+    if plot_order_line is None:
+        pass
+    else:
+        if num_lines == 1:
+            X_info = {0: x}
+            Y_info = {0: y}
+        else:
+            X_info = {}
+            Y_info = {}
+            for i in range(num_lines):
+                X_info[i] = x[i]
+                Y_info[i] = y[i]
+
+        order_line_information = ___make_order_lines___(plot_type, X_info, Y_info, plot_order_line)
+        for i in order_line_information:
+            LI = order_line_information[i]
+            if LI is None:
+                pass
+            else:
+                p0, p1, text_pos, order_n, color, style = LI
+                plotter([p0[0], p1[0]], [p0[1], p1[1]], style, c=color, linewidth=order_linewidth)
+                if isinstance(order_n, int):
+                    plt.text(text_pos[0], text_pos[1], "${}$".format(order_n), fontsize=order_text_size)
+                else:
+                    plt.text(text_pos[0], text_pos[1], "${}$".format('%0.2f' % order_n), fontsize=order_text_size)
 
     # ------ customize figure ---------------------------------------------------------------------1
     if xticks is not None:
@@ -286,3 +360,144 @@ def semilogy(*args, **kwargs):
 
 def loglog(*args, **kwargs):
     return __matplot__('loglog', *args, **kwargs)
+
+
+# ================== PLOT ORDER TRIANGLES ============================================================
+
+
+def ___make_order_triangles___(plot_type, X_info, Y_info, triangle_Info):
+    r""""""
+    assert isinstance(X_info, dict) and isinstance(Y_info, dict) and isinstance(triangle_Info, dict), \
+        f"All inputs must be dict."
+    for i in X_info:
+        assert i in Y_info, f"plot Information in-consistent."
+        if i in triangle_Info:
+            pass
+        else:
+            triangle_Info[i] = None
+
+    x_min = []
+    x_max = []
+    for i in X_info:
+        x_info = X_info[i]
+        x_min.append(min(x_info))
+        x_max.append(max(x_info))
+    x_min = min(x_min)
+    x_max = max(x_max)
+    x_coo_Range = [x_min, x_max]
+
+    triangle_plot_info = dict()
+    for i in X_info:
+        xd = X_info[i]  # x coo data
+        yd = Y_info[i]  # y coo data
+        t_info = triangle_Info[i]
+        if t_info is None:
+            triangle_plot_info[i] = None
+        else:
+            triangle_plot_info[i] = ___ORDER_TRIANGLE___(plot_type, xd, yd, t_info, x_coo_Range)
+
+    return triangle_plot_info
+
+
+def ___ORDER_TRIANGLE___(plot_type, xd, yd, t_info, x_coo_Range):
+    r""""""
+    if plot_type == 'loglog':
+        P = t_info['p']  # the position of the triangle
+        L = t_info['l']  # the length of the triangle bottom edge.
+        TP = t_info['tp']  # the order text position
+        ORDER = t_info['order']  # the order
+        x_min, x_max = x_coo_Range
+        x_range = np.log10(x_max) - np.log10(x_min)
+        origin = (xd[-1], yd[-1])
+        otc0x = np.log10(origin[0]) + x_range * P[0]
+        otc0x = 10**otc0x
+        otc0y = np.log10(origin[1]) + x_range * P[1]
+        otc0y = 10**otc0y
+        otc0 = (otc0x, otc0y)  # order_triangle_corner_0
+        otc1x = np.log10(otc0x) + x_range * L
+        otc1x = 10**otc1x
+        otc1 = (otc1x, otc0y)  # order_triangle_corner_0
+        otc2y = np.log10(otc0y) + x_range * L * ORDER
+        otc2y = 10**otc2y
+        otc2 = (otc1x, otc2y)  # order_triangle_corner_0
+        ttps_x, ttps_y = TP
+        text_pos_x = 10**(np.log10(otc1x) + x_range * ttps_x)
+        text_pos_y = 10**(np.log10(otc0y) + x_range * L * ORDER * ttps_y)
+
+        return otc0, otc1, otc2, (text_pos_x, text_pos_y), ORDER
+    else:
+        raise NotImplementedError()
+
+
+def ___make_order_lines___(plot_type, X_info, Y_info, line_Info):
+    r""""""
+    assert isinstance(X_info, dict) and isinstance(Y_info, dict) and isinstance(line_Info, dict), \
+        f"All inputs must be dict."
+    for i in X_info:
+        assert i in Y_info, f"Information in-consistent."
+        if i in line_Info:
+            pass
+        else:
+            line_Info[i] = None
+
+    LINE_plot_info = dict()
+    for i in X_info:
+        xd = X_info[i]  # x coo data
+        yd = Y_info[i]  # y coo data
+        l_info = line_Info[i]
+        if l_info is None:
+            LINE_plot_info[i] = None
+        else:
+            LINE_plot_info[i] = ___ORDER_LINE___(plot_type, xd, yd, l_info)
+
+    return LINE_plot_info
+
+
+def ___ORDER_LINE___(plot_type, xd, yd, l_info):
+    r""""""
+    if plot_type == 'loglog':
+        P = l_info['p']  # the position of the triangle
+        TP = l_info['tp']  # the order text position
+        ORDER = l_info['order']  # the order
+
+        if 'color' in l_info:
+            color = l_info['color']
+        else:
+            color = 'lightgray'
+
+        if 'style' in l_info:
+            style = l_info['style']
+        else:
+            style = '--'
+
+        ori = (xd[-1], yd[-1])
+        ori_x, ori_y = ori
+        end_x = xd[0]
+
+        if ori_x > end_x:
+            x_range = np.log10(ori_x) - np.log10(end_x)
+
+            otc0x = np.log10(ori_x) + x_range * P[0]
+            otc0y = np.log10(ori_y) + x_range * P[1]
+            otc0x = 10 ** otc0x
+            otc0y = 10 ** otc0y
+            otc0 = (otc0x, otc0y)  # starting point.
+
+            otc2x = np.log10(end_x) + x_range * P[0]
+            otc2y = np.log10(otc0y) + x_range * np.abs(ORDER)
+            otc2x = 10 ** otc2x
+            otc2y = 10 ** otc2y
+
+            otc2 = (otc2x, otc2y)  # starting point.
+
+            ttps_x, ttps_y = TP
+            text_pos_x = 10 ** (np.log10(otc0x) + x_range * ttps_x)
+            text_pos_y = 10 ** (np.log10(otc0y) + x_range * ttps_y)
+
+        else:
+            raise NotImplementedError()
+
+        return otc0, otc2, (text_pos_x, text_pos_y), ORDER, color, style
+
+    else:
+        raise NotImplementedError()

@@ -13,5 +13,5 @@ def string_digits(stringLength=8):
 
 if __name__ == '__main__':
     # python python tools/miscellaneous/random_.py
-    str = string_digits(24)
-    print(str)
+    str_ = string_digits(24)
+    print(str_)

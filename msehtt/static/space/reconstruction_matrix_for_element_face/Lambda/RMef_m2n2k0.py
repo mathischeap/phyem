@@ -7,20 +7,20 @@ ___one___ = np.array([1])
 ___min___ = np.array([-1])
 
 
-def ___ref_m2n2k2___(degree, element, face_index, xi_or_et):
+def ___RMef_m2n2k0___(degree, element, face_index, xi_or_et):
     r""""""
     etype = element.etype
     if etype in ("orthogonal rectangle", ):
         # for these element types: face index 0: North, 1: South, 2: West, 3: East.
-        return ___ref222_msepy_quadrilateral___(degree, element, face_index, xi_or_et)
+        return ___rMef220_msepy_quadrilateral___(degree, element, face_index, xi_or_et)
     else:
         raise NotImplementedError()
 
 
-from msehtt.static.space.reconstruction_matrix.Lambda.RM_m2n2k2 import ___rm222_msepy_quadrilateral___
+from msehtt.static.space.reconstruction_matrix.Lambda.RM_m2n2k0 import ___rm220_msepy_quadrilateral___
 
 
-def ___ref222_msepy_quadrilateral___(degree, element, face_index, xi_or_et):
+def ___rMef220_msepy_quadrilateral___(degree, element, face_index, xi_or_et):
     r""""""
     assert np.ndim(xi_or_et) == 1, f"I must receive 1d coo data."
     if face_index == 0:  # north face
@@ -38,4 +38,4 @@ def ___ref222_msepy_quadrilateral___(degree, element, face_index, xi_or_et):
     else:
         raise Exception
 
-    return ___rm222_msepy_quadrilateral___(element, degree, xi, et)
+    return ___rm220_msepy_quadrilateral___(element, degree, xi, et)

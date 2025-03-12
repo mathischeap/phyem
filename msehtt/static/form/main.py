@@ -21,7 +21,7 @@ from msehtt.static.form.dofs.main import MseHtt_StaticForm_Dofs
 class MseHttForm(Frozen):
     r""""""
 
-    def __init__(self, abstract_root_form):
+    def __init__(self, abstract_root_form, SPECIAL=None):
         r""""""
         self._pAti_form: Dict = {
             'base_form': None,  # the base form
@@ -29,9 +29,23 @@ class MseHttForm(Frozen):
             'ati': None,  # abstract time instant
         }
         self._ats_particular_forms = dict()   # the abstract forms based on this form.
-        assert abstract_root_form.__class__ is Form, f"I need an abstract form."
-        self._degree = abstract_root_form._degree
-        self._abstract = abstract_root_form
+        if abstract_root_form.__class__ is Form:
+            self._degree = abstract_root_form._degree
+            self._abstract = abstract_root_form
+            self._ftype = 'regular'
+        elif abstract_root_form is None and isinstance(SPECIAL, dict):   # to make an IMPLEMENTATION form.
+            assert 'KEY' in SPECIAL, \
+                f"Special form indicator must contain 'KEY' to tell which kind of special form we are saying."
+            KEY = SPECIAL['KEY']
+            if KEY == 'IMPLEMENTATION':             # IMPLEMENTATION form
+                self._degree = SPECIAL['degree']
+                self._abstract = None
+                self._ftype = 'IMPLEMENTATION'
+            else:
+                raise NotImplementedError()
+
+        else:
+            raise Exception()
 
         self._name_ = None  # name of this form
 
@@ -54,12 +68,71 @@ class MseHttForm(Frozen):
     @property
     def abstract(self):
         r"""Return the abstract form."""
+        if self._abstract is None:
+            raise Exception('No abstract form, DO NOT access it.')
         return self._abstract
 
     def __repr__(self):
         r"""repr"""
-        ab_rf_repr = self._abstract.__repr__().split(' at ')[0][1:]
-        return "<MseHtt " + ab_rf_repr + super().__repr__().split(" object")[1]
+        if self._ftype == 'regular':
+            ab_rf_repr = self.abstract.__repr__().split(' at ')[0][1:]
+            return "<MseHtt " + ab_rf_repr + super().__repr__().split(" object")[1]
+        elif self._ftype == 'IMPLEMENTATION':
+            ab_rf_repr = 'IMPLEMENTATION-form'
+            return "<MseHtt " + ab_rf_repr + super().__repr__().split(" object")[1]
+        else:
+            raise Exception()
+
+    # ------------ IMPLEMENTATION FORM ---------------------------------------------------------------------
+
+    def d(self):
+        r"""Return AN IMPLEMENTATION FORM represent d(self)."""
+        IMPLEMENTATION_NEXT_SPACE = self.space._IMPLEMENTATION_d_next_space_
+        df = MseHttForm(
+            None,
+            SPECIAL={
+                'KEY': 'IMPLEMENTATION',
+                'degree': self.degree
+            }
+        )
+        assert df._ftype == 'IMPLEMENTATION', f'must be!'
+        df.space = IMPLEMENTATION_NEXT_SPACE
+        df._tpm = self._tpm
+        df._tgm = self._tgm
+        df._manifold = self._manifold
+
+        dcc = df.cochain
+
+        for t in self.cochain:
+            scc = self.cochain[t]
+            dcc._set(t, scc.___coboundary_callable___)
+        return df
+
+    # ======================================================================================================
+
+    # ---------- OPERATIONS --------------------------------------------------------------------------------
+
+    def __sub__(self, other):
+        r""""""
+        if other.__class__ is self.__class__:
+            if self._ftype == 'regular' and other._ftype == 'IMPLEMENTATION':
+                return ___regular_sub_or_add_IMPLEMENTATION___(self, '-', other)
+            else:
+                raise NotImplementedError()
+        else:
+            raise NotImplementedError(f"cannot do: {self.__class__} - {other.__class__}")
+
+    def __add__(self, other):
+        r""""""
+        if other.__class__ is self.__class__:
+            if self._ftype == 'regular' and other._ftype == 'IMPLEMENTATION':
+                return ___regular_sub_or_add_IMPLEMENTATION___(self, '+', other)
+            else:
+                raise NotImplementedError()
+        else:
+            raise NotImplementedError(f"cannot do: {self.__class__} + {other.__class__}")
+
+    # ======================================================================================================
 
     @property
     def degree(self):
@@ -92,6 +165,17 @@ class MseHttForm(Frozen):
     def space(self):
         r"""Return the msehtt space."""
         return self._space
+
+    @space.setter
+    def space(self, space):
+        r""""""
+        if self._ftype == 'regular':
+            self._space = space
+        elif self._ftype == 'IMPLEMENTATION':
+            assert space.abstract.__class__.__name__ == '_IMPLEMENTATION_AbstractSpace_'
+            self._space = space
+        else:
+            raise NotImplementedError()
 
     @property
     def manifold(self):
@@ -194,7 +278,7 @@ class MseHttForm(Frozen):
             t[0] == 'nearest' and
             isinstance(t[1], int)
         ):
-            # we receive a indicator saying we need to make cache data for several nearest data
+            # we receive an indicator saying we need to make cache data for several nearest data
             # like t = ('nearest', 2)
             if t[1] == 1:
                 times = [self.cochain.newest, ]
@@ -521,3 +605,59 @@ class MseHttForm(Frozen):
             return self._dofs
         else:
             return self._base.dofs
+
+
+# ========================= other functions ===============================================================
+
+
+def ___regular_sub_or_add_IMPLEMENTATION___(rgf, sub_or_add, IMf):
+    r"""regular form - IMPLEMENTATION form, return an IMPLEMENTATION form."""
+    assert rgf._ftype == 'regular', f'must be!'
+    assert IMf._ftype == 'IMPLEMENTATION', f'must be!'
+
+    if sub_or_add == '-':
+        sub = True
+    elif sub_or_add == '+':
+        sub = False
+    else:
+        raise Exception()
+
+    s0 = rgf.space
+    s1 = IMf.space
+    assert s0._imn_ == s1._imn_, f"The two forms have different spaces. {s0._imn_} != {s1._imn_}."
+    assert rgf.degree == IMf.degree, f"degree must be "
+    indicator = s0._imn_[0]
+    if indicator == 'Lambda':
+        k0, k1 = s0.abstract.k, s1.abstract.k
+        o0, o1 = s0.abstract.orientation, s1.abstract.orientation
+        assert k0 == k1 and o0 == o1, \
+            f"the k and orientation are different; k0={k0}, k1={k1}, o0={o0}, o1={o1}"
+        SUBf = MseHttForm(
+            None,
+            SPECIAL={
+                'KEY': 'IMPLEMENTATION',
+                'degree': rgf.degree
+            }
+        )
+        assert SUBf._ftype == 'IMPLEMENTATION', f'must be!'
+        SUBf.space = IMf.space
+        SUBf._tpm = rgf._tpm
+        SUBf._tgm = rgf._tgm
+        SUBf._manifold = rgf._manifold
+
+        cc0 = rgf.cochain
+        cc1 = IMf.cochain
+        for t in cc0:
+            if t in cc1:
+                ccI0 = cc0[t]
+                ccI1 = cc1[t]
+                if sub:
+                    _ = ccI0 - ccI1
+                else:
+                    _ = ccI0 + ccI1
+                SUBf.cochain._set(t, _)
+
+        return SUBf
+
+    else:
+        raise NotImplementedError()

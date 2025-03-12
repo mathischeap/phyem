@@ -84,8 +84,22 @@ class MseHttGreatMeshBaseElement(Frozen):
 
     @classmethod
     def _find_mapping_(cls, parameters, x, y):
-        r"""A class method that compute ct.mapping with parameters. With this, we can do
+        r"""A class method that compute `ct.mapping` with parameters. With this, we can do
         some checks before the element is actually made.
+        """
+        raise NotImplementedError()
+
+    def _whether_coo_in_me_(self, *coordinates):
+        r"""
+
+        Parameters
+        ----------
+        coordinates
+            For example, m==n2==2, x, y = coordinates.
+
+        Returns
+        -------
+
         """
         raise NotImplementedError()
 

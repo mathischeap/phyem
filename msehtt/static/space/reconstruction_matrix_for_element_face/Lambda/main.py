@@ -2,13 +2,13 @@
 r"""Reconstruction along element face/edge for Lambda-type spaces (scalar-valued form spaces)
 """
 from tools.frozen import Frozen
-from msehtt.static.space.reconstruct_element_face.Lambda.ref_m2n2k0 import ___ref_m2n2k0___
-from msehtt.static.space.reconstruct_element_face.Lambda.ref_m2n2k1 import ___ref_m2n2k1_inner___
-from msehtt.static.space.reconstruct_element_face.Lambda.ref_m2n2k1 import ___ref_m2n2k1_outer___
-from msehtt.static.space.reconstruct_element_face.Lambda.ref_m2n2k2 import ___ref_m2n2k2___
+from msehtt.static.space.reconstruction_matrix_for_element_face.Lambda.RMef_m2n2k0 import ___RMef_m2n2k0___
+from msehtt.static.space.reconstruction_matrix_for_element_face.Lambda.RMef_m2n2k1 import ___RMef_m2n2k1_inner___
+from msehtt.static.space.reconstruction_matrix_for_element_face.Lambda.RMef_m2n2k1 import ___RMef_m2n2k1_outer___
+from msehtt.static.space.reconstruction_matrix_for_element_face.Lambda.RMef_m2n2k2 import ___RMef_m2n2k2___
 
 
-class MseHttSpace_REF_Lambda(Frozen):
+class MseHttSpace_RM_eF_Lambda(Frozen):
     """"""
 
     def __init__(self, space):
@@ -27,15 +27,15 @@ class MseHttSpace_REF_Lambda(Frozen):
         element = elements[element_index]
 
         if self._indicator == 'm2n2k0':
-            return ___ref_m2n2k0___(degree, element, face_index, *mesh_grid)
+            return ___RMef_m2n2k0___(degree, element, face_index, *mesh_grid)
         elif self._indicator == 'm2n2k1':
             if self._orientation == 'inner':
-                return ___ref_m2n2k1_inner___(degree, element, face_index, *mesh_grid)
+                return ___RMef_m2n2k1_inner___(degree, element, face_index, *mesh_grid)
             elif self._orientation == 'outer':
-                return ___ref_m2n2k1_outer___(degree, element, face_index, *mesh_grid)
+                return ___RMef_m2n2k1_outer___(degree, element, face_index, *mesh_grid)
             else:
                 raise Exception()
         elif self._indicator == 'm2n2k2':
-            return ___ref_m2n2k2___(degree, element, face_index, *mesh_grid)
+            return ___RMef_m2n2k2___(degree, element, face_index, *mesh_grid)
         else:
             raise NotImplementedError()

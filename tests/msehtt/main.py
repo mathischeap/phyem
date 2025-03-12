@@ -66,3 +66,7 @@ import tests.msehtt.Poisson2di_UnstructuredQuad
 php('>>> msehtt >>> tests.msehtt.Poisson2do_UnstructuredQuad')
 # noinspection PyUnresolvedReferences
 import tests.msehtt.Poisson2do_UnstructuredQuad
+
+php('>>> msehtt >>> tests.msehtt._2d_boundary_section_config_1')
+# noinspection PyUnresolvedReferences
+import tests.msehtt._2d_boundary_section_config_1

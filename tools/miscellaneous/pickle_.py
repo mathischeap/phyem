@@ -23,6 +23,20 @@ def ms(filename, obj):
     output.close()
 
 
+def mr(filename):
+    r"""master read. Read to the master rank only, return None in other ranks."""
+    if RANK == MASTER_RANK:
+
+        with open(filename, 'rb') as inputs:
+            obj = pickle.load(inputs)
+        inputs.close()
+
+    else:
+        obj = None
+
+    return obj
+
+
 def r(filename):
     r"""Read a file to all ranks."""
     if RANK == MASTER_RANK:
