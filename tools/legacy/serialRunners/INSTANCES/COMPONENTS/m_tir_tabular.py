@@ -14,6 +14,7 @@ import numpy as np
 from tools.frozen import Frozen
 from tools.decorators.all import accepts
 
+
 class M_TIR_Tabulate(Frozen):
     """ 
     <unittest> <unittests_P_Solvers> <test_No4_M3IR>.
@@ -55,7 +56,7 @@ class M_TIR_Tabulate(Frozen):
             " <Tabular> : {} is not in output_names: {}.".format(opn, self._tir_.output_names)
         d = {}
         df = self._tir_.rdf
-        #___ Matrix3dInputRunner ______________________________________________________
+        # ___ Matrix3dInputRunner ______________________________________________________
         if self._tir_.__class__.__name__ == 'Matrix3dInputRunner':
             if self._tir_._input_shape_ is None:
                 I0seq = list(set(df[self._tir_.input_names[0]]))
@@ -82,50 +83,51 @@ class M_TIR_Tabulate(Frozen):
                 _I0Seq_ = self._tir_._I0Seq_
                 _I1Seq_ = self._tir_._I1Seq_
                 _I2Seq_ = self._tir_._I2Seq_
-        #___ ThreeInputsRunner ________________________________________________________
+        # ___ ThreeInputsRunner ________________________________________________________
         elif self._tir_.__class__.__name__ == 'ThreeInputsRunner':
-                isp0 = len(self._tir_.I0seq)
-                isp1 = len(self._tir_.I1seq)
-                isp2 = len(self._tir_.I2seq)
-                isp = (isp0, isp1, isp2)
-                _I0Seq_ = self._tir_.I0seq
-                _I1Seq_ = self._tir_.I1seq
-                _I2Seq_ = self._tir_.I2seq
-        #______ ELSE: ERRORING ________________________________________________________
+            isp0 = len(self._tir_.I0seq)
+            isp1 = len(self._tir_.I1seq)
+            isp2 = len(self._tir_.I2seq)
+            isp = (isp0, isp1, isp2)
+            _I0Seq_ = self._tir_.I0seq
+            _I1Seq_ = self._tir_.I1seq
+            _I2Seq_ = self._tir_.I2seq
+        # ______ ELSE  ________________________________________________________
         else:
             raise Exception(" <Tabular> : this Tabular not for it.")
-        #------------------------------------------------------------------------------
-        for k in range(isp[2]): # go throug all keys
-            d[k] = np.zeros(isp[:2]) # distribute memory 
+        # ------------------------------------------------------------------------------
+        for k in range(isp[2]):  # go through all keys
+            d[k] = np.zeros(isp[:2])  # distribute memory
         ipn = self._tir_.input_names
-        #___ Matrix3dInputRunner ______________________________________________________
+        # ___ Matrix3dInputRunner ______________________________________________________
         if self._tir_.__class__.__name__ == 'Matrix3dInputRunner':
-            for k in range(isp[2]): # go throug all keys
+            for k in range(isp[2]):  # go through all keys
                 for i in range(isp[0]):
                     for j in range(isp[1]):
-                        dft = df[df[ipn[0]]==_I0Seq_[i][j][k]]
-                        dft = dft[dft[ipn[1]]==_I1Seq_[i][j][k]]
-                        dft = dft[dft[ipn[2]]==_I2Seq_[i][j][k]]
+                        dft = df[df[ipn[0]] == _I0Seq_[i][j][k]]
+                        dft = dft[dft[ipn[1]] == _I1Seq_[i][j][k]]
+                        dft = dft[dft[ipn[2]] == _I2Seq_[i][j][k]]
                         if dft.empty:
-                            d[k][i][j] = np.NaN
+                            d[k][i][j] = np.nan
                         else:
                             d[k][i][j] = dft.iloc[0][opn]
-        #___ ThreeInputsRunner ________________________________________________________
+        # ___ ThreeInputsRunner ________________________________________________________
         elif self._tir_.__class__.__name__ == 'ThreeInputsRunner':
-            for k in range(isp[2]): # go throug all keys
-                dfk = df[df[ipn[2]]==_I2Seq_[k]]
+            for k in range(isp[2]):  # go through all keys
+                dfk = df[df[ipn[2]] == _I2Seq_[k]]
                 for i in range(isp[0]):
-                    dfi = dfk[dfk[ipn[0]]==_I0Seq_[i]]
+                    dfi = dfk[dfk[ipn[0]] == _I0Seq_[i]]
                     for j in range(isp[1]):
-                        dfj = dfi[dfi[ipn[1]]==_I1Seq_[j]]
+                        dfj = dfi[dfi[ipn[1]] == _I1Seq_[j]]
                         if dfj.empty:
-                            d[k][i][j] = np.NaN
+                            d[k][i][j] = np.nan
                         else:
                             d[k][i][j] = dfj.iloc[0][opn]
-        #------------------------------------------------------------------------------
+        # ------------------------------------------------------------------------------
         else:
             raise Exception(" <Tabular> : this Tabular not for it.")
         return d
+
 
 def initialize_3d_list(a, b, c):
     """

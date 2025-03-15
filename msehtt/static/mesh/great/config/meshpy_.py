@@ -3,7 +3,12 @@ r"""
 """
 import numpy as np
 from tools.frozen import Frozen
-import meshpy.triangle as triangle
+
+try:
+    import meshpy.triangle as triangle
+except ModuleNotFoundError:
+    pass
+
 from msehtt.static.mesh.great.config.vtu import MseHttVtuInterface
 
 

@@ -75,7 +75,8 @@ class TIR_DRW(Frozen):
                         if fstr[i][-1] != '\n':
                             fstr[i] += '\n'
                         self._computed_m_.append(m)
-                        # when this is happening, we stored full values at this line, so we can keep it to `self._TIR_.results`.
+                        # when this is happening, we stored full values at this line,
+                        # so we can keep it to `self._TIR_.results`.
                         for k in range(j):
                             fstr_i_split[k] = float(fstr_i_split[k])
                         

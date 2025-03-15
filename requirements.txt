@@ -10,4 +10,3 @@ numdifftools >= 0.9.41
 sympy >= 1.13.3
 pypardiso >= 0.4.6
 pynverse >= 0.1.4.6
-meshpy

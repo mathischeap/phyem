@@ -11,7 +11,11 @@ import inspect
 import psutil
 import socket
 from src.config import RANK, MASTER_RANK, COMM
-from _monitor_wi import ___write_info___, ___write_picture___
+
+try:
+    from _monitor_wi import ___write_info___, ___write_picture___
+except ModuleNotFoundError:
+    pass
 
 from tools.iterator.monitor import IteratorMonitor
 
