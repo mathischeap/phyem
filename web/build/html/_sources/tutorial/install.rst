@@ -35,28 +35,32 @@ to clone the package to a local repository. Nevertheless, downloading a stable v
 Config
 ------
 
-The downloaded (and unzipped) library is a folder named ``phyem``. We now call this folder the *package*.
+The downloaded library is a folder, and we shall name it ``phyem``.
+Note that if you download the
+zipped library from github, you got a zipped file, for example, called ``phyem-main``. Then you should un-zip it and
+rename the fold to ``phyem``.
+
+We now call this folder the *package*.
 
 .. hint::
 
     To make *phyem* library importable, we can do either
 
+    - put the *package* in the current working dir.
     - put the *package* in a dir that is a default system path.
     - put the *package* in a dir which is not a default system path and customize the path locally in Python scripts.
 
-    And we recommend the second way to keep the default system path clean.
-
-For example, if the *package* is put in dir :code:`~/my_packages/`, in a Python
+For example, if the *package* is put in dir :code:`abs_dir_of_phyem`, in a Python
 script or console, you can do
 
 .. code-block::
 
     >>> import sys
-    >>> ph_dir = '~/my_packages/'
+    >>> ph_dir = 'abs_dir_of_phyem'
     >>> sys.path.insert(0, ph_dir)
 
-When this script is executed, the path :code:`~/my_packages/` will be added to system path temporally.
-Of course, if :code:`~/my_packages/` is a default system path, you can omit above three lines of code.
+When this script is executed, the path :code:`abs_dir_of_phyem` will be added to system path temporally.
+Of course, if :code:`abs_dir_of_phyem` is a default system path, you can omit above three lines of code.
 Then the *phyem* library can be imported by
 
 .. code-block::
