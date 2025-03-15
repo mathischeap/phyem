@@ -38,9 +38,9 @@ Config
 The downloaded library is a folder, and we shall name it ``phyem``.
 Note that if you download the
 zipped library from github, you got a zipped file, for example, called ``phyem-main``. Then you should un-zip it and
-rename the fold to ``phyem``.
+rename the folder to ``phyem``.
 
-We now call this folder the *package*.
+We now call the folder ``phyem`` the *package*.
 
 .. hint::
 
