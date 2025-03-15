@@ -11,13 +11,14 @@ Installation
 Download
 --------
 
-.. important::
+..
+    .. important::
 
-    We commend you to visit the release page of *phyem* git repository,
-    `Releases <https://github.com/mathischeap/phyem/releases>`_, to download a stable version.
+        We commend you to visit the release page of *phyem* git repository,
+        `Releases <https://github.com/mathischeap/phyem/releases>`_, to download a stable version.
 
 
-You can also download the most recent (maybe not thoroughly tested) source code from the GitHub page,
+You can download the most recent source code from the GitHub page,
 `git-phyem <https://github.com/mathischeap/phyem>`_, by, for example, running the following
 `git <https://git-scm.com/>`_
 command
@@ -26,8 +27,9 @@ command
 
     git clone https://github.com/mathischeap/phyem.git
 
-to clone the package to a local repository. Nevertheless, downloading a stable version from the
-`Releases <https://github.com/mathischeap/phyem/releases>`_ page is more recommended.
+to clone the package to a local repository.
+
+.. Nevertheless, downloading a stable version from the Releases <https://github.com/mathischeap/phyem/releases>`_ page is more recommended.
 
 
 .. _Config:
@@ -35,7 +37,7 @@ to clone the package to a local repository. Nevertheless, downloading a stable v
 Config
 ------
 
-The downloaded library is a folder, and we shall name it ``phyem``.
+The downloaded library is a folder named ``phyem``.
 Note that if you download the
 zipped library from github, you got a zipped file, for example, called ``phyem-main``. Then you should un-zip it and
 rename the folder to ``phyem``.
