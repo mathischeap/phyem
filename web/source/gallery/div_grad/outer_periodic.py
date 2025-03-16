@@ -43,6 +43,8 @@ def div_grad_2d_periodic_manufactured_test(degree, K, c=0):
 
     msepy.config(mesh)([K, K])
 
+    # mesh.visualize()
+
     phi = msepy.base['forms'][r'potential']
     u = msepy.base['forms'][r'velocity']
     f = msepy.base['forms'][r'source']

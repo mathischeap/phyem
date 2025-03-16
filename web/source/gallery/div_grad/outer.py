@@ -14,7 +14,7 @@ def div_grad_2d_general_bc_manufactured_test(degree, K, c=0.):
     degree : int
         The degree of the mimetic spectral elements.
     K : int
-        In total we will use :math:`4 * K * K` elements.
+        In total we will use :math:`K * K` elements.
     c : float, default=0
         The deformation factor of the :ref:`GALLERY-msepy-domains-and-meshes=crazy`.
 
@@ -52,6 +52,8 @@ def div_grad_2d_general_bc_manufactured_test(degree, K, c=0.):
 
     mesh = msepy.base['meshes'][r'\mathfrak{M}']
     msepy.config(mesh)([K, K])
+
+    # mesh.visualize()
 
     # for mesh_repr in msepy.base['meshes']:
     #     mesh = msepy.base['meshes'][mesh_repr]
