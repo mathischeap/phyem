@@ -494,7 +494,7 @@ class MseHttStaticNonLinearSystem(Frozen):
                     if sign == '+':
                         pass
                     else:
-                        if isinstance(static_vector.__class__, dict):
+                        if isinstance(static_vector, dict):
                             neg_static_vector = dict()
                             for e in static_vector:
                                 neg_static_vector[e] = - static_vector[e]

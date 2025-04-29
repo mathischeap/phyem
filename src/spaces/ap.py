@@ -47,6 +47,7 @@ __all__ = [
     '_VarPar_astA_x_astB_dp_tC',    # <A x B | C>
     '_VarPar_astA_x_B_dp_tC',
     '_VarPar_A_x_astB_dp_tC',
+    '_VarPar_A_x_B_dp_C',  # nonlinear
 
     '_VarPar_astA_x_astB__ip__astC_x_tD',  # vector (*A x *B, *C x D), ABC known, D test
     '_VarPar_A_x_astB__ip__astC_x_tD',     # vector (A x *B, *C x D), BC known, D test
@@ -63,6 +64,7 @@ __all__ = [
     '_VarPar_dA_B_tp_C__1Known',
     '_VarPar_dA_B_tp_C__2Known',
     '_VarPar_dA_B_tp_C',            # nonlinear
+    '_VarPar_AxB_ip_dC',            # nonlinear
 
     '_VarPar_A_B_tp_C__1Known',
     '_VarPar_A_B_tp_C__2Known',
@@ -458,6 +460,19 @@ def _VarPar_A_x_astB_dp_tC(A, gB, tC):
     return ra
 
 
+def _VarPar_A_x_B_dp_C(A, B, C):
+    """<AxB|C>"""
+    sym, lin = _VarSetting_A_x_B__dp__C[:2]
+
+    sym += rf"\left({A._sym_repr}, {B._sym_repr}, {C._sym_repr}\right)"
+    lin = lin.replace('{A}', A._pure_lin_repr)
+    lin = lin.replace('{B}', B._pure_lin_repr)
+    lin = lin.replace('{C}', C._pure_lin_repr)
+
+    mda = AbstractNonlinearOperator(sym, lin)
+    return mda
+
+
 # ------ (A x B, C x D) ----------------------------------------------------------------------------
 
 def _VarPar_astA_x_astB__ip__astC_x_tD(gA, gB, gC, tD):
@@ -697,6 +712,22 @@ def _VarPar_dA_B_tp_C(A, B, C):
     return mda
 
 
+# ------- (AxB, dC) : nonlinear -------------------------------------------------------------------
+
+def _VarPar_AxB_ip_dC(A, B, C):
+    """(AxB, dC), nonlinear"""
+    assert A is not B and A is not C and B is not C, f"A, B, C must be different."
+    sym, lin = _VarSetting_AxB_ip_dC[:2]
+
+    sym += rf"\left({A._sym_repr}, {B._sym_repr}, {C._sym_repr}\right)"
+    lin = lin.replace('{A}', A._pure_lin_repr)
+    lin = lin.replace('{B}', B._pure_lin_repr)
+    lin = lin.replace('{C}', C._pure_lin_repr)
+
+    mda = AbstractNonlinearOperator(sym, lin)
+    return mda
+
+
 # (A, B otimes C) --------------------------------------------------------------------------------
 
 def _VarPar_A_B_tp_C__1Known(A, B, C, kf, tf):
@@ -793,7 +824,7 @@ def _VarPar_A_B_tp_C__2Known(A, B, C, kf1, kf2, tf):
 
 
 def _VarPar_A_B_tp_C(A, B, C):
-    """(dA, B otimes C), nonlinear"""
+    """(A, B otimes C), nonlinear"""
     assert A is not B and A is not C and B is not C, f"A, B, C must be different."
     sym, lin = _VarSetting_A_B_tp_C[:2]
 

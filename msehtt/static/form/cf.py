@@ -3,7 +3,12 @@ r"""
 """
 from tools.frozen import Frozen
 from src.spaces.operators import _d_to_vc, _d_ast_to_vc
+from tools.functions.time_space._2d.wrappers.scalar import T2dScalar
+from tools.functions.time_space._2d.wrappers.vector import T2dVector
 
+def _m2n2_0_(t, x, y):
+    r""""""
+    return 0 * x + 0 * y + 0 * t
 
 class MseHttStaticFormCF(Frozen):
     """"""
@@ -22,6 +27,20 @@ class MseHttStaticFormCF(Frozen):
     @field.setter
     def field(self, _field):
         """"""
+        if _field == 0:
+            indicator, m, n = self._f.space._imn_
+            if indicator == 'Lambda' and (m, n) == (2, 2):
+                k = self._f.space.abstract.k
+                if k == 2 or k == 0:  # this means we are receiving a zero scalar function
+                    _field = T2dScalar(_m2n2_0_)
+                elif k == 1:
+                    _field = T2dVector(_m2n2_0_, _m2n2_0_)
+                else:
+                    raise Exception()
+            else:
+                raise NotImplementedError()
+        else:
+            pass
         self._field = _field
 
     def __getitem__(self, t):

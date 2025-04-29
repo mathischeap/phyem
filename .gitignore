@@ -61,6 +61,7 @@ _notes/
 _app/
 _log/
 _watching/
+_task/
 __phcache__/
 _local_tests/
 .doctrees/
@@ -71,9 +72,10 @@ conf.py
 
 rci.py
 _tm.py
+_mr.py
 _r.py
-_monitor.py
-_monitor_wi.py
+_m.py
+_s.py
 copy_a_image_to_clipboard.py
 msg_wechat.py
 

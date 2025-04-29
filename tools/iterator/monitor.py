@@ -155,7 +155,7 @@ class IteratorMonitor(Frozen):
     def _graphic_report(self, over):
         """"""
         save_time = MyTimer.current_time()[1:-1]
-        indices = self._select_reasonable_amount_of_data(1000, last_num=100)
+        indices = self._select_reasonable_amount_of_data(300, last_num=75)
 
         RDF = self._iterator_.RDF.iloc[indices]
 
@@ -354,6 +354,7 @@ class IteratorMonitor(Frozen):
                 else:
                     plt.plot([1, indices[-10]], [average_last_10, average_last_10], '--',
                              color='blue', linewidth=1.2)
+                    # noinspection PyTypeChecker
                     plt.plot([indices[-10], indices[-1]], [average_last_10, average_last_10],
                              color='blue', linewidth=1.2, label='V10')
 
@@ -404,29 +405,47 @@ class IteratorMonitor(Frozen):
             else:
                 color_index = i - 6
                 cmap_index = color_index % 8
+                y_data = np.array(RDF[di])
+
+                # --------- auto changing small values into log10 plot ---------------------------------
+
+                if np.all(np.logical_or(y_data > 0, np.isnan(y_data))):
+                    small_values = list(y_data < 1e-3)
+                    total_ = len(small_values)
+                    num_small_values = small_values.count(True)
+                    if num_small_values / total_ > 0.75:
+                        y_data = np.log10(y_data)
+                        ylabel = r"lg10: " + ylabel
+                    else:
+                        pass
+                else:
+                    pass
+
+                # ======================================================================================
+
                 if 't' in RDF:
                     if di == 't':
                         if len(indices) <= 10:
-                            plt.plot(indices, RDF[di], '-o', color=colors(cmap_index), linewidth=1.5)
+                            plt.plot(indices, y_data, '-o', color=colors(cmap_index), linewidth=1.5)
                         else:
-                            plt.plot(indices, RDF[di], color=colors(cmap_index), linewidth=1.5)
+                            plt.plot(indices, y_data, color=colors(cmap_index), linewidth=1.5)
                         plt.xlim([min(indices), max(indices)])
                         plt.xlabel('iterations')
                         if len(indices) <= 5:
                             ax.set_xticks(indices)
                     else:
                         if len(indices) <= 10:
-                            plt.plot(RDF['t'], RDF[di], '-o', color=colors(cmap_index), linewidth=1.5)
+                            plt.plot(RDF['t'], y_data, '-o', color=colors(cmap_index), linewidth=1.5)
                         else:
-                            plt.plot(RDF['t'], RDF[di], color=colors(cmap_index), linewidth=1.5)
+                            plt.plot(RDF['t'], y_data, color=colors(cmap_index), linewidth=1.5)
                         a, b = min(RDF['t']), max(RDF['t'])
                         if isinstance(a, (int, float)) and isinstance(b, (int, float)) and a < b:
                             plt.xlim([a, b])
                 else:
                     if len(indices) <= 10:
-                        plt.plot(indices, RDF[di], '-o', color=colors(cmap_index), linewidth=1.5)
+                        plt.plot(indices, y_data, '-o', color=colors(cmap_index), linewidth=1.5)
                     else:
-                        plt.plot(indices, RDF[di], color=colors(cmap_index), linewidth=1.5)
+                        plt.plot(indices, y_data, color=colors(cmap_index), linewidth=1.5)
                     plt.xlim([min(indices), max(indices)])
                     plt.xlabel('iterations')
                     if len(indices) <= 5:

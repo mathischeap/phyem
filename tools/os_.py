@@ -5,8 +5,12 @@ from src.config import RANK, MASTER_RANK
 import os
 
 
-def dirname(file):
-    return os.path.dirname(file)
+def dirname(filepath):
+    r"""
+    `filepath` is a path to a particular file. And this function
+    returns the dir of the folder that containing the file.
+    """
+    return os.path.dirname(filepath)
 
 
 def isfile(filename):
@@ -14,9 +18,9 @@ def isfile(filename):
     return os.path.isfile(filename)
 
 
-def isdir(filename):
+def isdir(dirpath):
     """"""
-    return os.path.isdir(filename)
+    return os.path.isdir(dirpath)
 
 
 def mkdir(folder_name):

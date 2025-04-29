@@ -182,7 +182,6 @@ class MsePyBasisFunctionsLambda(Frozen):
         else:
             raise NotImplementedError()
 
-
     def _m2_n2_k0(self, *domain):
         r""""""
         xi, eta = np.meshgrid(*domain, indexing='ij')

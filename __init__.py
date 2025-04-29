@@ -55,7 +55,7 @@ __all__ = [
 
     'rref',
 
-    'reveal_phc',   # to print a ph-cache file.
+    'print_cache_log',   # to print a ph-cache file.
     'php',   # ph print
     'pk',    # a pickle wrapper for phyem
 
@@ -126,8 +126,25 @@ from tools.dds.saving_api import _rws_grouped_saving as rws
 ___exist_signature___ = 'phyem exist 0'
 
 
-def exist():
+def exist(file_dir=None, write_dir=None):
     """"""
+    if file_dir is None and write_dir is None:
+        pass
+    else:
+        # when provided `file_dir` and `write_dir`,
+        # we write the source code in file `file_dir` to `write_dir/source.py`
+        assert file_dir is not None and write_dir is not None, f"provide both file and and write dir"
+        if config.RANK == config.MASTER_RANK:
+            with open(file_dir, 'r') as file:
+                source_code = file.read()
+            file.close()
+            with open(write_dir + r"\source.py", 'w') as file:
+                file.write(source_code)
+            file.close()
+
+        else:
+            pass
+
     print(f"RANK#{config.RANK} ends smoothly.", flush=True)
     config.COMM.barrier()
     if config.RANK == config.MASTER_RANK:
@@ -138,7 +155,7 @@ def exist():
 
 from tools.miscellaneous.rref import rref
 
-from tools.iterator.cache_reader import print_cache_log as reveal_phc
+from tools.iterator.cache_reader import print_cache_log
 
 from tools.miscellaneous.php import php
 

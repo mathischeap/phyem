@@ -106,6 +106,7 @@ class MseHttForm(Frozen):
         for t in self.cochain:
             scc = self.cochain[t]
             dcc._set(t, scc.___coboundary_callable___)
+
         return df
 
     # ======================================================================================================
@@ -338,7 +339,7 @@ class MseHttForm(Frozen):
     def saveto(self, filename, what=None):
         """save me to a file.
 
-        Basically, we only save the cochains of all available times.
+        Basically, we only save the co-chains of all available times.
         """
         if self._is_base():
             pass
@@ -528,6 +529,32 @@ class MseHttForm(Frozen):
     def norm(self, cochain, norm_type='L2'):
         """"""
         return self.space.norm(self.degree, cochain, norm_type=norm_type)
+
+    def inner_product(
+            self, self_cochain, other_form, other_degree, other_cochain, inner_type='L2'):
+        r"""
+
+        Parameters
+        ----------
+        self_cochain
+        other_form
+        other_degree
+        other_cochain
+        inner_type
+
+        Returns
+        -------
+
+        """
+        assert other_form.__class__ is self.__class__, f"other-form must be a form."
+        if self._tpm is other_form._tpm:   # on the same grid.
+            return self.space.inner_product(
+                self.degree, self_cochain,
+                other_form.space, other_degree, other_cochain,
+                inner_type=inner_type,
+            )
+        else:
+            raise NotImplementedError(f"cross adaptive grids? to be implemented")
 
     @property
     def bi(self):

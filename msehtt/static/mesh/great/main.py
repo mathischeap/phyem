@@ -256,6 +256,7 @@ class MseHttGreatMesh(Frozen):
                 input_case = 'pre-defined-msehtt-static'
 
         elif isinstance(indicator, str) and indicator == 'meshpy':
+            # case 4
             input_case = 'meshpy'
 
             kwargs_for_call_method = {}
@@ -273,9 +274,11 @@ class MseHttGreatMesh(Frozen):
                     pass
 
         elif indicator.__class__ is TriQuadRegions:  # quad regions as the indicator
+            # case 5
             input_case = 'tqr'
 
         elif isinstance(indicator, (tuple, list)) and isinstance(indicator[0], str) and indicator[0] == 'tqr':
+            # case 6
             # Instead of giving a TriQuadRegions instance, we can make the TriQuadRegions instance here.
             # If we receive a list or tuple whose first entry is 'tqr', then we make a TriQuadRegions instance
             # using all other entries in the list or tuple.
@@ -288,6 +291,7 @@ class MseHttGreatMesh(Frozen):
                 assert 'indicator' in indicator, f"key 'indicator' must be in indicator dict to guide the type."
                 assert 'args' in indicator, \
                     f"key 'args' must be in the indicator dict carrying the mandatory arguments."
+
                 if 'kwargs' in indicator:
                     assert isinstance(indicator['kwargs'], dict), f"Providing kwargs? put them in a dict."
                     kwargs = indicator['kwargs']

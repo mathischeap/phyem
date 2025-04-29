@@ -14,6 +14,7 @@ from msehtt.static.space.reconstruction_matrix.main import MseHttSpaceReconstruc
 from msehtt.static.space.reconstruction_matrix_for_element_face.main import MseHttSpace_RMef
 from msehtt.static.space.integrate_matrix_over_sub_geometry.main import MseHttSpace_IntMatOverSubGeo
 from msehtt.static.space.reconstruct_on_element_face.main import MseHttSpace_RConEF
+from msehtt.static.space.inner_product.main import MseHttSpace_InnerProduct
 
 
 ___global_IMPLEMENTATION_spaces___ = {}   # the space made in the implementation; no abstract space dependent.
@@ -95,6 +96,7 @@ class MseHttSpace(Frozen):
         self._RMef = None
         self._RConEF = None
         self._int_mat_over_sub_geo = None
+        self._ip_ = None
 
         self._freeze()
 
@@ -165,6 +167,10 @@ class MseHttSpace(Frozen):
     def _imn_(self):
         """"""
         return self.indicator, self.m, self.n
+
+    @property
+    def mn(self):
+        return self.m, self.n
 
     @property
     def str_indicator(self):
@@ -308,3 +314,10 @@ class MseHttSpace(Frozen):
         if self._int_mat_over_sub_geo is None:
             self._int_mat_over_sub_geo = MseHttSpace_IntMatOverSubGeo(self)
         return self._int_mat_over_sub_geo
+
+    @property
+    def inner_product(self):
+        r""""""
+        if self._ip_ is None:
+            self._ip_ = MseHttSpace_InnerProduct(self)
+        return self._ip_

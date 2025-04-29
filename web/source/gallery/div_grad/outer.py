@@ -86,6 +86,9 @@ def div_grad_2d_general_bc_manufactured_test(degree, K, c=0.):
 
     ls0 = ls(0)
     als = ls0.assemble()
+
+    # print(als.condition_number)
+
     results = als.solve()
     ls0.x.update(results[0])
 

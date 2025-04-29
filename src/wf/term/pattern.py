@@ -197,7 +197,7 @@ def _inner_simpler_pattern_examiner_scalar_valued_forms(factor, f0, f1, extra_in
                             'a': f_a,
                             'b': f_b,
                             'c': f1
-                        }
+                        }  # nonlinear
                 else:
                     raise Exception()
 
@@ -311,7 +311,14 @@ def _inner_simpler_pattern_examiner_scalar_valued_forms(factor, f0, f1, extra_in
                         else:
                             pass
                     else:  # nonlinear patterns
-                        pass
+                        # >>>>>>>>>>>>>>>>>>>> ['(AxB,dC)'] <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+                        return _simple_patterns['(AxB,dC)'], {
+                            'a': f_a,
+                            'b': f_b,
+                            'c': f_c,
+                            'dc': f1,
+                        }
+
                 else:
                     pass
             else:
@@ -680,9 +687,16 @@ def _dp_simpler_pattern_examiner_scalar_valued_forms(factor, f0, f1, extra_info)
                             'B': B,  # root-scalar-form-1
                             'C': C,
                         }
+                    else:
+                        raise Exception()
 
                 else:
-                    pass
+                    # >>>>>>>>>>>>>>>>>>>> ['(x,)'] <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+                    return _simple_patterns['<AxB|C>'], {
+                        'A': A,
+                        'B': B,
+                        'C': C
+                    }  # nonlinear term
 
             elif A.is_root() and B.is_root() and f1._lin_repr[:len(lin_d)] == lin_d:
                 # <A x B | d(C)> where A, B, C are root-forms.
@@ -741,7 +755,20 @@ def _dp_simpler_pattern_examiner_scalar_valued_forms(factor, f0, f1, extra_info)
 
 
 def _dp_simpler_pattern_examiner_scalar_valued_forms_restrict(factor, f0, f1, extra_info, restrict_manifold):
-    """"""
+    """
+
+    Parameters
+    ----------
+    factor
+    f0
+    f1
+    extra_info
+    restrict_manifold
+
+    Returns
+    -------
+
+    """
 
     if factor.__class__ is ConstantScalar0Form:
         # --- <tr star | tr > ---------------------------------------------------------------------------------
@@ -768,5 +795,4 @@ def _dp_simpler_pattern_examiner_scalar_valued_forms_restrict(factor, f0, f1, ex
         return '', None
 
     else:
-        raise NotImplementedError(f'Not implemented for factor={factor}')
-
+        raise NotImplementedError(f'Not implemented for factor={factor}, extra_info={extra_info}')

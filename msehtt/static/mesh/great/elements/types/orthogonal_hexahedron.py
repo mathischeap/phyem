@@ -109,12 +109,12 @@ class MseHttGreatMeshOrthogonalHexahedronElement(MseHttGreatMeshBaseElement):
             self._faces = MseHtt_GreatMesh_OrthogonalHexahedron_Element_Faces(self)
         return self._faces
 
-    def _generate_outline_data(self, ddf=1):
+    def _generate_outline_data(self, ddf=1, internal_grid=0):
         r""""""
         linspace = np.array([-1, 1, 1, -1, -1]), np.array([-1, -1, 1, 1, -1])
         ones = np.ones(5)
 
-        return {
+        data_dict = {
             'mn': (self.m(), self.n()),
             'center': self.ct.mapping(0, 0, 0),
             0: self.ct.mapping(-ones, linspace[0], linspace[1]),   # face #0, x-
@@ -124,6 +124,11 @@ class MseHttGreatMeshOrthogonalHexahedronElement(MseHttGreatMeshBaseElement):
             4: self.ct.mapping(linspace[0], linspace[1], -ones),   # face #4, z-
             5: self.ct.mapping(linspace[0], linspace[1], ones),    # face #5, z+
         }
+
+        if internal_grid == 0:
+            return data_dict
+        else:
+            raise NotImplementedError()
 
     def _generate_element_vtk_data_(self, xi, et, sg):
         r""""""

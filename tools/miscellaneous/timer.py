@@ -3,10 +3,29 @@ r"""
 """
 from abc import ABC
 from time import localtime, strftime
+import datetime
 
 
 class MyTimer(ABC):
     """My timers."""
+
+    @classmethod
+    def utc_time(cls):
+        r"""UTC now time"""
+        utc_time = datetime.datetime.now(datetime.UTC).strftime('%Y-%m-%d %H:%M:%S')
+        return utc_time
+
+    @classmethod
+    def utc_time_with_no_special_characters(cls):
+        r""""""
+        utc_time = cls.utc_time()
+        ct = utc_time.replace(' ', '_')
+        ct = ct.replace('[', '')
+        ct = ct.replace(']', '')
+        ct = ct.replace(':', '')
+        ct = ct.replace('-', '')
+        return ct
+
     @classmethod
     def current_time(cls):
         """(str) Return a string showing current time."""

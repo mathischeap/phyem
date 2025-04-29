@@ -153,7 +153,7 @@ def add_to_ndarray_cache(cache, arrays, results, check_str='', maximum=25):
     check_strings = cache['check strings']
 
     for i, ar in enumerate(arrays):
-        assert isinstance(ar, np.ndarray), f"arrays[{i}] is not a ndarray."
+        assert isinstance(ar, np.ndarray), f"arrays[{i}]={ar} is not a ndarray."
 
     # when there are more keys than 2 * maximum, we clean half (oldest) of them.
     if len(keys) > 2 * maximum:

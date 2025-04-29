@@ -181,7 +181,13 @@ class MseHttFormStaticCopy(Frozen):
         -------
 
         """
-        return self._f.norm(self.cochain, norm_type=norm_type)
+        return float(self._f.norm(self.cochain, norm_type=norm_type))
+
+    def inner_product(self, other, inner_type='L2'):
+        r""""""
+        return self._f.inner_product(
+            self.cochain, other._f, other.degree, other.cochain, inner_type=inner_type,
+        )
 
     def __eq__(self, other):
         r""""""

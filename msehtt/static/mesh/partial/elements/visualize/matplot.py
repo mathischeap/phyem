@@ -61,5 +61,9 @@ class MseHttElementsPartialMeshVisualizeMatplot(Frozen):
             return MseHttGreatMeshVisualizeMatplot._plot_2d_great_mesh_in_2d_space(
                 data, title=title, data_only=data_only, **kwargs
             )
+        elif len(mn) == 1 and list(mn)[0] == (3, 3):  # all elements are 3d elements in 3d spaces.
+            return MseHttGreatMeshVisualizeMatplot._plot_3d_great_mesh_in_3d_space(
+                data, title=title, data_only=data_only, **kwargs
+            )
         else:
             raise NotImplementedError()

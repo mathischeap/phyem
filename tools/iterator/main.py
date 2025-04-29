@@ -13,9 +13,10 @@ import socket
 from src.config import RANK, MASTER_RANK, COMM
 
 try:
-    from _monitor_wi import ___write_info___, ___write_picture___
+    from tools.miscellaneous._mr import ___write_info___, ___write_picture___
+    _ph_monitor_ = True
 except ModuleNotFoundError:
-    pass
+    _ph_monitor_ = False
 
 from tools.iterator.monitor import IteratorMonitor
 
@@ -598,23 +599,25 @@ class Iterator(Frozen):
                             else:
                                 pass
                             if cache_times == 1:
-                                # noinspection PyUnboundLocalVariable
-                                ___write_info___(
-                                    f"### [{socket.gethostname()}] FIRST CACHE <- "
-                                    f"{computing_times} <- {info_str}"
-                                )
+                                if _ph_monitor_:
+                                    # noinspection PyUnboundLocalVariable
+                                    ___write_info___(
+                                        f"### [{socket.gethostname()}] FIRST CACHE <- "
+                                        f"{computing_times} <- {info_str}"
+                                    )
                             else:
-                                # noinspection PyUnboundLocalVariable
-                                ___write_info___(
-                                    f"### [{socket.gethostname()}] (4) new CACHES <- "
-                                    f"{computing_times} <- {info_str}"
-                                )
-
-                            pic_report_path = f'{self.monitor.name}.png'
-                            if os.path.isfile(pic_report_path):
-                                ___write_picture___(pic_report_path)
-                            else:
-                                pass
+                                if _ph_monitor_:
+                                    # noinspection PyUnboundLocalVariable
+                                    ___write_info___(
+                                        f"### [{socket.gethostname()}] (4) new CACHES <- "
+                                        f"{computing_times} <- {info_str}"
+                                    )
+                            if _ph_monitor_:
+                                pic_report_path = f'{self.monitor.name}.png'
+                                if os.path.isfile(pic_report_path):
+                                    ___write_picture___(pic_report_path)
+                                else:
+                                    pass
                             computing_times = 0
                         else:
                             pass
@@ -643,6 +646,7 @@ class Iterator(Frozen):
             else:
                 pass
 
+            COMM.barrier()
             if RANK == MASTER_RANK:
                 self._cpu_load = psutil.cpu_percent(None)
                 self._append_outputs_to_RDF(outputs)

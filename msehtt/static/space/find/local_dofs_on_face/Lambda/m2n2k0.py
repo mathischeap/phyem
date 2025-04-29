@@ -5,8 +5,12 @@ r"""
 
 def find_local_dofs_on_face__m2n2k0(etype, p, face_index):
     r""""""
-    if etype in ('unique msepy curvilinear quadrilateral', 'orthogonal rectangle',
-                 9, 'unique curvilinear quad'):
+    if etype in (
+            9,
+            'orthogonal rectangle',
+            'unique curvilinear quad',
+            'unique msepy curvilinear quadrilateral',
+    ):
         local_numbering = __m2n2k0_msepy_quadrilateral_(p, face_index)
     elif etype == 5:
         local_numbering = __m2n2k0_vtu5__(p, face_index)

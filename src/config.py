@@ -450,6 +450,7 @@ _wf_term_default_simple_patterns = {   # use only str to represent a simple patt
     '<*x*|C>': r'$\left<\left.\mathrm{krf} \times \mathrm{krf} \right| \mathrm{rf}\right>$',
     '<Ax*|C>': r'$\left<\left.\mathrm{rf} \times \mathrm{krf} \right| \mathrm{rf}\right>$',
     '<*xB|C>': r'$\left<\left.\mathrm{krf} \times \mathrm{rf} \right| \mathrm{rf}\right>$',
+    '<AxB|C>': r'$\left<\left.\mathrm{rf} \times \mathrm{rf} \right| \mathrm{rf}\right>$',
 
     '<*x*|d(C)>': r'$\left<\left.\mathrm{krf} \times \mathrm{krf} \right| \mathrm{d}(\mathrm{rf})\right>$',
 
@@ -470,6 +471,7 @@ _wf_term_default_simple_patterns = {   # use only str to represent a simple patt
     '(*x,d)': r"(krf $\times$ rf, d rf)",
     '(x*,d)': r"(rf $\times$ krf, d rf)",
     '(*x*,d)': r"(krf $\times$ krf, d rf)",   # vector
+    '(AxB,dC)': r"(rf $\times$ rf, d rf)",
 
     '(x,)': r'(rf $\times$ rf, rf)',   # nonlinear term.
 

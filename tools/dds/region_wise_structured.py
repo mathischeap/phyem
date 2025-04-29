@@ -3,6 +3,7 @@ r"""
 """
 import pickle
 import numpy as np
+
 from tools.frozen import Frozen
 from tools.matplot.contour import contour, contourf
 from tools.matplot.quiver import quiver
@@ -32,6 +33,10 @@ class DDSRegionWiseStructured(Frozen):
         `val_dict_list = ([v00, v01, v02, v10, v11, v12, v20, v21, v22])`
 
     This represents a tensor in three dimensions.
+
+    This class can only contain 2d (or 3d) scalar, vector, tensor on a manifold whose dimensions
+    are equal to the dimensions of the space. So, it cannot contain,
+    for example, a scalar field over a surface in 3d space.
 
     """
 
@@ -195,6 +200,7 @@ class DDSRegionWiseStructured(Frozen):
                         h.append(dh)
                     volume = np.prod(h)
                     region_values = val_dict[region_key]
+                    # noinspection PyTypeChecker
                     region_integral = np.sum((region_values ** 2) * volume)
                     component_integral += region_integral
                 INTEGRAL.append(component_integral ** 0.5)
@@ -225,8 +231,10 @@ class DDSRegionWiseStructured(Frozen):
 
         if plot_type == 'contourf':
             fig = contourf(x, y, v, magnitude=magnitude, saveto=saveto, **kwargs)
+
         elif plot_type == 'contour':
             fig = contour(x, y, v, magnitude=magnitude, saveto=saveto, **kwargs)
+
         else:
             raise Exception()
 
@@ -431,36 +439,91 @@ class DDSRegionWiseStructured(Frozen):
             return itp
 
     # ---------------- STREAM FUNCTION ---------------------------------------------------------------------------
-    def streamfunction(self, shift=0):
+    # noinspection PyUnusedLocal
+    def streamfunction(
+            self,
+            shift=0,
+            starting_coo_and_sf=None,   # for 2d vector, ([x, y], sf), means we set sf to be at (x, y).
+            sf_dict=None,
+            corner_pool=None,
+            sf_data_only=False
+    ):
         """"""
-        sf_dict = dict()
-        if self.classification == '2d vector':
-            X, Y = self._coo_dict_list
-            U, V = self._val_dict_list
-            starting_corner = None
-            starting_sf = None
+        if sf_dict is None:
+            sf_dict = dict()
+        else:
+            pass
+
+        if corner_pool is None:
             corner_pool = dict()
-            element_range = list(X.keys())
-            element_range.sort()
-            for e in element_range:
-                x, y = X[e], Y[e]
-                u, v = U[e], V[e]
-                if starting_corner is None and starting_sf is None:
-                    starting_corner, starting_sf = (0, 0), 0
+            if starting_coo_and_sf is None:
+                empty_corner_pool = True
+            else:
+                s_c00, s_sf = starting_coo_and_sf
+                if self.classification == '2d vector':
+                    # noinspection PyTypeChecker
+                    corner_pool['%.7f-%.7f' % (s_c00[0], s_c00[1])] = s_sf
                 else:
-                    starting_corner, starting_sf = self._renew_starting_point_(
-                        corner_pool, x, y
-                    )
-                element_sf = self._compute_sf_in_region_(
-                    x, y, u, v,
-                    starting_corner, starting_sf
-                )
-                corner_pool.update(
-                    self._find_corner_xy_sf_(x, y, element_sf)
-                )
-                sf_dict[e] = element_sf
+                    raise Exception()
+                empty_corner_pool = False
+        else:
+            empty_corner_pool = False
+
+        X, Y = self._coo_dict_list
+        U, V = self._val_dict_list
+        element_range = list(X.keys())
+        element_range.sort()
+
+        is_full = True
+        amount_done_regions = len(sf_dict)
+        if self.classification == '2d vector':
+            for e in element_range:
+                if e in sf_dict:
+                    pass
+                else:
+                    x, y = X[e], Y[e]
+                    if empty_corner_pool:
+                        found_starting_corner = True
+                        starting_corner, starting_sf = (0, 0), 0
+                        empty_corner_pool = False
+                    else:
+                        ___ = self._renew_starting_point_2d_(corner_pool, x, y)
+                        if ___ is None:
+                            found_starting_corner = False
+                        else:
+                            found_starting_corner = True
+                            starting_corner, starting_sf = ___
+
+                    if found_starting_corner:
+                        u, v = U[e], V[e]
+                        # noinspection PyUnboundLocalVariable
+                        element_sf = self._compute_sf_in_2d_region_(
+                            x, y, u, v,
+                            starting_corner, starting_sf
+                        )
+                        corner_pool.update(
+                            self._find_corner_xy_sf_(x, y, element_sf)
+                        )
+                        sf_dict[e] = element_sf
+
+                    else:
+                        is_full = False
         else:
             raise Exception(self.classification + 'has not streamfunction.')
+
+        # noinspection PyUnreachableCode
+        new_amount = len(sf_dict)
+        assert new_amount > amount_done_regions, \
+            f"The starting_coo_and_sf={starting_coo_and_sf} is wrong? it is not at a region corner."
+        if is_full:
+            pass
+        else:
+            sf_data = self.streamfunction(
+                shift=0,
+                sf_dict=sf_dict,
+                corner_pool=corner_pool,
+                sf_data_only=True
+            )
 
         if shift != 0:
             for e in sf_dict:
@@ -468,10 +531,13 @@ class DDSRegionWiseStructured(Frozen):
         else:
             pass
 
-        return self.__class__(self._coo_dict_list, [sf_dict, ])
+        if sf_data_only:
+            return sf_dict
+        else:
+            return self.__class__(self._coo_dict_list, [sf_dict, ])
 
     @staticmethod
-    def _renew_starting_point_(corner_pool, x, y):
+    def _renew_starting_point_2d_(corner_pool, x, y):
         """"""
         xm_ym = '%.7f-%.7f' % (x[0, 0], y[0, 0])
         if xm_ym in corner_pool:
@@ -489,6 +555,8 @@ class DDSRegionWiseStructured(Frozen):
         if xp_yp in corner_pool:
             return (-1, -1), corner_pool[xp_yp]
 
+        return None  # Cannot find a starting point for the region, do it for other regions first
+
     @staticmethod
     def _find_corner_xy_sf_(x, y, sf):
         """"""
@@ -500,7 +568,7 @@ class DDSRegionWiseStructured(Frozen):
         }
         return corner_sf_pool
 
-    def _compute_sf_in_region_(
+    def _compute_sf_in_2d_region_(
             self,
             x, y, u, v,
             starting_corner, starting_sf
@@ -508,7 +576,7 @@ class DDSRegionWiseStructured(Frozen):
         """"""
         sp0, sp1 = x.shape
         sf = np.ones_like(x)
-        if starting_corner == (0, 0):
+        if starting_corner == (0, 0):  # start with x-, y- corner
             sf[0, 0] = starting_sf
             for i in range(1, sp0):
                 sf_start = sf[i-1, 0]
@@ -581,8 +649,161 @@ class DDSRegionWiseStructured(Frozen):
 
             return sf
 
+        elif starting_corner == (-1, 0):  # start with x+, y- corner
+            sf[-1, 0] = starting_sf
+            for i in range(1, sp0)[::-1]:
+                sf_start = sf[i, 0]
+
+                sx, sy = x[i, 0], y[i, 0]
+                ex, ey = x[i-1, 0], y[i-1, 0]
+
+                dx = ex - sx
+                dy = ey - sy
+
+                su, sv = u[i, 0], v[i, 0]
+                eu, ev = u[i-1, 0], v[i-1, 0]
+
+                mu = (su + eu) / 2
+                mv = (sv + ev) / 2
+
+                d_sf_0 = mu * dy
+                d_sf_1 = - mv * dx
+
+                sf_end = sf_start + d_sf_0 + d_sf_1
+
+                sf[i-1, 0] = sf_end
+
+            # col [1:]
+            for j in range(1, sp1):
+                # node [j, 0]
+                sf_start = sf[0, j-1]
+
+                sx, sy = x[0, j-1], y[0, j-1]
+                ex, ey = x[0, j], y[0, j]
+
+                dx = ex - sx
+                dy = ey - sy
+
+                su, sv = u[0, j-1], v[0, j-1]
+                eu, ev = u[0, j], v[0, j]
+
+                mu = (su + eu) / 2
+                mv = (sv + ev) / 2
+
+                d_sf_0 = mu * dy
+                d_sf_1 = - mv * dx
+
+                sf_end = sf_start + d_sf_0 + d_sf_1
+
+                sf[0, j] = sf_end
+
+                # row [1:]
+                for i in range(1, sp0):
+                    sf_start = sf[i-1, j]
+
+                    sx, sy = x[i-1, j], y[i-1, j]
+                    ex, ey = x[i, j], y[i, j]
+
+                    dx = ex - sx
+                    dy = ey - sy
+
+                    su, sv = u[i-1, j], v[i-1, j]
+                    eu, ev = u[i, j], v[i, j]
+
+                    mu = (su + eu) / 2
+                    mv = (sv + ev) / 2
+
+                    d_sf_0 = mu * dy
+                    d_sf_1 = - mv * dx
+
+                    sf_end = sf_start + d_sf_0 + d_sf_1
+
+                    sf[i, j] = sf_end
+
+            return sf
+
+        elif starting_corner == (0, -1):  # start with x-, y+ corner
+            sf[0, -1] = starting_sf
+            for i in range(1, sp1)[::-1]:
+                sf_start = sf[0, i]
+
+                sx, sy = x[0, i], y[0, i]
+                ex, ey = x[0, i-1], y[0, i-1]
+
+                dx = ex - sx
+                dy = ey - sy
+
+                su, sv = u[0, i], v[0, i]
+                eu, ev = u[0, i-1], v[0, i-1]
+
+                mu = (su + eu) / 2
+                mv = (sv + ev) / 2
+
+                d_sf_0 = mu * dy
+                d_sf_1 = - mv * dx
+
+                sf_end = sf_start + d_sf_0 + d_sf_1
+
+                sf[0, i-1] = sf_end
+
+            return self._compute_sf_in_2d_region_(
+                x, y, u, v,
+                (0, 0), sf[0, 0]
+            )
+
+        elif starting_corner == (-1, -1):  # start with x+, y+ corner
+            sf[-1, -1] = starting_sf
+            for i in range(1, sp0)[::-1]:
+                sf_start = sf[i, -1]
+
+                sx, sy = x[i, -1], y[i, -1]
+                ex, ey = x[i - 1, -1], y[i - 1, -1]
+
+                dx = ex - sx
+                dy = ey - sy
+
+                su, sv = u[i, -1], v[i, -1]
+                eu, ev = u[i - 1, -1], v[i - 1, -1]
+
+                mu = (su + eu) / 2
+                mv = (sv + ev) / 2
+
+                d_sf_0 = mu * dy
+                d_sf_1 = - mv * dx
+
+                sf_end = sf_start + d_sf_0 + d_sf_1
+
+                sf[i - 1, 0] = sf_end
+
+            for i in range(1, sp1)[::-1]:
+                sf_start = sf[0, i]
+
+                sx, sy = x[0, i], y[0, i]
+                ex, ey = x[0, i - 1], y[0, i - 1]
+
+                dx = ex - sx
+                dy = ey - sy
+
+                su, sv = u[0, i], v[0, i]
+                eu, ev = u[0, i - 1], v[0, i - 1]
+
+                mu = (su + eu) / 2
+                mv = (sv + ev) / 2
+
+                d_sf_0 = mu * dy
+                d_sf_1 = - mv * dx
+
+                sf_end = sf_start + d_sf_0 + d_sf_1
+
+                sf[0, i - 1] = sf_end
+
+            return self._compute_sf_in_2d_region_(
+                x, y, u, v,
+                (0, 0), sf[0, 0]
+            )
+
         else:
-            raise NotImplementedError(starting_corner)
+            raise Exception(f"streamfunction calculation from corner: {starting_corner} is not programed")
 
 
 # ================================================================================================================

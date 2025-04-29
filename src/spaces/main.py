@@ -165,6 +165,7 @@ __all__ = [
     '_VarSetting_astA_x_astB__dp__tC',             # vector <*A x *B | @C>, AB are known
     '_VarSetting_astA_x_B__dp__tC',
     '_VarSetting_A_x_astB__dp__tC',
+    '_VarSetting_A_x_B__dp__C',                      # nonlinear
 
     '_VarSetting_astA_x_astB__ip__astC_x_tD',      # vector  (*A x *B, *C x @D), ABC known, D test.
     '_VarSetting_A_x_astB__ip__astC_x_tD',         # matrix  (A x *B, *C x @D), BC known, D test.
@@ -179,6 +180,7 @@ __all__ = [
     '_VarSetting_dA_B_tp_C__1Known',
     '_VarSetting_dA_B_tp_C__2Known',
     '_VarSetting_dA_B_tp_C',                       # nonlinear
+    '_VarSetting_AxB_ip_dC',                        # nonlinear
 
     '_VarSetting_A_B_tp_C__1Known',
     '_VarSetting_A_B_tp_C__2Known',
@@ -275,7 +277,7 @@ _VarSetting_A_x_astB_ip_tC = [
 ]
 
 _VarSetting_A_x_B_ip_C = [
-    r"\mathsf{X}",
+    r"\left(\mathsf{\cdot x\cdot},\cdot\right)",
     _sep.join(["_X_:", "[{A}]", "[{B}]", "[{C}]"]),
 ]
 
@@ -293,6 +295,11 @@ _VarSetting_astA_x_B__dp__tC = [   # <*A x B | @D>
 _VarSetting_A_x_astB__dp__tC = [   # <A x *B | @D>
     r"\mathsf{M}_{\left\langle\left. \circ \times {B} \right| \mathsf{t}\right\rangle}^{\left[\mathsf{t},\circ\right]}",
     _sep.join(["<Ax*|C>", "[{A}]", "[{B}]", "[{C}]"])
+]
+
+_VarSetting_A_x_B__dp__C = [
+    r"\left<\left.\mathsf{\cdot x\cdot}\right|\cdot\right>",
+    _sep.join(["_XD_:", "[{A}]", "[{B}]", "[{C}]"]),
 ]
 
 # --------------- (A x B, C x D) ----------------------------------------------------
@@ -348,6 +355,12 @@ _VarSetting_dA_B_tp_C = [  # A, B, C are different; # nonlinear
     _sep.join(["dA--B-tp-C", "[{A}]", "[{B}]", "[{C}]"]),
 ]
 
+# (AxB, dc): nonlinear --------------------------------------------
+
+_VarSetting_AxB_ip_dC = [  # A, B, C are different; # nonlinear
+    r"\left(\mathsf{\cdot x\cdot}, \mathsf{d}\cdot\right)",
+    _sep.join(["AxB_ip_dC", "[{A}]", "[{B}]", "[{C}]"]),
+]
 
 # (A, B otimes C) -------------------------------------------------------
 

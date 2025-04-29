@@ -671,6 +671,7 @@ class WeakFormulation(Frozen):
             f"I have {len(self)} equations but receive {len(unknowns)} unknowns."
 
         for i, unknown in enumerate(unknowns):
+            # noinspection PyUnresolvedReferences
             assert unknown.__class__.__name__ == 'Form' and unknown.is_root(), \
                 f"{i}th variable is not a root form."
             assert unknown in self._efs, f"{i}th variable is not an elementary form."

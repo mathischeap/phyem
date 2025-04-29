@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-r"""Save objects to region-wise structured data file.
+r"""Save objects to grouped region-wise structured data file.
 """
 from numpy import testing
 from src.config import RANK, MASTER_RANK

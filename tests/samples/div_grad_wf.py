@@ -145,6 +145,9 @@ def _outer_Poisson(n, degree):
             1: '1 = 0',
         }
     )
+
+    # wf.pr()
+
     wf = wf.derive.switch_sign(1)
     # wf.pr()
     ph.space.finite(degree)
@@ -205,6 +208,9 @@ def _inner_Poisson(n, degree):
             1: '1 = 0, 2',
         }
     )
+
+    # wf.pr()
+
     wf = wf.derive.switch_sign(1)
     # wf.pr()
     ph.space.finite(degree)

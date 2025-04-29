@@ -6,6 +6,8 @@ from src.wf.term.ap import TermNonLinearOperatorAlgebraicProxy
 
 from src.spaces.main import _sep
 from src.spaces.main import _VarSetting_A_x_B_ip_C
+from src.spaces.main import _VarSetting_A_x_B__dp__C
+from src.spaces.main import _VarSetting_AxB_ip_dC
 
 
 def nonlinear_operator_parser(noc_term, imp_base):
@@ -32,8 +34,12 @@ def nonlinear_operator_parser(noc_term, imp_base):
 
         if type_indicator == _VarSetting_A_x_B_ip_C[1].split(_sep)[0]:
             M, time_indicator, text = PARSER.__A_x_B_ip_C__(*info_indicators)
+        elif type_indicator == _VarSetting_A_x_B__dp__C[1].split(_sep)[0]:
+            M, time_indicator, text = PARSER.__A_x_B_dp_C__(*info_indicators)
+        elif type_indicator == _VarSetting_AxB_ip_dC[1].split(_sep)[0]:
+            M, time_indicator, text = PARSER.__A_x_B_ip_dC__(*info_indicators)
         else:
-            raise NotImplementedError()
+            raise NotImplementedError(f"type_indicator={type_indicator} not implemented.")
 
     else:
         raise NotImplementedError()

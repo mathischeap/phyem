@@ -40,4 +40,5 @@ class MseHttStaticForm_Boundary_Integrate(Frozen):
                     self._f, t, vc, boundary_section)
 
         else:
-            raise NotImplementedError(f"BI with_vc_over_boundary_section for {indicator} not implemented.")
+            raise NotImplementedError(
+                f"BI with_vc_over_boundary_section for {indicator} not implemented.")

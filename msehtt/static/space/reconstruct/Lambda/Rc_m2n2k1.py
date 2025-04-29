@@ -174,6 +174,7 @@ def ___rc221o_msepy_quadrilateral___(element, degree, local_cochain, xi, et, rav
     u = np.einsum('ij, i -> j', bfs[0], local_0, optimize='optimal')
     v = np.einsum('ij, i -> j', bfs[1], local_1, optimize='optimal')
 
+    # ---------- IMPLEMENTATION 1 -----------------------------------------------------
     iJ = element.ct.inverse_Jacobian_matrix(*xi_et)
     iJ0, iJ1 = iJ
     iJ00, iJ01 = iJ0
@@ -188,6 +189,18 @@ def ___rc221o_msepy_quadrilateral___(element, degree, local_cochain, xi, et, rav
         v1 = + v * iJ00
     else:
         v1 = - u * iJ10 + v * iJ00
+
+    # ---------- IMPLEMENTATION 2 -----------------------------------------------------
+    # iJ = element.ct.inverse_Jacobian(*xi_et)
+    # JM = element.ct.Jacobian_matrix(*xi_et)
+    #
+    # j0, j1 = JM
+    # j00, j01 = j0
+    # j10, j11 = j1
+    # v0 = iJ * (j00 * u + j01 * v)
+    # v1 = iJ * (j10 * u + j11 * v)
+
+    # ==================================================================================
 
     if ravel:
         pass

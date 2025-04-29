@@ -171,6 +171,7 @@ class _OneDimPolynomial(Frozen):
 
         """
         # compute distances between the nodes
+        # noinspection PyUnresolvedReferences
         xi_xj = nodes.reshape(p + 1, 1) - nodes.reshape(1, p + 1)
         # diagonals to one
         xi_xj[np.diag_indices(p + 1)] = 1
@@ -236,7 +237,7 @@ class _OneDimPolynomial(Frozen):
         bmi = np.min(basis)
         interval = bmx - bmi
         ylim = [bmi - interval * ylim_ratio, bmx + interval * ylim_ratio]
-        plt.figure(figsize=figsize)
+        fig = plt.figure(figsize=figsize)
         for basis_i in basis:
             plt.plot(x, basis_i, linewidth=1 * linewidth)
         for i in self.nodes:
@@ -266,15 +267,20 @@ class _OneDimPolynomial(Frozen):
         plt.tick_params(axis='both', which='both', labelsize=tick_size)
         plt.tick_params(axis='x', which='both', pad=tick_pad)
         # plt.legend(fontsize=legend_size, loc=legend_local, frameon=legend_frame)
-        plt.xlabel(r"$\xi$", fontsize=label_size)
+        plt.xlabel(r"$\lambda$", fontsize=label_size)
         if dual:
             plt.ylabel(r"$\widetilde{l}^{i}(\xi)$", fontsize=label_size)
         else:
-            plt.ylabel(r"$l^{i}(\xi)$", fontsize=label_size)
+            plt.ylabel(r"$l^{i}(\lambda)$", fontsize=label_size)
         if saveto is not None:
             plt.savefig(saveto, bbox_inches='tight')
-        from src.config import _setting
-        plt.show(block=_setting['block'])
+        else:
+            from src.config import _setting, _pr_cache
+            if _setting['pr_cache']:
+                _pr_cache(fig, filename='MsePyMeshVisualization')
+            else:
+                plt.tight_layout()
+                plt.show(block=_setting['block'])
 
     def plot_edge_basis(
         self, dual=False, plot_density=300, ylim_ratio=0.1,
@@ -321,7 +327,7 @@ class _OneDimPolynomial(Frozen):
         for i in range(self.p + 1):
             segnodes += (x.index(self.nodes[i]),)
         # _______ LET GET THE data 2 be plotted _________________________________________
-        basis = self.edge_basis(x)
+        basis = self.edge_basis(np.array(x))
         if dual:
             M = self.edge_reference_mass_matrix
             M = np.linalg.inv(M)
@@ -367,11 +373,11 @@ class _OneDimPolynomial(Frozen):
 
         # plt.legend(fontsize=legend_size, loc=legend_local, frameon=legend_frame)
 
-        plt.xlabel(r"$\xi$", fontsize=label_size)
+        plt.xlabel(r"$\lambda$", fontsize=label_size)
         if dual:
-            plt.ylabel(r"$\widetilde{e}^{i}(\xi)$", fontsize=label_size)
+            plt.ylabel(r"$\widetilde{e}^{i}(\lambda)$", fontsize=label_size)
         else:
-            plt.ylabel(r"$e^{i}(\xi)$", fontsize=label_size)
+            plt.ylabel(r"$e^{i}(\lambda)$", fontsize=label_size)
         # _______ fill between ...
         if fill_between is not None and not dual:  # fill_between is on and dual is False
             if isinstance(fill_between, int):
@@ -408,9 +414,17 @@ class _OneDimPolynomial(Frozen):
 
 if __name__ == "__main__":
     # python msepy/tools/polynomials.py
-    p1 = _OneDimPolynomial([-1, -0.5, 0, 0.5, 1])
+    nodes = Quadrature(4, category='Lobatto').quad_nodes
+    # print(nodes.__class__)
+    p1 = _OneDimPolynomial(np.array(nodes))
     p1.plot_lagrange_basis(  # plot_lagrange_basis
         dual=False,
         title=False,
         figsize=(6, 4), tick_size=20, label_size=20,  # fill_between=2,
+    )
+
+    p1.plot_edge_basis(
+        dual=False,
+        title=False,
+        figsize=(6, 4), tick_size=20, label_size=20,  fill_between=2,
     )

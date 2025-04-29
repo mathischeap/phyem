@@ -177,6 +177,8 @@ class _SimplePatternAPParser(Frozen):
                 return self._parse_reprs_A_x_astB_dp_C(test_form=test_form)
             elif sp == _simple_patterns['<*xB|C>']:
                 return self._parse_reprs_astA_x_B_dp_C(test_form=test_form)
+            elif sp == _simple_patterns['<AxB|C>']:
+                return self._parse_reprs_A_x_B_dp_C(test_form=test_form)
 
             elif sp == _simple_patterns['<*x*|d(C)>']:
                 return self._parse_reprs_astA_x_astB_dp_dC(test_form=test_form)
@@ -195,6 +197,8 @@ class _SimplePatternAPParser(Frozen):
                 return self._parse_reprs_A_x_astB_ip_dC(test_form=test_form)
             elif sp == _simple_patterns['(*x*,d)']:
                 return self._parse_reprs_astA_x_astB_ip_dC(test_form=test_form)
+            elif sp == _simple_patterns['(AxB,dC)']:
+                return self._parse_reprs_A_x_B_ip_dC(test_form=test_form)  # nonlinear pattern
 
             elif sp == _simple_patterns['(d0*,0*tp)']:  # vector
                 return self._parse_reprs_dastA_astA_tp_C(test_form=test_form)  #
@@ -636,6 +640,25 @@ class _SimplePatternAPParser(Frozen):
 
         return term, sign, 'linear'
 
+    def _parse_reprs_A_x_B_dp_C(self, test_form):
+        r"""<A x B | C> where A, B, and C are all unknown. So, this is a nonlinear term."""
+        spk = self._wft.___simple_pattern_keys___
+        A, B, C = spk['A'], spk['B'], spk['C']
+
+        assert test_form in (A, B, C)
+
+        multi_dimensional_array = _VarPar_A_x_B_dp_C(A, B, C)
+
+        term = self._wft._factor * TermNonLinearOperatorAlgebraicProxy(
+            multi_dimensional_array,
+            [A, B, C]
+        )
+        sign = '+'
+
+        term.set_test_form(test_form)
+
+        return term, sign, 'nonlinear'
+
     # ---- <A x B | d(C)> ----------------------------------------------------------------
     def _parse_reprs_astA_x_astB_dp_dC(self, test_form):
         """<*A x *B | d(@C)>"""
@@ -795,6 +818,28 @@ class _SimplePatternAPParser(Frozen):
         sign = '+'
 
         return term, sign, 'linear'
+
+    def _parse_reprs_A_x_B_ip_dC(self, test_form):
+        r""""""
+        spk = self._wft.___simple_pattern_keys___
+        A, B, C = spk['a'], spk['b'], spk['c']
+        dC = spk['dc']
+        new_intermediate_root_form = dC.space.make_random_form()
+        new_intermediate_root_form.degree = C.degree
+
+        assert test_form in (A, B, C)
+
+        multi_dimensional_array = _VarPar_AxB_ip_dC(A, B, C)
+
+        term = self._wft._factor * TermNonLinearOperatorAlgebraicProxy(
+            multi_dimensional_array,
+            [A, B, C]
+        )
+        sign = '+'
+
+        term.set_test_form(test_form)
+
+        return term, sign, 'nonlinear'
 
     # (dA, B tp C) --------------------------------------------------------------------------
     def _parse_reprs_dastA_astA_tp_C(self, test_form):

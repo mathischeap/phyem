@@ -3,7 +3,7 @@ r"""
 """
 from tools.frozen import Frozen
 from src.config import RANK, MASTER_RANK, COMM, SIZE
-
+import numpy as np
 import matplotlib.pyplot as plt
 import matplotlib
 plt.rcParams.update({
@@ -107,6 +107,21 @@ class MseHttGreatMeshVisualizeMatplot(Frozen):
                         data,
                         **kwargs
                     )
+
+        elif len(mn) == 1 and list(mn)[0] == (3, 3):  # all elements are 3d elements in 3d spaces.
+
+            if quality:
+                raise NotImplementedError(f'element-quality matplot for m3n3 mesh is not implemented')
+            else:
+                if rank_wise_colored:
+                    raise NotImplementedError(
+                        f'element distribution rank_wise_colored matplot for m3n3 mesh is not implemented')
+                else:
+                    return self._plot_3d_great_mesh_in_3d_space(
+                        data,
+                        **kwargs
+                    )
+
         else:
             raise NotImplementedError()
 
@@ -476,6 +491,96 @@ class MseHttGreatMeshVisualizeMatplot(Frozen):
                 color='black', style='normal',
                 ha='left', va='center', wrap=True
             )
+
+        # save -----------------------------------------------------------
+        if saveto is not None and saveto != '':
+            plt.savefig(saveto, bbox_inches='tight', pad_inches=pad_inches)
+        else:
+            from src.config import _setting, _pr_cache
+            if _setting['pr_cache']:
+                _pr_cache(fig, filename='msehtt_elements')
+            else:
+                plt.tight_layout()
+                plt.show(block=_setting['block'])
+
+    @classmethod
+    def _plot_3d_great_mesh_in_3d_space(
+            cls,
+            line_data,
+            figsize=(10, 6),
+            labelsize=12,
+            ticksize=12,
+            aspect='equal',
+            saveto=None,
+            linewidth=0.75,
+            color='k',
+            title=None,  # None or custom
+            data_only=False,
+            pad_inches=0,
+    ):
+        r""""""
+        fig = plt.figure(figsize=figsize)
+        ax = fig.add_subplot(111, projection='3d')
+        # make the panes transparent
+        ax.xaxis.set_pane_color((1.0, 1.0, 1.0, 0.0))
+        ax.yaxis.set_pane_color((1.0, 1.0, 1.0, 0.0))
+        ax.zaxis.set_pane_color((1.0, 1.0, 1.0, 0.0))
+        # make the grid lines transparent
+        ax.xaxis._axinfo["grid"]['color'] = (1, 1, 1, 0)
+        ax.yaxis._axinfo["grid"]['color'] = (1, 1, 1, 0)
+        ax.zaxis._axinfo["grid"]['color'] = (1, 1, 1, 0)
+        ax.tick_params(labelsize=ticksize)
+        ax.set_xlabel(r'$x$', fontsize=labelsize)
+        ax.set_ylabel(r'$y$', fontsize=labelsize)
+        ax.set_zlabel(r'$z$', fontsize=labelsize)
+        x_lim, y_lim, z_lim = [list() for _ in range(3)]
+
+        for i in line_data:  # element # i
+
+            lines = line_data[i]
+
+            for line_index in lines:
+                if line_index == 'mn':
+                    pass
+                elif line_index == 'center':
+                    pass
+                elif isinstance(line_index, str) and line_index[:13] == 'internal_line':
+                    # these are lines in elements.
+                    raise NotImplementedError()
+                else:
+                    # these are element outlines.
+                    line_xyz_coo = lines[line_index]
+                    x, y, z = line_xyz_coo
+                    plt.plot(x, y, z, linewidth=linewidth, color=color)
+                    x_lim.append(min(x))
+                    x_lim.append(max(x))
+                    y_lim.append(min(y))
+                    y_lim.append(max(y))
+                    z_lim.append(min(z))
+                    z_lim.append(max(z))
+
+        if aspect == 'equal':
+            x_lim = [min(x_lim), max(x_lim)]
+            y_lim = [min(y_lim), max(y_lim)]
+            z_lim = [min(z_lim), max(z_lim)]
+            ax.set_box_aspect((np.ptp(x_lim), np.ptp(y_lim), np.ptp(z_lim)))
+            pass
+        else:
+            pass
+
+        # deal with title -----------------------------------------------
+        if title is None:
+            title = r"the great mesh"
+            plt.title(title)
+        elif title is False:
+            pass
+        else:
+            plt.title(title)
+
+        if data_only:
+            return fig
+        else:
+            pass
 
         # save -----------------------------------------------------------
         if saveto is not None and saveto != '':
