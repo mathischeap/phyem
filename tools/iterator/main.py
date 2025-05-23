@@ -166,7 +166,7 @@ class Iterator(Frozen):
 
             if show_info:
                 if RANK == MASTER_RANK:
-                    print(f" ... leads to outputs: (cost %.3f) seconds\n" % t_cost)
+                    print(f" ... leads to outputs: (costs %.3f seconds)\n" % t_cost)
                     if not hasattr(results, '__iter__'):
                         print(f"  Results: {results}")
                     else:
@@ -244,7 +244,7 @@ class Iterator(Frozen):
             if time is None:    # default caching time: every about 3 hours
                 self.___cache_time___ = 10800
                 self.___first_cache_time___ = 300
-            elif time == np.inf:
+            elif time == np.inf:  # basically, no caching when time is infinite.
                 self.___cache_time___ = np.inf
                 self.___first_cache_time___ = np.inf
             else:
@@ -563,8 +563,14 @@ class Iterator(Frozen):
                     cache_waiting_time = now - self._cache_time_
                     # noinspection PyUnboundLocalVariable
                     if first_caching:
+                        if self.___first_cache_time___ > 100:
+                            required_report_times = 2
+                        elif self.___first_cache_time___ > 10:
+                            required_report_times = 1
+                        else:
+                            required_report_times = 0
                         do_cache = ((cache_waiting_time > self.___first_cache_time___)
-                                    and self.monitor._report_times >= 2)
+                                    and self.monitor._report_times >= required_report_times)
                         if do_cache:
                             first_caching = False
                         else:

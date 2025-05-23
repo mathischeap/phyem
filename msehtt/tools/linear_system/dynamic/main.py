@@ -178,7 +178,7 @@ class MseHttDynamicLinearSystem(Frozen):
     def pr(self, figsize=(10, 4)):
         """pr"""
         if RANK != MASTER_RANK:
-            return
+            return None
 
         from src.config import _setting, _pr_cache
         plt.rcParams.update({

@@ -9,6 +9,8 @@ from tools.frozen import Frozen
 from msehtt.static.form.numeric.tsp import MseHtt_Form_Numeric_TimeSpaceProperties
 from tools.dds.region_wise_structured import DDSRegionWiseStructured
 
+from tools._mpi import merge_list
+
 
 class MseHtt_Form_Numeric(Frozen):
     r""""""
@@ -17,7 +19,7 @@ class MseHtt_Form_Numeric(Frozen):
         r""""""
         self._f = f
         self._tsp = None
-        self._cache_key_ = id(self)
+        self._cache_key_ = ''
         self._cache_itp_ = None
         self._export = None
         self._freeze()
@@ -134,7 +136,7 @@ class MseHtt_Form_Numeric(Frozen):
         if data_only:
             pass
         else:
-            key = f"{t}{ddf}{component_wise}"
+            key = f"{t}={ddf}={component_wise}"
             if key == self._cache_key_:
                 return self._cache_itp_
             else:
@@ -173,10 +175,14 @@ class MseHtt_Form_Numeric(Frozen):
                 X.extend(x[e])
                 Y.extend(y[e])
                 V.extend(v[e])
+            X = np.array(X)
+            Y = np.array(Y)
+            V = np.array(V)
             if data_only:
                 return dtype, (X, Y), (V,)
             else:
-                interp = NearestNDInterpolator(list(zip(X, Y)), V)
+                coo = np.array([X, Y]).T
+                interp = NearestNDInterpolator(coo, V)
                 if component_wise:
                     self._cache_itp_ = ['2d-scalar', (interp, )]
                     # do not remove (.,) since it shows we are getting something representing a scalar.
@@ -194,6 +200,10 @@ class MseHtt_Form_Numeric(Frozen):
                 Y.extend(y[e])
                 U.extend(u[e])
                 V.extend(v[e])
+            X = np.array(X)
+            Y = np.array(Y)
+            U = np.array(U)
+            V = np.array(V)
             if data_only:
                 return dtype, (X, Y), (U, V)
             else:
@@ -217,10 +227,15 @@ class MseHtt_Form_Numeric(Frozen):
                 Y.extend(y[e])
                 Z.extend(z[e])
                 V.extend(v[e])
+            X = np.array(X)
+            Y = np.array(Y)
+            Z = np.array(Z)
+            V = np.array(V)
             if data_only:
                 return dtype, (X, Y, Z), (V,)
             else:
-                interp = NearestNDInterpolator(list(zip(X, Y, Z)), V)
+                coo = np.array([X, Y, Z]).T
+                interp = NearestNDInterpolator(coo, V)
                 if component_wise:
                     self._cache_itp_ = ['3d-scalar', (interp, )]
                     # do not remove (.,) since it shows we are getting something representing a scalar.
@@ -240,6 +255,12 @@ class MseHtt_Form_Numeric(Frozen):
                 U.extend(u[e])
                 V.extend(v[e])
                 W.extend(w[e])
+            X = np.array(X)
+            Y = np.array(Y)
+            Z = np.array(Z)
+            U = np.array(U)
+            V = np.array(V)
+            W = np.array(W)
             if data_only:
                 return dtype, (X, Y, Z), (U, V, W)
             else:
@@ -257,3 +278,38 @@ class MseHtt_Form_Numeric(Frozen):
             raise NotImplementedError()
 
         return self._cache_itp_
+
+    def _interpolate_global_(self, t=None, ddf=1, data_only=False, component_wise=False):
+        r"""Use the solution of self._f at time `t` to make interpolations.
+
+        Note that the output (itp or data) is only in the master rank; it returns None in slaves.
+
+        Parameters
+        ----------
+        t
+        ddf
+        data_only : bool
+            If True, we only return the interpolation results. Otherwise, we save the interpolation to cache.
+        component_wise
+
+        """
+        dtype, coo, value = self._interpolate_(t=t, ddf=ddf, data_only=True)
+        if dtype == '2d-scalar':
+            X, Y = coo
+            V = value[0]
+            X, Y, V = merge_list(X, Y, V)
+            if RANK == MASTER_RANK:
+                if data_only:
+                    return '2d-scalar', (X, Y), (V,)
+                else:
+                    coo = np.array([X, Y]).T
+                    itp = NearestNDInterpolator(coo, V)
+                    if component_wise:
+                        return '2d-scalar', (itp, )
+                    else:
+                        return '2d-scalar', itp
+            else:
+                return '2d-scalar', None
+
+        else:
+            raise NotImplementedError(f"_interpolate_global_ dtype = {dtype} not implemented.")

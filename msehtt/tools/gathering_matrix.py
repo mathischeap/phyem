@@ -272,9 +272,11 @@ class MseHttGatheringMatrix(Frozen):
                     sgm = self._gm
                     ogm = other._gm
                     if len(sgm) == len(ogm):
+                        # noinspection PyUnusedLocal
                         rank_true_or_false = True
                         for i in sgm:
                             if i not in ogm:
+                                # noinspection PyUnusedLocal
                                 rank_true_or_false = False
                                 break
                             else:
@@ -283,6 +285,7 @@ class MseHttGatheringMatrix(Frozen):
                                 if np.all(s_numbering == o_numbering):
                                     pass
                                 else:
+                                    # noinspection PyUnusedLocal
                                     rank_true_or_false = False
                                     break
                     else:
@@ -448,7 +451,7 @@ class MseHttGatheringMatrix(Frozen):
         return self._global_location_cache[i]
 
     def assemble(self, data, mode='replace'):
-        """Assemble a data structure in a _1d array."""
+        """Assemble a data structure into a _1d array."""
         if mode == 'replace':  # will return the same (complete) global vector in all ranks.
             # we first collect the data to master rank ------------------------
             DATA = COMM.gather(data, root=MASTER_RANK)

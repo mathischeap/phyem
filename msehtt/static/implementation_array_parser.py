@@ -23,8 +23,13 @@ _locals = locals()
 _indicator_templates = {}
 
 _setting_ = {
-    'base': dict()
+    'base': dict(),
+    '_cache_M_': {},
 }
+
+
+from msehtt.static.form.addons.nop_data_computer.trilinear_AxB_ip_C import AxB_ip_C
+from msehtt.static.form.addons.nop_data_computer.trilinear_AxB_dp_C import AxB_dp_C
 
 
 def _indicator_check():
@@ -93,16 +98,16 @@ def _find_from_bracket_ABC(default_repr, *ABC, key_words=("{A}", "{B}", "{C}")):
 
         assert found_root_form is not None, f"must have found root-for for {format_form}."
 
-        msepy_base_form = None
+        msehtt_base_form = None
         for _pure_lin_repr in all_forms:
             if _pure_lin_repr == found_root_form._pure_lin_repr:
-                msepy_base_form = all_forms[_pure_lin_repr]
+                msehtt_base_form = all_forms[_pure_lin_repr]
                 break
             else:
                 pass
 
-        assert msepy_base_form is not None, f"we must have found a msepy copy of the root-form."
-        ABC_forms.append(msepy_base_form)
+        assert msehtt_base_form is not None, f"we must have found a msepy copy of the root-form."
+        ABC_forms.append(msehtt_base_form)
 
     return ABC_forms
 
@@ -145,17 +150,14 @@ def _parse_root_form(root_form_vec_lin_repr):
     return dynamic_cochain_vec, rf.abstract.ap()._sym_repr, rf.cochain._ati_time_caller
 
 
-_cache_M_ = {}
-
-
 def Parse__M_matrix(space, degree0, degree1):
     """"""
     degree0 = _str_degree_parser(degree0)
     degree1 = _str_degree_parser(degree1)
     space = _find_space_through_pure_lin_repr(space)
-    key = (space, degree0, degree1)
-    if key in _cache_M_:
-        return _cache_M_[key]
+    key = (id(space), degree0, degree1)
+    if key in _setting_['_cache_M_']:
+        return _setting_['_cache_M_'][key]
     else:
         if degree0 == degree1:
             degree = degree0
@@ -172,7 +174,7 @@ def Parse__M_matrix(space, degree0, degree1):
         else:
             raise NotImplementedError()
 
-        _cache_M_[key] = RETURN
+        _setting_['_cache_M_'][key] = RETURN
         return RETURN
 
 
@@ -373,8 +375,6 @@ class _TrStarRf0DualPairingTrS1(Frozen):
 
 # - (A x B, C) ------------------------------------------------------------------------------------
 
-from msehtt.static.form.addons.nop_data_computer.trilinear_AxB_ip_C import AxB_ip_C
-
 
 def Parse__astA_x_astB_ip_tC(gA, gB, tC):
     """(*A X *B, C), A and B are given, C is the test form, so it gives a dynamic vector."""
@@ -401,8 +401,6 @@ def Parse__A_x_astB_ip_tC(A, gB, tC):
 
 
 # - (A x B | C) ------------------------------------------------------------------------------------
-
-from msehtt.static.form.addons.nop_data_computer.trilinear_AxB_dp_C import AxB_dp_C
 
 
 def Parse__astA_x_astB__dp__tC(gA, gB, tC):

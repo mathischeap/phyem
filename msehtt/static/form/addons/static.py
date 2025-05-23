@@ -65,12 +65,15 @@ class MseHttFormStaticCopy(Frozen):
         """Return the coboundary of self's cochain, it is a dict of local cochain vector."""
         return self.cochain.coboundary()
 
-    def reduce(self):
+    def reduce(self, cf=None):
         """"""
-        self.cochain = self._f.reduce(self.cf)
+        if cf is None:
+            self.cochain = self._f.reduce(self.cf)
+        else:
+            self.cochain = self._f.reduce(cf)
 
-    def reconstruct(self, *meshgrid, ravel=False):
-        return self._f.reconstruct(self.cochain, *meshgrid, ravel=ravel)
+    def reconstruct(self, *meshgrid, ravel=False, element_range=None):
+        return self._f.reconstruct(self.cochain, *meshgrid, ravel=ravel, element_range=element_range)
 
     @property
     def cf(self):
@@ -227,8 +230,13 @@ class ___MseHtt_Static_Form_Copy_Numeric___(Frozen):
     def dtype(self):
         return self._f.numeric.dtype
 
-    def interpolate(self, ddf=1, data_only=False, component_wise=False):
-        return self._f.numeric._interpolate_(self._t, ddf=ddf, data_only=data_only, component_wise=component_wise)
+    def interpolate(self, ddf=1, data_only=False, component_wise=False, rankwise=True):
+        if rankwise:
+            return self._f.numeric._interpolate_(self._t, ddf=ddf, data_only=data_only, component_wise=component_wise)
+        else:
+            return self._f.numeric._interpolate_global_(
+                self._t, ddf=ddf, data_only=data_only, component_wise=component_wise
+            )
 
     def value(self, *coo):
         r"""Find the value of the form at this coordinate."""

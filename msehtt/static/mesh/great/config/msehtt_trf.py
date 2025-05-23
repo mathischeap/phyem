@@ -149,7 +149,8 @@ def _refining_(base_mesh, rff, rft, rcm):
         for ele_ind in element_type_dict:
             etype = element_type_dict[ele_ind]
             assert etype in (9, 'unique curvilinear quad'), \
-                f"Can only based on a msehtt mesh of quad or unique curvilinear quad."
+                (f"Can only based on a msehtt mesh of quad or unique curvilinear quad. "
+                 f"Now 'etype'={etype}.")
         mn = (2, 2)
     else:
         raise NotImplementedError()
@@ -204,8 +205,43 @@ def _level_one_refining_m2n2_(base_mesh, rrf, rft0, rcm):
             else:
                 pass
 
+    elif rcm == 'middle':
+
+        for ele_ind in element_type_dict:
+            etype = element_type_dict[ele_ind]
+            para = element_parameter_dict[ele_ind]
+
+            if etype == 9:
+                v0, v1, v2, v3 = para
+                x0, y0 = v0
+                x1, y1 = v1
+                x2, y2 = v2
+                x3, y3 = v3
+
+                nodes = np.array([
+                    [x0, y0],
+                    [(x1+x0)/2, (y1+y0)/2],
+                    [x1, y1],
+                    [(x3+x0)/2, (y3+y0)/2],
+                    [(x0+x1+x2+x3)/4, (y0+y1+y2+y3)/4],
+                    [(x1+x2)/2, (y1+y2)/2],
+                    [x3, y3],
+                    [(x3+x2)/2, (y3+y2)/2],
+                    [x2, y2],
+                ])
+            else:
+                raise NotImplementedError()
+
+            values = rrf(nodes[:, 0], nodes[:, 1])
+            rfv = max(values)
+
+            if rfv >= rft0:
+                elements_2be_refined.append(ele_ind)
+            else:
+                pass
+
     else:
-        raise NotImplementedError()
+        raise NotImplementedError(rcm)
 
     return elements_2be_refined
 
@@ -326,9 +362,35 @@ def _level_high_refining_m2n2_(base_mesh, rff, rft_i, rcm, element_indices):
 
                         refine_checking_val = rff(*val_coo)
 
+                    elif rcm == 'middle':
+
+                        ref_center_coo = _parse_triangle_ref_mean_coo_(e)
+
+                        if etype == 9:
+                            val_coo = Vtu9Quad._find_mapping_(e_par, ref_center_coo[:, 0], ref_center_coo[:, 1])
+
+                        elif etype == 'unique curvilinear quad':
+                            val_coo = UniqueCurvilinearQuad._find_mapping_(
+                                e_par, ref_center_coo[:, 0], ref_center_coo[:, 1])
+
+                        else:
+                            raise Exception()
+                        refine_checking_val = rff(val_coo[0], val_coo[1])
+                        refine_checking_val = max(refine_checking_val)
+
                     else:
                         raise NotImplementedError(f"_level_high_refining_ not implemented for rcm={rcm}.")
 
+                    # --- check `refine_checking_val` ---------------------------------------------------------------
+                    if isinstance(refine_checking_val, (list, tuple)):
+                        assert len(refine_checking_val) == 1 and isinstance(refine_checking_val[0], (int, float)), \
+                            f"refine_checking_val={refine_checking_val} can be a list or tuple of one number!"
+                        refine_checking_val = refine_checking_val[0]
+                    else:
+                        assert isinstance(refine_checking_val, (int, float)), \
+                            f"refine_checking_val={refine_checking_val} must be a number"
+
+                    # ---------------------------------------------------------------------------------------------
                     if refine_checking_val >= rft_i:
                         if e in refined_able_pairs:
                             elements_2be_refined.append(e)
@@ -367,7 +429,7 @@ def _find_refined_able_pairs_m2n2_(base_mesh, element_indices):
             else:
                 boundary_map[ei] = [fid]
 
-        # noinspection PyTypedDict
+        # noinspection PyTypedDict,PyTypeChecker
         ___a_cache___['boundary_faces'] = boundary_map
 
     else:
@@ -706,6 +768,37 @@ def _parse_triangle_ref_center_coo_(triangle_element_indicator):
     center = (bx + dx / 3, by + dy / 3)
     _msehtt_trf_cache_ref_center_of_triangle_[position_indicators] = center
     return center
+
+
+def _parse_triangle_ref_mean_coo_(triangle_element_indicator):
+    r"""
+
+    Parameters
+    ----------
+    triangle_element_indicator :
+        For example,
+            (220, 'S') means the triangle (vtu-5) attached to `South` edge of msepy element #220.
+            (220, 'S', 0) means the triangle attached to edge #0 of element (220, 'S').
+
+    Returns
+    -------
+
+    """
+    X, Y = _parse_ref_vortices_of_triangle_element_(triangle_element_indicator)
+    x0, x1, x2 = X
+    y0, y1, y2 = Y
+    bx, by = (x1 + x2) / 2, (y1 + y2) / 2
+    dx = x0 - bx
+    dy = y0 - by
+    center = (bx + dx / 3, by + dy / 3)
+    bottom = (bx, by)
+    left = (x0 + x1) / 2, (y0 + y1) / 2
+    right = (x0 + x2) / 2, (y0 + y2) / 2
+    V0 = (x0, y0)
+    V1 = (x1, y1)
+    V2 = (x2, y2)
+    coo = np.array([V0, V1, V2, center, bottom, left, right])
+    return coo
 
 
 def ___parse_TCTinUQ___(uq_mapping_JM, vortices_xi, vortices_et):

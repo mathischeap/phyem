@@ -68,7 +68,7 @@ class MseHttGreatMeshVisualizeMatplot(Frozen):
                 mesh_data_Lines = COMM.gather(mesh_data_Lines, root=MASTER_RANK)
 
         if RANK != MASTER_RANK:
-            return
+            return None
         else:
             pass
 
@@ -90,7 +90,7 @@ class MseHttGreatMeshVisualizeMatplot(Frozen):
                 for _ in all_elements_quality_data:
                     qd.update(_)
 
-                self._plot_2d_great_mesh_in_2d_space_quality_(
+                return self._plot_2d_great_mesh_in_2d_space_quality_(
                     data, qd, **kwargs
                 )
 
@@ -235,18 +235,18 @@ class MseHttGreatMeshVisualizeMatplot(Frozen):
         if data_only:
             return fig
         else:
-            pass
-
-        # save -----------------------------------------------------------
-        if saveto is not None and saveto != '':
-            plt.savefig(saveto, bbox_inches='tight', pad_inches=pad_inches)
-        else:
-            from src.config import _setting, _pr_cache
-            if _setting['pr_cache']:
-                _pr_cache(fig, filename='msehtt_elements')
+            # save -----------------------------------------------------------
+            if saveto is not None and saveto != '':
+                plt.savefig(saveto, bbox_inches='tight', pad_inches=pad_inches)
             else:
-                plt.tight_layout()
-                plt.show(block=_setting['block'])
+                from src.config import _setting, _pr_cache
+                if _setting['pr_cache']:
+                    _pr_cache(fig, filename='msehtt_elements')
+                else:
+                    plt.tight_layout()
+                    plt.show(block=_setting['block'])
+            plt.close()
+            return None
 
     @classmethod
     def _plot_2d_great_mesh_in_2d_space_quality_(
@@ -334,18 +334,19 @@ class MseHttGreatMeshVisualizeMatplot(Frozen):
         if data_only:
             return fig
         else:
-            pass
 
-        # save -----------------------------------------------------------
-        if saveto is not None and saveto != '':
-            plt.savefig(saveto, bbox_inches='tight', pad_inches=pad_inches)
-        else:
-            from src.config import _setting, _pr_cache
-            if _setting['pr_cache']:
-                _pr_cache(fig, filename='msehtt_elements')
+            # save -----------------------------------------------------------
+            if saveto is not None and saveto != '':
+                plt.savefig(saveto, bbox_inches='tight', pad_inches=pad_inches)
             else:
-                plt.tight_layout()
-                plt.show(block=_setting['block'])
+                from src.config import _setting, _pr_cache
+                if _setting['pr_cache']:
+                    _pr_cache(fig, filename='msehtt_elements')
+                else:
+                    plt.tight_layout()
+                    plt.show(block=_setting['block'])
+            plt.close()
+            return None
 
     @classmethod
     def _plot_2d_great_mesh_in_2d_space_rank_wise(
@@ -470,38 +471,39 @@ class MseHttGreatMeshVisualizeMatplot(Frozen):
         if data_only:
             return fig
         else:
-            pass
+            # -------- plot rank-legend --------------------------------------
 
-        # -------- plot rank-legend --------------------------------------
+            ax = AX[1]
+            ax.set_aspect('equal')
+            ax.axes.get_xaxis().set_visible(False)
+            ax.axes.get_yaxis().set_visible(False)
+            ax.spines['bottom'].set_visible(False)
+            ax.spines['top'].set_visible(False)
+            ax.spines['left'].set_visible(False)
+            ax.spines['right'].set_visible(False)
 
-        ax = AX[1]
-        ax.set_aspect('equal')
-        ax.axes.get_xaxis().set_visible(False)
-        ax.axes.get_yaxis().set_visible(False)
-        ax.spines['bottom'].set_visible(False)
-        ax.spines['top'].set_visible(False)
-        ax.spines['left'].set_visible(False)
-        ax.spines['right'].set_visible(False)
+            for rank in range(SIZE):
+                color = colors(rank)
+                ax.fill([0, 1, 1, 0, 0], [rank, rank, rank+0.5, rank+0.5, rank], color=color)
+                ax.text(
+                    1.25, rank+0.25, f'{rank}',
+                    color='black', style='normal',
+                    ha='left', va='center', wrap=True
+                )
 
-        for rank in range(SIZE):
-            color = colors(rank)
-            ax.fill([0, 1, 1, 0, 0], [rank, rank, rank+0.5, rank+0.5, rank], color=color)
-            ax.text(
-                1.25, rank+0.25, f'{rank}',
-                color='black', style='normal',
-                ha='left', va='center', wrap=True
-            )
-
-        # save -----------------------------------------------------------
-        if saveto is not None and saveto != '':
-            plt.savefig(saveto, bbox_inches='tight', pad_inches=pad_inches)
-        else:
-            from src.config import _setting, _pr_cache
-            if _setting['pr_cache']:
-                _pr_cache(fig, filename='msehtt_elements')
+            # save -----------------------------------------------------------
+            if saveto is not None and saveto != '':
+                plt.savefig(saveto, bbox_inches='tight', pad_inches=pad_inches)
             else:
-                plt.tight_layout()
-                plt.show(block=_setting['block'])
+                from src.config import _setting, _pr_cache
+                if _setting['pr_cache']:
+                    _pr_cache(fig, filename='msehtt_elements')
+                else:
+                    plt.tight_layout()
+                    plt.show(block=_setting['block'])
+            plt.close()
+
+            return None
 
     @classmethod
     def _plot_3d_great_mesh_in_3d_space(
@@ -580,15 +582,17 @@ class MseHttGreatMeshVisualizeMatplot(Frozen):
         if data_only:
             return fig
         else:
-            pass
 
-        # save -----------------------------------------------------------
-        if saveto is not None and saveto != '':
-            plt.savefig(saveto, bbox_inches='tight', pad_inches=pad_inches)
-        else:
-            from src.config import _setting, _pr_cache
-            if _setting['pr_cache']:
-                _pr_cache(fig, filename='msehtt_elements')
+            # save -----------------------------------------------------------
+            if saveto is not None and saveto != '':
+                plt.savefig(saveto, bbox_inches='tight', pad_inches=pad_inches)
             else:
-                plt.tight_layout()
-                plt.show(block=_setting['block'])
+                from src.config import _setting, _pr_cache
+                if _setting['pr_cache']:
+                    _pr_cache(fig, filename='msehtt_elements')
+                else:
+                    plt.tight_layout()
+                    plt.show(block=_setting['block'])
+            plt.close()
+
+            return None

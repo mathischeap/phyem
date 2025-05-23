@@ -7,12 +7,18 @@ from tools.quadrature import quadrature
 
 # ----------------- INNER ---------------------------------------------------------------------------------
 
-def reduce_Lambda__m3n3k1(cf_t, tpm, degree):
+def reduce_Lambda__m3n3k1(cf_t, tpm, degree, element_range=None):
     """Reduce target at time `t` to m2n2k1 outer space of degree ``degree`` on partial mesh ``tpm``."""
 
     elements = tpm.composition
     cochain = {}
-    for e in elements:
+
+    if element_range is None:
+        ELEMENT_RANGE = elements
+    else:
+        ELEMENT_RANGE = element_range
+
+    for e in ELEMENT_RANGE:
         element = elements[e]
         etype = element.etype
         if etype in ("orthogonal hexahedron", ):

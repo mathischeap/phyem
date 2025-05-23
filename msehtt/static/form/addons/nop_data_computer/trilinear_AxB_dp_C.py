@@ -23,3 +23,10 @@ class AxB_dp_C(AxB_ip_C):
             _3d_data = self._generate_data_()
             self._3d_data = _3d_data
             _cache_AxB_dp_C_3d_data_[self._cache_key] = _3d_data
+
+    @classmethod
+    def clean_cache(cls):
+        r""""""
+        keys = list(_cache_AxB_dp_C_3d_data_.keys())
+        for key in keys:
+            del _cache_AxB_dp_C_3d_data_[key]

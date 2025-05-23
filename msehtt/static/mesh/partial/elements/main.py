@@ -34,10 +34,13 @@ class MseHttElementsPartialMesh(Frozen):
 
         self._freeze()
 
-    def info(self):
+    def info(self, additional_info=''):
         """info self."""
-        print(f"msehtt-partial-elements > {self._tpm.abstract._sym_repr}: "
-              f"{self._num_global_elements} elements > distributed in {SIZE} ranks.")
+        print(
+            f"{additional_info}"
+            f"msehtt-partial-elements {self._tpm.abstract._sym_repr}: "
+            f"{self._num_global_elements} elements"
+        )
 
     @property
     def ___is_msehtt_partial_elements_mesh___(self):

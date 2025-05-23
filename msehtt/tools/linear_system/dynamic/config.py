@@ -29,7 +29,7 @@ class MseHttDynamicLinearSystem_Config(Frozen):
         else:
             raise NotImplementedError()
 
-    def _conf__natural_bc___1_(self, place, condition, root_form):
+    def _conf__natural_bc___1_(self, place, condition, root_form=None):
         r""""""
         self._configurations.append(
             {
@@ -41,7 +41,7 @@ class MseHttDynamicLinearSystem_Config(Frozen):
             }
         )
 
-    def _config__essential_bc___1_(self, place, condition, root_form):
+    def _config__essential_bc___1_(self, place, condition, root_form=None):
         r""""""
         self._configurations.append(
             {

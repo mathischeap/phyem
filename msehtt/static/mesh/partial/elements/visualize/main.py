@@ -19,7 +19,7 @@ class MseHttElementsPartialMeshVisualize(Frozen):
         r""""""
         mn = self._elements.mn
         if mn == (3, 3):
-            ___vtk_m3n3_partial_mesh_elements___(self._elements, *args, **kwargs)
+            return ___vtk_m3n3_partial_mesh_elements___(self._elements, *args, **kwargs)
         else:
             return self.matplot(*args, **kwargs)
 

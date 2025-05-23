@@ -3,6 +3,7 @@ r"""
 """
 from tools.frozen import Frozen
 from msehtt.static.mesh.great.visualize.matplot import MseHttGreatMeshVisualizeMatplot
+from msehtt.static.mesh.great.visualize.ts import MseHttGreatMeshVisualize_TS_Hierarchy
 
 
 class MseHttGreatMeshVisualize(Frozen):
@@ -12,6 +13,7 @@ class MseHttGreatMeshVisualize(Frozen):
         r""""""
         self._tgm = tgm
         self._matplot = None
+        self._ts_ = None
         self._freeze()
 
     def __call__(self, *args, **kwargs):
@@ -24,6 +26,13 @@ class MseHttGreatMeshVisualize(Frozen):
         if self._matplot is None:
             self._matplot = MseHttGreatMeshVisualizeMatplot(self._tgm)
         return self._matplot
+
+    @property
+    def ts(self):
+        r"""To plot the hierarchy of ts meshing!"""
+        if self._ts_ is None:
+            self._ts_ = MseHttGreatMeshVisualize_TS_Hierarchy(self._tgm)
+        return self._ts_
 
     def _generate_element_outline_data(self, ddf=1, internal_grid=0):
         r""""""

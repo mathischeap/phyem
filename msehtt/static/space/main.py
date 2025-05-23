@@ -17,19 +17,11 @@ from msehtt.static.space.reconstruct_on_element_face.main import MseHttSpace_RCo
 from msehtt.static.space.inner_product.main import MseHttSpace_InnerProduct
 
 
-___global_IMPLEMENTATION_spaces___ = {}   # the space made in the implementation; no abstract space dependent.
-
-
 def _distribute_IMPLEMENTATION_space(indicator, m, n, **kwargs):
     r""""""
-    cache_key = f"i{indicator}-m{m}-n{n}=KWARGS{kwargs}"
-    if cache_key in ___global_IMPLEMENTATION_spaces___:
-        return ___global_IMPLEMENTATION_spaces___[cache_key]
-    else:
-        new_IMPLEMENTATION_abstract_space = _IMPLEMENTATION_AbstractSpace_(indicator, m, n, **kwargs)
-        new_IMPLEMENTATION_space = MseHttSpace(new_IMPLEMENTATION_abstract_space)
-        ___global_IMPLEMENTATION_spaces___[cache_key] = new_IMPLEMENTATION_space
-        return new_IMPLEMENTATION_space
+    new_IMPLEMENTATION_abstract_space = _IMPLEMENTATION_AbstractSpace_(indicator, m, n, **kwargs)
+    new_IMPLEMENTATION_space = MseHttSpace(new_IMPLEMENTATION_abstract_space)
+    return new_IMPLEMENTATION_space
 
 
 class _IMPLEMENTATION_AbstractSpace_(Frozen):

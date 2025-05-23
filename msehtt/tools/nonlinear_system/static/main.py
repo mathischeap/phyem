@@ -225,13 +225,13 @@ class MseHttStaticNonLinearSystem(Frozen):
     def pr(self):
         """"""
         if RANK != MASTER_RANK:
-            return
+            return None
         else:
             pass
 
         if self._pr_texts is None:
             print('No texts to print.')
-            return
+            return None
 
         plt.rcParams.update({
             "text.usetex": True,

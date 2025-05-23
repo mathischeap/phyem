@@ -338,6 +338,9 @@ def _parse_type_and_pure_lin_repr(lin_repr):
         lk = len(key)
         if lin_repr[:lk] == key:
             return what, lin_repr[lk:-1]
+        else:
+            pass
+    return None
 
 
 _manifold_default_sym_repr = r'\mathcal{M}'
@@ -393,6 +396,7 @@ _global_operator_lin_repr_setting = {  # coded operators
     'multiply': r' \emph{multiply} ',
 
     'cross_product': r"$\times$",
+    'Cross_Product': r"-$\mathsf{X}$-",
     'convect': r"$\cdot\nabla$",
     'tensor_product': r"$\otimes$",
 
@@ -415,6 +419,7 @@ _global_operator_sym_repr_setting = {  # coded operators
     'division': [r'\frac{', r'}{', r"}"],
 
     'cross_product': r"{\times}",
+    'Cross_Product': r"{\mathsf{X}}",
     'tensor_product': r"{\otimes}",
     'convect': r"{\cdot\nabla}",
 

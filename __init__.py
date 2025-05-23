@@ -58,6 +58,7 @@ __all__ = [
     'print_cache_log',   # to print a ph-cache file.
     'php',   # ph print
     'pk',    # a pickle wrapper for phyem
+    'ws',    # write source code to
 
     'geometries',
 
@@ -123,27 +124,33 @@ from tools.vtk_.main import vtk
 from tools.dds.saving_api import _rws_grouped_saving as rws
 
 
+def ws(file_dir, write_dir, source='source'):
+    r""""""
+    assert file_dir is not None and write_dir is not None, f"provide both file and and write dir"
+    if config.RANK == config.MASTER_RANK:
+        with open(file_dir, 'r') as file:
+            source_code = file.read()
+        file.close()
+        with open(write_dir + rf"\{source}.py", 'w') as file:
+            file.write(source_code)
+        file.close()
+
+    else:
+        pass
+
+
 ___exist_signature___ = 'phyem exist 0'
 
 
-def exist(file_dir=None, write_dir=None):
+def exist(file_dir=None, write_dir=None, source='source'):
     """"""
     if file_dir is None and write_dir is None:
         pass
     else:
         # when provided `file_dir` and `write_dir`,
-        # we write the source code in file `file_dir` to `write_dir/source.py`
+        # we write the source code in file `file_dir` to `write_dir/{source}.py`
         assert file_dir is not None and write_dir is not None, f"provide both file and and write dir"
-        if config.RANK == config.MASTER_RANK:
-            with open(file_dir, 'r') as file:
-                source_code = file.read()
-            file.close()
-            with open(write_dir + r"\source.py", 'w') as file:
-                file.write(source_code)
-            file.close()
-
-        else:
-            pass
+        ws(file_dir, write_dir, source=source)
 
     print(f"RANK#{config.RANK} ends smoothly.", flush=True)
     config.COMM.barrier()

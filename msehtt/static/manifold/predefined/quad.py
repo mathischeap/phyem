@@ -8,8 +8,31 @@ from src.config import RANK, MASTER_RANK
 from msehtt.static.manifold.predefined.chaotic import ___invA___
 
 
-def quad(A=(0, 0), B=(1, 0), C=(2, 1), D=(1, 1)):
-    r"""Mainly for test purpose."""
+def quad(A=(0, 0), B=(1, 0), C=(2, 1), D=(1, 1), periodic=False):
+    r"""
+
+    The numbering of region nodes in the reference region.
+
+          ^ s
+          |
+          |
+          |  node 3        face 2         node 2
+          |     -----------------------------
+          |     |                           |
+          |     |                           |
+          |     |                           |
+          |     | face 3                    | face 1
+          |     |                           |
+          |     |                           |
+          |     |                           |
+          |     |                           |
+          |     -----------------------------
+          |   node 0         face 0       node 1
+          |
+          |
+          ------------------------------------------> r
+
+        """
     assert RANK == MASTER_RANK, f"only initialize quad mesh in the master rank"
 
     REGIONS = {
@@ -17,7 +40,10 @@ def quad(A=(0, 0), B=(1, 0), C=(2, 1), D=(1, 1)):
     }
 
     region_map = None        # the config method will parse the region map.
-    periodic_setting = None
+    if periodic:
+        raise Exception(f'Quad region cannot be periodic. Use chaotic.')
+    else:
+        periodic_setting = None
 
     return REGIONS, region_map, periodic_setting
 

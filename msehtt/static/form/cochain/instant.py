@@ -87,6 +87,10 @@ class MseHttTimeInstantCochain(Frozen):
         """Check whether element indexed ``e`` is a rank element."""
         return e in self._gm
 
+    def __len__(self):
+        r"""How many local elements?"""
+        return len(self._gm)
+
     def components(self, e):
         """Return component wise of cochain in element e."""
         indicator = self._f.space.str_indicator
@@ -170,11 +174,15 @@ class MseHttTimeInstantCochain(Frozen):
         else:
             cochain = None
         cochain = COMM.allgather(cochain)
+        _to_return_ = None
         for ch in cochain:
             if ch is not None:
-                return ch
+                _to_return_ = ch
+                break
             else:
                 pass
+        assert _to_return_ is not None, f"Must have found the local dof!"
+        return _to_return_
 
     def _merge_to(self, root=MASTER_RANK):
         r""""""
@@ -234,3 +242,16 @@ class MseHttTimeInstantCochain(Frozen):
             return MseHttStaticLocalVector(data_dict, self._gm)
         else:
             raise NotImplementedError()
+
+    def homogenous(self):
+        r""""""
+        cochain_dict = {}
+        for e in self:
+            cochain_dict[e] = self[e]
+        _1d_vec = self._gm.assemble(cochain_dict)
+
+        homogenous_local_dict = {}
+        for e in self:
+            homogenous_local_dict[e] = _1d_vec[self._gm[e]]
+
+        self._receive(homogenous_local_dict)

@@ -83,6 +83,8 @@ def tensor_product(s1, s2):
     else:
         raise NotImplementedError()
 
+    return None
+
 
 def convect(s1, s2):
     """s1.dot(grad(s2))."""
@@ -101,6 +103,8 @@ def convect(s1, s2):
                 raise NotImplementedError()
         else:
             raise NotImplementedError()
+
+    return None
 
 
 def cross_product(s1, s2):
@@ -153,11 +157,40 @@ def cross_product(s1, s2):
                 return new('Lambda', 1, mesh=s1.mesh, orientation='inner')
             elif (k1 == 2 and o1 == 'outer') and (k2 == 1 and o2 == 'inner'):
                 return new('Lambda', 2, mesh=s1.mesh, orientation='inner')
+            elif (k1 == 2 and o1 == 'outer') and (k2 == 2 and o2 == 'outer'):
+                return new('Lambda', 1, mesh=s1.mesh, orientation='outer')
             else:
                 raise NotImplementedError(f"{o1}-{k1} cross-product {o2}-{k2}")
 
     else:
         raise NotImplementedError()
+    return None
+
+
+def Cross_Product(s1, s2):
+    r""""""
+    from src.spaces.continuous.Lambda import ScalarValuedFormSpace
+
+    if s1.__class__ is ScalarValuedFormSpace and s2.__class__ is ScalarValuedFormSpace:
+
+        assert s1.mesh == s2.mesh, f"two entries have different meshes."
+
+        m, n = s1.mesh.m, s1.mesh.n
+
+        if m == n == 3:
+            k1 = s1.k
+            k2 = s2.k
+            o1 = s1.orientation
+            o2 = s2.orientation
+            if (k1 == 1 and o1 == 'outer') and (k2 == 2 and o2 == 'outer'):
+                return new('Lambda', 1, mesh=s1.mesh, orientation='outer')
+            else:
+                raise NotImplementedError(f"{o1}-{k1} Cross-Product {o2}-{k2}")
+
+    else:
+        raise NotImplementedError()
+
+    return None
 
 
 def Hodge(space):

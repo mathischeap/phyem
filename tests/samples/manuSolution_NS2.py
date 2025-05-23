@@ -1,7 +1,5 @@
 # -*- coding: utf-8 -*-
-"""
-Manufactured solutions for 2d NS.
-
+"""Manufactured solutions for 2d NS.
 """
 import sys
 
@@ -83,3 +81,4 @@ if __name__ == '__main__':
     # python tests/samples/manuSolution_NS2.py
     ic = ManufacturedSolutionNS2TGV(Re=np.inf)
     ic.omega.visualize([0, 2], 0)
+    ic.f.visualize([0, 2], 0)

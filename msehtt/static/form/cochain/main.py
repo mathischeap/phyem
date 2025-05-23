@@ -39,6 +39,16 @@ class MseHttCochain(Frozen):
         else:
             return rf._base.cochain._newest_t
 
+    @property
+    def times(self):
+        r"""return all cochain times."""
+        if self._f._is_base():
+            times = list(self._tcd.keys())
+            times.sort()
+            return times
+        else:
+            return self._f._base.cochain.times
+
     def _set(self, t, cochain):
         """add to cochain at `t` to be cochain."""
         rf = self._f
@@ -50,7 +60,7 @@ class MseHttCochain(Frozen):
                 pass
             else:
                 if auto_cleaning is True:
-                    left_cochain_amount = 3
+                    left_cochain_amount = 2
                 elif isinstance(auto_cleaning, (int, float)):
                     left_cochain_amount = auto_cleaning
                 else:
@@ -58,12 +68,12 @@ class MseHttCochain(Frozen):
                 left_cochain_amount = int(left_cochain_amount)
                 assert left_cochain_amount >= 2, f"auto_cleaning must left more than one cochains."
 
-                if len(self) > 2 * left_cochain_amount:
-                    self.clean(- left_cochain_amount)
+                if len(self) >= left_cochain_amount:
+                    self.clean(-left_cochain_amount+1)
+                    assert len(self) == left_cochain_amount - 1, f'must be!'
                 else:
                     pass
 
-                assert len(self) <= 2 * left_cochain_amount, f'must be!'
             # =================================================================================
             t = self._parse_t(t)
             _cochain_at_time = MseHttTimeInstantCochain(self._f, t)

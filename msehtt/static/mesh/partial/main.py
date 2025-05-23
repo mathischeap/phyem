@@ -29,14 +29,14 @@ class MseHttMeshPartial(Frozen):
         self._composition = None
         self._freeze()
 
-    def info(self):
+    def info(self, additional_info=''):
         """info self."""
         try:
             composition = self.composition
         except EmptyCompositionError:
             print(f"Mesh not-configured: {self.abstract._sym_repr}.")
         else:
-            composition.info()
+            composition.info(additional_info=additional_info)
 
     @property
     def ___is_msehtt_partial_mesh___(self):
@@ -102,6 +102,11 @@ class MseHttMeshPartial(Frozen):
         assert self._composition is None, f"components are not set!"
         self._tgm = tgm
 
+        if including.__class__.__name__ == 'MseHtt_Adaptive_TopMesh':
+            including = including.current
+        else:
+            pass
+
         if including == 'all':
             # CONFIGURATION 1: -----------------------------------------------------------
             # this partial mesh includes all elements of the great mesh.
@@ -130,6 +135,14 @@ class MseHttMeshPartial(Frozen):
                 raise NotImplementedError()
 
         elif isinstance(including, dict):
+
+            for key in including:
+                value = including[key]
+                if value.__class__.__name__ == "MseHtt_Adaptive_TopMesh":
+                    including[key] = value.current
+                else:
+                    pass
+
             keys = set(including.keys())
             if keys == {'type', 'partial elements', 'ounv'} and including['type'] in ___bs___:
                 # CONFIGURATION 3: ----------------------------------------------------------
@@ -357,7 +370,7 @@ class MseHttMeshPartial(Frozen):
                 raise Exception(f"Parse no configuration from {including}.")
 
         else:
-            raise NotImplementedError()
+            raise NotImplementedError(including)
 
         self._perform_configuration(including, CONFIGURATION)
 

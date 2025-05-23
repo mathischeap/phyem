@@ -127,14 +127,14 @@ def _parse_obj(implementation, obj):
         if obj._sym_repr in implementation.base['spaces']:
             return implementation.base['spaces'][obj._sym_repr]
         else:
-            pass  # for those spaces have no particular counterparts, we simply skip them.
+            return None  # for those spaces have no particular counterparts, we simply skip them.
     elif obj.__class__ is Form:
         if obj.is_root():
             if obj._pure_lin_repr in implementation.base['forms']:
                 return implementation.base['forms'][obj._pure_lin_repr]
             else:
-                pass  # for those spaces have no particular counterparts, we simply skip them.
+                return None  # for those spaces have no particular counterparts, we simply skip them.
         else:
-            pass  # non-root-form has no counterpart.
+            return None  # non-root-form has no counterpart.
     else:
         return implementation._parse(obj)

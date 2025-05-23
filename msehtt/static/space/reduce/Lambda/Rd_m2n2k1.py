@@ -10,7 +10,7 @@ from msehtt.static.mesh.great.elements.types.vtu_5_triangle import Vtu5Triangle
 # ----------------- INNER ---------------------------------------------------------------------------------
 
 
-def reduce_Lambda__m2n2k1_inner(cf_t, obj, degree, raw=False):
+def reduce_Lambda__m2n2k1_inner(cf_t, obj, degree, raw=False, element_range=None):
     r"""Reduce target at time `t` to m2n2k1 outer space of degree ``degree`` on partial mesh ``tpm``."""
 
     if hasattr(obj, '___is_msehtt_partial_mesh___'):  # obj is a tpm, i.e. the partial mesh.
@@ -27,7 +27,13 @@ def reduce_Lambda__m2n2k1_inner(cf_t, obj, degree, raw=False):
         raise NotImplementedError()
 
     cochain = {}
-    for e in elements:
+
+    if element_range is None:
+        ELEMENT_RANGE = elements
+    else:
+        ELEMENT_RANGE = element_range
+
+    for e in ELEMENT_RANGE:
         element = elements[e]
         etype = element.etype
         if etype in (
@@ -203,7 +209,7 @@ def ___221i_vtu_5_reducing___(element, cf_t, degree, raw=False):
 # ----------------- OUTER ---------------------------------------------------------------------------------
 
 
-def reduce_Lambda__m2n2k1_outer(cf_t, obj, degree, raw=False):
+def reduce_Lambda__m2n2k1_outer(cf_t, obj, degree, raw=False, element_range=None):
     """Reduce target at time `t` to m2n2k1 outer space of degree ``degree`` on partial mesh ``tpm``."""
     if hasattr(obj, '___is_msehtt_partial_mesh___'):  # obj is a tpm, i.e. the partial mesh.
         elements = obj.composition
@@ -219,7 +225,13 @@ def reduce_Lambda__m2n2k1_outer(cf_t, obj, degree, raw=False):
         raise NotImplementedError()
 
     cochain = {}
-    for e in elements:
+
+    if element_range is None:
+        ELEMENT_RANGE = elements
+    else:
+        ELEMENT_RANGE = element_range
+
+    for e in ELEMENT_RANGE:
         element = elements[e]
         etype = element.etype
         if etype in (

@@ -11,6 +11,7 @@ from src.spaces.main import _VarSetting_A_x_B__dp__C
 from src.spaces.main import _VarSetting_AxB_ip_dC
 
 from msehtt.static.implementation_array_parser import _find_from_bracket_ABC
+
 from msehtt.static.form.addons.nop_data_computer.trilinear_AxB_ip_C import AxB_ip_C
 from msehtt.static.form.addons.nop_data_computer.trilinear_AxB_ip_dC import AxB_ip_dC
 
@@ -29,7 +30,8 @@ def __A_x_B_dp_C__(A, B, C):
     A, B, C = _find_from_bracket_ABC(_VarSetting_A_x_B__dp__C, A, B, C)
     noc = AxB_ip_C(A, B, C)
     X = noc(3)
-    text = rf"\left\langle\left.{A.abstract._sym_repr}\times{B.abstract._sym_repr}\right|{C.abstract._sym_repr}\right\rangle"
+    text = (rf"\left\langle\left."
+            rf"{A.abstract._sym_repr}\times{B.abstract._sym_repr}\right|{C.abstract._sym_repr}\right\rangle")
     return X, X._time_caller, text
 
 

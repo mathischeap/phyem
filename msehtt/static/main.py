@@ -19,10 +19,12 @@ __all__ = [
 
 import msehtt.static.implementation_array_parser as PARSER
 PARSER._setting_['base'] = base
+# noinspection PyTypeChecker
 base['PARSER'] = PARSER
 
 import msehtt.static.implementation_nop_parser as NOC_PARSER
 NOC_PARSER._setting_['base'] = base
+# noinspection PyTypeChecker
 base['NOC-PARSER'] = NOC_PARSER
 
 from msehtt.static.manifold.main import MseHttManifold
@@ -91,7 +93,7 @@ def _parse_meshes(abstract_meshes):
         mesh_dict[sym] = pm
     base['meshes'] = mesh_dict
     assert base['the_great_mesh'] is None, f"We must do not generate the great mesh yet."
-    # noinspection PyTypedDict
+    # noinspection PyTypedDict,PyTypeChecker
     base['the_great_mesh'] = MseHttGreatMesh()
 
 
@@ -247,7 +249,7 @@ def info(*others_2b_printed):
     """We print the info, as much as possible, of the current msepy implementation."""
     # -- first we print the newest time of the cochain (if there is) of each form.
     if RANK != MASTER_RANK:
-        return
+        return None
     else:
         pass
 
@@ -295,7 +297,7 @@ def info(*others_2b_printed):
     print('\n\n', flush=True)
     _info_cache['info_count'] = count + 1
     _info_cache['info_time'] = new_time
-    return
+    return None
 
 
 from src.spaces.main import _degree_str_maker
@@ -310,6 +312,7 @@ def array(indicator, *args, **kwargs):
             assert form.__class__ is MseHttForm, f"we must have received a msehtt static form."
             space = form.space.abstract._pure_lin_repr
             degree = _degree_str_maker(form.degree)
+            # noinspection PyUnresolvedReferences
             M, time_caller = PARSER.Parse__M_matrix(space, degree, degree)
             return M, time_caller
         else:

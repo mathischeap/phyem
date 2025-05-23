@@ -17,6 +17,7 @@ from tools.functions.time_space._2d.wrappers.helpers.scalar_add import t2d_Scala
 from tools.functions.time_space._2d.wrappers.helpers.scalar_sub import t2d_ScalarSub
 from tools.functions.time_space._2d.wrappers.helpers.scalar_neg import t2d_ScalarNeg
 from tools.functions.time_space._2d.wrappers.helpers.scalar_mul import t2d_ScalarMultiply
+from tools.functions.time_space._2d.wrappers.helpers.scalar_abs import t2d_ScalarAbs
 
 from functools import partial
 from scipy.interpolate import LinearNDInterpolator
@@ -118,6 +119,11 @@ class T2dScalar(TimeSpaceFunctionBase):
         from tools.functions.time_space._2d.wrappers.vector import T2dVector
 
         return T2dVector(py, neg_px)
+
+    @property
+    def abs(self):
+        r""""""
+        return self.__class__(t2d_ScalarAbs(self._s_))
 
     def convection_by(self, u):
         """We compute (u cdot nabla) of self.

@@ -26,7 +26,7 @@ class MatrixProxyNoneLinearSystem(Frozen):
         """"""
         from src.config import RANK, MASTER_RANK
         if RANK != MASTER_RANK:
-            return
+            return None
         else:
             pass
 

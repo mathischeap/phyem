@@ -38,7 +38,7 @@ class MseHttElementsPartialMeshVisualizeMatplot(Frozen):
         mesh_data_Lines = COMM.gather(outline_data, root=MASTER_RANK)
 
         if RANK != MASTER_RANK:
-            return
+            return None
         else:
             pass
 

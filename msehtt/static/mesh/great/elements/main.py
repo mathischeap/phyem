@@ -35,6 +35,7 @@ class MseHttGreatMeshElements(Frozen):
         else:
             pass
 
+        self.___conforming_checking___()
         self._freeze()
 
     def __repr__(self):
@@ -155,6 +156,11 @@ class MseHttGreatMeshElements(Frozen):
             return self._tgm._global_element_type_dict
         else:
             return None
+
+    def ___conforming_checking___(self):
+        r"""To check of all elements are conforming!"""
+        pass
+        # TODO: to be implemented.
 
     def _parse_boundary_faces_of_a_patch_of_elements(self, element_range):
         """"""

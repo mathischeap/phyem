@@ -90,7 +90,7 @@ def _parse_trf(trf):
             rcm = trf['rcm']
         else:
             rcm = 'center'
-        assert callable(rff), f'rff must be callable.'
+        assert callable(rff), f'rff = {rff} must be callable.'
         if isinstance(rft, (int, float)):
             rft = [rft, ]
         else:

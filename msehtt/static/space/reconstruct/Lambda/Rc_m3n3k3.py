@@ -4,7 +4,7 @@
 import numpy as np
 
 
-def reconstruct_Lambda__m3n3k3(tpm, degree, cochain, xi, et, sg, ravel=False):
+def reconstruct_Lambda__m3n3k3(tpm, degree, cochain, xi, et, sg, ravel=False, element_range=None):
     """"""
     assert isinstance(xi, np.ndarray) and xi.ndim == 1, f"xi must be 1d array."
     assert isinstance(et, np.ndarray) and et.ndim == 1, f"eta must be 1d array."
@@ -14,7 +14,13 @@ def reconstruct_Lambda__m3n3k3(tpm, degree, cochain, xi, et, sg, ravel=False):
     assert np.min(sg) >= -1 and np.max(sg) <= 1, f"sg must be in [-1, 1]"
     elements = tpm.composition
     x, y, z, u = {}, {}, {}, {}
-    for e in elements:
+
+    if element_range is None:
+        ELEMENT_RANGE = elements
+    else:
+        ELEMENT_RANGE = element_range
+
+    for e in ELEMENT_RANGE:
         element = elements[e]
         etype = element.etype
         local_cochain = cochain[e]

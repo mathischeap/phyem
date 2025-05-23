@@ -9,6 +9,8 @@ from msehtt.tools.vector.static.local import MseHttStaticLocalVector
 from msehtt.tools.matrix.static.local import MseHttStaticLocalMatrix
 from msehtt.tools.linear_system.static.local.main import MseHttStaticLocalLinearSystem
 
+from msehtt.adaptive.form.main import MseHtt_Adaptive_TopForm
+
 
 class MseHttNonlinearSystemNewtonRaphsonSolve(Frozen):
     """"""
@@ -29,6 +31,16 @@ class MseHttNonlinearSystemNewtonRaphsonSolve(Frozen):
     @x0.setter
     def x0(self, _x0):
         """"""
+        # -- for adaptive forms: use their current generations ------------------------------------
+        _X0 = list()
+        for _ in _x0:
+            if isinstance(_, MseHtt_Adaptive_TopForm):
+                _X0.append(_.current)
+            else:
+                _X0.append(_)
+        _x0 = _X0
+        # ==========================================================================================
+
         if all([_.__class__ is MseHttForm for _ in _x0]):   # providing all MsePyRootForm
             # use the newest cochains.
             cochain = list()

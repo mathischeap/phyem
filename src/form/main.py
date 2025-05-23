@@ -122,6 +122,7 @@ matplotlib.use('TkAgg')
 from src.config import _global_lin_repr_setting
 from src.config import _parse_lin_repr
 from src.form.operators import wedge, time_derivative, d, codifferential, cross_product, tensor_product
+from src.form.operators import Cross_Product
 from src.form.operators import convect
 from src.form.operators import _project_to
 from src.config import _check_sym_repr
@@ -247,7 +248,7 @@ class Form(Frozen):
         """Print this form with matplotlib and latex."""
         from src.config import RANK, MASTER_RANK
         if RANK != MASTER_RANK:
-            return
+            return None
         else:
             my_id = r'\texttt{' + str(id(self)) + '}'
             if self._pAti_form['base_form'] is None:
@@ -370,6 +371,10 @@ class Form(Frozen):
         r"""The cross product, :math:`\times`, between this form and another form."""
         return cross_product(self, other)
 
+    def Cross_Product(self, other):
+        r"""Another branch of cross-product."""
+        return Cross_Product(self, other)
+
     def convect(self, other):
         """Let self be u, other be w, we compute u dot(grad(w))."""
         return convect(self, other)
@@ -459,11 +464,12 @@ class Form(Frozen):
                 lr = cs._lin_repr + operator_lin + lr
                 sr = cs._sym_repr + sr
             else:
-                lr = cs._lin_repr + operator_lin + r'\{' + lr + r'\}'
                 if cs.is_root():
-                    sr = cs._sym_repr + sr
-                else:
+                    lr = cs._lin_repr + operator_lin + r'\{' + lr + r'\}'
                     sr = cs._sym_repr + r'\left(' + sr + r'\right)'
+                else:
+                    lr = r'\{' + cs._lin_repr + r'\}' + operator_lin + r'\{' + lr + r'\}'
+                    sr = r'\left(' + cs._sym_repr + r'\right)' + r'\left(' + sr + r'\right)'
 
             f = Form(
                 self.space,         # space
@@ -472,6 +478,9 @@ class Form(Frozen):
                 False,       # not a root-form anymore.
             )
             return f
+        else:
+            raise NotImplementedError()
+        return None
 
     def __truediv__(self, other):
         """self / other"""

@@ -74,7 +74,8 @@ def ___Lambda_ip_Lambda_over_SameTPM_m2n2k1___(
 
         if inner_type == 'L2':
             ipe = np.einsum(
-                'ij,i,j->', (u1 * u2 + v1 * v2)*detJM, quad_weights, quad_weights,
+                'ij,i,j->',
+                (u1*u2 + v1*v2) * detJM, quad_weights, quad_weights,
                 optimize='optimal'
             )
         else:

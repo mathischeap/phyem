@@ -229,11 +229,11 @@ class MseHttStaticLocalLinearSystem(Frozen):
     def pr(self):
         """"""
         if RANK != MASTER_RANK:
-            return
+            return None
 
         if self._pr_texts is None:
             print('No texts to print.')
-            return
+            return None
 
         plt.rcParams.update({
             "text.usetex": True,
@@ -363,7 +363,7 @@ class _AAA(Frozen):
         if i in self._mA._gm_row:
             return self._mA.spy(i, **kwargs)
         else:
-            pass
+            return None
 
     def condition_number(self, i):
         """Return the condition number of local A matrix of element #i in all RANKS."""

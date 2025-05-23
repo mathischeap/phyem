@@ -380,7 +380,9 @@ class PartialDifferentialEquations(Frozen):
                 term_i0 = all_terms_of_equation_i[0]
                 for k, term_ij in enumerate(all_terms_of_equation_i[1:]):
                     assert term_i0.space == term_ij.space, \
-                        f"spaces in equation #{i} do not match each other: {k+1}th term."
+                        (f"spaces in equation #{i} do not match each other: {k+1}th term "
+                         f"---> space: {term_ij.space} =!= "
+                         f"0th term space: {term_i0.space}")
 
             elif all([
                 hasattr(_, '_is_able_to_be_a_weak_term') for _ in all_terms_of_equation_i
@@ -395,7 +397,7 @@ class PartialDifferentialEquations(Frozen):
 
         from src.config import RANK, MASTER_RANK
         if RANK != MASTER_RANK:
-            return
+            return None
         else:
             pass
 
@@ -604,7 +606,7 @@ class PartialDifferentialEquations(Frozen):
         """
         from src.config import RANK, MASTER_RANK
         if RANK != MASTER_RANK:
-            return
+            return None
         else:
             pass
 

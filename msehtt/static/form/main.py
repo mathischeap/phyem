@@ -273,11 +273,8 @@ class MseHttForm(Frozen):
             times = [self.cochain.newest, ]  # do it for the newest time only
 
         elif (
-            isinstance(t, tuple) and
-            len(t) == 2 and
-            isinstance(t[0], str) and
-            t[0] == 'nearest' and
-            isinstance(t[1], int)
+            isinstance(t, tuple) and len(t) == 2 and
+            isinstance(t[0], str) and t[0] == 'nearest' and isinstance(t[1], int)
         ):
             # we receive an indicator saying we need to make cache data for several nearest data
             # like t = ('nearest', 2)
@@ -498,9 +495,9 @@ class MseHttForm(Frozen):
         """"""
         return self._space.reduce(cf_at_t, self.degree)
 
-    def reconstruct(self, cochain, *meshgrid, ravel=False):
+    def reconstruct(self, cochain, *meshgrid, ravel=False, element_range=None):
         """"""
-        return self._space.reconstruct(self.degree, cochain, *meshgrid, ravel=ravel)
+        return self._space.reconstruct(self.degree, cochain, *meshgrid, ravel=ravel, element_range=element_range)
 
     def error(self, cf, cochain, error_type='L2'):
         """"""

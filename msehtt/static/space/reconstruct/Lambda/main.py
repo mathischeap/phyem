@@ -13,7 +13,7 @@ class MseHttSpaceReconstructLambda(Frozen):
         self._space = space
         self._freeze()
 
-    def __call__(self, degree, cochain, *meshgrid, ravel=False):
+    def __call__(self, degree, cochain, *meshgrid, ravel=False, element_range=None):
         """"""
         m = self._space.m
         n = self._space.n
@@ -24,9 +24,9 @@ class MseHttSpaceReconstructLambda(Frozen):
         module = import_module(path)
         if hasattr(module, 'reconstruct_Lambda__' + indicator):
             return getattr(module, 'reconstruct_Lambda__' + indicator)(
-                self._space.tpm, degree, cochain, *meshgrid, ravel=ravel
+                self._space.tpm, degree, cochain, *meshgrid, ravel=ravel, element_range=element_range,
             )
         else:
             return getattr(module, 'reconstruct_Lambda__' + indicator + f"_{orientation}")(
-                self._space.tpm, degree, cochain, *meshgrid, ravel=ravel
+                self._space.tpm, degree, cochain, *meshgrid, ravel=ravel, element_range=element_range,
             )

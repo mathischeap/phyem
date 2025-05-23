@@ -30,6 +30,13 @@ class AxB_ip_C(MseHttTrilinearBase):
         self._tgm = A.tgm
         self._freeze()
 
+    @classmethod
+    def clean_cache(cls):
+        r""""""
+        keys = list(_cache_AxB_ip_C_3d_data_.keys())
+        for key in keys:
+            del _cache_AxB_ip_C_3d_data_[key]
+
     def _make_3d_data(self):
         """"""
         # ---- if the data is already there -------------------------------------------

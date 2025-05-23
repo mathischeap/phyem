@@ -70,3 +70,36 @@ import tests.msehtt.Poisson2do_UnstructuredQuad
 php('>>> msehtt >>> tests.msehtt._2d_boundary_section_config_1')
 # noinspection PyUnresolvedReferences
 import tests.msehtt._2d_boundary_section_config_1
+
+php('>>> msehtt >>> tests.msehtt.OTV')
+# noinspection PyUnresolvedReferences
+import tests.msehtt.OTV
+
+php('>>> msehtt >>> tests.msehtt.Poisson2_outer_meshpy_ts1')
+# noinspection PyUnresolvedReferences
+import tests.msehtt.Poisson2_outer_meshpy_ts1
+
+php('>>> msehtt >>> tests.msehtt.adaptive.base2')
+# noinspection PyUnresolvedReferences
+import tests.msehtt.adaptive.base2
+
+php('>>> msehtt >>> tests.msehtt.adaptive.Poisson2')
+# noinspection PyUnresolvedReferences
+import tests.msehtt.adaptive.Poisson2
+
+php('>>> msehtt >>> tests.msehtt.adaptive.trf_tests')
+# noinspection PyUnresolvedReferences
+import tests.msehtt.adaptive.trf_tests
+
+
+import numpy as np
+
+
+def refining_function(x, y):
+    r""""""
+    return np.sin(np.pi * x) * np.sin(np.pi * y)
+
+
+php('>>> msehtt >>> tests.msehtt.adaptive.LDC')
+# noinspection PyUnresolvedReferences
+import tests.msehtt.adaptive.LDC

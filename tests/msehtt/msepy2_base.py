@@ -154,3 +154,12 @@ fo2[0].cochain = E @ fo1[0].cochain
 fo2.cf = fo1.cf.exterior_derivative()
 error = fo2[0].error()
 assert error < 1e-4
+
+df1 = fo1.d()
+df1.cf = fo1.cf.exterior_derivative()
+error = df1[None].error()
+assert error < 2e-5
+
+sub = fo2 - df1
+error = sub[None].norm()
+assert error == 0

@@ -6,7 +6,7 @@ import numpy as np
 
 # ----------- INNER -------------------------------------------------------------------------------
 
-def reconstruct_Lambda__m2n2k1_inner(tpm, degree, cochain, xi, et, ravel=False):
+def reconstruct_Lambda__m2n2k1_inner(tpm, degree, cochain, xi, et, ravel=False, element_range=None):
     """"""
     assert isinstance(xi, np.ndarray) and xi.ndim == 1, f"xi must be 1d array."
     assert isinstance(et, np.ndarray) and et.ndim == 1, f"eta must be 1d array."
@@ -14,7 +14,13 @@ def reconstruct_Lambda__m2n2k1_inner(tpm, degree, cochain, xi, et, ravel=False):
     assert np.min(et) >= -1 and np.max(et) <= 1, f"eta must be in [-1, 1]"
     elements = tpm.composition
     x, y, u, v = {}, {}, {}, {}
-    for e in elements:
+
+    if element_range is None:
+        ELEMENTS_RANGE = elements
+    else:
+        ELEMENTS_RANGE = element_range
+
+    for e in ELEMENTS_RANGE:
         element = elements[e]
         etype = element.etype
         local_cochain = cochain[e]
@@ -125,7 +131,7 @@ def ___rc221i_vtu_5___(element, degree, local_cochain, xi, et, ravel=False):
 
 # ----------- OUTER -------------------------------------------------------------------------------
 
-def reconstruct_Lambda__m2n2k1_outer(tpm, degree, cochain, xi, et, ravel=False):
+def reconstruct_Lambda__m2n2k1_outer(tpm, degree, cochain, xi, et, ravel=False, element_range=None):
     """"""
     assert isinstance(xi, np.ndarray) and xi.ndim == 1, f"xi must be 1d array."
     assert isinstance(et, np.ndarray) and et.ndim == 1, f"eta must be 1d array."
@@ -133,7 +139,13 @@ def reconstruct_Lambda__m2n2k1_outer(tpm, degree, cochain, xi, et, ravel=False):
     assert np.min(et) >= -1 and np.max(et) <= 1, f"eta must be in [-1, 1]"
     elements = tpm.composition
     x, y, u, v = {}, {}, {}, {}
-    for e in elements:
+
+    if element_range is None:
+        ELEMENTS_RANGE = elements
+    else:
+        ELEMENTS_RANGE = element_range
+
+    for e in ELEMENTS_RANGE:
         element = elements[e]
         etype = element.etype
         local_cochain = cochain[e]

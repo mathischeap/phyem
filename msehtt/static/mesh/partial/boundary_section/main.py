@@ -36,10 +36,13 @@ class MseHttBoundarySectionPartialMesh(Frozen):
         self._find_cache_ = {}  # cache all!
         self._freeze()
 
-    def info(self):
+    def info(self, additional_info=''):
         r"""info self."""
-        print(f"msehtt-boundary-section > {self._tpm.abstract._sym_repr}: "
-              f"{self._num_global_faces} faces > distributed in {SIZE} ranks.")
+        print(
+            f"{additional_info}"
+            f"msehtt-boundary-section {self._tpm.abstract._sym_repr}: "
+            f"{self._num_global_faces} faces"
+        )
 
     def __repr__(self):
         r""""""
@@ -108,7 +111,8 @@ class MseHttBoundarySectionPartialMesh(Frozen):
             self._mn = COMM.bcast(self._mn, root=MASTER_RANK)
 
         if self._mn == ():
-            raise Exception(f"boundary section is empty!")
+            assert self._num_global_faces == 0, f"must be empty"
+            raise Exception(f"num_global_faces={self._num_global_faces}; boundary section is empty!")
         else:
             return self._mn
 

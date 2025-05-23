@@ -25,6 +25,8 @@ from msehtt.static.mesh.great.elements.types.distributor import MseHttGreatMeshE
 from msehtt.static.mesh.great.config.tqr import TriQuadRegions
 from msehtt.static.mesh.great.config.tqr import MseHtt_TQR_config
 
+from msehtt.static.mesh.great.config.trf import TRF
+
 
 class MseHttGreatMesh(Frozen):
     r""""""
@@ -42,6 +44,10 @@ class MseHttGreatMesh(Frozen):
         else:
             pass
         self.selfcheck()
+        self.___original_ts___ = 0
+        self.___ts_element_info___ = {}
+        self._TS_ = {}
+        self.___renumbering_indicator___ = None
         self._freeze()
 
     def __repr__(self):
@@ -163,7 +169,7 @@ class MseHttGreatMesh(Frozen):
         else:
             self._elements = MseHttGreatMeshElements(self, rank_element_dict)
 
-    def _config(self, indicator, element_layout=None, crack_config=None, ts=False, **kwargs):
+    def _config(self, indicator, element_layout=None, crack_config=None, ts=False, renumbering=False, **kwargs):
         r"""Note that, periodic setting should be done before this configuration. This configuration can
         process crack and triangle/tetrahedron-split, but not periodic setting.
 
@@ -223,6 +229,9 @@ class MseHttGreatMesh(Frozen):
         ts :
             In ADDITION to configuration indicating, it will do ``triangle/tetrahedron-split``.
 
+        renumbering :
+            renumbering the element indices to be, for example, integers.
+
         kwargs :
             Other kwargs to be passed to particular configuration.
 
@@ -257,6 +266,7 @@ class MseHttGreatMesh(Frozen):
 
         elif isinstance(indicator, str) and indicator == 'meshpy':
             # case 4
+            # noinspection PyUnusedLocal
             input_case = 'meshpy'
 
             kwargs_for_call_method = {}
@@ -284,6 +294,24 @@ class MseHttGreatMesh(Frozen):
             # using all other entries in the list or tuple.
             indicator = TriQuadRegions(*indicator[1:])
             input_case = 'tqr'
+
+        elif (
+                isinstance(indicator, dict) and
+                'element_type_dict' in indicator and
+                'element_map_dict' in indicator and
+                'element_parameter_dict' in indicator
+        ):
+            # case 7
+            input_case = 'ELEMENT-DICT'
+            if RANK != MASTER_RANK:
+                assert indicator['element_type_dict'] is None, f"put all info in MASTER"
+                assert indicator['element_map_dict'] is None, f"put all info in MASTER"
+                assert indicator['element_parameter_dict'] is None, f"put all info in MASTER"
+            else:
+                pass
+            BASE_Element_type_dict = indicator['element_type_dict']
+            BASE_Element_map_dict = indicator['element_map_dict']
+            BASE_Element_parameter_dict = indicator['element_parameter_dict']
 
         else:
             if isinstance(indicator, dict):  # a standard input format for the indicator.
@@ -382,6 +410,14 @@ class MseHttGreatMesh(Frozen):
 
             elif input_case == 'tqr':
                 self._config_method = 'msehtt-static-tqr'
+                element_type_dict, element_parameter_dict, element_map_dict = (
+                    self._distribute_elements_to_ranks(
+                        None, None, None
+                    )
+                )
+
+            elif input_case == 'ELEMENT-DICT':
+                self._config_method = 'ELEMENT-DICT'
                 element_type_dict, element_parameter_dict, element_map_dict = (
                     self._distribute_elements_to_ranks(
                         None, None, None
@@ -516,7 +552,24 @@ class MseHttGreatMesh(Frozen):
                         element_type_dict, element_parameter_dict, element_map_dict
                     )
                 )
+            elif input_case == 'ELEMENT-DICT':
+                # noinspection PyUnboundLocalVariable
+                element_type_dict, element_parameter_dict, element_map_dict = TRF(
+                    BASE_Element_type_dict, BASE_Element_parameter_dict, BASE_Element_map_dict,
+                    **kwargs
+                )
 
+                self._config_method = 'ELEMENT-DICT'
+
+                self._check_elements(element_type_dict, element_parameter_dict, element_map_dict)
+
+                self._global_element_type_dict = element_type_dict
+                self._global_element_map_dict = element_map_dict
+                element_type_dict, element_parameter_dict, element_map_dict = (
+                    self._distribute_elements_to_ranks(
+                        element_type_dict, element_parameter_dict, element_map_dict
+                    )
+                )
             else:
                 raise NotImplementedError(
                     f"msehtt-great-mesh config not implemented for input_case={input_case}")
@@ -536,13 +589,79 @@ class MseHttGreatMesh(Frozen):
             assert isinstance(ts, int) and ts >= 0, \
                 f"ts={ts} wrong, it must be False, True or non-negative integer."
 
+        self.___original_ts___ = ts
+
         element_type_dict, element_parameter_dict, element_map_dict = self._parse_ts_(
             ts,
             element_type_dict, element_parameter_dict, element_map_dict
         )
-        # =======================================================================================
+
+        # ----------- making cracks in the domain --------------------------------------------
         element_map_dict = self._make_crack(crack_config, element_map_dict)
+
+        # -------- renumbering the element indices -------------------------------------------
+        self.___renumbering_indicator___ = renumbering
+        if renumbering is False:
+            pass
+        else:
+            element_type_dict, element_parameter_dict, element_map_dict = self._renumbering_(
+                renumbering,
+                element_type_dict, element_parameter_dict, element_map_dict
+            )
+
+        # =====================================================================================
+
         self._make_elements_(element_type_dict, element_parameter_dict, element_map_dict)
+
+    def _renumbering_(
+            self,
+            renumbering_indicator,   # to indicate which approach to be used for renumbering.
+            element_type_dict, element_parameter_dict, element_map_dict
+    ):
+        r""""""
+        if renumbering_indicator is True:
+            if RANK == MASTER_RANK:
+                renumbering_dict = {}
+                current = 0
+
+                new__global_element_type_dict = {}
+                new__global_element_map_dict = {}
+
+                for e in self._global_element_type_dict:
+                    renumbering_dict[e] = current
+                    new__global_element_type_dict[current] = self._global_element_type_dict[e]
+                    new__global_element_map_dict[current] = self._global_element_map_dict[e]
+                    current += 1
+
+                new__element_distribution = {}
+                for rank in range(SIZE):
+                    rank_elements = []
+                    for e in self._element_distribution[rank]:
+                        rank_elements.append(renumbering_dict[e])
+                    new__element_distribution[rank] = rank_elements
+
+                self._global_element_type_dict = new__global_element_type_dict
+                self._global_element_map_dict = new__global_element_map_dict
+                self._element_distribution = new__element_distribution
+            else:
+                renumbering_dict = None
+
+            renumbering_dict = COMM.bcast(renumbering_dict, root=MASTER_RANK)
+
+            new_element_type_dict = {}
+            new_element_parameter_dict = {}
+            new_element_map_dict = {}
+
+            for e in element_type_dict:
+                new_index = renumbering_dict[e]
+                new_element_type_dict[new_index] = element_type_dict[e]
+                new_element_parameter_dict[new_index] = element_parameter_dict[e]
+                new_element_map_dict[new_index] = element_map_dict[e]
+
+            return new_element_type_dict, new_element_parameter_dict, new_element_map_dict
+
+        else:
+            raise NotImplementedError(renumbering_indicator)
 
     @staticmethod
     def _check_elements(element_type_dict, element_parameter_dict, element_map_dict):
@@ -673,14 +792,35 @@ class MseHttGreatMesh(Frozen):
     def _parse_ts_(self, ts, element_type_dict, element_parameter_dict, element_map_dict):
         r""""""
         if ts == 0:
+            if len(self.___ts_element_info___) > 0:
+                # ---- renumbering ts in the info ------------------------------------
+                max_ts = max(list(self.___ts_element_info___.keys()))
+                ts_renumbering = {}
+                for j in range(max_ts):
+                    i = max_ts - j
+                    ts_renumbering[i] = j
+
+                _new_dict_ = {}
+                for i in self.___ts_element_info___:
+                    j = ts_renumbering[i]
+                    _new_dict_[j] = self.___ts_element_info___[i]
+                self.___ts_element_info___ = _new_dict_
+
+            else:
+                pass
+
             return element_type_dict, element_parameter_dict, element_map_dict
         else:
-            element_type_dict, element_parameter_dict, element_map_dict = self.___ts___(
+
+            self.___ts_element_info___[ts] = (element_type_dict, element_parameter_dict, element_map_dict)
+
+            new_element_type_dict, new_element_parameter_dict, new_element_map_dict = self.___ts___(
                 element_type_dict, element_parameter_dict, element_map_dict
             )
+
             new_ts = ts - 1
             return self._parse_ts_(
-                new_ts, element_type_dict, element_parameter_dict, element_map_dict
+                new_ts, new_element_type_dict, new_element_parameter_dict, new_element_map_dict
             )
 
     def ___ts___(self, element_type_dict, element_parameter_dict, element_map_dict):
@@ -1001,6 +1141,24 @@ class MseHttGreatMesh(Frozen):
                     + f'>\n share same nodes: numbered {face}, which is impossible.'
                 )
 
+    def ts(self, i):
+        r"""The previous generations of elements before `ts`.
+
+        For example, if ts = 2 for the config of this tgm. We then can do
+
+        tgm.ts(0)
+        tgm.ts(1)
+
+        to obtain the elements for lower ts.
+
+        """
+        if i in self._TS_:
+            pass
+        else:
+            assert i in self.___ts_element_info___, f"ts={i} not exist."
+            self._TS_[i] = ___TS_Elements___(self, i, self.___ts_element_info___[i])
+        return self._TS_[i]
+
 
 def ___Naive_element_distribution___(all_element_type_dict, all_element_parameter_dict, all_element_map_dict):
     r"""
@@ -1208,3 +1366,33 @@ class ___TSH_UCQ___(Frozen):
             [dx_dxi, dx_det],
             [dy_dxi, dy_det]
         )
+
+
+class ___TS_Elements___(Frozen):
+    r"""This is """
+    def __init__(self, tgm, i, ts_element_info):
+        r""""""
+        self._tgm = tgm
+        self._i = i
+        rank_element_dict = {}
+        rank_elements_type, rank_elements_parameter, rank_elements_map = ts_element_info
+        element_distributor = MseHttGreatMeshElementDistributor()
+        for i in rank_elements_type:
+            element = element_distributor(
+                i, rank_elements_type[i], rank_elements_parameter[i], rank_elements_map[i]
+            )
+            rank_element_dict[i] = element
+        self._elements_ = rank_element_dict
+        self._freeze()
+
+    def __repr__(self):
+        r""""""
+        return rf"TS[{self._i}] of {self._tgm.__repr__()}"
+
+    def _generate_element_outline_data(self, ddf=1, internal_grid=0):
+        r""""""
+        outline_data = {}
+        for i in self._elements_:
+            element = self._elements_[i]
+            outline_data[i] = element._generate_outline_data(ddf=ddf, internal_grid=internal_grid)
+        return outline_data
