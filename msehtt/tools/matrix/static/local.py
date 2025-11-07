@@ -325,6 +325,8 @@ class MseHttStaticLocalMatrix(Frozen):
                 data_caller, self._gm_row, self._gm_col, cache_key=cache_key_caller,
                 signature=signature,
             )
+        else:
+            raise NotImplementedError()
 
     def __matmul__(self, other):
         r""""""

@@ -2,7 +2,7 @@
 r"""
 """
 import pickle
-from src.config import MASTER_RANK, RANK
+from src.config import MASTER_RANK, RANK, SIZE, COMM
 from tools.dds.region_wise_structured import DDSRegionWiseStructured
 from tools.dds.region_wise_structured_group import DDS_RegionWiseStructured_Group
 
@@ -39,4 +39,19 @@ def read(filename, root=MASTER_RANK):
         else:  # we are reading a file coming from `ph.save`
             return obj  # a dict of multiple objects.
     else:
-        pass
+        return None
+
+
+def read_tsf(filename):
+    r"""This is a special reader. It read tsf objects to all ranks."""
+    tsf = None
+    for rank in range(SIZE):
+        if rank == RANK:
+            with open(filename, 'rb') as inputs:
+                tsf = pickle.load(inputs)
+            inputs.close()
+        else:
+            pass
+        COMM.barrier()
+    assert tsf._is_time_space_func(), f"I can only read time-space functions. Now I read {tsf}."
+    return tsf

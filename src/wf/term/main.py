@@ -90,8 +90,8 @@ class _WeakFormulationTerm(Frozen):
         return self.___simple_pattern___
 
     def _simpler_pattern_examiner(self, factor, f0, f1):
-        """"""
-        raise NotImplementedError()
+        """It has to be implemented in the child classes."""
+        raise NotImplementedError(f'Pls implement it for {self.__class__}.')
 
     @property
     def extra_info(self):
@@ -112,13 +112,15 @@ class _WeakFormulationTerm(Frozen):
         for indicator in self._extra_info:
             if indicator == 'known-forms':
                 known_forms = self._extra_info[indicator]
+                # If known forms are more than 1, we must put them in a list or tuple.
+                # Or if it is one form, then just put it as it is (DO NOT PUT IT IN A LIST OR TUPLE.)
                 if isinstance(known_forms, (list, tuple)):
-                    pass
+                    assert len(known_forms) > 1, f"Do not put one known form in a list or tuple!"
+                    for kf in known_forms:
+                        assert kf in self._efs, f"form {kf} is not a valid elementary form."
                 else:
-                    known_forms = [known_forms]
-
-                for kf in known_forms:
-                    assert kf in self._efs, f"form {kf} is not a valid elementary form."
+                    assert known_forms.__class__.__name__ == 'Form', f"know form is one form."
+                    assert known_forms in self._efs, f"known form: {known_forms} is not a valid elementary form."
 
             else:
                 raise Exception()
@@ -174,7 +176,7 @@ class _WeakFormulationTerm(Frozen):
         """Print the representations of this term."""
         from src.config import RANK, MASTER_RANK
         if RANK != MASTER_RANK:
-            return
+            return None
         else:
             fig = plt.figure(figsize=(5 + len(self._lin_repr)/20, 2))
             plt.axis((0, 1, 0, 1))
@@ -206,11 +208,13 @@ class _WeakFormulationTerm(Frozen):
         from src.form.main import Form
 
         if f == 'f0':
+            # noinspection PyUnresolvedReferences
             assert by.__class__.__name__ == 'Form' and by.space == f.space, f"Spaces do not match."
             assert self._f0.space == by.space, f"spaces do not match."
             return self.__class__(by, self._f1, factor=self._factor)
 
         elif f == 'f1':
+            # noinspection PyUnresolvedReferences
             assert by.__class__.__name__ == 'Form' and by.space == f.space, f"Spaces do not match."
             assert self._f1.space == by.space, f"spaces do not match."
             return self.__class__(self._f0, by, factor=self._factor)
@@ -778,7 +782,7 @@ class L2InnerProductTerm(_WeakFormulationTerm):
         else:
             raise NotImplementedError()
 
-    def _integration_by_parts(self):
+    def _integration_by_parts(self, drop_bi_term=False, output_format=0):
         """"""
         if _simple_patterns['(cd,)'] == self._simple_pattern:
             # we try to find the sf by testing all existing forms, this is bad. Update this in the future.
@@ -789,22 +793,72 @@ class L2InnerProductTerm(_WeakFormulationTerm):
             # self factor must be a constant parameter.
             term_manifold = L2InnerProductTerm(bf, d(self._f1), factor=self._factor)
 
-            if self.manifold.is_periodic():
+            if self.manifold.is_periodic() or drop_bi_term:
                 return [term_manifold, ], ['+', ]
 
             else:
-
                 trace_form_0 = trace(Hodge(bf))
-
                 trace_form_1 = trace(self._f1)
-
                 term_boundary = duality_pairing(trace_form_0, trace_form_1, factor=self._factor)
-
                 return (term_manifold, term_boundary), ('+', '-')
 
+        elif _simple_patterns['(A .V B, C)'] == self._simple_pattern:
+            keys = self.___simple_pattern_keys___
+            A = keys['A']
+            B = keys['B']
+            C = keys['C']
+
+            A_type = A.representing()[3]
+            B_type = B.representing()[3]
+            C_type = C.representing()[3]
+
+            A_space_type = A.representing()[0]
+            B_space_type = B.representing()[0]
+            C_space_type = C.representing()[0]
+
+            if (A_space_type == B_space_type == C_space_type == 'Lambda' and
+                    A_type == 'vector' and B_type == 'scalar' and C_type == 'scalar'):
+                # A, B, C are all scalar-valued forms and A is vector, B, C are scalars, so like (A .V b, c)
+                if output_format == 0:
+                    if drop_bi_term:
+                        # (A .V b, c) = - (b A, V c)
+                        f0 = B.multi(A, output_space=A)
+                        f1 = d(C)
+                        o0 = f0.space.orientation
+                        o1 = f1.space.orientation
+                        if o0 == o1 == 'inner' or o0 == o1 == 'outer':
+                            new_term = L2InnerProductTerm(f0, f1, factor=self._factor)
+                        elif (o0 == 'inner' and o1 == 'outer') or (o1 == 'inner' and o0 == 'outer'):
+                            new_term = DualityPairingTerm(f0, f1, factor=self._factor)
+                        else:
+                            raise NotImplementedError()
+                        new_sign = '-'
+                        terms = (new_term, )
+                        signs = (new_sign, )
+                    else:
+                        raise NotImplementedError()
+                else:
+                    raise NotImplementedError(
+                        f"Not implemented output format = {output_format} for IntByParts of pattern (A .V B, C)"
+                    )
+
+            else:
+                raise NotImplementedError(
+                    "IntByParts for pattern (A .V B, C) is not implemented for "
+                    f"A is {A_space_type}-{A_type}, B is {B_space_type}-{B_type} and C is {C_space_type}-{C_type}."
+                )
+
+            return terms, signs
+
         else:
-            raise Exception(f"Cannot apply integration by parts to "
-                            f"this term of simple_pattern: {self._simple_pattern}")
+            if self._simple_pattern == '':
+                raise Exception(f"Cannot apply integration by parts to "
+                                f"this term as its simple_pattern is empty. This means its pattern is not "
+                                f"understood thus we do not know apply which rule for it to do the "
+                                f"integration by parts.")
+            else:
+                raise Exception(f"Cannot apply integration by parts to "
+                                f"this term of simple_pattern: {self._simple_pattern}")
 
     def _commutation_wrt_inner_and_x(self, current_format, target_format, indicator_dict=None):
         """

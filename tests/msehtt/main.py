@@ -3,10 +3,17 @@ r"""
 mpiexec -n 1 python tests/msehtt/main.py
 mpiexec -n 5 python tests/msehtt/main.py
 """
-
 import sys
 if './' not in sys.path:
     sys.path.append('./')
+
+from tools.miscellaneous.ranking import Ranking
+
+import os
+source_dir = os.path.dirname(__file__)
+ranking = Ranking('msehtt', source_dir + '/__record__.txt')
+ranking.start_ranking()
+# ----------------- run the tests --------------------------------------------------
 
 from __init__ import php
 
@@ -26,6 +33,10 @@ import tests.msehtt.msepy2_base
 php('>>> msehtt >>> tests.msehtt.msepy3_base')
 # noinspection PyUnresolvedReferences
 import tests.msehtt.msepy3_base
+
+php('>>> msehtt >>> tests.msehtt.msepy3_base_curvilinear')
+# noinspection PyUnresolvedReferences
+import tests.msehtt.msepy3_base_curvilinear
 
 php('>>> msehtt >>> tests.msehtt.Poisson2')
 # noinspection PyUnresolvedReferences
@@ -79,6 +90,14 @@ php('>>> msehtt >>> tests.msehtt.Poisson2_outer_meshpy_ts1')
 # noinspection PyUnresolvedReferences
 import tests.msehtt.Poisson2_outer_meshpy_ts1
 
+php('>>> msehtt >>> tests.msehtt.tsf3_save_read_reduce_tests')
+# noinspection PyUnresolvedReferences
+import tests.msehtt.tsf3_save_read_reduce_tests
+
+
+# ------------------------------------------------------------------------------------------
+
+
 php('>>> msehtt >>> tests.msehtt.adaptive.base2')
 # noinspection PyUnresolvedReferences
 import tests.msehtt.adaptive.base2
@@ -100,6 +119,10 @@ def refining_function(x, y):
     return np.sin(np.pi * x) * np.sin(np.pi * y)
 
 
-php('>>> msehtt >>> tests.msehtt.adaptive.LDC')
-# noinspection PyUnresolvedReferences
-import tests.msehtt.adaptive.LDC
+# php('>>> msehtt >>> tests.msehtt.adaptive.LDC')
+# # noinspection PyUnresolvedReferences
+# import tests.msehtt.adaptive.LDC
+
+
+# -------- update records ------------------------------------------------------------------------
+ranking.report_ranking()

@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+# noinspection PyUnresolvedReferences
 r"""
 The Orszag-Tang Vortex is a 2d non-dimensional MHD manufactured test.
 
@@ -38,6 +39,8 @@ from tools.frozen import Frozen
 from tools.functions.time_space._2d.wrappers.scalar import T2dScalar
 from tools.functions.time_space._2d.wrappers.vector import T2dVector
 
+from tools.functions.time_space._3d.wrappers.vector import T3dVector
+
 
 def _phi(t, x, y):
     """"""
@@ -50,7 +53,7 @@ def _A(t, x, y):
 
 
 class InitialConditionOrszagTangVortex(Frozen):
-    """"""
+    """In a periodic domain [0, 2pi]^2."""
     def __init__(self, Rm=inf):
         self._streaming = T2dScalar(_phi)
         self._potential = T2dScalar(_A)
@@ -94,6 +97,121 @@ class InitialConditionOrszagTangVortex(Frozen):
     @property
     def f(self):
         return T2dVector(0, 0)
+
+
+# noinspection PyUnusedLocal
+def _phi_3d(t, x, y, z):
+    """"""
+    return 2 * sin(y) - 2 * cos(x)
+
+
+# noinspection PyUnusedLocal
+def _phi_3d_dx(t, x, y, z):
+    """"""
+    return 2 * sin(x)
+
+
+# noinspection PyUnusedLocal
+def _phi_3d_dy(t, x, y, z):
+    """"""
+    return 2 * cos(y)
+
+
+# noinspection PyUnusedLocal
+def _A_3d(t, x, y, z):
+    """"""
+    return cos(2*y) - 2 * cos(x)
+
+
+# noinspection PyUnusedLocal
+def _A_3d_dx(t, x, y, z):
+    """"""
+    return 2 * sin(x)
+
+
+# noinspection PyUnusedLocal
+def _A_3d_dy(t, x, y, z):
+    """"""
+    return - 2 * sin(2*y)
+
+
+class InitialConditionOrszagTangVortex_3D(Frozen):
+    """In a periodic domain [0, 2pi]^2 X [a, b]."""
+
+    def __init__(self, Rm=inf, eta=1):
+        self._streaming = T3dVector(
+            0, 0, _phi_3d,
+            steady=True,
+            Jacobian_matrix=(
+                [0, 0, 0],
+                [0, 0, 0],
+                [_phi_3d_dx, _phi_3d_dy, 0],
+            ),
+        )
+        self._potential = T3dVector(
+            0, 0, _A_3d,
+            steady=True,
+            Jacobian_matrix=(
+                [0, 0, 0],
+                [0, 0, 0],
+                [_A_3d_dx, _A_3d_dy, 0],
+            ),
+        )
+        self._Rm = Rm
+        self._eta = eta  # parameters of the HALL-EFFECT term.
+        self._E_init_ = None
+        self._freeze()
+
+    @property
+    def u(self):
+        """fluid velocity field"""
+        return self._streaming.curl
+
+    @property
+    def magnetic_potential(self):
+        return self._potential
+
+    @property
+    def B(self):
+        """magnetic flux density"""
+        return self._potential.curl
+
+    @property
+    def H(self):
+        """magnetic field strength, H = B under nondimensionalization."""
+        return self.B
+
+    @property
+    def j(self):
+        """electric current density"""
+        return self.B.curl
+
+    @property
+    def E(self):
+        """electric field strength
+
+        (1/Rm)j - u x B + eta * j x B = E
+        """
+        if self._E_init_ is None:
+            self._E_init_ = (
+                (1 / self._Rm) * self.j
+                - self.u.cross_product(self.B)
+                + self._eta * (self.j.cross_product(self.B))
+            )
+        return self._E_init_
+
+    @property
+    def omega(self):
+        """vorticity"""
+        return self.u.curl
+
+    @property
+    def f(self):
+        return T3dVector(0, 0, 0)
+
+    @property
+    def zero(self):
+        return T3dVector(0, 0, 0)
 
 
 if __name__ == '__main__':

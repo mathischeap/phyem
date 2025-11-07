@@ -3,6 +3,20 @@ from abc import ABC
 import numpy as np
 
 
+_cache_CFGt_m2n2_ = {}
+
+
+def cfg_t(C):
+    r"""A wrapper of CFGt."""
+
+    if C in _cache_CFGt_m2n2_:
+        return _cache_CFGt_m2n2_[C]
+    else:
+        cfg = CFGt(C)()
+        _cache_CFGt_m2n2_[C] = cfg
+        return cfg
+
+
 class CFGt(ABC):
     """
     Constant function generator: ``CF = CFG(5)()``.
@@ -10,7 +24,7 @@ class CFGt(ABC):
     .. doctest::
 
         >>> cf = CFGt(10.5)()
-        >>> cf(1, 1,1)
+        >>> float(cf(1, 1,1))
         10.5
     """
 

@@ -5,7 +5,10 @@ r"""
 
 def find_local_dofs_on_face__m3n3k0(etype, p, face_index):
     """"""
-    if etype in ('orthogonal hexahedron',):
+    if etype in (
+        'orthogonal hexahedron',
+        "unique msepy curvilinear hexahedron",
+    ):
         local_numbering = __m3n3k0_msepy_hexahedral_(p, face_index)
     else:
         raise NotImplementedError(f"{__name__} not implemented for etype={etype}")

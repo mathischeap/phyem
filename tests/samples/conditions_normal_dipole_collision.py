@@ -5,13 +5,13 @@ import sys
 if './' not in sys.path:
     sys.path.append('./')
 import numpy as np
-from tools.frozen import Frozen
+from tests.samples._base_2d import _TwoDimensionalConditionBase
 from tools.quadrature import Quadrature
 from tools.functions.time_space._2d.wrappers.vector import T2dVector
 from tools.functions.time_space._2d.wrappers.scalar import T2dScalar
 
 
-class ConditionsNormalDipoleCollision2(Frozen):
+class ConditionsNormalDipoleCollision2(_TwoDimensionalConditionBase):
     """"""
 
     def __init__(

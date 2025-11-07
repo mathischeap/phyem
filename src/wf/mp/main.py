@@ -480,7 +480,7 @@ class MatrixProxy(Frozen):
         """
         from src.config import RANK, MASTER_RANK
         if RANK != MASTER_RANK:
-            return
+            return None
         else:
             pass
         seek_text = self._mp_seek_text()

@@ -77,6 +77,15 @@ class DDS_RegionWiseStructured_Group(Frozen):
         super_repr = super().__repr__().split('object')[1]
         return rf"<DDR-RWS-grouped {self.ndim}d [" + ','.join(self.dtype) + ']' + super_repr
 
+    def __len__(self):
+        r""""""
+        return len(self._value_names)
+
+    def __iter__(self):
+        r""""""
+        for name in self._value_names:
+            yield self[name]
+
     # --------- save & read ------------------------------------------------------------------------------
 
     def saveto(self, filename):
@@ -144,4 +153,4 @@ class DDS_RegionWiseStructured_Group(Frozen):
             return self.__getitem__(index)
 
         else:
-            raise Exception()
+            raise Exception(i)

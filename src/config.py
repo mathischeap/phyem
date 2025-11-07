@@ -397,10 +397,14 @@ _global_operator_lin_repr_setting = {  # coded operators
 
     'cross_product': r"$\times$",
     'Cross_Product': r"-$\mathsf{X}$-",
+    'CrossProduct': r"-$\mathrm{x}$-",
+    'crossProduct': r"-$\mathsf{x}$-",
     'convect': r"$\cdot\nabla$",
     'tensor_product': r"$\otimes$",
 
-    'projection': r'$\pi$ '
+    'projection': r'$\pi$ ',
+
+    'multi': r"$\ast$",
 }
 
 
@@ -420,10 +424,14 @@ _global_operator_sym_repr_setting = {  # coded operators
 
     'cross_product': r"{\times}",
     'Cross_Product': r"{\mathsf{X}}",
+    'CrossProduct': r"{\mathrm{x}}",
+    'crossProduct': r"{\mathsf{x}}",
     'tensor_product': r"{\otimes}",
     'convect': r"{\cdot\nabla}",
 
-    'projection': r'{\pi}'
+    'projection': r'{\pi}',
+
+    'multi': r"",
 }
 
 
@@ -457,8 +465,19 @@ _wf_term_default_simple_patterns = {   # use only str to represent a simple patt
     '<*xB|C>': r'$\left<\left.\mathrm{krf} \times \mathrm{rf} \right| \mathrm{rf}\right>$',
     '<AxB|C>': r'$\left<\left.\mathrm{rf} \times \mathrm{rf} \right| \mathrm{rf}\right>$',
 
+    '<AB|C>': r'$\left<\left.\mathrm{rf} \ast \mathrm{rf} \right| \mathrm{rf}\right>$',
+    '<*B|C>': r'$\left<\left.\mathrm{krf} \ast \mathrm{rf} \right| \mathrm{rf}\right>$',
+    '<A*|C>': r'$\left<\left.\mathrm{rf} \ast \mathrm{krf} \right| \mathrm{rf}\right>$',
+    '<**|C>': r'$\left<\left.\mathrm{krf} \ast \mathrm{krf} \right| \mathrm{rf}\right>$',
+
+    '<AB|d(C)>': r'$\left<\left.\mathrm{rf} \ast \mathrm{rf} \right| \mathrm{d}(\mathrm{rf})\right>$',
+    '<*B|d(C)>': r'$\left<\left.\mathrm{krf} \ast \mathrm{rf} \right| \mathrm{d}(\mathrm{rf})\right>$',
+    '<A*|d(C)>': r'$\left<\left.\mathrm{rf} \ast \mathrm{krf} \right| \mathrm{d}(\mathrm{rf})\right>$',
+    '<**|d(C)>': r'$\left<\left.\mathrm{krf} \ast \mathrm{krf} \right| \mathrm{d}(\mathrm{rf})\right>$',
+
     '<*x*|d(C)>': r'$\left<\left.\mathrm{krf} \times \mathrm{krf} \right| \mathrm{d}(\mathrm{rf})\right>$',
 
+    '(A .V B, C)': r"$\left(\mathrm{rf} \cdot\nabla \mathrm{rf}, \mathrm{rf}\right)$",
     '(* .V *, C)': r"$\left(\mathrm{krf} \cdot\nabla \mathrm{krf}, \mathrm{rf}\right)$",
 
     '<AxB|CxD>': r"$\left<\left.\mathrm{rf} \times \mathrm{rf} \right| \mathrm{rf} \times \mathrm{rf}\right>$",
@@ -477,6 +496,21 @@ _wf_term_default_simple_patterns = {   # use only str to represent a simple patt
     '(x*,d)': r"(rf $\times$ krf, d rf)",
     '(*x*,d)': r"(krf $\times$ krf, d rf)",   # vector
     '(AxB,dC)': r"(rf $\times$ rf, d rf)",
+
+    '(AB, C)': r"(rf $\ast$ rf, rf)",
+    '(*B, C)': r"(krf $\ast$ rf, rf)",
+    '(A*, C)': r"(rf $\ast$ krf, rf)",
+    '(**, C)': r"(krf $\ast$ krf, rf)",
+
+    '(AB, d(C))': r"(rf $\ast$ rf, d rf)",
+    '(*B, d(C))': r"(krf $\ast$ rf, d rf)",
+    '(A*, d(C))': r"(rf $\ast$ krf, d rf)",
+    '(**, d(C))': r"(krf $\ast$ krf, d rf)",
+
+    '(A, BC)': r"(rf, rf $\ast$ rf)",
+    '(*, BC)': r"(krf, rf $\ast$ rf)",
+    '(A, *C)': r"(rf, krf $\ast$ rf)",
+    '(*, *C)': r"(krf, krf $\ast$ rf)",
 
     '(x,)': r'(rf $\times$ rf, rf)',   # nonlinear term.
 

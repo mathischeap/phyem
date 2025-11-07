@@ -8,7 +8,11 @@ from tools.functions.time_space._3d.wrappers.scalar import T3dScalar
 
 
 class MHD3_Helicity_Conservation_test1(Frozen):
-    """"""
+    """See Section 4.2 of [Kaibo Hu, Young-Ju Lee, Jinchao Xu, Helicity-conservative finite element discretization
+    for incompressible MHD systems, JCP 436 (2021) 110284]
+
+    It was used for conservation tests.
+    """
 
     def __init__(self):
         """"""
@@ -71,6 +75,7 @@ class MHD3_Helicity_Conservation_test1(Frozen):
     @property
     def m(self):
         return T3dVector(0, 0, 0)
+
 
 if __name__ == '__main__':
     condition = MHD3_Helicity_Conservation_test1()

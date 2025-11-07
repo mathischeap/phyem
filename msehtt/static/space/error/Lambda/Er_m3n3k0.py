@@ -13,7 +13,10 @@ def error__m3n3k0(tpm, cf, cochain, degree, error_type):
     for e in elements:
         element = elements[e]
         etype = element.etype
-        if etype in ("orthogonal hexahedron", ):
+        if etype in (
+                "orthogonal hexahedron",
+                "unique msepy curvilinear hexahedron",
+        ):
             element_error = _er330_msepy_quadrilateral_(
                 element, cf, cochain[e], degree, error_type)
             error.append(element_error)

@@ -172,6 +172,35 @@ __all__ = [
 
     '_VarSetting_astA_x_astB__dp__astC_x_tD',      # vector  <*A x *B | *C x @D>, ABC known, D test.
 
+    # (A, BC) ---------------------------------------------------------------------
+    '_VarSetting_A_ip_BC',                         # (A, BC); nonlinear; A, B, C all unknown
+    '_VarSetting_astA_ip_B_tC',                    # (A, BC); linear, A given, matrix, C test form
+    '_VarSetting_A_ip_astB_tC',                    # (A, BC); linear, B given, matrix, C test form
+    '_VarSetting_astA_ip_astB_tC',                 # (A, BC); A and B given, vector, C test form
+
+    # <AB|C> ---------------------------------------------------------------------
+    '_VarSetting_AB_dp_C',                         # <AB|C> nonlinear; A, B, C all unknown
+    '_VarSetting_astA_B_dp_tC',                    # <AB|C>; linear, A given, matrix, C test form
+    '_VarSetting_A_astB_dp_tC',                    # <AB|C>; linear, B given, matrix, C test form
+    '_VarSetting_astA_astB_dp_tC',                 # <AB|C>; A and B given, vector, C test form
+
+    # (AB, C) ---------------------------------------------------------------------
+    '_VarSetting_AB_ip_C',                         # (AB, C) nonlinear; A, B, C all unknown
+    '_VarSetting_astA_B_ip_tC',                    # (AB, C); linear, A given, matrix, C test form
+    '_VarSetting_A_astB_ip_tC',                    # (AB, C); linear, B given, matrix, C test form
+    '_VarSetting_astA_astB_ip_tC',                 # (AB, C); A and B given, vector, C test form
+
+    # (AB, dC) ---------------------------------------------------------------------
+    '_VarSetting_AB_ip_dC',                         # (AB, dC) nonlinear; A, B, C all unknown
+    '_VarSetting_astA_B_ip_dtC',                    # (AB, dC); linear, A given, matrix, C test form
+    '_VarSetting_A_astB_ip_dtC',                    # (AB, dC); linear, B given, matrix, C test form
+    '_VarSetting_astA_astB_ip_dtC',                 # (AB, dC); A and B given, vector, C test form
+
+    # <AB|dC> ---------------------------------------------------------------------
+    '_VarSetting_AB_dp_dC',                         # <AB|dC> nonlinear; A, B, C all unknown
+    '_VarSetting_astA_B_dp_dtC',                    # <AB|dC>; linear, A given, matrix, C test form
+    '_VarSetting_A_astB_dp_dtC',                    # <AB|dC>; linear, B given, matrix, C test form
+    '_VarSetting_astA_astB_dp_dtC',                 # <AB|dC>; A and B given, vector, C test form
 
     # bundle valued forms ---------------------------------------------------------
     '_VarSetting_dastA_astA_tp_tC',                #
@@ -279,6 +308,113 @@ _VarSetting_A_x_astB_ip_tC = [
 _VarSetting_A_x_B_ip_C = [
     r"\left(\mathsf{\cdot x\cdot},\cdot\right)",
     _sep.join(["_X_:", "[{A}]", "[{B}]", "[{C}]"]),
+]
+
+# (A, BC) ---------------------------------------------------------------------------------------
+_VarSetting_A_ip_BC = [               # nonlinear
+    r"\left(\cdot,\cdot \ast \cdot\right)",
+    _sep.join(["_;_*_:", "[{A}]", "[{B}]", "[{C}]"]),
+]
+
+_VarSetting_astA_ip_B_tC = [         # A given; matrix
+    r"\mathsf{M}_{\left({A},\cdot \ast \mathsf{t}\right)}^{\left[\mathsf{t},\circ\right]}",
+    _sep.join(["X;_*_:", "[{A}]", "[{B}]", "[{C}]"]),
+]
+
+_VarSetting_A_ip_astB_tC = [         # B given; matrix
+    r"\mathsf{M}_{\left(\cdot,{B} \ast \mathsf{t}\right)}^{\left[\mathsf{t},\circ\right]}",
+    _sep.join(["_;X*_:", "[{A}]", "[{B}]", "[{C}]"]),
+]
+
+_VarSetting_astA_ip_astB_tC = [         # A and B given; vector
+    r"\mathsf{V}_{\left({A},{B} \ast \mathsf{t}\right)}^{\left[\mathsf{t}\right]}",
+    _sep.join(["X;X*_:", "[{A}]", "[{B}]", "[{C}]"]),
+]
+
+# <AB|C> -----------------------------------------------------------------------------------------
+_VarSetting_AB_dp_C = [               # nonlinear
+    r"\left<\left.\cdot \ast \cdot \right| \cdot\right>",
+    _sep.join(["_*_|_:", "[{A}]", "[{B}]", "[{C}]"]),
+]
+
+_VarSetting_astA_B_dp_tC = [         # A given; matrix
+    # r"M{A}",
+    r"\mathsf{M}_{\left<\left. {A} \ast \circ \right|\mathsf{t}\right>}^{\left[\mathsf{t},\circ\right]}",
+    _sep.join(["X*_|_:", "[{A}]", "[{B}]", "[{C}]"]),
+]
+
+_VarSetting_A_astB_dp_tC = [         # B given; matrix
+    r"\mathsf{M}_{\left<\left.\circ \ast {B} \right|\mathsf{t}\right>}^{\left[\mathsf{t},\circ\right]}",
+    _sep.join(["_*X|_:", "[{A}]", "[{B}]", "[{C}]"]),
+]
+
+_VarSetting_astA_astB_dp_tC = [         # A and B given; vector
+    r"\mathsf{V}_{\left<\left. {A} \ast {B} \right|\mathsf{t}\right>}^{\left[\mathsf{t}\right]}",
+    _sep.join(["X*X|_:", "[{A}]", "[{B}]", "[{C}]"]),
+]
+
+# (AB, C) -----------------------------------------------------------------------------------------
+_VarSetting_AB_ip_C = [               # nonlinear
+    r"\left(\cdot \ast \cdot,\cdot\right)",
+    _sep.join(["_*_,_:", "[{A}]", "[{B}]", "[{C}]"]),
+]
+
+_VarSetting_astA_B_ip_tC = [         # A given; matrix
+    r"\mathsf{M}_{\left({A} \ast \circ ,\mathsf{t}\right)}^{\left[\mathsf{t},\circ\right]}",
+    _sep.join(["X*_,_:", "[{A}]", "[{B}]", "[{C}]"]),
+]
+
+_VarSetting_A_astB_ip_tC = [         # B given; matrix
+    r"\mathsf{M}_{\left( \circ \ast {B} ,\mathsf{t}\right)}^{\left[\mathsf{t},\circ\right]}",
+    _sep.join(["_*X,_:", "[{A}]", "[{B}]", "[{C}]"]),
+]
+
+_VarSetting_astA_astB_ip_tC = [         # A and B given; vector
+    r"\mathsf{V}_{\left( {A} \ast {B} ,\mathsf{t}\right)}^{\left[\mathsf{t}\right]}",
+    _sep.join(["X*X,_:", "[{A}]", "[{B}]", "[{C}]"]),
+]
+
+# (AB, d(C)) -----------------------------------------------------------------------------------------
+_VarSetting_AB_ip_dC = [               # nonlinear
+    r"\left(\cdot \ast \cdot,\mathrm{d}\cdot\right)",
+    _sep.join(["_*_,d_:", "[{A}]", "[{B}]", "[{C}]"]),
+]
+
+_VarSetting_astA_B_ip_dtC = [         # A given; matrix
+    # r"M{A}",
+    r"\mathsf{M}_{\left({A} \ast \circ ,\mathrm{d}\mathsf{t}\right)}^{\left[\mathsf{t},\circ\right]}",
+    _sep.join(["X*_,d_:", "[{A}]", "[{B}]", "[{C}]"]),
+]
+
+_VarSetting_A_astB_ip_dtC = [         # B given; matrix
+    r"\mathsf{M}_{\left( \circ \ast {B} ,\mathrm{d}\mathsf{t}\right)}^{\left[\mathsf{t},\circ\right]}",
+    _sep.join(["_*X,d_:", "[{A}]", "[{B}]", "[{C}]"]),
+]
+
+_VarSetting_astA_astB_ip_dtC = [         # A and B given; vector
+    r"\mathsf{V}_{\left( {A} \ast {B} ,\mathrm{d}\mathsf{t}\right)}^{\left[\mathsf{t}\right]}",
+    _sep.join(["X*X,d_:", "[{A}]", "[{B}]", "[{C}]"]),
+]
+
+# <AB|dC> -----------------------------------------------------------------------------------------
+_VarSetting_AB_dp_dC = [               # nonlinear
+    r"\left<\left.\cdot \ast \mathrm{d}\cdot\right|\cdot\right>",
+    _sep.join(["_*_|d_:", "[{A}]", "[{B}]", "[{C}]"]),
+]
+
+_VarSetting_astA_B_dp_dtC = [         # A given; matrix
+    r"\mathsf{M}_{\left<{A}\left. \ast \circ\right|\mathrm{d}\mathsf{t}\right>}^{\left[\mathsf{t},\circ\right]}",
+    _sep.join(["X*_|d_:", "[{A}]", "[{B}]", "[{C}]"]),
+]
+
+_VarSetting_A_astB_dp_dtC = [         # B given; matrix
+    r"\mathsf{M}_{\left<\left. \circ \ast {B}\right|\mathrm{d}\mathsf{t}\right>}^{\left[\mathsf{t},\circ\right]}",
+    _sep.join(["_*X|d_:", "[{A}]", "[{B}]", "[{C}]"]),
+]
+
+_VarSetting_astA_astB_dp_dtC = [         # A and B given; vector
+    r"\mathsf{V}_{\left< \left.{A} \ast {B}\right|\mathrm{d}\mathsf{t}\right>}^{\left[\mathsf{t}\right]}",
+    _sep.join(["X*X|d_:", "[{A}]", "[{B}]", "[{C}]"]),
 ]
 
 # --------------- <A x B | C> --------------------------------------------------------------------

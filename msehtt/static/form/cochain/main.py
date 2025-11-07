@@ -60,7 +60,7 @@ class MseHttCochain(Frozen):
                 pass
             else:
                 if auto_cleaning is True:
-                    left_cochain_amount = 2
+                    left_cochain_amount = 3
                 elif isinstance(auto_cleaning, (int, float)):
                     left_cochain_amount = auto_cleaning
                 else:

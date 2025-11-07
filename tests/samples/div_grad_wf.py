@@ -5,7 +5,7 @@ import __init__ as ph
 from src.form.operators import trace, Hodge
 
 
-def wf_div_grad(n=3, degree=2, orientation='outer', periodic=False):
+def wf_div_grad(n=3, degree=2, orientation='outer', periodic=False, **kwargs):
     """Generate wf representations of the Poisson problem.
 
     """
@@ -14,7 +14,7 @@ def wf_div_grad(n=3, degree=2, orientation='outer', periodic=False):
         if periodic:
             return _outer_periodic_Poisson(n, degree)
         else:
-            return _outer_Poisson(n, degree)
+            return _outer_Poisson(n, degree, **kwargs)
     elif orientation == 'inner':
         # f = - d d^{\ast} phi
         if periodic:
@@ -83,7 +83,7 @@ def _outer_periodic_Poisson(n, degree):
     return ls, mp
 
 
-def _outer_Poisson(n, degree):
+def _outer_Poisson(n, degree, num_abstract_bs=5):
     """
     f = - div grad phi
 
@@ -134,6 +134,14 @@ def _outer_Poisson(n, degree):
             r"\Gamma_u": trace(u),
             r"\Gamma_\phi": trace(Hodge(phi)),
         }
+    )
+
+    abs_bs = []
+    for i in range(num_abstract_bs):
+        abs_bs.append(rf"\Gamma_{i}")
+
+    pde.bc.partition(
+        *abs_bs
     )
 
     wf = pde.test_with([Lambda_nm1, Lambda_n], sym_repr=[rf'v^{n-1}', rf'q^{n}'])

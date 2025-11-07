@@ -148,7 +148,12 @@ class MseHttMsePyConfig(Frozen):
 
             elif m == 3:
                 if metric_signature is None:
-                    raise NotImplementedError('unique msepy curvilinear hexahedron not implemented')
+                    element_type_dict[i] = 'unique msepy curvilinear hexahedron'
+                    element_parameter_dict[i] = {
+                        'region': element._region,
+                        'origin': element.ct._origin,
+                        'delta': element.ct._delta,
+                    }
 
                 elif metric_signature[:7] == 'Linear:':
                     # orthogonal hexahedron element

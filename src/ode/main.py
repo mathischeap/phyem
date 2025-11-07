@@ -143,11 +143,14 @@ class OrdinaryDifferentialEquation(Frozen):
                 ind[i].append(index)
                 k += 1
 
-        _about = list(set(_about))
-        assert len(_about) <= 1, f"this ode should have no or only about a single root-form."
         if len(_about) == 1:
             self._about = _about[0]
             self._overall_order = max(overall_order)
+
+        elif len(_about) > 1:
+            self._about = _about
+            self._overall_order = max(overall_order)
+
         else:
             self._about = None
             self._overall_order = None

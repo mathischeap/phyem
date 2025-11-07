@@ -11,6 +11,9 @@ except ModuleNotFoundError:
 
 from msehtt.static.mesh.great.config.vtu import MseHttVtuInterface
 
+from tools.functions.space._2d.distance import distance
+import math
+
 
 class MseHtt_API_2_MeshPy(Frozen):
     r""""""
@@ -39,7 +42,7 @@ class MseHtt_API_2_MeshPy(Frozen):
         else:
             raise NotImplementedError
 
-    def ___case_0_parser___(self, max_volume=None,):
+    def ___case_0_parser___(self, max_volume=None):
         r"""Only provided points. Then must be 2d mesh. All points are in a sequence around the domain.
         The mesh will be triangular mesh.
 
@@ -65,18 +68,74 @@ class MseHtt_API_2_MeshPy(Frozen):
         mesh_tris = np.array(mesh.elements)
 
         coo = {}
+
+        renumbering = {}
+        count = 0
+        COO = {}
+        for i, ___ in enumerate(mesh_points):
+            coo[i] = ___
+            coo_str = "%.9f" % ___[0] + ',' + "%.9f" % ___[1]
+            if coo_str in renumbering:
+                pass
+            else:
+                renumbering[coo_str] = count
+                COO[count] = ___
+                count += 1
+
         connections = {}
         cell_types = {}
 
-        for i, ___ in enumerate(mesh_points):
-            coo[i] = ___
+        element_index = 0
+        for connection in mesh_tris:
+            assert len(connection) == 3, f"must be a triangle."
+            element_connection = [int(_) for _ in connection]
 
-        for element_index, connection in enumerate(mesh_tris):
-            cell_types[element_index] = 5  # all triangles
-            connections[element_index] = [int(_) for _ in connection]
+            A = coo[element_connection[0]]
+            B = coo[element_connection[1]]
+            C = coo[element_connection[2]]
+
+            # Square of lengths be a2, b2, c2
+            a = distance(B, C)
+            b = distance(A, C)
+            c = distance(A, B)
+
+            # length of sides be a, b, c
+            a2 = a ** 2
+            b2 = b ** 2
+            c2 = c ** 2
+
+            # From Cosine law
+            alpha = (b2 + c2 - a2) / (2 * b * c)
+            beta = (a2 + c2 - b2) / (2 * a * c)
+            gamma = (a2 + b2 - c2) / (2 * a * b)
+
+            if -1 < alpha < 1 and -1 < beta < 1 and -1 < gamma < 1:
+                if alpha < -0.95 or alpha > 0.95 or beta < -0.95 or beta > 0.95 or gamma < -0.95 or gamma > 0.95:
+                    alpha = math.acos(alpha)
+                    beta = math.acos(beta)
+                    gamma = math.acos(gamma)
+                    # Converting to degree
+                    alpha = alpha * 180 / math.pi
+                    beta = beta * 180 / math.pi
+                    gamma = gamma * 180 / math.pi
+                    print(f"WARNING: very bad triangle found!, its inner angles are {alpha} {beta} {gamma}", flush=True)
+                else:
+                    pass
+
+                coo_str_A = "%.9f" % A[0] + ',' + "%.9f" % A[1]
+                coo_str_B = "%.9f" % B[0] + ',' + "%.9f" % B[1]
+                coo_str_C = "%.9f" % C[0] + ',' + "%.9f" % C[1]
+                TRUE_CONNECTION = [
+                    renumbering[coo_str_A], renumbering[coo_str_B], renumbering[coo_str_C]
+                ]
+                cell_types[element_index] = 5  # all triangles
+                connections[element_index] = TRUE_CONNECTION
+                element_index += 1
+            else:
+                pass
 
         api2vtu = MseHttVtuInterface(
-            coo, connections, cell_types,
+            COO, connections, cell_types,
             redistribute=True
         )
         return api2vtu

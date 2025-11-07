@@ -7,7 +7,7 @@ from src.config import COMM
 from msehtt.static.space.mass_matrix.Lambda.MM_m2n2k0 import mass_matrix_Lambda__m2n2k0
 
 
-def norm_Lambda__m2n2k0(tpm, degree, cochain, norm_type='L2'):
+def norm_Lambda__m2n2k0(tpm, degree, cochain, norm_type='L2', component_wise=False):
     """"""
     if norm_type == "L2":
         M = mass_matrix_Lambda__m2n2k0(tpm, degree)[0]
@@ -17,7 +17,13 @@ def norm_Lambda__m2n2k0(tpm, degree, cochain, norm_type='L2'):
             e_cochain = cochain[e]
             e_mm = M[e]
             local_norm_square += np.sum(e_cochain * (e_mm @ e_cochain))
-        return (sum(COMM.allgather(local_norm_square)))**0.5
+
+        norm = (sum(COMM.allgather(local_norm_square)))**0.5
+
+        if component_wise:
+            return [norm, ]
+        else:
+            return norm
 
     else:
         raise NotImplementedError(f"norm_type={norm_type} is not implemented")

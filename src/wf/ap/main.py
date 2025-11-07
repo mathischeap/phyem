@@ -135,7 +135,7 @@ class AlgebraicProxy(Frozen):
         """Print the representations"""
         from src.config import RANK, MASTER_RANK
         if RANK != MASTER_RANK:
-            return
+            return None
         else:
             pass
         seek_text = self._wf._mesh.manifold._manifold_text()

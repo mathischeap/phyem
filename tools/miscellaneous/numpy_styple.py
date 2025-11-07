@@ -1,10 +1,9 @@
 # -*- coding: utf-8 -*-
 r""""""
-from abc import ABC
 from types import FunctionType, MethodType
 
 
-class NumpyStyleDocstringReader(ABC):
+class NumpyStyleDocstringReader(object):
     """ This class can only read numpy style docstring."""
     def __init__(self, fm2read):
         isinstance(fm2read, (FunctionType, MethodType)), " <DocstringReader> : I need a function or method to read."

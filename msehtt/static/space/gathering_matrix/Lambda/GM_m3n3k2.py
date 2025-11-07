@@ -34,7 +34,10 @@ def gathering_matrix_Lambda__m3n3k2(tpm, degree):
             map_ = global_map[e]
             # --------- call the element class to do the particular numbering -----------
             if e in tpm.composition.global_element_range:
-                if etype in ('orthogonal hexahedron',):
+                if etype in (
+                    'orthogonal hexahedron',
+                    "unique msepy curvilinear hexahedron",
+                ):
                     global_numbering[e], current = ___gm332_msepy_quadrilateral___(
                         map_,
                         face_numbering_pool,

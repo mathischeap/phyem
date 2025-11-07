@@ -89,7 +89,73 @@ def msehtt_root_array_parser(dls, array_lin_repr):
                        _VarSetting_A_x_astB__dp__tC):
             A, _ti = PARSER.Parse__A_x_astB__dp__tC(*info_indicators)
 
+        # ------------- (AB, d(C)) ------------------------------------------------------------------
+        elif type_indicator == PARSER._find_indicator(
+                       _VarSetting_astA_B_ip_dtC):
+            A, _ti = PARSER.Parse__astA_B_ip_dtC(*info_indicators)
+
+        elif type_indicator == PARSER._find_indicator(
+                       _VarSetting_A_astB_ip_dtC):
+            A, _ti = PARSER.Parse__A_astB_ip_dtC(*info_indicators)
+
+        elif type_indicator == PARSER._find_indicator(
+                       _VarSetting_astA_astB_ip_dtC):
+            A, _ti = PARSER.Parse__astA_astB_ip_dtC(*info_indicators)
+
+        # ------------- <AB|d(C)> ------------------------------------------------------------------
+        elif type_indicator == PARSER._find_indicator(
+                       _VarSetting_astA_B_dp_dtC):
+            A, _ti = PARSER.Parse__astA_B_dp_dtC(*info_indicators)
+
+        elif type_indicator == PARSER._find_indicator(
+                       _VarSetting_A_astB_dp_dtC):
+            A, _ti = PARSER.Parse__A_astB_dp_dtC(*info_indicators)
+
+        elif type_indicator == PARSER._find_indicator(
+                       _VarSetting_astA_astB_dp_dtC):
+            A, _ti = PARSER.Parse__astA_astB_dp_dtC(*info_indicators)
+
+        # ------------- (A, BC) ------------------------------------------------------------------
+        elif type_indicator == PARSER._find_indicator(
+                       _VarSetting_astA_ip_B_tC):
+            A, _ti = PARSER.Parse__astA_ip_B_tC(*info_indicators)
+
+        elif type_indicator == PARSER._find_indicator(
+                       _VarSetting_A_ip_astB_tC):
+            A, _ti = PARSER.Parse__A_ip_astB_tC(*info_indicators)
+
+        elif type_indicator == PARSER._find_indicator(
+                       _VarSetting_astA_ip_astB_tC):
+            A, _ti = PARSER.Parse__astA_ip_astB_tC(*info_indicators)
+
+        # ------------- <AB|C> ------------------------------------------------------------------
+        elif type_indicator == PARSER._find_indicator(
+                       _VarSetting_astA_B_dp_tC):
+            A, _ti = PARSER.Parse__astA_B_dp_tC(*info_indicators)
+
+        elif type_indicator == PARSER._find_indicator(
+                       _VarSetting_A_astB_dp_tC):
+            A, _ti = PARSER.Parse__A_astB_dp_tC(*info_indicators)
+
+        elif type_indicator == PARSER._find_indicator(
+                       _VarSetting_astA_astB_dp_tC):
+            A, _ti = PARSER.Parse__astA_astB_dp_tC(*info_indicators)
+
+        # ------------- (AB, C) ------------------------------------------------------------------
+        elif type_indicator == PARSER._find_indicator(
+                       _VarSetting_astA_B_ip_tC):
+            A, _ti = PARSER.Parse__astA_B_ip_tC(*info_indicators)
+
+        elif type_indicator == PARSER._find_indicator(
+                       _VarSetting_A_astB_ip_tC):
+            A, _ti = PARSER.Parse__A_astB_ip_tC(*info_indicators)
+
+        elif type_indicator == PARSER._find_indicator(
+                       _VarSetting_astA_astB_ip_tC):
+            A, _ti = PARSER.Parse__astA_astB_ip_tC(*info_indicators)
+
         # ===========================================================================================
+
         else:
             raise NotImplementedError(
                 f"I cannot parse array: {type_indicator} with parameters: {info_indicators}."

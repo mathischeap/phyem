@@ -61,7 +61,7 @@ class MseHttGreatMeshElements(Frozen):
         return len(self._elements_dict)
 
     def __contains__(self, item):
-        """If the element indexed ``item`` is an valid element in this rank?"""
+        """If the element indexed ``item`` is a valid element in this rank?"""
         return item in self._elements_dict
 
     def __iter__(self):

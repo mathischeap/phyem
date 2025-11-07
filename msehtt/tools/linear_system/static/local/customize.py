@@ -20,6 +20,20 @@ class MseHttStaticLinearSystemCustomize(Frozen):
         A.customize.identify_row(global_dof)
         b.customize.set_value(global_dof, value)
 
+    def set_local_dof(self, ith_unknown, element_index, local_dof_index, value):
+        r""""""
+        A = self._sls.A._mA
+        b = self._sls.b._vb
+        global_numbering0 = A._gm_row.find_global_numbering_of_ith_composition_local_dof(
+            ith_unknown, element_index, local_dof_index
+        )
+        global_numbering1 = b._gm.find_global_numbering_of_ith_composition_local_dof(
+            ith_unknown, element_index, local_dof_index
+        )
+        assert global_numbering0 == global_numbering1
+        A.customize.identify_row(global_numbering0)
+        b.customize.set_value(global_numbering0, value)
+
     def set_element_only_local_dof(self, element_index, local_dof, value):
         """Only change the local system of element #`element_index`.
 

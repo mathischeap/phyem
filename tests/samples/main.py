@@ -11,6 +11,7 @@ __all__ = [
     "InitialConditionShearLayerRollUp",
 
     "InitialConditionOrszagTangVortex",
+    "InitialConditionOrszagTangVortex_3D",
     "InitialCondition_LoopAdvection",
 
     "Eigen2",
@@ -30,13 +31,27 @@ __all__ = [
     "ManufacturedSolutionLSingularity",
 
     "MHD3_Helicity_Conservation_test1",
+
+    "ManufacturedSolution_Hall_MHD3_0",  # periodic domain [0, 2pi]^3
+    "ManufacturedSolution_Hall_MHD3_1",  # [0, 2pi]^3, uxn = Bxn = 0, P =0
+    "ManufacturedSolution_Hall_MHD3_2",  # [0, 2pi]^3, uxn = Exn = 0, P =0
+    "ManufacturedSolution_Hall_MHD3_3",  # [0, 2pi]^3  omega x n = 0 = Bxn = 0, P = 0
+    "ManufacturedSolution_Hall_MHD3_4_TemporalAccuracy",  # [0, 1]^3  uxn = Bxn = 0, P = 0; For temporal accuracy.
+    "ManufacturedSolution_Hall_MHD3_Conservation0",  # [0, 1]^3 uxn = Bxn = 0, P = 0; initial condition;
+                                                     # For conservation tests only.
+    "ManufacturedSolution_Hall_MHD3_NullPoints",     # Null Points in [-1, 1]^3
+
+    "Manufactured_Solution_PNPNS_2D_PeriodicDomain1",
 ]
+
 
 from tests.samples.canonical_pH_pde import pde_canonical_pH
 from tests.samples.div_grad_wf import wf_div_grad
 from tests.samples.iniCond_shear_layer_rollup import InitialConditionShearLayerRollUp
 
 from tests.samples.iniCond_Orszag_Tang_vortex import InitialConditionOrszagTangVortex
+from tests.samples.iniCond_Orszag_Tang_vortex import InitialConditionOrszagTangVortex_3D
+
 from tests.samples.iniCond_loop_advection import InitialCondition_LoopAdvection
 
 from tests.samples.conditions_flow_around_cylinder_2d import ConditionsFlowAroundCylinder2
@@ -58,3 +73,13 @@ from tests.samples.manuSolution_NS3 import ManufacturedSolutionNS3Conservation1
 from tests.samples.manuSolution_L_singularity import ManufacturedSolutionLSingularity
 
 from tests.samples.condition_MHD3_Hu_helicity_test import MHD3_Helicity_Conservation_test1
+
+from tests.samples.manuSolution_Hall_MHD import ManufacturedSolution_Hall_MHD3_0
+from tests.samples.manuSolution_Hall_MHD import ManufacturedSolution_Hall_MHD3_1
+from tests.samples.manuSolution_Hall_MHD import ManufacturedSolution_Hall_MHD3_2
+from tests.samples.manuSolution_Hall_MHD import ManufacturedSolution_Hall_MHD3_3
+from tests.samples.manuSolution_Hall_MHD import ManufacturedSolution_Hall_MHD3_4_TemporalAccuracy
+from tests.samples.manuSolution_Hall_MHD import ManufacturedSolution_Hall_MHD3_Conservation0
+from tests.samples.manuSolution_Hall_MHD import ManufacturedSolution_Hall_MHD3_NullPoints
+
+from tests.samples.manuSolution_PNPNS2 import Manufactured_Solution_PNPNS_2D_PeriodicDomain1

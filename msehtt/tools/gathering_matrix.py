@@ -293,6 +293,22 @@ class MseHttGatheringMatrix(Frozen):
 
         return COMM.allreduce(rank_true_or_false, op=MPI.LAND)
 
+    def find_global_numbering_of_ith_composition_local_dof(
+            self, ith_composition, element_index, local_dof
+    ):
+        r""""""
+        if element_index in self:
+            if ith_composition == 0:
+                global_numbering = self._gm[element_index][local_dof]
+            else:
+                start = 0
+                for j in range(ith_composition):
+                    start += self._gms[j].num_local_dofs(element_index)
+                global_numbering = self._gm[element_index][start + local_dof]
+        else:
+            global_numbering = 0
+        return COMM.allreduce(global_numbering, op=MPI.SUM)
+
     def find_global_numbering_of_local_dofs(self, elements, local_indices):
         """Each element in `elements` must be a local. So, no communication
         take place in this method.

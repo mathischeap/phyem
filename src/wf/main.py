@@ -686,7 +686,7 @@ class WeakFormulation(Frozen):
         """"""
         from src.config import RANK, MASTER_RANK
         if RANK != MASTER_RANK:
-            return
+            return None
         else:
             pass
 
@@ -785,7 +785,7 @@ class WeakFormulation(Frozen):
         """
         from src.config import RANK, MASTER_RANK
         if RANK != MASTER_RANK:
-            return
+            return None
         else:
             pass
 
@@ -891,6 +891,7 @@ class WeakFormulation(Frozen):
 
         if saveto is not None:
             plt.savefig(saveto, bbox_inches='tight', dpi=200)
+            return None
         else:
             from src.config import _setting, _pr_cache
             if _setting['pr_cache']:

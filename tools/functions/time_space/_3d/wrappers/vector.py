@@ -25,7 +25,7 @@ class T3dVector(TimeSpaceFunctionBase):
     """ Wrap three functions into a vector class.
     """
 
-    def __init__(self, v0, v1, v2, steady=False):
+    def __init__(self, v0, v1, v2, steady=False, Jacobian_matrix=None, time_derivative=None):
         """Initialize a vector with 3 functions which take (t, x, y, z) as inputs.
 
         Parameters
@@ -33,6 +33,35 @@ class T3dVector(TimeSpaceFunctionBase):
         v0
         v1
         v2
+        steady :
+            If it is steady, then this vector is independent of t.
+        Jacobian_matrix :
+            We can provide Jacobian matrix (3 by 3). We can give some components of it.
+            For the missing ones, just give None. For example,
+
+            Jacobian_matrix = (
+                [None, None, None],
+                [dv_dx, None, None],
+                [dw_dx, dw_dy, None]
+            )
+
+            We receive dv_dx, dw_dx, and dw_dy. For other components, we will use numerical
+            approach to compute them.
+
+            dw_dx, dw_dy, and dv_dx are all functions taking (t, x, y, z) as inputs.
+
+        time_derivative :
+            Like Jacobian_matrix, we can provide the analytical expressions of the
+            time derivative.
+
+            For example,
+
+            time_derivative = (None, dv_dt, dw_dt)
+
+            we provide dv_dt and dw_dt and leave du_dx for numerical approach.
+
+            dv_dt and dw_dt are both functions taking (t, x, y, z) as inputs.
+
         """
         super().__init__(steady)   # if it is steady, it is independent of t!
         if isinstance(v0, (int, float)) and v0 == 0:
@@ -55,6 +84,55 @@ class T3dVector(TimeSpaceFunctionBase):
         self.__NPD0__ = None
         self.__NPD1__ = None
         self.__NPD2__ = None
+
+        JM = [
+            [None, None, None],  # du_dx, du_dy, du_dz
+            [None, None, None],  # dv_dx, dv_dy, dv_dz
+            [None, None, None],  # dw_dx, dw_dy, dw_dz
+        ]
+        if Jacobian_matrix is None:
+            pass
+        else:
+            assert isinstance(Jacobian_matrix, (list, tuple)) and len(Jacobian_matrix) == 3, \
+                f"Jacobian_matrix must be a 3 by 3 object (like a tuple or list)"
+            for i, J_ in enumerate(Jacobian_matrix):
+                assert len(J_) == 3, (f"Jacobian_matrix must be a 3 by 3 object (like a tuple or list), "
+                                      f"len(J[{i},:])={len(J_)}, is not 3.")
+                for j, Jij in enumerate(J_):
+                    if isinstance(Jij, (int, float)):
+                        if Jij == 0:
+                            JM[i][j] = ___0_func___
+                        else:
+                            raise NotImplementedError()
+                    else:
+                        JM[i][j] = Jacobian_matrix[i][j]
+
+        self._JM = JM
+        self._du_dx = JM[0][0]
+        self._du_dy = JM[0][1]
+        self._du_dz = JM[0][2]
+        self._dv_dx = JM[1][0]
+        self._dv_dy = JM[1][1]
+        self._dv_dz = JM[1][2]
+        self._dw_dx = JM[2][0]
+        self._dw_dy = JM[2][1]
+        self._dw_dz = JM[2][2]
+
+        if self.___is_steady___:
+
+            self._td = (___0_func___, ___0_func___, ___0_func___)
+
+        else:
+            if time_derivative is None:
+                time_derivative = (None, None, None)
+            else:
+                assert len(time_derivative) == 3, \
+                    f"must provide three components of time_derivative representing (du_dt, dv_dt, dw_dt)."
+
+            self._td = time_derivative
+
+        self._du_dt, self._dv_dt, self._dw_dt = self._td
+
         self._freeze()
 
     def __call__(self, t, x, y, z):
@@ -114,16 +192,39 @@ class T3dVector(TimeSpaceFunctionBase):
 
     @property
     def time_derivative(self):
-        pv0_pt = self._NPD0_('t')
-        pv1_pt = self._NPD1_('t')
-        pv2_pt = self._NPD2_('t')
+        if self._du_dt is None:
+            pv0_pt = self._NPD0_('t')
+        else:
+            pv0_pt = self._du_dt
+
+        if self._dv_dt is None:
+            pv1_pt = self._NPD1_('t')
+        else:
+            pv1_pt = self._dv_dt
+
+        if self._dw_dt is None:
+            pv2_pt = self._NPD2_('t')
+        else:
+            pv2_pt = self._dw_dt
+
         return self.__class__(pv0_pt, pv1_pt, pv2_pt)
 
     @property
     def divergence(self):
-        pv0_px = self._NPD0_('x')
-        pv1_py = self._NPD1_('y')
-        pv2_pz = self._NPD2_('z')
+        if self._du_dx is None:
+            pv0_px = self._NPD0_('x')
+        else:
+            pv0_px = self._du_dx
+
+        if self._dv_dy is None:
+            pv1_py = self._NPD1_('y')
+        else:
+            pv1_py = self._dv_dy
+
+        if self._dw_dz is None:
+            pv2_pz = self._NPD2_('z')
+        else:
+            pv2_pz = self._dw_dz
 
         scalar_function = t3d_3ScalarAdd(pv0_px, pv1_py, pv2_pz)
 
@@ -141,12 +242,35 @@ class T3dVector(TimeSpaceFunctionBase):
         -------
 
         """
-        pw_py = self._NPD2_('y')
-        pw_px = self._NPD2_('x')
-        pu_pz = self._NPD0_('z')
-        pu_py = self._NPD0_('y')
-        pv_px = self._NPD1_('x')
-        pv_pz = self._NPD1_('z')
+        if self._dw_dy is None:
+            pw_py = self._NPD2_('y')
+        else:
+            pw_py = self._dw_dy
+
+        if self._dw_dx is None:
+            pw_px = self._NPD2_('x')
+        else:
+            pw_px = self._dw_dx
+
+        if self._du_dz is None:
+            pu_pz = self._NPD0_('z')
+        else:
+            pu_pz = self._du_dz
+
+        if self._du_dy is None:
+            pu_py = self._NPD0_('y')
+        else:
+            pu_py = self._du_dy
+
+        if self._dv_dx is None:
+            pv_px = self._NPD1_('x')
+        else:
+            pv_px = self._dv_dx
+
+        if self._dv_dz is None:
+            pv_pz = self._NPD1_('z')
+        else:
+            pv_pz = self._dv_dz
 
         v0 = t3d_ScalarSub(pw_py, pv_pz)
         v1 = t3d_ScalarSub(pu_pz, pw_px)
@@ -167,15 +291,50 @@ class T3dVector(TimeSpaceFunctionBase):
         """
         assert u.__class__.__name__ == "t3dVector", f"I need a t3dVector."
 
-        v0px = self._NPD0_('x')
-        v0py = self._NPD0_('y')
-        v0pz = self._NPD0_('z')
-        v1px = self._NPD1_('x')
-        v1py = self._NPD1_('y')
-        v1pz = self._NPD1_('z')
-        v2px = self._NPD2_('x')
-        v2py = self._NPD2_('y')
-        v2pz = self._NPD2_('z')
+        if self._du_dx is None:
+            v0px = self._NPD0_('x')
+        else:
+            v0px = self._du_dx
+
+        if self._du_dy is None:
+            v0py = self._NPD0_('y')
+        else:
+            v0py = self._du_dy
+
+        if self._du_dz is None:
+            v0pz = self._NPD0_('z')
+        else:
+            v0pz = self._du_dz
+
+        if self._dv_dx is None:
+            v1px = self._NPD1_('x')
+        else:
+            v1px = self._dv_dx
+
+        if self._dv_dy is None:
+            v1py = self._NPD1_('y')
+        else:
+            v1py = self._dv_dy
+
+        if self._dv_dz:
+            v1pz = self._NPD1_('z')
+        else:
+            v1pz = self._dv_dz
+
+        if self._dw_dx is None:
+            v2px = self._NPD2_('x')
+        else:
+            v2px = self._dw_dx
+
+        if self._dw_dy is None:
+            v2py = self._NPD2_('y')
+        else:
+            v2py = self._dw_dy
+
+        if self._dw_dz is None:
+            v2pz = self._NPD2_('z')
+        else:
+            v2pz = self._dw_dz
 
         vx, vy, vz = u._v0_, u._v1_, u._v2_
 

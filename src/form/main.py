@@ -122,8 +122,8 @@ matplotlib.use('TkAgg')
 from src.config import _global_lin_repr_setting
 from src.config import _parse_lin_repr
 from src.form.operators import wedge, time_derivative, d, codifferential, cross_product, tensor_product
-from src.form.operators import Cross_Product
-from src.form.operators import convect
+from src.form.operators import Cross_Product, CrossProduct, crossProduct
+from src.form.operators import convect, multi
 from src.form.operators import _project_to
 from src.config import _check_sym_repr
 from src.form.parameters import constant_scalar
@@ -347,6 +347,44 @@ class Form(Frozen):
         """The manifold this form is on."""
         return self.mesh.manifold
 
+    # ------------------------------------------------------------------------------------
+
+    def representing(self):
+        r"""What does this form representing?
+
+        So, return m, n, and scalar or vector or tensor or somthing similar!
+
+        """
+        m = self.space.m
+        n = self.space.n
+        indicator = self.space.indicator
+
+        if indicator == 'Lambda':
+            k = self.space.k
+            if m == n == 2:
+                if k == 1:
+                    v_type = 'vector'
+                elif k == 0 or k == 2:
+                    v_type = 'scalar'
+                else:
+                    raise Exception()
+            elif m == n == 3:
+                if k == 1 or k == 2:
+                    v_type = 'vector'
+                elif k == 0 or k == 3:
+                    v_type = 'scalar'
+                else:
+                    raise Exception()
+            else:
+                raise NotImplementedError()
+
+            return ['Lambda', m, n, v_type]
+
+        else:
+            raise NotImplementedError()
+
+    # --------------- OPERATORS ----------------------------------------------------------
+
     def wedge(self, other):
         r"""The wedge, :math:`\wedge`, between this form and another form."""
         return wedge(self, other)
@@ -367,6 +405,98 @@ class Form(Frozen):
         r"""The codifferential, :math:`\mathrm{d}^\ast`, of this form."""
         return codifferential(self)
 
+    def x(self, other, form_space=None):
+        r"""
+
+        Parameters
+        ----------
+        other
+        form_space :
+            i.e. the output space. We want to put the output to this space.
+
+        Returns
+        -------
+
+        """
+        try:
+            output1 = self.cross_product(other)
+        except NotImplementedError:
+            output1 = None
+
+        try:
+            output2 = self.Cross_Product(other)
+        except NotImplementedError:
+            output2 = None
+
+        try:
+            output3 = self.CrossProduct(other)
+        except NotImplementedError:
+            output3 = None
+
+        try:
+            output4 = self.crossProduct(other)
+        except NotImplementedError:
+            output4 = None
+
+        outputs = [output1, output2, output3, output4]
+        if all([_ is None for _ in outputs]):
+            raise NotImplementedError(
+                f"implement a cross-product somewhere!")
+        else:
+
+            if form_space.__class__ is self.__class__:
+                target_space = form_space.space
+            else:
+                raise NotImplementedError(f"which space?")
+
+            CANNOT_implement_in = []
+            if output1 is not None:
+                if output1.space is target_space:
+                    return output1
+                else:
+                    CANNOT_implement_in.append('cross_product')
+            else:
+                pass
+
+            if output2 is not None:
+                if output2.space is target_space:
+                    return output2
+                else:
+                    CANNOT_implement_in.append('Cross_Product')
+            else:
+                pass
+
+            if output3 is not None:
+                if output3.space is target_space:
+                    return output3
+                else:
+                    CANNOT_implement_in.append('CrossProduct')
+            else:
+                pass
+
+            if output4 is not None:
+                if output4.space is target_space:
+                    return output4
+                else:
+                    CANNOT_implement_in.append('crossProduct')
+            else:
+                pass
+
+            if len(CANNOT_implement_in) == 4:
+                raise Exception()
+            else:
+                cp = f"{self.space} x {other.space}"
+                if 'cross_product' not in CANNOT_implement_in:
+                    raise NotImplementedError(f"implement this cross-product: {cp} -> {target_space} in cross_product")
+                elif 'Cross_Product' not in CANNOT_implement_in:
+                    raise NotImplementedError(f"implement this cross-product: {cp} -> {target_space} in Cross_Product")
+                elif 'CrossProduct' not in CANNOT_implement_in:
+                    raise NotImplementedError(f"implement this cross-product: {cp} -> {target_space} in CrossProduct")
+                elif 'crossProduct' not in CANNOT_implement_in:
+                    raise NotImplementedError(f"implement this cross-product: {cp} -> {target_space} in crossProduct")
+                else:
+                    raise Exception()
+
     def cross_product(self, other):
         r"""The cross product, :math:`\times`, between this form and another form."""
         return cross_product(self, other)
@@ -374,6 +504,14 @@ class Form(Frozen):
     def Cross_Product(self, other):
         r"""Another branch of cross-product."""
         return Cross_Product(self, other)
+
+    def CrossProduct(self, other):
+        r"""Another branch of cross-product."""
+        return CrossProduct(self, other)
+
+    def crossProduct(self, other):
+        r"""Another branch of cross-product."""
+        return crossProduct(self, other)
 
     def convect(self, other):
         """Let self be u, other be w, we compute u dot(grad(w))."""
@@ -385,6 +523,16 @@ class Form(Frozen):
 
     def project_to(self, to_space):
         return _project_to(self, to_space)
+
+    def multi(self, other, output_space):
+        r"""Do f1 f2 -> a form in output space. For example, c = ab where a, b are both scalars, or D = a B where
+        a is scalar and BD are vectors.
+        """
+        if output_space.__class__ is self.__class__:
+            output_space = output_space.space
+        else:
+            raise NotImplementedError()
+        return multi(self, other, output_space)
 
     def __neg__(self):
         """- self"""
@@ -480,7 +628,6 @@ class Form(Frozen):
             return f
         else:
             raise NotImplementedError()
-        return None
 
     def __truediv__(self, other):
         """self / other"""

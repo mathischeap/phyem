@@ -172,19 +172,26 @@ class MseHttFormStaticCopy(Frozen):
         """"""
         return self._f.visualize(self._t)
 
-    def norm(self, norm_type='L2'):
+    def norm(self, norm_type='L2', component_wise=False):
         """
 
         Parameters
         ----------
         norm_type :
             ``L2_norm``: ((self, self)_{tpm}) ** 0.5
+        component_wise :
+            If `component_wise` is True, we return the norm of each component.
 
         Returns
         -------
 
         """
-        return float(self._f.norm(self.cochain, norm_type=norm_type))
+        if component_wise:
+            norms = self._f.norm(self.cochain, norm_type=norm_type, component_wise=True)
+            return [float(_) for _ in norms]
+
+        else:
+            return float(self._f.norm(self.cochain, norm_type=norm_type, component_wise=False))
 
     def inner_product(self, other, inner_type='L2'):
         r""""""
@@ -243,17 +250,35 @@ class ___MseHtt_Static_Form_Copy_Numeric___(Frozen):
         elements = self._f.space.tpm.composition
         in_elements_indexed = elements._find_in_which_elements_(*coo)
         the_element_index = in_elements_indexed[0]
-        if the_element_index in elements:
-            # we only make the interpolator in one RANK.
-            dtype, itp = self.interpolate(component_wise=True)
-            if dtype == '2d-scalar':
+
+        # we only make the interpolator in one RANK.
+        dtype, itp = self.interpolate(component_wise=True)
+        # return itp locally in all ranks. These interpolations are only valid in the local elements.
+
+        if dtype == '2d-scalar':
+            if the_element_index in elements:
                 w = itp[0]
                 x, y = coo
                 value = w(x, y)
             else:
-                raise NotImplementedError(dtype)
+                value = 0
+            return COMM.allreduce(value, op=MPI.SUM)
+
+        elif dtype == '3d-vector':
+            if the_element_index in elements:
+                U, V, W = itp
+                x, y, z = coo
+                vx = U(x, y, z)
+                vy = V(x, y, z)
+                vz = W(x, y, z)
+            else:
+                vx = 0
+                vy = 0
+                vz = 0
+            vx = COMM.allreduce(vx, op=MPI.SUM)
+            vy = COMM.allreduce(vy, op=MPI.SUM)
+            vz = COMM.allreduce(vz, op=MPI.SUM)
+            return float(vx), float(vy), float(vz)
 
         else:
-            value = 0
-
-        return COMM.allreduce(value, op=MPI.SUM)
+            raise NotImplementedError(dtype)

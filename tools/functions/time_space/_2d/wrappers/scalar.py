@@ -19,18 +19,91 @@ from tools.functions.time_space._2d.wrappers.helpers.scalar_neg import t2d_Scala
 from tools.functions.time_space._2d.wrappers.helpers.scalar_mul import t2d_ScalarMultiply
 from tools.functions.time_space._2d.wrappers.helpers.scalar_abs import t2d_ScalarAbs
 
+from tools.functions.time_space._2d.wrappers.helpers.log_helper import ___LOG_HELPER___
+from tools.functions.time_space._2d.wrappers.helpers.exp_helper import ___EXP_HELPER___
+
 from functools import partial
 from scipy.interpolate import LinearNDInterpolator
+
+
+# noinspection PyUnusedLocal
+def ___0_func2___(t, x, y):
+    """"""
+    return np.zeros_like(x)
 
 
 class T2dScalar(TimeSpaceFunctionBase):
     """"""
 
-    def __init__(self, s, steady=False):
-        """"""
+    def __init__(self, s, steady=False, derivative=None, second_derivative=None):
+        """
+
+        Parameters
+        ----------
+        s
+
+        steady
+
+        derivative :
+            [d/dt, d/dx, d/dy]
+
+        second_derivative :
+            [dd/dt^2, dd/dx^2, dd/dy^2, dd/dxdy]
+
+        """
         super().__init__(steady)
         self._s_ = s
         self.__NPD__ = None
+
+        D = [None, None, None]  # ds_dt, ds_dx, ds_dy
+
+        if derivative is None:
+            pass
+        else:
+            assert isinstance(derivative, (list, tuple)) and len(derivative) == 3, \
+                f"Please put df_dt, df_dx, df_dy into a list or tuple."
+
+            for i, di in enumerate(derivative):
+                if isinstance(di, (int, float)):
+                    if di == 0:
+                        D[i] = ___0_func2___
+                    else:
+                        raise NotImplementedError()
+                else:
+                    D[i] = di
+
+        if self.___is_steady___:
+            D[0] = ___0_func2___
+        else:
+            pass
+
+        self._derivative = D
+        self._dt, self._dx, self._dy = D
+
+        second_D = [None, None, None, None]  # [dd/dt^2, dd/dx^2, dd/dy^2, dd/dxdy]
+
+        if second_derivative is None:
+            pass
+        else:
+            assert isinstance(second_derivative, (list, tuple)) and len(second_derivative) == 4, \
+                f"Please put 4 second derivatives: [dd_dt^2, dd_dx^2, dd_dy^2, dd_dxdy] into a list or tuple."
+
+            for i, ddi in enumerate(second_derivative):
+                if isinstance(ddi, (int, float)):
+                    if ddi == 0:
+                        second_D[i] = ___0_func2___
+                    else:
+                        raise NotImplementedError()
+                else:
+                    second_D[i] = ddi
+
+        self._ddt = second_D[0]
+        self._ddx = second_D[1]
+        self._ddy = second_D[2]
+        self._dd_xy = second_D[3]
+
+        self._log_e_ = None
+        self._exp_ = None
         self._freeze()
 
     def __call__(self, t, x, y):
@@ -94,15 +167,24 @@ class T2dScalar(TimeSpaceFunctionBase):
     @property
     def time_derivative(self):
         """"""
-        ps_pt = self._NPD_('t')
+        if self._dt is None:
+            ps_pt = self._NPD_('t')
+        else:
+            ps_pt = self._dt
         return self.__class__(ps_pt)
 
     @property
     def gradient(self):
         """"""
+        if self._dx is None:
+            px = self._NPD_('x')
+        else:
+            px = self._dx
 
-        px = self._NPD_('x')
-        py = self._NPD_('y')
+        if self._dy is None:
+            py = self._NPD_('y')
+        else:
+            py = self._dy
 
         from tools.functions.time_space._2d.wrappers.vector import T2dVector
 
@@ -111,14 +193,50 @@ class T2dScalar(TimeSpaceFunctionBase):
     @property
     def curl(self):
         """R -> curl -> div -> 0"""
-        px = self._NPD_('x')
-        py = self._NPD_('y')
+        if self._dx is None:
+            px = self._NPD_('x')
+        else:
+            px = self._dx
+
+        if self._dy is None:
+            py = self._NPD_('y')
+        else:
+            py = self._dy
 
         neg_px = (- self.__class__(px))._s_
 
         from tools.functions.time_space._2d.wrappers.vector import T2dVector
 
         return T2dVector(py, neg_px)
+
+    @property
+    def Laplacian(self):
+        r"""Return a T2dScalar instance representing laplace of self."""
+        if self._ddx is None or self._ddy is None:
+            u = self.gradient
+            return u.divergence
+        else:
+            return self.__class__(t2d_ScalarAdd(self._ddx, self._ddy))
+
+    def log(self, base=np.e):
+        r"""return a scalar function of (t, x, y) which computes log_{base} self(t, x, t).
+
+        Be default, we compute log_e.
+
+        """
+        if base == np.e:
+            if self._log_e_ is None:
+                self._log_e_ = self.__class__(___LOG_HELPER___(self._s_, base=np.e))
+            return self._log_e_
+        else:
+            raise NotImplementedError()
+
+    @property
+    def exp(self):
+        r"""return a scalar function of (t, x, y) which computes exp^{self(t, x, y)}."""
+        if self._exp_ is None:
+            self._exp_ = self.__class__(___EXP_HELPER___(self._s_))
+        return self._exp_
 
     @property
     def abs(self):
@@ -138,8 +256,15 @@ class T2dScalar(TimeSpaceFunctionBase):
         """
         assert u.__class__.__name__ == "t2dVector", f"I need a t2dVector."
 
-        px = self._NPD_('x')
-        py = self._NPD_('y')
+        if self._dx is None:
+            px = self._NPD_('x')
+        else:
+            px = self._dx
+
+        if self._dy is None:
+            py = self._NPD_('y')
+        else:
+            py = self._dy
 
         vx, vy = u._v0_, u._v1_
 
@@ -187,12 +312,19 @@ class T2dScalar(TimeSpaceFunctionBase):
             s0_mul_s1 = t2d_ScalarMultiply(self._s_, other)
             return self.__class__(s0_mul_s1)
 
+        elif other.__class__.__name__ == 'T2dVector':
+            s0v0 = t2d_ScalarMultiply(self._s_, other._v0_)
+            s0v1 = t2d_ScalarMultiply(self._s_, other._v1_)
+            return other.__class__(s0v0, s0v1)
+
         else:
             raise NotImplementedError()
 
     def __rmul__(self, other):
         """other * self"""
         if isinstance(other, (int, float)):
+            return self * other
+        elif other.__class__.__name__ == 'T2dVector':
             return self * other
         else:
             raise NotImplementedError()

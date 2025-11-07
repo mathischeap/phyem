@@ -286,10 +286,10 @@ class WfDerive(Frozen):
         new_wf._bc = self._wf._bc             # pass the bc
         return new_wf
 
-    def integration_by_parts(self, index):
+    def integration_by_parts(self, index, drop_bi_term=False, output_format=0):
         """Do integration by parts for the term indicated by ``index``."""
         term = self._wf[index][1]
-        terms, signs = term._integration_by_parts()
+        terms, signs = term._integration_by_parts(drop_bi_term=drop_bi_term, output_format=output_format)
         return self.replace(index, terms, signs)
 
     def split(self, index, *args, **kwargs):

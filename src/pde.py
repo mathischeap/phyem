@@ -610,7 +610,7 @@ class PartialDifferentialEquations(Frozen):
         else:
             pass
 
-        if vc is True:
+        if vc:
             return self._pr_vc(figsize=figsize, title=title)
         else:
             pass
@@ -873,6 +873,7 @@ class PartialDifferentialEquations(Frozen):
                     f"We have {len(test_spaces)} test forms, so we need {len(test_spaces)} syb_repr. " \
                     f"Now we receive {len(sym_repr)}."
 
+                # noinspection PyUnresolvedReferences
                 sr = sym_repr[i]
 
             j = i

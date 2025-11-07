@@ -13,10 +13,12 @@ class MseHttSpaceNorm(Frozen):
         self._space = space
         self._freeze()
 
-    def __call__(self, degree, cochain, norm_type='L2'):
+    def __call__(self, degree, cochain, norm_type='L2', component_wise=False):
         """"""
         indicator = self._space.indicator
         if indicator == 'Lambda':
-            return MseHttSpaceNormLambda(self._space)(degree, cochain, norm_type=norm_type)
+            return MseHttSpaceNormLambda(self._space)(
+                degree, cochain, norm_type=norm_type, component_wise=component_wise
+            )
         else:
             raise NotImplementedError()

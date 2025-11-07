@@ -29,11 +29,15 @@ def bi_vc__m3n3k2(rf2, t, vc, boundary_section):
         element = rf2.tgm.elements[element_index]
         etype = element.etype
         face = boundary_section[element_index__face_id]
-        if etype in ("orthogonal hexahedron", ):
+        if etype in (
+            "orthogonal hexahedron",
+            "unique msepy curvilinear hexahedron",
+        ):
             num_test_form_local_dofs, local_dofs, face_boundary_integration_vec = (
                 ___bi_vc_332_orthogonal_hexahedral___(element, degree, face, tvc))
+
         else:
-            raise NotImplementedError()
+            raise NotImplementedError(f"{bi_vc__m3n3k2} not implemented for etype={etype}")
 
         if element_index in data_dict:
             assert len(data_dict[element_index]) == num_test_form_local_dofs
@@ -81,9 +85,9 @@ def ___bi_vc_332_orthogonal_hexahedral___(element, degree, face, tvc):
         raise Exception()
 
     v = ___rm332_msepy_hexahedral___(element, degree, *rm_nodes)
-    xyz = np.meshgrid(*rm_nodes, indexing='ij')
-    xyz = [_.ravel('F') for _ in xyz]
-    xyz = face.ct.mapping(*xyz)
+    rm_nodes_meshgrid = np.meshgrid(*rm_nodes, indexing='ij')
+    rm_nodes_meshgrid = [_.ravel('F') for _ in rm_nodes_meshgrid]
+    xyz = face.ct.mapping(*rm_nodes_meshgrid)
     u, v, w = v
     u = u.T
     v = v.T
@@ -92,10 +96,14 @@ def ___bi_vc_332_orthogonal_hexahedral___(element, degree, face, tvc):
     v = v[local_dofs]
     w = w[local_dofs]
 
-    onv = face.ct.outward_unit_normal_vector(*nodes)
+    onv = face.ct.outward_unit_normal_vector(*rm_nodes_meshgrid)
     nx, ny, nz = onv
     trStar_vc = tvc(*xyz)[0]
+    # print(rm_nodes, nodes, flush=True)
     trace_2f = u * nx + v * ny + w * nz  # <~ | trace-outer-2-f>
-    area = face.area / 4
-    face_boundary_integration_vec = np.sum(trStar_vc * trace_2f * weights * area, axis=1)
-    return num_test_form_local_dofs, local_dofs, face_boundary_integration_vec
+    if face.ct.is_perp_plane() and face.ct.is_rectangle():
+        area = face.area / 4
+        face_boundary_integration_vec = np.sum(trStar_vc * trace_2f * weights * area, axis=1)
+        return num_test_form_local_dofs, local_dofs, face_boundary_integration_vec
+    else:
+        raise NotImplementedError()

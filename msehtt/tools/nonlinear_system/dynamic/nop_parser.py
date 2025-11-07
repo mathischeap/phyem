@@ -8,6 +8,11 @@ from src.spaces.main import _sep
 from src.spaces.main import _VarSetting_A_x_B_ip_C
 from src.spaces.main import _VarSetting_A_x_B__dp__C
 from src.spaces.main import _VarSetting_AxB_ip_dC
+from src.spaces.main import _VarSetting_AB_ip_dC
+from src.spaces.main import _VarSetting_AB_dp_dC
+from src.spaces.main import _VarSetting_AB_dp_C
+from src.spaces.main import _VarSetting_AB_ip_C
+from src.spaces.main import _VarSetting_A_ip_BC
 
 
 def nonlinear_operator_parser(noc_term, imp_base):
@@ -38,8 +43,18 @@ def nonlinear_operator_parser(noc_term, imp_base):
             M, time_indicator, text = PARSER.__A_x_B_dp_C__(*info_indicators)
         elif type_indicator == _VarSetting_AxB_ip_dC[1].split(_sep)[0]:
             M, time_indicator, text = PARSER.__A_x_B_ip_dC__(*info_indicators)
+        elif type_indicator ==     _VarSetting_AB_ip_dC[1].split(_sep)[0]:  # (AB, d(C))
+            M, time_indicator, text = PARSER.__AB_ip_dC__(*info_indicators)
+        elif type_indicator ==     _VarSetting_AB_dp_dC[1].split(_sep)[0]:  # <AB|d(C)>
+            M, time_indicator, text = PARSER.__AB_dp_dC__(*info_indicators)
+        elif type_indicator ==     _VarSetting_A_ip_BC[1].split(_sep)[0]:  # (A, BC)
+            M, time_indicator, text = PARSER.__A_ip_BC__(*info_indicators)
+        elif type_indicator ==     _VarSetting_AB_dp_C[1].split(_sep)[0]:  # <AB|C>
+            M, time_indicator, text = PARSER.__AB_dp_C__(*info_indicators)
+        elif type_indicator ==     _VarSetting_AB_ip_C[1].split(_sep)[0]:  # (AB, C)
+            M, time_indicator, text = PARSER.__AB_ip_C__(*info_indicators)
         else:
-            raise NotImplementedError(f"type_indicator={type_indicator} not implemented.")
+            raise NotImplementedError(f"type_indicator={type_indicator} not implemented of nonlinear_operator_parser.")
 
     else:
         raise NotImplementedError()

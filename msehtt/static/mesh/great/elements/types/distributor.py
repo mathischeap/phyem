@@ -18,6 +18,10 @@ from msehtt.static.mesh.great.elements.types.vtu_8_pixel import Vtu8Pixel
 from msehtt.static.mesh.great.elements.types.vtu_9_quad import Vtu9Quad
 from msehtt.static.mesh.great.elements.types.vtu_11_voxel import Vtu_11_Voxel
 
+from msehtt.static.mesh.great.elements.types.unique_msepy_curvilinear_hexahedron import (
+    MseHtt_GreatMesh_Unique_MsePy_Hexahedron_Element
+)
+
 
 class MseHttGreatMeshElementDistributor(Frozen):
     r""""""
@@ -33,7 +37,7 @@ class MseHttGreatMeshElementDistributor(Frozen):
         r""""""
         assert etype in self.implemented_element_types(), f"element type = {etype} is not implemented."
         element_class = self.implemented_element_types()[etype]
-        if etype == 'unique msepy curvilinear quadrilateral':
+        if etype in ('unique msepy curvilinear quadrilateral', 'unique msepy curvilinear hexahedron'):
             return element_class(element_index, parameters, _map, msepy_manifold)
         elif etype == 'unique msepy curvilinear triangle':
             return element_class(element_index, parameters, _map, msepy_manifold)
@@ -54,6 +58,7 @@ class MseHttGreatMeshElementDistributor(Frozen):
             # m3n3 elements:
             'orthogonal hexahedron': MseHttGreatMeshOrthogonalHexahedronElement,
             11: Vtu_11_Voxel,   # same to 'orthogonal hexahedron'
+            'unique msepy curvilinear hexahedron': MseHtt_GreatMesh_Unique_MsePy_Hexahedron_Element,
 
             # 2d vtu elements:
             5: Vtu5Triangle,

@@ -23,7 +23,10 @@ def incidence_matrix_Lambda__m3n3k2(tpm, degree):
     for e in rank_elements:
         element = rank_elements[e]
         etype = element.etype
-        if etype in ('orthogonal hexahedron', ):
+        if etype in (
+            'orthogonal hexahedron',
+            "unique msepy curvilinear hexahedron",
+        ):
             E[e], cache_key_dict[e] = _im332_msepy_quadrilateral_(element, degree)
         else:
             raise NotImplementedError(f"{__name__} not implemented for etype={etype}")

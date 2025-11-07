@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 r"""
-All regions are triangles or quadrilaterals.
+All regions are triangles or quadrilaterals (2D).
 """
 from tools.frozen import Frozen
 from src.config import RANK, MASTER_RANK

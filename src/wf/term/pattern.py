@@ -134,8 +134,578 @@ def _inner_simpler_pattern_examiner_scalar_valued_forms(factor, f0, f1, extra_in
                         'B': f1,  # root-form B
                     }  # d(pi(B)) is in the same space of A, and is of same degree.
 
-        # --- (a x b, c) types term, where x is cross product, and a, b, c are root-scalar-valued forms ----------
+        # --- TYPE 1: (A x b, c) types term, where x is cross product, and A, b, c are root-scalar-valued forms -------
         cross_product_lin = _global_operator_lin_repr_setting['cross_product']
+        existing0 = cross_product_lin in f0._lin_repr
+        amount0 = f0._lin_repr.count(cross_product_lin)
+
+        Hodge_lin = _global_operator_lin_repr_setting['Hodge']
+        existing0_Hodge = Hodge_lin in f0._lin_repr
+        amount0_Hodge = f0._lin_repr.count(Hodge_lin)
+
+        if existing0 and amount0 == 1 and existing0_Hodge and amount0_Hodge == 1:
+            # "(*(a x b), c)"
+            hodge_start = Hodge_lin + _non_root_lin_sep[0]
+            hodge_end = _non_root_lin_sep[1]
+            if f0._lin_repr[:len(hodge_start)] == hodge_start and f0._lin_repr[-len(hodge_end):] == hodge_end:
+                f0_looking_lin = f0._lin_repr[len(hodge_start):-len(hodge_end)]
+                a_lin, b_lin = f0_looking_lin.split(cross_product_lin)
+
+                f_a = _find_form(a_lin)
+                f_b = _find_form(b_lin)
+
+                if (f_a.is_root() and f_b.is_root() and f1.is_root() and
+                        (f_a is not f_b) and (f_a is not f1) and (f_b is not f1)):
+
+                    if 'known-forms' in extra_info:
+
+                        known_forms = extra_info['known-forms']
+                        if known_forms is f_a:
+                            # >>>>>>>>>>>>>>>>>>>> ['(*x,)'] <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+                            return _simple_patterns['(*x,)'], {
+                                'a': f_a,
+                                'b': f_b,
+                                'c': f1
+                            }
+
+                        elif known_forms is f_b:
+                            # >>>>>>>>>>>>>>>>>>>> ['(x*,)'] <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+                            return _simple_patterns['(x*,)'], {
+                                'a': f_a,
+                                'b': f_b,
+                                'c': f1
+                            }
+
+                        elif isinstance(known_forms, (list, tuple)) and len(known_forms) == 2:
+
+                            kf0, kf1 = known_forms
+
+                            if kf0 is f_a and kf1 is f_b:
+                                # >>>>>>>>>>>>>>>>>>>> ['(*x*,)'] <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+                                return _simple_patterns['(*x*,)'], {
+                                    'a': f_a,
+                                    'b': f_b,
+                                    'c': f1
+                                }
+
+                        else:
+                            raise Exception
+
+                    else:
+                        # >>>>>>>>>>>>>>>>>>>> ['(x,)'] <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+                        return _simple_patterns['(x,)'], {
+                            'a': f_a,
+                            'b': f_b,
+                            'c': f1
+                        }  # nonlinear
+                else:
+                    raise Exception()
+
+        if existing0 and amount0 == 1:
+            # it is like `a` x `b` for f0
+            a_lin, b_lin = f0._lin_repr.split(cross_product_lin)
+
+            f_a = _find_form(a_lin)
+            f_b = _find_form(b_lin)
+
+            if (f_a.is_root() and f_b.is_root() and f1.is_root() and
+                    (f_a is not f_b) and (f_a is not f1) and (f_b is not f1)):
+                # a, b and c are all root-forms. This is good!
+
+                if 'known-forms' in extra_info:
+                    known_forms = extra_info['known-forms']
+
+                    if isinstance(known_forms, (list, tuple)) and len(known_forms) == 1:
+                        known_forms = known_forms[0]
+                    else:
+                        pass
+
+                    if known_forms is f_a:
+                        # >>>>>>>>>>>>>>>>>>>> ['(*x,)'] <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+                        return _simple_patterns['(*x,)'], {
+                            'a': f_a,
+                            'b': f_b,
+                            'c': f1
+                        }
+
+                    elif known_forms is f_b:
+                        # >>>>>>>>>>>>>>>>>>>> ['(x*,)'] <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+                        return _simple_patterns['(x*,)'], {
+                            'a': f_a,
+                            'b': f_b,
+                            'c': f1
+                        }
+
+                    elif isinstance(known_forms, (list, tuple)) and len(known_forms) == 2:
+
+                        kf0, kf1 = known_forms
+
+                        if kf0 is f_a and kf1 is f_b:
+                            # >>>>>>>>>>>>>>>>>>>> ['(*x*,)'] <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+                            return _simple_patterns['(*x*,)'], {
+                                'a': f_a,
+                                'b': f_b,
+                                'c': f1
+                            }
+
+                    else:
+                        raise Exception()
+
+                else:
+                    # this term will be a nonlinear one! Take care it in the future!
+                    # >>>>>>>>>>>>>>>>>>>> ['(x,)'] <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+                    return _simple_patterns['(x,)'], {
+                        'a': f_a,
+                        'b': f_b,
+                        'c': f1
+                    }
+
+            elif f_a.is_root() and f_b.is_root() and not f1.is_root() and f_a is not f_b:
+                if f1._lin_repr[:len(lin_d)] == lin_d:
+                    # (a x b, d(c)) where a, b, c are root-forms.
+                    f_c = _find_form(f1._lin_repr, upon=d)
+                    if 'known-forms' in extra_info:
+                        known_forms = extra_info['known-forms']
+                        if known_forms is f_a:
+                            # >>>>>>>>>>>>>>>>>>>> ['(*x,d)'] <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+                            return _simple_patterns['(*x,d)'], {
+                                'a': f_a,
+                                'b': f_b,
+                                'c': f_c,
+                                'dc': f1,
+                            }
+                        elif known_forms is f_b:
+                            # >>>>>>>>>>>>>>>>>>>> ['(x*,d)'] <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+                            return _simple_patterns['(x*,d)'], {
+                                'a': f_a,
+                                'b': f_b,
+                                'c': f_c,
+                                'dc': f1,
+                            }
+
+                        elif isinstance(known_forms, (list, tuple)) and len(known_forms) == 2:
+
+                            kf0, kf1 = known_forms
+
+                            if kf0 is f_a and kf1 is f_b:
+                                # >>>>>>>>>>>>>>>>>>>> ['(*x*,d)'] <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+                                return _simple_patterns['(*x*,d)'], {
+                                    'a': f_a,
+                                    'b': f_b,
+                                    'c': f_c,
+                                    'dc': f1,
+                                }
+
+                            elif kf0 is f_b and kf1 is f_a:
+                                # >>>>>>>>>>>>>>>>>>>> ['(*x*,d)'] <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+                                return _simple_patterns['(*x*,d)'], {
+                                    'a': f_a,
+                                    'b': f_b,
+                                    'c': f_c,
+                                    'dc': f1,
+                                }
+
+                            else:
+                                pass
+
+                        else:
+                            pass
+                    else:  # nonlinear patterns
+                        # >>>>>>>>>>>>>>>>>>>> ['(AxB,dC)'] <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+                        return _simple_patterns['(AxB,dC)'], {
+                            'a': f_a,
+                            'b': f_b,
+                            'c': f_c,
+                            'dc': f1,
+                        }
+
+                else:
+                    pass
+            else:
+                pass
+
+        # --- TYPE 2: (A x b, c) types term, where x is cross product, and A, b, c are root-scalar-valued forms -------
+        cross_product_lin = _global_operator_lin_repr_setting['Cross_Product']
+        existing0 = cross_product_lin in f0._lin_repr
+        amount0 = f0._lin_repr.count(cross_product_lin)
+
+        Hodge_lin = _global_operator_lin_repr_setting['Hodge']
+        existing0_Hodge = Hodge_lin in f0._lin_repr
+        amount0_Hodge = f0._lin_repr.count(Hodge_lin)
+
+        if existing0 and amount0 == 1 and existing0_Hodge and amount0_Hodge == 1:
+            # "(*(a x b), c)"
+            hodge_start = Hodge_lin + _non_root_lin_sep[0]
+            hodge_end = _non_root_lin_sep[1]
+            if f0._lin_repr[:len(hodge_start)] == hodge_start and f0._lin_repr[-len(hodge_end):] == hodge_end:
+                f0_looking_lin = f0._lin_repr[len(hodge_start):-len(hodge_end)]
+                a_lin, b_lin = f0_looking_lin.split(cross_product_lin)
+
+                f_a = _find_form(a_lin)
+                f_b = _find_form(b_lin)
+
+                if (f_a.is_root() and f_b.is_root() and f1.is_root() and
+                        (f_a is not f_b) and (f_a is not f1) and (f_b is not f1)):
+
+                    if 'known-forms' in extra_info:
+
+                        known_forms = extra_info['known-forms']
+                        if known_forms is f_a:
+                            # >>>>>>>>>>>>>>>>>>>> ['(*x,)'] <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+                            return _simple_patterns['(*x,)'], {
+                                'a': f_a,
+                                'b': f_b,
+                                'c': f1
+                            }
+
+                        elif known_forms is f_b:
+                            # >>>>>>>>>>>>>>>>>>>> ['(x*,)'] <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+                            return _simple_patterns['(x*,)'], {
+                                'a': f_a,
+                                'b': f_b,
+                                'c': f1
+                            }
+
+                        elif isinstance(known_forms, (list, tuple)) and len(known_forms) == 2:
+
+                            kf0, kf1 = known_forms
+
+                            if kf0 is f_a and kf1 is f_b:
+                                # >>>>>>>>>>>>>>>>>>>> ['(*x*,)'] <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+                                return _simple_patterns['(*x*,)'], {
+                                    'a': f_a,
+                                    'b': f_b,
+                                    'c': f1
+                                }
+
+                        else:
+                            raise Exception
+
+                    else:
+                        # >>>>>>>>>>>>>>>>>>>> ['(x,)'] <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+                        return _simple_patterns['(x,)'], {
+                            'a': f_a,
+                            'b': f_b,
+                            'c': f1
+                        }  # nonlinear
+                else:
+                    raise Exception()
+
+        if existing0 and amount0 == 1:
+            # it is like `a` x `b` for f0
+            a_lin, b_lin = f0._lin_repr.split(cross_product_lin)
+
+            f_a = _find_form(a_lin)
+            f_b = _find_form(b_lin)
+
+            if (f_a.is_root() and f_b.is_root() and f1.is_root() and
+                    (f_a is not f_b) and (f_a is not f1) and (f_b is not f1)):
+                # a, b and c are all root-forms. This is good!
+
+                if 'known-forms' in extra_info:
+                    known_forms = extra_info['known-forms']
+
+                    if isinstance(known_forms, (list, tuple)) and len(known_forms) == 1:
+                        known_forms = known_forms[0]
+                    else:
+                        pass
+
+                    if known_forms is f_a:
+                        # >>>>>>>>>>>>>>>>>>>> ['(*x,)'] <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+                        return _simple_patterns['(*x,)'], {
+                            'a': f_a,
+                            'b': f_b,
+                            'c': f1
+                        }
+
+                    elif known_forms is f_b:
+                        # >>>>>>>>>>>>>>>>>>>> ['(x*,)'] <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+                        return _simple_patterns['(x*,)'], {
+                            'a': f_a,
+                            'b': f_b,
+                            'c': f1
+                        }
+
+                    elif isinstance(known_forms, (list, tuple)) and len(known_forms) == 2:
+
+                        kf0, kf1 = known_forms
+
+                        if kf0 is f_a and kf1 is f_b:
+                            # >>>>>>>>>>>>>>>>>>>> ['(*x*,)'] <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+                            return _simple_patterns['(*x*,)'], {
+                                'a': f_a,
+                                'b': f_b,
+                                'c': f1
+                            }
+
+                    else:
+                        raise Exception()
+
+                else:
+                    # this term will be a nonlinear one! Take care it in the future!
+                    # >>>>>>>>>>>>>>>>>>>> ['(x,)'] <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+                    return _simple_patterns['(x,)'], {
+                        'a': f_a,
+                        'b': f_b,
+                        'c': f1
+                    }
+
+            elif f_a.is_root() and f_b.is_root() and not f1.is_root() and f_a is not f_b:
+                if f1._lin_repr[:len(lin_d)] == lin_d:
+                    # (a x b, d(c)) where a, b, c are root-forms.
+                    f_c = _find_form(f1._lin_repr, upon=d)
+                    if 'known-forms' in extra_info:
+                        known_forms = extra_info['known-forms']
+                        if known_forms is f_a:
+                            # >>>>>>>>>>>>>>>>>>>> ['(*x,d)'] <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+                            return _simple_patterns['(*x,d)'], {
+                                'a': f_a,
+                                'b': f_b,
+                                'c': f_c,
+                                'dc': f1,
+                            }
+                        elif known_forms is f_b:
+                            # >>>>>>>>>>>>>>>>>>>> ['(x*,d)'] <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+                            return _simple_patterns['(x*,d)'], {
+                                'a': f_a,
+                                'b': f_b,
+                                'c': f_c,
+                                'dc': f1,
+                            }
+
+                        elif isinstance(known_forms, (list, tuple)) and len(known_forms) == 2:
+
+                            kf0, kf1 = known_forms
+
+                            if kf0 is f_a and kf1 is f_b:
+                                # >>>>>>>>>>>>>>>>>>>> ['(*x*,d)'] <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+                                return _simple_patterns['(*x*,d)'], {
+                                    'a': f_a,
+                                    'b': f_b,
+                                    'c': f_c,
+                                    'dc': f1,
+                                }
+
+                            elif kf0 is f_b and kf1 is f_a:
+                                # >>>>>>>>>>>>>>>>>>>> ['(*x*,d)'] <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+                                return _simple_patterns['(*x*,d)'], {
+                                    'a': f_a,
+                                    'b': f_b,
+                                    'c': f_c,
+                                    'dc': f1,
+                                }
+
+                            else:
+                                pass
+
+                        else:
+                            pass
+                    else:  # nonlinear patterns
+                        # >>>>>>>>>>>>>>>>>>>> ['(AxB,dC)'] <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+                        return _simple_patterns['(AxB,dC)'], {
+                            'a': f_a,
+                            'b': f_b,
+                            'c': f_c,
+                            'dc': f1,
+                        }
+
+                else:
+                    pass
+            else:
+                pass
+
+        # --- TYPE 3: (A x B, c) types term, where x is cross product, and A, B, c are root-scalar-valued forms -------
+        cross_product_lin = _global_operator_lin_repr_setting['CrossProduct']
+        existing0 = cross_product_lin in f0._lin_repr
+        amount0 = f0._lin_repr.count(cross_product_lin)
+
+        Hodge_lin = _global_operator_lin_repr_setting['Hodge']
+        existing0_Hodge = Hodge_lin in f0._lin_repr
+        amount0_Hodge = f0._lin_repr.count(Hodge_lin)
+
+        if existing0 and amount0 == 1 and existing0_Hodge and amount0_Hodge == 1:
+            # "(*(a x b), c)"
+            hodge_start = Hodge_lin + _non_root_lin_sep[0]
+            hodge_end = _non_root_lin_sep[1]
+            if f0._lin_repr[:len(hodge_start)] == hodge_start and f0._lin_repr[-len(hodge_end):] == hodge_end:
+                f0_looking_lin = f0._lin_repr[len(hodge_start):-len(hodge_end)]
+                a_lin, b_lin = f0_looking_lin.split(cross_product_lin)
+
+                f_a = _find_form(a_lin)
+                f_b = _find_form(b_lin)
+
+                if (f_a.is_root() and f_b.is_root() and f1.is_root() and
+                        (f_a is not f_b) and (f_a is not f1) and (f_b is not f1)):
+
+                    if 'known-forms' in extra_info:
+
+                        known_forms = extra_info['known-forms']
+                        if known_forms is f_a:
+                            # >>>>>>>>>>>>>>>>>>>> ['(*x,)'] <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+                            return _simple_patterns['(*x,)'], {
+                                'a': f_a,
+                                'b': f_b,
+                                'c': f1
+                            }
+
+                        elif known_forms is f_b:
+                            # >>>>>>>>>>>>>>>>>>>> ['(x*,)'] <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+                            return _simple_patterns['(x*,)'], {
+                                'a': f_a,
+                                'b': f_b,
+                                'c': f1
+                            }
+
+                        elif isinstance(known_forms, (list, tuple)) and len(known_forms) == 2:
+
+                            kf0, kf1 = known_forms
+
+                            if kf0 is f_a and kf1 is f_b:
+                                # >>>>>>>>>>>>>>>>>>>> ['(*x*,)'] <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+                                return _simple_patterns['(*x*,)'], {
+                                    'a': f_a,
+                                    'b': f_b,
+                                    'c': f1
+                                }
+
+                        else:
+                            raise Exception
+
+                    else:
+                        # >>>>>>>>>>>>>>>>>>>> ['(x,)'] <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+                        return _simple_patterns['(x,)'], {
+                            'a': f_a,
+                            'b': f_b,
+                            'c': f1
+                        }  # nonlinear
+                else:
+                    raise Exception()
+
+        if existing0 and amount0 == 1:
+            # it is like `a` x `b` for f0
+            a_lin, b_lin = f0._lin_repr.split(cross_product_lin)
+
+            f_a = _find_form(a_lin)
+            f_b = _find_form(b_lin)
+
+            if (f_a.is_root() and f_b.is_root() and f1.is_root() and
+                    (f_a is not f_b) and (f_a is not f1) and (f_b is not f1)):
+                # a, b and c are all root-forms. This is good!
+
+                if 'known-forms' in extra_info:
+                    known_forms = extra_info['known-forms']
+
+                    if isinstance(known_forms, (list, tuple)) and len(known_forms) == 1:
+                        known_forms = known_forms[0]
+                    else:
+                        pass
+
+                    if known_forms is f_a:
+                        # >>>>>>>>>>>>>>>>>>>> ['(*x,)'] <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+                        return _simple_patterns['(*x,)'], {
+                            'a': f_a,
+                            'b': f_b,
+                            'c': f1
+                        }
+
+                    elif known_forms is f_b:
+                        # >>>>>>>>>>>>>>>>>>>> ['(x*,)'] <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+                        return _simple_patterns['(x*,)'], {
+                            'a': f_a,
+                            'b': f_b,
+                            'c': f1
+                        }
+
+                    elif isinstance(known_forms, (list, tuple)) and len(known_forms) == 2:
+
+                        kf0, kf1 = known_forms
+
+                        if kf0 is f_a and kf1 is f_b:
+                            # >>>>>>>>>>>>>>>>>>>> ['(*x*,)'] <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+                            return _simple_patterns['(*x*,)'], {
+                                'a': f_a,
+                                'b': f_b,
+                                'c': f1
+                            }
+
+                    else:
+                        raise Exception()
+
+                else:
+                    # this term will be a nonlinear one! Take care it in the future!
+                    # >>>>>>>>>>>>>>>>>>>> ['(x,)'] <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+                    return _simple_patterns['(x,)'], {
+                        'a': f_a,
+                        'b': f_b,
+                        'c': f1
+                    }
+
+            elif f_a.is_root() and f_b.is_root() and not f1.is_root() and f_a is not f_b:
+                if f1._lin_repr[:len(lin_d)] == lin_d:
+                    # (a x b, d(c)) where a, b, c are root-forms.
+                    f_c = _find_form(f1._lin_repr, upon=d)
+                    if 'known-forms' in extra_info:
+                        known_forms = extra_info['known-forms']
+                        if known_forms is f_a:
+                            # >>>>>>>>>>>>>>>>>>>> ['(*x,d)'] <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+                            return _simple_patterns['(*x,d)'], {
+                                'a': f_a,
+                                'b': f_b,
+                                'c': f_c,
+                                'dc': f1,
+                            }
+                        elif known_forms is f_b:
+                            # >>>>>>>>>>>>>>>>>>>> ['(x*,d)'] <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+                            return _simple_patterns['(x*,d)'], {
+                                'a': f_a,
+                                'b': f_b,
+                                'c': f_c,
+                                'dc': f1,
+                            }
+
+                        elif isinstance(known_forms, (list, tuple)) and len(known_forms) == 2:
+
+                            kf0, kf1 = known_forms
+
+                            if kf0 is f_a and kf1 is f_b:
+                                # >>>>>>>>>>>>>>>>>>>> ['(*x*,d)'] <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+                                return _simple_patterns['(*x*,d)'], {
+                                    'a': f_a,
+                                    'b': f_b,
+                                    'c': f_c,
+                                    'dc': f1,
+                                }
+
+                            elif kf0 is f_b and kf1 is f_a:
+                                # >>>>>>>>>>>>>>>>>>>> ['(*x*,d)'] <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+                                return _simple_patterns['(*x*,d)'], {
+                                    'a': f_a,
+                                    'b': f_b,
+                                    'c': f_c,
+                                    'dc': f1,
+                                }
+
+                            else:
+                                pass
+
+                        else:
+                            pass
+                    else:  # nonlinear patterns
+                        # >>>>>>>>>>>>>>>>>>>> ['(AxB,dC)'] <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+                        return _simple_patterns['(AxB,dC)'], {
+                            'a': f_a,
+                            'b': f_b,
+                            'c': f_c,
+                            'dc': f1,
+                        }
+
+                else:
+                    pass
+            else:
+                pass
+
+        # --- TYPE 4: (A x B, c) types term, where x is cross product, and A, B, c are root-scalar-valued forms -------
+        cross_product_lin = _global_operator_lin_repr_setting['crossProduct']
         existing0 = cross_product_lin in f0._lin_repr
         amount0 = f0._lin_repr.count(cross_product_lin)
 
@@ -368,7 +938,7 @@ def _inner_simpler_pattern_examiner_scalar_valued_forms(factor, f0, f1, extra_in
                         else:
                             pass
 
-        # ------ (A convect B, C) --------------------------------------------------------
+        # !{PATTERN}! ------ (A convect B, C) or (A .V B, C)--------------------------------------------
         convect_lin = _global_operator_lin_repr_setting['convect']
         existing0 = convect_lin in f0._lin_repr
         amount0 = f0._lin_repr.count(convect_lin)
@@ -377,7 +947,7 @@ def _inner_simpler_pattern_examiner_scalar_valued_forms(factor, f0, f1, extra_in
             A = _find_form(A_lin)
             B = _find_form(B_lin)
             C = f1
-            if A.is_root() and B.is_root() and C.is_root():
+            if A.is_root() and B.is_root():
                 if 'known-forms' in extra_info:
                     known_forms = extra_info['known-forms']
                     if known_forms.__class__ is Form:
@@ -386,7 +956,8 @@ def _inner_simpler_pattern_examiner_scalar_valued_forms(factor, f0, f1, extra_in
                         pass
 
                     if A in known_forms and B in known_forms:
-                        # >>>>>>>>>>>>>>>>>>>> ['(*x*,*x)'] <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+                        # >>>>>>>>>>>>>>>>>>>> ['(* .V *, C)'] <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+                        # >>>>>>>>>>>>>>>>>>>>    A and B are known <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
                         return _simple_patterns['(* .V *, C)'], {
                             'A': A,
                             'B': B,
@@ -394,8 +965,17 @@ def _inner_simpler_pattern_examiner_scalar_valued_forms(factor, f0, f1, extra_in
                         }
                     else:
                         pass
+                else:
+                    # >>>>>>>>>>>>>>>>>>>> A, B and C are all unknown. <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+                    return _simple_patterns['(A .V B, C)'], {
+                            'A': A,
+                            'B': B,
+                            'C': C,
+                        }
+            else:
+                pass
 
-        # -------------- (A, tr B) or (tr B, A) ------------------------------------------
+        # !{PATTERN}! -------------- (A, tr B) or (tr B, A) ------------------------------------------
         lin_tr = _global_operator_lin_repr_setting['trace']
         existing0 = lin_tr in f0._lin_repr
         amount0 = f0._lin_repr.count(lin_tr)
@@ -422,6 +1002,91 @@ def _inner_simpler_pattern_examiner_scalar_valued_forms(factor, f0, f1, extra_in
                 pass
         else:
             pass
+
+        # !!! {NEW PATTERN} !!! :  (AB, d(C)) -------------------------------------------------------------------
+        multi_lin = _global_operator_lin_repr_setting['multi']
+        existing0 = multi_lin in f0._lin_repr
+        amount0 = f0._lin_repr.count(multi_lin)
+        d_lin = _global_operator_lin_repr_setting['d']
+        existing1 = d_lin in f1._lin_repr
+        amount1 = f1._lin_repr.count(d_lin)
+        if existing0 and amount0 == 1 and existing1 and amount1 == 1:
+            A_lin, B_lin = f0._lin_repr.split(multi_lin)
+            A = _find_form(A_lin)
+            B = _find_form(B_lin)
+            C = _find_form(f1._lin_repr, upon=d)
+            if A.is_root() and B.is_root() and C.is_root():
+                if 'known-forms' in extra_info:
+                    kfs = extra_info['known-forms']
+                    if isinstance(kfs, (list, tuple)) and (A in kfs) and (B in kfs):
+                        return _simple_patterns['(**, d(C))'], {
+                            'A': A,  # root-scalar-form-0
+                            'B': B,  # root-scalar-form-1
+                            'C': C,
+                        }
+                    elif A is kfs:
+                        return _simple_patterns['(*B, d(C))'], {
+                            'A': A,  # root-scalar-form-0
+                            'B': B,  # root-scalar-form-1
+                            'C': C,
+                        }
+                    elif B is kfs:
+                        return _simple_patterns['(A*, d(C))'], {
+                            'A': A,  # root-scalar-form-0
+                            'B': B,  # root-scalar-form-1
+                            'C': C,
+                        }
+                    else:
+                        raise Exception()
+                else:
+                    # nonlinear
+                    return _simple_patterns['(AB, d(C))'], {
+                        'A': A,  # root-scalar-form-0
+                        'B': B,  # root-scalar-form-1
+                        'C': C,
+                    }
+
+        # !!! {NEW PATTERN} !!! :  (A, BC) -------------------------------------------------------
+        multi_lin = _global_operator_lin_repr_setting['multi']
+        existing1 = multi_lin in f1._lin_repr
+        amount1 = f1._lin_repr.count(multi_lin)
+        if f0.is_root() and existing1 and amount1 == 1:
+            B_lin, C_lin = f1._lin_repr.split(multi_lin)
+            B = _find_form(B_lin)
+            C = _find_form(C_lin)
+            if B.is_root() and C.is_root():
+                if 'known-forms' in extra_info:
+                    kfs = extra_info['known-forms']
+                    if isinstance(kfs, (list, tuple)) and (f0 in kfs) and (B in kfs):
+                        return _simple_patterns['(*, *C)'], {
+                            'A': f0,  # root-scalar-form-0
+                            'B': B,  # root-scalar-form-1
+                            'C': C,
+                        }
+                    elif f0 is kfs:
+                        return _simple_patterns['(*, BC)'], {
+                            'A': f0,  # root-scalar-form-0
+                            'B': B,  # root-scalar-form-1
+                            'C': C,
+                        }
+                    elif B is kfs:
+                        return _simple_patterns['(A, *C)'], {
+                            'A': f0,  # root-scalar-form-0
+                            'B': B,  # root-scalar-form-1
+                            'C': C,
+                        }
+                    else:
+                        raise Exception()
+
+                else:
+                    # nonlinear
+                    return _simple_patterns['(A, BC)'], {
+                        'A': f0,  # root-scalar-form-0
+                        'B': B,  # root-scalar-form-1
+                        'C': C,
+                    }
+
+        # ! END ! =================================================================================
 
         return '', None
 
@@ -737,7 +1402,7 @@ def _dp_simpler_pattern_examiner_scalar_valued_forms(factor, f0, f1, extra_info)
             if A.is_root() and B.is_root() and C.is_root() and D.is_root():
                 if 'known-forms' in extra_info:
                     kfs = extra_info['known-forms']
-                    if (A in kfs) and (B in kfs) and (C in kfs):
+                    if isinstance(kfs, (list, tuple)) and (A in kfs) and (B in kfs) and (C in kfs):
                         # >>>>>>>>>>>>>>>>>>>> ['<*x*|*xD>'] <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
                         return _simple_patterns['<*x*|*xD>'], {
                             'A': A,  # root-scalar-form-0
@@ -748,6 +1413,89 @@ def _dp_simpler_pattern_examiner_scalar_valued_forms(factor, f0, f1, extra_info)
                 else:  # Nonlinear
                     pass  # tbd
 
+        # !!! {NEW PATTERN} !!! :  < AB | C> -------------------------------------------------------------------
+        multi_lin = _global_operator_lin_repr_setting['multi']
+        existing0 = multi_lin in f0._lin_repr
+        amount0 = f0._lin_repr.count(multi_lin)
+        if existing0 and amount0 == 1 and f1.is_root():
+            A_lin, B_lin = f0._lin_repr.split(multi_lin)
+            A = _find_form(A_lin)
+            B = _find_form(B_lin)
+            if A.is_root() and B.is_root() and f1.is_root():
+                if 'known-forms' in extra_info:
+                    kfs = extra_info['known-forms']
+                    if isinstance(kfs, (list, tuple)) and (A in kfs) and (B in kfs):
+                        return _simple_patterns['<**|C>'], {
+                            'A': A,  # root-scalar-form-0
+                            'B': B,  # root-scalar-form-1
+                            'C': f1,
+                        }
+                    elif A is kfs:
+                        return _simple_patterns['<*B|C>'], {
+                            'A': A,  # root-scalar-form-0
+                            'B': B,  # root-scalar-form-1
+                            'C': f1,
+                        }
+                    elif B is kfs:
+                        return _simple_patterns['<A*|C>'], {
+                            'A': A,  # root-scalar-form-0
+                            'B': B,  # root-scalar-form-1
+                            'C': f1,
+                        }
+                    else:
+                        raise Exception()
+                else:
+                    # nonlinear
+                    return _simple_patterns['<AB|C>'], {
+                        'A': A,  # root-scalar-form-0
+                        'B': B,  # root-scalar-form-1
+                        'C': f1,
+                    }
+
+        # !!! {NEW PATTERN} !!! :  < AB | d(C)> -------------------------------------------------------------------
+        multi_lin = _global_operator_lin_repr_setting['multi']
+        existing0 = multi_lin in f0._lin_repr
+        amount0 = f0._lin_repr.count(multi_lin)
+        d_lin = _global_operator_lin_repr_setting['d']
+        existing1 = d_lin in f1._lin_repr
+        amount1 = f1._lin_repr.count(d_lin)
+        if existing0 and amount0 == 1 and existing1 and amount1 == 1:
+            A_lin, B_lin = f0._lin_repr.split(multi_lin)
+            A = _find_form(A_lin)
+            B = _find_form(B_lin)
+            C = _find_form(f1._lin_repr, upon=d)
+            if A.is_root() and B.is_root() and C.is_root():
+                if 'known-forms' in extra_info:
+                    kfs = extra_info['known-forms']
+                    if isinstance(kfs, (list, tuple)) and (A in kfs) and (B in kfs):
+                        return _simple_patterns['<**|d(C)>'], {
+                            'A': A,  # root-scalar-form-0
+                            'B': B,  # root-scalar-form-1
+                            'C': C,
+                        }
+                    elif A is kfs:
+                        return _simple_patterns['<*B|d(C)>'], {
+                            'A': A,  # root-scalar-form-0
+                            'B': B,  # root-scalar-form-1
+                            'C': C,
+                        }
+                    elif B is kfs:
+                        return _simple_patterns['<A*|d(C)>'], {
+                            'A': A,  # root-scalar-form-0
+                            'B': B,  # root-scalar-form-1
+                            'C': C,
+                        }
+                    else:
+                        raise Exception()
+                else:
+                    # nonlinear
+                    return _simple_patterns['<AB|d(C)>'], {
+                        'A': A,  # root-scalar-form-0
+                        'B': B,  # root-scalar-form-1
+                        'C': C,
+                    }
+
+        # =========== NO duality-pairing pattern found =========================================================
         return '', None
 
     else:

@@ -27,7 +27,8 @@ class MseHtt_Form_Numeric(Frozen):
     # ----------------- properties --------------------------------------------------------------------------
     @property
     def tsp(self):
-        r""""""
+        r"""Time-Space Properties. So we can express some properties of this form as time-space functions.
+        """
         if self._tsp is None:
             self._tsp = MseHtt_Form_Numeric_TimeSpaceProperties(self._f)
         return self._tsp
@@ -35,13 +36,18 @@ class MseHtt_Form_Numeric(Frozen):
     # ------ methods: data structure --------------------------------------------------------------------------
     def rws(self, t, ddf=1, component_wise=False, data_only=False):
         r"""Return a dds-rws instance in the master rank."""
-        density = int(7 * ddf)
+
+        n = self._f.space.n
+        total_num_elements = self._f.tpm.composition.num_global_elements
+        total_num_samples = 30001 * ddf
+        density = int((total_num_samples / total_num_elements) ** (1 / n) + 1)
         if density < 5:
             density = 5
         elif density > 39:
             density = 39
         else:
             pass
+
         linspace = np.linspace(-1, 1, density)
         n = self._f.space.n
         linspace = [linspace for _ in range(n)]
@@ -142,11 +148,14 @@ class MseHtt_Form_Numeric(Frozen):
             else:
                 self._cache_key_ = key
 
-        density = int(13 * ddf)
-        if density < 7:
-            density = 7
-        elif density > 31:
-            density = 31
+        n = self._f.space.n
+        total_num_elements = self._f.tpm.composition.num_global_elements
+        total_num_samples = 30001 * ddf
+        density = int((total_num_samples / total_num_elements) ** (1 / n) + 1)
+        if density < 5:
+            density = 5
+        elif density > 39:
+            density = 39
         else:
             pass
 
@@ -310,6 +319,43 @@ class MseHtt_Form_Numeric(Frozen):
                         return '2d-scalar', itp
             else:
                 return '2d-scalar', None
+
+        elif dtype == '3d-scalar':
+            X, Y, Z = coo
+            V = value[0]
+            X, Y, Z, V = merge_list(X, Y, Z, V)
+            if RANK == MASTER_RANK:
+                if data_only:
+                    return '3d-scalar', (X, Y, Z), (V,)
+                else:
+                    coo = np.array([X, Y, Z]).T
+                    itp = NearestNDInterpolator(coo, V)
+                    if component_wise:
+                        return '3d-scalar', (itp, )
+                    else:
+                        return '3d-scalar', itp
+            else:
+                return '3d-scalar', None
+
+        elif dtype == '3d-vector':
+            X, Y, Z = coo
+            U, V, W = value
+            X, Y, Z, U, V, W = merge_list(X, Y, Z, U, V, W)
+            if RANK == MASTER_RANK:
+                if data_only:
+                    return '3d-vector', (X, Y, Z), (U, V, W)
+                else:
+                    coo = np.array([X, Y, Z]).T
+                    if component_wise:
+                        interp_u = NearestNDInterpolator(coo, U)
+                        interp_v = NearestNDInterpolator(coo, V)
+                        interp_w = NearestNDInterpolator(coo, W)
+                        return '3d-vector', (interp_u, interp_v, interp_w)
+                    else:
+                        itp = NearestNDInterpolator(coo, np.array([U, V, W]).T)
+                        return '3d-vector', itp
+            else:
+                return '3d-vector', None
 
         else:
             raise NotImplementedError(f"_interpolate_global_ dtype = {dtype} not implemented.")

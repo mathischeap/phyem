@@ -152,6 +152,10 @@ if __name__ == '__main__':
 
     p = np.linspace(0, 1, 10)
     q = np.linspace(0, 1, 10)
-    Yp = genpiecewise([p, q], [p < 0.2, np.logical_and(p >= 0.2, p < 0.5), p >= 0.5], [Yp0, Yp1, Yp2])
+    Yp = genpiecewise(
+        [p, q],
+        [p < 0.2, np.logical_and(p >= 0.2, p < 0.5), p >= 0.5],
+        [Yp0, Yp1, Yp2]
+    )
 
     print(Yp)

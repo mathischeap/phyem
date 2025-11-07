@@ -20,8 +20,14 @@ def mass_matrix_Lambda__m3n3k3(tpm, degree):
     for e in tpm.composition:
         element = tpm.composition[e]
         etype = element.etype
-        if etype == 'orthogonal hexahedron':
+        if etype in (
+            'orthogonal hexahedron',
+        ):
             M[e], cache_key_dict[e] = ___mm333_orthogonal_hexahedron___(element, degree)
+        elif etype in (
+            'unique msepy curvilinear hexahedron',
+        ):
+            M[e], cache_key_dict[e] = ___mm333_unique_hexahedron___(element, degree)
         else:
             raise NotImplementedError(f"{__name__} not implemented for etype={etype}")
     _cache_mm333_[key] = M, cache_key_dict
@@ -55,3 +61,23 @@ def ___mm333_orthogonal_hexahedron___(element, degree):
         _cache_333_[key] = M, cache_key
 
     return M, cache_key
+
+
+def ___mm333_unique_hexahedron___(element, degree):
+    """"""
+    p, _ = element.degree_parser(degree)
+    quad_degree = (p[0], p[1], p[2])
+    quad = quadrature(quad_degree, 'Gauss')
+    quad_nodes = quad.quad_nodes
+    quad_weights = quad.quad_weights_ravel
+    xi_et_sg, bf = element.bf('m3n3k3', degree, *quad_nodes)
+    detJM = element.ct.Jacobian(*xi_et_sg)
+    M = np.einsum(
+        'm, im, jm -> ij',
+        quad_weights * np.reciprocal(detJM),
+        bf[0], bf[0],
+        optimize='optimal'
+    )
+    M = csr_matrix(M)
+
+    return M, 'unique'

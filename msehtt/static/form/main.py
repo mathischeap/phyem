@@ -59,7 +59,6 @@ class MseHttForm(Frozen):
         self._im = None
         self._bi = None
         self._numeric = None
-        self._export = None
         self._project = None
         self._dofs = None
 
@@ -523,9 +522,9 @@ class MseHttForm(Frozen):
             )
         return self._im
 
-    def norm(self, cochain, norm_type='L2'):
+    def norm(self, cochain, norm_type='L2', component_wise=False):
         """"""
-        return self.space.norm(self.degree, cochain, norm_type=norm_type)
+        return self.space.norm(self.degree, cochain, norm_type=norm_type, component_wise=component_wise)
 
     def inner_product(
             self, self_cochain, other_form, other_degree, other_cochain, inner_type='L2'):
@@ -617,6 +616,10 @@ class MseHttForm(Frozen):
                 from_cochain = self.cochain[from_time]
                 to_cochain = self.cochain[to_time]
                 diff_cochain = to_cochain - from_cochain
+
+                # for i in diff_cochain:
+                #     print(i, to_cochain[i])
+
                 norm = self.space.norm(self.degree, diff_cochain, norm_type=norm_type)
                 return norm
 

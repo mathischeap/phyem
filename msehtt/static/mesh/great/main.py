@@ -8,6 +8,8 @@ from src.config import RANK, MASTER_RANK, SIZE, COMM
 from msepy.manifold.predefined.distributor import PredefinedMsePyManifoldDistributor
 from msehtt.static.manifold.predefined.distributor import Predefined_Msehtt_Manifold_Distributor
 
+from msehtt.static.mesh.great.config.specific_meshes.deliver import Predefined_Specific_Meshes
+
 from msehtt.static.mesh.great.config.vtu import ___split___
 
 from msehtt.static.mesh.great.config.msepy_ import MseHttMsePyConfig
@@ -64,7 +66,7 @@ class MseHttGreatMesh(Frozen):
     def elements(self):
         r"""Return all great elements instance if it exists."""
         if self._elements is None:
-            raise Exception('No great elements found!')
+            raise Exception('No great elements found!, make sure the tgm is configured first!')
         else:
             return self._elements
 
@@ -163,7 +165,10 @@ class MseHttGreatMesh(Frozen):
 
         assert self._config_method != '', f"must change this indicator!"
 
-        if self._config_method == 'msepy':
+        if self._config_method in (
+                'msepy',
+                'specific: periodic slice',
+        ):
             # _config_method == 'msepy' means we config the great mesh from a msepy mesh.
             self._elements = MseHttGreatMeshElements(self, rank_element_dict, element_face_topology_mismatch=False)
         else:
@@ -176,8 +181,10 @@ class MseHttGreatMesh(Frozen):
         Parameters
         ----------
         indicator
-            case 0: reading from `.phm` file. `.phm` file can be made by calling the `saveto` method of
+            case reading: reading from `.phm` file. `.phm` file can be made by calling the `saveto` method of
             a configured great mesh object.
+
+            case 0 : 'special meshes'. Each mesh is particularly defined in a particular module.
 
             case 1: `indicator` is str and `indicator` indicates a pre-defined msepy-manifold.
                 So, `indicator`, `element_layout` and `kwargs` will be used for initialize a msepy mesh first.
@@ -245,6 +252,10 @@ class MseHttGreatMesh(Frozen):
         if isinstance(indicator, str) and '.phm' in indicator:
             # we read from a `.phm` file.
             input_case = 'reading'
+
+        elif isinstance(indicator, str) and indicator in Predefined_Specific_Meshes.defined():
+            # case 0, we use a specific mesh
+            input_case = 'specific'
 
         elif isinstance(indicator, str) and indicator in PredefinedMsePyManifoldDistributor._predefined_manifolds():
             # case 1
@@ -352,6 +363,15 @@ class MseHttGreatMesh(Frozen):
                         None, None, None
                     )
                 )
+
+            elif input_case == 'specific':
+                self._config_method = 'specific: ' + indicator
+                element_type_dict, element_parameter_dict, element_map_dict = (
+                    self._distribute_elements_to_ranks(
+                        None, None, None
+                    )
+                )
+
             elif input_case == 'pre-defined':
                 # We config the great mesh through a predefined msepy mesh, and we need to save the msepy manifold
                 self._msepy_manifold = COMM.bcast(None, root=MASTER_RANK)
@@ -425,7 +445,7 @@ class MseHttGreatMesh(Frozen):
                 )
 
             else:
-                raise NotImplementedError()
+                raise NotImplementedError(f"SLAVES: not implemented for input_case={input_case}!")
 
         else:
             if input_case == 'reading':
@@ -439,6 +459,26 @@ class MseHttGreatMesh(Frozen):
                         element_type_dict, element_parameter_dict, element_map_dict
                     )
                 )
+
+            elif input_case == 'specific':
+                self._config_method = 'specific: ' + indicator
+                element_type_dict, element_parameter_dict, element_map_dict = (
+                    Predefined_Specific_Meshes.defined()[indicator](
+                        element_layout, **kwargs
+                    )
+                )
+
+                self._check_elements(element_type_dict, element_parameter_dict, element_map_dict)
+
+                self._global_element_type_dict = element_type_dict
+                self._global_element_map_dict = element_map_dict
+
+                element_type_dict, element_parameter_dict, element_map_dict = (
+                    self._distribute_elements_to_ranks(
+                        element_type_dict, element_parameter_dict, element_map_dict
+                    )
+                )
+
             elif input_case == 'pre-defined':
                 # We config the great mesh through a predefined msepy mesh.
                 config = MseHttMsePyConfig(self, indicator)
@@ -572,15 +612,18 @@ class MseHttGreatMesh(Frozen):
                 )
             else:
                 raise NotImplementedError(
-                    f"msehtt-great-mesh config not implemented for input_case={input_case}")
+                    f"MASTER: msehtt-great-mesh config not implemented for input_case={input_case}")
 
         # --- check element map: node must be numbered (index must be int) -----------------
         for e in element_map_dict:
             e_map = element_map_dict[e]
             assert all([isinstance(_, int) for _ in e_map]), \
-                f"element map must be of integers only. map of element:{e} is illegal."
+                (f"element map must be of integers only. map of element:{e} is illegal. "
+                 f"Element nodes must be indexed with integers ONLY "
+                 f"(while elements themselves can be indexed with else).")
 
         # ----------- do triangle/tetrahedron-split----------------------------------------------
+        # noinspection PySimplifyBooleanCheck
         if ts is False:
             ts = 0
         elif ts is True:
@@ -596,11 +639,24 @@ class MseHttGreatMesh(Frozen):
             element_type_dict, element_parameter_dict, element_map_dict
         )
 
+        # ------------ clean elements: for example, to delete those of 0-area ----------------
+        element_type_dict, element_parameter_dict, element_map_dict = self.___clean_elements___(
+            element_type_dict,
+            element_parameter_dict,
+            element_map_dict
+        )
+
         # ----------- making cracks in the domain --------------------------------------------
-        element_map_dict = self._make_crack(crack_config, element_map_dict)
+        element_type_dict, element_parameter_dict, element_map_dict = self._make_crack(
+            crack_config,
+            element_type_dict,
+            element_parameter_dict,
+            element_map_dict
+        )
 
         # -------- renumbering the element indices -------------------------------------------
         self.___renumbering_indicator___ = renumbering
+        # noinspection PySimplifyBooleanCheck
         if renumbering is False:
             pass
         else:
@@ -613,13 +669,19 @@ class MseHttGreatMesh(Frozen):
 
         self._make_elements_(element_type_dict, element_parameter_dict, element_map_dict)
 
+    @staticmethod
+    def ___clean_elements___(element_type_dict, element_parameter_dict, element_map_dict):
+        r""""""
+        # TODO:
+        return element_type_dict, element_parameter_dict, element_map_dict
+
     def _renumbering_(
             self,
             renumbering_indicator,   # to indicate which approach to be used for renumbering.
             element_type_dict, element_parameter_dict, element_map_dict
     ):
         r""""""
-        if renumbering_indicator is True:
+        if renumbering_indicator is True:  # Renumbering element indices as integers.
             if RANK == MASTER_RANK:
                 renumbering_dict = {}
                 current = 0
@@ -782,10 +844,10 @@ class MseHttGreatMesh(Frozen):
     def selfcheck(self):
         r"""do a self check!"""
 
-    def _make_crack(self, crack_config, element_map_dict):
+    def _make_crack(self, crack_config, element_type_dict, element_parameter_dict, element_map_dict):
         r"""Define a crack along interface of elements."""
         if crack_config is None:  # define no crack.
-            return element_map_dict
+            return element_type_dict, element_parameter_dict, element_map_dict
         else:
             raise NotImplementedError()
 
@@ -1127,19 +1189,32 @@ class MseHttGreatMesh(Frozen):
                 else:
                     element_face_map_pool[face_nodes_numbering] = [(etype, e, face_id)]
 
+        warning_sent = False
         for face in element_face_map_pool:
             positions = element_face_map_pool[face]
             if len(positions) <= 2:
                 pass
             else:
-                raise Exception(
-                    f"{len(positions)} positions:\n<" +
-                    '>\n<'.join(
-                        [f'face {_[2]} on element indexed {_[1]} of etype:{_[0]} element'
-                         for _ in positions]
+                if warning_sent:
+                    pass
+                else:
+                    print(
+                        f"\n                           !!!!!!WARNING!!!!!!\n"
+                        f"-------------------------------------------------------------------------\n"
+                        f"{len(positions)} positions:\n<" +
+                        '>\n<'.join(
+                            [f'face {_[2]} on element indexed {_[1]} of etype:{_[0]} element'
+                             for _ in positions]
+                        )
+                        + f'>\n share same nodes: numbered {face}, which is impossible.\n'
+                          f'NOTE: This may happen in periodic domain when, for example, there are only two '
+                          f'layers along one axis. This type of mesh is allowed in principle, but pls avoid '
+                          f'using this type of mesh since it may introduce issues for this implementation. '
+                          f'This is not your fault; it is mine. SORRY!\n'
+                          f"-------------------------------------------------------------------------\n\n",
+                        flush=True
                     )
-                    + f'>\n share same nodes: numbered {face}, which is impossible.'
-                )
+                    warning_sent = True
 
     def ts(self, i):
         r"""The previous generations of elements before `ts`.

@@ -19,7 +19,10 @@ def rm__m3n3k0(tpm, degree, xi, et, sg):
     for e in elements:
         element = elements[e]
         etype = element.etype
-        if etype in ("orthogonal hexahedron", ):
+        if etype in (
+            "orthogonal hexahedron",
+            "unique msepy curvilinear hexahedron",
+        ):
             RM_u[e] = ___rm330_msepy_hexahedral___(element, degree, xi, et, sg)
         else:
             raise NotImplementedError(f"{__name__} not implemented for etype={etype}")

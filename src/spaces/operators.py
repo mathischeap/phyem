@@ -99,8 +99,15 @@ def convect(s1, s2):
             k2 = s2.k
             if k1 == k2 == 1 and s1.orientation == s2.orientation == 'inner':
                 return s1
+
+            elif k1 == 1 and k2 == 0 and s1.orientation == 'outer' and s2.orientation == 'inner':
+                # (f1 · nabla) f2 where f1 is a form in s1 and f2 is a form in s2.
+                # f1 is outer, and f2 is inner.
+                # like f1 is the outer velocity
+                return s2  # return inner-0-form space
+
             else:
-                raise NotImplementedError()
+                raise NotImplementedError(k1, k2, s1.orientation, s2.orientation)
         else:
             raise NotImplementedError()
 
@@ -162,12 +169,59 @@ def cross_product(s1, s2):
             else:
                 raise NotImplementedError(f"{o1}-{k1} cross-product {o2}-{k2}")
 
+        else:
+            raise NotImplementedError()
+
     else:
         raise NotImplementedError()
-    return None
 
 
 def Cross_Product(s1, s2):
+    r""""""
+    from src.spaces.continuous.Lambda import ScalarValuedFormSpace
+
+    if s1.__class__ is ScalarValuedFormSpace and s2.__class__ is ScalarValuedFormSpace:
+
+        assert s1.mesh == s2.mesh, f"two entries have different meshes."
+
+        m, n = s1.mesh.m, s1.mesh.n
+
+        if m == n == 2:
+            k1 = s1.k
+            k2 = s2.k
+            o1 = s1.orientation
+            o2 = s2.orientation
+            if (k1 == 0 and o1 == 'outer') and (k2 == 1 and o2 == 'inner'):
+                return new('Lambda', 1, mesh=s1.mesh, orientation='outer')
+            elif (k1 == 1 and o1 == 'outer') and (k2 == 1 and o2 == 'inner'):
+                return new('Lambda', 0, mesh=s1.mesh, orientation='outer')
+            else:
+                raise NotImplementedError(f"{o1}-{k1} Cross-Product {o2}-{k2}")
+
+        elif m == n == 3:
+            k1 = s1.k
+            k2 = s2.k
+            o1 = s1.orientation
+            o2 = s2.orientation
+            if (k1 == 1 and o1 == 'outer') and (k2 == 2 and o2 == 'outer'):
+                return new('Lambda', 1, mesh=s1.mesh, orientation='outer')
+            if (k1 == 1 and o1 == 'outer') and (k2 == 1 and o2 == 'inner'):
+                return new('Lambda', 2, mesh=s1.mesh, orientation='outer')
+            if (k1 == 2 and o1 == 'outer') and (k2 == 1 and o2 == 'inner'):
+                return new('Lambda', 1, mesh=s1.mesh, orientation='outer')
+            if (k1 == 2 and o1 == 'inner') and (k2 == 2 and o2 == 'outer'):
+                return new('Lambda', 2, mesh=s1.mesh, orientation='inner')
+            else:
+                raise NotImplementedError(f"{o1}-{k1} Cross-Product {o2}-{k2}")
+
+        else:
+            raise NotImplementedError()
+
+    else:
+        raise NotImplementedError()
+
+
+def CrossProduct(s1, s2):
     r""""""
     from src.spaces.continuous.Lambda import ScalarValuedFormSpace
 
@@ -182,15 +236,40 @@ def Cross_Product(s1, s2):
             k2 = s2.k
             o1 = s1.orientation
             o2 = s2.orientation
-            if (k1 == 1 and o1 == 'outer') and (k2 == 2 and o2 == 'outer'):
+            if (k1 == 1 and o1 == 'outer') and (k2 == 1 and o2 == 'inner'):
                 return new('Lambda', 1, mesh=s1.mesh, orientation='outer')
             else:
                 raise NotImplementedError(f"{o1}-{k1} Cross-Product {o2}-{k2}")
 
+        else:
+            raise NotImplementedError()
+
     else:
         raise NotImplementedError()
 
-    return None
+
+def crossProduct(s1, s2):
+    r""""""
+    from src.spaces.continuous.Lambda import ScalarValuedFormSpace
+
+    if s1.__class__ is ScalarValuedFormSpace and s2.__class__ is ScalarValuedFormSpace:
+
+        assert s1.mesh == s2.mesh, f"two entries have different meshes."
+
+        m, n = s1.mesh.m, s1.mesh.n
+
+        if m == n == 3:
+            k1 = s1.k
+            k2 = s2.k
+            o1 = s1.orientation
+            o2 = s2.orientation
+            raise NotImplementedError(f"{o1}-{k1} Cross-Product {o2}-{k2}")
+
+        else:
+            raise NotImplementedError()
+
+    else:
+        raise NotImplementedError()
 
 
 def Hodge(space):

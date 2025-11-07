@@ -67,6 +67,8 @@ class SpaceBase(Frozen):
             return 'inner'
         elif self.orientation == 'unknown':
             return 'unknown'
+        else:
+            raise Exception()
 
     @property
     def n(self):

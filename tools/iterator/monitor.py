@@ -177,6 +177,7 @@ class IteratorMonitor(Frozen):
         # subplots ...
         for i, di in enumerate(plot_keys):
             ylabel_backgroundcolor = 'paleturquoise'
+            sci_format_y = True
             face_color = 'aliceblue'
             ylabel = di.replace('_', '-')
             m = int(i/2)
@@ -416,6 +417,8 @@ class IteratorMonitor(Frozen):
                     if num_small_values / total_ > 0.75:
                         y_data = np.log10(y_data)
                         ylabel = r"lg10: " + ylabel
+                        ylabel_backgroundcolor = 'orchid'
+                        sci_format_y = False
                     else:
                         pass
                 else:
@@ -453,9 +456,14 @@ class IteratorMonitor(Frozen):
 
             ax.tick_params(axis="x", direction='in', length=8, labelsize=15)
             ax.tick_params(axis="y", direction='in', length=8, labelsize=15)
-            plt.ticklabel_format(style='sci', axis='y', scilimits=(0, 0))  # set y ticks to sci format.
+
+            if sci_format_y:
+                plt.ticklabel_format(style='sci', axis='y', scilimits=(0, 0))
+            else:
+                plt.ticklabel_format(style='sci', axis='y', scilimits=(-20, 2))
+
             tx = ax.yaxis.get_offset_text()
-            # ... change the ytick sci-format font size
+            # ... change the yticks sci-format font size
             tx.set_fontsize(15)
             ax.set_ylabel(ylabel, fontsize=17, backgroundcolor=ylabel_backgroundcolor)
 

@@ -94,9 +94,14 @@ class StraightSegment2(Frozen):
 
         Parameters
         ----------
-        A : Point2
-        B : Point2
+        A :
+        B :
         """
+        if isinstance(A, (list, tuple)):
+            A = Point2(*A)
+        if isinstance(B, (list, tuple)):
+            B = Point2(*B)
+
         assert A.__class__ is Point2, f"I need a Point2 instance."
         assert B.__class__ is Point2, f"I need a Point2 instance."
         assert distance2(A, B) > 1e-4, f"the two points are too close!"
@@ -128,6 +133,11 @@ class StraightSegment2(Frozen):
     @property
     def B(self):
         return self._B
+
+    def __repr__(self):
+        r""""""
+        super_repr = super().__repr__().split(' at ')[1]
+        return rf"{self.__class__.__name__}=({self.A},{self.B}) at " + super_repr
 
 
 def distance2(*objs):
@@ -170,6 +180,10 @@ def whether_point_on_straight_line(point, line):
 
 def whether_point_on_straight_segment(point, segment):
     r""""""
+    if isinstance(point, tuple):
+        point = Point2(*point)
+    else:
+        pass
     assert point.__class__ is Point2, f"The point must be a Point2 instance in m2n2."
     assert segment.__class__ is StraightSegment2, f"segment must be straight in m2n2."
     A, B = segment.A, segment.B
@@ -331,7 +345,7 @@ class Curve2(Frozen):
             x(t) and it must be a 'monotone increasing' or 'monotone decreasing' function of t. We can compute t
             from x.
         yt :
-            y(t) can be any function of t. So we cannot compute t from y.
+            y(t) can be any kind of function of t; we cannot compute t from y.
         t_interval :
             The interval of t. It determines the interval of x.
         """
@@ -393,6 +407,10 @@ class Curve2(Frozen):
 
 def whether_point_on_curve(point, curve):
     r""""""
+    if isinstance(point, tuple):
+        point = Point2(*point)
+    else:
+        pass
     assert point.__class__ is Point2, f"point must be a {Point2} instance."
     assert curve.__class__ is Curve2, f"curve must be a {Curve2} instance."
 

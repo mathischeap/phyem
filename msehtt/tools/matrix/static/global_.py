@@ -113,7 +113,7 @@ class MseHttGlobalMatrix(Frozen):
         """
         M = self.gather(root=MASTER_RANK)
         if RANK != MASTER_RANK:
-            return
+            return None
         fig = plt.figure()
         plt.spy(
             M,

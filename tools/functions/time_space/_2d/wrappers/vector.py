@@ -29,13 +29,45 @@ class T2dVector(TimeSpaceFunctionBase):
     """ Wrap two functions into a vector class.
     """
 
-    def __init__(self, v0, v1, steady=False):
+    def __init__(self, v0, v1, steady=False, Jacobian_matrix=None, time_derivative=None, v0v1_linked_object=None):
         """Initialize a vector with 2 functions which take (t, x, y) as inputs.
 
         Parameters
         ----------
         v0
         v1
+        steady :
+            If it is steady, then this vector is independent of t.
+        Jacobian_matrix :
+            We can provide Jacobian matrix (2 by 2). We can give some components of it.
+            For the missing ones, just give None. For example,
+
+            Jacobian_matrix = (
+                [None, None],
+                [dv_dx, None],
+            )
+
+            We receive dv_dx. For other components, we will use numerical
+            approach to compute them.
+
+            dv_dx is a function taking (t, x, y) as inputs.
+
+        time_derivative :
+            Like Jacobian_matrix, we can provide the analytical expressions of the
+            time derivative.
+
+            For example,
+
+            time_derivative = (None, dv_dt)
+
+            we provide dv_dt and leave du_dx for numerical approach.
+
+            dv_dt is a function taking (t, x, y) as inputs.
+
+        v0v1_linked_object:
+            When v0v1_linked_object is not None, it means v0 and v1 are linked through this instances (means
+            we can compute both v0 and v1 together by calling v0v1_linked_object).
+
         """
         super().__init__(steady)
         if v0 == 0:
@@ -58,6 +90,7 @@ class T2dVector(TimeSpaceFunctionBase):
         self._divergence = None
         self._gradient = None
         self._curl = None
+        self._Laplacian = None
         self._norm = None
 
         self._integrate_cache_ = {
@@ -67,11 +100,56 @@ class T2dVector(TimeSpaceFunctionBase):
             'int1': []
         }
 
+        JM = (
+            [None, None],  # du_dx, du_dy
+            [None, None],  # dv_dx, dv_dy
+        )
+
+        if Jacobian_matrix is None:
+            pass
+        else:
+            assert isinstance(Jacobian_matrix, (list, tuple)) and len(Jacobian_matrix) == 2, \
+                f"Jacobian_matrix must be a 2 by 2 object (like a tuple or list)"
+            for i, J_ in enumerate(Jacobian_matrix):
+                assert len(J_) == 2, (f"Jacobian_matrix must be a 2 by 2 object (like a tuple or list), "
+                                      f"len(J[{i},:])={len(J_)}, is not 2.")
+                for j, Jij in enumerate(J_):
+                    if isinstance(Jij, (int, float)):
+                        if Jij == 0:
+                            JM[i][j] = _0_function
+                        else:
+                            raise NotImplementedError()
+                    else:
+                        JM[i][j] = Jacobian_matrix[i][j]
+
+        self._JM = JM
+        self._du_dx = JM[0][0]
+        self._du_dy = JM[0][1]
+        self._dv_dx = JM[1][0]
+        self._dv_dy = JM[1][1]
+
+        if self.___is_steady___:
+            self._td = (_0_function, _0_function)
+
+        else:
+            if time_derivative is None:
+                time_derivative = (None, None)
+            else:
+                assert len(time_derivative) == 2, \
+                    f"must provide two components of time_derivative representing (du_dt, dv_dt)."
+            self._td = time_derivative
+
+        self._du_dt, self._dv_dt = self._td
+
+        self._v0v1_linked_object = v0v1_linked_object
         self._freeze()
 
     def __call__(self, t, x, y):
         """Evaluate the vector at (t, x, y)"""
-        return self._v0_(t, x, y), self._v1_(t, x, y)
+        if self._v0v1_linked_object is None:
+            return self._v0_(t, x, y), self._v1_(t, x, y)
+        else:
+            return self._v0v1_linked_object(t, x, y)
 
     def __getitem__(self, t):
         """return functions evaluated at time `t`."""
@@ -135,8 +213,16 @@ class T2dVector(TimeSpaceFunctionBase):
     def time_derivative(self):
         """partial self / partial t."""
         if self._time_derivative is None:
-            pv0_pt = self._NPD0_('t')
-            pv1_pt = self._NPD1_('t')
+            if self._du_dt is None:
+                pv0_pt = self._NPD0_('t')
+            else:
+                pv0_pt = self._du_dt
+
+            if self._dv_dt is None:
+                pv1_pt = self._NPD1_('t')
+            else:
+                pv1_pt = self._dv_dt
+
             self._time_derivative = self.__class__(pv0_pt, pv1_pt)
         return self._time_derivative
 
@@ -251,10 +337,25 @@ class T2dVector(TimeSpaceFunctionBase):
     def gradient(self):
         """Gives a 2 by 2 tensor. Note the difference from curl, rot, div."""
         if self._gradient is None:
-            p0_px = self._NPD0_('x')
-            p0_py = self._NPD0_('y')
-            p1_px = self._NPD1_('x')
-            p1_py = self._NPD1_('y')
+            if self._du_dx is None:
+                p0_px = self._NPD0_('x')
+            else:
+                p0_px = self._du_dx
+
+            if self._du_dy is None:
+                p0_py = self._NPD0_('y')
+            else:
+                p0_py = self._du_dy
+
+            if self._dv_dx is None:
+                p1_px = self._NPD1_('x')
+            else:
+                p1_px = self._dv_dx
+
+            if self._dv_dy is None:
+                p1_py = self._NPD1_('y')
+            else:
+                p1_py = self._dv_dy
 
             from tools.functions.time_space._2d.wrappers.tensor import T2dTensor
 
@@ -266,10 +367,25 @@ class T2dVector(TimeSpaceFunctionBase):
     def curl(self):
         """gives a tensor. Note the difference from `rot`."""
         if self._curl is None:
-            p0_px = self._NPD0_('x')
-            p0_py = self._NPD0_('y')
-            p1_px = self._NPD1_('x')
-            p1_py = self._NPD1_('y')
+            if self._du_dx is None:
+                p0_px = self._NPD0_('x')
+            else:
+                p0_px = self._du_dx
+
+            if self._du_dy is None:
+                p0_py = self._NPD0_('y')
+            else:
+                p0_py = self._du_dy
+
+            if self._dv_dx is None:
+                p1_px = self._NPD1_('x')
+            else:
+                p1_px = self._dv_dx
+
+            if self._dv_dy is None:
+                p1_py = self._NPD1_('y')
+            else:
+                p1_py = self._dv_dy
 
             neg_p0_px = t2d_ScalarNeg(p0_px)
             neg_p1_px = t2d_ScalarNeg(p1_px)
@@ -284,8 +400,16 @@ class T2dVector(TimeSpaceFunctionBase):
     def divergence(self):
         """div(self)"""
         if self._divergence is None:
-            pv0_px = self._NPD0_('x')
-            pv1_py = self._NPD1_('y')
+            if self._du_dx is None:
+                pv0_px = self._NPD0_('x')
+            else:
+                pv0_px = self._du_dx
+
+            if self._dv_dy is None:
+                pv1_py = self._NPD1_('y')
+            else:
+                pv1_py = self._dv_dy
+
             from tools.functions.time_space._2d.wrappers.scalar import T2dScalar
             dv0 = T2dScalar(pv0_px)
             dv1 = T2dScalar(pv1_py)
@@ -303,13 +427,29 @@ class T2dVector(TimeSpaceFunctionBase):
 
         """
         if self._rot is None:
-            pv1_px = self._NPD1_('x')
-            pv0_py = self._NPD0_('y')
+
+            if self._dv_dx is None:
+                pv1_px = self._NPD1_('x')
+            else:
+                pv1_px = self._dv_dx
+
+            if self._du_dy is None:
+                pv0_py = self._NPD0_('y')
+            else:
+                pv0_py = self._du_dy
+
             from tools.functions.time_space._2d.wrappers.scalar import T2dScalar
             dv0 = T2dScalar(pv1_px)
             dv1 = T2dScalar(pv0_py)
             self._rot = dv0 - dv1
         return self._rot
+
+    @property
+    def Laplacian(self):
+        r""" Laplacian(A) = grad (div A) - curl ( rot(A) )."""
+        if self._Laplacian is None:
+            self._Laplacian = self.divergence.gradient - self.rot.curl
+        return self._Laplacian
 
     @property
     def norm(self):
@@ -336,12 +476,27 @@ class T2dVector(TimeSpaceFunctionBase):
         -------
 
         """
-        assert u.__class__.__name__ == "t2dVector", f"I need a t2dVector."
+        assert u.__class__.__name__ == "T2dVector", f"I need a T2dVector."
 
-        v0px = self._NPD0_('x')
-        v0py = self._NPD0_('y')
-        v1px = self._NPD1_('x')
-        v1py = self._NPD1_('y')
+        if self._du_dx is None:
+            v0px = self._NPD0_('x')
+        else:
+            v0px = self._du_dx
+
+        if self._du_dy is None:
+            v0py = self._NPD0_('y')
+        else:
+            v0py = self._du_dy
+
+        if self._dv_dx is None:
+            v1px = self._NPD1_('x')
+        else:
+            v1px = self._dv_dx
+
+        if self._dv_dy is None:
+            v1py = self._NPD1_('y')
+        else:
+            v1py = self._dv_dy
 
         vx, vy = u._v0_, u._v1_
 
@@ -489,7 +644,7 @@ class T2dVector(TimeSpaceFunctionBase):
 
             # self = (u, v)
             # other = (a ,b)
-            # self otimes other = ([ua, ub], [va, vb])
+            # self `\otimes` other = ([ua, ub], [va, vb])
 
             u, v = self._v0_, self._v1_
             a, b = other._v0_, other._v1_

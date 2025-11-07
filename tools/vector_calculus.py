@@ -15,6 +15,9 @@ __all__ = [
     "scalar",
     "vector",
     "tensor",
+
+    "m2n2_scalar_on_lines",
+    "m2n2_vector_on_lines",
 ]
 
 
@@ -28,6 +31,10 @@ from tools.functions.time_space._3d.wrappers.tensor import T3dTensor as _3dt_ten
 
 
 from src.config import get_embedding_space_dim
+
+
+from tools.functions.time_space._2d.wrappers.vector_on_lines import vector_on_lines as m2n2_vector_on_lines
+from tools.functions.time_space._2d.wrappers.scalar_on_lines import scalar_on_lines as m2n2_scalar_on_lines
 
 
 # noinspection PyUnusedLocal

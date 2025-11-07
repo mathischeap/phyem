@@ -19,5 +19,5 @@ class Predefined_Msehtt_Manifold_Distributor(Frozen):
         return {
             'chaotic': chaotic,
             'rectangle': rectangle,
-            'quad': quad
+            'quad': quad,
         }

@@ -221,6 +221,9 @@ class DDSRegionWiseStructured(Frozen):
         elif self.classification == '2d vector':
             return self._2d_vector_field(magnitude=magnitude, saveto=saveto, **kwargs)
 
+        elif self.classification == '3d vector':
+            return self._3d_vector_field(magnitude=magnitude, saveto=saveto, **kwargs)
+
         else:
             raise NotImplementedError(f"not implemented for dds-rws of type: {self.classification}")
 
@@ -280,48 +283,188 @@ class DDSRegionWiseStructured(Frozen):
         else:
             raise Exception()
 
+    # ------ 3d vector plot -------------------------------------------------------------------------------
+
+    def _3d_vector_field(self, plot_type='contourf', magnitude=False, saveto=None, **kwargs):
+        """"""
+        if plot_type in ('contourf', 'contour'):
+            return self.___3d_vector_contour_plot___(plot_type=plot_type, magnitude=magnitude, saveto=saveto, **kwargs)
+        else:
+            raise NotImplementedError()
+
+    def ___3d_vector_contour_plot___(
+            self, what=None, geometry=None, plot_type='contourf', magnitude=False, saveto=None, **kwargs
+    ):
+        r""""""
+        if isinstance(geometry, dict) and geometry['type'] in ('perp slice', 'perp-slice', 'perp_slice'):
+            # for example:
+            # geometry = {
+            #     'type1: 'perp slice',    # do contour(f) plot for `what` of 3d vector on a slice perp to axis.
+            #     'x': 0,
+            #     'y': [-1, 1],
+            #     'z': [-1, 1],
+            # }
+            # this means we will do the plot on slice (x, y, z) = 0 X [-1, 1] X [-1, 1]
+            return self.___3d_vector_contour_plot___perp_slice___(
+                what, geometry, plot_type=plot_type, magnitude=magnitude, saveto=saveto, **kwargs
+            )
+        else:
+            raise NotImplementedError(f"cannot do contour(f) plot for 3d vector on geometry={geometry}")
+
+    def ___3d_vector_contour_plot___perp_slice___(
+            self, what, geometry, ddf=1, plot_type='contourf', magnitude=False, saveto=None, **kwargs
+    ):
+        r""""""
+        perp_to_axis, X, Y, Z = self.___meshgrid_over_perp_slice___(geometry, ddf=ddf)
+
+        ITP = self.interpolate()
+        UVW = ITP(X, Y, Z)
+
+        if what == 0:                # plot the first (x-) component of the vector
+            value = UVW[..., -3]
+        elif what == 1:              # plot the second (y-) component of the vector
+            value = UVW[..., -2]
+        elif what == 2:              # plot the third (z-) component of the vector
+            value = UVW[..., -1]
+        else:
+            raise NotImplementedError()
+
+        if plot_type == 'contourf':
+            plotter = contourf
+        elif plot_type == 'contour':
+            plotter = contour
+        else:
+            raise NotImplementedError(f"plotter={plot_type} is not implemented.")
+
+        if perp_to_axis == 'x':
+            fig = plotter(Y, Z, value, magnitude=magnitude, saveto=saveto, **kwargs)
+        elif perp_to_axis == 'y':
+            fig = plotter(Z, X, value, magnitude=magnitude, saveto=saveto, **kwargs)
+        elif perp_to_axis == 'z':
+            fig = plotter(X, Y, value, magnitude=magnitude, saveto=saveto, **kwargs)
+        else:
+            raise Exception()
+
+        return fig
+
+    @staticmethod
+    def ___meshgrid_over_perp_slice___(geometry, ddf=1):
+        r""""""
+        x, y, z = geometry['x'], geometry['y'], geometry['z']
+        if isinstance(x, (int, float)):
+            perp = 'x'
+            a0, a1 = y
+            b0, b1 = z
+        elif isinstance(y, (int, float)):
+            perp = 'y'
+            a0, a1 = x
+            b0, b1 = z
+        elif isinstance(z, (int, float)):
+            perp = 'z'
+            a0, a1 = x
+            b0, b1 = y
+        else:
+            raise Exception()
+
+        density = int(100 * ddf)
+
+        if density < 30:
+            density = 30
+        else:
+            pass
+
+        linspace0 = np.linspace(a0, a1, density)
+        linspace1 = np.linspace(b0, b1, density)
+
+        if perp == 'x':
+            meshgrid = np.meshgrid(np.array([x]), linspace0, linspace1, indexing='ij')
+            X, Y, Z = meshgrid
+            X = X[0, :, :]
+            Y = Y[0, :, :]
+            Z = Z[0, :, :]
+        elif perp == 'y':
+            meshgrid = np.meshgrid(linspace0, np.array([y]), linspace1, indexing='ij')
+            X, Y, Z = meshgrid
+            X = X[:, 0, :]
+            Y = Y[:, 0, :]
+            Z = Z[:, 0, :]
+        elif perp == 'z':
+            meshgrid = np.meshgrid(linspace0, linspace1, np.array([z]), indexing='ij')
+            X, Y, Z = meshgrid
+            X = X[:, :, 0]
+            Y = Y[:, :, 0]
+            Z = Z[:, :, 0]
+        else:
+            raise Exception()
+
+        return perp, X, Y, Z
+
     # -- Operations ----------------------------------------------------------------------------------------
     def __sub__(self, other):
         """self - other"""
-        assert self.___check_coo_equality___(other)
-        assert self._value_shape == other._value_shape, f"value shape wrong"
+        if other.__class__ is self.__class__:
+            assert self.___check_coo_equality___(other)
+            assert self._value_shape == other._value_shape, f"value shape wrong"
 
-        for i in range(self._space_dim):
-            xyz_self = self._coo_dict_list[i]
-            xyz_other = other._coo_dict_list[i]
-            for region in xyz_self:
-                assert region in xyz_other, f"region does not match"
-                assert np.allclose(xyz_self[region], xyz_other[region]), f"coordinates does not match."
+            for i in range(self._space_dim):
+                xyz_self = self._coo_dict_list[i]
+                xyz_other = other._coo_dict_list[i]
+                for region in xyz_self:
+                    assert region in xyz_other, f"region does not match"
+                    assert np.allclose(xyz_self[region], xyz_other[region]), f"coordinates does not match."
 
-        value_dict = [dict() for _ in range(self._value_shape)]
-        for _ in range(self._value_shape):
-            self_v, other_v = self._val_dict_list[_], other._val_dict_list[_]
-            for region in self_v:
-                assert region in other_v, f"region in value does not match."
-                value_dict[_][region] = self_v[region] - other_v[region]
+            value_dict = [dict() for _ in range(self._value_shape)]
+            for _ in range(self._value_shape):
+                self_v, other_v = self._val_dict_list[_], other._val_dict_list[_]
+                for region in self_v:
+                    assert region in other_v, f"region in value does not match."
+                    value_dict[_][region] = self_v[region] - other_v[region]
 
-        return self.__class__(self._coo_dict_list, value_dict)
+            return self.__class__(self._coo_dict_list, value_dict)
+
+        elif isinstance(other, (int, float)):
+            value_dict = [dict() for _ in range(self._value_shape)]
+            for _ in range(self._value_shape):
+                self_v = self._val_dict_list[_]
+                for region in self_v:
+                    value_dict[_][region] = self_v[region] - other
+            return self.__class__(self._coo_dict_list, value_dict)
+
+        else:
+            raise NotImplementedError(f"cannot do dds-rws - {other}")
 
     def __add__(self, other):
         """self + other"""
-        assert self.___check_coo_equality___(other)
-        assert self._value_shape == other._value_shape, f"value shape wrong"
+        if other.__class__ is self.__class__:
+            assert self.___check_coo_equality___(other)
+            assert self._value_shape == other._value_shape, f"value shape wrong"
 
-        for i in range(self._space_dim):
-            xyz_self = self._coo_dict_list[i]
-            xyz_other = other._coo_dict_list[i]
-            for region in xyz_self:
-                assert region in xyz_other, f"region does not match"
-                assert np.allclose(xyz_self[region], xyz_other[region]), f"coordinates does not match."
+            for i in range(self._space_dim):
+                xyz_self = self._coo_dict_list[i]
+                xyz_other = other._coo_dict_list[i]
+                for region in xyz_self:
+                    assert region in xyz_other, f"region does not match"
+                    assert np.allclose(xyz_self[region], xyz_other[region]), f"coordinates does not match."
 
-        value_dict = [dict() for _ in range(self._value_shape)]
-        for _ in range(self._value_shape):
-            self_v, other_v = self._val_dict_list[_], other._val_dict_list[_]
-            for region in self_v:
-                assert region in other_v, f"region in value does not match."
-                value_dict[_][region] = self_v[region] + other_v[region]
+            value_dict = [dict() for _ in range(self._value_shape)]
+            for _ in range(self._value_shape):
+                self_v, other_v = self._val_dict_list[_], other._val_dict_list[_]
+                for region in self_v:
+                    assert region in other_v, f"region in value does not match."
+                    value_dict[_][region] = self_v[region] + other_v[region]
 
-        return self.__class__(self._coo_dict_list, value_dict)
+            return self.__class__(self._coo_dict_list, value_dict)
+
+        elif isinstance(other, (int, float)):
+            value_dict = [dict() for _ in range(self._value_shape)]
+            for _ in range(self._value_shape):
+                self_v = self._val_dict_list[_]
+                for region in self_v:
+                    value_dict[_][region] = self_v[region] + other
+            return self.__class__(self._coo_dict_list, value_dict)
+
+        else:
+            raise NotImplementedError(f"cannot do dds-rws + {other}")
 
     def __rmul__(self, other):
         """other * self"""
@@ -405,6 +548,15 @@ class DDSRegionWiseStructured(Frozen):
 
             else:
                 raise NotImplementedError
+        else:
+            raise NotImplementedError()
+
+    def value(self, x, y):
+        r"""return the value of me at the coordinate (x, y)"""
+        if self.classification == '2d scalar':
+            itp = self.interpolate()
+            value = itp(x, y)
+            return value[0]
         else:
             raise NotImplementedError()
 
@@ -773,33 +925,11 @@ class DDSRegionWiseStructured(Frozen):
 
                 sf_end = sf_start + d_sf_0 + d_sf_1
 
-                sf[i - 1, 0] = sf_end
-
-            for i in range(1, sp1)[::-1]:
-                sf_start = sf[0, i]
-
-                sx, sy = x[0, i], y[0, i]
-                ex, ey = x[0, i - 1], y[0, i - 1]
-
-                dx = ex - sx
-                dy = ey - sy
-
-                su, sv = u[0, i], v[0, i]
-                eu, ev = u[0, i - 1], v[0, i - 1]
-
-                mu = (su + eu) / 2
-                mv = (sv + ev) / 2
-
-                d_sf_0 = mu * dy
-                d_sf_1 = - mv * dx
-
-                sf_end = sf_start + d_sf_0 + d_sf_1
-
-                sf[0, i - 1] = sf_end
+                sf[i - 1, -1] = sf_end
 
             return self._compute_sf_in_2d_region_(
                 x, y, u, v,
-                (0, 0), sf[0, 0]
+                (0, -1), sf[0, -1]
             )
 
         else:

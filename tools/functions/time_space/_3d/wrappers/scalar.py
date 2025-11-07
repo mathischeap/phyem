@@ -26,8 +26,16 @@ def ___0_func___(t, x, y, z):
 class T3dScalar(TimeSpaceFunctionBase):
     """"""
 
-    def __init__(self, s, steady=False):
-        """"""
+    def __init__(self, s, steady=False, derivative=None):
+        """
+
+        Parameters
+        ----------
+        s
+        steady :
+            This scalar is independent of time. So df/dt = 0.
+        derivative
+        """
         super().__init__(steady)
         if isinstance(s, (int, float)) and s == 0:
             self.___is_zero___ = True
@@ -38,6 +46,31 @@ class T3dScalar(TimeSpaceFunctionBase):
 
         self._s_ = s
         self.__NPD__ = None
+
+        D = [None, None, None, None]  # ds_dt, ds_dx, ds_dy, ds_dz
+        if derivative is None:
+            pass
+        else:
+            assert isinstance(derivative, (list, tuple)) and len(derivative) == 4, \
+                f"Please put df_dt, df_dx, df_dy, df_dz into a list or tuple."
+
+            for i, di in enumerate(derivative):
+                if isinstance(di, (int, float)):
+                    if di == 0:
+                        D[i] = ___0_func___
+                    else:
+                        raise NotImplementedError()
+                else:
+                    D[i] = di
+
+        if self.___is_steady___:
+            D[0] = ___0_func___
+        else:
+            pass
+
+        self._derivative = D
+        self._dt, self._dx, self._dy, self._dz = D
+
         self._freeze()
 
     def __call__(self, t, x, y, z):
@@ -84,7 +117,10 @@ class T3dScalar(TimeSpaceFunctionBase):
 
     @property
     def time_derivative(self):
-        ps_pt = self._NPD_('t')
+        if self._dt is None:
+            ps_pt = self._NPD_('t')
+        else:
+            ps_pt = self._dt
         return self.__class__(ps_pt)
 
     @property
@@ -94,9 +130,21 @@ class T3dScalar(TimeSpaceFunctionBase):
         if self.___is_zero___:
             return T3dVector(0, 0, 0)
         else:
-            px = self._NPD_('x')
-            py = self._NPD_('y')
-            pz = self._NPD_('z')
+            if self._dx is None:
+                px = self._NPD_('x')
+            else:
+                px = self._dx
+
+            if self._dy is None:
+                py = self._NPD_('y')
+            else:
+                py = self._dy
+
+            if self._dz is None:
+                pz = self._NPD_('z')
+            else:
+                pz = self._dz
+
             return T3dVector(px, py, pz)
 
     def convection_by(self, u):
@@ -112,9 +160,20 @@ class T3dScalar(TimeSpaceFunctionBase):
         """
         assert u.__class__.__name__ == "t3dVector", f"I need a t3dVector."
 
-        px = self._NPD_('x')
-        py = self._NPD_('y')
-        pz = self._NPD_('z')
+        if self._dx is None:
+            px = self._NPD_('x')
+        else:
+            px = self._dx
+
+        if self._dy is None:
+            py = self._NPD_('y')
+        else:
+            py = self._dy
+
+        if self._dz is None:
+            pz = self._NPD_('z')
+        else:
+            pz = self._dz
 
         vx, vy, vz = u._v0_, u._v1_, u._v2_
 

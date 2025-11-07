@@ -95,13 +95,27 @@ class MseHttGreatMeshBaseElement(Frozen):
         Parameters
         ----------
         coordinates
-            For example, m==n2==2, x, y = coordinates.
+            For example, m==n==2, x, y = coordinates.
 
         Returns
         -------
 
         """
-        raise NotImplementedError()
+        raise NotImplementedError(f"_whether_coo_in_me_ for {self.__class__.__name__} not implemented")
+
+    def _whether_coo_on_my_boundary_(self, *coordinates):
+        r"""
+
+        Parameters
+        ----------
+        coordinates
+            For example, m==n==2, x, y = coordinates.
+
+        Returns
+        -------
+
+        """
+        raise NotImplementedError(f"_whether_coo_on_my_boundary_ for {self.__class__.__name__} not implemented")
 
     @property
     def etype(self):
@@ -125,9 +139,9 @@ class MseHttGreatMeshBaseElement(Frozen):
 
     @property
     def signature(self):
-        r"""Each element has its unique signature. Even two elements have same metric, their signature are different.
+        r"""Each element has its unique signature. Even two elements have same metric, their signatures are different.
         This is mainly used to read data. For example, when we read cochain from a file, we need to use signatures of
-        elements to make sure we are reading the correct data into the correct elements because sometimes, elements
+        elements to make sure we are reading the correct data into the correct elements because sometimes elements
         may be numbered differently.
         """
         if self.m() == self.n() == 2:  # 2d element in 2d space
@@ -220,7 +234,10 @@ class MseHttGreatMeshBaseElement(Frozen):
             else:
                 raise NotImplementedError()
 
-        elif self.etype in ('orthogonal hexahedron', ):
+        elif self.etype in (
+            'orthogonal hexahedron',
+            'unique msepy curvilinear hexahedron',
+        ):
             if indicator == 'm3n3k0':
                 xi_et_sg, bf = ___bf330_msepy_quadrilateral___(p, btype, *grid_mesh)
             elif indicator == 'm3n3k1':
@@ -322,7 +339,7 @@ class MseHttGreatMeshBaseElement(Frozen):
 
         A face can be 2-d (face of 3d element) or 1-d (face of 2d element).
         """
-        raise NotImplementedError()
+        raise NotImplementedError(f"face_setting not implemented")
 
     @classmethod
     def edge_setting(cls):
@@ -330,7 +347,7 @@ class MseHttGreatMeshBaseElement(Frozen):
 
         An edge can be 1-d for 3d element. 2d element has no edge (only have face.)
         """
-        raise NotImplementedError()
+        raise NotImplementedError(f"edge_setting not implemented")
 
     def ___face_representative_str___(self):
         r""""""
@@ -343,31 +360,58 @@ class MseHttGreatMeshBaseElement(Frozen):
     @property
     def faces(self):
         r""""""
-        raise NotImplementedError()
+        raise NotImplementedError(f"faces not implemented")
 
     @property
     def edges(self):
         r""""""
-        return NotImplementedError()
+        return NotImplementedError(f"edges not implemented")
 
     @classmethod
-    def degree_parser(cls, degree):
+    def degree_parser(cls, degree, m=None, n=None):
         r""""""
         key = cls.__name__ + ':' + _degree_str_maker(degree)
+
         if key in ___degree_cache_pool___:
             return ___degree_cache_pool___[key]
+
         else:
+            if m is None:
+                m = cls.m()
+            else:
+                pass
+
+            if n is None:
+                n = cls.n()
+            else:
+                pass
+
             if isinstance(degree, int):
                 assert degree >= 1, f'Must be'
-                if cls.m() == cls.n() == 2:
+                if m == n == 2:
                     p = (degree, degree)
-                elif cls.m() == cls.n() == 3:
+                elif m == n == 3:
                     p = (degree, degree, degree)
                 else:
                     raise NotImplementedError()
                 dtype = 'Lobatto'
+
+            elif isinstance(degree, (list, tuple)) and all([isinstance(_, int) for _ in degree]):
+                # receive a list or tuple of integers.
+                assert all([_ >= 1 for _ in degree]), f"degree = {degree} is invalid."
+                if m == n == 2:
+                    assert len(degree) == 2, f"degree={degree} is invalid for m == n == 2."
+                    p = tuple(degree)
+                elif m == n == 3:
+                    assert len(degree) == 3, f"degree={degree} is invalid for m == n == 3."
+                    p = tuple(degree)
+                else:
+                    raise NotImplementedError(f"degree_parser for m={m}, n={n} not implemented")
+                dtype = 'Lobatto'
+
             else:
-                raise NotImplementedError()
+                raise NotImplementedError(f"degree={degree} is not implemented for degree_parser.")
+
             ___degree_cache_pool___[key] = p, dtype
             return p, dtype
 
@@ -710,6 +754,14 @@ class _FaceCoordinateTransformationBase(Frozen):
 
     def is_plane(self):
         r"""Return True if the face is plane; a straight line in 2d space or a plane surface in 3d space for example."""
+        raise NotImplementedError()
+
+    def is_perp_plane(self):
+        r""""""
+        raise NotImplementedError()
+
+    def is_rectangle(self):
+        r""""""
         raise NotImplementedError()
 
     @property

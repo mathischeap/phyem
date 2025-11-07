@@ -164,6 +164,9 @@ class Iterator(Frozen):
                 results = self._solver_(args)
             t_cost = time() - t_start
 
+            assert len(results) == len(self._solver_ret), \
+                f"The amount of results is different from the output names list in the solver docstring."
+
             if show_info:
                 if RANK == MASTER_RANK:
                     print(f" ... leads to outputs: (costs %.3f seconds)\n" % t_cost)
@@ -569,8 +572,12 @@ class Iterator(Frozen):
                             required_report_times = 1
                         else:
                             required_report_times = 0
-                        do_cache = ((cache_waiting_time > self.___first_cache_time___)
-                                    and self.monitor._report_times >= required_report_times)
+
+                        if cache_waiting_time > self.___cache_time___ / 4:
+                            do_cache = True
+                        else:
+                            do_cache = ((cache_waiting_time > self.___first_cache_time___)
+                                        and self.monitor._report_times >= required_report_times)
                         if do_cache:
                             first_caching = False
                         else:

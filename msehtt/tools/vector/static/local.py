@@ -149,6 +149,8 @@ class MseHttStaticLocalVector(Frozen):
                 return np.zeros(self._gm.num_local_dofs(i))
         elif self._dtype == "realtime":
             return self._data(i)
+        else:
+            raise Exception()
 
     @property
     def customize(self):

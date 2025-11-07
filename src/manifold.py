@@ -208,7 +208,8 @@ class Manifold(Frozen):
         for sym_repr in submanifolds_sym_repr:
             assert isinstance(sym_repr, str), f"please put sym_repr of partitions in str."
         num_of_partitions = len(submanifolds_sym_repr)
-        assert num_of_partitions >= 2 and num_of_partitions % 2 == 0, f"I need a integer >= 2."
+        # assert num_of_partitions >= 2 and num_of_partitions % 2 == 0, f"I need a integer >= 2."
+        assert num_of_partitions >= 2, f"I need a integer >= 2."
         partitions = tuple()
 
         for i in range(num_of_partitions):

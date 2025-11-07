@@ -740,7 +740,8 @@ class MseHttMeshPartial(Frozen):
             self._composition = MseHttBoundarySectionPartialMesh(self, self._tgm, valid_rank_faces)
 
         elif CONFIGURATION == '11=m2n2':
-            # CONFIGURATION 5 ===========================================================================
+            # CONFIGURATION 11 ===========================================================================
+            # on straight segments =======================================================================
             the_partial_elements = including['partial elements'].composition
             assert the_partial_elements.__class__ is MseHttElementsPartialMesh, \
                 f"I need a {MseHttElementsPartialMesh}."
@@ -795,7 +796,8 @@ class MseHttMeshPartial(Frozen):
             self._composition = MseHttBoundarySectionPartialMesh(self, self._tgm, valid_rank_faces)
 
         elif CONFIGURATION == '12=m2n2':
-            # CONFIGURATION 6 ===========================================================================
+            # CONFIGURATION 12 ===========================================================================
+            # except on straight segments ================================================================
             the_partial_elements = including['partial elements'].composition
             assert the_partial_elements.__class__ is MseHttElementsPartialMesh, \
                 f"I need a {MseHttElementsPartialMesh}."

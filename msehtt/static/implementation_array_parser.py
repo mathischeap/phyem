@@ -30,6 +30,8 @@ _setting_ = {
 
 from msehtt.static.form.addons.nop_data_computer.trilinear_AxB_ip_C import AxB_ip_C
 from msehtt.static.form.addons.nop_data_computer.trilinear_AxB_dp_C import AxB_dp_C
+from msehtt.static.form.addons.nop_data_computer.trilinear_AB_ip_dC import AB_ip_dC
+from msehtt.static.form.addons.nop_data_computer.trilinear_ABC import T_ABC
 
 
 def _indicator_check():
@@ -150,12 +152,12 @@ def _parse_root_form(root_form_vec_lin_repr):
     return dynamic_cochain_vec, rf.abstract.ap()._sym_repr, rf.cochain._ati_time_caller
 
 
-def Parse__M_matrix(space, degree0, degree1):
+def Parse__M_matrix(space, str_degree0, str_degree1):
     """"""
-    degree0 = _str_degree_parser(degree0)
-    degree1 = _str_degree_parser(degree1)
+    degree0 = _str_degree_parser(str_degree0)
+    degree1 = _str_degree_parser(str_degree1)
     space = _find_space_through_pure_lin_repr(space)
-    key = (id(space), degree0, degree1)
+    key = (id(space), str_degree0, str_degree1)
     if key in _setting_['_cache_M_']:
         return _setting_['_cache_M_'][key]
     else:
@@ -425,3 +427,148 @@ def Parse__A_x_astB__dp__tC(A, gB, tC):
     noc = AxB_dp_C(A, gB, tC)
     M = noc(2, tC, A)
     return M, gB.cochain._ati_time_caller  # since B is given, its ati determine the time of C.
+
+
+# -------- (AB, d(C)) ------------------------------------------------------------------------------
+
+def Parse__A_astB_ip_dtC(A, gB, tC):
+    r""""""
+    A, gB, tC = _find_from_bracket_ABC(_VarSetting_A_astB_ip_dtC, A, gB, tC)
+    noc = AB_ip_dC(A, gB, tC)
+    M = noc(2, tC, A)
+    return M, gB.cochain._ati_time_caller  # since B is given, its ati determine the time of C.
+
+
+def Parse__astA_B_ip_dtC(gA, B, tC):
+    r""""""
+    gA, B, tC = _find_from_bracket_ABC(_VarSetting_astA_B_ip_dtC, gA, B, tC)
+    noc = AB_ip_dC(gA, B, tC)
+    M = noc(2, tC, B)
+    return M, gA.cochain._ati_time_caller  # since B is given, its ati determine the time of C.
+
+
+def Parse__astA_astB_ip_dtC(gA, gB, tC):
+    """"""
+    gA, gB, tC = _find_from_bracket_ABC(_VarSetting_astA_astB_ip_dtC, gA, gB, tC)
+    noc = AB_ip_dC(gA, gB, tC)
+    v, time_caller = noc(1, tC)
+    return v, time_caller
+
+
+# ==================================================================================================
+
+
+# -------- <AB|d(C)> ------------------------------------------------------------------------------
+
+def Parse__A_astB_dp_dtC(A, gB, tC):
+    r""""""
+    A, gB, tC = _find_from_bracket_ABC(_VarSetting_A_astB_dp_dtC, A, gB, tC)
+    noc = AB_ip_dC(A, gB, tC)   # use AB_ip_dC is not a typo, it is correct.
+    M = noc(2, tC, A)
+    return M, gB.cochain._ati_time_caller  # since B is given, its ati determine the time of C.
+
+
+def Parse__astA_B_dp_dtC(gA, B, tC):
+    r""""""
+    gA, B, tC = _find_from_bracket_ABC(_VarSetting_astA_B_dp_dtC, gA, B, tC)
+    noc = AB_ip_dC(gA, B, tC)   # use AB_ip_dC is not a typo, it is correct.
+    M = noc(2, tC, B)
+    return M, gA.cochain._ati_time_caller  # since B is given, its ati determine the time of C.
+
+
+def Parse__astA_astB_dp_dtC(gA, gB, tC):
+    """"""
+    gA, gB, tC = _find_from_bracket_ABC(_VarSetting_astA_astB_dp_dtC, gA, gB, tC)
+    noc = AB_ip_dC(gA, gB, tC)   # use AB_ip_dC is not a typo, it is correct.
+    v, time_caller = noc(1, tC)
+    return v, time_caller
+
+
+# ==================================================================================================
+
+
+# -------- (A, BC) ------------------------------------------------------------------------------
+
+def Parse__A_ip_astB_tC(A, gB, tC):
+    r""""""
+    A, gB, tC = _find_from_bracket_ABC(_VarSetting_A_ip_astB_tC, A, gB, tC)
+    noc = T_ABC(A, gB, tC)
+    M = noc(2, tC, A)
+    return M, gB.cochain._ati_time_caller  # since B is given, its ati determine the time of C.
+
+
+def Parse__astA_ip_B_tC(gA, B, tC):
+    r""""""
+    gA, B, tC = _find_from_bracket_ABC(_VarSetting_astA_ip_B_tC, gA, B, tC)
+    noc = T_ABC(gA, B, tC)
+    M = noc(2, tC, B)
+    return M, gA.cochain._ati_time_caller  # since A is given, its ati determine the time of C.
+
+
+def Parse__astA_ip_astB_tC(gA, gB, tC):
+    """"""
+    gA, gB, tC = _find_from_bracket_ABC(_VarSetting_astA_ip_astB_tC, gA, gB, tC)
+    noc = T_ABC(gA, gB, tC)
+    v, time_caller = noc(1, tC)
+    return v, time_caller
+
+
+# ==================================================================================================
+
+
+# -------- <AB|C> ------------------------------------------------------------------------------
+
+def Parse__A_astB_dp_tC(A, gB, tC):
+    r""""""
+    A, gB, tC = _find_from_bracket_ABC(_VarSetting_A_astB_dp_tC, A, gB, tC)
+    noc = T_ABC(A, gB, tC)
+    M = noc(2, tC, A)
+    return M, gB.cochain._ati_time_caller  # since B is given, its ati determine the time of C.
+
+
+def Parse__astA_B_dp_tC(gA, B, tC):
+    r""""""
+    gA, B, tC = _find_from_bracket_ABC(_VarSetting_astA_B_dp_tC, gA, B, tC)
+    noc = T_ABC(gA, B, tC)
+    M = noc(2, tC, B)
+    return M, gA.cochain._ati_time_caller  # since B is given, its ati determine the time of C.
+
+
+def Parse__astA_astB_dp_tC(gA, gB, tC):
+    """"""
+    gA, gB, tC = _find_from_bracket_ABC(_VarSetting_astA_astB_dp_tC, gA, gB, tC)
+    noc = T_ABC(gA, gB, tC)
+    v, time_caller = noc(1, tC)
+    return v, time_caller
+
+
+# ==================================================================================================
+
+
+# -------- (AB, C) ------------------------------------------------------------------------------
+
+def Parse__A_astB_ip_tC(A, gB, tC):
+    r""""""
+    A, gB, tC = _find_from_bracket_ABC(_VarSetting_A_astB_ip_tC, A, gB, tC)
+    noc = T_ABC(A, gB, tC)
+    M = noc(2, tC, A)
+    return M, gB.cochain._ati_time_caller  # since B is given, its ati determine the time of C.
+
+
+def Parse__astA_B_ip_tC(gA, B, tC):
+    r""""""
+    gA, B, tC = _find_from_bracket_ABC(_VarSetting_astA_B_ip_tC, gA, B, tC)
+    noc = T_ABC(gA, B, tC)
+    M = noc(2, tC, B)
+    return M, gA.cochain._ati_time_caller  # since B is given, its ati determine the time of C.
+
+
+def Parse__astA_astB_ip_tC(gA, gB, tC):
+    """"""
+    gA, gB, tC = _find_from_bracket_ABC(_VarSetting_astA_astB_ip_tC, gA, gB, tC)
+    noc = T_ABC(gA, gB, tC)
+    v, time_caller = noc(1, tC)
+    return v, time_caller
+
+
+# ==================================================================================================

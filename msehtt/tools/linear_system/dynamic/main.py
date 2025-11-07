@@ -28,6 +28,8 @@ from msehtt.tools.linear_system.static.local.main import MseHttStaticLocalLinear
 
 from msehtt.tools.linear_system.dynamic.config import MseHttDynamicLinearSystem_Config
 
+from tools.miscellaneous.latex_bmatrix_to_array import bmatrix_to_array
+
 
 class MseHttDynamicLinearSystem(Frozen):
     """"""
@@ -192,6 +194,8 @@ class MseHttDynamicLinearSystem(Frozen):
             f"dynamic linear system initialized but not applied, do '.apply()' firstly."
 
         A_text = self._A_pr_text()
+        column = self.shape[1]
+        A_text = bmatrix_to_array(A_text, column)
 
         if self._bc is None or len(self._bc) == 0:
             bc_text = ''
@@ -314,6 +318,8 @@ class MseHttDynamicLinearSystem(Frozen):
                     pass
 
                 else:
+
+                    # print(i, j)
 
                     static_Aij, text, time_indicating = Aij(*args, **kwargs)
 

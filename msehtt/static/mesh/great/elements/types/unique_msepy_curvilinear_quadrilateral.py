@@ -254,7 +254,7 @@ class MseHttGreatMeshUniqueMsepyCurvilinearQuadrilateralElementCooTrans(MseHttGr
         for i in range(2):
             for j in range(2):
                 jm_ij = jm[i][j]
-                jm_ij *= self._element._delta[j] / 2
+                jm_ij *= self._element._delta[j] * 0.5
                 JM[i][j] = jm_ij
         return JM
 

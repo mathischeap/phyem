@@ -69,7 +69,7 @@ class MseHtt_StaticForm_Dofs_Visualize_Matplot(Frozen):
         GDofs_coo_info = COMM.gather(GDofs_coo_info, root=MASTER_RANK)
 
         if RANK != MASTER_RANK:
-            return
+            return None
         else:
             pass
 
@@ -85,6 +85,7 @@ class MseHtt_StaticForm_Dofs_Visualize_Matplot(Frozen):
 
         plt.rc('text', usetex=usetex)
         fig, ax = plt.subplots(figsize=figsize)
+        # noinspection PyTypeChecker
         ax.set_aspect(aspect)
         ax.spines['top'].set_visible(True)
         ax.spines['right'].set_visible(True)
@@ -155,3 +156,5 @@ class MseHtt_StaticForm_Dofs_Visualize_Matplot(Frozen):
             else:
                 plt.tight_layout()
                 plt.show(block=_setting['block'])
+
+        return None

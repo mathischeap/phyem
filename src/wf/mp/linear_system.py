@@ -12,6 +12,7 @@ plt.rcParams.update({
 matplotlib.use('TkAgg')
 
 from src.wf.mp.linear_system_bc import MatrixProxyLinearSystemBoundaryConditions
+from tools.miscellaneous.latex_bmatrix_to_array import bmatrix_to_array
 
 
 class MatrixProxyLinearSystem(Frozen):
@@ -40,12 +41,29 @@ class MatrixProxyLinearSystem(Frozen):
         """"""
         from src.config import RANK, MASTER_RANK
         if RANK != MASTER_RANK:
-            return
+            return None
         else:
             pass
         seek_text = self._mp._mp_seek_text()
         linear_system_text = self._ls._pr_text()
         symbolic = r"$" + linear_system_text + r"$"
+
+        # ----- for big matrix, bmatrix environment does not work, use array instead -----------------------
+        num_unknowns = len(self._mp._wf.unknowns)
+        if num_unknowns > 5:
+            # matrix_begin_latex = r"\left[\begin{array}{" + r"c" * num_unknowns + r"}"
+            # matrix_end_latex = r"\end{array}\right]"
+            # if r"\begin{bmatrix}" in symbolic:
+            #     symbolic = symbolic.replace(r"\begin{bmatrix}", matrix_begin_latex)
+            # if r"\end{bmatrix}" in symbolic:
+            #     symbolic = symbolic.replace(r"\end{bmatrix}", matrix_end_latex)
+
+            symbolic = bmatrix_to_array(symbolic, num_unknowns)
+
+        else:
+            pass
+        # ===================================================================================================
+
         if self.bc is None or len(self.bc) == 0:
             bc_text = ''
         else:

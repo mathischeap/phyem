@@ -44,6 +44,7 @@ __all__ = [
 
     "save",
     "read",
+    "read_tsf",
 
     "os",
     "film",
@@ -113,7 +114,7 @@ from tools.runner import RunnerDataReader as rdr             # runner date reade
 from tools.iterator.main import Iterator as iterator
 
 from tools.save import save
-from tools.read import read
+from tools.read import read, read_tsf
 
 import tools.os_ as os
 import tools.film as film

@@ -17,7 +17,8 @@ class MseHtt_Form_Numeric_TimeSpaceProperties(Frozen):
         r"""Return time-space scalar functions for all components of the form.
 
         The time of ``f`` is ``t``. When ``t`` is None, we always use the newest time of ``f``'s cochain.
-        So the functions will update automatically and the t in (t, x, y) does not have any effect.
+        So the functions will update automatically and the t in (t, x, y) of the time-space scalars
+        does not have any effect.
 
         Parameters
         ----------

@@ -52,12 +52,14 @@ class MseHttGreatMeshOrthogonalHexahedronElement(MseHttGreatMeshBaseElement):
         self._index = element_index
         self._parameters = parameters
         self._map = _map
-        self._freeze()
         self._ct = MseHtt_GreatMesh_OrthogonalHexahedron_Element_CooTrans(
             self,
             origin_x, origin_y, origin_z,
             delta_x, delta_y, delta_z
         )
+        self._melt()
+        self._polyhedron = None
+        self._freeze()
 
     @classmethod
     def m(cls):
@@ -213,6 +215,7 @@ class MseHttGreatMeshOrthogonalHexahedronElement(MseHttGreatMeshBaseElement):
         else:
             raise NotImplementedError()
 
+        # noinspection PyUnreachableCode
         cell_list = list()
         for i in range(data_density - 1):
             for j in range(data_density - 1):
@@ -231,6 +234,24 @@ class MseHttGreatMeshOrthogonalHexahedronElement(MseHttGreatMeshBaseElement):
                     )
 
         return data_dict, cell_list, dtype
+
+    def _whether_coo_in_me_(self, x, y, z):
+        r""""""
+        origin_x, origin_y, origin_z = self.parameters['origin']
+        delta_x, delta_y, delta_z = self.parameters['delta']
+        if origin_x <= x <= origin_x + delta_x:
+            pass
+        else:
+            return False
+        if origin_y <= y <= origin_y + delta_y:
+            pass
+        else:
+            return False
+        if origin_z <= z <= origin_z + delta_z:
+            pass
+        else:
+            return False
+        return True
 
 
 # ============ ELEMENT CT =====================================================================================
@@ -569,10 +590,20 @@ class MseHtt_GreatMesh_OrthogonalHexahedron_Element_OneFace_CT(_FaceCoordinateTr
         n = self._start_end
 
         if n == 0:  # x-, y-, z- face
-            return -nx, -ny, -nz
+            nx, ny, nz = -nx, -ny, -nz
         else:
-            return nx, ny, nz
+            pass
+
+        return nx, ny, nz
 
     def is_plane(self):
+        r""""""
+        return True
+
+    def is_perp_plane(self):
+        r""""""
+        return True
+
+    def is_rectangle(self):
         r""""""
         return True

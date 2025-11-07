@@ -13,7 +13,7 @@ class MseHttSpaceNormLambda(Frozen):
         self._space = space
         self._freeze()
 
-    def __call__(self, degree, cochain, norm_type='L2'):
+    def __call__(self, degree, cochain, norm_type='L2', component_wise=False):
         """"""
         m = self._space.m
         n = self._space.n
@@ -24,9 +24,9 @@ class MseHttSpaceNormLambda(Frozen):
         module = import_module(path)
         if hasattr(module, 'norm_Lambda__' + indicator):
             return getattr(module, 'norm_Lambda__' + indicator)(
-                self._space.tpm, degree, cochain, norm_type=norm_type,
+                self._space.tpm, degree, cochain, norm_type=norm_type, component_wise=component_wise
             )
         else:
             return getattr(module, 'norm_Lambda__' + indicator + f"_{orientation}")(
-                self._space.tpm, degree, cochain, norm_type=norm_type
+                self._space.tpm, degree, cochain, norm_type=norm_type, component_wise=component_wise
             )

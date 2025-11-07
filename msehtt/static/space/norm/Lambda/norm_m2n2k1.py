@@ -9,8 +9,11 @@ from src.config import COMM
 from msehtt.static.space.mass_matrix.Lambda.MM_m2n2k1 import mass_matrix_Lambda__m2n2k1_outer
 
 
-def norm_Lambda__m2n2k1_outer(tpm, degree, cochain, norm_type='L2'):
+def norm_Lambda__m2n2k1_outer(tpm, degree, cochain, norm_type='L2', component_wise=False):
     """"""
+    if component_wise:
+        raise NotImplementedError()
+
     if norm_type == "L2":
         M = mass_matrix_Lambda__m2n2k1_outer(tpm, degree)[0]
         rank_elements = tpm.composition
@@ -29,8 +32,11 @@ def norm_Lambda__m2n2k1_outer(tpm, degree, cochain, norm_type='L2'):
 from msehtt.static.space.mass_matrix.Lambda.MM_m2n2k1 import mass_matrix_Lambda__m2n2k1_inner
 
 
-def norm_Lambda__m2n2k1_inner(tpm, degree, cochain, norm_type='L2'):
+def norm_Lambda__m2n2k1_inner(tpm, degree, cochain, norm_type='L2', component_wise=False):
     """"""
+    if component_wise:
+        raise NotImplementedError()
+
     if norm_type == "L2":
         M = mass_matrix_Lambda__m2n2k1_inner(tpm, degree)[0]
         rank_elements = tpm.composition

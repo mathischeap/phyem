@@ -5,7 +5,7 @@ import numpy as np
 
 from tools.frozen import Frozen
 from msehtt.static.mesh.partial.elements.visualize.main import MseHttElementsPartialMeshVisualize
-from src.config import RANK, MASTER_RANK, COMM, SIZE
+from src.config import RANK, MASTER_RANK, COMM
 
 from msehtt.static.mesh.partial.elements.cfl import MseHtt_PartialMesh_Elements_CFL_condition
 from msehtt.static.mesh.partial.elements.rws import MseHtt_PartialMesh_Elements_ExportTo_DDS_RWS_Grouped
@@ -28,6 +28,8 @@ class MseHttElementsPartialMesh(Frozen):
         self._cfl = None
         self._rws = None
         self._compute = None
+
+        self.___cache0___ = {}
 
         self.___outline_plot_info___ = False  # do not use None; will only save in MASTER, save None in SLAVES.
         self._outline_plot_info()
@@ -194,7 +196,8 @@ class MseHttElementsPartialMesh(Frozen):
 
     def _outline_plot_info(self):
         r""""""
-        if self.___outline_plot_info___ is False:
+        # noinspection PySimplifyBooleanCheck
+        if self.___outline_plot_info___ is False:  # DO NOT change this!
 
             if RANK == MASTER_RANK:
                 all_boundary_faces_information = self._tgm.elements._parse_boundary_faces_of_a_patch_of_elements(
@@ -260,15 +263,24 @@ class MseHttElementsPartialMesh(Frozen):
         We return the same outputs in all ranks. So, if the element is not a local element, we return its index as well.
         """
         mn = self.mn
+
+        str_key = ''
+        for coo in coordinates:
+            str_key += "%.6f-" % coo
+
+        if str_key in self.___cache0___:
+            return self.___cache0___[str_key]
+        else:
+            pass
+
         if mn == (2, 2):
-            x, y =coordinates
-            in_element = None
+            x, y = coordinates
+            in_element = []
             for element_index in self:
                 element = self[element_index]
                 in_or_not = element._whether_coo_in_me_(x, y)
                 if in_or_not:
-                    in_element = element_index
-                    break
+                    in_element.append(element_index)
                 else:
                     pass
 
@@ -276,14 +288,36 @@ class MseHttElementsPartialMesh(Frozen):
             if RANK == MASTER_RANK:
                 IN_ELEMENT = []
                 for _e in in_element:
-                    if _e is None:
-                        pass
-                    else:
-                        IN_ELEMENT.append(_e)
+                    IN_ELEMENT.extend(_e)
             else:
                 IN_ELEMENT = None
 
-            return COMM.bcast(IN_ELEMENT, root=MASTER_RANK)
+            RETURN = COMM.bcast(IN_ELEMENT, root=MASTER_RANK)
+
+        elif mn == (3, 3):
+            x, y, z = coordinates
+            in_element = []
+            for element_index in self:
+                element = self[element_index]
+                in_or_not = element._whether_coo_in_me_(x, y, z)
+                if in_or_not:
+                    in_element.append(element_index)
+                else:
+                    pass
+
+            in_element = COMM.gather(in_element, root=MASTER_RANK)
+            if RANK == MASTER_RANK:
+                IN_ELEMENT = []
+                for _e in in_element:
+                    IN_ELEMENT.extend(_e)
+            else:
+                IN_ELEMENT = None
+
+            RETURN = COMM.bcast(IN_ELEMENT, root=MASTER_RANK)
 
         else:
             raise NotImplementedError()
+
+        self.___cache0___[str_key] = RETURN
+
+        return RETURN

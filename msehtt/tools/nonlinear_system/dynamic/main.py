@@ -23,12 +23,14 @@ from msehtt.tools.nonlinear_system.operator.dynamic import MseHttDynamicLocalNon
 from msehtt.tools.nonlinear_system.static.main import MseHttStaticNonLinearSystem
 from msehtt.tools.nonlinear_system.dynamic.config import MseHtt_Dynamic_NonLinear_System_Config
 
+from tools.miscellaneous.latex_bmatrix_to_array import bmatrix_to_array
+
 
 class MseHttDynamicNonLinearSystem(Frozen):
-    """"""
+    r""""""
 
     def __init__(self, wf_mp_nls, base):
-        """"""
+        r""""""
         from src.wf.mp.nonlinear_system import MatrixProxyNoneLinearSystem
         assert wf_mp_nls.__class__ is MatrixProxyNoneLinearSystem, \
             f"I need a {MatrixProxyNoneLinearSystem}!"
@@ -51,36 +53,38 @@ class MseHttDynamicNonLinearSystem(Frozen):
         self._freeze()
 
     def apply(self):
-        """"""
+        r""""""
         self._dls.apply()
         self._parse_nonlinear_terms()
         return self
 
     @property
     def shape(self):
+        r""""""
         return self._dls.shape
 
     @property
     def config(self):
+        r""""""
         return self._config
 
     @property
     def bc(self):
-        """dynamic linear system directly use bc of the linear system one."""
+        r"""dynamic linear system directly use bc of the linear system one."""
         return self._dls.bc
 
     def _pr_temporal_advancing(self, *args, **kwargs):
-        """"""
+        r""""""
         self._mp_nls._pr_temporal_advancing(*args, **kwargs)
 
     @property
     def base(self):
-        """The base I am built on"""
+        r"""The base I am built on"""
         return self._dls._base
 
     @property
     def test_forms(self):
-        """the test forms."""
+        r"""the test forms."""
         if self._tfs is None:
             self._tfs = list()
             forms = self.base['forms']
@@ -97,6 +101,7 @@ class MseHttDynamicNonLinearSystem(Frozen):
 
     @property
     def unknowns(self):
+        r""""""
         if self._unknowns is None:
             self._unknowns = list()
             forms = self.base['forms']
@@ -114,7 +119,7 @@ class MseHttDynamicNonLinearSystem(Frozen):
     # ------------ APPLY -------------------------------------------------------------------------------
 
     def _parse_nonlinear_terms(self):
-        """"""
+        r""""""
         nonlinear_factor = dict()
         parsed_terms = dict()
         parsed_signs = dict()
@@ -150,7 +155,7 @@ class MseHttDynamicNonLinearSystem(Frozen):
     # ----------------- PR -------------------------------------------------------------------------------
 
     def _pr_nonlinear_text(self):
-        """"""
+        r""""""
         nonlinear_text = ''
         for i in range(self.shape[0]):
             if i in self._nonlinear_texts:
@@ -180,13 +185,15 @@ class MseHttDynamicNonLinearSystem(Frozen):
         return nonlinear_text
 
     def pr(self, figsize=(10, 4)):
-        """"""
+        r""""""
         if RANK != MASTER_RANK:
             return None
         else:
             pass
 
         A_text = self._dls._A_pr_text()
+        column = self.shape[1]
+        A_text = bmatrix_to_array(A_text, column)
 
         if self._dls._bc is None or len(self._dls._bc) == 0:
             bc_text = ''
@@ -206,6 +213,7 @@ class MseHttDynamicNonLinearSystem(Frozen):
         plt.axis('off')
         plt.text(0.05, 0.5, text + bc_text, ha='left', va='center', size=15)
         from src.config import _setting, _pr_cache
+
         if _setting['pr_cache']:
             _pr_cache(fig, filename='msepy_DynamicNoneLinearSystem')
         else:

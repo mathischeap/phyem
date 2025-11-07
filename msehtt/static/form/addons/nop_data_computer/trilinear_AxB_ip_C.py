@@ -55,14 +55,20 @@ class AxB_ip_C(MseHttTrilinearBase):
         """"""
         if isinstance(self._A.degree, (float, int)):
             quad_degree_A = self._A.degree
+        elif isinstance(self._A.degree, (list, tuple)) and all([isinstance(_, int) for _ in self._A.degree]):
+            quad_degree_A = max(self._A.degree)
         else:
             raise NotImplementedError(f"cannot find a quad degree from form-A degree = {self._A.degree}")
         if isinstance(self._B.degree, (float, int)):
             quad_degree_B = self._B.degree
+        elif isinstance(self._B.degree, (list, tuple)) and all([isinstance(_, int) for _ in self._B.degree]):
+            quad_degree_B = max(self._B.degree)
         else:
             raise NotImplementedError(f"cannot find a quad degree from form-B degree = {self._B.degree}")
         if isinstance(self._C.degree, (float, int)):
             quad_degree_C = self._C.degree
+        elif isinstance(self._C.degree, (list, tuple)) and all([isinstance(_, int) for _ in self._C.degree]):
+            quad_degree_C = max(self._C.degree)
         else:
             raise NotImplementedError(f"cannot find a quad degree from form-C degree = {self._C.degree}")
 
@@ -115,8 +121,13 @@ class AxB_ip_C(MseHttTrilinearBase):
                     reverse_key_inner = ''
                 cache_key = metric_signature + '-' + reverse_key_outer + ':' + reverse_key_inner
 
+            elif etype in (
+                "unique msepy curvilinear hexahedron",
+            ):
+                cache_key = None
+
             else:
-                raise NotImplementedError()
+                raise NotImplementedError(f"{self.__class__.__name__} generate_data not implemented for e_type={etype}")
 
             if isinstance(cache_key, str) and cache_key in _cache_:
                 _3d_data[e] = _cache_[cache_key]

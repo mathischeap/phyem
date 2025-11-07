@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 r"""
 """
-from src.config import RANK, MASTER_RANK
+from src.config import RANK, MASTER_RANK, COMM
 import os
 
 
@@ -36,6 +36,7 @@ def mkdir(folder_name):
 
 def remove(*file_names):
     """"""
+    COMM.barrier()
     if RANK == MASTER_RANK:
         for file_name in file_names:
             os.remove(file_name)
