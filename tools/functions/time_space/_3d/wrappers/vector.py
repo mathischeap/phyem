@@ -5,9 +5,10 @@ import numpy as np
 
 from tools.functions.time_space.base import TimeSpaceFunctionBase
 from functools import partial
+from tools.quadrature import quadrature
 
 from tools.numerical.time_space._3d.partial_derivative_as_functions import \
-    NumericalPartialDerivativeTxyzFunctions
+    NumericalPartialDerivativeTxyzFunctions, NumericalPartialDerivativeTxyz
 
 from tools.functions.time_space._3d.wrappers.helpers._3scalars_add import t3d_3ScalarAdd
 from tools.functions.time_space._3d.wrappers.helpers.scalar_sub import t3d_ScalarSub
@@ -25,7 +26,14 @@ class T3dVector(TimeSpaceFunctionBase):
     """ Wrap three functions into a vector class.
     """
 
-    def __init__(self, v0, v1, v2, steady=False, Jacobian_matrix=None, time_derivative=None):
+    def __init__(
+            self, v0, v1, v2,
+            steady=False,
+            Jacobian_matrix=None, time_derivative=None,
+            v0v1v2_linked_object=None,
+            allowed_time_range=None,
+            mesh=None,
+    ):
         """Initialize a vector with 3 functions which take (t, x, y, z) as inputs.
 
         Parameters
@@ -62,8 +70,15 @@ class T3dVector(TimeSpaceFunctionBase):
 
             dv_dt and dw_dt are both functions taking (t, x, y, z) as inputs.
 
+        v0v1v2_linked_object :
+            When v0v1v2_linked_object is not None, it means v0, v1 and v2 are linked through this instances (means
+            we can compute all v0, v1 and v2 together by calling v0v1v2_linked_object).
+
+        mesh :
+            If a mesh is provided, we can check and visualize self on this mesh.
+
         """
-        super().__init__(steady)   # if it is steady, it is independent of t!
+        super().__init__(steady, allowed_time_range=allowed_time_range)   # if it is steady, it is independent of t!
         if isinstance(v0, (int, float)) and v0 == 0:
             v0 = ___0_func___
         else:
@@ -133,22 +148,126 @@ class T3dVector(TimeSpaceFunctionBase):
 
         self._du_dt, self._dv_dt, self._dw_dt = self._td
 
+        self._v0v1v2_linked_object = v0v1v2_linked_object
+
+        if mesh is None:
+            self._mesh = None
+        else:
+            self.mesh = mesh
+
         self._freeze()
 
     def __call__(self, t, x, y, z):
         """Evaluate the vector at (t, x, y, z)"""
-        return self._v0_(t, x, y, z), self._v1_(t, x, y, z), self._v2_(t, x, y, z)
+        if self._v0v1v2_linked_object is None:
+            return self._v0_(t, x, y, z), self._v1_(t, x, y, z), self._v2_(t, x, y, z)
+        else:
+            return self._v0v1v2_linked_object(t, x, y)
 
     def __getitem__(self, t):
         """return functions evaluated at time `t`."""
         return partial(self, t)
 
     def __matmul__(self, other):
-        """"""
+        """self @ other"""
         if isinstance(other, (int, float)):
             return self[other]
         else:
             raise NotImplementedError()
+
+    @property
+    def mesh(self):
+        return self._mesh
+
+    @mesh.setter
+    def mesh(self, _mesh):
+        r""""""
+        # before set the mesh, we do all checks ----------------------------------
+        # 1. we first found all components to be checked -------------------------
+        d_check_list = []
+        if self._du_dt is not None:
+            d_check_list.append('du_dt')
+        if self._dv_dt is not None:
+            d_check_list.append('dv_dt')
+        if self._dw_dt is not None:
+            d_check_list.append('dw_dt')
+        if self._du_dx is not None:
+            d_check_list.append('du_dx')
+        if self._du_dy is not None:
+            d_check_list.append('du_dy')
+        if self._du_dz is not None:
+            d_check_list.append('du_dz')
+        if self._dv_dx is not None:
+            d_check_list.append('dv_dx')
+        if self._dv_dy is not None:
+            d_check_list.append('dv_dy')
+        if self._dv_dz is not None:
+            d_check_list.append('dv_dz')
+        if self._dw_dx is not None:
+            d_check_list.append('dw_dx')
+        if self._dw_dy is not None:
+            d_check_list.append('dw_dy')
+        if self._dw_dz is not None:
+            d_check_list.append('dw_dz')
+
+        # 2. find out if we do checking ----------------------------------------------
+        if len(d_check_list) != 0:
+            do_checking = True
+        else:
+            do_checking = False
+
+        # 3. prepare mesh element coo data -------------------------------------------
+        X, Y, Z = dict(), dict(), dict()
+        if do_checking:
+            nodes = quadrature(7, category='Gauss').quad_nodes
+            xi, et, sg = np.meshgrid(nodes, nodes, nodes, indexing='ij')
+            if _mesh.__class__.__name__ == 'MseHttMeshPartial':
+                ELEMENTS = _mesh.composition
+            else:
+                raise NotImplementedError()
+            for i in ELEMENTS:
+                element = ELEMENTS[i]
+                X[i], Y[i], Z[i] = element.ct.mapping(xi, et, sg)
+        else:
+            pass
+
+        # 4. do the checking ---------------------------------------------------------
+        if len(d_check_list) == 0:
+            pass
+        else:
+            # 4.1) do dt, dx, dy checking ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+            for i in X:
+                x, y, z = X[i], Y[i], X[i]
+                t = self._find_random_testing_time_instance_()
+                npd_u = NumericalPartialDerivativeTxyz(self._v0_, t, x, y, z)
+                npd_v = NumericalPartialDerivativeTxyz(self._v1_, t, x, y, z)
+                npd_w = NumericalPartialDerivativeTxyz(self._v2_, t, x, y, z)
+                if 'du_dt' in d_check_list:
+                    assert npd_u.check_partial_t(self._du_dt)
+                if 'dv_dt' in d_check_list:
+                    assert npd_v.check_partial_t(self._dv_dt)
+                if 'dw_dt' in d_check_list:
+                    assert npd_w.check_partial_t(self._dw_dt)
+                if 'du_dx' in d_check_list:
+                    assert npd_u.check_partial_x(self._du_dx)
+                if 'du_dy' in d_check_list:
+                    assert npd_u.check_partial_y(self._du_dy)
+                if 'du_dz' in d_check_list:
+                    assert npd_u.check_partial_z(self._du_dz)
+                if 'dv_dx' in d_check_list:
+                    assert npd_v.check_partial_x(self._dv_dx)
+                if 'dv_dy' in d_check_list:
+                    assert npd_v.check_partial_y(self._dv_dy)
+                if 'dv_dz' in d_check_list:
+                    assert npd_v.check_partial_z(self._dv_dz)
+                if 'dw_dx' in d_check_list:
+                    assert npd_w.check_partial_x(self._dw_dx)
+                if 'dw_dy' in d_check_list:
+                    assert npd_w.check_partial_y(self._dw_dy)
+                if 'dw_dz' in d_check_list:
+                    assert npd_w.check_partial_z(self._dw_dz)
+        # =========================================================================
+        self._mesh = _mesh
 
     def visualize(self, mesh, t):
         """Return a visualize class for a mesh at t=`t`.

@@ -4,13 +4,12 @@ import sys
 if './' not in sys.path:
     sys.path.append('./')
 
-from abc import ABC
 import numpy as np
 from types import FunctionType, MethodType
 from tools.numerical.derivative import derivative
 
 
-class NumericalPartialDerivativeTxy(ABC):
+class NumericalPartialDerivativeTxy(object):
     """Numerical partial derivative, we compute a function or method of 3 inputs:
     ``A=f(t,x,y)``. And we will evaluate dA/dt, dA/dx, dA/dy at `(t, x, y)`. Note that `(x,y)`
     must be of the same shape; no matter the dimensions (we do not do mesh grid to them). And t must be 1-d.
@@ -32,7 +31,7 @@ class NumericalPartialDerivativeTxy(ABC):
         elif callable(func):
             pass
         else:
-            raise NotImplementedError(func.__class__.__name__)
+            raise NotImplementedError(f"cannot take {func}.")
         self._func_ = func
 
     def _check_txy(self, t, x, y):

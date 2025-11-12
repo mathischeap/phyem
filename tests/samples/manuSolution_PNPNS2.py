@@ -21,7 +21,7 @@ from tools.functions.time_space._2d.wrappers.vector import T2dVector
 class Manufactured_Solution_PNPNS_2D_PeriodicDomain1(Frozen):
     """The Domain must be [0, 2pi]^2 and is periodic."""
 
-    def __init__(self):
+    def __init__(self, mesh=None):
         """
 
         Parameters
@@ -29,27 +29,10 @@ class Manufactured_Solution_PNPNS_2D_PeriodicDomain1(Frozen):
 
         """
         self._epsilon = 1
-        self._velocity = T2dVector(
-            self._u, self._v,
-            Jacobian_matrix=(
-                [self._ux, self._uy],
-                [self._vx, self._vy]
-            ),
-            time_derivative=[self._ut, self._vt]
-        )
-        self._static_pressure = T2dScalar(  # static pressure
-            self._sp,
-            derivative=[self._sp_t, self._sp_x, self._sp_y],
-        )
-        self._pci = T2dScalar(  # concentration of positively charged ions
-            self._p,
-            derivative=[self._pt, self._px, self._py],
-        )
-        self._esp = T2dScalar(  # electrostatic potential
-            self._psi,
-            derivative=[self._psi_t, self._psi_x, self._psi_y],
-            second_derivative=[None, self._psi_xx, self._psi_yy, None]
-        )
+        self._velocity = None
+        self._static_pressure = None
+        self._pci = None
+        self._esp = None
 
         self._n = None                    # concentration of positively charged ions
         self._mu_ = None                  # mu = ln p + psi
@@ -60,6 +43,10 @@ class Manufactured_Solution_PNPNS_2D_PeriodicDomain1(Frozen):
         self._chi_ = None                 # chi = d(nu) = nu.gradient
         self._phi_ = None                 # modified pressure = total pressure - p - n
 
+        self._pTau_ = None                # p * tau
+        self._nChi_ = None                # n * chi
+
+        self._mesh = mesh
         self._freeze()
 
     @staticmethod
@@ -80,7 +67,7 @@ class Manufactured_Solution_PNPNS_2D_PeriodicDomain1(Frozen):
     @staticmethod
     def _uy(t, x, y):
         r""""""
-        return sin(x) * cos(y) * exp(t)
+        return - sin(x) * sin(y) * exp(t)
 
     @staticmethod
     def _v(t, x, y):
@@ -153,6 +140,11 @@ class Manufactured_Solution_PNPNS_2D_PeriodicDomain1(Frozen):
         return sin(x) * sin(y) * exp(t)
 
     @staticmethod
+    def _psi_tt(t, x, y):
+        r"""d/dt of electrostatic potential"""
+        return sin(x) * sin(y) * exp(t)
+
+    @staticmethod
     def _psi_x(t, x, y):
         r"""d/dx of electrostatic potential"""
         return cos(x) * sin(y) * exp(t)
@@ -163,9 +155,19 @@ class Manufactured_Solution_PNPNS_2D_PeriodicDomain1(Frozen):
         return - sin(x) * sin(y) * exp(t)
 
     @staticmethod
+    def _psi_xy(t, x, y):
+        r"""d/dx of electrostatic potential"""
+        return cos(x) * cos(y) * exp(t)
+
+    @staticmethod
     def _psi_y(t, x, y):
         r"""d/dy of electrostatic potential"""
         return sin(x) * cos(y) * exp(t)
+
+    @staticmethod
+    def _psi_yx(t, x, y):
+        r"""d/dy of electrostatic potential"""
+        return cos(x) * cos(y) * exp(t)
 
     @staticmethod
     def _psi_yy(t, x, y):
@@ -175,6 +177,12 @@ class Manufactured_Solution_PNPNS_2D_PeriodicDomain1(Frozen):
     @property
     def p(self):
         r"""concentration of positively charged ions."""
+        if self._pci is None:
+            self._pci = T2dScalar(  # concentration of positively charged ions
+                self._p,
+                derivative=[self._pt, self._px, self._py],
+                mesh=self._mesh,
+            )
         return self._pci
 
     @property
@@ -187,6 +195,13 @@ class Manufactured_Solution_PNPNS_2D_PeriodicDomain1(Frozen):
     @property
     def psi(self):
         r"""electrostatic potential"""
+        if self._esp is None:
+            self._esp = T2dScalar(  # electrostatic potential
+                self._psi,
+                derivative=[self._psi_t, self._psi_x, self._psi_y],
+                second_derivative=[self._psi_tt, self._psi_xx, self._psi_xy, self._psi_yx, self._psi_yy],
+                mesh=self._mesh,
+            )
         return self._esp
 
     @property
@@ -232,8 +247,32 @@ class Manufactured_Solution_PNPNS_2D_PeriodicDomain1(Frozen):
         return self._chi_
 
     @property
+    def pTau(self):
+        r"""p * tau"""
+        if self._pTau_ is None:
+            self._pTau_ = self.p * self.tau
+        return self._pTau_
+
+    @property
+    def nChi(self):
+        r"""n * chi"""
+        if self._nChi_ is None:
+            self._nChi_ = self.n * self.chi
+        return self._nChi_
+
+    @property
     def u(self):
         """fluid velocity field"""
+        if self._velocity is None:
+            self._velocity = T2dVector(
+                self._u, self._v,
+                Jacobian_matrix=(
+                    [self._ux, self._uy],
+                    [self._vx, self._vy]
+                ),
+                time_derivative=[self._ut, self._vt],
+                mesh=self._mesh,
+            )
         return self._velocity
 
     @property
@@ -249,6 +288,12 @@ class Manufactured_Solution_PNPNS_2D_PeriodicDomain1(Frozen):
 
     @property
     def static_pressure(self):
+        if self._static_pressure is None:
+            self._static_pressure = T2dScalar(  # static pressure
+                self._sp,
+                derivative=[self._sp_t, self._sp_x, self._sp_y],
+                mesh=self._mesh,
+            )
         return self._static_pressure
 
     @property

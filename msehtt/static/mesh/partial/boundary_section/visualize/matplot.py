@@ -24,12 +24,22 @@ class MseHttBoundarySectionPartialMeshVisualizeMatplot(Frozen):
 
     def __call__(self, *args, **kwargs):
         r""""""
-        if self._boundary_section.mn == (2, 2):
+        mn = self._boundary_section.mn
+        if mn == (2, 2):
             return self._plot_boundary_section_of_2d_mesh_in_2d_space(*args, **kwargs)
-        elif self._boundary_section.mn == (3, 3):
+
+        elif mn == (3, 3):
             return self._plot_boundary_section_of_3d_mesh_in_3d_space(*args, **kwargs)
+
+        elif mn == 'empty':  # this boundary has boundary sections at all.
+            if RANK == MASTER_RANK:
+                print(f"MseHtt boundary section: {self._boundary_section._tpm.abstract._sym_repr} is empty. "
+                      f"Skip plotting.")
+            else:
+                pass
+
         else:
-            raise NotImplementedError(self._boundary_section.mn)
+            raise NotImplementedError(mn)
 
     def _plot_boundary_section_of_2d_mesh_in_2d_space(
             self,

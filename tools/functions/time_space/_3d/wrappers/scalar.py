@@ -6,9 +6,10 @@ import numpy as np
 from tools.functions.time_space.base import TimeSpaceFunctionBase
 
 from tools.numerical.time_space._3d.partial_derivative_as_functions import \
-    NumericalPartialDerivativeTxyzFunctions
+    NumericalPartialDerivativeTxyzFunctions, NumericalPartialDerivativeTxyz
 
 from functools import partial
+from tools.quadrature import quadrature
 
 from tools.functions.time_space._3d.wrappers.helpers.scalar_mul import t3d_ScalarMultiply
 from tools.functions.time_space._3d.wrappers.helpers._3scalars_add import t3d_3ScalarAdd
@@ -26,7 +27,11 @@ def ___0_func___(t, x, y, z):
 class T3dScalar(TimeSpaceFunctionBase):
     """"""
 
-    def __init__(self, s, steady=False, derivative=None):
+    def __init__(
+            self, s, steady=False, derivative=None,
+            allowed_time_range=None,
+            mesh=None,
+    ):
         """
 
         Parameters
@@ -35,8 +40,12 @@ class T3dScalar(TimeSpaceFunctionBase):
         steady :
             This scalar is independent of time. So df/dt = 0.
         derivative
+
+        mesh :
+            If it is provided, we can check and visualize self using this mesh.
+
         """
-        super().__init__(steady)
+        super().__init__(steady, allowed_time_range=allowed_time_range)
         if isinstance(s, (int, float)) and s == 0:
             self.___is_zero___ = True
             s = ___0_func___
@@ -71,6 +80,11 @@ class T3dScalar(TimeSpaceFunctionBase):
         self._derivative = D
         self._dt, self._dx, self._dy, self._dz = D
 
+        if mesh is None:
+            self._mesh = None
+        else:
+            self.mesh = mesh
+
         self._freeze()
 
     def __call__(self, t, x, y, z):
@@ -81,11 +95,72 @@ class T3dScalar(TimeSpaceFunctionBase):
         return partial(self, t)
 
     def __matmul__(self, other):
-        """"""
+        """self @ other"""
         if isinstance(other, (int, float)):
             return self[other]
         else:
             raise NotImplementedError()
+
+    @property
+    def mesh(self):
+        return self._mesh
+
+    @mesh.setter
+    def mesh(self, _mesh):
+        r""""""
+        # before set the mesh, we do all checks ----------------------------------
+        # 1. we first found all components to be checked -------------------------
+        d_check_list = []
+        if self._dt is not None:
+            d_check_list.append('dt')
+        if self._dx is not None:
+            d_check_list.append('dx')
+        if self._dy is not None:
+            d_check_list.append('dy')
+        if self._dz is not None:
+            d_check_list.append('dz')
+
+        # 2. find out if we do checking ----------------------------------------------
+        if len(d_check_list) != 0:
+            do_checking = True
+        else:
+            do_checking = False
+
+        # 3. prepare mesh element coo data -------------------------------------------
+        X, Y, Z = dict(), dict(), dict()
+        if do_checking:
+            nodes = quadrature(5, category='Gauss').quad_nodes
+            xi, et, sg = np.meshgrid(nodes, nodes, nodes, indexing='ij')
+            if _mesh.__class__.__name__ == 'MseHttMeshPartial':
+                ELEMENTS = _mesh.composition
+            else:
+                raise NotImplementedError()
+            for i in ELEMENTS:
+                element = ELEMENTS[i]
+                X[i], Y[i], Z[i] = element.ct.mapping(xi, et, sg)
+        else:
+            pass
+
+        # 4. do the checking ---------------------------------------------------------
+        if len(d_check_list) == 0:
+            pass
+        else:
+            # 4.1) do dt, dx, dy checking ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+            for i in X:
+                x, y, z = X[i], Y[i], Z[i]
+                t = self._find_random_testing_time_instance_()
+                npd = NumericalPartialDerivativeTxyz(self._s_, t, x, y, z)
+                if 'dt' in d_check_list:
+                    assert npd.check_partial_t(self._dt)
+                if 'dx' in d_check_list:
+                    assert npd.check_partial_x(self._dx)
+                if 'dy' in d_check_list:
+                    assert npd.check_partial_y(self._dy)
+                if 'dz' in d_check_list:
+                    assert npd.check_partial_z(self._dz)
+
+        # =========================================================================
+        self._mesh = _mesh
 
     def visualize(self, mesh, t):
         """Return a visualize class for a mesh at t=`t`.

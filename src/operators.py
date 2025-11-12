@@ -6,6 +6,7 @@ __all__ = [
     'Hodge',
     'd', 'exterior_derivative', 'codifferential',
     'inner',
+    'dp',
     'time_derivative',
     'trace',
 ]
@@ -20,6 +21,8 @@ exterior_derivative = d   # `exterior_derivative` is equivalent to `d`.
 from src.form.operators import codifferential
 
 from src.wf.term.main import inner
+from src.wf.term.main import duality_pairing as dp
+
 
 from src.form.operators import time_derivative
 

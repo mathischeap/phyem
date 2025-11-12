@@ -112,9 +112,12 @@ class MseHttBoundarySectionPartialMesh(Frozen):
 
         if self._mn == ():
             assert self._num_global_faces == 0, f"must be empty"
-            raise Exception(f"num_global_faces={self._num_global_faces}; boundary section is empty!")
+            self._mn = 'empty'  # this boundary has no boundary section at all.
+            # raise Exception(f"num_global_faces={self._num_global_faces}; boundary section is empty!")
         else:
-            return self._mn
+            pass
+
+        return self._mn
 
     def find_dofs(self, f, local=True):
         r"""Find dofs of form `f` on this boundary section.

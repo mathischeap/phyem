@@ -211,6 +211,11 @@ class MsePyMesh(Frozen):
 
     def _parse_str_element_layout(self, str_layout_indicator):
         """"""
+        assert '-' in str_layout_indicator, \
+            (f"when use a string to indicate an element layout, we must have '-' in this string, and "
+             f"before '-', we have the distribution indicator like 'Lobatto' distribution and after "
+             f"'-', we have a int to represent its degree. Now `str_layout_indicator`={str_layout_indicator} "
+             f"of type <{str_layout_indicator.__class__.__name__}>, which is not legal.")
         indicator, degree = str_layout_indicator.split('-')
         degree = int(degree)
         assert degree > 0, f'degree = {degree} for indicator {str_layout_indicator} is wrong.'

@@ -10,8 +10,10 @@ if './' not in sys.path:
 
 from tools.functions.time_space.base import TimeSpaceFunctionBase
 
+from tools.quadrature import quadrature
+
 from tools.numerical.time_space._2d.partial_derivative_as_functions import \
-    NumericalPartialDerivativeTxyFunctions
+    NumericalPartialDerivativeTxyFunctions, NumericalPartialDerivativeTxy
 
 from tools.functions.time_space._2d.wrappers.helpers.scalar_add import t2d_ScalarAdd
 from tools.functions.time_space._2d.wrappers.helpers.scalar_sub import t2d_ScalarSub
@@ -35,7 +37,10 @@ def ___0_func2___(t, x, y):
 class T2dScalar(TimeSpaceFunctionBase):
     """"""
 
-    def __init__(self, s, steady=False, derivative=None, second_derivative=None):
+    def __init__(self, s, steady=False,
+                 derivative=None, second_derivative=None,
+                 allowed_time_range=None, mesh=None,
+                 ):
         """
 
         Parameters
@@ -48,10 +53,13 @@ class T2dScalar(TimeSpaceFunctionBase):
             [d/dt, d/dx, d/dy]
 
         second_derivative :
-            [dd/dt^2, dd/dx^2, dd/dy^2, dd/dxdy]
+            [dd/dt^2, dd/dx^2, dd/dxdy, dd/dydx, dd/dy^2]
+
+        mesh :
+            If it is provided, we can check and plot self using this mesh.
 
         """
-        super().__init__(steady)
+        super().__init__(steady, allowed_time_range=allowed_time_range)
         self._s_ = s
         self.__NPD__ = None
 
@@ -80,13 +88,13 @@ class T2dScalar(TimeSpaceFunctionBase):
         self._derivative = D
         self._dt, self._dx, self._dy = D
 
-        second_D = [None, None, None, None]  # [dd/dt^2, dd/dx^2, dd/dy^2, dd/dxdy]
+        second_D = [None, None, None, None, None]  # [dd/dt^2, dd/dx^2, dd/dxdy, dd/dydx, dd/dy^2]
 
         if second_derivative is None:
             pass
         else:
-            assert isinstance(second_derivative, (list, tuple)) and len(second_derivative) == 4, \
-                f"Please put 4 second derivatives: [dd_dt^2, dd_dx^2, dd_dy^2, dd_dxdy] into a list or tuple."
+            assert isinstance(second_derivative, (list, tuple)) and len(second_derivative) == 5, \
+                f"Please put 5 second derivatives: [dd/dt^2, dd/dx^2, dd/dxdy, dd/dydx, dd/dy^2] into a list or tuple."
 
             for i, ddi in enumerate(second_derivative):
                 if isinstance(ddi, (int, float)):
@@ -97,13 +105,20 @@ class T2dScalar(TimeSpaceFunctionBase):
                 else:
                     second_D[i] = ddi
 
-        self._ddt = second_D[0]
-        self._ddx = second_D[1]
-        self._ddy = second_D[2]
-        self._dd_xy = second_D[3]
+        self._dd_tt = second_D[0]
+        self._dd_xx = second_D[1]  # dd/dx^2
+        self._dd_xy = second_D[2]  # dd/dxdy
+        self._dd_yx = second_D[3]  # dd/dydx
+        self._dd_yy = second_D[4]  # dd/dy^2
 
         self._log_e_ = None
         self._exp_ = None
+
+        if mesh is None:
+            self._mesh = None
+        else:
+            self.mesh = mesh
+
         self._freeze()
 
     def __call__(self, t, x, y):
@@ -120,7 +135,107 @@ class T2dScalar(TimeSpaceFunctionBase):
         else:
             raise NotImplementedError()
 
-    def visualize(self, mesh_or_bounds, t, sampling_factor=1, **kwargs):
+    @property
+    def mesh(self):
+        return self._mesh
+
+    @mesh.setter
+    def mesh(self, _mesh):
+        r""""""
+        # before set the mesh, we do all checks ----------------------------------
+        # 1. we first found all components to be checked -------------------------
+        d_check_list = []
+        dd_check_list = []
+        if self._dt is not None:
+            d_check_list.append('dt')
+        if self._dx is not None:
+            d_check_list.append('dx')
+        if self._dy is not None:
+            d_check_list.append('dy')
+        if self._dd_tt is not None:
+            dd_check_list.append('dd_tt')
+        if self._dd_xx is not None:
+            dd_check_list.append('dd_xx')
+        if self._dd_xy is not None:
+            dd_check_list.append('dd_xy')
+        if self._dd_yx is not None:
+            dd_check_list.append('dd_yx')
+        if self._dd_yy is not None:
+            dd_check_list.append('dd_yy')
+
+        # 2. find out if we do checking ----------------------------------------------
+        if len(d_check_list) != 0 or len(dd_check_list) != 0:
+            do_checking = True
+        else:
+            do_checking = False
+
+        # 3. prepare mesh element coo data -------------------------------------------
+        X, Y = dict(), dict()
+        if do_checking:
+            nodes = quadrature(7, category='Gauss').quad_nodes
+            xi, et = np.meshgrid(nodes, nodes, indexing='ij')
+            if _mesh.__class__.__name__ == 'MseHttMeshPartial':
+                ELEMENTS = _mesh.composition
+            else:
+                raise NotImplementedError()
+            for i in ELEMENTS:
+                element = ELEMENTS[i]
+                X[i], Y[i] = element.ct.mapping(xi, et)
+        else:
+            pass
+
+        # 4. do the checking ---------------------------------------------------------
+        if len(d_check_list) == 0:
+            pass
+        else:
+            # 4.1) do dt, dx, dy checking ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+            for i in X:
+                x, y = X[i], Y[i]
+                t = self._find_random_testing_time_instance_()
+                npd = NumericalPartialDerivativeTxy(self._s_, t, x, y)
+                if 'dt' in d_check_list:
+                    assert npd.check_partial_t(self._dt)
+                if 'dx' in d_check_list:
+                    assert npd.check_partial_x(self._dx)
+                if 'dy' in d_check_list:
+                    assert npd.check_partial_y(self._dy)
+
+        if len(dd_check_list) == 0:
+            pass
+        else:
+            NPD_f = NumericalPartialDerivativeTxyFunctions(self._s_)
+            # 4.2) do dd_tt, dd_xx, dd_xy, dd_yx, dd_yy checking ~~~~~~~~~~~~~~~~~~~~~~~~
+            if 'dd_tt' in dd_check_list:
+                dt_f = NPD_f('t')
+                for i in X:
+                    t = self._find_random_testing_time_instance_()
+                    npd = NumericalPartialDerivativeTxy(dt_f, t, X[i], Y[i])
+                    assert npd.check_partial_t(self._dd_tt)
+
+            if 'dd_xx' in dd_check_list or 'dd_xy' in dd_check_list:
+                dx_f = NPD_f('x')
+                for i in X:
+                    t = self._find_random_testing_time_instance_()
+                    npd = NumericalPartialDerivativeTxy(dx_f, t, X[i], Y[i])
+                    if 'dd_xx' in dd_check_list:
+                        assert npd.check_partial_x(self._dd_xx)
+                    if 'dd_xy' in dd_check_list:
+                        assert npd.check_partial_y(self._dd_xy)
+
+            if 'dd_yx' in dd_check_list or 'dd_yy' in dd_check_list:
+                dy_f = NPD_f('y')
+                for i in X:
+                    t = self._find_random_testing_time_instance_()
+                    npd = NumericalPartialDerivativeTxy(dy_f, t, X[i], Y[i])
+                    if 'dd_yx' in dd_check_list:
+                        assert npd.check_partial_x(self._dd_yx)
+                    if 'dd_yy' in dd_check_list:
+                        assert npd.check_partial_y(self._dd_yy)
+
+        # =========================================================================
+        self._mesh = _mesh
+
+    def visualize(self, mesh_or_bounds=None, t=0, sampling_factor=1, **kwargs):
         """Return a visualize class for a mesh at t=`t`.
 
         Parameters
@@ -128,6 +243,8 @@ class T2dScalar(TimeSpaceFunctionBase):
         mesh_or_bounds
         t
         sampling_factor
+        kwargs :
+            kwargs sent to the visualizer (of dds-rws).
 
         Returns
         -------
@@ -141,9 +258,13 @@ class T2dScalar(TimeSpaceFunctionBase):
 
             from msepy.main import _quick_mesh
             mesh = _quick_mesh(*bounds)
+        elif mesh_or_bounds is None:
+            mesh = self.mesh
         else:
             mesh = mesh_or_bounds
 
+        assert mesh is not None, f"pls provide a mesh or set self._mesh."
+        assert self.atr_check(t), f"t={t} is not allowed by the atr of this scalar."
         v = self[t]
         mesh.visualize._target(v, sampling_factor=sampling_factor, **kwargs)
 
@@ -171,7 +292,7 @@ class T2dScalar(TimeSpaceFunctionBase):
             ps_pt = self._NPD_('t')
         else:
             ps_pt = self._dt
-        return self.__class__(ps_pt)
+        return self.__class__(ps_pt, mesh=self.mesh)
 
     @property
     def gradient(self):
@@ -188,7 +309,7 @@ class T2dScalar(TimeSpaceFunctionBase):
 
         from tools.functions.time_space._2d.wrappers.vector import T2dVector
 
-        return T2dVector(px, py)
+        return T2dVector(px, py, mesh=self.mesh)
     
     @property
     def curl(self):
@@ -207,16 +328,16 @@ class T2dScalar(TimeSpaceFunctionBase):
 
         from tools.functions.time_space._2d.wrappers.vector import T2dVector
 
-        return T2dVector(py, neg_px)
+        return T2dVector(py, neg_px, mesh=self.mesh)
 
     @property
     def Laplacian(self):
         r"""Return a T2dScalar instance representing laplace of self."""
-        if self._ddx is None or self._ddy is None:
+        if self._dd_xx is None or self._dd_yy is None:
             u = self.gradient
             return u.divergence
         else:
-            return self.__class__(t2d_ScalarAdd(self._ddx, self._ddy))
+            return self.__class__(t2d_ScalarAdd(self._dd_xx, self._dd_yy), mesh=self.mesh)
 
     def log(self, base=np.e):
         r"""return a scalar function of (t, x, y) which computes log_{base} self(t, x, t).
@@ -226,7 +347,7 @@ class T2dScalar(TimeSpaceFunctionBase):
         """
         if base == np.e:
             if self._log_e_ is None:
-                self._log_e_ = self.__class__(___LOG_HELPER___(self._s_, base=np.e))
+                self._log_e_ = self.__class__(___LOG_HELPER___(self._s_, base=np.e), mesh=self.mesh)
             return self._log_e_
         else:
             raise NotImplementedError()
@@ -235,13 +356,13 @@ class T2dScalar(TimeSpaceFunctionBase):
     def exp(self):
         r"""return a scalar function of (t, x, y) which computes exp^{self(t, x, y)}."""
         if self._exp_ is None:
-            self._exp_ = self.__class__(___EXP_HELPER___(self._s_))
+            self._exp_ = self.__class__(___EXP_HELPER___(self._s_), mesh=self.mesh)
         return self._exp_
 
     @property
     def abs(self):
         r""""""
-        return self.__class__(t2d_ScalarAbs(self._s_))
+        return self.__class__(t2d_ScalarAbs(self._s_), mesh=self.mesh)
 
     def convection_by(self, u):
         """We compute (u cdot nabla) of self.

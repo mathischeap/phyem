@@ -15,9 +15,9 @@ from tools.numerical.time_space._1d.partial_derivative_as_functions import \
 class T1dScalar(TimeSpaceFunctionBase):
     """"""
 
-    def __init__(self, s, steady=False):
+    def __init__(self, s, steady=False, allowed_time_range=None):
         """"""
-        super().__init__(steady)
+        super().__init__(steady, allowed_time_range=allowed_time_range)
         self._s_ = s
         self.__NPD__ = None
         self._freeze()

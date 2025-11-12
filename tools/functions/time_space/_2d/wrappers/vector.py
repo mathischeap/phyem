@@ -6,6 +6,7 @@ from tools.frozen import Frozen
 
 from tools.functions.time_space.base import TimeSpaceFunctionBase
 from functools import partial
+from tools.quadrature import quadrature
 
 from tools.functions.time_space._2d.wrappers.helpers.scalar_add import t2d_ScalarAdd
 from tools.functions.time_space._2d.wrappers.helpers.scalar_sub import t2d_ScalarSub
@@ -14,7 +15,7 @@ from tools.functions.time_space._2d.wrappers.helpers.scalar_mul import t2d_Scala
 from tools.functions.time_space._2d.wrappers.helpers.norm_helper import NormHelper2DVector
 
 from tools.numerical.time_space._2d.partial_derivative_as_functions import \
-    NumericalPartialDerivativeTxyFunctions
+    NumericalPartialDerivativeTxyFunctions, NumericalPartialDerivativeTxy
 
 
 from scipy.interpolate import LinearNDInterpolator
@@ -29,7 +30,11 @@ class T2dVector(TimeSpaceFunctionBase):
     """ Wrap two functions into a vector class.
     """
 
-    def __init__(self, v0, v1, steady=False, Jacobian_matrix=None, time_derivative=None, v0v1_linked_object=None):
+    def __init__(self, v0, v1, steady=False,
+                 Jacobian_matrix=None, time_derivative=None,
+                 v0v1_linked_object=None,
+                 allowed_time_range=None, mesh=None,
+                 ):
         """Initialize a vector with 2 functions which take (t, x, y) as inputs.
 
         Parameters
@@ -64,12 +69,15 @@ class T2dVector(TimeSpaceFunctionBase):
 
             dv_dt is a function taking (t, x, y) as inputs.
 
-        v0v1_linked_object:
+        v0v1_linked_object :
             When v0v1_linked_object is not None, it means v0 and v1 are linked through this instances (means
             we can compute both v0 and v1 together by calling v0v1_linked_object).
 
+        mesh :
+            If a mesh is provided, we can check and plot self on this mesh.
+
         """
-        super().__init__(steady)
+        super().__init__(steady, allowed_time_range=allowed_time_range)
         if v0 == 0:
             v0 = _0_function
         else:
@@ -142,6 +150,12 @@ class T2dVector(TimeSpaceFunctionBase):
         self._du_dt, self._dv_dt = self._td
 
         self._v0v1_linked_object = v0v1_linked_object
+
+        if mesh is None:
+            self._mesh = None
+        else:
+            self.mesh = mesh
+
         self._freeze()
 
     def __call__(self, t, x, y):
@@ -156,13 +170,82 @@ class T2dVector(TimeSpaceFunctionBase):
         return partial(self, t)
 
     def __matmul__(self, other):
-        """"""
+        """self @ other"""
         if isinstance(other, (int, float)):
             return self[other]
         else:
             raise NotImplementedError()
 
-    def visualize(self, mesh_or_bounds, t, sampling_factor=1):
+    @property
+    def mesh(self):
+        return self._mesh
+
+    @mesh.setter
+    def mesh(self, _mesh):
+        r""""""
+        # before set the mesh, we do all checks ----------------------------------
+        # 1. we first found all components to be checked -------------------------
+        d_check_list = []
+        if self._du_dt is not None:
+            d_check_list.append('du_dt')
+        if self._dv_dt is not None:
+            d_check_list.append('dv_dt')
+        if self._du_dx is not None:
+            d_check_list.append('du_dx')
+        if self._du_dy is not None:
+            d_check_list.append('du_dy')
+        if self._dv_dx is not None:
+            d_check_list.append('dv_dx')
+        if self._dv_dy is not None:
+            d_check_list.append('dv_dy')
+
+        # 2. find out if we do checking ----------------------------------------------
+        if len(d_check_list) != 0:
+            do_checking = True
+        else:
+            do_checking = False
+
+        # 3. prepare mesh element coo data -------------------------------------------
+        X, Y = dict(), dict()
+        if do_checking:
+            nodes = quadrature(7, category='Gauss').quad_nodes
+            xi, et = np.meshgrid(nodes, nodes, indexing='ij')
+            if _mesh.__class__.__name__ == 'MseHttMeshPartial':
+                ELEMENTS = _mesh.composition
+            else:
+                raise NotImplementedError()
+            for i in ELEMENTS:
+                element = ELEMENTS[i]
+                X[i], Y[i] = element.ct.mapping(xi, et)
+        else:
+            pass
+
+        # 4. do the checking ---------------------------------------------------------
+        if len(d_check_list) == 0:
+            pass
+        else:
+            # 4.1) do dt, dx, dy checking ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+            for i in X:
+                x, y = X[i], Y[i]
+                t = self._find_random_testing_time_instance_()
+                npd_u = NumericalPartialDerivativeTxy(self._v0_, t, x, y)
+                npd_v = NumericalPartialDerivativeTxy(self._v1_, t, x, y)
+                if 'du_dt' in d_check_list:
+                    assert npd_u.check_partial_t(self._du_dt)
+                if 'dv_dt' in d_check_list:
+                    assert npd_v.check_partial_t(self._dv_dt)
+                if 'du_dx' in d_check_list:
+                    assert npd_u.check_partial_x(self._du_dx)
+                if 'du_dy' in d_check_list:
+                    assert npd_u.check_partial_y(self._du_dy)
+                if 'dv_dx' in d_check_list:
+                    assert npd_v.check_partial_x(self._dv_dx)
+                if 'dv_dy' in d_check_list:
+                    assert npd_v.check_partial_y(self._dv_dy)
+        # =========================================================================
+        self._mesh = _mesh
+
+    def visualize(self, mesh_or_bounds=None, t=0, sampling_factor=1, **kwargs):
         """Return a visualize class for a mesh at t=`t`.
 
         Parameters
@@ -170,6 +253,8 @@ class T2dVector(TimeSpaceFunctionBase):
         mesh_or_bounds
         t
         sampling_factor
+        kwargs :
+            kwargs sent to the final visualizer (of dds-rws).
 
         Returns
         -------
@@ -183,10 +268,14 @@ class T2dVector(TimeSpaceFunctionBase):
 
             from msepy.main import _quick_mesh
             mesh = _quick_mesh(*bounds)
+        elif mesh_or_bounds is None:
+            mesh = self.mesh
         else:
             mesh = mesh_or_bounds
+
+        assert mesh is not None, f"pls provide a mesh or set self._mesh."
         v = self[t]
-        mesh.visualize._target(v, sampling_factor=sampling_factor)
+        mesh.visualize._target(v, sampling_factor=sampling_factor, **kwargs)
 
     @property
     def ndim(self):
@@ -223,7 +312,7 @@ class T2dVector(TimeSpaceFunctionBase):
             else:
                 pv1_pt = self._dv_dt
 
-            self._time_derivative = self.__class__(pv0_pt, pv1_pt)
+            self._time_derivative = self.__class__(pv0_pt, pv1_pt, mesh=self.mesh)
         return self._time_derivative
 
     def ___time_integrate___(self, component, t0, t1, x, y, h=1e-4):
@@ -331,7 +420,7 @@ class T2dVector(TimeSpaceFunctionBase):
         def v1(t, x, y):
             return self.___time_integrate___(1, t0, t, x, y, h=h)
 
-        return self.__class__(v0, v1)
+        return self.__class__(v0, v1, mesh=self.mesh)
 
     @property
     def gradient(self):
@@ -453,7 +542,9 @@ class T2dVector(TimeSpaceFunctionBase):
 
     @property
     def norm(self):
-        """
+        """return the norm of self as a scalar.
+
+        The norm of a vector (u, v) is defined as `norm = sqrt{u * u + v * v}`.
 
         Returns
         -------
@@ -504,8 +595,10 @@ class T2dVector(TimeSpaceFunctionBase):
         v0y = t2d_ScalarMultiply(vy, v0py)
         v1x = t2d_ScalarMultiply(vx, v1px)
         v1y = t2d_ScalarMultiply(vy, v1py)
-
-        return self.__class__(t2d_ScalarAdd(v0x, v0y), t2d_ScalarAdd(v1x, v1y))
+        if self.mesh is u.mesh:
+            return self.__class__(t2d_ScalarAdd(v0x, v0y), t2d_ScalarAdd(v1x, v1y), mesh=self.mesh)
+        else:
+            return self.__class__(t2d_ScalarAdd(v0x, v0y), t2d_ScalarAdd(v1x, v1y))
 
     def __add__(self, other):
         """
@@ -526,7 +619,10 @@ class T2dVector(TimeSpaceFunctionBase):
             V0 = t2d_ScalarAdd(v00, v10)
             V1 = t2d_ScalarAdd(v01, v11)
 
-            return self.__class__(V0, V1)
+            if self.mesh is other.mesh:
+                return self.__class__(V0, V1, mesh=self.mesh)
+            else:
+                return self.__class__(V0, V1)
 
         else:
             raise NotImplementedError()
@@ -550,7 +646,10 @@ class T2dVector(TimeSpaceFunctionBase):
             V0 = t2d_ScalarSub(v00, v10)
             V1 = t2d_ScalarSub(v01, v11)
 
-            return self.__class__(V0, V1)
+            if self.mesh is other.mesh:
+                return self.__class__(V0, V1, mesh=self.mesh)
+            else:
+                return self.__class__(V0, V1)
 
         else:
             raise NotImplementedError()
@@ -561,7 +660,7 @@ class T2dVector(TimeSpaceFunctionBase):
         neg_v0 = t2d_ScalarNeg(v0)
         neg_v1 = t2d_ScalarNeg(v1)
 
-        return self.__class__(neg_v0, neg_v1)
+        return self.__class__(neg_v0, neg_v1, mesh=self.mesh)
 
     def __mul__(self, other):
         """self * other"""
@@ -570,7 +669,7 @@ class T2dVector(TimeSpaceFunctionBase):
             v0_mul_number = t2d_ScalarMultiply(self._v0_, other)
             v1_mul_number = t2d_ScalarMultiply(self._v1_, other)
 
-            return self.__class__(v0_mul_number, v1_mul_number)
+            return self.__class__(v0_mul_number, v1_mul_number, mesh=self.mesh)
 
         else:
             raise NotImplementedError()

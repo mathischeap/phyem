@@ -64,6 +64,8 @@ plt.rcParams.update({
 })
 matplotlib.use('TkAgg')
 
+from tools.miscellaneous.latex_bmatrix_to_array import bmatrix_to_array
+
 from src.form.others import _find_form
 from src.config import _root_form_ap_vec_setting
 from tools.frozen import Frozen
@@ -485,6 +487,7 @@ class MatrixProxy(Frozen):
             pass
         seek_text = self._mp_seek_text()
         symbolic = r"$" + self._pr_text() + r"$"
+        symbolic = bmatrix_to_array(symbolic, len(self._unknowns))
         if self._bc is None or len(self._bc) == 0:
             bc_text = ''
         else:

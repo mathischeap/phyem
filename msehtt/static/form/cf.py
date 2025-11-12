@@ -101,3 +101,7 @@ class MseHttStaticFormCF(Frozen):
         m, n, k = space.m, space.n, space.k
         ori = space.orientation
         return _d_ast_to_vc(space_indicator, m, n, k, ori)
+
+    def visualize(self, *args, **kwargs):
+        r"""visualize this continuous form."""
+        self.field.visualize(*args, **kwargs)

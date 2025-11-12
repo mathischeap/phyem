@@ -410,7 +410,8 @@ class MseHttGreatMeshBaseElement(Frozen):
                 dtype = 'Lobatto'
 
             else:
-                raise NotImplementedError(f"degree={degree} is not implemented for degree_parser.")
+                raise NotImplementedError(f"degree={degree} of type <{degree.__class__.__name__}> "
+                                          f"is not implemented for degree_parser.")
 
             ___degree_cache_pool___[key] = p, dtype
             return p, dtype

@@ -298,14 +298,18 @@ def _VarPar_boundary_dp_vector(rf0, f1):
     d1 = _degree_str_maker(d1)
     lin = lin.replace('{d}', d1)
     sym += rf"_{s1.k}"
+
     if _form_evaluate_at_repr_setting['lin'] in rf0._pure_lin_repr:
-        evaluation_sym = _form_evaluate_at_repr_setting['sym']
         rf0_sym_repr = rf0._sym_repr
-        rf0_superscript = rf0_sym_repr.split(evaluation_sym[1])[1]
-        rf0_superscript = rf0_superscript[:-len(evaluation_sym[2])]
-        sym = sym + r"^{(" + rf0_superscript + r")}"
+        sym = sym + r"^{(" + rf0_sym_repr + r")}"
+        # evaluation_sym = _form_evaluate_at_repr_setting['sym']
+        # rf0_superscript = rf0_sym_repr.split(evaluation_sym[1])[1]
+        # rf0_superscript = rf0_superscript[:-len(evaluation_sym[2])]
+        # sym = sym + r"^{(" + rf0_sym_repr + '@' + rf0_superscript + r")}"
     else:
-        pass
+        rf0_sym_repr = rf0._sym_repr
+        sym = sym + r"^{(" + rf0_sym_repr + r")}"
+
     ra = _root_array(sym, lin, (s1._sym_repr + _default_space_degree_repr + d1, 1))
     return ra
 

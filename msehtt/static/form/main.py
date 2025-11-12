@@ -16,6 +16,7 @@ from msehtt.static.form.visualize.main import MseHttFormVisualize
 from msehtt.static.form.bi.main import MseHttStaticForm_Boundary_Integrate
 from msehtt.static.form.numeric.main import MseHtt_Form_Numeric
 from msehtt.static.form.dofs.main import MseHtt_StaticForm_Dofs
+from msehtt.static.form.print_.main import MseHtt_Static_Form_Print
 
 
 class MseHttForm(Frozen):
@@ -61,6 +62,7 @@ class MseHttForm(Frozen):
         self._numeric = None
         self._project = None
         self._dofs = None
+        self._print_ = None
 
         self._freeze()
 
@@ -447,6 +449,7 @@ class MseHttForm(Frozen):
                                 f"I don't know which one you are referring to")
         else:
             pass
+
         t = self.cochain._parse_t(t)  # round off the truncation error to make it clear.
 
         if isinstance(t, (int, float)):
@@ -632,6 +635,13 @@ class MseHttForm(Frozen):
             return self._dofs
         else:
             return self._base.dofs
+
+    @property
+    def print(self):
+        r"""To print like properties, attributes or else of this form. It is usually for checking/debugging purpose."""
+        if self._print_ is None:
+            self._print_ = MseHtt_Static_Form_Print(self)
+        return self._print_
 
 
 # ========================= other functions ===============================================================

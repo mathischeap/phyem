@@ -83,7 +83,7 @@ def _outer_periodic_Poisson(n, degree):
     return ls, mp
 
 
-def _outer_Poisson(n, degree, num_abstract_bs=5):
+def _outer_Poisson(n, degree, num_abstract_bs=0):
     """
     f = - div grad phi
 
@@ -136,13 +136,16 @@ def _outer_Poisson(n, degree, num_abstract_bs=5):
         }
     )
 
-    abs_bs = []
-    for i in range(num_abstract_bs):
-        abs_bs.append(rf"\Gamma_{i}")
+    if num_abstract_bs > 0:
+        abs_bs = []
+        for i in range(num_abstract_bs):
+            abs_bs.append(rf"\Gamma_{i}")
 
-    pde.bc.partition(
-        *abs_bs
-    )
+        pde.bc.partition(
+            *abs_bs
+        )
+    else:
+        pass
 
     wf = pde.test_with([Lambda_nm1, Lambda_n], sym_repr=[rf'v^{n-1}', rf'q^{n}'])
     wf = wf.derive.integration_by_parts('0-1')

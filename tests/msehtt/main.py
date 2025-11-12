@@ -94,9 +94,17 @@ php('>>> msehtt >>> tests.msehtt.tsf3_save_read_reduce_tests')
 # noinspection PyUnresolvedReferences
 import tests.msehtt.tsf3_save_read_reduce_tests
 
+# ----------- PNP-NS ---------------------------------------------------------------------
+
+php('>>> msehtt >>> tests.msehtt.PNPNS.linearSchemePeriodicManu')
+# noinspection PyUnresolvedReferences
+import tests.msehtt.PNPNS.linearSchemePeriodicManu
+
+php('>>> msehtt >>> tests.msehtt.PNPNS.linearSchemeBcManu')
+# noinspection PyUnresolvedReferences
+import tests.msehtt.PNPNS.linearSchemeBcManu
 
 # ------------------------------------------------------------------------------------------
-
 
 php('>>> msehtt >>> tests.msehtt.adaptive.base2')
 # noinspection PyUnresolvedReferences
@@ -110,19 +118,18 @@ php('>>> msehtt >>> tests.msehtt.adaptive.trf_tests')
 # noinspection PyUnresolvedReferences
 import tests.msehtt.adaptive.trf_tests
 
-
-import numpy as np
-
-
-def refining_function(x, y):
-    r""""""
-    return np.sin(np.pi * x) * np.sin(np.pi * y)
-
-
+#
+# import numpy as np
+#
+#
+# def refining_function(x, y):
+#     r""""""
+#     return np.sin(np.pi * x) * np.sin(np.pi * y)
+#
+#
 # php('>>> msehtt >>> tests.msehtt.adaptive.LDC')
 # # noinspection PyUnresolvedReferences
 # import tests.msehtt.adaptive.LDC
-
 
 # -------- update records ------------------------------------------------------------------------
 ranking.report_ranking()
