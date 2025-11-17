@@ -1,19 +1,15 @@
 # -*- coding: utf-8 -*-
 r"""
 """
-import sys
 import numpy as np
 
-if './' not in sys.path:
-    sys.path.append('./')
-from tools.frozen import Frozen
-from msehtt.tools.vector.static.local import MseHttStaticLocalVector
-from msehtt.tools.vector.static.local import concatenate
-from msehtt.tools.vector.static.global_gathered import MseHttGlobalVectorGathered
-import msehtt.tools.linear_system.static.global_.solvers.mpi_py as _mpi_py
-import msehtt.tools.linear_system.static.global_.solvers.scipy_ as _scipy
-
-from msehtt.static.form.main import MseHttForm
+from phyem.tools.frozen import Frozen
+from phyem.msehtt.tools.vector.static.local import MseHttStaticLocalVector
+from phyem.msehtt.tools.vector.static.local import concatenate
+from phyem.msehtt.tools.vector.static.global_gathered import MseHttGlobalVectorGathered
+import phyem.msehtt.tools.linear_system.static.global_.solvers.mpi_py as _mpi_py
+import phyem.msehtt.tools.linear_system.static.global_.solvers.scipy_ as _scipy
+from phyem.msehtt.static.form.main import MseHttForm
 
 
 ___local_setting___ = {
@@ -64,7 +60,7 @@ class MseHttLinearSystemSolve(Frozen):
                 scheme_name = 'spsolve'
             elif scheme_name == 'ppsp':
                 if self._package_pypardiso is None:
-                    import msehtt.tools.linear_system.static.global_.solvers.pypardiso_ as _pypardiso
+                    import phyem.msehtt.tools.linear_system.static.global_.solvers.pypardiso_ as _pypardiso
                     self._package_pypardiso = _pypardiso
                 else:
                     pass

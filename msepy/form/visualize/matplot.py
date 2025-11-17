@@ -2,11 +2,12 @@
 r"""
 """
 import numpy as np
-from tools.frozen import Frozen
-from tools.matplot.plot import plot
-from tools.matplot.contour import contour, contourf
-from tools.matplot.quiver import quiver
-from tools.matplot.plot3d import plot3d
+
+from phyem.tools.frozen import Frozen
+from phyem.tools.matplot.plot import plot
+from phyem.tools.matplot.contour import contour, contourf
+from phyem.tools.matplot.quiver import quiver
+from phyem.tools.matplot.plot3d import plot3d
 
 
 class MsePyRootFormVisualizeMatplot(Frozen):

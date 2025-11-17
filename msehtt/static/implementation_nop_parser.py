@@ -6,21 +6,21 @@ _setting_ = {
     'base': None
 }
 
-from src.spaces.main import _VarSetting_A_x_B_ip_C
-from src.spaces.main import _VarSetting_A_x_B__dp__C
-from src.spaces.main import _VarSetting_AxB_ip_dC
-from src.spaces.main import _VarSetting_AB_ip_dC
-from src.spaces.main import _VarSetting_AB_dp_dC
-from src.spaces.main import _VarSetting_AB_dp_C
-from src.spaces.main import _VarSetting_AB_ip_C
-from src.spaces.main import _VarSetting_A_ip_BC
+from phyem.src.spaces.main import _VarSetting_A_x_B_ip_C
+from phyem.src.spaces.main import _VarSetting_A_x_B__dp__C
+from phyem.src.spaces.main import _VarSetting_AxB_ip_dC
+from phyem.src.spaces.main import _VarSetting_AB_ip_dC
+from phyem.src.spaces.main import _VarSetting_AB_dp_dC
+from phyem.src.spaces.main import _VarSetting_AB_dp_C
+from phyem.src.spaces.main import _VarSetting_AB_ip_C
+from phyem.src.spaces.main import _VarSetting_A_ip_BC
 
-from msehtt.static.implementation_array_parser import _find_from_bracket_ABC
+from phyem.msehtt.static.implementation_array_parser import _find_from_bracket_ABC
 
-from msehtt.static.form.addons.nop_data_computer.trilinear_AxB_ip_C import AxB_ip_C
-from msehtt.static.form.addons.nop_data_computer.trilinear_AxB_ip_dC import AxB_ip_dC
-from msehtt.static.form.addons.nop_data_computer.trilinear_AB_ip_dC import AB_ip_dC
-from msehtt.static.form.addons.nop_data_computer.trilinear_ABC import T_ABC
+from phyem.msehtt.static.form.addons.nop_data_computer.trilinear_AxB_ip_C import AxB_ip_C
+from phyem.msehtt.static.form.addons.nop_data_computer.trilinear_AxB_ip_dC import AxB_ip_dC
+from phyem.msehtt.static.form.addons.nop_data_computer.trilinear_AB_ip_dC import AB_ip_dC
+from phyem.msehtt.static.form.addons.nop_data_computer.trilinear_ABC import T_ABC
 
 
 def __A_x_B_ip_C__(A, B, C):

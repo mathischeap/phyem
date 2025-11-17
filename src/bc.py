@@ -1,14 +1,9 @@
 # -*- coding: utf-8 -*-
 r"""
 """
-
-import sys
-
-if './' not in sys.path:
-    sys.path.append('./')
-
-from tools.frozen import Frozen
 from typing import Dict
+
+from phyem.tools.frozen import Frozen
 
 
 class BoundaryCondition(Frozen):
@@ -38,7 +33,7 @@ class BoundaryCondition(Frozen):
         assert isinstance(bcs_dict, dict), \
             f"pls put boundary conditions in a dict whose keys are the boundary " \
             f"sections, and values are the B.C.s on the corresponding sections."
-        from src.form.main import Form
+        from phyem.src.form.main import Form
         for key in bcs_dict:
             assert key in self._boundary._sub_manifolds, \
                 f"boundary section: {key} is not defined yet. Be among {self._boundary._sub_manifolds}"

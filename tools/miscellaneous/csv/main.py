@@ -1,15 +1,11 @@
 # -*- coding: utf-8 -*-
 r"""
 """
-import sys
-
-if './' not in sys.path:
-    sys.path.append('./')
-from tools.frozen import Frozen
 import pandas as pd
 
-from tools.miscellaneous.csv.visualize.main import CsvFilerVisualize
-from src.config import SIZE
+from phyem.tools.frozen import Frozen
+from phyem.tools.miscellaneous.csv.visualize.main import CsvFilerVisualize
+from phyem.src.config import SIZE
 
 
 class CsvFiler(Frozen):

@@ -1,11 +1,10 @@
 # -*- coding: utf-8 -*-
 r"""
 """
-from tools.frozen import Frozen
-
-from tools.functions.space._2d.geometrical_functions.anticlockwise_arc import ArcAntiClockWise
-from tools.functions.space._2d.geometrical_functions.clockwise_arc import ArcClockWise
-from tools.functions.space._2d.geometrical_functions.straight_line import StraightLine
+from phyem.tools.frozen import Frozen
+from phyem.tools.functions.space._2d.geometrical_functions.anticlockwise_arc import ArcAntiClockWise
+from phyem.tools.functions.space._2d.geometrical_functions.clockwise_arc import ArcClockWise
+from phyem.tools.functions.space._2d.geometrical_functions.straight_line import StraightLine
 
 
 class GeoFunc2Parser(Frozen):

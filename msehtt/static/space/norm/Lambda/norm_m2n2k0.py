@@ -2,9 +2,9 @@
 r"""
 """
 import numpy as np
-from src.config import COMM
 
-from msehtt.static.space.mass_matrix.Lambda.MM_m2n2k0 import mass_matrix_Lambda__m2n2k0
+from phyem.src.config import COMM
+from phyem.msehtt.static.space.mass_matrix.Lambda.MM_m2n2k0 import mass_matrix_Lambda__m2n2k0
 
 
 def norm_Lambda__m2n2k0(tpm, degree, cochain, norm_type='L2', component_wise=False):

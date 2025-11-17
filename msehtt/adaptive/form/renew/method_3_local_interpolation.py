@@ -5,21 +5,22 @@ the reduction of cochains of the new form.
 
 """
 import numpy as np
-from src.config import RANK, MASTER_RANK, COMM
-from tools._mpi import merge_dict
-
-from tools.frozen import Frozen
 from scipy.interpolate import NearestNDInterpolator
 
-from msehtt.adaptive.form.renew.method_1_global_interpolation import ___WRAPPER_SCALAR___
-from msehtt.adaptive.form.renew.method_1_global_interpolation import ___WRAPPER_VECTOR_2d___
+from phyem.src.config import RANK, MASTER_RANK, COMM
+from phyem.tools._mpi import merge_dict
 
-from msehtt.static.space.reduce.Lambda.Rd_m2n2k0 import reduce_Lambda__m2n2k0
-from msehtt.static.space.reduce.Lambda.Rd_m2n2k1 import reduce_Lambda__m2n2k1_inner
-from msehtt.static.space.reduce.Lambda.Rd_m2n2k1 import reduce_Lambda__m2n2k1_outer
-from msehtt.static.space.reduce.Lambda.Rd_m2n2k2 import reduce_Lambda__m2n2k2
+from phyem.tools.frozen import Frozen
 
-from msehtt.static.mesh.partial.elements.main import MseHttElementsPartialMesh
+from phyem.msehtt.adaptive.form.renew.method_1_global_interpolation import ___WRAPPER_SCALAR___
+from phyem.msehtt.adaptive.form.renew.method_1_global_interpolation import ___WRAPPER_VECTOR_2d___
+
+from phyem.msehtt.static.space.reduce.Lambda.Rd_m2n2k0 import reduce_Lambda__m2n2k0
+from phyem.msehtt.static.space.reduce.Lambda.Rd_m2n2k1 import reduce_Lambda__m2n2k1_inner
+from phyem.msehtt.static.space.reduce.Lambda.Rd_m2n2k1 import reduce_Lambda__m2n2k1_outer
+from phyem.msehtt.static.space.reduce.Lambda.Rd_m2n2k2 import reduce_Lambda__m2n2k2
+
+from phyem.msehtt.static.mesh.partial.elements.main import MseHttElementsPartialMesh
 
 
 class MseHtt_FormCochainRenew_Method3_LocalInterpolation(Frozen):

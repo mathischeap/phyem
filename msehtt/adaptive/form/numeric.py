@@ -3,8 +3,8 @@ r"""
 """
 import numpy as np
 
-from tools.frozen import Frozen
-from src.config import RANK, MASTER_RANK
+from phyem.tools.frozen import Frozen
+from phyem.src.config import RANK, MASTER_RANK
 
 
 class MseHtt_Adaptive_TopForm_Numeric(Frozen):

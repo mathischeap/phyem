@@ -3,16 +3,11 @@
 Manufactured solutions for 3D Hall-MHD.
 
 """
-import sys
-
-if './' not in sys.path:
-    sys.path.append('./')
-
 from numpy import sin, cos, exp, pi, zeros_like
-from tools.frozen import Frozen
 
-from tools.functions.time_space._3d.wrappers.scalar import T3dScalar
-from tools.functions.time_space._3d.wrappers.vector import T3dVector
+from phyem.tools.frozen import Frozen
+from phyem.tools.functions.time_space._3d.wrappers.scalar import T3dScalar
+from phyem.tools.functions.time_space._3d.wrappers.vector import T3dVector
 
 
 # ================ MANU 0: [0, 2pi]^3, periodic domain =======================================

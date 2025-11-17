@@ -17,27 +17,27 @@ __all__ = [
 ]
 
 
-import msehtt.static.implementation_array_parser as PARSER
+import phyem.msehtt.static.implementation_array_parser as PARSER
 PARSER._setting_['base'] = base
 # noinspection PyTypeChecker
 base['PARSER'] = PARSER
 
-import msehtt.static.implementation_nop_parser as NOC_PARSER
+import phyem.msehtt.static.implementation_nop_parser as NOC_PARSER
 NOC_PARSER._setting_['base'] = base
 # noinspection PyTypeChecker
 base['NOC-PARSER'] = NOC_PARSER
 
-from msehtt.static.manifold.main import MseHttManifold
-from msehtt.static.mesh.partial.main import MseHttMeshPartial
-from msehtt.static.mesh.great.main import MseHttGreatMesh
-from msehtt.static.space.main import MseHttSpace
-from msehtt.static.form.main import MseHttForm
+from phyem.msehtt.static.manifold.main import MseHttManifold
+from phyem.msehtt.static.mesh.partial.main import MseHttMeshPartial
+from phyem.msehtt.static.mesh.great.main import MseHttGreatMesh
+from phyem.msehtt.static.space.main import MseHttSpace
+from phyem.msehtt.static.form.main import MseHttForm
 
-from src.wf.mp.linear_system import MatrixProxyLinearSystem
-from src.wf.mp.nonlinear_system import MatrixProxyNoneLinearSystem
+from phyem.src.wf.mp.linear_system import MatrixProxyLinearSystem
+from phyem.src.wf.mp.nonlinear_system import MatrixProxyNoneLinearSystem
 
 
-from src.config import RANK, MASTER_RANK
+from phyem.src.config import RANK, MASTER_RANK
 
 
 def _check_config():
@@ -196,11 +196,11 @@ def _parse(obj):
     particular fem setting.
     """
     if obj.__class__ is MatrixProxyLinearSystem:
-        from msehtt.tools.linear_system.dynamic.main import MseHttDynamicLinearSystem
+        from phyem.msehtt.tools.linear_system.dynamic.main import MseHttDynamicLinearSystem
         dynamic = MseHttDynamicLinearSystem(obj, base)
         return dynamic
     elif obj.__class__ is MatrixProxyNoneLinearSystem:
-        from msehtt.tools.nonlinear_system.dynamic.main import MseHttDynamicNonLinearSystem
+        from phyem.msehtt.tools.nonlinear_system.dynamic.main import MseHttDynamicNonLinearSystem
         dynamic = MseHttDynamicNonLinearSystem(obj, base)
         return dynamic
 
@@ -231,8 +231,8 @@ def _config(obj=None):
     return obj._config
 
 
-from msehtt.tools.gathering_matrix import ___clean_cache_msehtt_gm___
-from msehtt.static.mesh.great.elements.types.base import ___clean_cache_msehtt_element_ct___
+from phyem.msehtt.tools.gathering_matrix import ___clean_cache_msehtt_gm___
+from phyem.msehtt.static.mesh.great.elements.types.base import ___clean_cache_msehtt_element_ct___
 
 
 def clean_cache():
@@ -242,7 +242,7 @@ def clean_cache():
 
 
 from time import time
-from tools.miscellaneous.timer import MyTimer
+from phyem.tools.miscellaneous.timer import MyTimer
 
 
 def info(*others_2b_printed):
@@ -279,7 +279,7 @@ def info(*others_2b_printed):
         else:
             pass
     print(f"\n~) Existing time sequences --------- ")
-    from src.time_sequence import _global_abstract_time_sequence
+    from phyem.src.time_sequence import _global_abstract_time_sequence
     for ats_lin in _global_abstract_time_sequence:
         ats = _global_abstract_time_sequence[ats_lin]
         ats.info()
@@ -300,7 +300,7 @@ def info(*others_2b_printed):
     return None
 
 
-from src.spaces.main import _degree_str_maker
+from phyem.src.spaces.main import _degree_str_maker
 
 
 def array(indicator, *args, **kwargs):

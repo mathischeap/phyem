@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 r"""
 """
-from src.spaces.main import new
+from phyem.src.spaces.main import new
 
 _implemented_space_operators = (
     'wedge',
@@ -19,8 +19,8 @@ _implemented_space_operators = (
 
 def wedge(s1, s2):
     """"""
-    from src.spaces.continuous.Lambda import ScalarValuedFormSpace
-    from src.spaces.continuous.bundle import BundleValuedFormSpace
+    from phyem.src.spaces.continuous.Lambda import ScalarValuedFormSpace
+    from phyem.src.spaces.continuous.bundle import BundleValuedFormSpace
     assert s1.mesh == s2.mesh, f"two entries have different meshes."
 
     if s1.__class__ is ScalarValuedFormSpace and s2.__class__ is ScalarValuedFormSpace:
@@ -63,7 +63,7 @@ def wedge(s1, s2):
 
 def tensor_product(s1, s2):
     """"""
-    from src.spaces.continuous.bundle import BundleValuedFormSpace
+    from phyem.src.spaces.continuous.bundle import BundleValuedFormSpace
 
     if s1.__class__ is BundleValuedFormSpace and s2.__class__ is BundleValuedFormSpace:
 
@@ -88,7 +88,7 @@ def tensor_product(s1, s2):
 
 def convect(s1, s2):
     """s1.dot(grad(s2))."""
-    from src.spaces.continuous.Lambda import ScalarValuedFormSpace
+    from phyem.src.spaces.continuous.Lambda import ScalarValuedFormSpace
 
     if s1.__class__ is ScalarValuedFormSpace and s2.__class__ is ScalarValuedFormSpace:
         assert s1.mesh == s2.mesh, f"two entries have different meshes."
@@ -116,7 +116,7 @@ def convect(s1, s2):
 
 def cross_product(s1, s2):
     """"""
-    from src.spaces.continuous.Lambda import ScalarValuedFormSpace
+    from phyem.src.spaces.continuous.Lambda import ScalarValuedFormSpace
 
     if s1.__class__ is ScalarValuedFormSpace and s2.__class__ is ScalarValuedFormSpace:
 
@@ -178,7 +178,7 @@ def cross_product(s1, s2):
 
 def Cross_Product(s1, s2):
     r""""""
-    from src.spaces.continuous.Lambda import ScalarValuedFormSpace
+    from phyem.src.spaces.continuous.Lambda import ScalarValuedFormSpace
 
     if s1.__class__ is ScalarValuedFormSpace and s2.__class__ is ScalarValuedFormSpace:
 
@@ -223,7 +223,7 @@ def Cross_Product(s1, s2):
 
 def CrossProduct(s1, s2):
     r""""""
-    from src.spaces.continuous.Lambda import ScalarValuedFormSpace
+    from phyem.src.spaces.continuous.Lambda import ScalarValuedFormSpace
 
     if s1.__class__ is ScalarValuedFormSpace and s2.__class__ is ScalarValuedFormSpace:
 
@@ -250,7 +250,7 @@ def CrossProduct(s1, s2):
 
 def crossProduct(s1, s2):
     r""""""
-    from src.spaces.continuous.Lambda import ScalarValuedFormSpace
+    from phyem.src.spaces.continuous.Lambda import ScalarValuedFormSpace
 
     if s1.__class__ is ScalarValuedFormSpace and s2.__class__ is ScalarValuedFormSpace:
 
@@ -274,8 +274,8 @@ def crossProduct(s1, s2):
 
 def Hodge(space):
     """A not well-defined one"""
-    from src.spaces.continuous.Lambda import ScalarValuedFormSpace
-    from src.spaces.continuous.bundle import BundleValuedFormSpace
+    from phyem.src.spaces.continuous.Lambda import ScalarValuedFormSpace
+    from phyem.src.spaces.continuous.bundle import BundleValuedFormSpace
     if space.__class__ is ScalarValuedFormSpace:
         n = space.mesh.ndim
         return new('Lambda', n - space.k, mesh=space.mesh, orientation=space.opposite_orientation)
@@ -288,8 +288,8 @@ def Hodge(space):
 
 def d(space):
     """the range of exterior derivative operator on `space`."""
-    from src.spaces.continuous.Lambda import ScalarValuedFormSpace
-    from src.spaces.continuous.bundle import BundleValuedFormSpace
+    from phyem.src.spaces.continuous.Lambda import ScalarValuedFormSpace
+    from phyem.src.spaces.continuous.bundle import BundleValuedFormSpace
     if space.__class__ is ScalarValuedFormSpace:
         assert space.k < space.mesh.ndim, f'd of top-form-space: {space} is 0.'
         return new('Lambda', space.k + 1, mesh=space.mesh, orientation=space.orientation)
@@ -297,13 +297,13 @@ def d(space):
         assert space.k < space.mesh.ndim, f'd of top-form-space: {space} is 0.'
         return new('bundle', space.k + 1, mesh=space.mesh, orientation=space.orientation)
     else:
-        raise NotImplementedError()
+        raise NotImplementedError(space.__class__)
 
 
 def codifferential(space):
     """the range of exterior derivative operator on `space`."""
-    from src.spaces.continuous.Lambda import ScalarValuedFormSpace
-    from src.spaces.continuous.bundle import BundleValuedFormSpace
+    from phyem.src.spaces.continuous.Lambda import ScalarValuedFormSpace
+    from phyem.src.spaces.continuous.bundle import BundleValuedFormSpace
     if space.__class__ is ScalarValuedFormSpace:
         assert space.k > 0, f'd of 0-form is 0.'
         return new('Lambda', space.k - 1, mesh=space.mesh, orientation=space.orientation)
@@ -404,7 +404,7 @@ def _d_ast_to_vc(space_indicator, *args):
 
 
 def trace(space):
-    from src.spaces.continuous.Lambda import ScalarValuedFormSpace
+    from phyem.src.spaces.continuous.Lambda import ScalarValuedFormSpace
     if space.__class__ is ScalarValuedFormSpace:
         mesh = space.mesh
         assert 0 <= space.k < mesh.ndim, f"Cannot do trace on {space}."

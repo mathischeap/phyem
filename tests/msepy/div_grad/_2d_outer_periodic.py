@@ -2,12 +2,7 @@
 r"""
 """
 
-import sys
-
-if './' not in sys.path:
-    sys.path.append('./')
-
-import __init__ as ph
+import phyem as ph
 import numpy as np
 
 

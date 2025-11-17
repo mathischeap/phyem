@@ -2,9 +2,9 @@
 r"""
 How to parse a degree for Mse Py space.
 """
-from tools.frozen import Frozen
-from tools.quadrature import Quadrature
-from msepy.tools.polynomials import _OneDimPolynomial
+from phyem.tools.frozen import Frozen
+from phyem.tools.quadrature import Quadrature
+from phyem.msepy.tools.polynomials import _OneDimPolynomial
 
 
 class PySpaceDegree(Frozen):

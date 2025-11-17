@@ -1,11 +1,11 @@
 # -*- coding: utf-8 -*-
 r"""
 """
-from src.spaces.main import *
-from src.spaces.main import _sep
-from src.config import _global_lin_repr_setting
-from src.config import _transpose_text
-from src.config import _root_form_ap_vec_setting
+from phyem.src.spaces.main import *
+from phyem.src.spaces.main import _sep
+from phyem.src.config import _global_lin_repr_setting
+from phyem.src.config import _transpose_text
+from phyem.src.config import _root_form_ap_vec_setting
 
 _root_form_ap_lin_repr = _root_form_ap_vec_setting['lin']
 _len_rf_ap_lin_repr = len(_root_form_ap_lin_repr)

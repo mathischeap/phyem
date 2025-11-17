@@ -1,14 +1,10 @@
 # -*- coding: utf-8 -*-
 r"""
 """
-import sys
-
-if './' not in sys.path:
-    sys.path.append('./')
-from tools.frozen import Frozen
-from msehtt.tools.matrix.static.global_ import MseHttGlobalMatrix
-from msehtt.tools.vector.static.global_distributed import MseHttGlobalVectorDistributed
-from msehtt.tools.linear_system.static.global_.solve import MseHttLinearSystemSolve
+from phyem.tools.frozen import Frozen
+from phyem.msehtt.tools.matrix.static.global_ import MseHttGlobalMatrix
+from phyem.msehtt.tools.vector.static.global_distributed import MseHttGlobalVectorDistributed
+from phyem.msehtt.tools.linear_system.static.global_.solve import MseHttLinearSystemSolve
 
 
 class MseHttLinearSystem(Frozen):
@@ -16,7 +12,7 @@ class MseHttLinearSystem(Frozen):
 
     def __init__(self, A, b):
         r""""""
-        assert A.__class__ is MseHttGlobalMatrix, f"A must be {MseHttGlobalMatrix}."
+        assert A.__class__ is MseHttGlobalMatrix, f"A must be {MseHttGlobalMatrix}. Now it is {A.__class__}"
         assert b.__class__ is MseHttGlobalVectorDistributed, f"b must be {MseHttGlobalVectorDistributed}."
         A_shape = A.shape
         b_shape = b.shape

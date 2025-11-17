@@ -1,13 +1,14 @@
 # -*- coding: utf-8 -*-
 r"""
 """
-from tools.functions.time_space.base import TimeSpaceFunctionBase
 from functools import partial
 
-from tools.numerical.time_space._2d.partial_derivative_as_functions import \
+from phyem.tools.functions.time_space.base import TimeSpaceFunctionBase
+
+from phyem.tools.numerical.time_space._2d.partial_derivative_as_functions import \
     NumericalPartialDerivativeTxyFunctions
-from tools.functions.time_space._2d.wrappers.helpers.scalar_add import t2d_ScalarAdd
-from tools.functions.time_space._2d.wrappers.helpers.scalar_sub import t2d_ScalarSub
+from phyem.tools.functions.time_space._2d.wrappers.helpers.scalar_add import t2d_ScalarAdd
+from phyem.tools.functions.time_space._2d.wrappers.helpers.scalar_sub import t2d_ScalarSub
 
 
 class T2dTensor(TimeSpaceFunctionBase):
@@ -117,7 +118,7 @@ class T2dTensor(TimeSpaceFunctionBase):
             v0 = t2d_ScalarAdd(p00, p01)
             v1 = t2d_ScalarAdd(p10, p11)
 
-            from tools.functions.time_space._2d.wrappers.vector import T2dVector
+            from phyem.tools.functions.time_space._2d.wrappers.vector import T2dVector
 
             self._divergence = T2dVector(v0, v1)
 
@@ -135,7 +136,7 @@ class T2dTensor(TimeSpaceFunctionBase):
             v0 = t2d_ScalarSub(p01_px, p00_py)
             v1 = t2d_ScalarSub(p11_px, p10_py)
 
-            from tools.functions.time_space._2d.wrappers.vector import T2dVector
+            from phyem.tools.functions.time_space._2d.wrappers.vector import T2dVector
 
             self._rot = T2dVector(v0, v1)
 

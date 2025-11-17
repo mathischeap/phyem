@@ -11,8 +11,9 @@ plt.rcParams.update({
 matplotlib.use('TkAgg')
 
 from types import FunctionType
-from src.config import _global_operator_lin_repr_setting
-from src.form.main import _global_forms, _global_form_variables
+
+from phyem.src.config import _global_operator_lin_repr_setting
+from phyem.src.form.main import _global_forms, _global_form_variables
 
 
 def _find_root_forms_through_lin_repr(lin_repr):

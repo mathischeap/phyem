@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 r"""
 """
-from tools.frozen import Frozen
-from src.config import COMM
+from phyem.tools.frozen import Frozen
+from phyem.src.config import COMM
 
 
 class MseHttStaticNonlinearSystemCustomize(Frozen):
@@ -66,6 +66,18 @@ class MseHttStaticNonlinearSystemCustomize(Frozen):
                     'take-effect': 0,
                 }
             )
+        elif customization_indicator == 'add_additional_constrain__fix_a_global_dof':
+            assert kwargs == {}, f"add_additional_constrain__fix_a_global_dof customization accepts no kwargs."
+            ith_unknown, global_dof, insert_place = args
+            self._nonlinear_customizations.append(
+                {
+                    'customization_indicator': 'add_additional_constrain__fix_a_global_dof',
+                    'ith_unknown': ith_unknown,
+                    'global_dof': global_dof,
+                    'insert_place': insert_place,
+                    'take-effect': 0,
+                }
+            )
         else:
             raise NotImplementedError(f"cannot accept customization_indicator={customization_indicator}.")
 
@@ -85,6 +97,34 @@ class MseHttStaticNonlinearSystemCustomize(Frozen):
         """"""
         self.___check_nonlinear_customization___(
             'set_x0_for_unknown', ith_unknown, global_dofs, global_cochain
+        )
+
+    def add_additional_constrain__fix_a_global_dof(self, ith_unknown, global_dof, insert_place=-1):
+        r"""We all one additional constrain that says: the global dof of `ith_unknown` unknown will keep same.
+        So, it will equal to the value of its initial guess.
+
+        This is different to `fixed_global_dofs_for_unknown` since we will add a row and a column to the
+        system to achieve it other than modifying the matrix at place.
+
+        Parameters
+        ----------
+        ith_unknown :
+            The ith unknown; starts with 0, i.e.  `ith_unknown` = 0 1, 2, 3, ...
+
+        global_dof :
+            The global dof numbered `global_dof` will be fixed.
+
+        insert_place :
+            Since we are going to add a new relation or a new line to the system. So a question is:
+            At which place we insert this new constrain?
+
+            So insert_place must be an int. And the new relation is added to this row. For example,
+            if insert_place == -1, we add this now relation to the end of the system.
+
+        """
+        self.___check_nonlinear_customization___(
+            'add_additional_constrain__fix_a_global_dof',
+            ith_unknown, global_dof, insert_place
         )
 
 

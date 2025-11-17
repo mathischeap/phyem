@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 r"""
 """
-from src.spaces.base import SpaceBase
+from phyem.src.spaces.base import SpaceBase
 
 
 class BundleValuedFormSpace(SpaceBase):

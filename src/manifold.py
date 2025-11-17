@@ -21,18 +21,14 @@ specify any exact parameters, for example size and shape, of it.
         :members: m, n
 
 """
-import sys
 
-if './' not in sys.path:
-    sys.path.append('./')
-
-from tools.frozen import Frozen
-from src.config import get_embedding_space_dim
-from src.config import _manifold_default_sym_repr
-from src.config import _check_sym_repr
-from src.config import _parse_lin_repr
-from src.config import _manifold_default_lin_repr
-from src.config import _manifold_partition_lin_repr
+from phyem.tools.frozen import Frozen
+from phyem.src.config import get_embedding_space_dim
+from phyem.src.config import _manifold_default_sym_repr
+from phyem.src.config import _check_sym_repr
+from phyem.src.config import _parse_lin_repr
+from phyem.src.config import _manifold_default_lin_repr
+from phyem.src.config import _manifold_partition_lin_repr
 
 _global_manifolds = dict()  # all manifolds are cached, and all sym_repr and lin_repr are different.
 
@@ -284,7 +280,7 @@ class NullManifold(Frozen):
 
 if __name__ == '__main__':
     # python src/manifold.py
-    import __init__ as ph
+    import phyem as ph
 
     m1 = ph.manifold(3)
     m0 = m1.boundary()

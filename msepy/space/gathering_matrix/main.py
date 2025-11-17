@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*-
 r"""
 """
-from tools.frozen import Frozen
-from msepy.space.gathering_matrix.Lambda import MsePyGatheringMatrixLambda
-from msepy.space.gathering_matrix.bundle import MsePyGatheringMatrixBundle
+from phyem.tools.frozen import Frozen
+from phyem.msepy.space.gathering_matrix.Lambda import MsePyGatheringMatrixLambda
+from phyem.msepy.space.gathering_matrix.bundle import MsePyGatheringMatrixBundle
 
 
 class MsePyGatheringMatrix(Frozen):
@@ -30,7 +30,7 @@ class MsePyGatheringMatrix(Frozen):
 
     def _next(self, degree):
         """The gathering matrix of d(space)."""
-        from msepy.main import new
+        from phyem.msepy.main import new
         ab_space = self._space.abstract
         d_ab_space = ab_space.d()
         d_msepy_space = new(d_ab_space)  # make msepy space, must using this function.

@@ -1,16 +1,12 @@
 # -*- coding: utf-8 -*-
 r"""
 """
-import sys
-if './' not in sys.path:
-    sys.path.append('./')
-
-from tools.gen_piece_wise import genpiecewise
-from tools.functions.time_space._2d.wrappers.vector import T2dVector
-from tools.functions.time_space._2d.wrappers.scalar import T2dScalar
-from tools.frozen import Frozen
-from msepy.mesh.main import MsePyMesh
-from msepy.manifold.predefined.cylinder_channel import _CylinderChannel
+from phyem.tools.gen_piece_wise import genpiecewise
+from phyem.tools.functions.time_space._2d.wrappers.vector import T2dVector
+from phyem.tools.functions.time_space._2d.wrappers.scalar import T2dScalar
+from phyem.tools.frozen import Frozen
+from phyem.msepy.mesh.main import MsePyMesh
+from phyem.msepy.manifold.predefined.cylinder_channel import _CylinderChannel
 
 
 # noinspection PyUnusedLocal

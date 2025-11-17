@@ -2,9 +2,9 @@
 r"""
 """
 
-from tools.frozen import Frozen
-from src.algebra.linear_system import LinearSystem
-from src.wf.term.ap import TermNonLinearOperatorAlgebraicProxy
+from phyem.tools.frozen import Frozen
+from phyem.src.algebra.linear_system import LinearSystem
+from phyem.src.wf.term.ap import TermNonLinearOperatorAlgebraicProxy
 
 
 class NonLinearSystem(Frozen):

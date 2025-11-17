@@ -2,9 +2,10 @@
 r"""
 """
 import numpy as np
-from tools.frozen import Frozen
-from tools.matplot.contour import contour, contourf
-from tools.matplot.quiver import quiver
+
+from phyem.tools.frozen import Frozen
+from phyem.tools.matplot.contour import contour, contourf
+from phyem.tools.matplot.quiver import quiver
 
 
 class MsePyMeshVisualizeTarget(Frozen):

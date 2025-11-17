@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*-
 r"""
 """
-from tools.frozen import Frozen
-from msepy.space.norm.Lambda import MsePySpaceNormLambda
-from msepy.space.norm.bundle import MsePySpaceNormBundle
+from phyem.tools.frozen import Frozen
+from phyem.msepy.space.norm.Lambda import MsePySpaceNormLambda
+from phyem.msepy.space.norm.bundle import MsePySpaceNormBundle
 
 
 class MsePySpaceNorm(Frozen):

@@ -2,7 +2,8 @@
 r"""
 """
 import numpy as np
-from tools.quadrature import quadrature
+
+from phyem.tools.quadrature import quadrature
 
 
 def reduce_Lambda__m3n3k0(cf_t, tpm, degree, element_range=None):

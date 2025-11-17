@@ -2,7 +2,8 @@
 r"""
 """
 from numpy import zeros_like, ones_like
-from tools.frozen import Frozen
+
+from phyem.tools.frozen import Frozen
 
 
 class MsePyBoundaryRegionCoordinateTransformation(Frozen):

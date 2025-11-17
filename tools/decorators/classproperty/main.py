@@ -2,7 +2,7 @@
 r"""
 
 """
-from tools.decorators.classproperty.descriptor import ClassPropertyDescriptor
+from phyem.tools.decorators.classproperty.descriptor import ClassPropertyDescriptor
 
 
 def classproperty(func):

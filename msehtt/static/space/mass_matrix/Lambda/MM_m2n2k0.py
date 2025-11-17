@@ -1,10 +1,11 @@
 # -*- coding: utf-8 -*-
 r"""
 """
-from tools.quadrature import quadrature
-from src.spaces.main import _degree_str_maker
 import numpy as np
 from scipy.sparse import csr_matrix
+
+from phyem.tools.quadrature import quadrature
+from phyem.src.spaces.main import _degree_str_maker
 
 _cache_mm220_ = {}
 

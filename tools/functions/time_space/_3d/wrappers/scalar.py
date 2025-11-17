@@ -2,20 +2,20 @@
 r"""
 """
 import numpy as np
+from functools import partial
 
-from tools.functions.time_space.base import TimeSpaceFunctionBase
+from phyem.tools.functions.time_space.base import TimeSpaceFunctionBase
 
-from tools.numerical.time_space._3d.partial_derivative_as_functions import \
+from phyem.tools.numerical.time_space._3d.partial_derivative_as_functions import \
     NumericalPartialDerivativeTxyzFunctions, NumericalPartialDerivativeTxyz
 
-from functools import partial
-from tools.quadrature import quadrature
+from phyem.tools.quadrature import quadrature
 
-from tools.functions.time_space._3d.wrappers.helpers.scalar_mul import t3d_ScalarMultiply
-from tools.functions.time_space._3d.wrappers.helpers._3scalars_add import t3d_3ScalarAdd
-from tools.functions.time_space._3d.wrappers.helpers.scalar_add import t3d_ScalarAdd
-from tools.functions.time_space._3d.wrappers.helpers.scalar_sub import t3d_ScalarSub
-from tools.functions.time_space._3d.wrappers.helpers.scalar_neg import t3d_ScalarNeg
+from phyem.tools.functions.time_space._3d.wrappers.helpers.scalar_mul import t3d_ScalarMultiply
+from phyem.tools.functions.time_space._3d.wrappers.helpers._3scalars_add import t3d_3ScalarAdd
+from phyem.tools.functions.time_space._3d.wrappers.helpers.scalar_add import t3d_ScalarAdd
+from phyem.tools.functions.time_space._3d.wrappers.helpers.scalar_sub import t3d_ScalarSub
+from phyem.tools.functions.time_space._3d.wrappers.helpers.scalar_neg import t3d_ScalarNeg
 
 
 # noinspection PyUnusedLocal
@@ -201,7 +201,7 @@ class T3dScalar(TimeSpaceFunctionBase):
     @property
     def gradient(self):
         """"""
-        from tools.functions.time_space._3d.wrappers.vector import T3dVector
+        from phyem.tools.functions.time_space._3d.wrappers.vector import T3dVector
         if self.___is_zero___:
             return T3dVector(0, 0, 0)
         else:

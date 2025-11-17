@@ -2,11 +2,12 @@
 """
 """
 import numpy as np
-from msepy.form.main import MsePyRootForm
-from src.spaces.main import _degree_str_maker
-from tools.quadrature import Quadrature
-from src.spaces.continuous.Lambda import ScalarValuedFormSpace
-from msepy.form.addons.noc._4_entries__BASE import Base4Entries
+
+from phyem.msepy.form.main import MsePyRootForm
+from phyem.src.spaces.main import _degree_str_maker
+from phyem.tools.quadrature import Quadrature
+from phyem.src.spaces.continuous.Lambda import ScalarValuedFormSpace
+from phyem.msepy.form.addons.noc._4_entries__BASE import Base4Entries
 
 _AxB_ip_CxD__data_cache_ = {}
 

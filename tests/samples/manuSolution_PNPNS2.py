@@ -1,16 +1,11 @@
 # -*- coding: utf-8 -*-
 r"""
 """
-import sys
-
-if './' not in sys.path:
-    sys.path.append('./')
-
 from numpy import sin, cos, exp
-from tools.frozen import Frozen
 
-from tools.functions.time_space._2d.wrappers.scalar import T2dScalar
-from tools.functions.time_space._2d.wrappers.vector import T2dVector
+from phyem.tools.frozen import Frozen
+from phyem.tools.functions.time_space._2d.wrappers.scalar import T2dScalar
+from phyem.tools.functions.time_space._2d.wrappers.vector import T2dVector
 
 
 # ------------------------------------------------------------------------------------------------
@@ -21,14 +16,15 @@ from tools.functions.time_space._2d.wrappers.vector import T2dVector
 class Manufactured_Solution_PNPNS_2D_PeriodicDomain1(Frozen):
     """The Domain must be [0, 2pi]^2 and is periodic."""
 
-    def __init__(self, mesh=None):
+    def __init__(self, epsilon=1, shift=3, mesh=None):
         """
 
         Parameters
         ----------
 
         """
-        self._epsilon = 1
+        self._epsilon = epsilon
+        self._shift = shift
         self._velocity = None
         self._static_pressure = None
         self._pci = None
@@ -109,15 +105,13 @@ class Manufactured_Solution_PNPNS_2D_PeriodicDomain1(Frozen):
         r"""d/dy of Static pressure."""
         return sin(x) * cos(y) * exp(t)
 
-    @staticmethod
-    def _p(t, x, y):
+    def _p(self, t, x, y):
         r"""concentration of positively charged ions."""
-        return cos(x) * sin(y) * exp(t) + 100
+        return (cos(x) * sin(y) + self._shift) * exp(t)
 
-    @staticmethod
-    def _pt(t, x, y):
+    def _pt(self, t, x, y):
         r"""d/dt of concentration of positively charged ions."""
-        return cos(x) * sin(y) * exp(t)
+        return (cos(x) * sin(y) + self._shift) * exp(t)
 
     @staticmethod
     def _px(t, x, y):

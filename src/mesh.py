@@ -25,14 +25,14 @@ You can print a list of defined meshes by
 Existing meshes:...
 
 """
-from tools.frozen import Frozen
-from src.config import _mesh_default_sym_repr
-from src.config import _check_sym_repr
-from src.config import _parse_lin_repr
-from src.config import _mesh_default_lin_repr
-from src.spaces.main import set_mesh
+from phyem.tools.frozen import Frozen
+from phyem.src.config import _mesh_default_sym_repr
+from phyem.src.config import _check_sym_repr
+from phyem.src.config import _parse_lin_repr
+from phyem.src.config import _mesh_default_lin_repr
+from phyem.src.spaces.main import set_mesh
 
-from src.config import _mesh_partition_sym_repr, _mesh_partition_lin_repr
+from phyem.src.config import _mesh_partition_sym_repr, _mesh_partition_lin_repr
 
 _global_meshes = dict()    # all meshes are cached, and all sym_repr and lin_repr are different.
 

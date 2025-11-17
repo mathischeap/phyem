@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*-
 r"""
 """
-from tools.frozen import Frozen
-from msepy.space.num_local_dofs.Lambda import MsePyNumLocalDofsLambda
-from msepy.space.num_local_dofs.bundle import MsePyNumLocalDofsBundle
+from phyem.tools.frozen import Frozen
+from phyem.msepy.space.num_local_dofs.Lambda import MsePyNumLocalDofsLambda
+from phyem.msepy.space.num_local_dofs.bundle import MsePyNumLocalDofsBundle
 
 
 class MsePyNumLocalDofs(Frozen):

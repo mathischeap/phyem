@@ -2,8 +2,9 @@
 r"""
 """
 import numpy as np
-from tools.frozen import Frozen
-from src.config import RANK, MASTER_RANK, SIZE, COMM
+
+from phyem.tools.frozen import Frozen
+from phyem.src.config import RANK, MASTER_RANK, SIZE, COMM
 
 
 class MseHttVtuInterface(Frozen):

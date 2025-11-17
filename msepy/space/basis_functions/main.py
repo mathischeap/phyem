@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*-
 r"""
 """
-from tools.frozen import Frozen
-from msepy.space.basis_functions.Lambda import MsePyBasisFunctionsLambda
-from msepy.space.basis_functions.bundle import MsePyBasisFunctionsBundle
+from phyem.tools.frozen import Frozen
+from phyem.msepy.space.basis_functions.Lambda import MsePyBasisFunctionsLambda
+from phyem.msepy.space.basis_functions.bundle import MsePyBasisFunctionsBundle
 
 
 class MsePyBasisFunctions(Frozen):

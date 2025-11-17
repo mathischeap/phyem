@@ -1,10 +1,11 @@
 # -*- coding: utf-8 -*-
 r"""
 """
-from tools.frozen import Frozen
 from scipy.sparse import linalg as spspalinalg
 from time import time
-from tools.miscellaneous.timer import MyTimer
+
+from phyem.tools.frozen import Frozen
+from phyem.tools.miscellaneous.timer import MyTimer
 
 
 class _PackageScipy(Frozen):

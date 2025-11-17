@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*-
 r"""
 """
-from tools.frozen import Frozen
-from msepy.form.visualize.matplot import MsePyRootFormVisualizeMatplot
-from msepy.form.visualize.vtk_ import MsePyRootFormVisualizeVTK
+from phyem.tools.frozen import Frozen
+from phyem.msepy.form.visualize.matplot import MsePyRootFormVisualizeMatplot
+from phyem.msepy.form.visualize.vtk_ import MsePyRootFormVisualizeVTK
 
 
 class MsePyRootFormVisualize(Frozen):

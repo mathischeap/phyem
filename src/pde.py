@@ -155,12 +155,6 @@ to a PDE instance.
 
 
 """
-from tools.frozen import Frozen
-from src.config import _global_lin_repr_setting, _non_root_lin_sep
-from src.form.main import Form, _global_root_forms_lin_dict
-from src.config import _global_operator_lin_repr_setting
-from src.config import _pde_test_form_lin_repr
-
 import matplotlib.pyplot as plt
 import matplotlib
 plt.rcParams.update({
@@ -170,9 +164,15 @@ plt.rcParams.update({
 })
 matplotlib.use('TkAgg')
 
-from src.wf.term.main import inner
-from src.wf.main import WeakFormulation
-from src.bc import BoundaryCondition
+from phyem.tools.frozen import Frozen
+from phyem.src.config import _global_lin_repr_setting, _non_root_lin_sep
+from phyem.src.form.main import Form, _global_root_forms_lin_dict
+from phyem.src.config import _global_operator_lin_repr_setting
+from phyem.src.config import _pde_test_form_lin_repr
+
+from phyem.src.wf.term.main import inner
+from phyem.src.wf.main import WeakFormulation
+from phyem.src.bc import BoundaryCondition
 
 
 def pde(expression=None, interpreter=None, terms_and_signs_dict=None):
@@ -395,16 +395,16 @@ class PartialDifferentialEquations(Frozen):
     def _pr_vc(self, figsize=(8, 6), title=None):
         """We print the pde but change all exterior derivatives to corresponding vector calculus operators."""
 
-        from src.config import RANK, MASTER_RANK
+        from phyem.src.config import RANK, MASTER_RANK
         if RANK != MASTER_RANK:
             return None
         else:
             pass
 
-        from src.spaces.operators import _d_to_vc, _d_ast_to_vc
-        from src.config import _global_operator_sym_repr_setting
-        from src.config import _global_operator_lin_repr_setting
-        from src.config import _non_root_lin_sep
+        from phyem.src.spaces.operators import _d_to_vc, _d_ast_to_vc
+        from phyem.src.config import _global_operator_sym_repr_setting
+        from phyem.src.config import _global_operator_lin_repr_setting
+        from phyem.src.config import _non_root_lin_sep
         start, end = _non_root_lin_sep
 
         d_sym_repr = _global_operator_sym_repr_setting['d']
@@ -413,7 +413,7 @@ class PartialDifferentialEquations(Frozen):
         d_lin_repr = _global_operator_lin_repr_setting['d']
         cd_lin_repr = _global_operator_lin_repr_setting['codifferential']
 
-        from src.form.others import _find_form
+        from phyem.src.form.others import _find_form
 
         number_equations = len(self._term_dict)
         symbolic = ''
@@ -575,7 +575,7 @@ class PartialDifferentialEquations(Frozen):
         else:
             plt.title(title)
 
-        from src.config import _setting, _pr_cache
+        from phyem.src.config import _setting, _pr_cache
         if _setting['pr_cache']:
             _pr_cache(fig, filename='pde_vc')
         else:
@@ -604,7 +604,7 @@ class PartialDifferentialEquations(Frozen):
         :func:`src.config.set_pr_cache`
 
         """
-        from src.config import RANK, MASTER_RANK
+        from phyem.src.config import RANK, MASTER_RANK
         if RANK != MASTER_RANK:
             return None
         else:
@@ -751,7 +751,7 @@ class PartialDifferentialEquations(Frozen):
             pass
         else:
             plt.title(title)
-        from src.config import _setting, _pr_cache
+        from phyem.src.config import _setting, _pr_cache
         if _setting['pr_cache']:
             _pr_cache(fig, filename='pde')
         else:
@@ -834,7 +834,7 @@ class PartialDifferentialEquations(Frozen):
 
         # parse test spaces from forms if forms provided.
         _test_spaces = list()
-        from src.form.main import Form
+        from phyem.src.form.main import Form
 
         for i, obj in enumerate(test_spaces):
             if isinstance(obj, Form):
@@ -923,11 +923,11 @@ class PartialDifferentialEquations(Frozen):
                                     else:
                                         root_form_lin_repr = the_end_form
 
-                                    from src.form.others import _find_form
+                                    from phyem.src.form.others import _find_form
                                     the_form = _find_form(root_form_lin_repr)
 
                                     sp_lin_repr = front_form_lin_repr
-                                    from src.form.parameters import _find_root_scalar_parameter
+                                    from phyem.src.form.parameters import _find_root_scalar_parameter
 
                                     root_factor = _find_root_scalar_parameter(sp_lin_repr)
 

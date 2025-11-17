@@ -2,8 +2,9 @@
 r"""
 """
 import numpy as np
-from tools.frozen import Frozen
-from msepy.mesh.boundary_section.visualize.matplot import Matplot
+
+from phyem.tools.frozen import Frozen
+from phyem.msepy.mesh.boundary_section.visualize.matplot import Matplot
 
 
 class MsePyBoundarySectionVisualize(Frozen):

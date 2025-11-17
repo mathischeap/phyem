@@ -5,15 +5,15 @@ import matplotlib.pyplot as plt
 import matplotlib
 import numpy as np
 
-from tools.frozen import Frozen
-from msepy.tools.matrix.static.local import MsePyStaticLocalMatrix
-from msepy.tools.vector.static.local import MsePyStaticLocalVector
-from msepy.form.cochain.vector.static import MsePyRootFormStaticCochainVector
-from msepy.tools.linear_system.static.assembled.main import MsePyStaticLinearSystemAssembled
-from msepy.tools.linear_system.static.local.customize import MsePyStaticLinearSystemCustomize
+from phyem.tools.frozen import Frozen
+from phyem.msepy.tools.matrix.static.local import MsePyStaticLocalMatrix
+from phyem.msepy.tools.vector.static.local import MsePyStaticLocalVector
+from phyem.msepy.form.cochain.vector.static import MsePyRootFormStaticCochainVector
+from phyem.msepy.tools.linear_system.static.assembled.main import MsePyStaticLinearSystemAssembled
+from phyem.msepy.tools.linear_system.static.local.customize import MsePyStaticLinearSystemCustomize
 
-from msepy.tools.matrix.static.local import bmat
-from msepy.tools.vector.static.local import concatenate
+from phyem.msepy.tools.matrix.static.local import bmat
+from phyem.msepy.tools.vector.static.local import concatenate
 
 
 class MsePyStaticLocalLinearSystem(Frozen):

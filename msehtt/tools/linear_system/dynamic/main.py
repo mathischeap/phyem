@@ -3,32 +3,33 @@ r"""
 """
 import matplotlib.pyplot as plt
 import matplotlib
-from src.config import RANK, MASTER_RANK
 
-from tools.frozen import Frozen
-from src.wf.mp.linear_system import MatrixProxyLinearSystem
-from src.config import _abstract_array_factor_sep, _abstract_array_connector
-from src.form.parameters import constant_scalar, ConstantScalar0Form
-from src.form.parameters import _factor_parser
+from phyem.src.config import RANK, MASTER_RANK
 
-from src.wf.mp.linear_system_bc import _EssentialBoundaryCondition
+from phyem.tools.frozen import Frozen
+from phyem.src.wf.mp.linear_system import MatrixProxyLinearSystem
+from phyem.src.config import _abstract_array_factor_sep, _abstract_array_connector
+from phyem.src.form.parameters import constant_scalar, ConstantScalar0Form
+from phyem.src.form.parameters import _factor_parser
 
-from msehtt.tools.matrix.static.local import MseHttStaticLocalMatrix
-from msehtt.tools.vector.static.local import MseHttStaticLocalVector
-from msehtt.static.form.cochain.vector.static import MseHttStaticCochainVector
+from phyem.src.wf.mp.linear_system_bc import _EssentialBoundaryCondition
 
-from msehtt.tools.matrix.dynamic import MseHttDynamicLocalMatrix
-from msehtt.tools.vector.dynamic import MseHttDynamicLocalVector
-from msehtt.static.form.cochain.vector.dynamic import MseHttDynamicCochainVector
+from phyem.msehtt.tools.matrix.static.local import MseHttStaticLocalMatrix
+from phyem.msehtt.tools.vector.static.local import MseHttStaticLocalVector
+from phyem.msehtt.static.form.cochain.vector.static import MseHttStaticCochainVector
+
+from phyem.msehtt.tools.matrix.dynamic import MseHttDynamicLocalMatrix
+from phyem.msehtt.tools.vector.dynamic import MseHttDynamicLocalVector
+from phyem.msehtt.static.form.cochain.vector.dynamic import MseHttDynamicCochainVector
 
 _cs1 = constant_scalar(1)
 
-from msehtt.tools.linear_system.dynamic.array_parser import msehtt_root_array_parser
-from msehtt.tools.linear_system.static.local.main import MseHttStaticLocalLinearSystem
+from phyem.msehtt.tools.linear_system.dynamic.array_parser import msehtt_root_array_parser
+from phyem.msehtt.tools.linear_system.static.local.main import MseHttStaticLocalLinearSystem
 
-from msehtt.tools.linear_system.dynamic.config import MseHttDynamicLinearSystem_Config
+from phyem.msehtt.tools.linear_system.dynamic.config import MseHttDynamicLinearSystem_Config
 
-from tools.miscellaneous.latex_bmatrix_to_array import bmatrix_to_array
+from phyem.tools.miscellaneous.latex_bmatrix_to_array import bmatrix_to_array
 
 
 class MseHttDynamicLinearSystem(Frozen):

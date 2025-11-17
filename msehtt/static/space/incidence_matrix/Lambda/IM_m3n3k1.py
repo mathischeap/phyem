@@ -4,12 +4,12 @@ r"""
 import numpy as np
 from scipy.sparse import csr_matrix
 
-from msehtt.static.space.local_numbering.Lambda.ln_m3n3k1 import _ln_m3n3k1_msepy_quadrilateral_
-from msehtt.static.space.local_numbering.Lambda.ln_m3n3k2 import _ln_m3n3k2_msepy_quadrilateral_
+from phyem.msehtt.static.space.local_numbering.Lambda.ln_m3n3k1 import _ln_m3n3k1_msepy_quadrilateral_
+from phyem.msehtt.static.space.local_numbering.Lambda.ln_m3n3k2 import _ln_m3n3k2_msepy_quadrilateral_
+from phyem.src.spaces.main import _degree_str_maker
 
 
 _cache_E331_ = {}
-from src.spaces.main import _degree_str_maker
 
 
 def incidence_matrix_Lambda__m3n3k1(tpm, degree):

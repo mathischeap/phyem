@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*-
 r"""
 """
-from tools.frozen import Frozen
-from msepy.space.mass_matrix.Lambda import MsePyMassMatrixLambda
-from msepy.space.mass_matrix.bundle import MsePyMassMatrixBundle
+from phyem.tools.frozen import Frozen
+from phyem.msepy.space.mass_matrix.Lambda import MsePyMassMatrixLambda
+from phyem.msepy.space.mass_matrix.bundle import MsePyMassMatrixBundle
 
 
 class MsePyMassMatrix(Frozen):

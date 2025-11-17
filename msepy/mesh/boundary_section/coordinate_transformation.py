@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 r"""
 """
-from tools.frozen import Frozen
-from tools.miscellaneous.ndarray_cache import ndarray_key_comparer, add_to_ndarray_cache
+from phyem.tools.frozen import Frozen
+from phyem.tools.miscellaneous.ndarray_cache import ndarray_key_comparer, add_to_ndarray_cache
 
 
 class MsePyBoundarySectionMeshCooTrans(Frozen):

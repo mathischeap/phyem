@@ -2,7 +2,7 @@
 r"""
 """
 
-from tools.frozen import Frozen
+from phyem.tools.frozen import Frozen
 
 
 class BrokenSpaceBase(Frozen):

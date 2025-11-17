@@ -2,10 +2,10 @@
 r"""
 """
 import numpy as np
-from tools.frozen import Frozen
-
-from msepy.tools.vector.static.assembled import MsePyStaticAssembledVector
 from numpy import zeros
+
+from phyem.tools.frozen import Frozen
+from phyem.msepy.tools.vector.static.assembled import MsePyStaticAssembledVector
 
 
 class MsePyStaticLocalVectorAssemble(Frozen):

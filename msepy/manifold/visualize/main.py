@@ -1,9 +1,10 @@
 # -*- coding: utf-8 -*-
 r"""
 """
-from tools.frozen import Frozen
-from msepy.manifold.visualize.matplot import MsePyManifoldVisualizeMatplot
 import numpy as np
+
+from phyem.tools.frozen import Frozen
+from phyem.msepy.manifold.visualize.matplot import MsePyManifoldVisualizeMatplot
 
 
 class MsePyManifoldVisualize(Frozen):

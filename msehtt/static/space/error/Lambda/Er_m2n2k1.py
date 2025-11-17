@@ -1,8 +1,9 @@
 # -*- coding: utf-8 -*-
 r"""
 """
-from src.config import RANK, MASTER_RANK, COMM
-from tools.quadrature import quadrature
+from phyem.src.config import RANK, MASTER_RANK, COMM
+from phyem.tools.quadrature import quadrature
+
 import numpy as np
 
 
@@ -58,8 +59,8 @@ def _compute_error__m2n2k1_(tpm, cf, cochain, degree, error_type, orientation='o
         raise NotImplementedError(f"error_type = {error_type}.")
 
 
-from msehtt.static.space.reconstruct.Lambda.Rc_m2n2k1 import ___rc221o_msepy_quadrilateral___
-from msehtt.static.space.reconstruct.Lambda.Rc_m2n2k1 import ___rc221i_msepy_quadrilateral___
+from phyem.msehtt.static.space.reconstruct.Lambda.Rc_m2n2k1 import ___rc221o_msepy_quadrilateral___
+from phyem.msehtt.static.space.reconstruct.Lambda.Rc_m2n2k1 import ___rc221i_msepy_quadrilateral___
 
 
 def _er221_msepy_quadrilateral_(element, cf, local_cochain, degree, error_type, orientation):
@@ -90,8 +91,8 @@ def _er221_msepy_quadrilateral_(element, cf, local_cochain, degree, error_type, 
         raise NotImplementedError(error_type)
 
 
-from msehtt.static.space.reconstruct.Lambda.Rc_m2n2k1 import ___rc221o_vtu_5___
-from msehtt.static.space.reconstruct.Lambda.Rc_m2n2k1 import ___rc221i_vtu_5___
+from phyem.msehtt.static.space.reconstruct.Lambda.Rc_m2n2k1 import ___rc221o_vtu_5___
+from phyem.msehtt.static.space.reconstruct.Lambda.Rc_m2n2k1 import ___rc221i_vtu_5___
 
 
 def _er221_vtu5_(element, cf, local_cochain, degree, error_type, orientation):

@@ -2,12 +2,13 @@
 r"""
 """
 import numpy as np
-from src.config import COMM, RANK, MASTER_RANK
-from tools.frozen import Frozen
-from msehtt.tools.gathering_matrix import MseHttGatheringMatrix
 
-from msehtt.tools.vector.static.global_distributed import MseHttGlobalVectorDistributed
-from msehtt.tools.vector.static.global_gathered import MseHttGlobalVectorGathered
+from phyem.src.config import COMM, RANK, MASTER_RANK
+from phyem.tools.frozen import Frozen
+from phyem.msehtt.tools.gathering_matrix import MseHttGatheringMatrix
+
+from phyem.msehtt.tools.vector.static.global_distributed import MseHttGlobalVectorDistributed
+from phyem.msehtt.tools.vector.static.global_gathered import MseHttGlobalVectorGathered
 
 
 class MseHttStaticLocalVectorAssemble(Frozen):
@@ -27,7 +28,7 @@ class MseHttStaticLocalVectorAssemble(Frozen):
         for i in self._v:
             yield i
 
-    def __call__(self, vtype='distributed', mode='sum'):
+    def __call__(self, vtype='distributed', mode='sum', customizations=None):
         """"""
 
         if vtype == 'distributed':
@@ -36,7 +37,7 @@ class MseHttStaticLocalVectorAssemble(Frozen):
                 v = np.zeros(gm.num_global_dofs)
                 for i in self:
                     v[gm[i]] += self[i]  # must do this to be consistent with the matrix assembling.
-                return MseHttGlobalVectorDistributed(v, gm)
+                RETURN = MseHttGlobalVectorDistributed(v, gm)
             else:
                 raise NotImplementedError(f"mode={mode} not implemented for {vtype} assembling")
 
@@ -59,13 +60,40 @@ class MseHttStaticLocalVectorAssemble(Frozen):
                 else:
                     v = np.zeros(self._v._gm.num_global_dofs)
                 COMM.Bcast(v, root=MASTER_RANK)
-                return MseHttGlobalVectorGathered(v, self._v._gm)
+                RETURN = MseHttGlobalVectorGathered(v, self._v._gm)
 
             else:
                 raise NotImplementedError(f"mode={mode} not implemented for {vtype} assembling")
 
         else:
             raise NotImplementedError()
+
+        if customizations is None:
+            return RETURN
+        else:
+            return self._deal_with_customizations_(RETURN, customizations, vtype, mode)
+
+    def _deal_with_customizations_(self, RETURN, customizations, vtype, mode):
+        r""""""
+        if len(customizations) == 1:
+            cus = customizations[0]
+            indicator = cus[0]
+            if indicator == 'add_a_value_at_the_end':
+                value = cus[1]
+                if vtype == 'distributed' and mode == 'sum' and value == 0:
+                    new_v = np.append(RETURN.V, [value, ])
+                    return MseHttGlobalVectorDistributed(new_v)
+                else:
+                    raise NotImplementedError(f"vtype={vtype}, mode={mode}, value={value} not implemented.")
+            else:
+                raise NotImplementedError(
+                    f"MseHttStaticLocalVectorAssemble _deal_with_customizations_ cannot do for "
+                    f"indicator={indicator}."
+                )
+        else:
+            raise NotImplementedError(
+                f"MseHttStaticLocalVectorAssemble cannot deal with multi customizations yet"
+            )
 
 
 class EmptyDataError(Exception):

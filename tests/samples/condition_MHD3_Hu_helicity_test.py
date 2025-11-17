@@ -1,10 +1,11 @@
 # -*- coding: utf-8 -*-
 r"""
 """
-from tools.frozen import Frozen
 from numpy import sin, cos, pi, zeros_like
-from tools.functions.time_space._3d.wrappers.vector import T3dVector
-from tools.functions.time_space._3d.wrappers.scalar import T3dScalar
+
+from phyem.tools.frozen import Frozen
+from phyem.tools.functions.time_space._3d.wrappers.vector import T3dVector
+from phyem.tools.functions.time_space._3d.wrappers.scalar import T3dScalar
 
 
 class MHD3_Helicity_Conservation_test1(Frozen):

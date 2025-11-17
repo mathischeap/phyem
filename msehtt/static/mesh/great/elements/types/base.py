@@ -2,33 +2,34 @@
 r"""
 """
 import numpy as np
-from tools.frozen import Frozen
-from src.spaces.main import _degree_str_maker
 
-from msehtt.static.space.basis_function.Lambda.bf_m2n2k0 import ___bf220_msepy_quadrilateral___
-from msehtt.static.space.basis_function.Lambda.bf_m2n2k1 import ___bf221o_outer_msepy_quadrilateral___
-from msehtt.static.space.basis_function.Lambda.bf_m2n2k1 import ___bf221i_inner_msepy_quadrilateral___
-from msehtt.static.space.basis_function.Lambda.bf_m2n2k2 import ___bf222_msepy_quadrilateral___
+from phyem.tools.frozen import Frozen
+from phyem.src.spaces.main import _degree_str_maker
 
-from msehtt.static.space.basis_function.Lambda.bf_m2n2k0 import ___bf220_utv_5_triangle___
-from msehtt.static.space.basis_function.Lambda.bf_m2n2k1 import ___bf221i_inner_vtu_5___
-from msehtt.static.space.basis_function.Lambda.bf_m2n2k1 import ___bf221o_outer_vtu_5___
+from phyem.msehtt.static.space.basis_function.Lambda.bf_m2n2k0 import ___bf220_msepy_quadrilateral___
+from phyem.msehtt.static.space.basis_function.Lambda.bf_m2n2k1 import ___bf221o_outer_msepy_quadrilateral___
+from phyem.msehtt.static.space.basis_function.Lambda.bf_m2n2k1 import ___bf221i_inner_msepy_quadrilateral___
+from phyem.msehtt.static.space.basis_function.Lambda.bf_m2n2k2 import ___bf222_msepy_quadrilateral___
 
-from msehtt.static.space.basis_function.Lambda.bf_m3n3k0 import ___bf330_msepy_quadrilateral___
-from msehtt.static.space.basis_function.Lambda.bf_m3n3k1 import ___bf331_msepy_quadrilateral___
-from msehtt.static.space.basis_function.Lambda.bf_m3n3k2 import ___bf332_msepy_quadrilateral___
-from msehtt.static.space.basis_function.Lambda.bf_m3n3k3 import ___bf333_msepy_quadrilateral___
+from phyem.msehtt.static.space.basis_function.Lambda.bf_m2n2k0 import ___bf220_utv_5_triangle___
+from phyem.msehtt.static.space.basis_function.Lambda.bf_m2n2k1 import ___bf221i_inner_vtu_5___
+from phyem.msehtt.static.space.basis_function.Lambda.bf_m2n2k1 import ___bf221o_outer_vtu_5___
 
-from msehtt.static.space.local_numbering.Lambda.ln_m2n2k1 import local_numbering_Lambda__m2n2k1_outer
-from msehtt.static.space.local_numbering.Lambda.ln_m2n2k1 import local_numbering_Lambda__m2n2k1_inner
+from phyem.msehtt.static.space.basis_function.Lambda.bf_m3n3k0 import ___bf330_msepy_quadrilateral___
+from phyem.msehtt.static.space.basis_function.Lambda.bf_m3n3k1 import ___bf331_msepy_quadrilateral___
+from phyem.msehtt.static.space.basis_function.Lambda.bf_m3n3k2 import ___bf332_msepy_quadrilateral___
+from phyem.msehtt.static.space.basis_function.Lambda.bf_m3n3k3 import ___bf333_msepy_quadrilateral___
 
-from msehtt.static.space.find.local_dofs_on_face.Lambda.m2n2k1 import find_local_dofs_on_face__m2n2k1_outer
-from msehtt.static.space.find.local_dofs_on_face.Lambda.m2n2k1 import find_local_dofs_on_face__m2n2k1_inner
-from msehtt.static.space.find.local_dofs_on_face.Lambda.m2n2k0 import find_local_dofs_on_face__m2n2k0
+from phyem.msehtt.static.space.local_numbering.Lambda.ln_m2n2k1 import local_numbering_Lambda__m2n2k1_outer
+from phyem.msehtt.static.space.local_numbering.Lambda.ln_m2n2k1 import local_numbering_Lambda__m2n2k1_inner
 
-from msehtt.static.space.find.local_dofs_on_face.Lambda.m3n3k0 import find_local_dofs_on_face__m3n3k0
-from msehtt.static.space.find.local_dofs_on_face.Lambda.m3n3k1 import find_local_dofs_on_face__m3n3k1
-from msehtt.static.space.find.local_dofs_on_face.Lambda.m3n3k2 import find_local_dofs_on_face__m3n3k2
+from phyem.msehtt.static.space.find.local_dofs_on_face.Lambda.m2n2k1 import find_local_dofs_on_face__m2n2k1_outer
+from phyem.msehtt.static.space.find.local_dofs_on_face.Lambda.m2n2k1 import find_local_dofs_on_face__m2n2k1_inner
+from phyem.msehtt.static.space.find.local_dofs_on_face.Lambda.m2n2k0 import find_local_dofs_on_face__m2n2k0
+
+from phyem.msehtt.static.space.find.local_dofs_on_face.Lambda.m3n3k0 import find_local_dofs_on_face__m3n3k0
+from phyem.msehtt.static.space.find.local_dofs_on_face.Lambda.m3n3k1 import find_local_dofs_on_face__m3n3k1
+from phyem.msehtt.static.space.find.local_dofs_on_face.Lambda.m3n3k2 import find_local_dofs_on_face__m3n3k2
 
 
 ___xi___ = np.linspace(-1, 1, 3)
@@ -467,7 +468,7 @@ def ___clean_cache_msehtt_element_ct___():
         del ___cache_msehtt_imm___[key]
 
 
-from tools.miscellaneous.ndarray_cache import add_to_ndarray_cache, ndarray_key_comparer
+from phyem.tools.miscellaneous.ndarray_cache import add_to_ndarray_cache, ndarray_key_comparer
 
 
 class MseHttGreatMeshBaseElementCooTrans(Frozen):

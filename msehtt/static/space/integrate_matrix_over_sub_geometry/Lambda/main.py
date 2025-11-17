@@ -1,12 +1,12 @@
 # -*- coding: utf-8 -*-
 r"""
 """
-from tools.frozen import Frozen
+from phyem.tools.frozen import Frozen
 
-from msehtt.static.space.integrate_matrix_over_sub_geometry.Lambda.ImSG_m2n0k0 import ___iMsg_m2n2k0___
-from msehtt.static.space.integrate_matrix_over_sub_geometry.Lambda.ImSG_m2n2k1 import ___iMsg_m2n2k1_inner___
-from msehtt.static.space.integrate_matrix_over_sub_geometry.Lambda.ImSG_m2n2k1 import ___iMsg_m2n2k1_outer___
-from msehtt.static.space.integrate_matrix_over_sub_geometry.Lambda.ImSG_m2n2k2 import ___iMsg_m2n2k2___
+from phyem.msehtt.static.space.integrate_matrix_over_sub_geometry.Lambda.ImSG_m2n0k0 import ___iMsg_m2n2k0___
+from phyem.msehtt.static.space.integrate_matrix_over_sub_geometry.Lambda.ImSG_m2n2k1 import ___iMsg_m2n2k1_inner___
+from phyem.msehtt.static.space.integrate_matrix_over_sub_geometry.Lambda.ImSG_m2n2k1 import ___iMsg_m2n2k1_outer___
+from phyem.msehtt.static.space.integrate_matrix_over_sub_geometry.Lambda.ImSG_m2n2k2 import ___iMsg_m2n2k2___
 
 
 class MseHttSpace_iMSG_Lambda(Frozen):

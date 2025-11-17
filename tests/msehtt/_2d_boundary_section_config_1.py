@@ -2,14 +2,9 @@
 r"""
 mpiexec -n 4 python tests/msehtt/_2d_boundary_section_config_1.py
 """
-import sys
-
 import numpy as np
 
-if './' not in sys.path:
-    sys.path.append('./')
-
-import __init__ as ph
+import phyem as ph
 
 # ------------ parameters -------------------------------
 alpha_1 = 75

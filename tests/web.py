@@ -15,10 +15,6 @@ This will:
 """
 
 import os
-import sys
-
-if './' not in sys.path:
-    sys.path.append('./')
 
 if os.path.isfile(f"./web/source/conf.py"):   # do all doctests in we have the conf.py file.
     stream = os.popen(rf'.\web\make doctest')

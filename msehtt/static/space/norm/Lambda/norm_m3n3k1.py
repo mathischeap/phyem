@@ -2,9 +2,10 @@
 r"""
 """
 import numpy as np
-from src.config import COMM, MPI
-from tools.quadrature import quadrature
-from msehtt.static.space.mass_matrix.Lambda.MM_m3n3k1 import mass_matrix_Lambda__m3n3k1
+
+from phyem.src.config import COMM, MPI
+from phyem.tools.quadrature import quadrature
+from phyem.msehtt.static.space.mass_matrix.Lambda.MM_m3n3k1 import mass_matrix_Lambda__m3n3k1
 
 
 def norm_Lambda__m3n3k1(tpm, degree, cochain, norm_type='L2', component_wise=False):
@@ -28,8 +29,8 @@ def norm_Lambda__m3n3k1(tpm, degree, cochain, norm_type='L2', component_wise=Fal
         raise NotImplementedError(f"norm_type={norm_type} is not implemented")
 
 
-from msehtt.static.mesh.great.elements.types.base import MseHttGreatMeshBaseElement
-from msehtt.static.space.reconstruct.Lambda.Rc_m3n3k1 import reconstruct_Lambda__m3n3k1
+from phyem.msehtt.static.mesh.great.elements.types.base import MseHttGreatMeshBaseElement
+from phyem.msehtt.static.space.reconstruct.Lambda.Rc_m3n3k1 import reconstruct_Lambda__m3n3k1
 
 
 def ___norm_Lambda__m3n3k1_component_wise___(tpm, degree, cochain, norm_type='L2'):

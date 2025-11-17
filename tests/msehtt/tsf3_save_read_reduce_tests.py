@@ -5,15 +5,9 @@ Test the time-space function of forms (through form.export)
 mpiexec -n 4 python tests/msehtt/tsf3_save_read_reduce_tests.py
 """
 
-import sys
-
 import numpy as np
 
-ph_dir = './'  # customize it to your dir containing phyem
-if ph_dir not in sys.path:
-    sys.path.append(ph_dir)
-
-import __init__ as ph
+import phyem as ph
 
 ph.config.set_embedding_space_dim(3)
 ph.config.set_high_accuracy(True)

@@ -1,14 +1,14 @@
 # -*- coding: utf-8 -*-
 r"""
 """
-from src.config import _wf_term_default_simple_patterns as _simple_patterns
-from src.spaces.ap import *
-from src.form.parameters import ConstantScalar0Form, constant_scalar
-from src.config import _parse_lin_repr  # _parse_lin_repr('TermNonLinearAlgebraicProxy', lin_repr)
-from src.config import _nonlinear_ap_test_form_repr
-from src.algebra.nonlinear_operator import AbstractNonlinearOperator
+from phyem.src.config import _wf_term_default_simple_patterns as _simple_patterns
+from phyem.src.spaces.ap import *
+from phyem.src.form.parameters import ConstantScalar0Form, constant_scalar
+from phyem.src.config import _parse_lin_repr  # _parse_lin_repr('TermNonLinearAlgebraicProxy', lin_repr)
+from phyem.src.config import _nonlinear_ap_test_form_repr
+from phyem.src.algebra.nonlinear_operator import AbstractNonlinearOperator
+from phyem.tools.frozen import Frozen
 
-from tools.frozen import Frozen
 _cs1 = constant_scalar(1)
 
 

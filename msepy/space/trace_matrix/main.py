@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 r"""
 """
-from tools.frozen import Frozen
-from msepy.space.trace_matrix.Lambda import MsePyTraceMatrixLambda
+from phyem.tools.frozen import Frozen
+from phyem.msepy.space.trace_matrix.Lambda import MsePyTraceMatrixLambda
 
 
 class MsePyTraceMatrix(Frozen):

@@ -2,15 +2,16 @@
 r"""
 """
 import numpy as np
-from tools.frozen import Frozen
-from tools.dds.region_wise_structured import DDSRegionWiseStructured
 from typing import Dict
-from tools.quadrature import Quadrature
 from scipy.interpolate import NearestNDInterpolator
-from msepy.form.numeric.tsf import MsePyRootFormNumericTimeSpaceFunction
-from msepy.form.numeric.tsp import MsePyRootFormNumericTimeSpaceProperty
-from msepy.form.numeric.dds import MsePyRootFormNumericDiscreteDataStructure
-from msepy.form.numeric.streamfunction import MsePyRootFormNumericStreamFunction
+
+from phyem.tools.frozen import Frozen
+from phyem.tools.dds.region_wise_structured import DDSRegionWiseStructured
+from phyem.tools.quadrature import Quadrature
+from phyem.msepy.form.numeric.tsf import MsePyRootFormNumericTimeSpaceFunction
+from phyem.msepy.form.numeric.tsp import MsePyRootFormNumericTimeSpaceProperty
+from phyem.msepy.form.numeric.dds import MsePyRootFormNumericDiscreteDataStructure
+from phyem.msepy.form.numeric.streamfunction import MsePyRootFormNumericStreamFunction
 
 
 class MsePyRootFormNumeric(Frozen):

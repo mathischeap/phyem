@@ -4,7 +4,8 @@ A wrapper of pickle package in the phyem environment.
 """
 
 import pickle
-from src.config import RANK, MASTER_RANK, COMM
+
+from phyem.src.config import RANK, MASTER_RANK, COMM
 
 
 def ms(filename, obj):

@@ -2,7 +2,7 @@
 r"""
 """
 
-from msehtt.static.form.addons.nop_data_computer.trilinear_AxB_ip_C import AxB_ip_C
+from phyem.msehtt.static.form.addons.nop_data_computer.trilinear_AxB_ip_C import AxB_ip_C
 
 _cache_AxB_dp_C_3d_data_ = {}
 

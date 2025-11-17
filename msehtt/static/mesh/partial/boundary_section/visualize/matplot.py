@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 r"""
 """
-from tools.frozen import Frozen
-from src.config import RANK, MASTER_RANK, COMM
+from phyem.tools.frozen import Frozen
+from phyem.src.config import RANK, MASTER_RANK, COMM
 
 import matplotlib.pyplot as plt
 import matplotlib

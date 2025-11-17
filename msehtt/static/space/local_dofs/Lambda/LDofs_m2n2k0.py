@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 r"""
 """
-from tools.quadrature import quadrature
+from phyem.tools.quadrature import quadrature
 
 
 def LDofs_Lambda__m2n2k0(tpm, degree):
@@ -20,7 +20,7 @@ def LDofs_Lambda__m2n2k0(tpm, degree):
     return LDofs
 
 
-from msehtt.static.space.local_numbering.Lambda.ln_m2n2k0 import _ln_m2n2k0_msepy_quadrilateral_
+from phyem.msehtt.static.space.local_numbering.Lambda.ln_m2n2k0 import _ln_m2n2k0_msepy_quadrilateral_
 
 
 def ___mm220_lDofs_quad___(element, degree):

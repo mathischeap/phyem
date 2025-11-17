@@ -1,13 +1,14 @@
 # -*- coding: utf-8 -*-
 r"""
 """
-from tools.frozen import Frozen
 import numpy as np
-from msehtt.tools.gathering_matrix import MseHttGatheringMatrix
+
+from phyem.tools.frozen import Frozen
+from phyem.msehtt.tools.gathering_matrix import MseHttGatheringMatrix
 
 
 class MseHttGlobalVectorGathered(Frozen):
-    """"""
+    """We store the same complete vector in all ranks."""
 
     def __init__(self, V, gm=None):
         """"""

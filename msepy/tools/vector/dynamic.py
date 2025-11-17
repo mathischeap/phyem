@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 """
 """
-from tools.frozen import Frozen
-from msepy.tools.vector.static.local import MsePyStaticLocalVector
+from phyem.tools.frozen import Frozen
+from phyem.msepy.tools.vector.static.local import MsePyStaticLocalVector
 
 
 class MsePyDynamicLocalVector(Frozen):

@@ -2,10 +2,11 @@
 r"""
 """
 import numpy as np
-from scipy.sparse import linalg as spspalinalg
 from time import time
-from tools.miscellaneous.timer import MyTimer
-from src.config import RANK, MASTER_RANK, COMM, MPI
+from scipy.sparse import linalg as spspalinalg
+
+from phyem.tools.miscellaneous.timer import MyTimer
+from phyem.src.config import RANK, MASTER_RANK, COMM, MPI
 
 
 def spsolve(A, b, clean=False):  # I receive shells of A and b in order to have the freedom to clean the original data.

@@ -2,12 +2,7 @@
 r"""
 python tests/msepy/main.py
 """
-import sys
-
-if './' not in sys.path:
-    sys.path.append('./')
-
-from src.config import SIZE
+from phyem.src.config import SIZE
 
 assert SIZE == 1, f"msepy does not work with multiple ranks."
 
@@ -18,14 +13,14 @@ __all__ = [
 ]
 
 
-import tests.msepy.m1n1 as _1
+import phyem.tests.msepy.m1n1 as _1
 
-import tests.msepy.m2n2 as _2
+import phyem.tests.msepy.m2n2 as _2
 
-import tests.msepy.m3n3 as _3
+import phyem.tests.msepy.m3n3 as _3
 
 
-from tests.msepy.codifferential_test import codifferential_test
+from phyem.tests.msepy.codifferential_test import codifferential_test
 codifferential_test(1, 1, 'outer')
 codifferential_test(1, 1, 'inner')
 codifferential_test(2, 1, 'outer')
@@ -40,8 +35,8 @@ codifferential_test(3, 3, 'outer')
 codifferential_test(3, 3, 'inner')
 
 
-from tests.msepy.div_grad._2d_outer_periodic import div_grad_2d_periodic_manufactured_test
-from tests.msepy.div_grad._2d_outer import div_grad_2d_general_bc_manufactured_test
+from phyem.tests.msepy.div_grad._2d_outer_periodic import div_grad_2d_periodic_manufactured_test
+from phyem.tests.msepy.div_grad._2d_outer import div_grad_2d_general_bc_manufactured_test
 
 
 a, b = div_grad_2d_periodic_manufactured_test(3, 4)

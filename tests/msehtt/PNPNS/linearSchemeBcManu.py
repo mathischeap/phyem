@@ -4,12 +4,7 @@ Normal dipole collision
 mpiexec -n 4 python tests/msehtt/PNPNS/linearSchemeBcManu.py
 """
 
-import sys
-
-if './' not in sys.path:
-    sys.path.append('./')
-
-import __init__ as ph
+import phyem as ph
 
 import numpy as np
 
@@ -610,7 +605,9 @@ pTau = obj['pTau']
 nChi = obj['nChi']
 dPsi = obj['dPsi']
 
-conditions = ph.samples.Manufactured_Solution_PNPNS_2D_PeriodicDomain1(msehtt_mesh)
+conditions = ph.samples.Manufactured_Solution_PNPNS_2D_PeriodicDomain1(
+    mesh=msehtt_mesh, epsilon=epsilon, shift=3
+)
 
 w.cf = conditions.omega
 u.cf = conditions.u
@@ -694,10 +691,7 @@ def solver(k):
     L2_error_phi = phi[t_minus].error()
 
     if k == 3:
-        benchmark_Results = np.array([
-            0.006, 0.020816704355997886, 0.025914864517428034, 0.011813869770750366, 0.06576854638135196,
-            0.09344914719026799, 0.27316769885091513
-        ])
+        benchmark_Results = np.array([0.006, 0.006549, 0.014551, 0.008622, 0.065769, 0.09345, 0.27171])
         Results = np.array([
             t, L2_error_p, L2_error_n, L2_error_psi, L2_error_u, L2_error_omega, L2_error_phi
         ])

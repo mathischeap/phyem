@@ -2,7 +2,8 @@
 r"""
 """
 import numpy as np
-from tools.quadrature import quadrature
+
+from phyem.tools.quadrature import quadrature
 
 
 def reduce_Lambda__m3n3k3(cf_t, tpm, degree, element_range=None):
@@ -57,7 +58,7 @@ def ___rd333_msepy_quadrilateral___(element, cf_t, degree):
 
 
 _cache_rd333_dp_ = {}
-from msehtt.static.mesh.great.elements.types.orthogonal_hexahedron import MseHttGreatMeshOrthogonalHexahedronElement
+from phyem.msehtt.static.mesh.great.elements.types.orthogonal_hexahedron import MseHttGreatMeshOrthogonalHexahedronElement
 
 
 def _preparation_m3n3k3(degree):

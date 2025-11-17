@@ -1,8 +1,9 @@
 # -*- coding: utf-8 -*-
 r"""
 """
-from tools.functions.space._2d.distance import distance
 import math
+
+from phyem.tools.functions.space._2d.distance import distance
 
 
 def angles_of_triangle(A, B, C):

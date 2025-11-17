@@ -1,8 +1,9 @@
 # -*- coding: utf-8 -*-
 r"""
 """
-from tools.frozen import Frozen
 from scipy.sparse import linalg as spspalinalg
+
+from phyem.tools.frozen import Frozen
 
 
 class MseHtt_Local_LinearSystem_Solve(Frozen):

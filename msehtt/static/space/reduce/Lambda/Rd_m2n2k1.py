@@ -2,9 +2,10 @@
 r"""
 """
 import numpy as np
-from tools.quadrature import quadrature
-from msehtt.static.mesh.great.elements.types.orthogonal_rectangle import MseHttGreatMeshOrthogonalRectangleElement
-from msehtt.static.mesh.great.elements.types.vtu_5_triangle import Vtu5Triangle
+
+from phyem.tools.quadrature import quadrature
+from phyem.msehtt.static.mesh.great.elements.types.orthogonal_rectangle import MseHttGreatMeshOrthogonalRectangleElement
+from phyem.msehtt.static.mesh.great.elements.types.vtu_5_triangle import Vtu5Triangle
 
 
 # ----------------- INNER ---------------------------------------------------------------------------------

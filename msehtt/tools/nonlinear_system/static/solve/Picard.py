@@ -4,14 +4,16 @@ r"""
 import numpy as np
 from time import time
 
-from tools.frozen import Frozen
-from msehtt.static.form.main import MseHttForm
-from msehtt.tools.vector.static.local import MseHttStaticLocalVector
-from msehtt.tools.matrix.static.local import MseHttStaticLocalMatrix
-from msehtt.tools.linear_system.static.local.main import MseHttStaticLocalLinearSystem
+from phyem.tools.frozen import Frozen
+from phyem.msehtt.static.form.main import MseHttForm
+from phyem.msehtt.tools.vector.static.local import MseHttStaticLocalVector
+from phyem.msehtt.tools.matrix.static.local import MseHttStaticLocalMatrix
+from phyem.msehtt.tools.linear_system.static.local.main import MseHttStaticLocalLinearSystem
 
-from msehtt.tools.nonlinear_system.static.solve.Newton_Raphson import _check_stop_criterion_
-from msehtt.tools.vector.static.local import concatenate
+from phyem.msehtt.tools.nonlinear_system.static.solve.Newton_Raphson import _check_stop_criterion_
+from phyem.msehtt.tools.vector.static.local import concatenate
+
+from phyem.src.config import COMM, MPI
 
 
 class MseHtt_NonlinearSystem_Picard(Frozen):
@@ -139,6 +141,10 @@ class MseHtt_NonlinearSystem_Picard(Frozen):
 
             ls = MseHttStaticLocalLinearSystem(LHS, x, rhs)
 
+            customizations_to_be_handled_by_LinearSystem_Assembler = list()
+            select_values_of_res_x_rule_keys = list()
+            # a list of values that define how to clean x before sending it to unknowns
+
             # adopt customizations: important ---------------------------------------------------
             for nonlinear_customization in self._nls.customize._nonlinear_customizations:
                 indicator = nonlinear_customization['customization_indicator']
@@ -163,6 +169,39 @@ class MseHtt_NonlinearSystem_Picard(Frozen):
                         else:
                             Aij.customize.identify_rows(global_dofs)
                     bi.customize.set_values(global_dofs, global_cochain)
+
+                # -------------------------------------------------------------
+                elif indicator == "add_additional_constrain__fix_a_global_dof":
+                    if ITER == 1:
+                        assert nonlinear_customization['take-effect'] == 0
+                        nonlinear_customization['take-effect'] = 1
+                    else:
+                        assert nonlinear_customization['take-effect'] == 1
+
+                    ith_unknown = nonlinear_customization['ith_unknown']
+                    global_dof = nonlinear_customization['global_dof']
+                    insert_place = nonlinear_customization['insert_place']
+
+                    the_unknown = xi[ith_unknown]
+                    the_gm = the_unknown._gm
+                    e, local_dof = the_gm.find_representative_location(global_dof)
+                    if e in the_unknown:
+                        initial_guess = the_unknown[e][global_dof]
+                    else:
+                        initial_guess = 0
+                    initial_guess = COMM.allreduce(initial_guess, op=MPI.SUM)
+
+                    if insert_place == -1:
+                        customizations_to_be_handled_by_LinearSystem_Assembler.append(
+                            {
+                                'A': ['new_EndZeroRowCol_with_a_one_for_global_dof', ith_unknown, global_dof],
+                                'b': ['add_a_value_at_the_end', initial_guess],
+                            }
+                        )
+                        select_values_of_res_x_rule_keys.append("InsertPlaceEnd")
+                    else:
+                        raise NotImplementedError()
+
                 # -------------------------------------------------------------
                 else:
                     pass
@@ -174,9 +213,19 @@ class MseHtt_NonlinearSystem_Picard(Frozen):
                 signatures = str(self._nls.shape) + '===' + signatures
                 raise NotImplementedError(f"Now convert signatures into a cache key! {signatures}")
 
-            als = ls.assemble(cache=cache, preconditioner=preconditioner, threshold=threshold)
+            als = ls.assemble(
+                cache=cache,
+                preconditioner=preconditioner,
+                threshold=threshold,
+                customizations=customizations_to_be_handled_by_LinearSystem_Assembler
+            )
 
-            concatenate_xi = concatenate(xi, als.gm_col)
+            if als.gm_col is None:
+                gm_COL = ls.A._mA._gm_col
+            else:
+                gm_COL = als.gm_col
+
+            concatenate_xi = concatenate(xi, gm_COL)
             assembled_xi = concatenate_xi.assemble(vtype='gathered', mode='replace')
 
             if inner_solver_scheme in ('spsolve', 'direct'):
@@ -186,6 +235,23 @@ class MseHtt_NonlinearSystem_Picard(Frozen):
 
             results = als.solve(inner_solver_scheme, x0=solve_x0, **inner_solver_kwargs)
             x, LSm = results[:2]
+
+            if not select_values_of_res_x_rule_keys:  # when it is empty
+                pass
+
+            elif len(select_values_of_res_x_rule_keys) == 1:
+                # we have received a list of a single value that says how we clean x.
+                if select_values_of_res_x_rule_keys[0] == 'InsertPlaceEnd':
+                    # we have received a list: ['InsertPlaceEnd', ], this means we just need to drop the last value.
+                    # So we just drop the last value of x.
+                    x = x[:-1]
+                else:
+                    raise NotImplementedError(select_values_of_res_x_rule_keys)
+            else:
+                raise NotImplementedError(
+                    f"For select_values_of_res_x_rule_keys={select_values_of_res_x_rule_keys}, not coded yet."
+                )
+
             beta = np.sum((assembled_xi.V - x) ** 2) ** 0.5
             BETA.append(beta)
             JUDGE, stop_iteration, convergence_info, JUDGE_explanation = _check_stop_criterion_(

@@ -2,8 +2,9 @@
 r"""
 """
 import numpy as np
-from tools.frozen import Frozen
-from tools.quadrature import Quadrature
+
+from phyem.tools.frozen import Frozen
+from phyem.tools.quadrature import Quadrature
 
 
 class BoundaryIntegrateVCBSLambda(Frozen):

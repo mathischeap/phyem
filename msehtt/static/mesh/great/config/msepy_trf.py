@@ -2,8 +2,9 @@
 r"""We config the msehtt great mesh as a msepy mesh + triangular refining.
 """
 import numpy as np
-from tools.frozen import Frozen
-from msehtt.static.mesh.great.config.msepy_ import MseHttMsePyConfig
+
+from phyem.tools.frozen import Frozen
+from phyem.msehtt.static.mesh.great.config.msepy_ import MseHttMsePyConfig
 
 
 # noinspection PyUnusedLocal

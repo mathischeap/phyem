@@ -2,13 +2,9 @@
 r"""
 mpiexec -n 4 python tests/msehtt/adaptive/LDC.py
 """
-import sys
 import numpy as np
 
-if './' not in sys.path:
-    sys.path.append('./')
-
-import __init__ as ph
+import phyem as ph
 
 # --- config program -------------------------------------------------
 ph.config.set_embedding_space_dim(2)

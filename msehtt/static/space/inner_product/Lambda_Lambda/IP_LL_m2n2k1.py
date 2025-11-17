@@ -3,11 +3,11 @@
 """
 import numpy as np
 
-from tools.quadrature import quadrature
-from msehtt.static.space.reconstruct.Lambda.Rc_m2n2k1 import reconstruct_Lambda__m2n2k1_inner
-from msehtt.static.space.reconstruct.Lambda.Rc_m2n2k1 import reconstruct_Lambda__m2n2k1_outer
+from phyem.tools.quadrature import quadrature
+from phyem.msehtt.static.space.reconstruct.Lambda.Rc_m2n2k1 import reconstruct_Lambda__m2n2k1_inner
+from phyem.msehtt.static.space.reconstruct.Lambda.Rc_m2n2k1 import reconstruct_Lambda__m2n2k1_outer
 
-from src.config import COMM, MPI
+from phyem.src.config import COMM, MPI
 
 
 def ___Lambda_ip_Lambda_over_SameTPM_m2n2k1___(

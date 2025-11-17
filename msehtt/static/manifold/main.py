@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 r"""
 """
-from tools.frozen import Frozen
-from src.manifold import Manifold
+from phyem.tools.frozen import Frozen
+from phyem.src.manifold import Manifold
 
 
 class MseHttManifold(Frozen):

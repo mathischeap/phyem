@@ -2,11 +2,12 @@
 r"""
 """
 import numpy as np
-from tools.frozen import Frozen
-from tools.functions.space._2d.angle import angle
-from tools.functions.space._2d.angles_of_triangle import angles_of_triangle
-from tools.functions.space._2d.distance import distance
-from msehtt.static.mesh.great.elements.types.base import MseHttGreatMeshBaseElement
+
+from phyem.tools.frozen import Frozen
+from phyem.tools.functions.space._2d.angle import angle
+from phyem.tools.functions.space._2d.angles_of_triangle import angles_of_triangle
+from phyem.tools.functions.space._2d.distance import distance
+from phyem.msehtt.static.mesh.great.elements.types.base import MseHttGreatMeshBaseElement
 
 
 class Vtu5Triangle(MseHttGreatMeshBaseElement):
@@ -166,7 +167,7 @@ ___invA___ = np.array([
 # ================== CT ==============================================================================
 
 
-from msehtt.static.mesh.great.elements.types.base import MseHttGreatMeshBaseElementCooTrans
+from phyem.msehtt.static.mesh.great.elements.types.base import MseHttGreatMeshBaseElementCooTrans
 
 
 class Vtu5Triangle_CT(MseHttGreatMeshBaseElementCooTrans):
@@ -301,7 +302,7 @@ class _VTU5_Triangle_OneFace_(Frozen):
         return self._ct
 
 
-from msehtt.static.mesh.great.elements.types.base import _FaceCoordinateTransformationBase
+from phyem.msehtt.static.mesh.great.elements.types.base import _FaceCoordinateTransformationBase
 
 
 class _VTU5_Triangle_OneFace_CT_(_FaceCoordinateTransformationBase):

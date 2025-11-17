@@ -11,7 +11,9 @@ Aerodynamics, AE
 TU Delft
 """
 import pandas as pd
-from tools.frozen import Frozen
+
+from phyem.tools.frozen import Frozen
+
 
 class DataStructure(Frozen):
     """ """
@@ -46,7 +48,9 @@ class DFW(DataStructure):
     def __call__(self):
         return self._dfd_
 
-from tools.legacy.serialRunners.COMPONENTS.data.COMPONENTS.visualize import RunnerDataVisualize
+
+from phyem.tools.legacy.serialRunners.COMPONENTS.data.COMPONENTS.visualize import RunnerDataVisualize
+
 
 class RunnerData(DFW):
     """ """

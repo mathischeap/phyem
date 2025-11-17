@@ -1,18 +1,18 @@
 # -*- coding: utf-8 -*-
 r"""
 """
-from src.config import _nonlinear_ap_test_form_repr
-from src.wf.term.ap import TermNonLinearOperatorAlgebraicProxy
+from phyem.src.config import _nonlinear_ap_test_form_repr
+from phyem.src.wf.term.ap import TermNonLinearOperatorAlgebraicProxy
 
-from src.spaces.main import _sep
-from src.spaces.main import _VarSetting_A_x_B_ip_C
-from src.spaces.main import _VarSetting_A_x_B__dp__C
-from src.spaces.main import _VarSetting_AxB_ip_dC
-from src.spaces.main import _VarSetting_AB_ip_dC
-from src.spaces.main import _VarSetting_AB_dp_dC
-from src.spaces.main import _VarSetting_AB_dp_C
-from src.spaces.main import _VarSetting_AB_ip_C
-from src.spaces.main import _VarSetting_A_ip_BC
+from phyem.src.spaces.main import _sep
+from phyem.src.spaces.main import _VarSetting_A_x_B_ip_C
+from phyem.src.spaces.main import _VarSetting_A_x_B__dp__C
+from phyem.src.spaces.main import _VarSetting_AxB_ip_dC
+from phyem.src.spaces.main import _VarSetting_AB_ip_dC
+from phyem.src.spaces.main import _VarSetting_AB_dp_dC
+from phyem.src.spaces.main import _VarSetting_AB_dp_C
+from phyem.src.spaces.main import _VarSetting_AB_ip_C
+from phyem.src.spaces.main import _VarSetting_A_ip_BC
 
 
 def nonlinear_operator_parser(noc_term, imp_base):

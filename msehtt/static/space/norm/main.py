@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 """
 """
-from tools.frozen import Frozen
-from msehtt.static.space.norm.Lambda.main import MseHttSpaceNormLambda
+from phyem.tools.frozen import Frozen
+from phyem.msehtt.static.space.norm.Lambda.main import MseHttSpaceNormLambda
 
 
 class MseHttSpaceNorm(Frozen):

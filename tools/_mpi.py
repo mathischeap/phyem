@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 r"""
 """
-from src.config import MASTER_RANK, RANK, COMM
+from phyem.src.config import MASTER_RANK, RANK, COMM
 
 
 def merge_dict(*dictionaries, root=MASTER_RANK):

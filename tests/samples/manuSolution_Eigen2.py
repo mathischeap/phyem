@@ -4,13 +4,10 @@ An eigen solution for 2d linear pH system.
 
 Taken from Andrea's Firedrake code.
 """
-import sys
-if './' not in sys.path:
-    sys.path.append('./')
-
 from numpy import sqrt, sin, cos, pi
-from tools.functions.time_space._2d.wrappers.scalar import T2dScalar
-from tools.functions.time_space._2d.wrappers.vector import T2dVector
+
+from phyem.tools.functions.time_space._2d.wrappers.scalar import T2dScalar
+from phyem.tools.functions.time_space._2d.wrappers.vector import T2dVector
 
 
 class Eigen2:

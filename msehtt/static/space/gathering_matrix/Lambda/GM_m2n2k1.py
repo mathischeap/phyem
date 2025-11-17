@@ -1,17 +1,17 @@
 # -*- coding: utf-8 -*-
 r"""
 """
-
-from src.config import RANK, MASTER_RANK, COMM, SIZE
 from numpy import arange, ones, concatenate
-from msehtt.tools.gathering_matrix import MseHttGatheringMatrix
-from msehtt.static.mesh.great.main import MseHttGreatMesh
-from msehtt.static.mesh.partial.main import MseHttMeshPartial
 
-from src.spaces.main import _degree_str_maker
+from phyem.src.config import RANK, MASTER_RANK, COMM, SIZE
+from phyem.msehtt.tools.gathering_matrix import MseHttGatheringMatrix
+from phyem.msehtt.static.mesh.great.main import MseHttGreatMesh
+from phyem.msehtt.static.mesh.partial.main import MseHttMeshPartial
 
-from msehtt.static.mesh.great.elements.types.orthogonal_rectangle import MseHttGreatMeshOrthogonalRectangleElement
-from msehtt.static.mesh.great.elements.types.vtu_5_triangle import Vtu5Triangle
+from phyem.src.spaces.main import _degree_str_maker
+
+from phyem.msehtt.static.mesh.great.elements.types.orthogonal_rectangle import MseHttGreatMeshOrthogonalRectangleElement
+from phyem.msehtt.static.mesh.great.elements.types.vtu_5_triangle import Vtu5Triangle
 
 
 # ----------------- outer m2n2 1-form --------------------------------------------------

@@ -2,7 +2,8 @@
 r"""
 """
 from numpy import ndarray
-from tools.frozen import Frozen
+
+from phyem.tools.frozen import Frozen
 
 
 class MsePyStaticAssembledVector(Frozen):

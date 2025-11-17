@@ -1,10 +1,10 @@
 # -*- coding: utf-8 -*-
 r"""
 """
-from src.config import MASTER_RANK, RANK
-from tools.frozen import Frozen
-from tools.functions.time_space._3d.wrappers.scalar import T3dScalar
-from tools.functions.time_space._3d.wrappers.vector import T3dVector
+from phyem.src.config import MASTER_RANK, RANK
+from phyem.tools.frozen import Frozen
+from phyem.tools.functions.time_space._3d.wrappers.scalar import T3dScalar
+from phyem.tools.functions.time_space._3d.wrappers.vector import T3dVector
 
 import pickle
 

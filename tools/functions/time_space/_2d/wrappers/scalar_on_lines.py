@@ -3,17 +3,14 @@ On different lines (1d geometries in 2d space), we can define different scalars.
 useful for example when defining (pressure, temperature) boundary conditions.
 
 """
-from tools.miscellaneous.geometries.m2n2 import StraightSegment2, Curve2
-from tools.miscellaneous.geometries.m2n2 import whether_point_on_straight_segment
-from tools.miscellaneous.geometries.m2n2 import whether_point_on_curve
-
-from tools.functions.time_space._2d.wrappers.scalar import T2dScalar
-
-from tools.frozen import Frozen
 import numpy as np
 
-
-from tools.functions.time_space._2d.constant import cfg_t
+from phyem.tools.miscellaneous.geometries.m2n2 import StraightSegment2, Curve2
+from phyem.tools.miscellaneous.geometries.m2n2 import whether_point_on_straight_segment
+from phyem.tools.miscellaneous.geometries.m2n2 import whether_point_on_curve
+from phyem.tools.functions.time_space._2d.wrappers.scalar import T2dScalar
+from phyem.tools.frozen import Frozen
+from phyem.tools.functions.time_space._2d.constant import cfg_t
 
 
 def scalar_on_lines(*scalar_on_lines_pairs):

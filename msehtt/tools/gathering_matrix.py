@@ -2,8 +2,9 @@
 r"""
 """
 import numpy as np
-from tools.frozen import Frozen
-from src.config import COMM, RANK, MASTER_RANK, SIZE, MPI
+
+from phyem.tools.frozen import Frozen
+from phyem.src.config import COMM, RANK, MASTER_RANK, SIZE, MPI
 
 ___cache_msehtt_gm_chaining___ = {}
 ___cache_msehtt_gm_find___ = {}
@@ -293,10 +294,25 @@ class MseHttGatheringMatrix(Frozen):
 
         return COMM.allreduce(rank_true_or_false, op=MPI.LAND)
 
+    def find_global_numbering_of_ith_composition_global_dof(self, ith_composition, locally_global_dof):
+        r"""For example, in the 3th composition, there is a dof globally numbered 15 in all dofs
+        of 3th composition, and in the chained-GM, it is totally globally numbered 1536.
+
+        Then we should have
+            1536 = self.find_global_numbering_of_global_dof_of_ith_composition(3, 15)
+
+        And 1536 will be returned in all ranks. So, this method should be called at the same time
+        in all ranks with the same inputs.
+        """
+        e, i = self._gms[ith_composition].find_representative_location(locally_global_dof)
+        return self.find_global_numbering_of_ith_composition_local_dof(ith_composition, e, i)
+
     def find_global_numbering_of_ith_composition_local_dof(
             self, ith_composition, element_index, local_dof
     ):
         r""""""
+
+        global_numbering = 0
         if element_index in self:
             if ith_composition == 0:
                 global_numbering = self._gm[element_index][local_dof]
@@ -306,14 +322,12 @@ class MseHttGatheringMatrix(Frozen):
                     start += self._gms[j].num_local_dofs(element_index)
                 global_numbering = self._gm[element_index][start + local_dof]
         else:
-            global_numbering = 0
-        return COMM.allreduce(global_numbering, op=MPI.SUM)
+            pass
+        GLOBAL_NUMBER = COMM.allreduce(global_numbering, op=MPI.SUM)
+        return int(GLOBAL_NUMBER)
 
     def find_global_numbering_of_local_dofs(self, elements, local_indices):
-        """Each element in `elements` must be a local. So, no communication
-        take place in this method.
-
-        Thus, this method should be called at the same time in all ranks with
+        """This method should be called at the same time in all ranks with
         the same input. And same results are returned in all ranks.
 
         That is saying, even if an element is not in a rank, the corresponding
@@ -405,7 +419,7 @@ class MseHttGatheringMatrix(Frozen):
                         # noinspection PyUnresolvedReferences
                         indices = list(np.where(numbering == gd)[0])
                         for i in indices:
-                            temp.append((e, i))
+                            temp.append((e, int(i)))
                     else:
                         pass
                 location_dict[gd] = tuple(temp)

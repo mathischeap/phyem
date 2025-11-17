@@ -1,13 +1,10 @@
 # -*- coding: utf-8 -*-
 r"""
 """
-import sys
-
-if './' not in sys.path:
-    sys.path.append('./')
-from tools.frozen import Frozen
-from src.time_sequence import AbstractTimeSequence
 from typing import Dict
+
+from phyem.tools.frozen import Frozen
+from phyem.src.time_sequence import AbstractTimeSequence
 
 
 class TemporalDiscretization(Frozen):
@@ -22,7 +19,7 @@ class TemporalDiscretization(Frozen):
 
     def _initialize_odes(self):
         """Initialize odes."""
-        from src.ode.main import ode
+        from phyem.src.ode.main import ode
         # must import locally here to avoid a circular import
 
         wf = self._wf

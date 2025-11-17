@@ -2,12 +2,13 @@
 """
 """
 import numpy as np
-from tools.frozen import Frozen
 from scipy.sparse import csr_matrix
-from msepy.tools.matrix.dynamic import MsePyDynamicLocalMatrix
-from msepy.tools.vector.dynamic import MsePyDynamicLocalVector
-from msepy.tools.vector.static.local import MsePyStaticLocalVector
-from msepy.tools.matrix.static.local import MsePyStaticLocalMatrix
+
+from phyem.tools.frozen import Frozen
+from phyem.msepy.tools.matrix.dynamic import MsePyDynamicLocalMatrix
+from phyem.msepy.tools.vector.dynamic import MsePyDynamicLocalVector
+from phyem.msepy.tools.vector.static.local import MsePyStaticLocalVector
+from phyem.msepy.tools.matrix.static.local import MsePyStaticLocalMatrix
 
 
 class Base4Entries(Frozen):

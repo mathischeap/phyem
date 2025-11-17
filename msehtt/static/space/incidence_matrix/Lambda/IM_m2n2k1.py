@@ -4,14 +4,14 @@ r"""
 import numpy as np
 from scipy.sparse import csr_matrix
 
-from msehtt.static.space.local_numbering.Lambda.ln_m2n2k2 import _ln_m2n2k2_msepy_quadrilateral_
-from msehtt.static.space.local_numbering.Lambda.ln_m2n2k1 import _ln_m2n2k1_inner_msepy_quadrilateral_
-from msehtt.static.space.local_numbering.Lambda.ln_m2n2k1 import _ln_m2n2k1_outer_msepy_quadrilateral_
+from phyem.msehtt.static.space.local_numbering.Lambda.ln_m2n2k2 import _ln_m2n2k2_msepy_quadrilateral_
+from phyem.msehtt.static.space.local_numbering.Lambda.ln_m2n2k1 import _ln_m2n2k1_inner_msepy_quadrilateral_
+from phyem.msehtt.static.space.local_numbering.Lambda.ln_m2n2k1 import _ln_m2n2k1_outer_msepy_quadrilateral_
 
-from msehtt.static.space.local_numbering.Lambda.ln_m2n2k1 import _ln_m2n2k1_inner_vtu5_
-from msehtt.static.space.local_numbering.Lambda.ln_m2n2k1 import _ln_m2n2k1_outer_vtu5_
+from phyem.msehtt.static.space.local_numbering.Lambda.ln_m2n2k1 import _ln_m2n2k1_inner_vtu5_
+from phyem.msehtt.static.space.local_numbering.Lambda.ln_m2n2k1 import _ln_m2n2k1_outer_vtu5_
 
-from src.spaces.main import _degree_str_maker
+from phyem.src.spaces.main import _degree_str_maker
 
 
 _cache_E221_ = {}

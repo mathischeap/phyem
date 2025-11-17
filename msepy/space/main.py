@@ -1,29 +1,29 @@
 # -*- coding: utf-8 -*-
 r"""
 """
-from tools.frozen import Frozen
-from msepy.space.gathering_matrix.main import MsePyGatheringMatrix
-from msepy.space.incidence_matrix.main import MsePyIncidenceMatrix
-from msepy.space.mass_matrix.main import MsePyMassMatrix
-from msepy.space.trace_matrix.main import MsePyTraceMatrix
-from msepy.space.wedge_matrix.main import MsePyWedgeMatrix
-from msepy.space.inner_product.main import MsePyInnerProduct
-from msepy.space.local_numbering.main import MsePyLocalNumbering
-from msepy.space.num_local_dofs.main import MsePyNumLocalDofs
-from msepy.space.num_local_dof_components.main import MsePyNumLocalDofComponents
-from msepy.space.basis_functions.main import MsePyBasisFunctions
-from msepy.space.reduce.main import MsePySpaceReduce
-from msepy.space.reconstruct.main import MsePySpaceReconstruct
-from msepy.space.error.main import MsePySpaceError
-from msepy.space.norm.main import MsePySpaceNorm
-from msepy.space.degree import PySpaceDegree
-from msepy.space.reconstruction_matrix.main import MsePyReconstructMatrix
+from phyem.tools.frozen import Frozen
+from phyem.msepy.space.gathering_matrix.main import MsePyGatheringMatrix
+from phyem.msepy.space.incidence_matrix.main import MsePyIncidenceMatrix
+from phyem.msepy.space.mass_matrix.main import MsePyMassMatrix
+from phyem.msepy.space.trace_matrix.main import MsePyTraceMatrix
+from phyem.msepy.space.wedge_matrix.main import MsePyWedgeMatrix
+from phyem.msepy.space.inner_product.main import MsePyInnerProduct
+from phyem.msepy.space.local_numbering.main import MsePyLocalNumbering
+from phyem.msepy.space.num_local_dofs.main import MsePyNumLocalDofs
+from phyem.msepy.space.num_local_dof_components.main import MsePyNumLocalDofComponents
+from phyem.msepy.space.basis_functions.main import MsePyBasisFunctions
+from phyem.msepy.space.reduce.main import MsePySpaceReduce
+from phyem.msepy.space.reconstruct.main import MsePySpaceReconstruct
+from phyem.msepy.space.error.main import MsePySpaceError
+from phyem.msepy.space.norm.main import MsePySpaceNorm
+from phyem.msepy.space.degree import PySpaceDegree
+from phyem.msepy.space.reconstruction_matrix.main import MsePyReconstructMatrix
 
-from msepy.mesh.main import MsePyMesh
+from phyem.msepy.mesh.main import MsePyMesh
 
-from msepy.space.find.main import MsePySpaceFind
+from phyem.msepy.space.find.main import MsePySpaceFind
 
-from src.spaces.finite import SpaceFiniteSetting
+from phyem.src.spaces.finite import SpaceFiniteSetting
 
 
 class MsePySpace(Frozen):

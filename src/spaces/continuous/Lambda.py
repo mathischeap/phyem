@@ -2,7 +2,7 @@
 r"""
 """
 
-from src.spaces.base import SpaceBase
+from phyem.src.spaces.base import SpaceBase
 
 
 class ScalarValuedFormSpace(SpaceBase):

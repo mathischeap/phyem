@@ -2,8 +2,9 @@
 r"""
 """
 import numpy as np
-from src.spaces.main import _degree_str_maker
-from tools.miscellaneous.ndarray_cache import add_to_ndarray_cache, ndarray_key_comparer
+
+from phyem.src.spaces.main import _degree_str_maker
+from phyem.tools.miscellaneous.ndarray_cache import add_to_ndarray_cache, ndarray_key_comparer
 
 
 def rm__m3n3k3(tpm, degree, xi, et, sg):

@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*-
 r"""
 """
-from tools.frozen import Frozen
-from src.config import RANK, MASTER_RANK, COMM
-from msehtt.static.mesh.great.visualize.matplot import MseHttGreatMeshVisualizeMatplot
+from phyem.tools.frozen import Frozen
+from phyem.src.config import RANK, MASTER_RANK, COMM
+from phyem.msehtt.static.mesh.great.visualize.matplot import MseHttGreatMeshVisualizeMatplot
 
 import matplotlib.pyplot as plt
 import matplotlib

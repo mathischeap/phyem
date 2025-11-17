@@ -3,8 +3,9 @@ r"""
 """
 from numpy import linalg as np_linalg
 import matplotlib.pyplot as plt
-from tools.frozen import Frozen
 from scipy.sparse import isspmatrix_csc, isspmatrix_csr
+
+from phyem.tools.frozen import Frozen
 
 
 class MsePyStaticAssembledMatrix(Frozen):

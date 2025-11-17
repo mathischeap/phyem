@@ -3,7 +3,7 @@ r""""""
 from PIL import Image
 import os
 
-from tools.miscellaneous.timer import MyTimer
+from phyem.tools.miscellaneous.timer import MyTimer
 
 
 def compress_images_in_folder(input_folder_dir, output_folder_dir=None, quality=75):

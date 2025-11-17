@@ -1,9 +1,8 @@
 # -*- coding: utf-8 -*-
 """
 """
-from tools.frozen import Frozen
-
-from msehtt.static.space.reconstruction_matrix.Lambda.main import MseHttSpaceReconstructMatrixLambda
+from phyem.tools.frozen import Frozen
+from phyem.msehtt.static.space.reconstruction_matrix.Lambda.main import MseHttSpaceReconstructMatrixLambda
 
 
 class MseHttSpaceReconstructionMatrix(Frozen):

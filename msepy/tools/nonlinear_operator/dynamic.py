@@ -2,9 +2,10 @@
 r"""
 """
 import numpy as np
-from tools.frozen import Frozen
-from msepy.tools.nonlinear_operator.static.local import MsePyStaticLocalNonlinearOperator
-from msepy.form.main import MsePyRootForm
+
+from phyem.tools.frozen import Frozen
+from phyem.msepy.tools.nonlinear_operator.static.local import MsePyStaticLocalNonlinearOperator
+from phyem.msepy.form.main import MsePyRootForm
 
 
 class MsePyDynamicLocalNonlinearOperator(Frozen):

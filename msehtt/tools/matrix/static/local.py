@@ -2,16 +2,18 @@
 r"""
 """
 import numpy as np
-
-from src.config import RANK
+from numpy import diff
 import matplotlib.pyplot as plt
-from tools.frozen import Frozen
-from msehtt.tools.gathering_matrix import MseHttGatheringMatrix
 from scipy.sparse import isspmatrix_csr, isspmatrix_csc, csc_matrix, csr_matrix
-from msehtt.static.form.cochain.instant import MseHttTimeInstantCochain
-from msehtt.static.form.cochain.vector.static import MseHttStaticCochainVector
-from msehtt.tools.vector.static.local import MseHttStaticLocalVector
 from scipy.sparse import linalg as sp_spa_linalg
+
+from phyem.src.config import RANK, MASTER_RANK
+from phyem.tools.frozen import Frozen
+from phyem.msehtt.tools.gathering_matrix import MseHttGatheringMatrix
+from phyem.msehtt.static.form.cochain.instant import MseHttTimeInstantCochain
+from phyem.msehtt.static.form.cochain.vector.static import MseHttStaticCochainVector
+from phyem.msehtt.tools.vector.static.local import MseHttStaticLocalVector
+from phyem.msehtt.tools.matrix.static.global_ import MseHttGlobalMatrix
 
 
 class MseHttStaticLocalMatrix(Frozen):
@@ -646,10 +648,6 @@ class _MseHttStaticLocalMatrixBmat(Frozen):
         return '.'.join(keys)
 
 
-from numpy import diff
-from msehtt.tools.matrix.static.global_ import MseHttGlobalMatrix
-
-
 ___cache_msehtt_assembled_StaticMatrix___ = {}
 
 
@@ -661,7 +659,7 @@ class MseHttStaticLocalMatrixAssemble(Frozen):
         self._M = M
         self._freeze()
 
-    def __call__(self, format='csc', cache=None, threshold=None):
+    def __call__(self, format='csc', cache=None, threshold=None, customizations=None):
         r"""
 
         Parameters
@@ -672,11 +670,24 @@ class MseHttStaticLocalMatrixAssemble(Frozen):
             it sees the same `cache` it will return the cached matrix from the cache, i.e.,
             ``_msepy_assembled_StaticMatrix_cache``.
         threshold :
+        customizations :
+            Sometimes, we need to make changes in the assembled matrix. We need to put the information
+            of how to make these changes in this keyword argument.
+
+            It should be a list or tuple of changes. Each charge itself is a tuple or list containing
+            all information of this change.
 
         Returns
         -------
 
         """
+        if customizations is None:
+            pass
+        else:
+            return self.___customized_call___(
+                format, threshold, customizations,
+            )
+
         if cache is None:
             pass
         else:
@@ -754,5 +765,150 @@ class MseHttStaticLocalMatrixAssemble(Frozen):
             else:
                 # noinspection PyUnboundLocalVariable
                 ___cache_msehtt_assembled_StaticMatrix___[cache_key] = A
+
+        return A
+
+    def ___customized_call___(self, format, threshold, customizations):
+        r""" Here, we will do some customizations to the assembled A matrix.
+
+        Parameters
+        ----------
+        format
+        threshold
+        customizations :
+
+
+        Returns
+        -------
+
+        """
+        if len(customizations) == 1:
+            cus = customizations[0]
+            indicator = cus[0]
+            if indicator == "new_EndZeroRowCol_with_a_one_for_global_dof":
+                ith_unknown, global_dof = cus[1], cus[2]
+                # the place of the new `1` entry is the `global_dof` of `ith_unknown`.
+                return self.___new_EndZeroRowCol_with_a_one_for_global_dof___(
+                    format, threshold, ith_unknown, global_dof
+                )
+
+            elif indicator == "new_EndZeroRowCol_with_a_one_for_local_dof":
+                ith_unknown, element_index, local_dof = cus[1], cus[2], cus[3]
+                return self.___new_EndZeroRowCol_with_a_one_for_local_dof___(
+                    format, threshold, ith_unknown, element_index, local_dof
+                )
+            else:
+                raise NotImplementedError(
+                    f"indicator={indicator} of ___customized_call___ of {self.__class__} is not coded!"
+                )
+        else:
+            raise NotImplementedError(
+                f"___customized_call___ of {self.__class__} for more customizations is not coded."
+            )
+
+    def ___new_EndZeroRowCol_with_a_one_for_global_dof___(
+            self, format, threshold,
+            ith_unknown, global_dof
+    ):
+        r"""When the assembling only have one customization and this customization is to
+        add a new line at the end who only have zero-entries except that there is one `1` at the
+        place for the `global_dof` of `ith_unknown`.
+
+        Parameters
+        ----------
+        format
+        threshold
+        ith_unknown
+        global_dof
+
+        Returns
+        -------
+
+        """
+        gm_col = self._M._gm_col
+        place = gm_col.find_global_numbering_of_ith_composition_global_dof(ith_unknown, global_dof)
+        return self._new_EndZeroRowCol_with_a_one_(format, threshold, place)
+
+    def ___new_EndZeroRowCol_with_a_one_for_local_dof___(
+            self, format, threshold,
+            ith_unknown, element_index, local_dof
+    ):
+        r""""""
+        gm_col = self._M._gm_col
+        place = gm_col.find_global_numbering_of_ith_composition_local_dof(ith_unknown, element_index, local_dof)
+        return self._new_EndZeroRowCol_with_a_one_(format, threshold, place)
+
+    def _new_EndZeroRowCol_with_a_one_(self, format, threshold, place):
+        r""""""
+
+        gm_row = self._M._gm_row
+        gm_col = self._M._gm_col
+
+        ROW = list()
+        COL = list()
+        DAT = list()
+
+        # A = SPA_MATRIX((dep, wid))  # initialize a sparse matrix
+
+        for i in self._M:
+
+            Mi = self._M[i]  # all adjustments and customizations take effect
+            indices = Mi.indices
+            indptr = Mi.indptr
+            data = Mi.data
+            if threshold is None:
+                pass
+            else:
+                data[np.abs(data) < threshold] = 0.
+
+            nums: list = list(diff(indptr))
+            row = []
+            col = []
+
+            if Mi.__class__.__name__ == 'csc_matrix':
+                for j, num in enumerate(nums):
+                    idx = indices[indptr[j]:indptr[j+1]]
+                    row.extend(gm_row[i][idx])
+                    col.extend([gm_col[i][j] for _ in range(num)])
+
+            elif Mi.__class__.__name__ == 'csr_matrix':
+                for j, num in enumerate(nums):
+                    idx = indices[indptr[j]:indptr[j+1]]
+                    row.extend([gm_row[i][j] for _ in range(num)])
+                    col.extend(gm_col[i][idx])
+
+            else:
+                raise Exception("I can not handle %r." % Mi)
+
+            ROW.extend(row)
+            COL.extend(col)
+            DAT.extend(data)
+
+        if format == 'csc':
+            SPA_MATRIX = csc_matrix
+        elif format == 'csr':
+            SPA_MATRIX = csr_matrix
+        else:
+            raise Exception
+
+        dep = int(gm_row.num_global_dofs)
+        wid = int(gm_col.num_global_dofs)
+
+        if RANK == MASTER_RANK:
+            DAT.append(1)
+            ROW.append(dep)
+            COL.append(place)
+            DAT.append(1)
+            ROW.append(place)
+            COL.append(wid)
+        else:
+            pass
+        A = SPA_MATRIX((DAT, (ROW, COL)), shape=(dep+1, wid+1))
+        A = MseHttGlobalMatrix(A)
+
+        assert A.value_at(dep, place) == 1, r"must be!"
+        assert A.value_at(place, wid) == 1, r"must be!"
+        assert A.nnz_of_row(dep) == 1, r"must be!"
+        assert A.nnz_of_col(wid) == 1, r"must be!"
 
         return A

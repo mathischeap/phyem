@@ -3,13 +3,13 @@ r"""
 """
 import numpy as np
 
-from tools.frozen import Frozen
-from src.config import COMM, MASTER_RANK, RANK
-from msehtt.static.form.cochain.vector.static import MseHttStaticCochainVector
-from msehtt.tools.vector.static.local import MseHttStaticLocalVector
+from phyem.tools.frozen import Frozen
+from phyem.src.config import COMM, MASTER_RANK, RANK
+from phyem.msehtt.static.form.cochain.vector.static import MseHttStaticCochainVector
+from phyem.msehtt.tools.vector.static.local import MseHttStaticLocalVector
 
-from msehtt.static.space.num_local_dofs.Lambda.num_local_dofs_m2n2k1 import num_local_dofs__Lambda__m2n2k1_inner
-from msehtt.static.space.num_local_dofs.Lambda.num_local_dofs_m2n2k1 import num_local_dofs__Lambda__m2n2k1_outer
+from phyem.msehtt.static.space.num_local_dofs.Lambda.num_local_dofs_m2n2k1 import num_local_dofs__Lambda__m2n2k1_inner
+from phyem.msehtt.static.space.num_local_dofs.Lambda.num_local_dofs_m2n2k1 import num_local_dofs__Lambda__m2n2k1_outer
 
 
 class MseHttTimeInstantCochain(Frozen):

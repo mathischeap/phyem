@@ -48,10 +48,7 @@ Implemented spaces:...
 
 """
 
-import sys
 
-if './' not in sys.path:
-    sys.path.append('./')
 from importlib import import_module
 
 _config = {
@@ -66,10 +63,10 @@ _sep = ' ->- '
 # whenever new space is implemented, add it below.
 _implemented_spaces = {
     # indicator: (class path                    ,  class name            , description                 , parameters),
-    'Lambda':    ('src.spaces.continuous.Lambda', 'ScalarValuedFormSpace', 'scalar valued k-form space', ['k', ]),
-    'bundle':    ('src.spaces.continuous.bundle', 'BundleValuedFormSpace', 'bundle valued k-form space', ['k', ]),
+    'Lambda':    ('phyem.src.spaces.continuous.Lambda', 'ScalarValuedFormSpace', 'scalar valued k-form space', ['k', ]),
+    'bundle':    ('phyem.src.spaces.continuous.bundle', 'BundleValuedFormSpace', 'bundle valued k-form space', ['k', ]),
     'bundle-diagonal': (
-        'src.spaces.continuous.bundle_diagonal',
+        'phyem.src.spaces.continuous.bundle_diagonal',
         'DiagonalBundleValuedFormSpace',
         'diagonal bundle valued k-form space',
         ['k', ]
@@ -567,7 +564,7 @@ def set_mesh(mesh):
 
 def _list_spaces():
     """"""
-    from src.config import RANK, MASTER_RANK
+    from phyem.src.config import RANK, MASTER_RANK
     if RANK != MASTER_RANK:
         return
     else:

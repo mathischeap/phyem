@@ -17,7 +17,7 @@ def ___RMef_m2n2k2___(degree, element, face_index, xi_or_et):
         raise NotImplementedError()
 
 
-from msehtt.static.space.reconstruction_matrix.Lambda.RM_m2n2k2 import ___rm222_msepy_quadrilateral___
+from phyem.msehtt.static.space.reconstruction_matrix.Lambda.RM_m2n2k2 import ___rm222_msepy_quadrilateral___
 
 
 def ___rMef222_msepy_quadrilateral___(degree, element, face_index, xi_or_et):

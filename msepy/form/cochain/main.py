@@ -1,13 +1,13 @@
 # -*- coding: utf-8 -*-
 r"""
 """
-from tools.frozen import Frozen
+from phyem.tools.frozen import Frozen
 
-from src.config import _setting
+from phyem.src.config import _setting
 
-from msepy.form.cochain.time_instant import _CochainAtOneTime
-from msepy.form.cochain.vector.static import MsePyRootFormStaticCochainVector
-from msepy.form.cochain.vector.dynamic import MsePyRootFormDynamicCochainVector
+from phyem.msepy.form.cochain.time_instant import _CochainAtOneTime
+from phyem.msepy.form.cochain.vector.static import MsePyRootFormStaticCochainVector
+from phyem.msepy.form.cochain.vector.dynamic import MsePyRootFormDynamicCochainVector
 
 
 class MsePyLockCochainError(Exception):

@@ -1,21 +1,21 @@
 # -*- coding: utf-8 -*-
 r"""
 """
-from tools.frozen import Frozen
-from src.config import get_embedding_space_dim
+from phyem.tools.frozen import Frozen
+from phyem.src.config import get_embedding_space_dim
 
-from src.manifold import NullManifold
+from phyem.src.manifold import NullManifold
 
-from msepy.manifold.predefined.distributor import PredefinedMsePyManifoldDistributor
+from phyem.msepy.manifold.predefined.distributor import PredefinedMsePyManifoldDistributor
 
-from msepy.manifold.regions.main import MseManifoldRegions
-from msepy.manifold.coordinate_transformation import MsePyManifoldsCoordinateTransformation
-from msepy.manifold.visualize.main import MsePyManifoldVisualize
+from phyem.msepy.manifold.regions.main import MseManifoldRegions
+from phyem.msepy.manifold.coordinate_transformation import MsePyManifoldsCoordinateTransformation
+from phyem.msepy.manifold.visualize.main import MsePyManifoldVisualize
 
-from msepy.manifold.regions.standard.main import MsePyManifoldStandardRegion
-from msepy.manifold.regions.standard.ct import MsePyStandardRegionCoordinateTransformation
+from phyem.msepy.manifold.regions.standard.main import MsePyManifoldStandardRegion
+from phyem.msepy.manifold.regions.standard.ct import MsePyStandardRegionCoordinateTransformation
 
-from msepy.manifold.regions.boundary.main import MsePyManifoldBoundaryRegion
+from phyem.msepy.manifold.regions.boundary.main import MsePyManifoldBoundaryRegion
 
 
 def config(mf, arg, *args, **kwargs):
@@ -131,11 +131,11 @@ class MsePyManifold(Frozen):
             pass
 
         boundary_manifold = self.abstract.boundary()
-        from src.manifold import NullManifold
+        from phyem.src.manifold import NullManifold
         if boundary_manifold.__class__ is NullManifold:
             assert self.abstract._is_periodic, f"A manifold has null boundary must be periodic."
         else:
-            from msepy.main import base
+            from phyem.msepy.main import base
             manifolds = base['manifolds']
             the_msepy_boundary_manifold = None
             for sym in manifolds:
@@ -251,7 +251,7 @@ class MsePyManifold(Frozen):
                         configured_sections = list()
                         not_configured_sections = list()
 
-                        from msepy.main import base
+                        from phyem.msepy.main import base
                         all_msepy_manifolds = base['manifolds']
 
                         for abs_section in partition:

@@ -2,10 +2,11 @@
 r"""
 """
 
-from msehtt.static.form.addons.nop_data_computer.trilinear_base import MseHttTrilinearBase
-from msehtt.static.form.main import MseHttForm
-from src.spaces.main import _degree_str_maker
-from tools.quadrature import quadrature
+from phyem.msehtt.static.form.addons.nop_data_computer.trilinear_base import MseHttTrilinearBase
+from phyem.msehtt.static.form.main import MseHttForm
+from phyem.src.spaces.main import _degree_str_maker
+from phyem.tools.quadrature import quadrature
+
 import numpy as np
 
 ___msehtt_static_cache_AB_ip_dC_3d_data___ = {}

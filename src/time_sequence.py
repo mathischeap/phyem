@@ -1,21 +1,16 @@
 # -*- coding: utf-8 -*-
 r"""
 """
-
-import sys
-
-if './' not in sys.path:
-    sys.path.append('./')
-
-from tools.frozen import Frozen
-from src.config import RANK, MASTER_RANK
 import traceback
-from src.config import _parse_lin_repr
-from src.config import _abstract_time_sequence_default_sym_repr
-from src.config import _abstract_time_interval_default_sym_repr
-from src.config import _abstract_time_sequence_default_lin_repr
-from src.config import _check_sym_repr
-from src.form.parameters import constant_scalar
+
+from phyem.tools.frozen import Frozen
+from phyem.src.config import RANK, MASTER_RANK
+from phyem.src.config import _parse_lin_repr
+from phyem.src.config import _abstract_time_sequence_default_sym_repr
+from phyem.src.config import _abstract_time_interval_default_sym_repr
+from phyem.src.config import _abstract_time_sequence_default_lin_repr
+from phyem.src.config import _check_sym_repr
+from phyem.src.form.parameters import constant_scalar
 
 _global_abstract_time_sequence = dict()
 _global_abstract_time_interval = dict()

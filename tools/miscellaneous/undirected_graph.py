@@ -5,8 +5,6 @@ import numpy as np
 import geopandas as gpd
 from shapely.geometry import Polygon
 from shapely.ops import unary_union
-
-from tools.frozen import Frozen
 import matplotlib.pyplot as plt
 import matplotlib
 plt.rcParams.update({
@@ -16,8 +14,9 @@ plt.rcParams.update({
 })
 matplotlib.use('TkAgg')
 
-from tools.functions.space._2d.angle import angle
-from tools.miscellaneous.geometries.m2n2 import StraightSegment2
+from phyem.tools.frozen import Frozen
+from phyem.tools.functions.space._2d.angle import angle
+from phyem.tools.miscellaneous.geometries.m2n2 import StraightSegment2
 
 
 class CoordinatedUndirectedGraph(Frozen):

@@ -1,10 +1,11 @@
 # -*- coding: utf-8 -*-
 r"""
 """
-from tools.frozen import Frozen
 import numpy as np
-from msehtt.static.mesh.great.elements.types.base import MseHttGreatMeshBaseElement
-from msehtt.static.mesh.great.elements.types.base import MseHttGreatMeshBaseElementCooTrans
+
+from phyem.tools.frozen import Frozen
+from phyem.msehtt.static.mesh.great.elements.types.base import MseHttGreatMeshBaseElement
+from phyem.msehtt.static.mesh.great.elements.types.base import MseHttGreatMeshBaseElementCooTrans
 
 
 class MseHtt_GreatMesh_Unique_Msepy_Curvilinear_Triangle_Element(MseHttGreatMeshBaseElement):
@@ -167,7 +168,7 @@ class MseHtt_GreatMesh_Unique_Msepy_Curvilinear_Triangle_Element(MseHttGreatMesh
 # ============ ELEMENT CT =====================================================================================
 
 
-from msehtt.static.mesh.great.elements.types.vtu_5_triangle import ___invA___
+from phyem.msehtt.static.mesh.great.elements.types.vtu_5_triangle import ___invA___
 
 
 class _Curvilinear_Triangle_CT_(MseHttGreatMeshBaseElementCooTrans):
@@ -394,7 +395,7 @@ class _Curvilinear_Triangle_OneFace_(Frozen):
         return self._ct
 
 
-from msehtt.static.mesh.great.elements.types.vtu_5_triangle import _VTU5_Triangle_OneFace_CT_
+from phyem.msehtt.static.mesh.great.elements.types.vtu_5_triangle import _VTU5_Triangle_OneFace_CT_
 
 
 class _Curvilinear_Triangle_OneFace_CT_(_VTU5_Triangle_OneFace_CT_):

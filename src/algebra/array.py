@@ -9,12 +9,14 @@ plt.rcParams.update({
     "text.latex.preamble": r"\usepackage{amsmath, amssymb}",
 })
 matplotlib.use('TkAgg')
-from src.config import RANK, MASTER_RANK
 
-from tools.frozen import Frozen
-from src.config import _parse_lin_repr, _abstract_array_factor_sep, _abstract_array_connector
-from src.config import _transpose_text
-from src.form.parameters import constant_scalar
+from phyem.src.config import RANK, MASTER_RANK
+
+from phyem.tools.frozen import Frozen
+from phyem.src.config import _parse_lin_repr, _abstract_array_factor_sep, _abstract_array_connector
+from phyem.src.config import _transpose_text
+from phyem.src.form.parameters import constant_scalar
+
 _cs1 = constant_scalar(1)
 _global_root_arrays = dict()  # using pure_lin_repr as cache keys
 

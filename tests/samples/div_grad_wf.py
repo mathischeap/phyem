@@ -1,8 +1,9 @@
 # -*- coding: utf-8 -*-
 r"""
 """
-import __init__ as ph
-from src.form.operators import trace, Hodge
+import phyem as ph
+
+from phyem.src.form.operators import trace, Hodge
 
 
 def wf_div_grad(n=3, degree=2, orientation='outer', periodic=False, **kwargs):

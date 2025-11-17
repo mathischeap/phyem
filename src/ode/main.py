@@ -1,9 +1,6 @@
 # -*- coding: utf-8 -*-
 r"""
 """
-from tools.frozen import Frozen
-from src.form.others import _find_form
-from src.config import _wf_term_default_simple_patterns as _simple_patterns
 import matplotlib.pyplot as plt
 import matplotlib
 plt.rcParams.update({
@@ -12,8 +9,12 @@ plt.rcParams.update({
     "text.latex.preamble": r"\usepackage{amsmath, amssymb}",
 })
 matplotlib.use('TkAgg')
-from src.ode.discretize import OrdinaryDifferentialEquationDiscretize
-from src.config import _wf_term_default_simple_patterns
+
+from phyem.tools.frozen import Frozen
+from phyem.src.form.others import _find_form
+from phyem.src.config import _wf_term_default_simple_patterns as _simple_patterns
+from phyem.src.ode.discretize import OrdinaryDifferentialEquationDiscretize
+from phyem.src.config import _wf_term_default_simple_patterns
 
 
 def ode(*args, **kwargs):

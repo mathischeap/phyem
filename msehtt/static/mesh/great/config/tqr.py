@@ -2,8 +2,8 @@
 r"""
 All regions are triangles or quadrilaterals (2D).
 """
-from tools.frozen import Frozen
-from src.config import RANK, MASTER_RANK
+from phyem.tools.frozen import Frozen
+from phyem.src.config import RANK, MASTER_RANK
 
 
 class TriQuadRegions(Frozen):

@@ -4,13 +4,14 @@ A base for nonlinear term of trilinear term.
 """
 import numpy as np
 from scipy.sparse import csr_matrix
-from tools.frozen import Frozen
-from msehtt.tools.matrix.dynamic import MseHttDynamicLocalMatrix
-from msehtt.tools.vector.dynamic import MseHttDynamicLocalVector
-from msehtt.tools.matrix.static.local import MseHttStaticLocalMatrix
-from msehtt.tools.vector.static.local import MseHttStaticLocalVector
-from msehtt.tools.nonlinear_system.operator.dynamic import MseHttDynamicLocalNonlinearOperator
-from msehtt.tools.nonlinear_system.operator.local_wrapper import MseHttStatic_Local_Wrapper_NonlinearOperator_DataMaker
+
+from phyem.tools.frozen import Frozen
+from phyem.msehtt.tools.matrix.dynamic import MseHttDynamicLocalMatrix
+from phyem.msehtt.tools.vector.dynamic import MseHttDynamicLocalVector
+from phyem.msehtt.tools.matrix.static.local import MseHttStaticLocalMatrix
+from phyem.msehtt.tools.vector.static.local import MseHttStaticLocalVector
+from phyem.msehtt.tools.nonlinear_system.operator.dynamic import MseHttDynamicLocalNonlinearOperator
+from phyem.msehtt.tools.nonlinear_system.operator.local_wrapper import MseHttStatic_Local_Wrapper_NonlinearOperator_DataMaker
 
 
 class MseHttTrilinearBase(Frozen):

@@ -8,12 +8,13 @@ Each space is an instance of a particular space class which inherits :class:`Spa
 
 
 """
-from tools.frozen import Frozen
-from src.config import get_embedding_space_dim
-from src.form.main import Form
-from src.spaces.finite import SpaceFiniteSetting
-from tools.miscellaneous.random_ import string_digits
 from time import time
+
+from phyem.tools.frozen import Frozen
+from phyem.src.config import get_embedding_space_dim
+from phyem.src.form.main import Form
+from phyem.src.spaces.finite import SpaceFiniteSetting
+from phyem.tools.miscellaneous.random_ import string_digits
 
 
 class SpaceBase(Frozen):
@@ -138,5 +139,5 @@ class SpaceBase(Frozen):
 
     def d(self):
         """d (self)"""
-        from src.spaces.operators import d
+        from phyem.src.spaces.operators import d
         return d(self)

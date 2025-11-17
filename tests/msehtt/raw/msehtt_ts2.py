@@ -9,12 +9,7 @@ import sys
 
 import numpy as np
 
-ph_dir = './'  # customize it to your dir containing phyem
-if ph_dir not in sys.path:
-    sys.path.append(ph_dir)
-
-import __init__ as ph
-
+import phyem as ph
 
 def ph_test(N, K, ts=1):
     r""""""

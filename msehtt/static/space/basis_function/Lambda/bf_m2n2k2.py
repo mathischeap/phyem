@@ -2,8 +2,9 @@
 r"""
 """
 import numpy as np
-from msepy.tools.polynomials import Lobatto_polynomials_of_degree
-from tools.miscellaneous.ndarray_cache import add_to_ndarray_cache, ndarray_key_comparer
+
+from phyem.msepy.tools.polynomials import Lobatto_polynomials_of_degree
+from phyem.tools.miscellaneous.ndarray_cache import add_to_ndarray_cache, ndarray_key_comparer
 
 
 _cache_bf222_mq_ = {}

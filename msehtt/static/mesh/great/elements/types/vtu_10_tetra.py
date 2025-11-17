@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 r"""
 """
-from msehtt.static.mesh.great.elements.types.base import MseHttGreatMeshBaseElement
+from phyem.msehtt.static.mesh.great.elements.types.base import MseHttGreatMeshBaseElement
 
 
 class Vtu_10_Tetra(MseHttGreatMeshBaseElement):

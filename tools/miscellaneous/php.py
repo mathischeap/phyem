@@ -2,7 +2,7 @@
 r"""
 phyem print.
 """
-from src.config import RANK, MASTER_RANK
+from phyem.src.config import RANK, MASTER_RANK
 
 
 def php(*str_, flush=True):

@@ -159,9 +159,9 @@ def contour(
         outline_plot_type = ''
         outline_plot_info = {}
     else:
-        from msehtt.static.mesh.partial.main import MseHttMeshPartial
+        from phyem.msehtt.static.mesh.partial.main import MseHttMeshPartial
         if isinstance(outline, MseHttMeshPartial):
-            from msehtt.static.mesh.partial.elements.main import MseHttElementsPartialMesh
+            from phyem.msehtt.static.mesh.partial.elements.main import MseHttElementsPartialMesh
             # ----------- msehtt partial mesh --------------------------------------------
             composition = outline.composition
             if isinstance(composition, MseHttElementsPartialMesh):

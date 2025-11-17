@@ -11,19 +11,19 @@ __all__ = [
     'trace',
 ]
 
-from src.form.operators import wedge
+from phyem.src.form.operators import wedge
 
-from src.form.operators import Hodge
+from phyem.src.form.operators import Hodge
 
-from src.form.operators import d
+from phyem.src.form.operators import d
 exterior_derivative = d   # `exterior_derivative` is equivalent to `d`.
 
-from src.form.operators import codifferential
+from phyem.src.form.operators import codifferential
 
-from src.wf.term.main import inner
-from src.wf.term.main import duality_pairing as dp
+from phyem.src.wf.term.main import inner
+from phyem.src.wf.term.main import duality_pairing as dp
 
 
-from src.form.operators import time_derivative
+from phyem.src.form.operators import time_derivative
 
-from src.form.operators import trace
+from phyem.src.form.operators import trace

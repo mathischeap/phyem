@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*-
 r"""
 """
-from tools.frozen import Frozen
-from msepy.space.reduce.Lambda import MsePySpaceReduceLambda
-from msepy.space.reduce.bundle import MsePySpaceReduceBundle
+from phyem.tools.frozen import Frozen
+from phyem.msepy.space.reduce.Lambda import MsePySpaceReduceLambda
+from phyem.msepy.space.reduce.bundle import MsePySpaceReduceBundle
 
 
 class MsePySpaceReduce(Frozen):

@@ -1,8 +1,9 @@
 # -*- coding: utf-8 -*-
 r"""
 """
-from src.config import RANK, MASTER_RANK, COMM
-from tools.quadrature import quadrature
+from phyem.src.config import RANK, MASTER_RANK, COMM
+from phyem.tools.quadrature import quadrature
+
 import numpy as np
 
 
@@ -37,7 +38,7 @@ def error__m3n3k2(tpm, cf, cochain, degree, error_type):
         raise NotImplementedError(f"error_type = {error_type}.")
 
 
-from msehtt.static.space.reconstruct.Lambda.Rc_m3n3k2 import ___rc332_msepy_quadrilateral___
+from phyem.msehtt.static.space.reconstruct.Lambda.Rc_m3n3k2 import ___rc332_msepy_quadrilateral___
 
 
 def _er332_msepy_quadrilateral_(element, cf, local_cochain, degree, error_type):

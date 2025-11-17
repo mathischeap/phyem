@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 r"""
 """
-from tools.frozen import Frozen
-from msehtt.static.space.error.Lambda.main import MseHttSpaceLambdaError
+from phyem.tools.frozen import Frozen
+from phyem.msehtt.static.space.error.Lambda.main import MseHttSpaceLambdaError
 
 
 class MseHttSpaceError(Frozen):

@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-from tools.frozen import Frozen
+from phyem.tools.frozen import Frozen
 
 
 class ParallelRunnerBase(Frozen):

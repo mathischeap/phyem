@@ -3,9 +3,9 @@ r"""
 """
 import numpy as np
 
-from tools.frozen import Frozen
-from src.config import RANK, MASTER_RANK
-from msehtt.static.manifold.predefined.chaotic import ___invA___
+from phyem.tools.frozen import Frozen
+from phyem.src.config import RANK, MASTER_RANK
+from phyem.msehtt.static.manifold.predefined.chaotic import ___invA___
 
 
 def quad(A=(0, 0), B=(1, 0), C=(2, 1), D=(1, 1), periodic=False):

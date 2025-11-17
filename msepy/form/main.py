@@ -2,28 +2,25 @@
 r"""
 """
 import numpy as np
-import sys
 from typing import Dict
 from random import random
 from time import time
 
-if './' not in sys.path:
-    sys.path.append('./')
-from tools.frozen import Frozen
-from msepy.space.main import MsePySpace
-from msepy.form.cf import MsePyContinuousForm
-from msepy.form.cochain.main import MsePyRootFormCochain
-from msepy.form.cochain.passive import MsePyRootFormCochainPassive
-from msepy.form.addons.static import MsePyRootFormStaticCopy
-from msepy.form.addons.interpolate import MsePyRootFormInterpolateCopy
-from msepy.form.visualize.main import MsePyRootFormVisualize
-from msepy.form.coboundary import MsePyRootFormCoboundary
-from msepy.form.matrix import MsePyRootFormMatrix
-from msepy.form.boundary_integrate.main import MsePyRootFormBoundaryIntegrate
-from msepy.form.projection import MsePyFormProjection
-from msepy.form.numeric.main import MsePyRootFormNumeric
+from phyem.tools.frozen import Frozen
+from phyem.msepy.space.main import MsePySpace
+from phyem.msepy.form.cf import MsePyContinuousForm
+from phyem.msepy.form.cochain.main import MsePyRootFormCochain
+from phyem.msepy.form.cochain.passive import MsePyRootFormCochainPassive
+from phyem.msepy.form.addons.static import MsePyRootFormStaticCopy
+from phyem.msepy.form.addons.interpolate import MsePyRootFormInterpolateCopy
+from phyem.msepy.form.visualize.main import MsePyRootFormVisualize
+from phyem.msepy.form.coboundary import MsePyRootFormCoboundary
+from phyem.msepy.form.matrix import MsePyRootFormMatrix
+from phyem.msepy.form.boundary_integrate.main import MsePyRootFormBoundaryIntegrate
+from phyem.msepy.form.projection import MsePyFormProjection
+from phyem.msepy.form.numeric.main import MsePyRootFormNumeric
 
-from tools.miscellaneous.ndarray_cache import ndarray_key_comparer, add_to_ndarray_cache
+from phyem.tools.miscellaneous.ndarray_cache import ndarray_key_comparer, add_to_ndarray_cache
 
 
 class MsePyRootForm(Frozen):

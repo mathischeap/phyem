@@ -1,8 +1,9 @@
 # -*- coding: utf-8 -*-
 r"""
 """
-from tools.frozen import Frozen
 from importlib import import_module
+
+from phyem.tools.frozen import Frozen
 
 
 class MseHttSpaceReduceLambda(Frozen):

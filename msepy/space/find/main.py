@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 r"""
 """
-from tools.frozen import Frozen
-from msepy.space.find.local_dofs import _MsePySpaceFindLocalDofs
+from phyem.tools.frozen import Frozen
+from phyem.msepy.space.find.local_dofs import _MsePySpaceFindLocalDofs
 
 
 class MsePySpaceFind(Frozen):

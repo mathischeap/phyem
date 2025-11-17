@@ -2,9 +2,10 @@
 r"""
 
 """
-from src.config import RANK, MASTER_RANK
 import pickle
 import os
+
+from phyem.src.config import RANK, MASTER_RANK
 
 
 def cache_reader(filename):

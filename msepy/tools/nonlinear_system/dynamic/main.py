@@ -1,12 +1,12 @@
 # -*- coding: utf-8 -*-
 r"""
 """
-from tools.frozen import Frozen
-from msepy.tools.linear_system.dynamic.main import MsePyDynamicLinearSystem
-from src.wf.mp.nonlinear_system import MatrixProxyNoneLinearSystem
-from msepy.tools.nonlinear_system.dynamic.nonlinear_operator_parser import msepy_nonlinear_operator_parser
-from msepy.tools.nonlinear_system.static.local import MsePyStaticLocalNonLinearSystem
-from msepy.tools.nonlinear_operator.dynamic import MsePyDynamicLocalNonlinearOperator
+from phyem.tools.frozen import Frozen
+from phyem.msepy.tools.linear_system.dynamic.main import MsePyDynamicLinearSystem
+from phyem.src.wf.mp.nonlinear_system import MatrixProxyNoneLinearSystem
+from phyem.msepy.tools.nonlinear_system.dynamic.nonlinear_operator_parser import msepy_nonlinear_operator_parser
+from phyem.msepy.tools.nonlinear_system.static.local import MsePyStaticLocalNonLinearSystem
+from phyem.msepy.tools.nonlinear_operator.dynamic import MsePyDynamicLocalNonlinearOperator
 
 
 class MsePyDynamicNonLinearSystem(Frozen):

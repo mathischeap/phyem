@@ -2,9 +2,10 @@
 r"""
 """
 from numpy import sin, pi
-from tools.frozen import Frozen
-from tools.functions.space._2d.Cartesian_polar_coordinates_switcher import CartPolSwitcher
-from tools.functions.time_space._2d.wrappers.scalar import T2dScalar
+
+from phyem.tools.frozen import Frozen
+from phyem.tools.functions.space._2d.Cartesian_polar_coordinates_switcher import CartPolSwitcher
+from phyem.tools.functions.time_space._2d.wrappers.scalar import T2dScalar
 
 
 class ManufacturedSolutionLSingularity(Frozen):

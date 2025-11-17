@@ -2,10 +2,10 @@
 r"""
 """
 import numpy as np
-from src.config import RANK, MASTER_RANK, COMM
 from pyevtk.hl import unstructuredGridToVTK
 
-from msehtt.static.mesh.partial.elements.main import MseHttElementsPartialMesh
+from phyem.src.config import RANK, MASTER_RANK, COMM
+from phyem.msehtt.static.mesh.partial.elements.main import MseHttElementsPartialMesh
 
 
 def ___ph_vtk_msehtt_static_copy___(filename, *forms, ddf=1):

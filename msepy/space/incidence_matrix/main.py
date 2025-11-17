@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*-
 r"""
 """
-from tools.frozen import Frozen
-from msepy.space.incidence_matrix.Lambda import MsePyIncidenceMatrixLambda
-from msepy.space.incidence_matrix.bundle import MsePyIncidenceMatrixBundle
+from phyem.tools.frozen import Frozen
+from phyem.msepy.space.incidence_matrix.Lambda import MsePyIncidenceMatrixLambda
+from phyem.msepy.space.incidence_matrix.bundle import MsePyIncidenceMatrixBundle
 
 
 class MsePyIncidenceMatrix(Frozen):

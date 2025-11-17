@@ -2,16 +2,9 @@
 r"""
 mpiexec -n 4 python tests/msehtt/Poisson2di_UnstructuredQuad.py
 """
-
-import sys
-
 import numpy as np
 
-ph_dir = './'  # customize it to your dir containing phyem
-if ph_dir not in sys.path:
-    sys.path.append(ph_dir)
-
-import __init__ as ph
+import phyem as ph
 N = 3
 K = 7
 c = 0.

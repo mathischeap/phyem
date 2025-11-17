@@ -2,7 +2,7 @@
 r"""
 """
 import numpy as np
-from tools.quadrature import quadrature
+from phyem.tools.quadrature import quadrature
 _one_array_ = np.array([1])
 
 
@@ -53,8 +53,8 @@ def bi_vc__m2n2k1_outer(rf1, t, vc, boundary_section):
     return data_dict
 
 
-from msehtt.static.space.reconstruction_matrix.Lambda.RM_m2n2k1 import ___rm221o_msepy_quadrilateral___
-from msehtt.static.space.find.local_dofs_on_face.Lambda.m2n2k1 import __m2n2k1_outer_msepy_quadrilateral_
+from phyem.msehtt.static.space.reconstruction_matrix.Lambda.RM_m2n2k1 import ___rm221o_msepy_quadrilateral___
+from phyem.msehtt.static.space.find.local_dofs_on_face.Lambda.m2n2k1 import __m2n2k1_outer_msepy_quadrilateral_
 
 
 def ___bi_vc_221o_msepy_quadrilateral___(element, degree, face, tvc):
@@ -100,7 +100,7 @@ def ___bi_vc_221o_msepy_quadrilateral___(element, degree, face, tvc):
     return num_test_form_local_dofs, local_dofs, face_boundary_integration_vec
 
 
-from msehtt.static.space.reconstruction_matrix.Lambda.RM_m2n2k1 import ___rm221o_quad_9___
+from phyem.msehtt.static.space.reconstruction_matrix.Lambda.RM_m2n2k1 import ___rm221o_quad_9___
 
 
 def ___bi_vc_221o_quad_9___(element, degree, face, tvc):
@@ -195,8 +195,8 @@ def bi_vc__m2n2k1_inner(rf1, t, vc, boundary_section):
     return data_dict
 
 
-from msehtt.static.space.reconstruction_matrix.Lambda.RM_m2n2k1 import ___rm221i_msepy_quadrilateral___
-from msehtt.static.space.find.local_dofs_on_face.Lambda.m2n2k1 import __m2n2k1_inner_msepy_quadrilateral_
+from phyem.msehtt.static.space.reconstruction_matrix.Lambda.RM_m2n2k1 import ___rm221i_msepy_quadrilateral___
+from phyem.msehtt.static.space.find.local_dofs_on_face.Lambda.m2n2k1 import __m2n2k1_inner_msepy_quadrilateral_
 
 
 def ___bi_vc_221i_msepy_quadrilateral___(element, degree, face, tvc):
@@ -242,7 +242,7 @@ def ___bi_vc_221i_msepy_quadrilateral___(element, degree, face, tvc):
     return num_test_form_local_dofs, local_dofs, face_boundary_integration_vec
 
 
-from msehtt.static.space.reconstruction_matrix.Lambda.RM_m2n2k1 import ___rm221i_quad_9___
+from phyem.msehtt.static.space.reconstruction_matrix.Lambda.RM_m2n2k1 import ___rm221i_quad_9___
 
 
 def ___bi_vc_221i_quad_9___(element, degree, face, tvc):

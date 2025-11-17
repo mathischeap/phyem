@@ -2,8 +2,9 @@
 r""""""
 from types import FunctionType, MethodType
 from abc import ABC
-from tools.numerical.derivative import derivative
 import numpy as np
+
+from phyem.tools.numerical.derivative import derivative
 
 
 class NumericalPartialDerivativeXYZ(ABC):

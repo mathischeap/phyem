@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 r"""Reconstruct matrix along element face/edge.
 """
-from tools.frozen import Frozen
-from msehtt.static.space.reconstruction_matrix_for_element_face.Lambda.main import MseHttSpace_RM_eF_Lambda
+from phyem.tools.frozen import Frozen
+from phyem.msehtt.static.space.reconstruction_matrix_for_element_face.Lambda.main import MseHttSpace_RM_eF_Lambda
 
 
 class MseHttSpace_RMef(Frozen):

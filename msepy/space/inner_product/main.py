@@ -2,10 +2,12 @@
 r"""
 """
 import numpy as np
-from src.config import _setting
-from tools.frozen import Frozen
-from tools.quadrature import Quadrature
 from scipy.sparse import csr_matrix
+
+from phyem.src.config import _setting
+from phyem.tools.frozen import Frozen
+from phyem.tools.quadrature import Quadrature
+from phyem.msepy.space.degree import PySpaceDegree
 
 
 def _find_dim(m):
@@ -81,9 +83,6 @@ def _make_quad(space, degree):
         raise NotImplementedError()
 
     return quad
-
-
-from msepy.space.degree import PySpaceDegree
 
 
 class MsePyInnerProduct(Frozen):

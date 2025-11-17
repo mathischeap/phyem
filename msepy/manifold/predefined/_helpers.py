@@ -1,10 +1,11 @@
 # -*- coding: utf-8 -*-
 r"""
 """
-from tools.frozen import Frozen
 from numpy import ones_like
-from tools.functions.space._2d.transfinite import TransfiniteMapping
-from tools.functions.space._2d.geometrical_functions.parser import geo_func2_parser
+
+from phyem.tools.frozen import Frozen
+from phyem.tools.functions.space._2d.transfinite import TransfiniteMapping
+from phyem.tools.functions.space._2d.geometrical_functions.parser import geo_func2_parser
 
 
 class _LinearTransformation(Frozen):

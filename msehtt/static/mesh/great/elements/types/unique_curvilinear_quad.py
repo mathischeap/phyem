@@ -2,9 +2,10 @@
 r"""Like the unique msepy curvilinear quadrilateral element, but this element does not depend
 on structured msepy regions.
 """
-from tools.frozen import Frozen
 import numpy as np
-from msehtt.static.mesh.great.elements.types.base import MseHttGreatMeshBaseElement
+
+from phyem.tools.frozen import Frozen
+from phyem.msehtt.static.mesh.great.elements.types.base import MseHttGreatMeshBaseElement
 
 
 class UniqueCurvilinearQuad(MseHttGreatMeshBaseElement):
@@ -155,7 +156,7 @@ class UniqueCurvilinearQuad(MseHttGreatMeshBaseElement):
         raise Exception(f"U-C-Q (2d) element has no edges.")
 
 
-from msehtt.static.mesh.great.elements.types.base import MseHttGreatMeshBaseElementCooTrans
+from phyem.msehtt.static.mesh.great.elements.types.base import MseHttGreatMeshBaseElementCooTrans
 
 
 class UCQ_CT(MseHttGreatMeshBaseElementCooTrans):
@@ -230,7 +231,7 @@ class UCQ_Face(Frozen):
         return self._ct
 
 
-from msehtt.static.mesh.great.elements.types.orthogonal_rectangle import \
+from phyem.msehtt.static.mesh.great.elements.types.orthogonal_rectangle import \
     MseHttGreatMeshOrthogonalRectangleElementFaceCT
 
 

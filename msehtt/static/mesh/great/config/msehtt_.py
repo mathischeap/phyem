@@ -1,9 +1,10 @@
 # -*- coding: utf-8 -*-
 r"""
 """
-from tools.frozen import Frozen
-from msehtt.static.manifold.predefined.distributor import Predefined_Msehtt_Manifold_Distributor
 import numpy as np
+
+from phyem.tools.frozen import Frozen
+from phyem.msehtt.static.manifold.predefined.distributor import Predefined_Msehtt_Manifold_Distributor
 
 
 class MseHtt_Static_PreDefined_Config(Frozen):

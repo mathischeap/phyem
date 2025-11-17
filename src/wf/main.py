@@ -281,12 +281,6 @@ they are in. For example,
 We are ready to bring this weak formulation into its algebraic proxy (linear algebraic form) now.
 
 """
-
-import sys
-
-if './' not in sys.path:
-    sys.path.append('./')
-from tools.frozen import Frozen
 import matplotlib.pyplot as plt
 import matplotlib
 plt.rcParams.update({
@@ -295,13 +289,15 @@ plt.rcParams.update({
     "text.latex.preamble": r"\usepackage{amsmath, amssymb}",
 })
 matplotlib.use('TkAgg')
-from src.wf.td import TemporalDiscretization
-from src.bc import BoundaryCondition
-from src.wf.derive import WfDerive
-from src.wf.ap.main import AlgebraicProxy
-from src.wf.mp.main import MatrixProxy
-from src.config import _pde_test_form_lin_repr
-from src.config import _form_evaluate_at_repr_setting
+
+from phyem.tools.frozen import Frozen
+from phyem.src.wf.td import TemporalDiscretization
+from phyem.src.bc import BoundaryCondition
+from phyem.src.wf.derive import WfDerive
+from phyem.src.wf.ap.main import AlgebraicProxy
+from phyem.src.wf.mp.main import MatrixProxy
+from phyem.src.config import _pde_test_form_lin_repr
+from phyem.src.config import _form_evaluate_at_repr_setting
 
 
 class WeakFormulation(Frozen):

@@ -18,28 +18,29 @@ base = {
 
 
 from time import time
-from tools.miscellaneous.random_ import string_digits
-from tools.miscellaneous.timer import MyTimer
 
-from msehtt.static.mesh.great.main import MseHttGreatMesh
+from phyem.tools.miscellaneous.random_ import string_digits
+from phyem.tools.miscellaneous.timer import MyTimer
 
-from msehtt.static.manifold.main import MseHttManifold
+from phyem.msehtt.static.mesh.great.main import MseHttGreatMesh
 
-from msehtt.adaptive.mesh.main import MseHtt_Adaptive_TopMesh
-from msehtt.adaptive.space.main import MseHtt_Adaptive_TopSpace
-from msehtt.adaptive.form.main import MseHtt_Adaptive_TopForm
+from phyem.msehtt.static.manifold.main import MseHttManifold
 
-from src.wf.mp.linear_system import MatrixProxyLinearSystem
-from src.wf.mp.nonlinear_system import MatrixProxyNoneLinearSystem
+from phyem.msehtt.adaptive.mesh.main import MseHtt_Adaptive_TopMesh
+from phyem.msehtt.adaptive.space.main import MseHtt_Adaptive_TopSpace
+from phyem.msehtt.adaptive.form.main import MseHtt_Adaptive_TopForm
 
-from msehtt.adaptive.tools.linear_system import MseHtt_Adaptive_Linear_System
-from msehtt.adaptive.tools.nonlinear_system import MseHtt_Adaptive_NonLinear_System
+from phyem.src.wf.mp.linear_system import MatrixProxyLinearSystem
+from phyem.src.wf.mp.nonlinear_system import MatrixProxyNoneLinearSystem
 
-from src.config import RANK, MASTER_RANK, COMM, SIZE
+from phyem.msehtt.adaptive.tools.linear_system import MseHtt_Adaptive_Linear_System
+from phyem.msehtt.adaptive.tools.nonlinear_system import MseHtt_Adaptive_NonLinear_System
+
+from phyem.src.config import RANK, MASTER_RANK, COMM, SIZE
 
 
-from msehtt.tools.gathering_matrix import ___clean_cache_msehtt_gm___
-from msehtt.static.mesh.great.elements.types.base import ___clean_cache_msehtt_element_ct___
+from phyem.msehtt.tools.gathering_matrix import ___clean_cache_msehtt_gm___
+from phyem.msehtt.static.mesh.great.elements.types.base import ___clean_cache_msehtt_element_ct___
 
 
 def clean_cache():
@@ -184,11 +185,11 @@ def _config(obj=None):
     return obj._config
 
 
-from msehtt.adaptive.___func___ import ___base_tgm___
-from msehtt.adaptive.___func___ import ___link_all_forms____
-from msehtt.adaptive.___func___ import ___func_renew___
-from msehtt.adaptive.___func___ import ___renew_stamp___
-from msehtt.adaptive.___func___ import ___check_tgm___
+from phyem.msehtt.adaptive.___func___ import ___base_tgm___
+from phyem.msehtt.adaptive.___func___ import ___link_all_forms____
+from phyem.msehtt.adaptive.___func___ import ___func_renew___
+from phyem.msehtt.adaptive.___func___ import ___renew_stamp___
+from phyem.msehtt.adaptive.___func___ import ___check_tgm___
 
 
 def initialize(ts=1):
@@ -294,8 +295,8 @@ def ___renew_root_form_cochains___(use_method=3, clean=False, from_generation=-2
     return form_renew_info
 
 
-import msehtt.static.implementation_array_parser as PARSER
-import msehtt.static.implementation_nop_parser as NOC_PARSER
+import phyem.msehtt.static.implementation_array_parser as PARSER
+import phyem.msehtt.static.implementation_nop_parser as NOC_PARSER
 
 
 def current_base():

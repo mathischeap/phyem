@@ -1,31 +1,26 @@
 # -*- coding: utf-8 -*-
 r"""
 """
-import sys
-
 import numpy as np
-
-if './' not in sys.path:
-    sys.path.append('./')
-
-from tools.functions.time_space.base import TimeSpaceFunctionBase
-
-from tools.quadrature import quadrature
-
-from tools.numerical.time_space._2d.partial_derivative_as_functions import \
-    NumericalPartialDerivativeTxyFunctions, NumericalPartialDerivativeTxy
-
-from tools.functions.time_space._2d.wrappers.helpers.scalar_add import t2d_ScalarAdd
-from tools.functions.time_space._2d.wrappers.helpers.scalar_sub import t2d_ScalarSub
-from tools.functions.time_space._2d.wrappers.helpers.scalar_neg import t2d_ScalarNeg
-from tools.functions.time_space._2d.wrappers.helpers.scalar_mul import t2d_ScalarMultiply
-from tools.functions.time_space._2d.wrappers.helpers.scalar_abs import t2d_ScalarAbs
-
-from tools.functions.time_space._2d.wrappers.helpers.log_helper import ___LOG_HELPER___
-from tools.functions.time_space._2d.wrappers.helpers.exp_helper import ___EXP_HELPER___
 
 from functools import partial
 from scipy.interpolate import LinearNDInterpolator
+
+from phyem.tools.functions.time_space.base import TimeSpaceFunctionBase
+
+from phyem.tools.quadrature import quadrature
+
+from phyem.tools.numerical.time_space._2d.partial_derivative_as_functions import \
+    NumericalPartialDerivativeTxyFunctions, NumericalPartialDerivativeTxy
+
+from phyem.tools.functions.time_space._2d.wrappers.helpers.scalar_add import t2d_ScalarAdd
+from phyem.tools.functions.time_space._2d.wrappers.helpers.scalar_sub import t2d_ScalarSub
+from phyem.tools.functions.time_space._2d.wrappers.helpers.scalar_neg import t2d_ScalarNeg
+from phyem.tools.functions.time_space._2d.wrappers.helpers.scalar_mul import t2d_ScalarMultiply
+from phyem.tools.functions.time_space._2d.wrappers.helpers.scalar_abs import t2d_ScalarAbs
+
+from phyem.tools.functions.time_space._2d.wrappers.helpers.log_helper import ___LOG_HELPER___
+from phyem.tools.functions.time_space._2d.wrappers.helpers.exp_helper import ___EXP_HELPER___
 
 
 # noinspection PyUnusedLocal
@@ -307,7 +302,7 @@ class T2dScalar(TimeSpaceFunctionBase):
         else:
             py = self._dy
 
-        from tools.functions.time_space._2d.wrappers.vector import T2dVector
+        from phyem.tools.functions.time_space._2d.wrappers.vector import T2dVector
 
         return T2dVector(px, py, mesh=self.mesh)
     
@@ -326,7 +321,7 @@ class T2dScalar(TimeSpaceFunctionBase):
 
         neg_px = (- self.__class__(px))._s_
 
-        from tools.functions.time_space._2d.wrappers.vector import T2dVector
+        from phyem.tools.functions.time_space._2d.wrappers.vector import T2dVector
 
         return T2dVector(py, neg_px, mesh=self.mesh)
 
@@ -448,11 +443,11 @@ class T2dScalar(TimeSpaceFunctionBase):
         elif other.__class__.__name__ == 'T2dVector':
             return self * other
         else:
-            raise NotImplementedError()
+            raise NotImplementedError(other)
 
     def cross_product(self, other):
         """self x other"""
-        from tools.functions.time_space._2d.wrappers.vector import T2dVector
+        from phyem.tools.functions.time_space._2d.wrappers.vector import T2dVector
         if other.__class__ is T2dVector:
             # scalar x vector
             # A is self (scalar), B is vector (other)

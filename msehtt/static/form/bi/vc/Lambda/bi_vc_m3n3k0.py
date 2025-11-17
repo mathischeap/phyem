@@ -2,7 +2,7 @@
 r"""
 """
 import numpy as np
-from tools.quadrature import quadrature
+from phyem.tools.quadrature import quadrature
 _one_array_ = np.array([1])
 
 

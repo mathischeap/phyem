@@ -2,11 +2,11 @@
 r"""
 """
 import numpy as np
-from src.config import COMM
+from phyem.src.config import COMM
 
 
 # ========= OUTER ==================================================================
-from msehtt.static.space.mass_matrix.Lambda.MM_m2n2k1 import mass_matrix_Lambda__m2n2k1_outer
+from phyem.msehtt.static.space.mass_matrix.Lambda.MM_m2n2k1 import mass_matrix_Lambda__m2n2k1_outer
 
 
 def norm_Lambda__m2n2k1_outer(tpm, degree, cochain, norm_type='L2', component_wise=False):
@@ -29,7 +29,7 @@ def norm_Lambda__m2n2k1_outer(tpm, degree, cochain, norm_type='L2', component_wi
 
 
 # ========= INNER ==================================================================
-from msehtt.static.space.mass_matrix.Lambda.MM_m2n2k1 import mass_matrix_Lambda__m2n2k1_inner
+from phyem.msehtt.static.space.mass_matrix.Lambda.MM_m2n2k1 import mass_matrix_Lambda__m2n2k1_inner
 
 
 def norm_Lambda__m2n2k1_inner(tpm, degree, cochain, norm_type='L2', component_wise=False):

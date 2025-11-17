@@ -2,10 +2,11 @@
 r"""
 """
 import numpy as np
-from tools.frozen import Frozen
 from numpy import ones_like, sin, pi, cos
 from random import randint
-from src.config import RANK, MASTER_RANK
+
+from phyem.tools.frozen import Frozen
+from phyem.src.config import RANK, MASTER_RANK
 
 
 ___A___ = np.array([

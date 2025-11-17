@@ -2,7 +2,8 @@
 r"""
 """
 import numpy as np
-from tools.quadrature import quadrature
+
+from phyem.tools.quadrature import quadrature
 
 
 # ----------------- INNER ---------------------------------------------------------------------------------
@@ -115,7 +116,7 @@ def ___332_msepy_orthogonal___(element, cf_t, degree):
 
 
 _cache332_data_ = {}
-from msehtt.static.mesh.great.elements.types.orthogonal_hexahedron import MseHttGreatMeshOrthogonalHexahedronElement
+from phyem.msehtt.static.mesh.great.elements.types.orthogonal_hexahedron import MseHttGreatMeshOrthogonalHexahedronElement
 
 
 def _msepy_data_preparation(degree):

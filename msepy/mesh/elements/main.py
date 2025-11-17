@@ -1,15 +1,12 @@
 # -*- coding: utf-8 -*-
 r"""
 """
-import sys
-if './' not in sys.path:
-    sys.path.append('./')
-
 import numpy as np
-from tools.frozen import Frozen
-from tools.quadrature import Quadrature
-from msepy.mesh.elements.element import MsePyElement
-from msepy.mesh.elements.coordinate_transformation import MsePyMeshElementsCooTrans
+
+from phyem.tools.frozen import Frozen
+from phyem.tools.quadrature import Quadrature
+from phyem.msepy.mesh.elements.element import MsePyElement
+from phyem.msepy.mesh.elements.coordinate_transformation import MsePyMeshElementsCooTrans
 
 
 class MsePyMeshElements(Frozen):

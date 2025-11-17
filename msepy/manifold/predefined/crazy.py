@@ -118,7 +118,8 @@ And, if we want to generate a crazy mesh in domain :math:`\Omega:=(x,y,z)\in[-1,
 from numpy import sin, pi, cos, ones_like
 
 import warnings
-from tools.frozen import Frozen
+
+from phyem.tools.frozen import Frozen
 
 
 class CrazyMeshCurvatureWarning(UserWarning):

@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 r"""
 """
-from tools.frozen import Frozen
-from msepy.manifold.regions.boundary.ct import MsePyBoundaryRegionCoordinateTransformation
+from phyem.tools.frozen import Frozen
+from phyem.msepy.manifold.regions.boundary.ct import MsePyBoundaryRegionCoordinateTransformation
 
 
 class MsePyManifoldBoundaryRegion(Frozen):

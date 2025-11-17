@@ -30,7 +30,7 @@ def ___RoF_m2n2k1_outer___(degree, cochain, element, face_index, xi_or_et):
         raise NotImplementedError(f"___RoF_m2n2k1_outer___ not implemented for etype={etype}")
 
 
-from msehtt.static.space.reconstruct.Lambda.Rc_m2n2k1 import ___rc221o_msepy_quadrilateral___
+from phyem.msehtt.static.space.reconstruct.Lambda.Rc_m2n2k1 import ___rc221o_msepy_quadrilateral___
 
 
 def ___RoF_outer_QUAD___(degree, cochain, element, face_index, xi_or_et):

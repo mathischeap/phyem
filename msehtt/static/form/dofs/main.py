@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 r"""
 """
-from tools.frozen import Frozen
-from msehtt.static.form.dofs.visualize.main import MseHtt_StaticForm_Dofs_Visualize
+from phyem.tools.frozen import Frozen
+from phyem.msehtt.static.form.dofs.visualize.main import MseHtt_StaticForm_Dofs_Visualize
 
 
 class MseHtt_StaticForm_Dofs(Frozen):

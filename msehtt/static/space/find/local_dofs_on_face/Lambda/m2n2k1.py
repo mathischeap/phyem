@@ -22,7 +22,7 @@ def find_local_dofs_on_face__m2n2k1_outer(etype, p, face_index, component_wise=F
     return local_numbering
 
 
-from msehtt.static.space.local_numbering.Lambda.ln_m2n2k1 import _ln_m2n2k1_outer_msepy_quadrilateral_
+from phyem.msehtt.static.space.local_numbering.Lambda.ln_m2n2k1 import _ln_m2n2k1_outer_msepy_quadrilateral_
 _cache_221o_ = {}
 
 
@@ -58,7 +58,7 @@ def __m2n2k1_outer_msepy_quadrilateral_(p, face_index, component_wise=False):
         return _cache_221o_[key]
 
 
-from msehtt.static.space.local_numbering.Lambda.ln_m2n2k1 import _ln_m2n2k1_outer_vtu5_
+from phyem.msehtt.static.space.local_numbering.Lambda.ln_m2n2k1 import _ln_m2n2k1_outer_vtu5_
 _cache_221o_vtu5_ = {}
 
 
@@ -129,7 +129,7 @@ def find_local_dofs_on_face__m2n2k1_inner(etype, p, face_index, component_wise=F
     return local_numbering
 
 
-from msehtt.static.space.local_numbering.Lambda.ln_m2n2k1 import _ln_m2n2k1_inner_msepy_quadrilateral_
+from phyem.msehtt.static.space.local_numbering.Lambda.ln_m2n2k1 import _ln_m2n2k1_inner_msepy_quadrilateral_
 _cache_221i_ = {}
 
 
@@ -165,7 +165,7 @@ def __m2n2k1_inner_msepy_quadrilateral_(p, face_index, component_wise=False):
         return _cache_221i_[key]
 
 
-from msehtt.static.space.local_numbering.Lambda.ln_m2n2k1 import _ln_m2n2k1_inner_vtu5_
+from phyem.msehtt.static.space.local_numbering.Lambda.ln_m2n2k1 import _ln_m2n2k1_inner_vtu5_
 _cache_221i_vtu5_ = {}
 
 

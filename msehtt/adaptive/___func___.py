@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 r"""
 """
-from src.config import MASTER_RANK, RANK, COMM
-from msehtt.static.mesh.partial.main import MseHttMeshPartial
+from phyem.src.config import MASTER_RANK, RANK, COMM
+from phyem.msehtt.static.mesh.partial.main import MseHttMeshPartial
 
 
 def ___func_renew___(new_tgm, base):

@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*-
 r"""
 """
-from tools.frozen import Frozen
-from msehtt.tools.nonlinear_system.static.solve.Newton_Raphson import MseHttNonlinearSystemNewtonRaphsonSolve
-from msehtt.tools.nonlinear_system.static.solve.Picard import MseHtt_NonlinearSystem_Picard
+from phyem.tools.frozen import Frozen
+from phyem.msehtt.tools.nonlinear_system.static.solve.Newton_Raphson import MseHttNonlinearSystemNewtonRaphsonSolve
+from phyem.msehtt.tools.nonlinear_system.static.solve.Picard import MseHtt_NonlinearSystem_Picard
 
 
 class MseHttStaticNonlinearSystemSolve(Frozen):
@@ -101,7 +101,7 @@ class MseHttStaticNonlinearSystemSolve(Frozen):
         for i, setting in enumerate(nonlinear_customizations):
             customization_indicator = setting['customization_indicator']
             assert setting['take-effect'] == 1, \
-                f"{i}th nonlinear-customization {customization_indicator} does not (fully) take effect."
+                f"{i}th nonlinear-customization <{customization_indicator}> does not (fully) take effect."
         # =================================================================================================
 
         self._message = message

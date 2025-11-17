@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 r"""
 """
-from tools.frozen import Frozen
-from msepy.form.cochain.time_instant import _CochainAtOneTime
+from phyem.tools.frozen import Frozen
+from phyem.msepy.form.cochain.time_instant import _CochainAtOneTime
 
 
 class MsePyRootFormCochainPassive(Frozen):

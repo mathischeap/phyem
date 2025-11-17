@@ -1,13 +1,9 @@
 # -*- coding: utf-8 -*-
 r""""""
-import sys
-if './' not in sys.path: 
-    sys.path.append('./')
-
 from types import FunctionType, MethodType
-from tools.frozen import Frozen
 
-from tools.numerical.time_space._2d.partial_derivative import NumericalPartialDerivativeTxy
+from phyem.tools.frozen import Frozen
+from phyem.tools.numerical.time_space._2d.partial_derivative import NumericalPartialDerivativeTxy
 
 
 class NumericalPartialDerivativeTxyFunctions(Frozen):

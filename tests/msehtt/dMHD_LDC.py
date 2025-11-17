@@ -3,12 +3,8 @@ r"""
 mpiexec -n 4 python tests/msehtt/dMHD_LDC.py
 """
 import numpy as np
-import sys
 
-if './' not in sys.path:
-    sys.path.append('./')
-
-import __init__ as ph
+import phyem as ph
 
 # --- config program --------------------------------------------------------------------
 ph.config.set_embedding_space_dim(2)
@@ -33,8 +29,6 @@ element_layout = [
     [1, 2, 4] + [8] * (K-6) + [4, 2, 1],
 ]
 
-from _app.workspace_dir import local_dir as ph_dir
-data_dir = ph_dir + f"/LDC_no_normal_B_bc_Rf{_rf_}Rm{_rm_}c{int(1/_c_)}_N{N}K{K}sps{steps_per_second}"
 manifold = ph.manifold(2, periodic=False)
 mesh = ph.mesh(manifold)
 
@@ -438,7 +432,7 @@ def solver(k):
 iterator = ph.iterator(
     solver,
     [0, u_energy_t0, B_energy_t0, energy_t0],
-    name=data_dir + r'/quantities'
+    name='quantities'
 )
 
 test_results = iterator.test([1, ], show_info=False)

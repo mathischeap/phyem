@@ -2,15 +2,14 @@
 r"""
 """
 import numpy as np
-
-from tools.frozen import Frozen
-from src.config import RANK, MASTER_RANK, COMM, MPI
-from msehtt.static.mesh.great.elements.types.distributor import MseHttGreatMeshElementDistributor
-
 from random import random
 
-from tools.functions.time_space._2d.wrappers.vector import T2dVector
-# from tools.functions.time_space._2d.wrappers.tensor import T2dTensor
+from phyem.tools.frozen import Frozen
+from phyem.src.config import RANK, MASTER_RANK, COMM, MPI
+from phyem.msehtt.static.mesh.great.elements.types.distributor import MseHttGreatMeshElementDistributor
+
+from phyem.tools.functions.time_space._2d.wrappers.vector import T2dVector
+# from phyem.tools.functions.time_space._2d.wrappers.tensor import T2dTensor
 
 
 class MseHttGreatMeshElements(Frozen):
@@ -512,11 +511,11 @@ class MseHttGreatMeshElements(Frozen):
     def ___get_form_face_dof_topology_mismatch_m2n2k1_inner___(self, vector):
         r""""""
         # --------- m2n2 Lambda 1-form inner --------------------------------------------------
-        from msehtt.static.space.gathering_matrix.Lambda.GM_m2n2k1 import gathering_matrix_Lambda__m2n2k1_inner
+        from phyem.msehtt.static.space.gathering_matrix.Lambda.GM_m2n2k1 import gathering_matrix_Lambda__m2n2k1_inner
         gm_m2n2k1_inner = gathering_matrix_Lambda__m2n2k1_inner(self._tgm, 1, do_cache=False)
         gm = gm_m2n2k1_inner._gm
 
-        from msehtt.static.space.reduce.Lambda.Rd_m2n2k1 import reduce_Lambda__m2n2k1_inner
+        from phyem.msehtt.static.space.reduce.Lambda.Rd_m2n2k1 import reduce_Lambda__m2n2k1_inner
         referring_cochain = reduce_Lambda__m2n2k1_inner(vector[0], self, 1, raw=True)
 
         face_cochain_indices = {
@@ -547,11 +546,11 @@ class MseHttGreatMeshElements(Frozen):
     def ___get_form_face_dof_topology_mismatch_m2n2k1_outer___(self, vector):
         r""""""
         # --------- m2n2 Lambda 1-form inner --------------------------------------------------
-        from msehtt.static.space.gathering_matrix.Lambda.GM_m2n2k1 import gathering_matrix_Lambda__m2n2k1_outer
+        from phyem.msehtt.static.space.gathering_matrix.Lambda.GM_m2n2k1 import gathering_matrix_Lambda__m2n2k1_outer
         gm_m2n2k1_outer = gathering_matrix_Lambda__m2n2k1_outer(self._tgm, 1, do_cache=False)
         gm = gm_m2n2k1_outer._gm
 
-        from msehtt.static.space.reduce.Lambda.Rd_m2n2k1 import reduce_Lambda__m2n2k1_outer
+        from phyem.msehtt.static.space.reduce.Lambda.Rd_m2n2k1 import reduce_Lambda__m2n2k1_outer
         referring_cochain = reduce_Lambda__m2n2k1_outer(vector[0], self, 1, raw=True)
 
         face_cochain_indices = {

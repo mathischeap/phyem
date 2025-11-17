@@ -2,12 +2,13 @@
 r"""
 """
 import numpy as np
-from tools.frozen import Frozen
-from tools.quadrature import quadrature
-from tools.functions.time_space._2d.wrappers.scalar import T2dScalar
-from msehtt.static.form.addons.static import MseHttFormStaticCopy
 
-from src.config import COMM, MPI
+from phyem.tools.frozen import Frozen
+from phyem.tools.quadrature import quadrature
+from phyem.tools.functions.time_space._2d.wrappers.scalar import T2dScalar
+from phyem.msehtt.static.form.addons.static import MseHttFormStaticCopy
+
+from phyem.src.config import COMM, MPI
 
 
 class PartialMesh_Elements_Compute(Frozen):

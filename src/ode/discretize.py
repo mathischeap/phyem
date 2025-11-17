@@ -1,11 +1,11 @@
 # -*- coding: utf-8 -*-
 r"""
 """
-from tools.frozen import Frozen
-from src.config import _wf_term_default_simple_patterns as simple_patterns
-from src.form.others import _find_form
-from src.form.operators import time_derivative
-from src.pde import PartialDifferentialEquations
+from phyem.tools.frozen import Frozen
+from phyem.src.config import _wf_term_default_simple_patterns as simple_patterns
+from phyem.src.form.others import _find_form
+from phyem.src.form.operators import time_derivative
+from phyem.src.pde import PartialDifferentialEquations
 
 
 class OrdinaryDifferentialEquationDiscretize(Frozen):

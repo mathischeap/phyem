@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*-
 r"""
 """
-from tools.frozen import Frozen
-from src.config import RANK, MASTER_RANK, COMM, MPI
-from msehtt.static.mesh.partial.boundary_section.visualize.main import MseHttBoundarySectionPartialMeshVisualize
+from phyem.tools.frozen import Frozen
+from phyem.src.config import RANK, MASTER_RANK, COMM, MPI
+from phyem.msehtt.static.mesh.partial.boundary_section.visualize.main import MseHttBoundarySectionPartialMeshVisualize
 
 
 class MseHttBoundarySectionPartialMesh(Frozen):

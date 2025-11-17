@@ -1,10 +1,10 @@
 # -*- coding: utf-8 -*-
 r"""
 """
-from tools.frozen import Frozen
-from src.spaces.operators import _d_to_vc, _d_ast_to_vc
-from tools.functions.time_space._2d.wrappers.scalar import T2dScalar
-from tools.functions.time_space._2d.wrappers.vector import T2dVector
+from phyem.tools.frozen import Frozen
+from phyem.src.spaces.operators import _d_to_vc, _d_ast_to_vc
+from phyem.tools.functions.time_space._2d.wrappers.scalar import T2dScalar
+from phyem.tools.functions.time_space._2d.wrappers.vector import T2dVector
 
 def _m2n2_0_(t, x, y):
     r""""""

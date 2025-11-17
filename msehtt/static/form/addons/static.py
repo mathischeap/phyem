@@ -3,21 +3,21 @@ r"""
 """
 import numpy as np
 
-from tools.frozen import Frozen
-from tools.quadrature import quadrature
+from phyem.tools.frozen import Frozen
+from phyem.tools.quadrature import quadrature
 
-from src.config import COMM, MPI
+from phyem.src.config import COMM, MPI
 
-from msehtt.static.form.addons.ic import MseHtt_From_InterpolateCopy
+from phyem.msehtt.static.form.addons.ic import MseHtt_From_InterpolateCopy
 
-from msehtt.static.form.export.main import MseHtt_Static_Form_Export
-from msehtt.static.form.project.main import MseHtt_Static_Form_Project
+from phyem.msehtt.static.form.export.main import MseHtt_Static_Form_Export
+from phyem.msehtt.static.form.project.main import MseHtt_Static_Form_Project
 
-from msehtt.static.space.error.Lambda.Er_m3n3k1 import error__m3n3k1
-from msehtt.static.space.error.Lambda.Er_m3n3k2 import error__m3n3k2
-from msehtt.static.space.error.Lambda.Er_m3n3k3 import error__m3n3k3
-from msehtt.static.space.error.Lambda.Er_m2n2k1 import error__m2n2k1_inner, error__m2n2k1_outer
-from msehtt.static.space.error.Lambda.Er_m2n2k2 import error__m2n2k2
+from phyem.msehtt.static.space.error.Lambda.Er_m3n3k1 import error__m3n3k1
+from phyem.msehtt.static.space.error.Lambda.Er_m3n3k2 import error__m3n3k2
+from phyem.msehtt.static.space.error.Lambda.Er_m3n3k3 import error__m3n3k3
+from phyem.msehtt.static.space.error.Lambda.Er_m2n2k1 import error__m2n2k1_inner, error__m2n2k1_outer
+from phyem.msehtt.static.space.error.Lambda.Er_m2n2k2 import error__m2n2k2
 
 
 class MseHttFormStaticCopy(Frozen):
@@ -128,7 +128,7 @@ class MseHttFormStaticCopy(Frozen):
             The flux over the whole boundary section. We return the same global value in all ranks.
 
         """
-        from msehtt.static.mesh.partial.boundary_section.main import MseHttBoundarySectionPartialMesh
+        from phyem.msehtt.static.mesh.partial.boundary_section.main import MseHttBoundarySectionPartialMesh
         if boundary_section.__class__ is MseHttBoundarySectionPartialMesh:
             pass
         elif hasattr(boundary_section, 'composition'):

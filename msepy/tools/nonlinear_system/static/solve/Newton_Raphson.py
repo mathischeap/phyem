@@ -3,10 +3,11 @@ r"""
 """
 import numpy as np
 from time import time
-from tools.frozen import Frozen
-from msepy.form.main import MsePyRootForm
-from msepy.tools.matrix.static.local import MsePyStaticLocalMatrix
-from msepy.tools.linear_system.static.local.main import MsePyStaticLocalLinearSystem
+
+from phyem.tools.frozen import Frozen
+from phyem.msepy.form.main import MsePyRootForm
+from phyem.msepy.tools.matrix.static.local import MsePyStaticLocalMatrix
+from phyem.msepy.tools.linear_system.static.local.main import MsePyStaticLocalLinearSystem
 
 
 class MsePyNonlinearSystemNewtonRaphsonSolve(Frozen):

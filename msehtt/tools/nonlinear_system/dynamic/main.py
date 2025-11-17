@@ -1,7 +1,8 @@
 # -*- coding: utf-8 -*-
 r"""
 """
-from src.config import RANK, MASTER_RANK
+from phyem.src.config import RANK, MASTER_RANK
+
 if RANK == MASTER_RANK:
     import matplotlib.pyplot as plt
     import matplotlib
@@ -14,16 +15,16 @@ if RANK == MASTER_RANK:
 else:
     pass
 
-from tools.frozen import Frozen
-from msehtt.tools.linear_system.dynamic.main import MseHttDynamicLinearSystem
+from phyem.tools.frozen import Frozen
+from phyem.msehtt.tools.linear_system.dynamic.main import MseHttDynamicLinearSystem
 
-from msehtt.tools.nonlinear_system.dynamic.nop_parser import nonlinear_operator_parser
-from msehtt.tools.nonlinear_system.operator.dynamic import MseHttDynamicLocalNonlinearOperator
+from phyem.msehtt.tools.nonlinear_system.dynamic.nop_parser import nonlinear_operator_parser
+from phyem.msehtt.tools.nonlinear_system.operator.dynamic import MseHttDynamicLocalNonlinearOperator
 
-from msehtt.tools.nonlinear_system.static.main import MseHttStaticNonLinearSystem
-from msehtt.tools.nonlinear_system.dynamic.config import MseHtt_Dynamic_NonLinear_System_Config
+from phyem.msehtt.tools.nonlinear_system.static.main import MseHttStaticNonLinearSystem
+from phyem.msehtt.tools.nonlinear_system.dynamic.config import MseHtt_Dynamic_NonLinear_System_Config
 
-from tools.miscellaneous.latex_bmatrix_to_array import bmatrix_to_array
+from phyem.tools.miscellaneous.latex_bmatrix_to_array import bmatrix_to_array
 
 
 class MseHttDynamicNonLinearSystem(Frozen):
@@ -31,7 +32,7 @@ class MseHttDynamicNonLinearSystem(Frozen):
 
     def __init__(self, wf_mp_nls, base):
         r""""""
-        from src.wf.mp.nonlinear_system import MatrixProxyNoneLinearSystem
+        from phyem.src.wf.mp.nonlinear_system import MatrixProxyNoneLinearSystem
         assert wf_mp_nls.__class__ is MatrixProxyNoneLinearSystem, \
             f"I need a {MatrixProxyNoneLinearSystem}!"
         self._mp_nls = wf_mp_nls

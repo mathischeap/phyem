@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 r"""
 """
-from tools.frozen import Frozen
-from src.config import RANK, MASTER_RANK
+from phyem.tools.frozen import Frozen
+from phyem.src.config import RANK, MASTER_RANK
 
 
 def rectangle(bounds=([0, 1], [0, 1]), periodic=False):

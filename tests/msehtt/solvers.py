@@ -1,18 +1,14 @@
 # -*- coding: utf-8 -*-
 r"""
-mpiexec -n 4 python tests/msehtt/solvers.py
+mpiexec -n 4 python phyem/tests/msehtt/solvers.py
 """
-import sys
-
-if './' not in sys.path:
-    sys.path.append('./')
-
 import numpy as np
 from scipy import sparse as sp_spa
-from src.config import RANK, MASTER_RANK, COMM
-from msehtt.tools.matrix.static.global_ import MseHttGlobalMatrix
-from msehtt.tools.vector.static.global_distributed import MseHttGlobalVectorDistributed
-from msehtt.tools.linear_system.static.global_.main import MseHttLinearSystem
+
+from phyem.src.config import RANK, MASTER_RANK, COMM
+from phyem.msehtt.tools.matrix.static.global_ import MseHttGlobalMatrix
+from phyem.msehtt.tools.vector.static.global_distributed import MseHttGlobalVectorDistributed
+from phyem.msehtt.tools.linear_system.static.global_.main import MseHttLinearSystem
 
 
 if RANK != MASTER_RANK:

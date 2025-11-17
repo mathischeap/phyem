@@ -3,16 +3,16 @@ r"""We config the msehtt great mesh as a msepy mesh.
 """
 import inspect
 import numpy as np
-from tools.frozen import Frozen
-from src.config import RANK, MASTER_RANK
-from src.config import get_embedding_space_dim
-from msepy.manifold.predefined.distributor import PredefinedMsePyManifoldDistributor
-from msepy.manifold.main import MsePyManifold
-from src.manifold import Manifold
-from src.mesh import Mesh
-from msepy.mesh.main import MsePyMesh
-from msepy.mesh.elements.main import MsePyMeshElements
-from msepy.manifold.regions.standard.ct import UniqueRegionException
+from phyem.tools.frozen import Frozen
+from phyem.src.config import RANK, MASTER_RANK
+from phyem.src.config import get_embedding_space_dim
+from phyem.msepy.manifold.predefined.distributor import PredefinedMsePyManifoldDistributor
+from phyem.msepy.manifold.main import MsePyManifold
+from phyem.src.manifold import Manifold
+from phyem.src.mesh import Mesh
+from phyem.msepy.mesh.main import MsePyMesh
+from phyem.msepy.mesh.elements.main import MsePyMeshElements
+from phyem.msepy.manifold.regions.standard.ct import UniqueRegionException
 
 
 class MseHttMsePyConfig(Frozen):

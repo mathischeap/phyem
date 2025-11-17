@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 r"""
 """
-from tools.frozen import Frozen
-from msehtt.static.space.mass_matrix.Lambda.main import MseHttSpaceLambdaMassMatrix
+from phyem.tools.frozen import Frozen
+from phyem.msehtt.static.space.mass_matrix.Lambda.main import MseHttSpaceLambdaMassMatrix
 
 
 class MseHttSpaceMassMatrix(Frozen):

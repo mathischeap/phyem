@@ -1,9 +1,10 @@
 # -*- coding: utf-8 -*-
 r"""Discrete Data Structure.
 """
-from tools.frozen import Frozen
 import numpy as np
-from tools.dds.region_wise_structured import DDSRegionWiseStructured
+
+from phyem.tools.frozen import Frozen
+from phyem.tools.dds.region_wise_structured import DDSRegionWiseStructured
 
 
 class MsePyRootFormNumericDiscreteDataStructure(Frozen):

@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*-
 r"""
 """
-from tools.frozen import Frozen
-from msepy.space.error.Lambda import MsePySpaceErrorLambda
-from msepy.space.error.bundle import MsePySpaceErrorBundle
+from phyem.tools.frozen import Frozen
+from phyem.msepy.space.error.Lambda import MsePySpaceErrorLambda
+from phyem.msepy.space.error.bundle import MsePySpaceErrorBundle
 
 
 class MsePySpaceError(Frozen):

@@ -1,10 +1,11 @@
 # -*- coding: utf-8 -*-
 r"""
 """
-from tools.frozen import Frozen
-from tools.quadrature import Quadrature
 import numpy as np
 from scipy.sparse import csr_matrix
+
+from phyem.tools.frozen import Frozen
+from phyem.tools.quadrature import Quadrature
 
 
 class MsePyWedgeMatrixLambda(Frozen):

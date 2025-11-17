@@ -1,14 +1,10 @@
 # -*- coding: utf-8 -*-
 r"""
 """
-
-import sys
-
-if './' not in sys.path:
-    sys.path.append('/')
-from tools.functions.time_space.base import TimeSpaceFunctionBase
 from functools import partial
-from tools.numerical.time_space._1d.partial_derivative_as_functions import \
+
+from phyem.tools.functions.time_space.base import TimeSpaceFunctionBase
+from phyem.tools.numerical.time_space._1d.partial_derivative_as_functions import \
     NumericalPartialDerivativeTxFunctions
 
 

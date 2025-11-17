@@ -2,9 +2,10 @@
 r"""Save objects to grouped region-wise structured data file.
 """
 from numpy import testing
-from src.config import RANK, MASTER_RANK
-from msehtt.static.form.addons.static import MseHttFormStaticCopy
-from tools.dds.region_wise_structured_group import DDS_RegionWiseStructured_Group
+
+from phyem.src.config import RANK, MASTER_RANK
+from phyem.msehtt.static.form.addons.static import MseHttFormStaticCopy
+from phyem.tools.dds.region_wise_structured_group import DDS_RegionWiseStructured_Group
 
 
 def _rws_grouped_saving(filename, *objs, ddf=1):

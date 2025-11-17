@@ -1,15 +1,10 @@
 # -*- coding: utf-8 -*-
 r"""
 """
-
-import sys
-
-if './' not in sys.path:
-    sys.path.append('./')
-from tools.frozen import Frozen
-from msepy.mesh.boundary_section.faces import MsePyBoundarySectionFaces
-from msepy.mesh.boundary_section.coordinate_transformation import MsePyBoundarySectionMeshCooTrans
-from msepy.mesh.boundary_section.visualize.main import MsePyBoundarySectionVisualize
+from phyem.tools.frozen import Frozen
+from phyem.msepy.mesh.boundary_section.faces import MsePyBoundarySectionFaces
+from phyem.msepy.mesh.boundary_section.coordinate_transformation import MsePyBoundarySectionMeshCooTrans
+from phyem.msepy.mesh.boundary_section.visualize.main import MsePyBoundarySectionVisualize
 
 
 class MsePyBoundarySectionMesh(Frozen):

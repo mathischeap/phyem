@@ -2,12 +2,13 @@
 r"""
 """
 import numpy as np
-from tools.frozen import Frozen
-from msepy.form.main import MsePyRootForm
-from msepy.tools.matrix.static.assembled import MsePyStaticAssembledMatrix
-from msepy.tools.vector.static.assembled import MsePyStaticAssembledVector
 
-from msepy.tools.linear_system.static.assembled.solvers._scipy import _PackageScipy
+from phyem.tools.frozen import Frozen
+from phyem.msepy.form.main import MsePyRootForm
+from phyem.msepy.tools.matrix.static.assembled import MsePyStaticAssembledMatrix
+from phyem.msepy.tools.vector.static.assembled import MsePyStaticAssembledVector
+
+from phyem.msepy.tools.linear_system.static.assembled.solvers._scipy import _PackageScipy
 
 
 class MsePyStaticLinearSystemAssembledSolve(Frozen):

@@ -1,7 +1,8 @@
 # -*- coding: utf-8 -*-
 r"""3D numerical."""
 from abc import ABC
-from tools.numerical.space._3d.partial_derivative import NumericalPartialDerivativeXYZ
+
+from phyem.tools.numerical.space._3d.partial_derivative import NumericalPartialDerivativeXYZ
 
 
 class NumericalJacobianXYZrst33(ABC):

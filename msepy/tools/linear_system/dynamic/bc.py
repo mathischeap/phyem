@@ -1,18 +1,18 @@
 # -*- coding: utf-8 -*-
 r"""
 """
-from tools.frozen import Frozen
-from msepy.manifold.main import MsePyManifold
+from phyem.tools.frozen import Frozen
+from phyem.msepy.manifold.main import MsePyManifold
 
-from msepy.form.addons.static import MsePyRootFormStaticCopy
-from msepy.form.cochain.vector.static import MsePyRootFormStaticCochainVector
+from phyem.msepy.form.addons.static import MsePyRootFormStaticCopy
+from phyem.msepy.form.cochain.vector.static import MsePyRootFormStaticCochainVector
 
-from msepy.form.cf import MsePyContinuousForm
-from msepy.mesh.boundary_section.main import MsePyBoundarySectionMesh
+from phyem.msepy.form.cf import MsePyContinuousForm
+from phyem.msepy.mesh.boundary_section.main import MsePyBoundarySectionMesh
 
-from src.wf.mp.linear_system_bc import _EssentialBoundaryCondition
-from src.wf.mp.linear_system_bc import _NaturalBoundaryCondition
-from src.wf.mp.linear_system_bc import _ManualBoundaryCondition
+from phyem.src.wf.mp.linear_system_bc import _EssentialBoundaryCondition
+from phyem.src.wf.mp.linear_system_bc import _NaturalBoundaryCondition
+from phyem.src.wf.mp.linear_system_bc import _ManualBoundaryCondition
 
 
 class MsePyDynamicLinearSystemBoundaryCondition(Frozen):
@@ -197,7 +197,7 @@ class MsePyDLSNaturalBoundaryCondition(MsePyDLSBoundaryCondition):
     def config(self, *args, category=0):
         """config the bc to be particular."""
         bf0 = self._raw_ls_bc._provided_root_form
-        from msepy.main import base
+        from phyem.msepy.main import base
         msepy_forms = base['forms']
         found_msepy_bf0 = None
         for msepy_form_sym_repr in msepy_forms:
@@ -243,7 +243,7 @@ class MsePyDLSEssentialBoundaryCondition(MsePyDLSBoundaryCondition):
 
     def config(self, *args):
         """config the bc to be particular."""
-        from msepy.main import base
+        from phyem.msepy.main import base
         bf0 = self._raw_ls_bc._provided_root_form
         msepy_forms = base['forms']
         found_msepy_bf0 = None
@@ -282,8 +282,8 @@ class MsePyDLSEssentialBoundaryCondition(MsePyDLSBoundaryCondition):
         -------
 
         """
-        from msepy.tools.linear_system.dynamic.main import MsePyDynamicLinearSystem
-        from msepy.tools.nonlinear_system.static.local import MsePyStaticLocalNonLinearSystem
+        from phyem.msepy.tools.linear_system.dynamic.main import MsePyDynamicLinearSystem
+        from phyem.msepy.tools.nonlinear_system.static.local import MsePyStaticLocalNonLinearSystem
 
         # apply this essential boundary condition to dynamic linear system
         if len(args) == 4 and args[0].__class__ is MsePyDynamicLinearSystem:
@@ -309,7 +309,7 @@ class MsePyDLSEssentialBoundaryCondition(MsePyDLSBoundaryCondition):
             self._cache1['key'] = key
 
         # below, we try to find the msepy mesh boundary section where the essential bc will apply.
-        from msepy.main import base
+        from phyem.msepy.main import base
         meshes = base['meshes']  # find mesh here! because only when we call it, the meshes are config-ed.
         found_msepy_boundary_section_mesh = None
         for mesh_sym_repr in meshes:

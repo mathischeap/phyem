@@ -2,8 +2,8 @@
 r"""
 """
 
-from tools.frozen import Frozen
-from msepy.tools.nonlinear_system.static.solve.Newton_Raphson import MsePyNonlinearSystemNewtonRaphsonSolve
+from phyem.tools.frozen import Frozen
+from phyem.msepy.tools.nonlinear_system.static.solve.Newton_Raphson import MsePyNonlinearSystemNewtonRaphsonSolve
 
 
 class MsePyStaticNonlinearSystemSolve(Frozen):

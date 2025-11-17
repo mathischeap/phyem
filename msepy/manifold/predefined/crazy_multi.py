@@ -73,8 +73,9 @@ The multi-crazy mesh is visualized as
 """
 
 import numpy as np
-from tools.frozen import Frozen
-from msepy.manifold.predefined.crazy import _MesPyRegionCrazyMapping
+
+from phyem.tools.frozen import Frozen
+from phyem.msepy.manifold.predefined.crazy import _MesPyRegionCrazyMapping
 
 
 def crazy_multi(bounds=None, c=0, Ns=None, periodic=False):

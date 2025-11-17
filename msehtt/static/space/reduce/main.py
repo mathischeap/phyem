@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*-
 r"""
 """
-from tools.frozen import Frozen
+from phyem.tools.frozen import Frozen
 
-from msehtt.static.space.reduce.Lambda.main import MseHttSpaceReduceLambda
+from phyem.msehtt.static.space.reduce.Lambda.main import MseHttSpaceReduceLambda
 
 
 class MseHttSpaceReduce(Frozen):

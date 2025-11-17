@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 r"""
 """
-from tools.frozen import Frozen
+from phyem.tools.frozen import Frozen
 
 
 class _MsePySpaceFindLocalDofs(Frozen):

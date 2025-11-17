@@ -3,13 +3,14 @@ r"""
 """
 import numpy as np
 from scipy.interpolate import NearestNDInterpolator
-from src.config import RANK, MASTER_RANK, COMM
 
-from tools.frozen import Frozen
-from msehtt.static.form.numeric.tsp import MseHtt_Form_Numeric_TimeSpaceProperties
-from tools.dds.region_wise_structured import DDSRegionWiseStructured
+from phyem.src.config import RANK, MASTER_RANK, COMM
 
-from tools._mpi import merge_list
+from phyem.tools.frozen import Frozen
+from phyem.msehtt.static.form.numeric.tsp import MseHtt_Form_Numeric_TimeSpaceProperties
+from phyem.tools.dds.region_wise_structured import DDSRegionWiseStructured
+
+from phyem.tools._mpi import merge_list
 
 
 class MseHtt_Form_Numeric(Frozen):

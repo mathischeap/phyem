@@ -2,13 +2,9 @@
 r"""
 mpiexec -n 5 python tests/msehtt/dMHD_manu_cache.py
 """
-import sys
 import numpy as np
 
-if './' not in sys.path:
-    sys.path.append('./')
-
-import __init__ as ph
+import phyem as ph
 
 
 N = 2

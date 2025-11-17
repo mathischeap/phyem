@@ -3,16 +3,9 @@ r"""
 mpiexec -n 4 python tests/msehtt/OTV.py
 
 """
-import sys
-
 import numpy as np
 
-dir_of_phyem = './'
-
-if dir_of_phyem not in sys.path:
-    sys.path.append(dir_of_phyem)
-
-import __init__ as ph
+import phyem as ph
 
 # --- config program -------------------------------------------------
 ph.config.set_embedding_space_dim(2)

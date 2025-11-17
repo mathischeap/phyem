@@ -11,12 +11,8 @@ Here we run all jupyter notebooks. Just do
 """
 
 import os
-import sys
 
-if './' not in sys.path:
-    sys.path.append('./')
-
-from src.config import RANK, MASTER_RANK
+from phyem.src.config import RANK, MASTER_RANK
 
 if RANK == MASTER_RANK:  # this is conducted only in one rank.
 

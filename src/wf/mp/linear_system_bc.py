@@ -1,12 +1,12 @@
 # -*- coding: utf-8 -*-
 r"""
 """
-from tools.frozen import Frozen
-from src.form.main import _global_root_forms_lin_dict
-from src.config import _global_operator_lin_repr_setting, _non_root_lin_sep
-from src.config import _global_lin_repr_setting, _root_form_ap_vec_setting
-from src.config import _form_evaluate_at_repr_setting
-from src.spaces.main import _VarSetting_boundary_dp_vector, _sep
+from phyem.tools.frozen import Frozen
+from phyem.src.form.main import _global_root_forms_lin_dict
+from phyem.src.config import _global_operator_lin_repr_setting, _non_root_lin_sep
+from phyem.src.config import _global_lin_repr_setting, _root_form_ap_vec_setting
+from phyem.src.config import _form_evaluate_at_repr_setting
+from phyem.src.spaces.main import _VarSetting_boundary_dp_vector, _sep
 
 
 class _BoundaryCondition(Frozen):

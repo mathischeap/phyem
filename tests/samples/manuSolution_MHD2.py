@@ -3,15 +3,11 @@
 Manufactured solutions for 2d MHD.
 
 """
-import sys
-if './' not in sys.path:
-    sys.path.append('./')
-
 from numpy import sin, cos, pi, exp
-from tools.frozen import Frozen
 
-from tools.functions.time_space._2d.wrappers.scalar import T2dScalar
-from tools.functions.time_space._2d.wrappers.vector import T2dVector
+from phyem.tools.frozen import Frozen
+from phyem.tools.functions.time_space._2d.wrappers.scalar import T2dScalar
+from phyem.tools.functions.time_space._2d.wrappers.vector import T2dVector
 
 
 def _phi(t, x, y):

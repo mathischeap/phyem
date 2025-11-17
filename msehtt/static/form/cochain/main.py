@@ -1,11 +1,11 @@
 # -*- coding: utf-8 -*-
 r"""
 """
-from tools.frozen import Frozen
-from src.config import _setting
-from msehtt.static.form.cochain.instant import MseHttTimeInstantCochain
-from msehtt.static.form.cochain.vector.static import MseHttStaticCochainVector
-from msehtt.static.form.cochain.vector.dynamic import MseHttDynamicCochainVector
+from phyem.tools.frozen import Frozen
+from phyem.src.config import _setting
+from phyem.msehtt.static.form.cochain.instant import MseHttTimeInstantCochain
+from phyem.msehtt.static.form.cochain.vector.static import MseHttStaticCochainVector
+from phyem.msehtt.static.form.cochain.vector.dynamic import MseHttDynamicCochainVector
 
 
 class MseHttCochain(Frozen):

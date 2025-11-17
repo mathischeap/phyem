@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 r"""
 """
-from tools.frozen import Frozen
-from src.form.main import _global_forms
+from phyem.tools.frozen import Frozen
+from phyem.src.form.main import _global_forms
 
 
 class SpaceFiniteSetting(Frozen):

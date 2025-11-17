@@ -4,8 +4,9 @@ These codes are copied from a legacy. They are not very efficient. Luckily, they
 executed only once. Thus, we keep these codes.
 
 """
-from tools.frozen import Frozen
 import numpy as np
+
+from phyem.tools.frozen import Frozen
 
 
 class MsePyMeshTopology(Frozen):

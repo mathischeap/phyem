@@ -1,8 +1,9 @@
 # -*- coding: utf-8 -*-
 r"""
 """
-from src.config import RANK, MASTER_RANK, COMM
 import os
+
+from phyem.src.config import RANK, MASTER_RANK, COMM
 
 
 def dirname(filepath):

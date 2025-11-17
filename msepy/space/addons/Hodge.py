@@ -1,14 +1,10 @@
 # -*- coding: utf-8 -*-
 """
 """
-
-import sys
-
-if './' not in sys.path:
-    sys.path.append('./')
-from tools.frozen import Frozen
-from msepy.tools.matrix.static.local import MsePyStaticLocalMatrix
 from scipy.sparse.linalg import inv
+
+from phyem.tools.frozen import Frozen
+from phyem.msepy.tools.matrix.static.local import MsePyStaticLocalMatrix
 
 
 class MsePySpaceHodge(Frozen):

@@ -1,9 +1,10 @@
 # -*- coding: utf-8 -*-
 r"""
 """
-from tools.frozen import Frozen
 from importlib import import_module
-from src.config import SIZE
+
+from phyem.tools.frozen import Frozen
+from phyem.src.config import SIZE
 assert SIZE == 1, "Runners can only be run in single thread."
 
 

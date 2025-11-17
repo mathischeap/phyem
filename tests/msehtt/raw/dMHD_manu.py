@@ -5,10 +5,7 @@ mpiexec -n 4 python tests/msehtt/raw/dMHD_manu.py
 import sys
 import numpy as np
 
-if './' not in sys.path:
-    sys.path.append('./')
-
-import __init__ as ph
+import phyem as ph
 
 
 N = 2

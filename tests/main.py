@@ -12,11 +12,8 @@ $ mpiexec -n 1 python tests/main.py
 $ mpiexec -n 4 python tests/main.py
 
 """
-import sys
-if './' not in sys.path:
-    sys.path.append('./')
 
-from src.config import SIZE
+from phyem.src.config import SIZE
 
 __all__ = [
     'msepy',
@@ -27,11 +24,11 @@ __all__ = [
 ]
 
 if SIZE == 1:
-    import tests.msepy.main as msepy
-    import tests.jupyter_notebooks as jupyter
-    import tests.web as web
+    import phyem.tests.msepy.main as msepy
+    import phyem.tests.jupyter_notebooks as jupyter
+    import phyem.tests.web as web
 
 else:
     pass
 
-import tests.msehtt.main as msehtt
+import phyem.tests.msehtt.main as msehtt

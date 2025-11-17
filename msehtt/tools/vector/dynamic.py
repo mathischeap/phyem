@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 r"""
 """
-from tools.frozen import Frozen
-from msehtt.tools.vector.static.local import MseHttStaticLocalVector
+from phyem.tools.frozen import Frozen
+from phyem.msehtt.tools.vector.static.local import MseHttStaticLocalVector
 
 
 class MseHttDynamicLocalVector(Frozen):

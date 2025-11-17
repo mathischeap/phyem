@@ -2,16 +2,9 @@
 r"""
 mpiexec -n 4 python tests/msehtt/Poisson2_outer_meshpy_ts1.py
 """
-import sys
-
 import numpy as np
-
-ph_dir = './'  # customize it to your dir containing phyem
-if ph_dir not in sys.path:
-    sys.path.append(ph_dir)
-
-import __init__ as ph
-from tools.functions.space._2d.Cartesian_polar_coordinates_switcher import CartPolSwitcher
+import phyem as ph
+from phyem.tools.functions.space._2d.Cartesian_polar_coordinates_switcher import CartPolSwitcher
 
 
 def phi_func(t, x, y):

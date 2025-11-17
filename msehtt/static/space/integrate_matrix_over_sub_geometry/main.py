@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*-
 r"""
 """
-from tools.frozen import Frozen
+from phyem.tools.frozen import Frozen
 
-from msehtt.static.space.integrate_matrix_over_sub_geometry.Lambda.main import MseHttSpace_iMSG_Lambda
+from phyem.msehtt.static.space.integrate_matrix_over_sub_geometry.Lambda.main import MseHttSpace_iMSG_Lambda
 
 
 class MseHttSpace_IntMatOverSubGeo(Frozen):

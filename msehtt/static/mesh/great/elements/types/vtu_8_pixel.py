@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 r"""
 """
-from msehtt.static.mesh.great.elements.types.orthogonal_rectangle import MseHttGreatMeshOrthogonalRectangleElement
+from phyem.msehtt.static.mesh.great.elements.types.orthogonal_rectangle import MseHttGreatMeshOrthogonalRectangleElement
 
 
 class Vtu8Pixel(MseHttGreatMeshOrthogonalRectangleElement):

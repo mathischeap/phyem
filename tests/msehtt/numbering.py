@@ -5,19 +5,13 @@ Test the reduction and reconstruction for msehtt mesh built upon msepy 2d meshes
 mpiexec -n 4 python tests/msehtt/numbering.py
 """
 
-import sys
-
-ph_dir = './'  # customize it to your dir containing phyem
-if ph_dir not in sys.path:
-    sys.path.append(ph_dir)
-
 import numpy as np
-
-from msehtt.static.mesh.great.config.vtu import MseHttVtuInterface
 from random import uniform, randint
-from src.config import MASTER_RANK, RANK, COMM
 
-import __init__ as ph
+from phyem.msehtt.static.mesh.great.config.vtu import MseHttVtuInterface
+from phyem.src.config import MASTER_RANK, RANK, COMM
+
+import phyem as ph
 
 
 def fx(t, x, y):
@@ -291,11 +285,7 @@ def check_local_cochain(gm, cochain):
 
 
 if __name__ == '__main__':
-    # mpiexec -n 4 python tests/msehtt/numbering.py
-    ph_test(0)
-    ph_test(1)
-    ph_test(2)
-    ph_test(3)
-    ph_test(4)
-    ph_test(5)
-    ph_test(6)
+    # mpiexec -n 4 python tests/msehtt/numbering.py 1
+    import sys
+    i = int(sys.argv[1])
+    ph_test(i)

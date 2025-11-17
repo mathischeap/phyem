@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*-
 r"""
 """
-from tools.frozen import Frozen
-from msehtt.static.form.visualize.quick.main import MseHttFormVisualizeQuick
-from tools.vtk_.msehtt_form_static_copy import ___ph_vtk_msehtt_static_copy___
+from phyem.tools.frozen import Frozen
+from phyem.msehtt.static.form.visualize.quick.main import MseHttFormVisualizeQuick
+from phyem.tools.vtk_.msehtt_form_static_copy import ___ph_vtk_msehtt_static_copy___
 
 
 class MseHttFormVisualize(Frozen):

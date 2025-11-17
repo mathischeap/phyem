@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 r"""All the projections from m3n3k1-forms.
 """
-from tools.quadrature import quadrature
-from msehtt.static.space.reconstruct.Lambda.Rc_m3n3k1 import ___rc331_orthogonal_hexahedron___
+from phyem.tools.quadrature import quadrature
+from phyem.msehtt.static.space.reconstruct.Lambda.Rc_m3n3k1 import ___rc331_orthogonal_hexahedron___
 
 
 def to__m3n3k0(ff, ft):

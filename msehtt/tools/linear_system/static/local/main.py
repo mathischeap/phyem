@@ -4,20 +4,21 @@ r"""
 import matplotlib.pyplot as plt
 import matplotlib
 import numpy as np
-from src.config import RANK, MASTER_RANK, COMM, MPI
 
-from tools.frozen import Frozen
-from msehtt.tools.matrix.static.local import MseHttStaticLocalMatrix
-from msehtt.tools.vector.static.local import MseHttStaticLocalVector
-from msehtt.static.form.cochain.vector.static import MseHttStaticCochainVector
+from phyem.src.config import RANK, MASTER_RANK, COMM, MPI
 
-from msehtt.tools.matrix.static.local import bmat
-from msehtt.tools.vector.static.local import concatenate
+from phyem.tools.frozen import Frozen
+from phyem.msehtt.tools.matrix.static.local import MseHttStaticLocalMatrix
+from phyem.msehtt.tools.vector.static.local import MseHttStaticLocalVector
+from phyem.msehtt.static.form.cochain.vector.static import MseHttStaticCochainVector
 
-from msehtt.tools.linear_system.static.global_.main import MseHttLinearSystem
-from msehtt.tools.linear_system.static.local.customize import MseHttStaticLinearSystemCustomize
+from phyem.msehtt.tools.matrix.static.local import bmat
+from phyem.msehtt.tools.vector.static.local import concatenate
 
-from msehtt.tools.linear_system.static.local.solve import MseHtt_Local_LinearSystem_Solve
+from phyem.msehtt.tools.linear_system.static.global_.main import MseHttLinearSystem
+from phyem.msehtt.tools.linear_system.static.local.customize import MseHttStaticLinearSystemCustomize
+
+from phyem.msehtt.tools.linear_system.static.local.solve import MseHtt_Local_LinearSystem_Solve
 
 
 class MseHttStaticLocalLinearSystem(Frozen):
@@ -190,7 +191,7 @@ class MseHttStaticLocalLinearSystem(Frozen):
             self._solve = MseHtt_Local_LinearSystem_Solve(self)
         return self._solve
 
-    def assemble(self, cache=None, preconditioner=False, threshold=None):
+    def assemble(self, cache=None, preconditioner=False, threshold=None, customizations=None):
         """
 
         Parameters
@@ -202,14 +203,77 @@ class MseHttStaticLocalLinearSystem(Frozen):
             This is very helpful, for example, when the A matrix does not change in all iterations.
         preconditioner :
         threshold :
+        customizations :
+            The customizations that need to be done in the assembled system.
+
+            customizations = [
+                {
+                    'A': ...,
+                    'b': ...
+                },
+                {
+                    'A': ...,
+                    'b': ...
+                }
+            ]
+
+            So, each customization is a dict, and it can have two keys that contain the customization
+            sent to A or b.
 
         Returns
         -------
 
         """
-        A = self.A._mA.assemble(cache=cache, threshold=threshold)
-        b = self.b._vb.assemble()
-        if preconditioner is False:
+        A_customizations = []
+        b_customizations = []
+
+        if customizations is None:
+            pass
+        else:
+            for cus in customizations:
+                for key in cus:
+                    assert key in ('A', 'b'), \
+                        f"each set of customization can only customize A and b, or, A or b."
+
+                if 'A' in cus:
+                    cus_A = cus['A']
+                    indicator = cus_A[0]
+                    if indicator == 'new_EndZeroRowCol_with_a_one_for_global_dof':
+                        ith_unknown, global_dof = cus_A[1], cus_A[2]
+                        A_customizations.append(
+                            ('new_EndZeroRowCol_with_a_one_for_global_dof', ith_unknown, global_dof)
+                        )
+                    else:
+                        raise NotImplementedError(indicator)
+                else:
+                    pass
+
+                if 'b' in cus:
+                    cus_b = cus['b']
+                    indicator = cus_b[0]
+                    if indicator == 'add_a_value_at_the_end':
+                        value = cus_b[1]
+                        b_customizations.append(('add_a_value_at_the_end', value))
+                    else:
+                        raise NotImplementedError(indicator)
+                else:
+                    pass
+
+        if len(A_customizations) == 0:
+            A_customizations = None
+        else:
+            pass
+
+        if len(b_customizations) == 0:
+            b_customizations = None
+        else:
+            pass
+
+        A = self.A._mA.assemble(cache=cache, threshold=threshold, customizations=A_customizations)
+        b = self.b._vb.assemble(customizations=b_customizations)
+
+        # noinspection PySimplifyBooleanCheck
+        if preconditioner is False:  # this is not a typo; do NOT use: if not preconditioner:
             pass
         elif preconditioner == 'Jacobian':
             diag = A.diagonal()

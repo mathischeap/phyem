@@ -3,14 +3,14 @@ r"""
 """
 import numpy as np
 
-from tools.frozen import Frozen
-from tools.quadrature import Quadrature
-from msepy.manifold.main import MsePyManifold
-from msepy.mesh.elements.main import MsePyMeshElements
-from msepy.mesh.coordinate_transformation import MsePyMeshCoordinateTransformation
-from msepy.mesh.visualize.main import MsePyMeshVisualize
-from msepy.mesh.topology.main import MsePyMeshTopology
-from msepy.mesh.boundary_section.main import MsePyBoundarySectionMesh
+from phyem.tools.frozen import Frozen
+from phyem.tools.quadrature import Quadrature
+from phyem.msepy.manifold.main import MsePyManifold
+from phyem.msepy.mesh.elements.main import MsePyMeshElements
+from phyem.msepy.mesh.coordinate_transformation import MsePyMeshCoordinateTransformation
+from phyem.msepy.mesh.visualize.main import MsePyMeshVisualize
+from phyem.msepy.mesh.topology.main import MsePyMeshTopology
+from phyem.msepy.mesh.boundary_section.main import MsePyBoundarySectionMesh
 
 
 def config(mesh, manifold, element_layout):
@@ -234,7 +234,7 @@ class MsePyMesh(Frozen):
     def _config_dependent_boundary_section_meshes(self):
         """"""
 
-        from msepy.main import base
+        from phyem.msepy.main import base
 
         all_msepy_manifolds = base['manifolds']
 

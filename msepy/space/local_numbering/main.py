@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*-
 r"""
 """
-from tools.frozen import Frozen
-from msepy.space.local_numbering.Lambda import MsePyLocalNumberingLambda
-from msepy.space.local_numbering.bundle import MsePyLocalNumberingBundle
+from phyem.tools.frozen import Frozen
+from phyem.msepy.space.local_numbering.Lambda import MsePyLocalNumberingLambda
+from phyem.msepy.space.local_numbering.bundle import MsePyLocalNumberingBundle
 
 
 class MsePyLocalNumbering(Frozen):

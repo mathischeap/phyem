@@ -1,11 +1,12 @@
 # -*- coding: utf-8 -*-
 r"""
 """
-from tools.frozen import Frozen
-from tools.quadrature import Quadrature
 import numpy as np
 from scipy.sparse import csr_matrix, bmat
-from src.config import _setting
+
+from phyem.tools.frozen import Frozen
+from phyem.tools.quadrature import Quadrature
+from phyem.src.config import _setting
 
 
 class MsePyMassMatrixBundle(Frozen):

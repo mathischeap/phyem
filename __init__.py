@@ -2,11 +2,11 @@
 r"""
 """
 
-import os
-absolute_path = os.path.dirname(__file__)
-import sys
-if absolute_path not in sys.path:
-    sys.path.insert(0, absolute_path)
+# import os
+# absolute_path = os.path.dirname(__file__)
+# import sys
+# if absolute_path not in sys.path:
+#     sys.path.insert(0, absolute_path)
 
 __version__ = '1.0.2'
 
@@ -75,56 +75,56 @@ def test():
     # so far, `msepy` is the only implementation released.
 
 
-import src.config as config
+import phyem.src.config as config
 
-from src.form.others import _list_forms as list_forms
-from src.spaces.main import _list_spaces as list_spaces
-from src.mesh import _list_meshes as list_meshes
+from phyem.src.form.others import _list_forms as list_forms
+from phyem.src.spaces.main import _list_spaces as list_spaces
+from phyem.src.mesh import _list_meshes as list_meshes
 
-from src.form.main import _clear_forms as clear_forms
+from phyem.src.form.main import _clear_forms as clear_forms
 
-import tests.samples.main as samples
+import phyem.tests.samples.main as samples
 
-from src.manifold import manifold
-from src.manifold import find_manifold
+from phyem.src.manifold import manifold
+from phyem.src.manifold import find_manifold
 
-from src.mesh import mesh
+from phyem.src.mesh import mesh
 
-import src.spaces.main as space
+import phyem.src.spaces.main as space
 
-from src.operators import inner, dp
-from src.operators import wedge, Hodge, trace
-from src.operators import d, exterior_derivative
-from src.operators import codifferential
-from src.operators import time_derivative
-from src.operators import time_derivative as ddt
+from phyem.src.operators import inner, dp
+from phyem.src.operators import wedge, Hodge, trace
+from phyem.src.operators import d, exterior_derivative
+from phyem.src.operators import codifferential
+from phyem.src.operators import time_derivative
+from phyem.src.operators import time_derivative as ddt
 
-from src.pde import pde
-from src.ode.main import ode
-from src.wf.main import WeakFormulation as wf
+from phyem.src.pde import pde
+from phyem.src.ode.main import ode
+from phyem.src.wf.main import WeakFormulation as wf
 
-from src.time_sequence import abstract_time_sequence as time_sequence
-from src.form.parameters import constant_scalar
+from phyem.src.time_sequence import abstract_time_sequence as time_sequence
+from phyem.src.form.parameters import constant_scalar
 
-import src.fem as fem
+import phyem.src.fem as fem
 
-import tools.vector_calculus as vc
+import phyem.tools.vector_calculus as vc
 
-from tools.runner import ParallelMatrix3dInputRunner as run  # runner date reader
-from tools.runner import RunnerDataReader as rdr             # runner date reader
+from phyem.tools.runner import ParallelMatrix3dInputRunner as run  # runner date reader
+from phyem.tools.runner import RunnerDataReader as rdr             # runner date reader
 
-from tools.iterator.main import Iterator as iterator
+from phyem.tools.iterator.main import Iterator as iterator
 
-from tools.save import save
-from tools.read import read, read_tsf
+from phyem.tools.save import save
+from phyem.tools.read import read, read_tsf
 
-import tools.os_ as os
-import tools.film as film
+import phyem.tools.os_ as os
+import phyem.tools.film as film
 
-import tools
+import phyem.tools
 
-from tools.vtk_.main import vtk
-from tools.dds.saving_api import _rws_grouped_saving as rws
+from phyem.tools.vtk_.main import vtk
+from phyem.tools.dds.saving_api import _rws_grouped_saving as rws
 
 
 def ws(file_dir, write_dir, source='source'):
@@ -163,12 +163,12 @@ def exist(file_dir=None, write_dir=None, source='source'):
         pass
 
 
-from tools.miscellaneous.rref import rref
+from phyem.tools.miscellaneous.rref import rref
 
-from tools.iterator.cache_reader import print_cache_log
+from phyem.tools.iterator.cache_reader import print_cache_log
 
-from tools.miscellaneous.php import php
+from phyem.tools.miscellaneous.php import php
 
-import tools.miscellaneous.pickle_ as pk
+import phyem.tools.miscellaneous.pickle_ as pk
 
-import tools.miscellaneous.geometries.main as geometries
+import phyem.tools.miscellaneous.geometries.main as geometries

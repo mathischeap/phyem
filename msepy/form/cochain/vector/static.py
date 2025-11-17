@@ -2,7 +2,8 @@
 r"""
 """
 import numpy as np
-from msepy.tools.vector.static.local import MsePyStaticLocalVector
+
+from phyem.msepy.tools.vector.static.local import MsePyStaticLocalVector
 
 
 class MsePyRootFormStaticCochainVector(MsePyStaticLocalVector):

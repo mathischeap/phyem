@@ -2,29 +2,29 @@
 r"""
 """
 
-from tools.frozen import Frozen
-from src.spaces.main import _sep
-from msepy.main import base
-from src.spaces.main import _str_degree_parser
-from src.spaces.main import *
+from phyem.tools.frozen import Frozen
+from phyem.src.spaces.main import _sep
+from phyem.msepy.main import base
+from phyem.src.spaces.main import _str_degree_parser
+from phyem.src.spaces.main import *
 
-from src.form.main import _global_root_forms_lin_dict
-from msepy.tools.matrix.static.local import MsePyStaticLocalMatrix
+from phyem.src.form.main import _global_root_forms_lin_dict
+from phyem.msepy.tools.matrix.static.local import MsePyStaticLocalMatrix
 
-from msepy.form.addons.noc.diff_3_entries_AxB_ip_C import _AxBipC, _AxBdpC
-from msepy.form.addons.noc.diff_3_entries_A_convect_B_ip_C import _A_convect_B_ip_C
-from msepy.form.addons.noc.diff_3_entries_dA_ip_BtpC import __dA_ip_BtpC__
-from msepy.form.addons.noc.diff_3_entries_A__ip__B_tp_C import _A__ip__B_tp_C_
-from msepy.form.addons.noc.AxB_ip_CxD import AxB_ip_CxD
-from msepy.form.addons.noc.AxB_dp_CxD import AxB_dp_CxD
+from phyem.msepy.form.addons.noc.diff_3_entries_AxB_ip_C import _AxBipC, _AxBdpC
+from phyem.msepy.form.addons.noc.diff_3_entries_A_convect_B_ip_C import _A_convect_B_ip_C
+from phyem.msepy.form.addons.noc.diff_3_entries_dA_ip_BtpC import __dA_ip_BtpC__
+from phyem.msepy.form.addons.noc.diff_3_entries_A__ip__B_tp_C import _A__ip__B_tp_C_
+from phyem.msepy.form.addons.noc.AxB_ip_CxD import AxB_ip_CxD
+from phyem.msepy.form.addons.noc.AxB_dp_CxD import AxB_dp_CxD
 
-from msepy.tools.vector.dynamic import MsePyDynamicLocalVector
-from msepy.tools.vector.static.local import MsePyStaticLocalVector
+from phyem.msepy.tools.vector.dynamic import MsePyDynamicLocalVector
+from phyem.msepy.tools.vector.static.local import MsePyStaticLocalVector
 
-from msepy.tools.linear_system.dynamic.bc import MsePyDLSNaturalBoundaryCondition
-from msepy.mesh.boundary_section.main import MsePyBoundarySectionMesh
+from phyem.msepy.tools.linear_system.dynamic.bc import MsePyDLSNaturalBoundaryCondition
+from phyem.msepy.mesh.boundary_section.main import MsePyBoundarySectionMesh
 
-from src.config import _form_evaluate_at_repr_setting
+from phyem.src.config import _form_evaluate_at_repr_setting
 _rf_evaluate_at_lin_repr = _form_evaluate_at_repr_setting['lin']
 
 __all__ = [

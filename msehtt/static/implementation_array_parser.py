@@ -1,23 +1,23 @@
 # -*- coding: utf-8 -*-
 r"""
 """
-from tools.frozen import Frozen
-from src.spaces.main import _str_degree_parser
-from src.spaces.main import _degree_str_maker
-from src.spaces.main import _sep
-from src.config import _form_evaluate_at_repr_setting
+from phyem.tools.frozen import Frozen
+from phyem.src.spaces.main import _str_degree_parser
+from phyem.src.spaces.main import _degree_str_maker
+from phyem.src.spaces.main import _sep
+from phyem.src.config import _form_evaluate_at_repr_setting
 _rf_evaluate_at_lin_repr = _form_evaluate_at_repr_setting['lin']
 
-from src.form.main import _global_root_forms_lin_dict
-from src.wf.mp.linear_system_bc import _NaturalBoundaryCondition
+from phyem.src.form.main import _global_root_forms_lin_dict
+from phyem.src.wf.mp.linear_system_bc import _NaturalBoundaryCondition
 
-from msehtt.tools.matrix.static.local import MseHttStaticLocalMatrix
-from msehtt.tools.vector.dynamic import MseHttDynamicLocalVector
-from msehtt.tools.vector.static.local import MseHttStaticLocalVector
+from phyem.msehtt.tools.matrix.static.local import MseHttStaticLocalMatrix
+from phyem.msehtt.tools.vector.dynamic import MseHttDynamicLocalVector
+from phyem.msehtt.tools.vector.static.local import MseHttStaticLocalVector
 
 
 # noinspection PyUnresolvedReferences
-from src.spaces.main import *
+from phyem.src.spaces.main import *
 _locals = locals()
 
 _indicator_templates = {}
@@ -28,10 +28,10 @@ _setting_ = {
 }
 
 
-from msehtt.static.form.addons.nop_data_computer.trilinear_AxB_ip_C import AxB_ip_C
-from msehtt.static.form.addons.nop_data_computer.trilinear_AxB_dp_C import AxB_dp_C
-from msehtt.static.form.addons.nop_data_computer.trilinear_AB_ip_dC import AB_ip_dC
-from msehtt.static.form.addons.nop_data_computer.trilinear_ABC import T_ABC
+from phyem.msehtt.static.form.addons.nop_data_computer.trilinear_AxB_ip_C import AxB_ip_C
+from phyem.msehtt.static.form.addons.nop_data_computer.trilinear_AxB_dp_C import AxB_dp_C
+from phyem.msehtt.static.form.addons.nop_data_computer.trilinear_AB_ip_dC import AB_ip_dC
+from phyem.msehtt.static.form.addons.nop_data_computer.trilinear_ABC import T_ABC
 
 
 def _indicator_check():

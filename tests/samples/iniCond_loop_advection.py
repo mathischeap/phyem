@@ -1,17 +1,13 @@
 # -*- coding: utf-8 -*-
 r"""
 """
-import sys
-if './' not in sys.path:
-    sys.path.append('./')
-
 import numpy as np
 
-from tools.frozen import Frozen
-from tools.functions.time_space._2d.wrappers.scalar import T2dScalar
-from tools.functions.time_space._2d.wrappers.vector import T2dVector
+from phyem.tools.frozen import Frozen
+from phyem.tools.functions.time_space._2d.wrappers.scalar import T2dScalar
+from phyem.tools.functions.time_space._2d.wrappers.vector import T2dVector
 
-from tools.gen_piece_wise import genpiecewise
+from phyem.tools.gen_piece_wise import genpiecewise
 
 
 class InitialCondition_LoopAdvection(Frozen):

@@ -2,8 +2,8 @@
 r"""
 """
 import numpy as np
-from src.config import RANK, MASTER_RANK, COMM, SIZE
-from tools.matplot.scatter import scatter
+from phyem.src.config import RANK, MASTER_RANK, COMM, SIZE
+from phyem.tools.matplot.scatter import scatter
 
 
 def quick_visualizer_m2n2k0(f, t, ddf=1, **kwargs):

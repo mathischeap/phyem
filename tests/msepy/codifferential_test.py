@@ -2,13 +2,9 @@
 r"""
 python tests/msepy/codifferential_test.py
 """
-import sys
 import numpy as np
 
-if './' not in sys.path:
-    sys.path.append('./')
-
-import __init__ as ph
+import phyem as ph
 
 
 def codifferential_test(n, k, orientation):

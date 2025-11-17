@@ -96,15 +96,11 @@ Note that we configure the mesh with a factor ``3``. Increasing this factor to r
 
 """
 
-import sys
-
-if './' not in sys.path:
-    sys.path.append('./')
-
 import numpy as np
-from msepy.manifold.predefined._helpers import _LinearTransformation, _Transfinite2
-
 import matplotlib.pyplot as plt
+
+from phyem.msepy.manifold.predefined._helpers import _LinearTransformation, _Transfinite2
+
 
 
 def _make_an_illustration(saveto, r=1, dl=10, dr=25, h=6):

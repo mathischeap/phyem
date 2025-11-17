@@ -1,21 +1,18 @@
 # -*- coding: utf-8 -*-
 r"""
 """
-import sys
-
-if './' not in sys.path:
-    sys.path.append('./')
-from tools.frozen import Frozen
-
 from time import time
-from src.config import RANK, MASTER_RANK, SIZE
-from tools.miscellaneous.php import php
+
+from phyem.tools.frozen import Frozen
+from phyem.src.config import RANK, MASTER_RANK
+from phyem.tools.miscellaneous.php import php
+from phyem.tools.miscellaneous.timer import MyTimer
 
 
 class Ranking(Frozen):
     r"""Use it to test the speed of different machines."""
 
-    def __init__(self, ranking_title, record_file_dir, top_how_much=10):
+    def __init__(self, ranking_title, record_file_dir, top_how_much=10, num_ranks=5):
         r""""""
         self._ranking_title = ranking_title
         self._record_file_dir = record_file_dir
@@ -25,6 +22,7 @@ class Ranking(Frozen):
         self._t_start = - 1.0
         self._current_records = None
         self._all_hosts = None
+        self._num_ranks = num_ranks
         self._freeze()
 
     def start_ranking(self):
@@ -55,18 +53,18 @@ class Ranking(Frozen):
     def report_ranking(self):
         r""""""
         if RANK == MASTER_RANK:
-            from tools.miscellaneous.timer import MyTimer
+            from phyem.tools.miscellaneous.timer import MyTimer
             t_cost = time() - self._t_start
             if self._my_hostname in self._all_hosts:
                 for r in self._current_records:
                     if self._current_records[r][0] == self._my_hostname:
-                        self._current_records[r] = (self._my_hostname, SIZE, t_cost)
+                        self._current_records[r] = (self._my_hostname, self._num_ranks, t_cost)
                         break
                     else:
                         pass
             else:
                 num_hosts = len(self._all_hosts)
-                self._current_records[num_hosts] = (self._my_hostname, SIZE, t_cost)
+                self._current_records[num_hosts] = (self._my_hostname, self._num_ranks, t_cost)
 
             new_ranking = []
             new_cost = []
@@ -133,3 +131,23 @@ class Ranking(Frozen):
                 w_str = '\n'.join(w_str)
                 file.write(w_str)
             file.close()
+
+    def print_ranking(self):
+        r""""""
+        php(
+            f"\n\n----------------- RANKING [{self._ranking_title}] SUMMARY -----------------",
+            flush=True
+        )
+
+        with open(self._record_file_dir, 'r') as file:
+            records = file.readlines()
+        file.close()
+        for r, line in enumerate(records):
+            # print(line.split(' '))
+            _, _hostname, _size, _cost = line[:-1].split(' ')
+            _cost = float(_cost)
+            php(
+                f"{r + 1: >3}", f"{_hostname: >15}", f" {_size: >3} ranks : ",
+                f"costs {MyTimer.seconds2hmsm(_cost): >15}"
+            )
+        php(f"==================== END [{self._ranking_title}] RANKING ==================\n\n")

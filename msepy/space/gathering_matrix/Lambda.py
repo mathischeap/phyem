@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*-
 r"""
 """
-from tools.frozen import Frozen
-from msepy.tools.gathering_matrix import RegularGatheringMatrix
 import numpy as np
+from phyem.tools.frozen import Frozen
+from phyem.msepy.tools.gathering_matrix import RegularGatheringMatrix
 
 
 class MsePyGatheringMatrixLambda(Frozen):

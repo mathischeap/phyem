@@ -10,7 +10,7 @@ plt.rcParams.update({
 })
 matplotlib.use('TkAgg')
 
-from tools.frozen import Frozen
+from phyem.tools.frozen import Frozen
 
 
 class AlgebraicProxy(Frozen):

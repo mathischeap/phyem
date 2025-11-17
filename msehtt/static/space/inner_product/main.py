@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 """
 """
-from tools.frozen import Frozen
-from msehtt.static.space.inner_product.Lambda_Lambda.main import MseHttSpace_Lambda_ip_Lambda
+from phyem.tools.frozen import Frozen
+from phyem.msehtt.static.space.inner_product.Lambda_Lambda.main import MseHttSpace_Lambda_ip_Lambda
 
 
 class MseHttSpace_InnerProduct(Frozen):

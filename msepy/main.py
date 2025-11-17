@@ -347,18 +347,21 @@ the ``matplot`` method is only implemented for 2-dimensional forms.
 And we again recommand interactive VTK visualization tools for 3-dimensional visualization.
 
 """
-
-from tools.frozen import Frozen
-from msepy.manifold.main import MsePyManifold
-from msepy.mesh.main import MsePyMesh
-from msepy.space.main import MsePySpace
-from msepy.form.main import MsePyRootForm
-from src.wf.mp.linear_system import MatrixProxyLinearSystem
-from src.wf.mp.nonlinear_system import MatrixProxyNoneLinearSystem
-from src.config import SIZE   # MPI.SIZE
 from time import time
-from tools.miscellaneous.timer import MyTimer
-from msepy.tools.gathering_matrix import _cgm_cache
+
+from phyem.tools.frozen import Frozen
+from phyem.msepy.manifold.main import MsePyManifold
+from phyem.msepy.mesh.main import MsePyMesh
+from phyem.msepy.space.main import MsePySpace
+from phyem.msepy.form.main import MsePyRootForm
+from phyem.src.wf.mp.linear_system import MatrixProxyLinearSystem
+from phyem.src.wf.mp.nonlinear_system import MatrixProxyNoneLinearSystem
+from phyem.src.config import SIZE   # MPI.SIZE
+from phyem.tools.miscellaneous.timer import MyTimer
+from phyem.msepy.tools.gathering_matrix import _cgm_cache
+
+from phyem.msepy.manifold.main import config as _mf_config
+from phyem.msepy.mesh.main import config as _mh_config
 
 
 __setting__ = {}
@@ -524,11 +527,11 @@ def _parse(obj):
     particular fem setting.
     """
     if obj.__class__ is MatrixProxyLinearSystem:
-        from msepy.tools.linear_system.dynamic.main import MsePyDynamicLinearSystem
+        from phyem.msepy.tools.linear_system.dynamic.main import MsePyDynamicLinearSystem
         dynamic = MsePyDynamicLinearSystem(obj, base)
         return dynamic
     elif obj.__class__ is MatrixProxyNoneLinearSystem:
-        from msepy.tools.nonlinear_system.dynamic.main import MsePyDynamicNonLinearSystem
+        from phyem.msepy.tools.nonlinear_system.dynamic.main import MsePyDynamicNonLinearSystem
         dynamic = MsePyDynamicNonLinearSystem(obj, base)
         return dynamic
 
@@ -566,7 +569,7 @@ def info(*others_2b_printed):
         else:
             pass
     print(f"\n~) Existing time sequences --------- ")
-    from src.time_sequence import _global_abstract_time_sequence
+    from phyem.src.time_sequence import _global_abstract_time_sequence
     for ats_lin in _global_abstract_time_sequence:
         ats = _global_abstract_time_sequence[ats_lin]
         ats.info()
@@ -613,11 +616,11 @@ def _quick_mesh(*bounds, element_layout=None):
     for i, bound in enumerate(bounds):
         lower, upper = bound
         assert upper > lower, f"bounds[{i}] = {bound} is wrong."
-    from src.config import set_embedding_space_dim
+    from phyem.src.config import set_embedding_space_dim
     set_embedding_space_dim(ndim)
-    from src.manifold import manifold
+    from phyem.src.manifold import manifold
     manifold = manifold(ndim)
-    from src.mesh import mesh
+    from phyem.src.mesh import mesh
     mesh = mesh(manifold)
     manifold = MsePyManifold(manifold)
     mesh = MsePyMesh(mesh)
@@ -628,7 +631,7 @@ def _quick_mesh(*bounds, element_layout=None):
 
 def find_mesh_of_manifold(msepy_or_abstract_manifold):
     """Find the corresponding msepy mesh."""
-    from src.manifold import Manifold
+    from phyem.src.manifold import Manifold
     the_mesh = None
 
     if msepy_or_abstract_manifold.__class__ is Manifold:
@@ -645,10 +648,6 @@ def find_mesh_of_manifold(msepy_or_abstract_manifold):
 
     assert the_mesh is not None, f"We must have found one!"
     return the_mesh
-
-
-from msepy.manifold.main import config as _mf_config
-from msepy.mesh.main import config as _mh_config
 
 
 def config(obj):

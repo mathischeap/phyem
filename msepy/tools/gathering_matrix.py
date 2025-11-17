@@ -2,8 +2,9 @@
 r"""
 """
 import numpy as np
-from tools.frozen import Frozen
-from tools.miscellaneous.ndarray_cache import ndarray_key_comparer, add_to_ndarray_cache
+
+from phyem.tools.frozen import Frozen
+from phyem.tools.miscellaneous.ndarray_cache import ndarray_key_comparer, add_to_ndarray_cache
 
 
 _cgm_cache = {

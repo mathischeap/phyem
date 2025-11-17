@@ -2,9 +2,10 @@
 r"""
 """
 import pickle
-from src.config import MASTER_RANK, RANK, SIZE, COMM
-from tools.dds.region_wise_structured import DDSRegionWiseStructured
-from tools.dds.region_wise_structured_group import DDS_RegionWiseStructured_Group
+
+from phyem.src.config import MASTER_RANK, RANK, SIZE, COMM
+from phyem.tools.dds.region_wise_structured import DDSRegionWiseStructured
+from phyem.tools.dds.region_wise_structured_group import DDS_RegionWiseStructured_Group
 
 
 def read(filename, root=MASTER_RANK):

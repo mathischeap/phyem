@@ -1,10 +1,10 @@
 # -*- coding: utf-8 -*-
 r"""
 """
-from tools.frozen import Frozen
-from msepy.tools.matrix.static.assembled import MsePyStaticAssembledMatrix
-from msepy.tools.vector.static.assembled import MsePyStaticAssembledVector
-from msepy.tools.linear_system.static.assembled.solve import MsePyStaticLinearSystemAssembledSolve
+from phyem.tools.frozen import Frozen
+from phyem.msepy.tools.matrix.static.assembled import MsePyStaticAssembledMatrix
+from phyem.msepy.tools.vector.static.assembled import MsePyStaticAssembledVector
+from phyem.msepy.tools.linear_system.static.assembled.solve import MsePyStaticLinearSystemAssembledSolve
 
 
 class MsePyStaticLinearSystemAssembled(Frozen):

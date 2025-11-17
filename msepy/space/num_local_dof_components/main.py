@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*-
 r"""
 """
-from tools.frozen import Frozen
-from msepy.space.num_local_dof_components.Lambda import MsePyNumLocalDofComponentsLambda
-from msepy.space.num_local_dof_components.bundle import MsePyNumLocalDofComponentsBundle
+from phyem.tools.frozen import Frozen
+from phyem.msepy.space.num_local_dof_components.Lambda import MsePyNumLocalDofComponentsLambda
+from phyem.msepy.space.num_local_dof_components.bundle import MsePyNumLocalDofComponentsBundle
 
 
 class MsePyNumLocalDofComponents(Frozen):

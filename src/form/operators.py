@@ -2,22 +2,24 @@
 r"""
 """
 
-from src.spaces.operators import wedge as space_wedge
-from src.spaces.operators import Hodge as space_Hodge
-from src.spaces.operators import d as space_d
-from src.spaces.operators import codifferential as space_codifferential
-from src.spaces.operators import cross_product as space_cross_product
-from src.spaces.operators import Cross_Product as space_Cross_Product
-from src.spaces.operators import CrossProduct as space_CrossProduct
-from src.spaces.operators import crossProduct as space_crossProduct
-from src.spaces.operators import convect as space_convect
-from src.spaces.operators import tensor_product as space_tensor_product
-from src.spaces.operators import project_to as space_project_to
+from phyem.src.spaces.operators import wedge as space_wedge
+from phyem.src.spaces.operators import Hodge as space_Hodge
+from phyem.src.spaces.operators import d as space_d
+from phyem.src.spaces.operators import codifferential as space_codifferential
+from phyem.src.spaces.operators import cross_product as space_cross_product
+from phyem.src.spaces.operators import Cross_Product as space_Cross_Product
+from phyem.src.spaces.operators import CrossProduct as space_CrossProduct
+from phyem.src.spaces.operators import crossProduct as space_crossProduct
+from phyem.src.spaces.operators import convect as space_convect
+from phyem.src.spaces.operators import tensor_product as space_tensor_product
+from phyem.src.spaces.operators import project_to as space_project_to
+from phyem.src.spaces.operators import trace as space_trace
 
-from src.config import _global_operator_lin_repr_setting
-from src.config import _global_operator_sym_repr_setting
+from phyem.src.config import _global_operator_lin_repr_setting
+from phyem.src.config import _global_operator_sym_repr_setting
 
-from src.config import _non_root_lin_sep
+from phyem.src.config import _non_root_lin_sep
+
 
 _time_derivative_related_operators = {
     'time_derivative': _global_operator_lin_repr_setting['time_derivative'],
@@ -228,9 +230,6 @@ def time_derivative(f, degree=1):
 
     else:
         raise NotImplementedError()
-
-
-from src.spaces.operators import trace as space_trace
 
 
 def trace(f):

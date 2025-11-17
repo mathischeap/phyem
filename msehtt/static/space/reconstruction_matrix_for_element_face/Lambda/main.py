@@ -1,11 +1,11 @@
 # -*- coding: utf-8 -*-
 r"""Reconstruction along element face/edge for Lambda-type spaces (scalar-valued form spaces)
 """
-from tools.frozen import Frozen
-from msehtt.static.space.reconstruction_matrix_for_element_face.Lambda.RMef_m2n2k0 import ___RMef_m2n2k0___
-from msehtt.static.space.reconstruction_matrix_for_element_face.Lambda.RMef_m2n2k1 import ___RMef_m2n2k1_inner___
-from msehtt.static.space.reconstruction_matrix_for_element_face.Lambda.RMef_m2n2k1 import ___RMef_m2n2k1_outer___
-from msehtt.static.space.reconstruction_matrix_for_element_face.Lambda.RMef_m2n2k2 import ___RMef_m2n2k2___
+from phyem.tools.frozen import Frozen
+from phyem.msehtt.static.space.reconstruction_matrix_for_element_face.Lambda.RMef_m2n2k0 import ___RMef_m2n2k0___
+from phyem.msehtt.static.space.reconstruction_matrix_for_element_face.Lambda.RMef_m2n2k1 import ___RMef_m2n2k1_inner___
+from phyem.msehtt.static.space.reconstruction_matrix_for_element_face.Lambda.RMef_m2n2k1 import ___RMef_m2n2k1_outer___
+from phyem.msehtt.static.space.reconstruction_matrix_for_element_face.Lambda.RMef_m2n2k2 import ___RMef_m2n2k2___
 
 
 class MseHttSpace_RM_eF_Lambda(Frozen):

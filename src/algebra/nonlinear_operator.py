@@ -1,9 +1,10 @@
 # -*- coding: utf-8 -*-
 r"""
 """
-from tools.frozen import Frozen
-from src.config import _parse_lin_repr
-from src.form.parameters import constant_scalar
+from phyem.tools.frozen import Frozen
+from phyem.src.config import _parse_lin_repr
+from phyem.src.form.parameters import constant_scalar
+
 _cs1 = constant_scalar(1)
 
 _global_nop_arrays = dict()  # using pure_lin_repr as cache keys

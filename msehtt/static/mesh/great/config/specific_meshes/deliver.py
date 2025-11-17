@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*-
 r"""
 """
-from tools.frozen import Frozen
+from phyem.tools.frozen import Frozen
 
-from msehtt.static.mesh.great.config.specific_meshes.periodic_slice import periodic_slice
+from phyem.msehtt.static.mesh.great.config.specific_meshes.periodic_slice import periodic_slice
 
 
 class Predefined_Specific_Meshes(Frozen):

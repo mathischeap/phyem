@@ -2,15 +2,16 @@
 r"""
 """
 import numpy as np
-from tools.frozen import Frozen
 from scipy.sparse import csr_matrix
 
-from msehtt.tools.matrix.static.local import MseHttStaticLocalMatrix
+from phyem.tools.frozen import Frozen
 
-from msehtt.static.form.main import MseHttForm
-from msehtt.static.form.addons.static import MseHttFormStaticCopy
-from msehtt.static.form.cochain.instant import MseHttTimeInstantCochain
-from msehtt.static.form.cochain.vector.static import MseHttStaticCochainVector, MseHttStaticLocalVector
+from phyem.msehtt.tools.matrix.static.local import MseHttStaticLocalMatrix
+
+from phyem.msehtt.static.form.main import MseHttForm
+from phyem.msehtt.static.form.addons.static import MseHttFormStaticCopy
+from phyem.msehtt.static.form.cochain.instant import MseHttTimeInstantCochain
+from phyem.msehtt.static.form.cochain.vector.static import MseHttStaticCochainVector, MseHttStaticLocalVector
 
 
 class MseHttStatic_Local_Multi_Linear_NonlinearOperator(Frozen):

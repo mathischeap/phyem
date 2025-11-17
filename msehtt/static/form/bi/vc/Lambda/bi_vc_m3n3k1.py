@@ -2,7 +2,7 @@
 r"""
 """
 import numpy as np
-from tools.quadrature import quadrature
+from phyem.tools.quadrature import quadrature
 _one_array_ = np.array([1])
 
 
@@ -48,9 +48,9 @@ def bi_vc__m3n3k1(rf1, t, vc, boundary_section):
     return data_dict
 
 
-from msehtt.static.space.reconstruction_matrix.Lambda.RM_m3n3k1 import ___rm331_msepy_hexahedral___
-from msehtt.static.space.find.local_dofs_on_face.Lambda.m3n3k1 import __m3n3k1_msepy_hexahedral_
-from msehtt.static.space.num_local_dofs.Lambda.num_local_dofs_m3n3k1 import _num_local_dofs__m3n3k1_msepy_hexahedral_
+from phyem.msehtt.static.space.reconstruction_matrix.Lambda.RM_m3n3k1 import ___rm331_msepy_hexahedral___
+from phyem.msehtt.static.space.find.local_dofs_on_face.Lambda.m3n3k1 import __m3n3k1_msepy_hexahedral_
+from phyem.msehtt.static.space.num_local_dofs.Lambda.num_local_dofs_m3n3k1 import _num_local_dofs__m3n3k1_msepy_hexahedral_
 
 
 def ___bi_vc_331_orthogonal_hexahedral___(element, degree, face, tvc):

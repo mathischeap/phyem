@@ -3,15 +3,10 @@
 mpiexec -n 4 python tests/msehtt/Poisson3_periodic.py
 """
 
-import sys
-
 import numpy as np
 
-ph_dir = './'  # customize it to your dir containing phyem
-if ph_dir not in sys.path:
-    sys.path.append(ph_dir)
+import phyem as ph
 
-import __init__ as ph
 N = 3
 K = 5
 c = 0.

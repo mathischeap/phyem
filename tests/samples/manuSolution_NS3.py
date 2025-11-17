@@ -4,9 +4,9 @@ Manufactured solutions for 3d NS.
 
 """
 from numpy import sin, cos, pi
-from tools.frozen import Frozen
 
-from tools.functions.time_space._3d.wrappers.vector import T3dVector
+from phyem.tools.frozen import Frozen
+from phyem.tools.functions.time_space._3d.wrappers.vector import T3dVector
 
 
 # noinspection PyUnusedLocal

@@ -4,7 +4,8 @@ r"""
 
 import contextlib
 from time import localtime, strftime, time
-from src.config import SIZE, RANK, MASTER_RANK
+
+from phyem.src.config import SIZE, RANK, MASTER_RANK
 
 
 @contextlib.contextmanager

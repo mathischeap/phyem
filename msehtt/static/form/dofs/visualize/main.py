@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 r"""
 """
-from tools.frozen import Frozen
-from msehtt.static.form.dofs.visualize.matplot import MseHtt_StaticForm_Dofs_Visualize_Matplot
+from phyem.tools.frozen import Frozen
+from phyem.msehtt.static.form.dofs.visualize.matplot import MseHtt_StaticForm_Dofs_Visualize_Matplot
 
 
 class MseHtt_StaticForm_Dofs_Visualize(Frozen):

@@ -2,11 +2,12 @@
 r"""
 """
 import numpy as np
-from msepy.form.main import MsePyRootForm
-from src.spaces.main import _degree_str_maker
-from tools.quadrature import Quadrature
-from src.spaces.continuous.bundle import BundleValuedFormSpace
-from msepy.form.addons.noc.diff_3_entries__BASE import Base3Entries
+
+from phyem.msepy.form.main import MsePyRootForm
+from phyem.src.spaces.main import _degree_str_maker
+from phyem.tools.quadrature import Quadrature
+from phyem.src.spaces.continuous.bundle import BundleValuedFormSpace
+from phyem.msepy.form.addons.noc.diff_3_entries__BASE import Base3Entries
 
 _3d_data_cache_2 = {}
 

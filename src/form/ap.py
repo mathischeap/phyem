@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 r"""
 """
-from src.config import _form_evaluate_at_repr_setting, _root_form_ap_vec_setting
-from src.algebra.array import _root_array
+from phyem.src.config import _form_evaluate_at_repr_setting, _root_form_ap_vec_setting
+from phyem.src.algebra.array import _root_array
 
 
 def _parse_root_form_ap(f, sym_repr=None):

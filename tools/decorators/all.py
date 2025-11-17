@@ -12,16 +12,17 @@ decorators return new functions, therefore will change .__code__ and so on.
 """
 import functools
 lru_cache = functools.lru_cache
-from tools.decorators.timeit.timeit_1 import timeit1
-from tools.decorators.timeit.timeit_2 import timeit2
 
-from tools.decorators.memoize.memoize_1 import memoize1
-from tools.decorators.memoize.memoize_2 import memoize2
-from tools.decorators.memoize.memoize_3 import memoize3
-from tools.decorators.memoize.memoize_4 import memoize4
-from tools.decorators.memoize.memoize_5 import memoize5
+from phyem.tools.decorators.timeit.timeit_1 import timeit1
+from phyem.tools.decorators.timeit.timeit_2 import timeit2
 
-from tools.decorators.accepts import accepts
+from phyem.tools.decorators.memoize.memoize_1 import memoize1
+from phyem.tools.decorators.memoize.memoize_2 import memoize2
+from phyem.tools.decorators.memoize.memoize_3 import memoize3
+from phyem.tools.decorators.memoize.memoize_4 import memoize4
+from phyem.tools.decorators.memoize.memoize_5 import memoize5
+
+from phyem.tools.decorators.accepts import accepts
 
 
 if __name__ == "__main__":

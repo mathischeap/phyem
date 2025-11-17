@@ -2,11 +2,12 @@
 r"""
 """
 import numpy as np
-from src.config import RANK, MASTER_RANK, COMM
-from tools.frozen import Frozen
 from scipy.sparse import isspmatrix_csc
 from scipy.sparse import dia_matrix
-from msehtt.tools.gathering_matrix import MseHttGatheringMatrix
+
+from phyem.src.config import RANK, MASTER_RANK, COMM
+from phyem.tools.frozen import Frozen
+from phyem.msehtt.tools.gathering_matrix import MseHttGatheringMatrix
 
 
 class MseHttGlobalVectorDistributed(Frozen):

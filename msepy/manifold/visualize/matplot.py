@@ -2,11 +2,12 @@
 r"""
 """
 import numpy as np
-from tools.frozen import Frozen
 import matplotlib.pyplot as plt
 import matplotlib
 matplotlib.use('TkAgg')
-from src.config import RANK, MASTER_RANK
+
+from phyem.tools.frozen import Frozen
+from phyem.src.config import RANK, MASTER_RANK
 
 
 class MsePyManifoldVisualizeMatplot(Frozen):

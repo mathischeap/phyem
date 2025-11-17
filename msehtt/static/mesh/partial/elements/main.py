@@ -3,13 +3,13 @@ r"""
 """
 import numpy as np
 
-from tools.frozen import Frozen
-from msehtt.static.mesh.partial.elements.visualize.main import MseHttElementsPartialMeshVisualize
-from src.config import RANK, MASTER_RANK, COMM
+from phyem.tools.frozen import Frozen
+from phyem.msehtt.static.mesh.partial.elements.visualize.main import MseHttElementsPartialMeshVisualize
+from phyem.src.config import RANK, MASTER_RANK, COMM
 
-from msehtt.static.mesh.partial.elements.cfl import MseHtt_PartialMesh_Elements_CFL_condition
-from msehtt.static.mesh.partial.elements.rws import MseHtt_PartialMesh_Elements_ExportTo_DDS_RWS_Grouped
-from msehtt.static.mesh.partial.elements.compute import PartialMesh_Elements_Compute
+from phyem.msehtt.static.mesh.partial.elements.cfl import MseHtt_PartialMesh_Elements_CFL_condition
+from phyem.msehtt.static.mesh.partial.elements.rws import MseHtt_PartialMesh_Elements_ExportTo_DDS_RWS_Grouped
+from phyem.msehtt.static.mesh.partial.elements.compute import PartialMesh_Elements_Compute
 
 
 class MseHttElementsPartialMesh(Frozen):

@@ -5,24 +5,25 @@ import numpy as np
 import pandas as pd
 from tqdm import tqdm
 from time import time, sleep
-from tools.frozen import Frozen
-from tools.miscellaneous.numpy_styple import NumpyStyleDocstringReader
 import inspect
 import psutil
 import socket
-from src.config import RANK, MASTER_RANK, COMM
+
+from phyem.tools.frozen import Frozen
+from phyem.tools.miscellaneous.numpy_styple import NumpyStyleDocstringReader
+from phyem.src.config import RANK, MASTER_RANK, COMM
 
 try:
-    from tools.miscellaneous._mr import ___write_info___, ___write_picture___
+    from myserver.tools._mr import ___write_info___, ___write_picture___
     _ph_monitor_ = True
 except ModuleNotFoundError:
     _ph_monitor_ = False
 
-from tools.iterator.monitor import IteratorMonitor
+from phyem.tools.iterator.monitor import IteratorMonitor
 
 if RANK == MASTER_RANK:
     import pickle
-    from tools.miscellaneous.timer import MyTimer
+    from phyem.tools.miscellaneous.timer import MyTimer
 else:
     pass
 
@@ -214,8 +215,8 @@ class Iterator(Frozen):
             cache_filename = self._name
         else:
             pass
-        assert isinstance(cache_filename, str) and '.' not in cache_filename, \
-            f"cache_filename={cache_filename} illegal. It must be str of no '.' in it."
+        assert isinstance(cache_filename, str), \
+            f"cache_filename={cache_filename} illegal. It must be str."
         cache_filename += '.phc'
         self._cache_objs_ = cache_objs
 

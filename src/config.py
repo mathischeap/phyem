@@ -154,7 +154,7 @@ def _pr_cache(fig, filename=None):
     else:
         pass
 
-    from tools.os_ import mkdir, empty_dir, isdir
+    from phyem.tools.os_ import mkdir, empty_dir, isdir
     phcache_folder = _setting[r'cache_folder']
     if isdir(phcache_folder):
         pass
@@ -162,7 +162,7 @@ def _pr_cache(fig, filename=None):
         mkdir(phcache_folder)
 
     from time import time
-    from tools.miscellaneous.random_ import string_digits
+    from phyem.tools.miscellaneous.random_ import string_digits
     import matplotlib.pyplot as plt
     import matplotlib
     matplotlib.use('TkAgg')
@@ -213,13 +213,14 @@ def _clear_pr_cache():
     _setting["pr_cache_subfolder"] = ''  # clean cache_subfolder
 
     if RANK == MASTER_RANK:
-        from tools.os_ import listdir, isdir, mkdir, rmdir, empty_dir
+        from phyem.tools.os_ import listdir, isdir, mkdir, rmdir, empty_dir
 
         phcache_folder = _setting[r'cache_folder']
         if isdir(phcache_folder):
             pass
         else:
-            mkdir(phcache_folder)
+            return None
+
         all_ph_cache_files = listdir(phcache_folder)  # including folder names.
 
         pr_prefix = _setting['pr_cache_folder_prefix']
@@ -252,39 +253,39 @@ def _clear_all():
 
     Make sure that, when we add new global cache, put it here.
     """
-    from src.algebra.array import _global_root_arrays
-    from src.algebra.nonlinear_operator import _global_nop_arrays
-    from src.form.main import _global_forms
-    from src.form.main import _global_root_forms_lin_dict
+    from phyem.src.algebra.array import _global_root_arrays
+    from phyem.src.algebra.nonlinear_operator import _global_nop_arrays
+    from phyem.src.form.main import _global_forms
+    from phyem.src.form.main import _global_root_forms_lin_dict
     _clear_a_dict(_global_root_arrays)
     _clear_a_dict(_global_nop_arrays)
     _clear_a_dict(_global_forms)
     _clear_a_dict(_global_root_forms_lin_dict)
-    from src.form.parameters import _global_root_constant_scalars
+    from phyem.src.form.parameters import _global_root_constant_scalars
     _clear_a_dict(_global_root_constant_scalars)
-    from src.form.main import _global_form_variables
+    from phyem.src.form.main import _global_form_variables
     _global_form_variables['update_cache'] = True
 
-    from src.manifold import _global_manifolds
+    from phyem.src.manifold import _global_manifolds
     _clear_a_dict(_global_manifolds)
-    from src.mesh import _global_meshes
+    from phyem.src.mesh import _global_meshes
     _clear_a_dict(_global_meshes)
 
-    from src.time_sequence import _global_abstract_time_sequence
-    from src.time_sequence import _global_abstract_time_interval
+    from phyem.src.time_sequence import _global_abstract_time_sequence
+    from phyem.src.time_sequence import _global_abstract_time_interval
     _clear_a_dict(_global_abstract_time_sequence)
     _clear_a_dict(_global_abstract_time_interval)
 
-    from src.spaces.main import _config
+    from phyem.src.spaces.main import _config
     _config['current_mesh'] = ''
-    from src.spaces.main import _degree_cache
-    from src.spaces.main import _space_set
-    from src.spaces.main import _mesh_set
+    from phyem.src.spaces.main import _degree_cache
+    from phyem.src.spaces.main import _space_set
+    from phyem.src.spaces.main import _mesh_set
     _clear_a_dict(_degree_cache)
     _clear_a_dict(_space_set)
     _clear_a_dict(_mesh_set)
 
-    from src.wf.term.main import _global_wf_terms
+    from phyem.src.wf.term.main import _global_wf_terms
     _clear_a_dict(_global_wf_terms)
 
 

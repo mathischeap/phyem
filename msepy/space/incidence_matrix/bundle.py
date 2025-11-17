@@ -1,9 +1,10 @@
 # -*- coding: utf-8 -*-
 r"""
 """
-from tools.frozen import Frozen
 import numpy as np
 from scipy.sparse import csr_matrix, bmat
+
+from phyem.tools.frozen import Frozen
 
 
 class MsePyIncidenceMatrixBundle(Frozen):

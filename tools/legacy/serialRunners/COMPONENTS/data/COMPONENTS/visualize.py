@@ -9,9 +9,10 @@ Aerodynamics, AE
 TU Delft
 """
 import matplotlib.pyplot as plt
-from tools.miscellaneous.timer import MyTimer
-from tools.frozen import Frozen
-from tools.legacy.serialRunners.COMPONENTS.data.COMPONENTS.MODULES.m_tir_visualize import MITRVisualize
+
+from phyem.tools.miscellaneous.timer import MyTimer
+from phyem.tools.frozen import Frozen
+from phyem.tools.legacy.serialRunners.COMPONENTS.data.COMPONENTS.MODULES.m_tir_visualize import MITRVisualize
 
 
 class DFWVisualize(Frozen):

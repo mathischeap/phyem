@@ -1,14 +1,12 @@
 # -*- coding: utf-8 -*-
 r"""
 """
-import sys
-if './' not in sys.path:
-    sys.path.append('./')
 import matplotlib.pyplot as plt
-from tools.quadrature import Quadrature
 import numpy as np
-from tools.frozen import Frozen
-from tools.miscellaneous.ndarray_cache import ndarray_key_comparer, add_to_ndarray_cache
+
+from phyem.tools.quadrature import Quadrature
+from phyem.tools.frozen import Frozen
+from phyem.tools.miscellaneous.ndarray_cache import ndarray_key_comparer, add_to_ndarray_cache
 
 _cache_nodes = dict()
 _cache_edges = dict()

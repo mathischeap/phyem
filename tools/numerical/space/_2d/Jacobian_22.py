@@ -1,7 +1,8 @@
 # -*- coding: utf-8 -*-
 r""""""
 from abc import ABC
-from tools.numerical.space._2d.partial_derivative import NumericalPartialDerivativeXY
+
+from phyem.tools.numerical.space._2d.partial_derivative import NumericalPartialDerivativeXY
 
 
 class NumericalJacobianXYrs22(ABC):

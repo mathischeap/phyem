@@ -3,14 +3,14 @@ r"""
 """
 import numpy as np
 
-from tools.quadrature import quadrature
-from tools.dds.region_wise_structured import DDSRegionWiseStructured
-from tools._mpi import merge_dict
-from src.config import RANK, MASTER_RANK, COMM
+from phyem.tools.quadrature import quadrature
+from phyem.tools.dds.region_wise_structured import DDSRegionWiseStructured
+from phyem.tools._mpi import merge_dict
+from phyem.src.config import RANK, MASTER_RANK, COMM
 
-from tools.frozen import Frozen
-from msehtt.static.mesh.partial.elements.visualize.matplot import MseHttElementsPartialMeshVisualizeMatplot
-from msehtt.static.mesh.partial.elements.visualize.vtk_ import ___vtk_m3n3_partial_mesh_elements___
+from phyem.tools.frozen import Frozen
+from phyem.msehtt.static.mesh.partial.elements.visualize.matplot import MseHttElementsPartialMeshVisualizeMatplot
+from phyem.msehtt.static.mesh.partial.elements.visualize.vtk_ import ___vtk_m3n3_partial_mesh_elements___
 
 
 class MseHttElementsPartialMeshVisualize(Frozen):

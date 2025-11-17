@@ -1,8 +1,9 @@
 # -*- coding: utf-8 -*-
 r"""
 """
-from tools.frozen import Frozen
 from random import random
+
+from phyem.tools.frozen import Frozen
 
 
 class TimeSpaceFunctionBase(Frozen):

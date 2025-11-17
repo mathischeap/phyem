@@ -3,15 +3,14 @@ On different lines (1d geometries in 2d space), we can define different vector f
 useful for example when defining boundary conditions.
 
 """
-from tools.miscellaneous.geometries.m2n2 import StraightSegment2, Curve2
-from tools.miscellaneous.geometries.m2n2 import whether_point_on_straight_segment
-from tools.miscellaneous.geometries.m2n2 import whether_point_on_curve
-
-from tools.functions.time_space._2d.wrappers.vector import T2dVector
-from tools.functions.time_space._2d.constant import cfg_t
-
-from tools.frozen import Frozen
 import numpy as np
+
+from phyem.tools.miscellaneous.geometries.m2n2 import StraightSegment2, Curve2
+from phyem.tools.miscellaneous.geometries.m2n2 import whether_point_on_straight_segment
+from phyem.tools.miscellaneous.geometries.m2n2 import whether_point_on_curve
+from phyem.tools.functions.time_space._2d.wrappers.vector import T2dVector
+from phyem.tools.functions.time_space._2d.constant import cfg_t
+from phyem.tools.frozen import Frozen
 
 
 def vector_on_lines(*vector_on_lines_pairs):

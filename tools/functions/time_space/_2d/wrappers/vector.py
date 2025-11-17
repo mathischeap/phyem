@@ -2,23 +2,24 @@
 r"""
 """
 import numpy as np
-from tools.frozen import Frozen
-
-from tools.functions.time_space.base import TimeSpaceFunctionBase
 from functools import partial
-from tools.quadrature import quadrature
+from scipy.interpolate import LinearNDInterpolator
 
-from tools.functions.time_space._2d.wrappers.helpers.scalar_add import t2d_ScalarAdd
-from tools.functions.time_space._2d.wrappers.helpers.scalar_sub import t2d_ScalarSub
-from tools.functions.time_space._2d.wrappers.helpers.scalar_neg import t2d_ScalarNeg
-from tools.functions.time_space._2d.wrappers.helpers.scalar_mul import t2d_ScalarMultiply
-from tools.functions.time_space._2d.wrappers.helpers.norm_helper import NormHelper2DVector
+from phyem.tools.frozen import Frozen
 
-from tools.numerical.time_space._2d.partial_derivative_as_functions import \
+from phyem.tools.functions.time_space.base import TimeSpaceFunctionBase
+from phyem.tools.quadrature import quadrature
+
+from phyem.tools.functions.time_space._2d.wrappers.helpers.scalar_add import t2d_ScalarAdd
+from phyem.tools.functions.time_space._2d.wrappers.helpers.scalar_sub import t2d_ScalarSub
+from phyem.tools.functions.time_space._2d.wrappers.helpers.scalar_neg import t2d_ScalarNeg
+from phyem.tools.functions.time_space._2d.wrappers.helpers.scalar_mul import t2d_ScalarMultiply
+from phyem.tools.functions.time_space._2d.wrappers.helpers.norm_helper import NormHelper2DVector
+
+from phyem.tools.numerical.time_space._2d.partial_derivative_as_functions import \
     NumericalPartialDerivativeTxyFunctions, NumericalPartialDerivativeTxy
 
 
-from scipy.interpolate import LinearNDInterpolator
 
 
 # noinspection PyUnusedLocal
@@ -446,7 +447,7 @@ class T2dVector(TimeSpaceFunctionBase):
             else:
                 p1_py = self._dv_dy
 
-            from tools.functions.time_space._2d.wrappers.tensor import T2dTensor
+            from phyem.tools.functions.time_space._2d.wrappers.tensor import T2dTensor
 
             self._gradient = T2dTensor(p0_px, p0_py, p1_px, p1_py)
 
@@ -479,7 +480,7 @@ class T2dVector(TimeSpaceFunctionBase):
             neg_p0_px = t2d_ScalarNeg(p0_px)
             neg_p1_px = t2d_ScalarNeg(p1_px)
 
-            from tools.functions.time_space._2d.wrappers.tensor import T2dTensor
+            from phyem.tools.functions.time_space._2d.wrappers.tensor import T2dTensor
 
             self._curl = T2dTensor(p0_py, neg_p0_px, p1_py, neg_p1_px)
 
@@ -499,7 +500,7 @@ class T2dVector(TimeSpaceFunctionBase):
             else:
                 pv1_py = self._dv_dy
 
-            from tools.functions.time_space._2d.wrappers.scalar import T2dScalar
+            from phyem.tools.functions.time_space._2d.wrappers.scalar import T2dScalar
             dv0 = T2dScalar(pv0_px)
             dv1 = T2dScalar(pv1_py)
             self._divergence = dv0 + dv1
@@ -527,7 +528,7 @@ class T2dVector(TimeSpaceFunctionBase):
             else:
                 pv0_py = self._du_dy
 
-            from tools.functions.time_space._2d.wrappers.scalar import T2dScalar
+            from phyem.tools.functions.time_space._2d.wrappers.scalar import T2dScalar
             dv0 = T2dScalar(pv1_px)
             dv1 = T2dScalar(pv0_py)
             self._rot = dv0 - dv1
@@ -552,7 +553,7 @@ class T2dVector(TimeSpaceFunctionBase):
         """
         if self._norm is None:
             norm = NormHelper2DVector(self._v0_, self._v1_)
-            from tools.functions.time_space._2d.wrappers.scalar import T2dScalar
+            from phyem.tools.functions.time_space._2d.wrappers.scalar import T2dScalar
             self._norm = T2dScalar(norm)
         return self._norm
 
@@ -702,7 +703,7 @@ class T2dVector(TimeSpaceFunctionBase):
             V1 = t2d_ScalarMultiply(v01, v11)
 
             V0V1 = t2d_ScalarAdd(V0, V1)
-            from tools.functions.time_space._2d.wrappers.scalar import T2dScalar
+            from phyem.tools.functions.time_space._2d.wrappers.scalar import T2dScalar
             return T2dScalar(V0V1)
 
         else:
@@ -714,7 +715,7 @@ class T2dVector(TimeSpaceFunctionBase):
 
     def cross_product(self, other):
         """self x other."""
-        from tools.functions.time_space._2d.wrappers.scalar import T2dScalar
+        from phyem.tools.functions.time_space._2d.wrappers.scalar import T2dScalar
 
         if other.__class__ is self.__class__:
             # 2-d vector x 2-d vector
@@ -739,7 +740,7 @@ class T2dVector(TimeSpaceFunctionBase):
         """self otimes other"""
 
         if other.__class__ is self.__class__:
-            from tools.functions.time_space._2d.wrappers.tensor import T2dTensor
+            from phyem.tools.functions.time_space._2d.wrappers.tensor import T2dTensor
 
             # self = (u, v)
             # other = (a ,b)

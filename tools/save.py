@@ -3,7 +3,8 @@ r"""Save objects to file. The objects must have method `_saving_check`. In other
 a `_saving_check` method, we can save it using this function.
 """
 import pickle
-from src.config import RANK, MASTER_RANK
+
+from phyem.src.config import RANK, MASTER_RANK
 
 
 def save(*objs, filename='phyem_objects'):

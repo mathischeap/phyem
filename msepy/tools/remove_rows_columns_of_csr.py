@@ -1,12 +1,7 @@
 # -*- coding: utf-8 -*-
 r"""
 """
-import sys
 import numpy as np
-
-if './' not in sys.path:
-    sys.path.append('./')
-
 from scipy.sparse import csr_matrix
 
 

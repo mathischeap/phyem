@@ -3,8 +3,9 @@ r"""
 """
 import numpy as np
 
-from tools.frozen import Frozen
-from src.config import COMM, RANK, MASTER_RANK
+from phyem.tools.frozen import Frozen
+from phyem.src.config import COMM, RANK, MASTER_RANK
+
 if RANK == MASTER_RANK:
     import matplotlib.pyplot as plt
     import matplotlib

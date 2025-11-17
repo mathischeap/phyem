@@ -1,19 +1,20 @@
 # -*- coding: utf-8 -*-
 r"""
 """
+import numpy as np
+from numpy import diff
+from scipy.sparse import bmat as sp_bmat
 import matplotlib.pyplot as plt
-
 from scipy.sparse import csr_matrix, csc_matrix
 from scipy.sparse import issparse, isspmatrix_csr, isspmatrix_csc
-from tools.frozen import Frozen
-from msepy.mesh.elements.main import _DataDictDistributor
-from msepy.tools.vector.static.local import MsePyStaticLocalVector
-from msepy.form.cochain.vector.static import MsePyRootFormStaticCochainVector
-import numpy as np
 
+from phyem.tools.frozen import Frozen
+from phyem.msepy.mesh.elements.main import _DataDictDistributor
+from phyem.msepy.tools.vector.static.local import MsePyStaticLocalVector
+from phyem.msepy.form.cochain.vector.static import MsePyRootFormStaticCochainVector
 
-from msepy.tools.gathering_matrix import RegularGatheringMatrix
-from scipy.sparse import bmat as sp_bmat
+from phyem.msepy.tools.gathering_matrix import RegularGatheringMatrix
+from phyem.msepy.tools.matrix.static.assembled import MsePyStaticAssembledMatrix
 
 
 class MsePyStaticLocalMatrix(Frozen):
@@ -806,9 +807,6 @@ class _MsePyStaticLocalMatrixBmat(Frozen):
         else:
             return ''.join(keys)
 
-
-from numpy import diff
-from msepy.tools.matrix.static.assembled import MsePyStaticAssembledMatrix
 
 _msepy_assembled_StaticMatrix_cache = {}
 # we can cache the assembled matrices in case that it is the same for many or even all time steps.

@@ -16,9 +16,10 @@ TU Delft
 import types
 from tqdm import tqdm
 from time import localtime, strftime, time, sleep
-from tools.legacy.serialRunners._runner_ import Runner
-from tools.legacy.serialRunners.INSTANCES.COMPONENTS.m_tir_tabular import M_TIR_Tabulate
-from src.config import MASTER_RANK, RANK, SIZE, COMM
+
+from phyem.tools.legacy.serialRunners._runner_ import Runner
+from phyem.tools.legacy.serialRunners.INSTANCES.COMPONENTS.m_tir_tabular import M_TIR_Tabulate
+from phyem.src.config import MASTER_RANK, RANK, SIZE, COMM
 
 
 class TimeIteration:

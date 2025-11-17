@@ -4,10 +4,7 @@ mpiexec -n 4 python tests/msehtt/lid_driven_cavity_3d.py
 """
 import sys
 
-if './' not in sys.path:
-    sys.path.append('./')
-
-import __init__ as ph
+import phyem as ph
 
 ph.config.set_embedding_space_dim(3)
 ph.config.set_high_accuracy(True)

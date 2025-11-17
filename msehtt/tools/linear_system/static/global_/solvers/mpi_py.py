@@ -2,8 +2,9 @@
 r"""
 """
 import numpy as np
-from src.config import RANK, MASTER_RANK, COMM, MPI, SIZE
-from msepy.tools.nonlinear_system.static.solve.Newton_Raphson import _check_stop_criterion_
+
+from phyem.src.config import RANK, MASTER_RANK, COMM, MPI, SIZE
+from phyem.msepy.tools.nonlinear_system.static.solve.Newton_Raphson import _check_stop_criterion_
 
 
 class LinerSystemSolverDivergenceError(Exception):

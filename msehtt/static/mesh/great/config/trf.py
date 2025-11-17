@@ -2,10 +2,10 @@
 r"""
 """
 
-from msehtt.static.mesh.great.config.msehtt_trf import _parse_trf
-from msehtt.static.mesh.great.config.msehtt_trf import _refining_
-from msehtt.static.mesh.great.config.msehtt_trf import _make_element_map_m2n2_
-from msehtt.static.mesh.great.config.msehtt_trf import _finalize_m2n2_
+from phyem.msehtt.static.mesh.great.config.msehtt_trf import _parse_trf
+from phyem.msehtt.static.mesh.great.config.msehtt_trf import _refining_
+from phyem.msehtt.static.mesh.great.config.msehtt_trf import _make_element_map_m2n2_
+from phyem.msehtt.static.mesh.great.config.msehtt_trf import _finalize_m2n2_
 
 
 def TRF(

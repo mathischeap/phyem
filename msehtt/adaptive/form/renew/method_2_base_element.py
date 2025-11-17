@@ -3,19 +3,20 @@ r"""This is the first renewer.
 
 """
 import numpy as np
-from tools.frozen import Frozen
-
-from src.config import COMM, RANK, MASTER_RANK, SIZE
-from tools._mpi import merge_dict
 from scipy.interpolate import LinearNDInterpolator
 
-from msehtt.adaptive.form.renew.method_1_global_interpolation import ___WRAPPER_SCALAR___
-from msehtt.adaptive.form.renew.method_1_global_interpolation import ___WRAPPER_VECTOR_2d___
+from phyem.tools.frozen import Frozen
 
-from msehtt.static.space.reduce.Lambda.Rd_m2n2k0 import reduce_Lambda__m2n2k0
-from msehtt.static.space.reduce.Lambda.Rd_m2n2k1 import reduce_Lambda__m2n2k1_inner
-from msehtt.static.space.reduce.Lambda.Rd_m2n2k1 import reduce_Lambda__m2n2k1_outer
-from msehtt.static.space.reduce.Lambda.Rd_m2n2k2 import reduce_Lambda__m2n2k2
+from phyem.src.config import COMM, RANK, MASTER_RANK, SIZE
+from phyem.tools._mpi import merge_dict
+
+from phyem.msehtt.adaptive.form.renew.method_1_global_interpolation import ___WRAPPER_SCALAR___
+from phyem.msehtt.adaptive.form.renew.method_1_global_interpolation import ___WRAPPER_VECTOR_2d___
+
+from phyem.msehtt.static.space.reduce.Lambda.Rd_m2n2k0 import reduce_Lambda__m2n2k0
+from phyem.msehtt.static.space.reduce.Lambda.Rd_m2n2k1 import reduce_Lambda__m2n2k1_inner
+from phyem.msehtt.static.space.reduce.Lambda.Rd_m2n2k1 import reduce_Lambda__m2n2k1_outer
+from phyem.msehtt.static.space.reduce.Lambda.Rd_m2n2k2 import reduce_Lambda__m2n2k2
 
 
 class MseHtt_FormCochainRenew_Method2_BaseElementWise(Frozen):

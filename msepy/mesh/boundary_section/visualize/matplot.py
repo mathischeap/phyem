@@ -1,8 +1,5 @@
 # -*- coding: utf-8 -*-
 r""""""
-
-from tools.frozen import Frozen
-
 import matplotlib.pyplot as plt
 import matplotlib
 plt.rcParams.update({
@@ -10,6 +7,8 @@ plt.rcParams.update({
     "text.latex.preamble": r"\usepackage{amsmath, amssymb}",
 })
 matplotlib.use('TkAgg')
+
+from phyem.tools.frozen import Frozen
 
 
 class Matplot(Frozen):

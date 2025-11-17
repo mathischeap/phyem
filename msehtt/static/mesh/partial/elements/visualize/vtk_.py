@@ -3,8 +3,9 @@ r"""
 """
 
 import numpy as np
-from src.config import RANK, MASTER_RANK, COMM
 from pyevtk.hl import unstructuredGridToVTK
+
+from phyem.src.config import RANK, MASTER_RANK, COMM
 
 
 def ___vtk_m3n3_partial_mesh_elements___(elements, saveto=None):

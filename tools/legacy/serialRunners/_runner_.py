@@ -10,10 +10,11 @@ TU Delft
 import pickle
 import types
 import pandas as pd
-from tools.frozen import Frozen
-from tools.miscellaneous.timer import MyTimer
-from tools.miscellaneous.numpy_styple import NumpyStyleDocstringReader
-from tools.legacy.serialRunners.COMPONENTS.data.body import RunnerData
+
+from phyem.tools.frozen import Frozen
+from phyem.tools.miscellaneous.timer import MyTimer
+from phyem.tools.miscellaneous.numpy_styple import NumpyStyleDocstringReader
+from phyem.tools.legacy.serialRunners.COMPONENTS.data.body import RunnerData
 
 
 class Runner(Frozen):

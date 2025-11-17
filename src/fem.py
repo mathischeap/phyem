@@ -34,21 +34,23 @@ no error (will just be ignored).
 
 """
 
-from src.manifold import Manifold
-from src.mesh import Mesh
-from src.spaces.base import SpaceBase
-from src.form.main import Form
+from phyem.src.manifold import Manifold
+from phyem.src.mesh import Mesh
+from phyem.src.spaces.base import SpaceBase
+from phyem.src.form.main import Form
 
-from src.manifold import _global_manifolds              # [manifold_sym_repr] -> manifold
-from src.mesh import _global_meshes                     # [mesh_sym_repr] -> mesh
-from src.spaces.main import _space_set                  # [mesh_sym_repr][space_sym_repr] -> space
-from src.form.main import _global_root_forms_lin_dict   # [root-form_lin_repr] -> root-form
+from phyem.src.manifold import _global_manifolds              # [manifold_sym_repr] -> manifold
+from phyem.src.mesh import _global_meshes                     # [mesh_sym_repr] -> mesh
+from phyem.src.spaces.main import _space_set                  # [mesh_sym_repr][space_sym_repr] -> space
+from phyem.src.form.main import _global_root_forms_lin_dict   # [root-form_lin_repr] -> root-form
 
 # implemented implementations ------------------------------------------------------------------------------
-import msepy.main as msepy                                # mimetic spectral elements, python implementation
-import msehtt.static.main as msehtt_static                # static version of msehtt
-import msehtt_ncf.static.main as msehtt_ncf_static        # static version of msehtt-ncf
-import msehtt.adaptive.main as msehtt_adaptive            # adaptive version of msehtt
+import phyem.msepy.main as msepy                                # mimetic spectral elements, python implementation
+
+import phyem.msehtt.static.main as msehtt_static                # static version of msehtt
+import phyem.msehtt.adaptive.main as msehtt_adaptive            # adaptive version of msehtt
+
+# import msehtt_ncf.static.main as msehtt_ncf_static        # static version of msehtt-ncf
 # ==========================================================================================================
 
 _implemented_finite_elements = {
@@ -61,9 +63,9 @@ _implemented_finite_elements = {
     'msehtt-a':        msehtt_adaptive,
     'msehtt-adaptive': msehtt_adaptive,
 
-    'msehtt-ncf':        msehtt_ncf_static,  # default version of msehtt-ncf is the static one
-    'msehtt-ncf-s':      msehtt_ncf_static,  # shortcut of static version of msehtt-ncf
-    'msehtt-ncf-static': msehtt_ncf_static,  # static version of msehtt-ncf
+    # 'msehtt-ncf':        msehtt_ncf_static,  # default version of msehtt-ncf is the static one
+    # 'msehtt-ncf-s':      msehtt_ncf_static,  # shortcut of static version of msehtt-ncf
+    # 'msehtt-ncf-static': msehtt_ncf_static,  # static version of msehtt-ncf
 }
 
 

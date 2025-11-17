@@ -1,11 +1,6 @@
 # -*- coding: utf-8 -*-
 r"""
 """
-import sys
-
-if './' not in sys.path:
-    sys.path.append('./')
-
 import matplotlib.pyplot as plt
 import matplotlib
 plt.rcParams.update({
@@ -17,25 +12,25 @@ matplotlib.use('TkAgg')
 
 _global_wf_terms = dict()
 
-from src.spaces.continuous.Lambda import ScalarValuedFormSpace
-from src.spaces.continuous.bundle import BundleValuedFormSpace
-from src.spaces.continuous.bundle_diagonal import DiagonalBundleValuedFormSpace
+from phyem.src.spaces.continuous.Lambda import ScalarValuedFormSpace
+from phyem.src.spaces.continuous.bundle import BundleValuedFormSpace
+from phyem.src.spaces.continuous.bundle_diagonal import DiagonalBundleValuedFormSpace
 
-from tools.frozen import Frozen
-from src.form.main import _global_forms
-from src.form.others import _find_form
-from src.form.operators import codifferential, d, trace, Hodge
-from src.config import _global_operator_lin_repr_setting
-from src.config import _wf_term_default_simple_patterns as _simple_patterns
-from src.form.parameters import constant_scalar, ConstantScalar0Form
-from src.config import _global_operator_sym_repr_setting
-from src.config import _non_root_lin_sep
-from src.wf.term.ap import _SimplePatternAPParser
-from src.wf.term.pattern import _dp_simpler_pattern_examiner_scalar_valued_forms
-from src.wf.term.pattern import _dp_simpler_pattern_examiner_scalar_valued_forms_restrict
-from src.wf.term.pattern import _inner_simpler_pattern_examiner_scalar_valued_forms
-from src.wf.term.pattern import _inner_simpler_pattern_examiner_bundle_valued_forms
-from src.wf.term.pattern import _inner_simpler_pattern_examiner_diagonal_bundle_valued_forms
+from phyem.tools.frozen import Frozen
+from phyem.src.form.main import _global_forms
+from phyem.src.form.others import _find_form
+from phyem.src.form.operators import codifferential, d, trace, Hodge
+from phyem.src.config import _global_operator_lin_repr_setting
+from phyem.src.config import _wf_term_default_simple_patterns as _simple_patterns
+from phyem.src.form.parameters import constant_scalar, ConstantScalar0Form
+from phyem.src.config import _global_operator_sym_repr_setting
+from phyem.src.config import _non_root_lin_sep
+from phyem.src.wf.term.ap import _SimplePatternAPParser
+from phyem.src.wf.term.pattern import _dp_simpler_pattern_examiner_scalar_valued_forms
+from phyem.src.wf.term.pattern import _dp_simpler_pattern_examiner_scalar_valued_forms_restrict
+from phyem.src.wf.term.pattern import _inner_simpler_pattern_examiner_scalar_valued_forms
+from phyem.src.wf.term.pattern import _inner_simpler_pattern_examiner_bundle_valued_forms
+from phyem.src.wf.term.pattern import _inner_simpler_pattern_examiner_diagonal_bundle_valued_forms
 _cs1 = constant_scalar(1)
 
 
@@ -205,7 +200,7 @@ class _WeakFormulationTerm(Frozen):
         -------
 
         """
-        from src.form.main import Form
+        from phyem.src.form.main import Form
 
         if f == 'f0':
             # noinspection PyUnresolvedReferences

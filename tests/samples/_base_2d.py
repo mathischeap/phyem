@@ -1,7 +1,9 @@
 # -*- coding: utf-8 -*-
 r"""
 """
-from tools.frozen import Frozen
+from phyem.tools.frozen import Frozen
+from phyem.tools.functions.time_space._2d.wrappers.vector import T2dVector
+from phyem.tools.functions.time_space._2d.wrappers.scalar import T2dScalar
 
 
 # noinspection PyUnusedLocal
@@ -26,10 +28,6 @@ def _half_(t, x, y):
 def _m1_(t, x, y):
     r""""""
     return 0 * x - 1
-
-
-from tools.functions.time_space._2d.wrappers.vector import T2dVector
-from tools.functions.time_space._2d.wrappers.scalar import T2dScalar
 
 
 class _TwoDimensionalConditionBase(Frozen):

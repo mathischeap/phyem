@@ -1,11 +1,11 @@
 # -*- coding: utf-8 -*-
 r"""
 """
-from tools.frozen import Frozen
-from msepy.mesh.boundary_section.main import MsePyBoundarySectionMesh
-from src.spaces.continuous.Lambda import ScalarValuedFormSpace
+from phyem.tools.frozen import Frozen
+from phyem.msepy.mesh.boundary_section.main import MsePyBoundarySectionMesh
+from phyem.src.spaces.continuous.Lambda import ScalarValuedFormSpace
 
-from msepy.form.boundary_integrate.with_vc_over_boundary_section.Lambda import BoundaryIntegrateVCBSLambda
+from phyem.msepy.form.boundary_integrate.with_vc_over_boundary_section.Lambda import BoundaryIntegrateVCBSLambda
 
 
 class MsePyRootFormBoundaryIntegrate(Frozen):

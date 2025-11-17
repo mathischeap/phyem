@@ -64,18 +64,18 @@ plt.rcParams.update({
 })
 matplotlib.use('TkAgg')
 
-from tools.miscellaneous.latex_bmatrix_to_array import bmatrix_to_array
+from phyem.tools.miscellaneous.latex_bmatrix_to_array import bmatrix_to_array
 
-from src.form.others import _find_form
-from src.config import _root_form_ap_vec_setting
-from tools.frozen import Frozen
-from src.algebra.array import AbstractArray
-from src.wf.term.ap import TermLinearAlgebraicProxy
-from src.wf.term.ap import TermNonLinearOperatorAlgebraicProxy
-from src.algebra.linear_system import BlockMatrix, BlockColVector, LinearSystem
-from src.algebra.nonlinear_system import NonLinearSystem
-from src.wf.mp.linear_system import MatrixProxyLinearSystem
-from src.wf.mp.nonlinear_system import MatrixProxyNoneLinearSystem
+from phyem.src.form.others import _find_form
+from phyem.src.config import _root_form_ap_vec_setting
+from phyem.tools.frozen import Frozen
+from phyem.src.algebra.array import AbstractArray
+from phyem.src.wf.term.ap import TermLinearAlgebraicProxy
+from phyem.src.wf.term.ap import TermNonLinearOperatorAlgebraicProxy
+from phyem.src.algebra.linear_system import BlockMatrix, BlockColVector, LinearSystem
+from phyem.src.algebra.nonlinear_system import NonLinearSystem
+from phyem.src.wf.mp.linear_system import MatrixProxyLinearSystem
+from phyem.src.wf.mp.nonlinear_system import MatrixProxyNoneLinearSystem
 
 
 class MatrixProxy(Frozen):

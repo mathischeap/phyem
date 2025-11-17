@@ -1,15 +1,12 @@
 # -*- coding: utf-8 -*-
 r"""
 """
-import sys
-
-if './' not in sys.path:
-    sys.path.append('./')
 
 import os
-from src.config import RANK, MASTER_RANK
-from tools.miscellaneous.timer import MyTimer
-from tools.miscellaneous.random_ import string_digits
+
+from phyem.src.config import RANK, MASTER_RANK
+from phyem.tools.miscellaneous.timer import MyTimer
+from phyem.tools.miscellaneous.random_ import string_digits
 
 
 # noinspection PyUnresolvedReferences

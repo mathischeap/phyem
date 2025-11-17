@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 r"""
 """
-from src.config import RANK, MASTER_RANK
+from phyem.src.config import RANK, MASTER_RANK
 
 if RANK == MASTER_RANK:
     import matplotlib.pyplot as plt
@@ -10,18 +10,19 @@ else:
     pass
 
 import numpy as np
-from tools.frozen import Frozen
-from msehtt.tools.gathering_matrix import MseHttGatheringMatrix
-from msehtt.tools.matrix.static.local import MseHttStaticLocalMatrix
-from msehtt.tools.vector.static.local import MseHttStaticLocalVector
-from msehtt.static.form.addons.static import MseHttFormStaticCopy
-from msehtt.static.form.main import MseHttForm
 
-from msehtt.tools.nonlinear_system.static.customize import MseHttStaticNonlinearSystemCustomize
-from msehtt.tools.nonlinear_system.static.solve.main import MseHttStaticNonlinearSystemSolve
-from msehtt.tools.linear_system.static.local.main import MseHttStaticLocalLinearSystem
+from phyem.tools.frozen import Frozen
+from phyem.msehtt.tools.gathering_matrix import MseHttGatheringMatrix
+from phyem.msehtt.tools.matrix.static.local import MseHttStaticLocalMatrix
+from phyem.msehtt.tools.vector.static.local import MseHttStaticLocalVector
+from phyem.msehtt.static.form.addons.static import MseHttFormStaticCopy
+from phyem.msehtt.static.form.main import MseHttForm
 
-from src.wf.mp.linear_system_bc import _EssentialBoundaryCondition
+from phyem.msehtt.tools.nonlinear_system.static.customize import MseHttStaticNonlinearSystemCustomize
+from phyem.msehtt.tools.nonlinear_system.static.solve.main import MseHttStaticNonlinearSystemSolve
+from phyem.msehtt.tools.linear_system.static.local.main import MseHttStaticLocalLinearSystem
+
+from phyem.src.wf.mp.linear_system_bc import _EssentialBoundaryCondition
 
 
 class MseHttStaticNonLinearSystem(Frozen):

@@ -1,7 +1,8 @@
 # -*- coding: utf-8 -*-
 r""""""
 from abc import ABC
-from tools.functions.space._2d.constant import CFG
+
+from phyem.tools.functions.space._2d.constant import CFG
 
 
 class Opposite(ABC):

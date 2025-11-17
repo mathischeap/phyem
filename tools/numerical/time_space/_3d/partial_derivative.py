@@ -1,13 +1,10 @@
 # -*- coding: utf-8 -*-
 r""""""
-import sys
-if './' not in sys.path:
-    sys.path.append('./')
-
 from abc import ABC
 import numpy as np
 from types import FunctionType, MethodType
-from tools.numerical.derivative import derivative
+
+from phyem.tools.numerical.derivative import derivative
 
 
 class NumericalPartialDerivativeTxyz(ABC):

@@ -3,16 +3,11 @@
 Manufactured solutions for 2d MHD.
 
 """
-import sys
-
-if './' not in sys.path:
-    sys.path.append('./')
-
 from numpy import sin, cos, exp
-from tools.frozen import Frozen
 
-from tools.functions.time_space._3d.wrappers.scalar import T3dScalar
-from tools.functions.time_space._3d.wrappers.vector import T3dVector
+from phyem.tools.frozen import Frozen
+from phyem.tools.functions.time_space._3d.wrappers.scalar import T3dScalar
+from phyem.tools.functions.time_space._3d.wrappers.vector import T3dVector
 
 
 def ux(t, x, y, z):

@@ -1,7 +1,8 @@
 # -*- coding: utf-8 -*-
 r"""
 """
-from tools.frozen import Frozen
+from phyem.tools.frozen import Frozen
+
 import matplotlib.pyplot as plt
 import matplotlib
 plt.rcParams.update({

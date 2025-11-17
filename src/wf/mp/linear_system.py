@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 r"""
 """
-from tools.frozen import Frozen
 import matplotlib.pyplot as plt
 import matplotlib
 plt.rcParams.update({
@@ -11,8 +10,9 @@ plt.rcParams.update({
 })
 matplotlib.use('TkAgg')
 
-from src.wf.mp.linear_system_bc import MatrixProxyLinearSystemBoundaryConditions
-from tools.miscellaneous.latex_bmatrix_to_array import bmatrix_to_array
+from phyem.tools.frozen import Frozen
+from phyem.src.wf.mp.linear_system_bc import MatrixProxyLinearSystemBoundaryConditions
+from phyem.tools.miscellaneous.latex_bmatrix_to_array import bmatrix_to_array
 
 
 class MatrixProxyLinearSystem(Frozen):

@@ -1,17 +1,16 @@
 # -*- coding: utf-8 -*-
 r"""
 """
-
-from tools.frozen import Frozen
-import matplotlib.pyplot as plt
-from numpy import linalg as np_linalg
-from src.config import COMM, RANK, MASTER_RANK, MPI
 import numpy as np
 from scipy.sparse import dia_matrix
-
+import matplotlib.pyplot as plt
+from numpy import linalg as np_linalg
 from scipy.sparse import isspmatrix_csc, isspmatrix_csr
-# from scipy.sparse import csc_matrix, csr_matrix
-from msehtt.tools.gathering_matrix import MseHttGatheringMatrix
+
+from phyem.tools.frozen import Frozen
+from phyem.src.config import COMM, RANK, MASTER_RANK, MPI
+# from phyem.scipy.sparse import csc_matrix, csr_matrix
+from phyem.msehtt.tools.gathering_matrix import MseHttGatheringMatrix
 
 
 class MseHttGlobalMatrix(Frozen):
@@ -97,6 +96,37 @@ class MseHttGlobalMatrix(Frozen):
         # else:
         #     raise Exception()
         self._M = None
+
+    def value_at(self, i, j):
+        r"""Return the value of M[i][j] in all ranks. So we find the value at each rank, and then
+        allreduce with SUM.
+        """
+        vij = self._M[i, j]
+        return COMM.allreduce(vij, op=MPI.SUM)
+
+    def nnz_of_row(self, i):
+        r"""return the number of non-zero values in row #i of the total matrix. So we first sum
+        the contributions of row #i from all ranks, then check the number of nnz in this summation.
+        """
+        Mi = self._M[i]
+        sum_Mi = COMM.reduce(Mi, root=MASTER_RANK, op=MPI.SUM)
+        if RANK == MASTER_RANK:
+            nnz = sum_Mi.nnz
+        else:
+            nnz = 0
+        return COMM.bcast(nnz, root=MASTER_RANK)
+
+    def nnz_of_col(self, i):
+        r"""return the number of non-zero values in col #i of the total matrix. So we first sum
+        the contributions of col #i from all ranks, then check the number of nnz in this summation.
+        """
+        Mi = self._M[:, i]
+        sum_Mi = COMM.reduce(Mi, root=MASTER_RANK, op=MPI.SUM)
+        if RANK == MASTER_RANK:
+            nnz = sum_Mi.nnz
+        else:
+            nnz = 0
+        return COMM.bcast(nnz, root=MASTER_RANK)
 
     def spy(self, markerfacecolor='k', markeredgecolor='g', markersize=6):
         """spy the assembled matrix.
@@ -224,7 +254,7 @@ class MseHttGlobalMatrix(Frozen):
         -------
 
         """
-        from msehtt.tools.vector.static.global_distributed import MseHttGlobalVectorDistributed
+        from phyem.msehtt.tools.vector.static.global_distributed import MseHttGlobalVectorDistributed
         assert b.__class__ is MseHttGlobalVectorDistributed
 
         essential_rows = self.___find_essential_rows___()

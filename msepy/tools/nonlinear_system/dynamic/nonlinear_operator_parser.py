@@ -1,22 +1,22 @@
 # -*- coding: utf-8 -*-
 r"""
 """
-from src.config import _nonlinear_ap_test_form_repr
+from phyem.src.config import _nonlinear_ap_test_form_repr
 
-from src.wf.term.ap import TermNonLinearOperatorAlgebraicProxy
+from phyem.src.wf.term.ap import TermNonLinearOperatorAlgebraicProxy
 
-from msepy.tools.linear_system.dynamic._arr_par import _find_from_bracket_ABC
+from phyem.msepy.tools.linear_system.dynamic._arr_par import _find_from_bracket_ABC
 
-from msepy.main import base
-from msepy.form.addons.noc.diff_3_entries_AxB_ip_C import _AxBipC
-from msepy.form.addons.noc.diff_3_entries_dA_ip_BtpC import __dA_ip_BtpC__
-from msepy.form.addons.noc.diff_3_entries_A__ip__B_tp_C import _A__ip__B_tp_C_
+from phyem.msepy.main import base
+from phyem.msepy.form.addons.noc.diff_3_entries_AxB_ip_C import _AxBipC
+from phyem.msepy.form.addons.noc.diff_3_entries_dA_ip_BtpC import __dA_ip_BtpC__
+from phyem.msepy.form.addons.noc.diff_3_entries_A__ip__B_tp_C import _A__ip__B_tp_C_
 
 
-from src.spaces.main import _sep
-from src.spaces.main import _VarSetting_A_x_B_ip_C
-from src.spaces.main import _VarSetting_dA_B_tp_C
-from src.spaces.main import _VarSetting_A_B_tp_C
+from phyem.src.spaces.main import _sep
+from phyem.src.spaces.main import _VarSetting_A_x_B_ip_C
+from phyem.src.spaces.main import _VarSetting_dA_B_tp_C
+from phyem.src.spaces.main import _VarSetting_A_B_tp_C
 
 
 def msepy_nonlinear_operator_parser(mda):

@@ -2,12 +2,13 @@
 r"""
 """
 import numpy as np
-from tools.frozen import Frozen
-from tools.functions.region_wise_wrapper import RegionWiseFunctionWrapper
-from src.spaces.operators import _d_to_vc, _d_ast_to_vc
-from src.spaces.continuous.Lambda import ScalarValuedFormSpace
-from src.spaces.continuous.bundle import BundleValuedFormSpace
-from src.spaces.continuous.bundle_diagonal import DiagonalBundleValuedFormSpace
+
+from phyem.tools.frozen import Frozen
+from phyem.tools.functions.region_wise_wrapper import RegionWiseFunctionWrapper
+from phyem.src.spaces.operators import _d_to_vc, _d_ast_to_vc
+from phyem.src.spaces.continuous.Lambda import ScalarValuedFormSpace
+from phyem.src.spaces.continuous.bundle import BundleValuedFormSpace
+from phyem.src.spaces.continuous.bundle_diagonal import DiagonalBundleValuedFormSpace
 
 
 class MsePyContinuousForm(Frozen):

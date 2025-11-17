@@ -2,12 +2,12 @@
 r"""
 """
 import numpy as np
-from src.config import RANK, MASTER_RANK, COMM
 from pyevtk.hl import unstructuredGridToVTK
 
-from tools.frozen import Frozen
-from msehtt.static.form.addons.static import MseHttFormStaticCopy
-from tools.dds.region_wise_structured import DDSRegionWiseStructured
+from phyem.src.config import RANK, MASTER_RANK, COMM
+from phyem.tools.frozen import Frozen
+from phyem.msehtt.static.form.addons.static import MseHttFormStaticCopy
+from phyem.tools.dds.region_wise_structured import DDSRegionWiseStructured
 
 
 def _merge_dict_(data, root=MASTER_RANK):

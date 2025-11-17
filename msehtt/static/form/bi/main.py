@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*-
 """
 """
-from tools.frozen import Frozen
+from phyem.tools.frozen import Frozen
 from importlib import import_module
-from msehtt.static.mesh.partial.boundary_section.main import MseHttBoundarySectionPartialMesh
+from phyem.msehtt.static.mesh.partial.boundary_section.main import MseHttBoundarySectionPartialMesh
 
 
 class MseHttStaticForm_Boundary_Integrate(Frozen):

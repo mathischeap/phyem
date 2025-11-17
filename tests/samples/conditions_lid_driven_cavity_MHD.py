@@ -2,10 +2,11 @@
 r"""
 """
 import numpy as np
-from tools.frozen import Frozen
-from tools.gen_piece_wise import genpiecewise
-from tools.functions.time_space._2d.wrappers.vector import T2dVector
-from tools.functions.time_space._2d.wrappers.scalar import T2dScalar
+
+from phyem.tools.frozen import Frozen
+from phyem.tools.gen_piece_wise import genpiecewise
+from phyem.tools.functions.time_space._2d.wrappers.vector import T2dVector
+from phyem.tools.functions.time_space._2d.wrappers.scalar import T2dScalar
 
 
 class ConditionsLidDrivenCavity_2dMHD_1(Frozen):

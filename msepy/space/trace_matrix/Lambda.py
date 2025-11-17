@@ -3,7 +3,7 @@ r"""
 """
 from scipy.sparse import lil_matrix
 
-from tools.frozen import Frozen
+from phyem.tools.frozen import Frozen
 
 
 class MsePyTraceMatrixLambda(Frozen):

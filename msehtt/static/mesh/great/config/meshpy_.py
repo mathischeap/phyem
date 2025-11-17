@@ -2,17 +2,16 @@
 r"""
 """
 import numpy as np
-from tools.frozen import Frozen
+import math
 
 try:
     import meshpy.triangle as triangle
 except ModuleNotFoundError:
     pass
 
-from msehtt.static.mesh.great.config.vtu import MseHttVtuInterface
-
-from tools.functions.space._2d.distance import distance
-import math
+from phyem.tools.frozen import Frozen
+from phyem.msehtt.static.mesh.great.config.vtu import MseHttVtuInterface
+from phyem.tools.functions.space._2d.distance import distance
 
 
 class MseHtt_API_2_MeshPy(Frozen):

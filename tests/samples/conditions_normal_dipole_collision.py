@@ -1,14 +1,12 @@
 # -*- coding: utf-8 -*-
 r"""
 """
-import sys
-if './' not in sys.path:
-    sys.path.append('./')
 import numpy as np
-from tests.samples._base_2d import _TwoDimensionalConditionBase
-from tools.quadrature import Quadrature
-from tools.functions.time_space._2d.wrappers.vector import T2dVector
-from tools.functions.time_space._2d.wrappers.scalar import T2dScalar
+
+from phyem.tests.samples._base_2d import _TwoDimensionalConditionBase
+from phyem.tools.quadrature import Quadrature
+from phyem.tools.functions.time_space._2d.wrappers.vector import T2dVector
+from phyem.tools.functions.time_space._2d.wrappers.scalar import T2dScalar
 
 
 class ConditionsNormalDipoleCollision2(_TwoDimensionalConditionBase):

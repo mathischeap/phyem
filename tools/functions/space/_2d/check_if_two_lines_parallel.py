@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 r""""""
-from tools.functions.space._2d.angle import angle
+from phyem.tools.functions.space._2d.angle import angle
 
 
 def if_two_lines_parallel(a1, a2, b1, b2):

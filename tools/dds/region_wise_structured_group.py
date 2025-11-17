@@ -3,11 +3,12 @@ save some space.
 
 """
 import pickle
-from tools.frozen import Frozen
-from src.config import RANK, MASTER_RANK
 
-from tools.dds.region_wise_structured import _find_shape
-from tools.dds.region_wise_structured import DDSRegionWiseStructured
+from phyem.tools.frozen import Frozen
+from phyem.src.config import RANK, MASTER_RANK
+
+from phyem.tools.dds.region_wise_structured import _find_shape
+from phyem.tools.dds.region_wise_structured import DDSRegionWiseStructured
 
 
 class DDS_RegionWiseStructured_Group(Frozen):

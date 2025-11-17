@@ -2,7 +2,7 @@
 r"""
 """
 import numpy as np
-from tools.quadrature import quadrature
+from phyem.tools.quadrature import quadrature
 _one_array_ = np.array([1])
 
 
@@ -55,8 +55,8 @@ def bi_vc__m2n2k0_outer(rf0, t, vc, boundary_section):
     return data_dict
 
 
-from msehtt.static.space.reconstruction_matrix.Lambda.RM_m2n2k0 import ___rm220_msepy_quadrilateral___
-from msehtt.static.space.find.local_dofs_on_face.Lambda.m2n2k0 import __m2n2k0_msepy_quadrilateral_
+from phyem.msehtt.static.space.reconstruction_matrix.Lambda.RM_m2n2k0 import ___rm220_msepy_quadrilateral___
+from phyem.msehtt.static.space.find.local_dofs_on_face.Lambda.m2n2k0 import __m2n2k0_msepy_quadrilateral_
 
 
 def ___bi_vc_220o_msepy_quadrilateral___(element, degree, face, tvc):

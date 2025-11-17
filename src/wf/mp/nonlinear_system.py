@@ -9,8 +9,9 @@ plt.rcParams.update({
     "text.latex.preamble": r"\usepackage{amsmath, amssymb}",
 })
 matplotlib.use('TkAgg')
-from tools.frozen import Frozen
-from tools.miscellaneous.latex_bmatrix_to_array import bmatrix_to_array
+
+from phyem.tools.frozen import Frozen
+from phyem.tools.miscellaneous.latex_bmatrix_to_array import bmatrix_to_array
 
 
 class MatrixProxyNoneLinearSystem(Frozen):

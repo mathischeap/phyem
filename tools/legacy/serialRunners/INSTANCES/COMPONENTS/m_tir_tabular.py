@@ -11,8 +11,9 @@ Aerodynamics, AE
 TU Delft
 """
 import numpy as np
-from tools.frozen import Frozen
-from tools.decorators.all import accepts
+
+from phyem.tools.frozen import Frozen
+from phyem.tools.decorators.all import accepts
 
 
 class M_TIR_Tabulate(Frozen):

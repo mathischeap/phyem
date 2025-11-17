@@ -2,7 +2,8 @@
 r"""
 """
 import numpy as np
-from tools.frozen import Frozen
+
+from phyem.tools.frozen import Frozen
 
 
 class ___EXP_HELPER___(Frozen):

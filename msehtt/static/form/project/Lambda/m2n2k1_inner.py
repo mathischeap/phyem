@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 r"""All the projections from m2n2k1_inner.
 """
-from tools.quadrature import quadrature
-from msehtt.static.space.reconstruct.Lambda.Rc_m2n2k1 import ___rc221i_msepy_quadrilateral___
+from phyem.tools.quadrature import quadrature
+from phyem.msehtt.static.space.reconstruct.Lambda.Rc_m2n2k1 import ___rc221i_msepy_quadrilateral___
 
 
 def to__m2n2k0(ff, ft):

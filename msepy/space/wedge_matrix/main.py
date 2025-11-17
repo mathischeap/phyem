@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 """
 """
-from tools.frozen import Frozen
-from msepy.space.wedge_matrix.Lambda import MsePyWedgeMatrixLambda
+from phyem.tools.frozen import Frozen
+from phyem.msepy.space.wedge_matrix.Lambda import MsePyWedgeMatrixLambda
 
 
 class MsePyWedgeMatrix(Frozen):

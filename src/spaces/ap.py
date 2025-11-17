@@ -2,16 +2,16 @@
 """
 Algebraic Proxy.
 """
-import src.spaces.main as space_main
-from src.spaces.main import *
-from src.spaces.main import _sep
-from src.spaces.operators import trace as space_trace
-from src.config import _form_evaluate_at_repr_setting
-from src.spaces.main import _default_space_degree_repr
-from src.spaces.main import _degree_str_maker
-from src.algebra.array import _root_array
-from src.algebra.nonlinear_operator import AbstractNonlinearOperator
-from src.spaces.operators import d
+import phyem.src.spaces.main as space_main
+from phyem.src.spaces.main import *
+from phyem.src.spaces.main import _sep
+from phyem.src.spaces.operators import trace as space_trace
+from phyem.src.config import _form_evaluate_at_repr_setting
+from phyem.src.spaces.main import _default_space_degree_repr
+from phyem.src.spaces.main import _degree_str_maker
+from phyem.src.algebra.array import _root_array
+from phyem.src.algebra.nonlinear_operator import AbstractNonlinearOperator
+from phyem.src.spaces.operators import d
 
 
 # check that all lin_signature are different.
@@ -186,7 +186,7 @@ def _VarPar_tM(B):
 
 def _VarPar_E(f_or_space_degree, transpose=False):
     """"""
-    from src.form.main import Form
+    from phyem.src.form.main import Form
     if f_or_space_degree.__class__ is Form:  # I receive a form. Space and degree are from this form.
         f = f_or_space_degree
         s = f.space

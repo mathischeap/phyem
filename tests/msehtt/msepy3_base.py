@@ -4,16 +4,8 @@ Test the reduction and reconstruction for msehtt mesh built upon msepy 3d meshes
 
 mpiexec -n 4 python tests/msehtt/msepy3_base.py
 """
-
-import sys
-
 import numpy as np
-
-ph_dir = './'  # customize it to your dir containing phyem
-if ph_dir not in sys.path:
-    sys.path.append(ph_dir)
-
-import __init__ as ph
+import phyem as ph
 
 ph.config.set_embedding_space_dim(3)
 ph.config.set_high_accuracy(True)

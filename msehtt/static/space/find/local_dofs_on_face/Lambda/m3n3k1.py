@@ -16,7 +16,7 @@ def find_local_dofs_on_face__m3n3k1(etype, p, face_index, component_wise=False):
     return local_numbering
 
 
-from msehtt.static.space.local_numbering.Lambda.ln_m3n3k1 import _ln_m3n3k1_msepy_quadrilateral_
+from phyem.msehtt.static.space.local_numbering.Lambda.ln_m3n3k1 import _ln_m3n3k1_msepy_quadrilateral_
 _cache_331_ln_ = {}
 
 

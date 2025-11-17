@@ -3,12 +3,12 @@ r"""
 """
 import numpy as np
 
-from msehtt.static.mesh.great.config.msepy_trf import _parse_trf
-from tools.frozen import Frozen
-from msehtt.static.mesh.great.config.msehtt_ import MseHtt_Static_PreDefined_Config
-from msehtt.static.mesh.great.elements.types.distributor import MseHttGreatMeshElementDistributor
-from msehtt.static.mesh.great.elements.types.distributor import Vtu9Quad
-from msehtt.static.mesh.great.elements.types.distributor import UniqueCurvilinearQuad
+from phyem.msehtt.static.mesh.great.config.msepy_trf import _parse_trf
+from phyem.tools.frozen import Frozen
+from phyem.msehtt.static.mesh.great.config.msehtt_ import MseHtt_Static_PreDefined_Config
+from phyem.msehtt.static.mesh.great.elements.types.distributor import MseHttGreatMeshElementDistributor
+from phyem.msehtt.static.mesh.great.elements.types.distributor import Vtu9Quad
+from phyem.msehtt.static.mesh.great.elements.types.distributor import UniqueCurvilinearQuad
 
 
 ___a_cache___ = {

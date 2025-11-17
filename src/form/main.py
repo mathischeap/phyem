@@ -107,8 +107,6 @@ All these forms, both root and non-root ones, are the ingredients for making par
 which is introduced in the next section.
 
 """
-
-from tools.frozen import Frozen
 from typing import Dict
 import matplotlib.pyplot as plt
 import matplotlib
@@ -119,19 +117,20 @@ plt.rcParams.update({
 })
 matplotlib.use('TkAgg')
 
-from src.config import _global_lin_repr_setting
-from src.config import _parse_lin_repr
-from src.form.operators import wedge, time_derivative, d, codifferential, cross_product, tensor_product
-from src.form.operators import Cross_Product, CrossProduct, crossProduct
-from src.form.operators import convect, multi
-from src.form.operators import _project_to
-from src.config import _check_sym_repr
-from src.form.parameters import constant_scalar
-from src.config import _global_operator_lin_repr_setting
-from src.config import _global_operator_sym_repr_setting
-from src.config import _form_evaluate_at_repr_setting
-from src.spaces.main import _default_space_degree_repr
-from src.spaces.main import _degree_str_maker
+from phyem.tools.frozen import Frozen
+from phyem.src.config import _global_lin_repr_setting
+from phyem.src.config import _parse_lin_repr
+from phyem.src.form.operators import wedge, time_derivative, d, codifferential, cross_product, tensor_product
+from phyem.src.form.operators import Cross_Product, CrossProduct, crossProduct
+from phyem.src.form.operators import convect, multi
+from phyem.src.form.operators import _project_to
+from phyem.src.config import _check_sym_repr
+from phyem.src.form.parameters import constant_scalar
+from phyem.src.config import _global_operator_lin_repr_setting
+from phyem.src.config import _global_operator_sym_repr_setting
+from phyem.src.config import _form_evaluate_at_repr_setting
+from phyem.src.spaces.main import _default_space_degree_repr
+from phyem.src.spaces.main import _degree_str_maker
 
 
 _global_forms = dict()   # cache keys are id
@@ -149,7 +148,7 @@ def _clear_forms():
         del _global_root_forms_lin_dict[key]
 
 
-from src.form.ap import _parse_root_form_ap
+from phyem.src.form.ap import _parse_root_form_ap
 
 
 class Form(Frozen):
@@ -246,7 +245,7 @@ class Form(Frozen):
 
     def pr(self, figsize=(12, 6)):
         """Print this form with matplotlib and latex."""
-        from src.config import RANK, MASTER_RANK
+        from phyem.src.config import RANK, MASTER_RANK
         if RANK != MASTER_RANK:
             return None
         else:
@@ -269,7 +268,7 @@ class Form(Frozen):
             root_text = rf'is_root: {self.is_root()}'
             plt.text(0, 0.5, root_text, ha='left', va='center', size=15)
             plt.axis('off')
-            from src.config import _setting
+            from phyem.src.config import _setting
             plt.show(block=_setting['block'])
             return fig
 
@@ -663,8 +662,8 @@ class Form(Frozen):
 
     def _evaluate_at(self, other):
         """evaluate_at"""
-        from src.time_sequence import AbstractTimeInstant
-        from src.time_sequence import _global_abstract_time_sequence
+        from phyem.src.time_sequence import AbstractTimeInstant
+        from phyem.src.time_sequence import _global_abstract_time_sequence
 
         if isinstance(other, str) and len(_global_abstract_time_sequence) == 1:
             # when there is only one abstract time sequence at behind, we can

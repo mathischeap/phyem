@@ -3,12 +3,9 @@ r"""
 python tests/msepy/m2n2.py
 """
 import numpy as np
-import sys
 import os
-if './' not in sys.path:
-    sys.path.append('./')
 
-import __init__ as ph
+import phyem as ph
 assert ph.config.SIZE == 1, f"msepy does not work with multiple ranks."
 
 print(f"[MsePy] >>> <m2n2> ...")

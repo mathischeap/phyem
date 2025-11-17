@@ -2,12 +2,7 @@
 r"""
 """
 
-import sys
-
-if './' not in sys.path:
-    sys.path.append('./')
-
-import __init__ as ph
+import phyem as ph
 import numpy as np
 
 
@@ -96,7 +91,7 @@ def div_grad_2d_general_bc_manufactured_test(degree, K, c=0.):
     # u[0].visualize()
 
     du = u.d()
-    print(du[None].norm())
+    # print(du[None].norm())
 
     return phi[0].error(), u[0].error()
 

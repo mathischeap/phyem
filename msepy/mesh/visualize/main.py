@@ -2,10 +2,11 @@
 r"""
 """
 import numpy as np
-from tools.frozen import Frozen
-from msepy.mesh.visualize.matplot import MsePyMeshVisualizeMatplot
-from msepy.mesh.visualize.vtk_ import MsePyMeshVisualizeVTK
-from msepy.mesh.visualize.target import MsePyMeshVisualizeTarget
+
+from phyem.tools.frozen import Frozen
+from phyem.msepy.mesh.visualize.matplot import MsePyMeshVisualizeMatplot
+from phyem.msepy.mesh.visualize.vtk_ import MsePyMeshVisualizeVTK
+from phyem.msepy.mesh.visualize.target import MsePyMeshVisualizeTarget
 
 
 class MsePyMeshVisualize(Frozen):

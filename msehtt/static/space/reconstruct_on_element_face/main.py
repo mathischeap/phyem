@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 r"""Reconstruct on an element face/edge.
 """
-from tools.frozen import Frozen
-from msehtt.static.space.reconstruct_on_element_face.Lambda.main import MseHttSpace_RConEF_Lambda
+from phyem.tools.frozen import Frozen
+from phyem.msehtt.static.space.reconstruct_on_element_face.Lambda.main import MseHttSpace_RConEF_Lambda
 
 
 class MseHttSpace_RConEF(Frozen):

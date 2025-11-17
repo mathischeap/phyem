@@ -1,10 +1,10 @@
 # -*- coding: utf-8 -*-
 r"""
 """
-from tools.frozen import Frozen
-from msehtt.adaptive.form.renew.method_1_global_interpolation import MseHtt_FormCochainRenew_Method1_GlobalInterpolation
-from msehtt.adaptive.form.renew.method_2_base_element import MseHtt_FormCochainRenew_Method2_BaseElementWise
-from msehtt.adaptive.form.renew.method_3_local_interpolation import MseHtt_FormCochainRenew_Method3_LocalInterpolation
+from phyem.tools.frozen import Frozen
+from phyem.msehtt.adaptive.form.renew.method_1_global_interpolation import MseHtt_FormCochainRenew_Method1_GlobalInterpolation
+from phyem.msehtt.adaptive.form.renew.method_2_base_element import MseHtt_FormCochainRenew_Method2_BaseElementWise
+from phyem.msehtt.adaptive.form.renew.method_3_local_interpolation import MseHtt_FormCochainRenew_Method3_LocalInterpolation
 
 
 class MseHtt_Adaptive_TopForm_CochainRenew(Frozen):

@@ -2,7 +2,8 @@
 r"""Like the unique curvilinear quadrilateral element, but this element is a triangle element.
 """
 import numpy as np
-from msehtt.static.mesh.great.elements.types.base import MseHttGreatMeshBaseElement
+
+from phyem.msehtt.static.mesh.great.elements.types.base import MseHttGreatMeshBaseElement
 
 
 class Unique_Curvilinear_Triangle(MseHttGreatMeshBaseElement):
@@ -180,7 +181,7 @@ class Unique_Curvilinear_Triangle(MseHttGreatMeshBaseElement):
         raise Exception(f"U-C-T (2d) element has no edges.")
 
 
-from msehtt.static.mesh.great.elements.types.base import MseHttGreatMeshBaseElementCooTrans
+from phyem.msehtt.static.mesh.great.elements.types.base import MseHttGreatMeshBaseElementCooTrans
 
 
 class UCT_CT(MseHttGreatMeshBaseElementCooTrans):

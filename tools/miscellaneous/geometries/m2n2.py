@@ -1,22 +1,14 @@
 # -*- coding: utf-8 -*-
 r"""
 """
-import sys
-
 import numpy as np
-
-if './' not in sys.path:
-    sys.path.append('./')
-from tools.frozen import Frozen
-
-from tools.functions.space._2d.angle import angle
+from matplotlib.path import Path
 from pynverse import inversefunc
 
-from tools.miscellaneous.geometries.m1n1 import Interval
-
-from matplotlib.path import Path
-
-from src.config import RANK, MASTER_RANK
+from phyem.tools.frozen import Frozen
+from phyem.tools.functions.space._2d.angle import angle
+from phyem.tools.miscellaneous.geometries.m1n1 import Interval
+from phyem.src.config import RANK, MASTER_RANK
 
 
 class Parallel2dLinesError(Exception):

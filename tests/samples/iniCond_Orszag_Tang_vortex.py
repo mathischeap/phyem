@@ -29,17 +29,12 @@ These initial conditions are implemented. To initialize an ideal Orszag-Tang Vor
 <tests.samples.iniCond_Orszag_Tang_vortex.InitialConditionOrszagTangVortex object at ...
 
 """
-import sys
-if './' not in sys.path:
-    sys.path.append('./')
-
 from numpy import sin, cos, pi, inf
 
-from tools.frozen import Frozen
-from tools.functions.time_space._2d.wrappers.scalar import T2dScalar
-from tools.functions.time_space._2d.wrappers.vector import T2dVector
-
-from tools.functions.time_space._3d.wrappers.vector import T3dVector
+from phyem.tools.frozen import Frozen
+from phyem.tools.functions.time_space._2d.wrappers.scalar import T2dScalar
+from phyem.tools.functions.time_space._2d.wrappers.vector import T2dVector
+from phyem.tools.functions.time_space._3d.wrappers.vector import T3dVector
 
 
 def _phi(t, x, y):

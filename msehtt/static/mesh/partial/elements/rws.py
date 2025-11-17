@@ -1,10 +1,10 @@
 # -*- coding: utf-8 -*-
 r"""Save some objects to a dds-rws-grouped object based on this partial elements (basically a mesh).
 """
-from src.config import RANK, MASTER_RANK
-from tools.frozen import Frozen
-from msehtt.static.form.addons.static import MseHttFormStaticCopy
-from tools.dds.region_wise_structured_group import DDS_RegionWiseStructured_Group
+from phyem.src.config import RANK, MASTER_RANK
+from phyem.tools.frozen import Frozen
+from phyem.msehtt.static.form.addons.static import MseHttFormStaticCopy
+from phyem.tools.dds.region_wise_structured_group import DDS_RegionWiseStructured_Group
 
 
 class MseHtt_PartialMesh_Elements_ExportTo_DDS_RWS_Grouped(Frozen):

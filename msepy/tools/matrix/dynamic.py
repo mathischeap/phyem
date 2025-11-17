@@ -1,10 +1,10 @@
 # -*- coding: utf-8 -*-
 r"""
 """
-from tools.frozen import Frozen
-from msepy.tools.matrix.static.local import MsePyStaticLocalMatrix
-from msepy.form.cochain.vector.dynamic import MsePyRootFormDynamicCochainVector
-from msepy.tools.vector.dynamic import MsePyDynamicLocalVector
+from phyem.tools.frozen import Frozen
+from phyem.msepy.tools.matrix.static.local import MsePyStaticLocalMatrix
+from phyem.msepy.form.cochain.vector.dynamic import MsePyRootFormDynamicCochainVector
+from phyem.msepy.tools.vector.dynamic import MsePyDynamicLocalVector
 
 
 class MsePyDynamicLocalMatrix(Frozen):

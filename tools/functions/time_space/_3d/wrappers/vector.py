@@ -2,19 +2,19 @@
 r"""
 """
 import numpy as np
-
-from tools.functions.time_space.base import TimeSpaceFunctionBase
 from functools import partial
-from tools.quadrature import quadrature
 
-from tools.numerical.time_space._3d.partial_derivative_as_functions import \
+from phyem.tools.functions.time_space.base import TimeSpaceFunctionBase
+from phyem.tools.quadrature import quadrature
+
+from phyem.tools.numerical.time_space._3d.partial_derivative_as_functions import \
     NumericalPartialDerivativeTxyzFunctions, NumericalPartialDerivativeTxyz
 
-from tools.functions.time_space._3d.wrappers.helpers._3scalars_add import t3d_3ScalarAdd
-from tools.functions.time_space._3d.wrappers.helpers.scalar_sub import t3d_ScalarSub
-from tools.functions.time_space._3d.wrappers.helpers.scalar_mul import t3d_ScalarMultiply
-from tools.functions.time_space._3d.wrappers.helpers.scalar_add import t3d_ScalarAdd
-from tools.functions.time_space._3d.wrappers.helpers.scalar_neg import t3d_ScalarNeg
+from phyem.tools.functions.time_space._3d.wrappers.helpers._3scalars_add import t3d_3ScalarAdd
+from phyem.tools.functions.time_space._3d.wrappers.helpers.scalar_sub import t3d_ScalarSub
+from phyem.tools.functions.time_space._3d.wrappers.helpers.scalar_mul import t3d_ScalarMultiply
+from phyem.tools.functions.time_space._3d.wrappers.helpers.scalar_add import t3d_ScalarAdd
+from phyem.tools.functions.time_space._3d.wrappers.helpers.scalar_neg import t3d_ScalarNeg
 
 
 # noinspection PyUnusedLocal
@@ -347,7 +347,7 @@ class T3dVector(TimeSpaceFunctionBase):
 
         scalar_function = t3d_3ScalarAdd(pv0_px, pv1_py, pv2_pz)
 
-        from tools.functions.time_space._3d.wrappers.scalar import T3dScalar
+        from phyem.tools.functions.time_space._3d.wrappers.scalar import T3dScalar
 
         return T3dScalar(scalar_function)
 
@@ -572,7 +572,7 @@ class T3dVector(TimeSpaceFunctionBase):
             V2 = t3d_ScalarMultiply(v02, v12)
 
             V0V1V2 = t3d_3ScalarAdd(V0, V1, V2)
-            from tools.functions.time_space._3d.wrappers.scalar import T3dScalar
+            from phyem.tools.functions.time_space._3d.wrappers.scalar import T3dScalar
             return T3dScalar(V0V1V2)
 
         else:

@@ -2,10 +2,11 @@
 r"""
 """
 import numpy as np
-from tools.frozen import Frozen
-from msehtt.tools.nonlinear_system.operator.local_multilinear import MseHttStatic_Local_Multi_Linear_NonlinearOperator
-from msehtt.tools.nonlinear_system.operator.local_wrapper import MseHttStatic_Local_Wrapper_NonlinearOperator
-from msehtt.tools.nonlinear_system.operator.local_wrapper import MseHttStatic_Local_Wrapper_NonlinearOperator_DataMaker
+
+from phyem.tools.frozen import Frozen
+from phyem.msehtt.tools.nonlinear_system.operator.local_multilinear import MseHttStatic_Local_Multi_Linear_NonlinearOperator
+from phyem.msehtt.tools.nonlinear_system.operator.local_wrapper import MseHttStatic_Local_Wrapper_NonlinearOperator
+from phyem.msehtt.tools.nonlinear_system.operator.local_wrapper import MseHttStatic_Local_Wrapper_NonlinearOperator_DataMaker
 
 
 class MseHttDynamicLocalNonlinearOperator(Frozen):

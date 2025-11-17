@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 r"""
 """
-from tools.frozen import Frozen
-from msehtt.static.space.local_dofs.Lambda.main import MseHttSpace_Local_Dofs_Lambda
+from phyem.tools.frozen import Frozen
+from phyem.msehtt.static.space.local_dofs.Lambda.main import MseHttSpace_Local_Dofs_Lambda
 
 
 class MseHttSpace_Local_Dofs(Frozen):

@@ -2,17 +2,12 @@
 """
 created at: 3/14/2023 12:13 PM
 """
-import sys
-
-if './' not in sys.path:
-    sys.path.append('./')
-
-from src.config import set_embedding_space_dim
-from src.manifold import manifold
-from src.mesh import mesh
-from src.pde import pde
-import src.spaces.main as space
-from src.form.operators import trace, Hodge
+from phyem.src.config import set_embedding_space_dim
+from phyem.src.manifold import manifold
+from phyem.src.mesh import mesh
+from phyem.src.pde import pde
+import phyem.src.spaces.main as space
+from phyem.src.form.operators import trace, Hodge
 
 
 def pde_canonical_pH(n=3, p=3, periodic=False):

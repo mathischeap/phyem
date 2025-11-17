@@ -1,9 +1,5 @@
 # -*- coding: utf-8 -*-
 r""""""
-import sys
-if './' not in sys.path:
-    sys.path.append('./')
-
 from abc import ABC
 import numdifftools as nd
 # from scipy.misc import derivative

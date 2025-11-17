@@ -1,14 +1,14 @@
 # -*- coding: utf-8 -*-
 r"""
 """
-from src.form.operators import _parse_related_time_derivative
-from src.form.main import _global_root_forms_lin_dict, Form
-from src.form.operators import time_derivative, d, Hodge, trace
-from src.config import _global_operator_lin_repr_setting
-from src.form.others import _find_form, _find_root_forms_through_lin_repr
-from src.config import _non_root_lin_sep
-from src.config import _wf_term_default_simple_patterns as _simple_patterns
-from src.form.parameters import ConstantScalar0Form
+from phyem.src.form.operators import _parse_related_time_derivative
+from phyem.src.form.main import _global_root_forms_lin_dict, Form
+from phyem.src.form.operators import time_derivative, d, Hodge, trace
+from phyem.src.config import _global_operator_lin_repr_setting
+from phyem.src.form.others import _find_form, _find_root_forms_through_lin_repr
+from phyem.src.config import _non_root_lin_sep
+from phyem.src.config import _wf_term_default_simple_patterns as _simple_patterns
+from phyem.src.form.parameters import ConstantScalar0Form
 
 
 def _inner_simpler_pattern_examiner_scalar_valued_forms(factor, f0, f1, extra_info):

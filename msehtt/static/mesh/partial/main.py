@@ -3,15 +3,15 @@ r"""
 """
 import numpy as np
 
-from tools.miscellaneous.geometries.m2n2 import Point2, StraightLine2, whether_point_on_straight_line
-from tools.miscellaneous.geometries.m2n2 import Polygon2, whether_point_in_polygon
-from tools.miscellaneous.geometries.m2n2 import Curve2, whether_point_on_curve
-from tools.miscellaneous.geometries.m2n2 import StraightSegment2, whether_point_on_straight_segment
+from phyem.tools.miscellaneous.geometries.m2n2 import Point2, StraightLine2, whether_point_on_straight_line
+from phyem.tools.miscellaneous.geometries.m2n2 import Polygon2, whether_point_in_polygon
+from phyem.tools.miscellaneous.geometries.m2n2 import Curve2, whether_point_on_curve
+from phyem.tools.miscellaneous.geometries.m2n2 import StraightSegment2, whether_point_on_straight_segment
 
-from tools.frozen import Frozen
-from src.mesh import Mesh
-from msehtt.static.mesh.partial.elements.main import MseHttElementsPartialMesh
-from msehtt.static.mesh.partial.boundary_section.main import MseHttBoundarySectionPartialMesh
+from phyem.tools.frozen import Frozen
+from phyem.src.mesh import Mesh
+from phyem.msehtt.static.mesh.partial.elements.main import MseHttElementsPartialMesh
+from phyem.msehtt.static.mesh.partial.boundary_section.main import MseHttBoundarySectionPartialMesh
 
 
 class EmptyCompositionError(Exception):

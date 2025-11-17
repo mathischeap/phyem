@@ -4,23 +4,23 @@ r"""
 import matplotlib.pyplot as plt
 import matplotlib
 
-from tools.frozen import Frozen
-from msepy.tools.matrix.static.local import MsePyStaticLocalMatrix
-from msepy.tools.matrix.dynamic import MsePyDynamicLocalMatrix
-from msepy.tools.vector.dynamic import MsePyDynamicLocalVector
-from msepy.form.cochain.vector.dynamic import MsePyRootFormDynamicCochainVector
-from src.config import _abstract_array_factor_sep, _abstract_array_connector
-from src.form.parameters import constant_scalar, ConstantScalar0Form
-from src.form.parameters import _factor_parser
-from msepy.tools.linear_system.dynamic.array_parser import msepy_root_array_parser
+from phyem.tools.frozen import Frozen
+from phyem.msepy.tools.matrix.static.local import MsePyStaticLocalMatrix
+from phyem.msepy.tools.matrix.dynamic import MsePyDynamicLocalMatrix
+from phyem.msepy.tools.vector.dynamic import MsePyDynamicLocalVector
+from phyem.msepy.form.cochain.vector.dynamic import MsePyRootFormDynamicCochainVector
+from phyem.src.config import _abstract_array_factor_sep, _abstract_array_connector
+from phyem.src.form.parameters import constant_scalar, ConstantScalar0Form
+from phyem.src.form.parameters import _factor_parser
+from phyem.msepy.tools.linear_system.dynamic.array_parser import msepy_root_array_parser
 
-from msepy.tools.linear_system.static.local.main import MsePyStaticLocalLinearSystem
+from phyem.msepy.tools.linear_system.static.local.main import MsePyStaticLocalLinearSystem
 
-from msepy.tools.vector.static.local import MsePyStaticLocalVector
-from msepy.form.cochain.vector.static import MsePyRootFormStaticCochainVector
+from phyem.msepy.tools.vector.static.local import MsePyStaticLocalVector
+from phyem.msepy.form.cochain.vector.static import MsePyRootFormStaticCochainVector
 
-from msepy.tools.linear_system.dynamic.bc import MsePyDynamicLinearSystemBoundaryCondition
-from src.wf.mp.linear_system import MatrixProxyLinearSystem
+from phyem.msepy.tools.linear_system.dynamic.bc import MsePyDynamicLinearSystemBoundaryCondition
+from phyem.src.wf.mp.linear_system import MatrixProxyLinearSystem
 
 _cs1 = constant_scalar(1)
 

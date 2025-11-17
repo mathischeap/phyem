@@ -1,12 +1,12 @@
 # -*- coding: utf-8 -*-
 r"""
 """
-
-from src.config import RANK, MASTER_RANK, COMM, SIZE
 import numpy as np
-from msehtt.tools.gathering_matrix import MseHttGatheringMatrix
 
-from src.spaces.main import _degree_str_maker
+from phyem.src.config import RANK, MASTER_RANK, COMM, SIZE
+from phyem.msehtt.tools.gathering_matrix import MseHttGatheringMatrix
+from phyem.src.spaces.main import _degree_str_maker
+
 _cache_ = {}
 
 
@@ -80,7 +80,7 @@ def gathering_matrix_Lambda__m2n2k0(tpm, degree):
     return _cache_[key]
 
 
-from msehtt.static.mesh.great.elements.types.orthogonal_rectangle import MseHttGreatMeshOrthogonalRectangleElement
+from phyem.msehtt.static.mesh.great.elements.types.orthogonal_rectangle import MseHttGreatMeshOrthogonalRectangleElement
 
 
 def ___gm220_msepy_quadrilateral___(map_, edge_numbering_pool, node_numbering_pool, current, degree):
@@ -196,7 +196,7 @@ def ___gm220_msepy_quadrilateral___(map_, edge_numbering_pool, node_numbering_po
     return numbering, current
 
 
-from msehtt.static.mesh.great.elements.types.vtu_9_quad import Vtu9Quad
+from phyem.msehtt.static.mesh.great.elements.types.vtu_9_quad import Vtu9Quad
 
 
 def ___gm220_quad_9___(map_, edge_numbering_pool, node_numbering_pool, current, degree):
@@ -312,7 +312,7 @@ def ___gm220_quad_9___(map_, edge_numbering_pool, node_numbering_pool, current, 
     return numbering, current
 
 
-from msehtt.static.mesh.great.elements.types.vtu_5_triangle import Vtu5Triangle
+from phyem.msehtt.static.mesh.great.elements.types.vtu_5_triangle import Vtu5Triangle
 
 
 def ___gm220_vtu_5___(map_, edge_numbering_pool, node_numbering_pool, current, degree):

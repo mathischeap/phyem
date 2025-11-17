@@ -5,12 +5,12 @@ the reduction of cochains of the new form.
 
 """
 import numpy as np
-from src.config import RANK, MASTER_RANK, COMM
-from tools._mpi import merge_dict
-
-from tools.frozen import Frozen
 from scipy.interpolate import NearestNDInterpolator
 # from scipy.interpolate import LinearNDInterpolator
+
+from phyem.src.config import RANK, MASTER_RANK, COMM
+from phyem.tools._mpi import merge_dict
+from phyem.tools.frozen import Frozen
 
 
 class MseHtt_FormCochainRenew_Method1_GlobalInterpolation(Frozen):

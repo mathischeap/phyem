@@ -1,11 +1,11 @@
 # -*- coding: utf-8 -*-
 r"""
 """
-
-from tools.frozen import Frozen
 import numpy as np
-from msehtt.static.mesh.great.elements.types.base import MseHttGreatMeshBaseElement
-from msehtt.static.mesh.great.elements.types.base import MseHttGreatMeshBaseElementCooTrans
+
+from phyem.tools.frozen import Frozen
+from phyem.msehtt.static.mesh.great.elements.types.base import MseHttGreatMeshBaseElement
+from phyem.msehtt.static.mesh.great.elements.types.base import MseHttGreatMeshBaseElementCooTrans
 
 
 class MseHtt_GreatMesh_Unique_MsePy_Hexahedron_Element(MseHttGreatMeshBaseElement):
@@ -275,11 +275,11 @@ class MseHtt_GreatMesh_Curvilinear_Hexahedron_Element_Face(Frozen):
         return self._area
 
 
-from msehtt.static.mesh.great.elements.types.orthogonal_hexahedron import (
+from phyem.msehtt.static.mesh.great.elements.types.orthogonal_hexahedron import (
     MseHtt_GreatMesh_OrthogonalHexahedron_Element_OneFace_CT)
 
 
-from tools.miscellaneous.geometries.m3n3 import Point3, angle3
+from phyem.tools.miscellaneous.geometries.m3n3 import Point3, angle3
 
 
 class MseHtt_GreatMeshUniqueMsepy_CurvilinearHexahedron_Element_Face_CT(

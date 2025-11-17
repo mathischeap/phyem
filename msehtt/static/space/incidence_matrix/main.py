@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 r"""
 """
-from tools.frozen import Frozen
-from msehtt.static.space.incidence_matrix.Lambda.main import MseHttSpaceLambdaIncidenceMatrix
+from phyem.tools.frozen import Frozen
+from phyem.msehtt.static.space.incidence_matrix.Lambda.main import MseHttSpaceLambdaIncidenceMatrix
 
 
 class MseHttSpaceIncidenceMatrix(Frozen):

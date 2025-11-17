@@ -14,8 +14,9 @@ Aerodynamics, AE
 TU Delft
 """
 import numpy as np
-from tools.frozen import Frozen
-from tools.numerical.space._2d.Jacobian_21 import NumericalJacobianXYt21
+
+from phyem.tools.frozen import Frozen
+from phyem.tools.numerical.space._2d.Jacobian_21 import NumericalJacobianXYt21
 
 
 class TransfiniteMapping(Frozen):

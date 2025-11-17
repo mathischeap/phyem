@@ -1,8 +1,9 @@
 # -*- coding: utf-8 -*-
 r"""
 """
-from tools.frozen import Frozen
 from numpy import abs
+
+from phyem.tools.frozen import Frozen
 
 
 class t2d_ScalarAbs(Frozen):

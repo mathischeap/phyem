@@ -2,7 +2,8 @@
 r"""2D numerical."""
 import numpy as np
 from abc import ABC
-from tools.numerical.derivative import derivative
+
+from phyem.tools.numerical.derivative import derivative
 
 
 class NumericalJacobianXYt21(ABC):

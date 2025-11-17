@@ -1,9 +1,10 @@
 # -*- coding: utf-8 -*-
 r"""
 """
-from tools.frozen import Frozen
-from msehtt.static.space.gathering_matrix.Lambda.main import MseHttSpaceGatheringMatrixLambda
 from importlib import import_module
+
+from phyem.tools.frozen import Frozen
+from phyem.msehtt.static.space.gathering_matrix.Lambda.main import MseHttSpaceGatheringMatrixLambda
 
 
 class MseHttSpaceGatheringMatrix(Frozen):
