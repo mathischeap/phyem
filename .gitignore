@@ -70,17 +70,9 @@ doctrees/
 conf.py
 *.phc
 
-rci.py
-_tm.py
-_mr.py
-_r.py
-_m.py
-_s.py
-_t.py
-_email.py
-copy_a_image_to_clipboard.py
-msg_wechat.py
-
+ph_cache_test.png
+ph_cache_test.csv
+ph_cache_test.phc
 
 make.bat
 Makefile
