@@ -24,7 +24,7 @@ linguistic representations (``'variable1'``, ``'variable2'``), represectively. T
 If you have turned off the *py cache* , see :ref:`docs-presetting-set`, a figure should have popped out. Otherwise,
 it is saved to ``./__phcache__/Pr_current/``. A form is an instance of :class:`Form`.
 
-    .. autoclass:: src.form.main.Form
+    .. autoclass:: phyem.src.form.main.Form
         :members: mesh, manifold, orientation, space, wedge, codifferential, exterior_derivative, cross_product,
             time_derivative, degree
 
@@ -110,6 +110,8 @@ which is introduced in the next section.
 from typing import Dict
 import matplotlib.pyplot as plt
 import matplotlib
+import math
+
 plt.rcParams.update({
     "text.usetex": True,
     "font.family": "DejaVu Sans",
@@ -122,7 +124,7 @@ from phyem.src.config import _global_lin_repr_setting
 from phyem.src.config import _parse_lin_repr
 from phyem.src.form.operators import wedge, time_derivative, d, codifferential, cross_product, tensor_product
 from phyem.src.form.operators import Cross_Product, CrossProduct, crossProduct
-from phyem.src.form.operators import convect, multi
+from phyem.src.form.operators import convect, multi, log
 from phyem.src.form.operators import _project_to
 from phyem.src.config import _check_sym_repr
 from phyem.src.form.parameters import constant_scalar
@@ -525,13 +527,29 @@ class Form(Frozen):
 
     def multi(self, other, output_space):
         r"""Do f1 f2 -> a form in output space. For example, c = ab where a, b are both scalars, or D = a B where
-        a is scalar and BD are vectors.
+        `a` is scalar and BD are vectors.
         """
-        if output_space.__class__ is self.__class__:
+        if hasattr(output_space, '_is_space') and output_space._is_space:
+            pass
+        elif output_space.__class__ is self.__class__:
             output_space = output_space.space
         else:
-            raise NotImplementedError()
+            raise NotImplementedError(output_space.__class__)
         return multi(self, other, output_space)
+
+    def log(self, base=math.e, output_space=None):
+        r"""We compute log_{base} of this form, and we let the output form be a form in the `output_space`.
+
+        This at the discrete level of course is wrong since we normally do not have a finite element space
+        containing the functions of log. But from a implementation aspect, we do it for now.
+        """
+        if output_space is None:
+            output_space = self.space
+        elif hasattr(output_space, '_is_space') and output_space._is_space:
+            pass
+        else:
+            raise NotImplementedError(output_space.__class__)
+        return log(self, base, output_space)
 
     def __neg__(self):
         """- self"""

@@ -3,12 +3,8 @@ r"""
 """
 
 # python tests/msepy/div_grad/_1d_periodic.py
-import sys
-
-if './' not in sys.path:
-    sys.path.append('./')
 import numpy as np
-import __init__ as ph
+import phyem as ph
 
 ls = ph.samples.wf_div_grad(n=1, degree=4, orientation='outer', periodic=True)
 # ls.pr()

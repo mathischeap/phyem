@@ -4,7 +4,7 @@ r"""
 .. testsetup:: *
 
     None_or_custom_path = './source/gallery/msepy_domains_and_meshes/msepy/crazy_multi.png'
-    import __init__ as ph
+    import phyem as ph
 
 .. testcleanup::
 
@@ -16,7 +16,7 @@ The multi-crazy ones are like stacking multiple :ref:`GALLERY-msepy-domains-and-
 mesh except there is one additional, ``Ns``, see:
 
 
-.. autofunction:: msepy.manifold.predefined.crazy_multi.crazy_multi
+.. autofunction:: phyem.msepy.manifold.predefined.crazy_multi.crazy_multi
 
 .. note::p
 

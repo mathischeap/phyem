@@ -48,11 +48,13 @@ class MseHttGreatMeshVisualizeMatplot(Frozen):
             mesh_data_Lines = self._tgm.visualize._generate_element_outline_data(ddf=ddf)
             mesh_data_Lines = COMM.gather(mesh_data_Lines, root=MASTER_RANK)
         else:
-            if internal_grid is False:
+            # noinspection PySimplifyBooleanCheck
+            if internal_grid is False:  # NOT A TYPO
                 mesh_data_Lines = self._tgm.visualize._generate_element_outline_data(ddf=ddf)
                 mesh_data_Lines = COMM.gather(mesh_data_Lines, root=MASTER_RANK)
             else:
-                if internal_grid is True:
+                # noinspection PySimplifyBooleanCheck
+                if internal_grid is True:  # NOT A TYPO
                     internal_grid = 2
                 else:
                     internal_grid = internal_grid
@@ -240,7 +242,7 @@ class MseHttGreatMeshVisualizeMatplot(Frozen):
             if saveto is not None and saveto != '':
                 plt.savefig(saveto, bbox_inches='tight', pad_inches=pad_inches)
             else:
-                from src.config import _setting, _pr_cache
+                from phyem.src.config import _setting, _pr_cache
                 if _setting['pr_cache']:
                     _pr_cache(fig, filename='msehtt_elements')
                 else:
@@ -340,7 +342,7 @@ class MseHttGreatMeshVisualizeMatplot(Frozen):
             if saveto is not None and saveto != '':
                 plt.savefig(saveto, bbox_inches='tight', pad_inches=pad_inches)
             else:
-                from src.config import _setting, _pr_cache
+                from phyem.src.config import _setting, _pr_cache
                 if _setting['pr_cache']:
                     _pr_cache(fig, filename='msehtt_elements')
                 else:
@@ -496,7 +498,7 @@ class MseHttGreatMeshVisualizeMatplot(Frozen):
             if saveto is not None and saveto != '':
                 plt.savefig(saveto, bbox_inches='tight', pad_inches=pad_inches)
             else:
-                from src.config import _setting, _pr_cache
+                from phyem.src.config import _setting, _pr_cache
                 if _setting['pr_cache']:
                     _pr_cache(fig, filename='msehtt_elements')
                 else:
@@ -525,11 +527,15 @@ class MseHttGreatMeshVisualizeMatplot(Frozen):
         fig = plt.figure(figsize=figsize)
         ax = fig.add_subplot(111, projection='3d')
         # make the panes transparent
+        # noinspection PyUnresolvedReferences
         ax.xaxis.set_pane_color((1.0, 1.0, 1.0, 0.0))
+        # noinspection PyUnresolvedReferences
         ax.yaxis.set_pane_color((1.0, 1.0, 1.0, 0.0))
         ax.zaxis.set_pane_color((1.0, 1.0, 1.0, 0.0))
         # make the grid lines transparent
+        # noinspection PyUnresolvedReferences
         ax.xaxis._axinfo["grid"]['color'] = (1, 1, 1, 0)
+        # noinspection PyUnresolvedReferences
         ax.yaxis._axinfo["grid"]['color'] = (1, 1, 1, 0)
         ax.zaxis._axinfo["grid"]['color'] = (1, 1, 1, 0)
         ax.tick_params(labelsize=ticksize)
@@ -588,7 +594,7 @@ class MseHttGreatMeshVisualizeMatplot(Frozen):
             if saveto is not None and saveto != '':
                 plt.savefig(saveto, bbox_inches='tight', pad_inches=pad_inches)
             else:
-                from src.config import _setting, _pr_cache
+                from phyem.src.config import _setting, _pr_cache
                 if _setting['pr_cache']:
                     _pr_cache(fig, filename='msehtt_elements')
                 else:

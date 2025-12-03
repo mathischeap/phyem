@@ -183,7 +183,7 @@ class MseHttDynamicLinearSystem(Frozen):
         if RANK != MASTER_RANK:
             return None
 
-        from src.config import _setting, _pr_cache
+        from phyem.src.config import _setting, _pr_cache
         plt.rcParams.update({
             "text.usetex": True,
             "font.family": "DejaVu Sans",

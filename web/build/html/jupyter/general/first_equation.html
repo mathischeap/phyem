@@ -253,6 +253,7 @@
 <li class="toctree-l3"><a class="reference internal" href="../../gallery/Navier_Stokes/Taylor_Green_vortex/index.html">Taylor-Green vortex</a></li>
 </ul>
 </details></li>
+<li class="toctree-l2"><a class="reference internal" href="../../gallery/MHD/index.html">🧲 MHD</a></li>
 </ul>
 </details></li>
 </ul>
@@ -464,11 +465,8 @@ document.write(`
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[1]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>import sys
-ph_dir = &#39;../../../../../&#39;   # the path to dir that containing the phyem package.
-sys.path.append(ph_dir)
-import phyem as ph  # import the phyem package
-ph.config._set_matplot_block(False)
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">phyem</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">ph</span>  <span class="c1"># import the phyem package</span>
+<span class="n">ph</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">_set_matplot_block</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -477,7 +475,7 @@ ph.config._set_matplot_block(False)
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[2]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>ph.config.set_embedding_space_dim(3)
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">ph</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">set_embedding_space_dim</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -486,7 +484,7 @@ ph.config._set_matplot_block(False)
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[3]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>manifold = ph.manifold(3)
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">manifold</span> <span class="o">=</span> <span class="n">ph</span><span class="o">.</span><span class="n">manifold</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -495,7 +493,7 @@ ph.config._set_matplot_block(False)
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[4]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>mesh = ph.mesh(manifold)
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">mesh</span> <span class="o">=</span> <span class="n">ph</span><span class="o">.</span><span class="n">mesh</span><span class="p">(</span><span class="n">manifold</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -504,7 +502,7 @@ ph.config._set_matplot_block(False)
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[5]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>ph.list_meshes()
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">ph</span><span class="o">.</span><span class="n">list_meshes</span><span class="p">()</span>
 </pre></div>
 </div>
 </div>
@@ -515,7 +513,7 @@ ph.config._set_matplot_block(False)
 <div class="highlight"><pre>
 Existing meshes:
 ---------------- symbolic - &lt;manifold&gt; -------------------------
-             \mathfrak{M} | &lt;Manifold \mathcal{M} at 0x000001D65EDFF1A0&gt;
+             \mathfrak{M} | &lt;Manifold \mathcal{M} at 0x00000150E91E8C20&gt;
 </pre></div></div>
 </div>
 <p>where we can see the symbolic representation of the mesh and the manifold on which it is built. If we render the symbolic representation of the mesh with an equation environment, we see <span class="math notranslate nohighlight">\(\mathfrak{M}\)</span>.</p>
@@ -524,12 +522,12 @@ Existing meshes:
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[6]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>ph.space.set_mesh(mesh)
-O0 = ph.space.new(&#39;Lambda&#39;, 0)  # Lambda is the indicator for (standard) scalar valued form spaces.
-O1 = ph.space.new(&#39;Lambda&#39;, 1)
-O2 = ph.space.new(&#39;Lambda&#39;, 2)
-O3 = ph.space.new(&#39;Lambda&#39;, 3)
-ph.list_spaces()  # we can also list all existing spaces
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">ph</span><span class="o">.</span><span class="n">space</span><span class="o">.</span><span class="n">set_mesh</span><span class="p">(</span><span class="n">mesh</span><span class="p">)</span>
+<span class="n">O0</span> <span class="o">=</span> <span class="n">ph</span><span class="o">.</span><span class="n">space</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="s1">&#39;Lambda&#39;</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>  <span class="c1"># Lambda is the indicator for (standard) scalar valued form spaces.</span>
+<span class="n">O1</span> <span class="o">=</span> <span class="n">ph</span><span class="o">.</span><span class="n">space</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="s1">&#39;Lambda&#39;</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+<span class="n">O2</span> <span class="o">=</span> <span class="n">ph</span><span class="o">.</span><span class="n">space</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="s1">&#39;Lambda&#39;</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+<span class="n">O3</span> <span class="o">=</span> <span class="n">ph</span><span class="o">.</span><span class="n">space</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="s1">&#39;Lambda&#39;</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span>
+<span class="n">ph</span><span class="o">.</span><span class="n">list_spaces</span><span class="p">()</span>  <span class="c1"># we can also list all existing spaces</span>
 </pre></div>
 </div>
 </div>
@@ -558,11 +556,11 @@ bundle-diagonal | diagonal bundle valued k-form space
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[7]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>w = O1.make_form(r&#39;\omega^1&#39;, &quot;vorticity1&quot;)
-u = O2.make_form(r&#39;u^2&#39;, r&quot;velocity2&quot;)
-f = O2.make_form(r&#39;f^2&#39;, r&quot;body-force&quot;)
-P = O3.make_form(r&#39;P^3&#39;, r&quot;total-pressure3&quot;)
-ph.list_forms()  # this will generate a table in a separete figure showing.
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">w</span> <span class="o">=</span> <span class="n">O1</span><span class="o">.</span><span class="n">make_form</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;\omega^1&#39;</span><span class="p">,</span> <span class="s2">&quot;vorticity1&quot;</span><span class="p">)</span>
+<span class="n">u</span> <span class="o">=</span> <span class="n">O2</span><span class="o">.</span><span class="n">make_form</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;u^2&#39;</span><span class="p">,</span> <span class="sa">r</span><span class="s2">&quot;velocity2&quot;</span><span class="p">)</span>
+<span class="n">f</span> <span class="o">=</span> <span class="n">O2</span><span class="o">.</span><span class="n">make_form</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;f^2&#39;</span><span class="p">,</span> <span class="sa">r</span><span class="s2">&quot;body-force&quot;</span><span class="p">)</span>
+<span class="n">P</span> <span class="o">=</span> <span class="n">O3</span><span class="o">.</span><span class="n">make_form</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;P^3&#39;</span><span class="p">,</span> <span class="sa">r</span><span class="s2">&quot;total-pressure3&quot;</span><span class="p">)</span>
+<span class="n">ph</span><span class="o">.</span><span class="n">list_forms</span><span class="p">()</span>  <span class="c1"># this will generate a table in a separete figure showing.</span>
 </pre></div>
 </div>
 </div>
@@ -584,7 +582,7 @@ ph.list_forms()  # this will generate a table in a separete figure showing.
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[8]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>u.pr()
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">u</span><span class="o">.</span><span class="n">pr</span><span class="p">()</span>
 </pre></div>
 </div>
 </div>
@@ -602,11 +600,11 @@ ph.list_forms()  # this will generate a table in a separete figure showing.
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[9]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>dsP = ph.codifferential(P)
-dsu = ph.codifferential(u)
-du = ph.d(u)
-du_dt = ph.time_derivative(u)
-# ph.list_forms(locals())
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">dsP</span> <span class="o">=</span> <span class="n">ph</span><span class="o">.</span><span class="n">codifferential</span><span class="p">(</span><span class="n">P</span><span class="p">)</span>
+<span class="n">dsu</span> <span class="o">=</span> <span class="n">ph</span><span class="o">.</span><span class="n">codifferential</span><span class="p">(</span><span class="n">u</span><span class="p">)</span>
+<span class="n">du</span> <span class="o">=</span> <span class="n">ph</span><span class="o">.</span><span class="n">d</span><span class="p">(</span><span class="n">u</span><span class="p">)</span>
+<span class="n">du_dt</span> <span class="o">=</span> <span class="n">ph</span><span class="o">.</span><span class="n">time_derivative</span><span class="p">(</span><span class="n">u</span><span class="p">)</span>
+<span class="c1"># ph.list_forms(locals())</span>
 </pre></div>
 </div>
 </div>
@@ -615,7 +613,7 @@ du_dt = ph.time_derivative(u)
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[10]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>ph.list_forms()
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">ph</span><span class="o">.</span><span class="n">list_forms</span><span class="p">()</span>
 </pre></div>
 </div>
 </div>
@@ -634,21 +632,21 @@ du_dt = ph.time_derivative(u)
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[11]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>exp1 = [
-    &#39;dudt - dsP = f&#39;,
-    &#39;w = dsu&#39;,
-    &#39;du = 0&#39;,
-]
-itp = {
-    &#39;dudt&#39;: du_dt,
-    &#39;dsP&#39;: dsP,
-    &#39;f&#39;: f,
-    &#39;w&#39;: w,
-    &#39;dsu&#39;: dsu,
-    &#39;du&#39;: du,
-}
-pde1 = ph.pde(exp1, itp)
-pde1.unknowns = [u, w, P]
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">exp1</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="s1">&#39;dudt - dsP = f&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;w = dsu&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;du = 0&#39;</span><span class="p">,</span>
+<span class="p">]</span>
+<span class="n">itp</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s1">&#39;dudt&#39;</span><span class="p">:</span> <span class="n">du_dt</span><span class="p">,</span>
+    <span class="s1">&#39;dsP&#39;</span><span class="p">:</span> <span class="n">dsP</span><span class="p">,</span>
+    <span class="s1">&#39;f&#39;</span><span class="p">:</span> <span class="n">f</span><span class="p">,</span>
+    <span class="s1">&#39;w&#39;</span><span class="p">:</span> <span class="n">w</span><span class="p">,</span>
+    <span class="s1">&#39;dsu&#39;</span><span class="p">:</span> <span class="n">dsu</span><span class="p">,</span>
+    <span class="s1">&#39;du&#39;</span><span class="p">:</span> <span class="n">du</span><span class="p">,</span>
+<span class="p">}</span>
+<span class="n">pde1</span> <span class="o">=</span> <span class="n">ph</span><span class="o">.</span><span class="n">pde</span><span class="p">(</span><span class="n">exp1</span><span class="p">,</span> <span class="n">itp</span><span class="p">)</span>
+<span class="n">pde1</span><span class="o">.</span><span class="n">unknowns</span> <span class="o">=</span> <span class="p">[</span><span class="n">u</span><span class="p">,</span> <span class="n">w</span><span class="p">,</span> <span class="n">P</span><span class="p">]</span>
 </pre></div>
 </div>
 </div>
@@ -658,13 +656,13 @@ pde1.unknowns = [u, w, P]
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[12]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>exp2 = [
-    &#39;du_dt - dsP = f&#39;,
-    &#39;w = dsu&#39;,
-    &#39;du = 0&#39;,
-]
-pde2 = ph.pde(exp2, locals())
-pde2.unknowns = [u, w, P]
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">exp2</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="s1">&#39;du_dt - dsP = f&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;w = dsu&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;du = 0&#39;</span><span class="p">,</span>
+<span class="p">]</span>
+<span class="n">pde2</span> <span class="o">=</span> <span class="n">ph</span><span class="o">.</span><span class="n">pde</span><span class="p">(</span><span class="n">exp2</span><span class="p">,</span> <span class="nb">locals</span><span class="p">())</span>
+<span class="n">pde2</span><span class="o">.</span><span class="n">unknowns</span> <span class="o">=</span> <span class="p">[</span><span class="n">u</span><span class="p">,</span> <span class="n">w</span><span class="p">,</span> <span class="n">P</span><span class="p">]</span>
 </pre></div>
 </div>
 </div>
@@ -674,7 +672,7 @@ pde2.unknowns = [u, w, P]
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[13]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>pde2.pr(indexing=False)
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">pde2</span><span class="o">.</span><span class="n">pr</span><span class="p">(</span><span class="n">indexing</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -758,7 +756,7 @@ By Andrea Brugnoli, Ramy Rashad, Stefano Stramigioli, Yi Zhang and more
   <div class="footer-item">
     
 <div class="extra_footer">
-  <div>Last updated on March 16, 2025, 15:57:13, China Standard Time</div>
+  <div>Last updated on 十一月 18, 2025, 19:20:03, China Standard Time</div>
 </div>
   </div>
   

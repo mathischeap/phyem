@@ -35,6 +35,7 @@ def gathering_matrix_Lambda__m3n3k2(tpm, degree):
             # --------- call the element class to do the particular numbering -----------
             if e in tpm.composition.global_element_range:
                 if etype in (
+                    11,
                     'orthogonal hexahedron',
                     "unique msepy curvilinear hexahedron",
                 ):

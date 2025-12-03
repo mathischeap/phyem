@@ -3,12 +3,7 @@ r"""
 python tests/msepy/dualNS2/shear_layer_rollup.py
 """
 from numpy import pi
-import sys
-
-if './' not in sys.path:
-    sys.path.append('./')
-
-import __init__ as ph
+import phyem as ph
 ph.config.set_embedding_space_dim(2)
 ph.config.set_high_accuracy(True)
 ph.config.set_pr_cache(True)

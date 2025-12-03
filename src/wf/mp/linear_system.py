@@ -39,7 +39,7 @@ class MatrixProxyLinearSystem(Frozen):
 
     def pr(self, figsize=(12, 6)):
         """"""
-        from src.config import RANK, MASTER_RANK
+        from phyem.src.config import RANK, MASTER_RANK
         if RANK != MASTER_RANK:
             return None
         else:
@@ -73,7 +73,7 @@ class MatrixProxyLinearSystem(Frozen):
         plt.axis('off')
         plt.text(0.05, 0.5, seek_text + symbolic + bc_text, ha='left', va='center', size=15)
 
-        from src.config import _setting, _pr_cache
+        from phyem.src.config import _setting, _pr_cache
         if _setting['pr_cache']:
             _pr_cache(fig, filename='matrixProxyLinearSystem')
         else:

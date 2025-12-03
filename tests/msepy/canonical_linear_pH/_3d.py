@@ -48,12 +48,7 @@ iterations.
 
 """
 
-import sys
-
-if './' not in sys.path:
-    sys.path.append('./')
-
-import __init__ as ph
+import phyem as ph
 from tests.msepy.canonical_linear_pH._3d_eigen_solution import Eigen1
 
 

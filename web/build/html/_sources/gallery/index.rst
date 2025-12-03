@@ -30,6 +30,7 @@ Below, different kinds of problems are solved as demonstrations,
 
     div_grad/index
     Navier_Stokes/index
+    MHD/index
 
 
 |

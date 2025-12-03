@@ -5,5 +5,5 @@
 Crazy domain and mesh
 =====================
 
-.. automodule:: msepy.manifold.predefined.crazy
+.. automodule:: phyem.msepy.manifold.predefined.crazy
     :undoc-members: crazy

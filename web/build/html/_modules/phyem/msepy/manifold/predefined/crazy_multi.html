@@ -1,0 +1,866 @@
+
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="../../../../../" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>phyem.msepy.manifold.predefined.crazy_multi &#8212; phyem, a finite element library powering LEGO-like simulations for (multi-)physics.</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
+  </script>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../../../../../_static/styles/theme.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+<link href="../../../../../_static/styles/bootstrap.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+<link href="../../../../../_static/styles/pydata-sphinx-theme.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+
+  
+  <link href="../../../../../_static/vendor/fontawesome/6.5.2/css/all.min.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+  <link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../../_static/vendor/fontawesome/6.5.2/webfonts/fa-solid-900.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../../_static/vendor/fontawesome/6.5.2/webfonts/fa-brands-400.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../../_static/vendor/fontawesome/6.5.2/webfonts/fa-regular-400.woff2" />
+
+    <link rel="stylesheet" type="text/css" href="../../../../../_static/pygments.css?v=8f2a1f02" />
+    <link rel="stylesheet" type="text/css" href="../../../../../_static/styles/sphinx-book-theme.css?v=eba8b062" />
+    <link rel="stylesheet" type="text/css" href="../../../../../_static/copybutton.css?v=76b2166b" />
+  
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../../../../../_static/scripts/bootstrap.js?digest=dfe6caa3a7d634c4db9b" />
+<link rel="preload" as="script" href="../../../../../_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b" />
+  <script src="../../../../../_static/vendor/fontawesome/6.5.2/js/all.min.js?digest=dfe6caa3a7d634c4db9b"></script>
+
+    <script src="../../../../../_static/documentation_options.js?v=9eb32ce0"></script>
+    <script src="../../../../../_static/doctools.js?v=9bcbadda"></script>
+    <script src="../../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../../../../_static/clipboard.min.js?v=a7894cd8"></script>
+    <script src="../../../../../_static/copybutton.js?v=f281be69"></script>
+    <script src="../../../../../_static/scripts/sphinx-book-theme.js?v=887ef09a"></script>
+    <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = '_modules/phyem/msepy/manifold/predefined/crazy_multi';</script>
+    <link rel="icon" href="../../../../../_static/favicon.png"/>
+    <link rel="index" title="Index" href="../../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../../search.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="">
+
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          id="pst-primary-sidebar-checkbox"/>
+  <label class="overlay overlay-primary" for="pst-primary-sidebar-checkbox"></label>
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          id="pst-secondary-sidebar-checkbox"/>
+  <label class="overlay overlay-secondary" for="pst-secondary-sidebar-checkbox"></label>
+  
+  <div class="search-button__wrapper">
+    <div class="search-button__overlay"></div>
+    <div class="search-button__search-container">
+<form class="bd-search d-flex align-items-center"
+      action="../../../../../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         id="search-input"
+         placeholder="Search..."
+         aria-label="Search..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form></div>
+  </div>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+<aside class="bd-header-announcement" aria-label="Announcement">
+  <div class="bd-header-announcement__content">
+        <p style='color:white;'> &#127867 PHYEM is coming</p>
+    </div>
+</aside>
+
+  
+    <header class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+        
+      
+      <div class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+    
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item">
+
+  
+    
+  
+
+<a class="navbar-brand logo" href="../../../../../index.html">
+  
+  
+  
+  
+  
+    
+    
+      
+    
+    
+    <img src="../../../../../_static/logo-light.png" class="logo__image only-light" alt="phyem, a finite element library powering LEGO-like simulations for (multi-)physics. - Home"/>
+    <script>document.write(`<img src="../../../../../_static/logo-dark.png" class="logo__image only-dark" alt="phyem, a finite element library powering LEGO-like simulations for (multi-)physics. - Home"/>`);</script>
+  
+  
+</a></div>
+        <div class="sidebar-primary-item"><ul class="navbar-icon-links"
+    aria-label="Quick Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://www.mathischeap.com/" title="mathischeap" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><img src="../../../../../_static/favicon-mic.png" class="icon-link-image" alt="mathischeap"/></a>
+        </li>
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/mathischeap/phyem" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-square-github fa-lg" aria-hidden="true"></i>
+            <span class="sr-only">GitHub</span></a>
+        </li>
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://app.netlify.com/sites/phyem/deploys" title="Netlify Status" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><img src="https://api.netlify.com/api/v1/badges/6a559326-c54e-4a8f-a79a-a715648c73c2/deploy-status" class="icon-link-image" alt="Netlify Status"/></a>
+        </li>
+</ul></div>
+        <div class="sidebar-primary-item">
+
+ <script>
+ document.write(`
+   <button class="btn search-button-field search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass"></i>
+    <span class="search-button__default-text">Search</span>
+    <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+   </button>
+ `);
+ </script></div>
+        <div class="sidebar-primary-item"><nav class="bd-links bd-docs-nav" aria-label="Main">
+    <div class="bd-toc-item navbar-nav active">
+        
+        <ul class="nav bd-sidenav bd-sidenav__home-link">
+            <li class="toctree-l1">
+                <a class="reference internal" href="../../../../../index.html">
+                    Welcome
+                </a>
+            </li>
+        </ul>
+        <ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../../../../../tutorial/about.html">About</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../tutorial/install.html">Installation</a></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../../../../tutorial/documentations.html">Documentations</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../../../tutorial/docs/presetting.html">1. Presetting</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../../tutorial/docs/manifold_mesh.html">2. Manifold &amp; mesh</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../../tutorial/docs/space_form.html">3. Space &amp; form</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../../tutorial/docs/pde.html">4. PDE</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../../tutorial/docs/wf.html">5. Weak formulation &amp; discretization</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../../tutorial/docs/ap.html">6. Algebraic proxy</a></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../../../../../tutorial/docs/implementations.html">7. Implementations</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../../../tutorial/docs/implementations/msepy.html">7.1. msepy</a></li>
+</ul>
+</details></li>
+</ul>
+</details></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../tutorial/summary.html">Summary</a></li>
+</ul>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../../../../jupyter/index.html">Jupyter notebooks 🪐</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../../../jupyter/general/first_equation.html">Set up your first equations</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../../jupyter/general/discretize_linear_pH_system.html">How to discretize equations</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../../../../gallery/index.html">Gallery🖼</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../../../../../gallery/msepy_domains_and_meshes/index.html"><em>msepy</em> domains and meshes</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../../../gallery/msepy_domains_and_meshes/msepy/backward_step.html">Backward step</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../../gallery/msepy_domains_and_meshes/msepy/crazy.html">Crazy domain and mesh</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../../gallery/msepy_domains_and_meshes/msepy/cylinder_channel.html">Cylinder channel</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../../gallery/msepy_domains_and_meshes/msepy/multi_crazy.html">Multi-crazy domain and mesh</a></li>
+</ul>
+</details></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../../gallery/div_grad/index.html">🟢 div-grad</a></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../../../../../gallery/Navier_Stokes/index.html">🌊 Navier-Stokes equations</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../../../gallery/Navier_Stokes/backward_facing_step/index.html">Backward facing step flow</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../../gallery/Navier_Stokes/lid_driven_cavity/index.html">Lid-driven cavity</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../../gallery/Navier_Stokes/normal_dipole_collision/index.html">Normal dipole collision</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../../gallery/Navier_Stokes/shear_layer_rollup/index.html">Shear layer rollup</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../../gallery/Navier_Stokes/Taylor_Green_vortex/index.html">Taylor-Green vortex</a></li>
+</ul>
+</details></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../../gallery/MHD/index.html">🧲 MHD</a></li>
+</ul>
+</details></li>
+</ul>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../../../../../contact.html">Contact</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../contributors.html">Contributors</a></li>
+</ul>
+
+    </div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+  </div>
+  
+  <div id="rtd-footer-container"></div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+
+<div class="sbt-scroll-pixel-helper"></div>
+
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item"><button class="sidebar-toggle primary-toggle btn btn-sm" title="Toggle primary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <span class="fa-solid fa-bars"></span>
+</button></div>
+      
+    </div>
+  
+  
+    <div class="header-article-items__end">
+      
+        <div class="header-article-item">
+
+<div class="article-header-buttons">
+
+
+
+
+
+<div class="dropdown dropdown-source-buttons">
+  <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Source repositories">
+    <i class="fab fa-github"></i>
+  </button>
+  <ul class="dropdown-menu">
+      
+      
+      
+      <li><a href="https://github.com/mathischeap/phyem" target="_blank"
+   class="btn btn-sm btn-source-repository-button dropdown-item"
+   title="Source repository"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fab fa-github"></i>
+  </span>
+<span class="btn__text-container">Repository</span>
+</a>
+</li>
+      
+      
+      
+      
+      <li><a href="https://github.com/mathischeap/phyem/issues/new?title=Issue%20on%20page%20%2F_modules/phyem/msepy/manifold/predefined/crazy_multi.html&body=Your%20issue%20content%20here." target="_blank"
+   class="btn btn-sm btn-source-issues-button dropdown-item"
+   title="Open an issue"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-lightbulb"></i>
+  </span>
+<span class="btn__text-container">Open issue</span>
+</a>
+</li>
+      
+  </ul>
+</div>
+
+
+
+
+<button onclick="toggleFullScreen()"
+  class="btn btn-sm btn-fullscreen-button"
+  title="Fullscreen mode"
+  data-bs-placement="bottom" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-expand"></i>
+  </span>
+
+</button>
+
+
+
+<script>
+document.write(`
+  <button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button" title="light/dark" aria-label="light/dark" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="theme-switch fa-solid fa-sun fa-lg" data-mode="light"></i>
+    <i class="theme-switch fa-solid fa-moon fa-lg" data-mode="dark"></i>
+    <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"></i>
+  </button>
+`);
+</script>
+
+
+<script>
+document.write(`
+  <button class="btn btn-sm pst-navbar-icon search-button search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass fa-lg"></i>
+  </button>
+`);
+</script>
+
+</div></div>
+      
+    </div>
+  
+</div>
+</div>
+              
+              
+
+<div id="jb-print-docs-body" class="onlyprint">
+    <h1></h1>
+    <!-- Table of contents -->
+    <div id="print-main-content">
+        <div id="jb-print-toc">
+            
+        </div>
+    </div>
+</div>
+
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <h1>Source code for phyem.msepy.manifold.predefined.crazy_multi</h1><div class="highlight"><pre>
+<span></span><span class="c1"># -*- coding: utf-8 -*-</span>
+<span class="c1"># noinspection PyUnresolvedReferences,PyRedeclaration</span>
+<span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">.. testsetup:: *</span>
+
+<span class="sd">    None_or_custom_path = &#39;./source/gallery/msepy_domains_and_meshes/msepy/crazy_multi.png&#39;</span>
+<span class="sd">    import phyem as ph</span>
+
+<span class="sd">.. testcleanup::</span>
+
+<span class="sd">    pass</span>
+
+
+<span class="sd">The multi-crazy ones are like stacking multiple :ref:`GALLERY-msepy-domains-and-meshes=crazy`</span>
+<span class="sd">(blocks) together. The parameters are same to those of the crazy</span>
+<span class="sd">mesh except there is one additional, ``Ns``, see:</span>
+
+
+<span class="sd">.. autofunction:: phyem.msepy.manifold.predefined.crazy_multi.crazy_multi</span>
+
+<span class="sd">.. note::p</span>
+
+<span class="sd">    Multi-crazy domains and meshes, like the crazy ones, are also mainly used for testing purposes. As each block will</span>
+<span class="sd">    be treated as a region, with them, we can test our codes with meshes of multiple (orthogonal or curvilinear)</span>
+<span class="sd">    regions.</span>
+
+<span class="sd">Boundary units</span>
+<span class="sd">--------------</span>
+
+<span class="sd">Since the amount of regions is dynamic, its amount of boundary units is dynamic as well.</span>
+<span class="sd">They contain the boundary faces of these regions attached to the domain boundary. For example, when</span>
+<span class="sd">there are :math:`2 * 3` regions/blocks, the complete set of boundary units is</span>
+
+<span class="sd">&gt;&gt;&gt; boundary_units_set = {</span>
+<span class="sd">...     0: [1, 0, 1, 0],</span>
+<span class="sd">...     1: [0, 1, 1, 0],</span>
+<span class="sd">...     2: [1, 0, 0, 0],</span>
+<span class="sd">...     3: [0, 1, 0, 0],</span>
+<span class="sd">...     4: [1, 0, 0, 1],</span>
+<span class="sd">...     5: [0, 1, 0, 1],</span>
+<span class="sd">... }</span>
+
+<span class="sd">Examples</span>
+<span class="sd">--------</span>
+
+<span class="sd">We now generate a multi-crazy mesh in domain :math:`\Omega:=(x,y,z)\in[-1,1]\times[0,2]\subset\mathbb{R}^2` of</span>
+<span class="sd">:math:`2 * 3` crazy regions/blocks at :math:`c=0.3`. In each crazy block, we make :math:`5 * 3` elements. The codes are</span>
+
+<span class="sd">&gt;&gt;&gt; ph.config.set_embedding_space_dim(2)</span>
+<span class="sd">&gt;&gt;&gt; manifold = ph.manifold(2)</span>
+<span class="sd">&gt;&gt;&gt; mesh = ph.mesh(manifold)</span>
+<span class="sd">&gt;&gt;&gt; msepy, obj = ph.fem.apply(&#39;msepy&#39;, locals())</span>
+<span class="sd">&gt;&gt;&gt; manifold = obj[&#39;manifold&#39;]</span>
+<span class="sd">&gt;&gt;&gt; mesh = obj[&#39;mesh&#39;]</span>
+<span class="sd">&gt;&gt;&gt; msepy.config(manifold)(&#39;crazy_multi&#39;, c=0.3, periodic=False, Ns=[2, 3], bounds=[[-1, 1], [0, 2]])</span>
+<span class="sd">&gt;&gt;&gt; msepy.config(mesh)([5, 3])</span>
+<span class="sd">&gt;&gt;&gt; mesh.visualize(saveto=None_or_custom_path)  # doctest: +ELLIPSIS</span>
+<span class="sd">&lt;Figure size ...</span>
+
+
+<span class="sd">The multi-crazy mesh is visualized as</span>
+
+<span class="sd">.. figure:: crazy_multi.png</span>
+<span class="sd">    :width: 50%</span>
+
+<span class="sd">    The crazy mesh in :math:`\Omega=[-1,1]\times[0,2]\subset\mathbb{R}^2` of :math:`2 * 3` blocks</span>
+<span class="sd">    at deformation factor :math:`c=0.3`. In each block, we have :math:`5 * 3` elements.</span>
+
+
+<span class="sd">|</span>
+
+<span class="sd">↩️  Back to :ref:`GALLERY-msepy-domains-and-meshes`.</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">phyem.tools.frozen</span><span class="w"> </span><span class="kn">import</span> <span class="n">Frozen</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">phyem.msepy.manifold.predefined.crazy</span><span class="w"> </span><span class="kn">import</span> <span class="n">_MesPyRegionCrazyMapping</span>
+
+
+<div class="viewcode-block" id="crazy_multi">
+<a class="viewcode-back" href="../../../../../gallery/msepy_domains_and_meshes/msepy/multi_crazy.html#phyem.msepy.manifold.predefined.crazy_multi.crazy_multi">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">crazy_multi</span><span class="p">(</span><span class="n">bounds</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">c</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">Ns</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">periodic</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    bounds : list, tuple, ``None``, default=None</span>
+<span class="sd">        The bounds of the domain along each axis. When it is ``None``, the code will automatically analyze the</span>
+<span class="sd">        manifold and set the ``bounds`` to be :math:`[0,1]^n` where :math:`n` is the dimensions of the space.</span>
+
+<span class="sd">        For example, the unit cube is of ``bounds = ([0, 1], [0, 1], [0, 1])``.</span>
+
+<span class="sd">    c : float, default=0.</span>
+<span class="sd">        The deformation factor. ``c`` must be in :math:`[0, 0.3]`. When ``c = 0``, the domain is orthogonal, and</span>
+<span class="sd">        when ``c &gt; 0``, the space in the domain is distorted.</span>
+
+<span class="sd">    Ns : list, None, default=None</span>
+
+<span class="sd">        ``Ns`` should be a list of :math:`n` (the dimensions of the manifold) positive integers. It means along</span>
+<span class="sd">        each axis, we will stack how many crazy meshes.</span>
+
+<span class="sd">        When it is ``None``, the code will automatically analyze the manifold and then set ``Ns`` to be</span>
+<span class="sd">        :math:`[\underbrace{2, 2, \cdots}_{n}]`.</span>
+
+<span class="sd">    periodic : bool, default=False</span>
+<span class="sd">        It indicates whether the domain is periodic. When it is ``True``, the domain is fully periodic along all</span>
+<span class="sd">        axes. And when it is ``False``, the domain is not periodic at all.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="n">bounds</span><span class="p">,</span> <span class="n">c</span><span class="p">,</span> <span class="n">Ns</span><span class="p">,</span> <span class="n">periodic</span><span class="p">)</span></div>
+
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_crazy_multi</span><span class="p">(</span><span class="n">mf</span><span class="p">,</span> <span class="n">bounds</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">c</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">Ns</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">periodic</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;&quot;&quot;&quot;</span>
+    <span class="k">assert</span> <span class="n">mf</span><span class="o">.</span><span class="n">m</span> <span class="o">==</span> <span class="n">mf</span><span class="o">.</span><span class="n">ndim</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;crazy mesh only works for manifold.ndim == embedding space dimensions.&quot;</span>
+    <span class="n">m</span> <span class="o">=</span> <span class="n">mf</span><span class="o">.</span><span class="n">m</span>
+    <span class="k">if</span> <span class="n">bounds</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">bounds</span> <span class="o">=</span> <span class="p">[(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">m</span><span class="p">)]</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="n">bounds</span><span class="p">)</span> <span class="o">==</span> <span class="n">m</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;bounds=</span><span class="si">{</span><span class="n">bounds</span><span class="si">}</span><span class="s2"> dimensions wrong.&quot;</span>
+
+    <span class="n">region_mappings</span> <span class="o">=</span> <span class="n">_MesPyRegionCrazyMultiMapping</span><span class="p">(</span><span class="n">bounds</span><span class="p">,</span> <span class="n">c</span><span class="p">,</span> <span class="n">m</span><span class="p">,</span> <span class="n">Ns</span><span class="o">=</span><span class="n">Ns</span><span class="p">)</span>
+    <span class="n">Ns</span> <span class="o">=</span> <span class="n">region_mappings</span><span class="o">.</span><span class="n">_Ns</span>
+    <span class="n">num_regions</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">prod</span><span class="p">(</span><span class="n">Ns</span><span class="p">)</span>
+    <span class="n">region_map_nd</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">num_regions</span><span class="p">)</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">Ns</span><span class="p">,</span> <span class="n">order</span><span class="o">=</span><span class="s1">&#39;F&#39;</span><span class="p">)</span>
+
+    <span class="n">region_map</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>
+    <span class="k">if</span> <span class="n">m</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">periodic</span><span class="p">:</span>
+            <span class="n">N</span> <span class="o">=</span> <span class="n">Ns</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+
+            <span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">N</span><span class="p">):</span>
+
+                <span class="n">left</span><span class="p">,</span> <span class="n">right</span> <span class="o">=</span> <span class="n">n</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="n">n</span><span class="o">+</span><span class="mi">1</span>
+
+                <span class="k">if</span> <span class="n">left</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
+                    <span class="n">left</span> <span class="o">=</span> <span class="n">region_map_nd</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">left</span> <span class="o">=</span> <span class="n">region_map_nd</span><span class="p">[</span><span class="n">left</span><span class="p">]</span>
+
+                <span class="k">if</span> <span class="n">right</span> <span class="o">&gt;=</span> <span class="n">N</span><span class="p">:</span>
+                    <span class="n">right</span> <span class="o">=</span> <span class="n">region_map_nd</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">right</span> <span class="o">=</span> <span class="n">region_map_nd</span><span class="p">[</span><span class="n">right</span><span class="p">]</span>
+
+                <span class="n">region_map</span><span class="p">[</span><span class="n">n</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="n">left</span><span class="p">,</span> <span class="n">right</span><span class="p">]</span>
+
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">N</span> <span class="o">=</span> <span class="n">Ns</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+
+            <span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">N</span><span class="p">):</span>
+
+                <span class="n">left</span><span class="p">,</span> <span class="n">right</span> <span class="o">=</span> <span class="n">n</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="n">n</span><span class="o">+</span><span class="mi">1</span>
+
+                <span class="k">if</span> <span class="n">left</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
+                    <span class="n">left</span> <span class="o">=</span> <span class="kc">None</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">left</span> <span class="o">=</span> <span class="n">region_map_nd</span><span class="p">[</span><span class="n">left</span><span class="p">]</span>
+
+                <span class="k">if</span> <span class="n">right</span> <span class="o">&gt;=</span> <span class="n">N</span><span class="p">:</span>
+                    <span class="n">right</span> <span class="o">=</span> <span class="kc">None</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">right</span> <span class="o">=</span> <span class="n">region_map_nd</span><span class="p">[</span><span class="n">right</span><span class="p">]</span>
+
+                <span class="n">region_map</span><span class="p">[</span><span class="n">n</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="n">left</span><span class="p">,</span> <span class="n">right</span><span class="p">]</span>
+    <span class="k">elif</span> <span class="n">m</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">periodic</span><span class="p">:</span>
+            <span class="n">Nx</span><span class="p">,</span> <span class="n">Ny</span> <span class="o">=</span> <span class="n">Ns</span>
+            <span class="k">for</span> <span class="n">ny</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">Ny</span><span class="p">):</span>
+                <span class="k">for</span> <span class="n">nx</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">Nx</span><span class="p">):</span>
+                    <span class="n">n</span> <span class="o">=</span> <span class="n">nx</span> <span class="o">+</span> <span class="n">ny</span> <span class="o">*</span> <span class="n">Nx</span>
+
+                    <span class="n">x_m</span><span class="p">,</span> <span class="n">x_p</span> <span class="o">=</span> <span class="n">nx</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="n">nx</span><span class="o">+</span><span class="mi">1</span>
+                    <span class="n">y_m</span><span class="p">,</span> <span class="n">y_p</span> <span class="o">=</span> <span class="n">ny</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="n">ny</span><span class="o">+</span><span class="mi">1</span>
+
+                    <span class="k">if</span> <span class="n">x_m</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
+                        <span class="n">x_m</span> <span class="o">=</span> <span class="n">region_map_nd</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="n">ny</span><span class="p">]</span>
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="n">x_m</span> <span class="o">=</span> <span class="n">region_map_nd</span><span class="p">[</span><span class="n">x_m</span><span class="p">,</span> <span class="n">ny</span><span class="p">]</span>
+
+                    <span class="k">if</span> <span class="n">x_p</span> <span class="o">&gt;=</span> <span class="n">Nx</span><span class="p">:</span>
+                        <span class="n">x_p</span> <span class="o">=</span> <span class="n">region_map_nd</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="n">ny</span><span class="p">]</span>
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="n">x_p</span> <span class="o">=</span> <span class="n">region_map_nd</span><span class="p">[</span><span class="n">x_p</span><span class="p">,</span> <span class="n">ny</span><span class="p">]</span>
+
+                    <span class="k">if</span> <span class="n">y_m</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
+                        <span class="n">y_m</span> <span class="o">=</span> <span class="n">region_map_nd</span><span class="p">[</span><span class="n">nx</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="n">y_m</span> <span class="o">=</span> <span class="n">region_map_nd</span><span class="p">[</span><span class="n">nx</span><span class="p">,</span> <span class="n">y_m</span><span class="p">]</span>
+
+                    <span class="k">if</span> <span class="n">y_p</span> <span class="o">&gt;=</span> <span class="n">Ny</span><span class="p">:</span>
+                        <span class="n">y_p</span> <span class="o">=</span> <span class="n">region_map_nd</span><span class="p">[</span><span class="n">nx</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span>
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="n">y_p</span> <span class="o">=</span> <span class="n">region_map_nd</span><span class="p">[</span><span class="n">nx</span><span class="p">,</span> <span class="n">y_p</span><span class="p">]</span>
+
+                    <span class="n">region_map</span><span class="p">[</span><span class="n">n</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="n">x_m</span><span class="p">,</span> <span class="n">x_p</span><span class="p">,</span> <span class="n">y_m</span><span class="p">,</span> <span class="n">y_p</span><span class="p">]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">Nx</span><span class="p">,</span> <span class="n">Ny</span> <span class="o">=</span> <span class="n">Ns</span>
+            <span class="k">for</span> <span class="n">ny</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">Ny</span><span class="p">):</span>
+                <span class="k">for</span> <span class="n">nx</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">Nx</span><span class="p">):</span>
+                    <span class="n">n</span> <span class="o">=</span> <span class="n">nx</span> <span class="o">+</span> <span class="n">ny</span> <span class="o">*</span> <span class="n">Nx</span>
+
+                    <span class="n">x_m</span><span class="p">,</span> <span class="n">x_p</span> <span class="o">=</span> <span class="n">nx</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="n">nx</span><span class="o">+</span><span class="mi">1</span>
+                    <span class="n">y_m</span><span class="p">,</span> <span class="n">y_p</span> <span class="o">=</span> <span class="n">ny</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="n">ny</span><span class="o">+</span><span class="mi">1</span>
+
+                    <span class="k">if</span> <span class="n">x_m</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
+                        <span class="n">x_m</span> <span class="o">=</span> <span class="kc">None</span>
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="n">x_m</span> <span class="o">=</span> <span class="n">region_map_nd</span><span class="p">[</span><span class="n">x_m</span><span class="p">,</span> <span class="n">ny</span><span class="p">]</span>
+
+                    <span class="k">if</span> <span class="n">x_p</span> <span class="o">&gt;=</span> <span class="n">Nx</span><span class="p">:</span>
+                        <span class="n">x_p</span> <span class="o">=</span> <span class="kc">None</span>
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="n">x_p</span> <span class="o">=</span> <span class="n">region_map_nd</span><span class="p">[</span><span class="n">x_p</span><span class="p">,</span> <span class="n">ny</span><span class="p">]</span>
+
+                    <span class="k">if</span> <span class="n">y_m</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
+                        <span class="n">y_m</span> <span class="o">=</span> <span class="kc">None</span>
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="n">y_m</span> <span class="o">=</span> <span class="n">region_map_nd</span><span class="p">[</span><span class="n">nx</span><span class="p">,</span> <span class="n">y_m</span><span class="p">]</span>
+
+                    <span class="k">if</span> <span class="n">y_p</span> <span class="o">&gt;=</span> <span class="n">Ny</span><span class="p">:</span>
+                        <span class="n">y_p</span> <span class="o">=</span> <span class="kc">None</span>
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="n">y_p</span> <span class="o">=</span> <span class="n">region_map_nd</span><span class="p">[</span><span class="n">nx</span><span class="p">,</span> <span class="n">y_p</span><span class="p">]</span>
+
+                    <span class="n">region_map</span><span class="p">[</span><span class="n">n</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="n">x_m</span><span class="p">,</span> <span class="n">x_p</span><span class="p">,</span> <span class="n">y_m</span><span class="p">,</span> <span class="n">y_p</span><span class="p">]</span>
+    <span class="k">elif</span> <span class="n">m</span> <span class="o">==</span> <span class="mi">3</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">periodic</span><span class="p">:</span>
+            <span class="n">Nx</span><span class="p">,</span> <span class="n">Ny</span><span class="p">,</span> <span class="n">Nz</span> <span class="o">=</span> <span class="n">Ns</span>
+            <span class="k">for</span> <span class="n">nz</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">Nz</span><span class="p">):</span>
+                <span class="k">for</span> <span class="n">ny</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">Ny</span><span class="p">):</span>
+                    <span class="k">for</span> <span class="n">nx</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">Nx</span><span class="p">):</span>
+                        <span class="n">n</span> <span class="o">=</span> <span class="n">nx</span> <span class="o">+</span> <span class="n">ny</span> <span class="o">*</span> <span class="n">Nx</span> <span class="o">+</span> <span class="n">nz</span> <span class="o">*</span> <span class="n">Nx</span> <span class="o">*</span> <span class="n">Ny</span>
+
+                        <span class="n">x_m</span><span class="p">,</span> <span class="n">x_p</span> <span class="o">=</span> <span class="n">nx</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="n">nx</span><span class="o">+</span><span class="mi">1</span>
+                        <span class="n">y_m</span><span class="p">,</span> <span class="n">y_p</span> <span class="o">=</span> <span class="n">ny</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="n">ny</span><span class="o">+</span><span class="mi">1</span>
+                        <span class="n">z_m</span><span class="p">,</span> <span class="n">z_p</span> <span class="o">=</span> <span class="n">nz</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="n">nz</span><span class="o">+</span><span class="mi">1</span>
+
+                        <span class="k">if</span> <span class="n">x_m</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
+                            <span class="n">x_m</span> <span class="o">=</span> <span class="n">region_map_nd</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="n">ny</span><span class="p">,</span> <span class="n">nz</span><span class="p">]</span>
+                        <span class="k">else</span><span class="p">:</span>
+                            <span class="n">x_m</span> <span class="o">=</span> <span class="n">region_map_nd</span><span class="p">[</span><span class="n">x_m</span><span class="p">,</span> <span class="n">ny</span><span class="p">,</span> <span class="n">nz</span><span class="p">]</span>
+                        <span class="k">if</span> <span class="n">x_p</span> <span class="o">&gt;=</span> <span class="n">Nx</span><span class="p">:</span>
+                            <span class="n">x_p</span> <span class="o">=</span> <span class="n">region_map_nd</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="n">ny</span><span class="p">,</span> <span class="n">nz</span><span class="p">]</span>
+                        <span class="k">else</span><span class="p">:</span>
+                            <span class="n">x_p</span> <span class="o">=</span> <span class="n">region_map_nd</span><span class="p">[</span><span class="n">x_p</span><span class="p">,</span> <span class="n">ny</span><span class="p">,</span> <span class="n">nz</span><span class="p">]</span>
+
+                        <span class="k">if</span> <span class="n">y_m</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
+                            <span class="n">y_m</span> <span class="o">=</span> <span class="n">region_map_nd</span><span class="p">[</span><span class="n">nx</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="n">nz</span><span class="p">]</span>
+                        <span class="k">else</span><span class="p">:</span>
+                            <span class="n">y_m</span> <span class="o">=</span> <span class="n">region_map_nd</span><span class="p">[</span><span class="n">nx</span><span class="p">,</span> <span class="n">y_m</span><span class="p">,</span> <span class="n">nz</span><span class="p">]</span>
+                        <span class="k">if</span> <span class="n">y_p</span> <span class="o">&gt;=</span> <span class="n">Ny</span><span class="p">:</span>
+                            <span class="n">y_p</span> <span class="o">=</span> <span class="n">region_map_nd</span><span class="p">[</span><span class="n">nx</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">nz</span><span class="p">]</span>
+                        <span class="k">else</span><span class="p">:</span>
+                            <span class="n">y_p</span> <span class="o">=</span> <span class="n">region_map_nd</span><span class="p">[</span><span class="n">nx</span><span class="p">,</span> <span class="n">y_p</span><span class="p">,</span> <span class="n">nz</span><span class="p">]</span>
+
+                        <span class="k">if</span> <span class="n">z_m</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
+                            <span class="n">z_m</span> <span class="o">=</span> <span class="n">region_map_nd</span><span class="p">[</span><span class="n">nx</span><span class="p">,</span> <span class="n">ny</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+                        <span class="k">else</span><span class="p">:</span>
+                            <span class="n">z_m</span> <span class="o">=</span> <span class="n">region_map_nd</span><span class="p">[</span><span class="n">nx</span><span class="p">,</span> <span class="n">ny</span><span class="p">,</span> <span class="n">z_m</span><span class="p">]</span>
+                        <span class="k">if</span> <span class="n">z_p</span> <span class="o">&gt;=</span> <span class="n">Nz</span><span class="p">:</span>
+                            <span class="n">z_p</span> <span class="o">=</span> <span class="n">region_map_nd</span><span class="p">[</span><span class="n">nx</span><span class="p">,</span> <span class="n">ny</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span>
+                        <span class="k">else</span><span class="p">:</span>
+                            <span class="n">z_p</span> <span class="o">=</span> <span class="n">region_map_nd</span><span class="p">[</span><span class="n">nx</span><span class="p">,</span> <span class="n">ny</span><span class="p">,</span> <span class="n">z_p</span><span class="p">]</span>
+
+                        <span class="n">region_map</span><span class="p">[</span><span class="n">n</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="n">x_m</span><span class="p">,</span> <span class="n">x_p</span><span class="p">,</span> <span class="n">y_m</span><span class="p">,</span> <span class="n">y_p</span><span class="p">,</span> <span class="n">z_m</span><span class="p">,</span> <span class="n">z_p</span><span class="p">]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">Nx</span><span class="p">,</span> <span class="n">Ny</span><span class="p">,</span> <span class="n">Nz</span> <span class="o">=</span> <span class="n">Ns</span>
+            <span class="k">for</span> <span class="n">nz</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">Nz</span><span class="p">):</span>
+                <span class="k">for</span> <span class="n">ny</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">Ny</span><span class="p">):</span>
+                    <span class="k">for</span> <span class="n">nx</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">Nx</span><span class="p">):</span>
+                        <span class="n">n</span> <span class="o">=</span> <span class="n">nx</span> <span class="o">+</span> <span class="n">ny</span> <span class="o">*</span> <span class="n">Nx</span> <span class="o">+</span> <span class="n">nz</span> <span class="o">*</span> <span class="n">Nx</span> <span class="o">*</span> <span class="n">Ny</span>
+
+                        <span class="n">x_m</span><span class="p">,</span> <span class="n">x_p</span> <span class="o">=</span> <span class="n">nx</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="n">nx</span><span class="o">+</span><span class="mi">1</span>
+                        <span class="n">y_m</span><span class="p">,</span> <span class="n">y_p</span> <span class="o">=</span> <span class="n">ny</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="n">ny</span><span class="o">+</span><span class="mi">1</span>
+                        <span class="n">z_m</span><span class="p">,</span> <span class="n">z_p</span> <span class="o">=</span> <span class="n">nz</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="n">nz</span><span class="o">+</span><span class="mi">1</span>
+
+                        <span class="k">if</span> <span class="n">x_m</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
+                            <span class="n">x_m</span> <span class="o">=</span> <span class="kc">None</span>
+                        <span class="k">else</span><span class="p">:</span>
+                            <span class="n">x_m</span> <span class="o">=</span> <span class="n">region_map_nd</span><span class="p">[</span><span class="n">x_m</span><span class="p">,</span> <span class="n">ny</span><span class="p">,</span> <span class="n">nz</span><span class="p">]</span>
+                        <span class="k">if</span> <span class="n">x_p</span> <span class="o">&gt;=</span> <span class="n">Nx</span><span class="p">:</span>
+                            <span class="n">x_p</span> <span class="o">=</span> <span class="kc">None</span>
+                        <span class="k">else</span><span class="p">:</span>
+                            <span class="n">x_p</span> <span class="o">=</span> <span class="n">region_map_nd</span><span class="p">[</span><span class="n">x_p</span><span class="p">,</span> <span class="n">ny</span><span class="p">,</span> <span class="n">nz</span><span class="p">]</span>
+
+                        <span class="k">if</span> <span class="n">y_m</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
+                            <span class="n">y_m</span> <span class="o">=</span> <span class="kc">None</span>
+                        <span class="k">else</span><span class="p">:</span>
+                            <span class="n">y_m</span> <span class="o">=</span> <span class="n">region_map_nd</span><span class="p">[</span><span class="n">nx</span><span class="p">,</span> <span class="n">y_m</span><span class="p">,</span> <span class="n">nz</span><span class="p">]</span>
+                        <span class="k">if</span> <span class="n">y_p</span> <span class="o">&gt;=</span> <span class="n">Ny</span><span class="p">:</span>
+                            <span class="n">y_p</span> <span class="o">=</span> <span class="kc">None</span>
+                        <span class="k">else</span><span class="p">:</span>
+                            <span class="n">y_p</span> <span class="o">=</span> <span class="n">region_map_nd</span><span class="p">[</span><span class="n">nx</span><span class="p">,</span> <span class="n">y_p</span><span class="p">,</span> <span class="n">nz</span><span class="p">]</span>
+
+                        <span class="k">if</span> <span class="n">z_m</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
+                            <span class="n">z_m</span> <span class="o">=</span> <span class="kc">None</span>
+                        <span class="k">else</span><span class="p">:</span>
+                            <span class="n">z_m</span> <span class="o">=</span> <span class="n">region_map_nd</span><span class="p">[</span><span class="n">nx</span><span class="p">,</span> <span class="n">ny</span><span class="p">,</span> <span class="n">z_m</span><span class="p">]</span>
+                        <span class="k">if</span> <span class="n">z_p</span> <span class="o">&gt;=</span> <span class="n">Nz</span><span class="p">:</span>
+                            <span class="n">z_p</span> <span class="o">=</span> <span class="kc">None</span>
+                        <span class="k">else</span><span class="p">:</span>
+                            <span class="n">z_p</span> <span class="o">=</span> <span class="n">region_map_nd</span><span class="p">[</span><span class="n">nx</span><span class="p">,</span> <span class="n">ny</span><span class="p">,</span> <span class="n">z_p</span><span class="p">]</span>
+
+                        <span class="n">region_map</span><span class="p">[</span><span class="n">n</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="n">x_m</span><span class="p">,</span> <span class="n">x_p</span><span class="p">,</span> <span class="n">y_m</span><span class="p">,</span> <span class="n">y_p</span><span class="p">,</span> <span class="n">z_m</span><span class="p">,</span> <span class="n">z_p</span><span class="p">]</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">()</span>
+
+    <span class="n">mapping_dict</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>
+    <span class="n">Jacobian_matrix_dict</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>
+    <span class="n">mtype_dict</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>
+
+    <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">num_regions</span><span class="p">):</span>
+        <span class="n">mapping_dict</span><span class="p">[</span><span class="n">r</span><span class="p">]</span> <span class="o">=</span> <span class="n">region_mappings</span><span class="o">.</span><span class="n">_regions</span><span class="p">[</span><span class="n">r</span><span class="p">]</span><span class="o">.</span><span class="n">mapping</span>
+        <span class="n">Jacobian_matrix_dict</span><span class="p">[</span><span class="n">r</span><span class="p">]</span> <span class="o">=</span> <span class="n">region_mappings</span><span class="o">.</span><span class="n">_regions</span><span class="p">[</span><span class="n">r</span><span class="p">]</span><span class="o">.</span><span class="n">Jacobian_matrix</span>
+        <span class="k">if</span> <span class="n">c</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">mtype</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;indicator&#39;</span><span class="p">:</span> <span class="s1">&#39;Linear&#39;</span><span class="p">,</span> <span class="s1">&#39;parameters&#39;</span><span class="p">:</span> <span class="p">[]}</span>
+            <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">lb_ub</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">region_mappings</span><span class="o">.</span><span class="n">_regions</span><span class="p">[</span><span class="n">r</span><span class="p">]</span><span class="o">.</span><span class="n">_bounds</span><span class="p">):</span>
+                <span class="n">xyz</span> <span class="o">=</span> <span class="s1">&#39;xyz&#39;</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+                <span class="n">lb</span><span class="p">,</span> <span class="n">ub</span> <span class="o">=</span> <span class="n">lb_ub</span>
+                <span class="n">d</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="nb">round</span><span class="p">(</span><span class="n">ub</span> <span class="o">-</span> <span class="n">lb</span><span class="p">,</span> <span class="mi">5</span><span class="p">))</span>  <span class="c1"># do this to round off the truncation error.</span>
+                <span class="n">mtype</span><span class="p">[</span><span class="s1">&#39;parameters&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">xyz</span> <span class="o">+</span> <span class="n">d</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">mtype</span> <span class="o">=</span> <span class="kc">None</span>  <span class="c1"># this is a unique region. Its metric does not like any other.</span>
+
+        <span class="n">mtype_dict</span><span class="p">[</span><span class="n">r</span><span class="p">]</span> <span class="o">=</span> <span class="n">mtype</span>
+
+    <span class="k">return</span> <span class="n">region_map</span><span class="p">,</span> <span class="n">mapping_dict</span><span class="p">,</span> <span class="n">Jacobian_matrix_dict</span><span class="p">,</span> <span class="n">mtype_dict</span><span class="p">,</span> <span class="kc">None</span>
+
+
+<span class="k">class</span><span class="w"> </span><span class="nc">_MesPyRegionCrazyMultiMapping</span><span class="p">(</span><span class="n">Frozen</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;&quot;&quot;&quot;</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">bounds</span><span class="p">,</span> <span class="n">c</span><span class="p">,</span> <span class="n">m</span><span class="p">,</span> <span class="n">Ns</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        bounds</span>
+<span class="sd">        c</span>
+<span class="sd">        m</span>
+<span class="sd">        Ns :</span>
+<span class="sd">            The domain is divided into np.prod(Ns) regions equally.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">bs</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">bounds</span><span class="p">):</span>
+            <span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="n">bs</span><span class="p">)</span> <span class="o">==</span> <span class="mi">2</span> <span class="ow">and</span> <span class="nb">all</span><span class="p">([</span><span class="nb">isinstance</span><span class="p">(</span><span class="n">_</span><span class="p">,</span> <span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="nb">float</span><span class="p">))</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="n">bs</span><span class="p">]),</span> <span class="sa">f</span><span class="s2">&quot;bounds[</span><span class="si">{</span><span class="n">i</span><span class="si">}</span><span class="s2">]=</span><span class="si">{</span><span class="n">bs</span><span class="si">}</span><span class="s2"> is illegal.&quot;</span>
+            <span class="n">lb</span><span class="p">,</span> <span class="n">up</span> <span class="o">=</span> <span class="n">bs</span>
+            <span class="k">assert</span> <span class="n">lb</span> <span class="o">&lt;</span> <span class="n">up</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;bounds[</span><span class="si">{</span><span class="n">i</span><span class="si">}</span><span class="s2">]=</span><span class="si">{</span><span class="n">bs</span><span class="si">}</span><span class="s2"> is illegal. low bound is larger than (or equal to) higher bound.&quot;</span>
+        <span class="k">assert</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">c</span><span class="p">,</span> <span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="nb">float</span><span class="p">)),</span> <span class="sa">f</span><span class="s2">&quot;=</span><span class="si">{</span><span class="n">c</span><span class="si">}</span><span class="s2"> is illegal, need to be a int or float. Ideally in [0, 0.3].&quot;</span>
+
+        <span class="k">if</span> <span class="n">Ns</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">Ns</span> <span class="o">=</span> <span class="mi">2</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">pass</span>
+
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">Ns</span><span class="p">,</span> <span class="nb">int</span><span class="p">):</span>
+            <span class="n">Ns</span> <span class="o">=</span> <span class="p">[</span><span class="n">Ns</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">m</span><span class="p">)]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="n">Ns</span><span class="p">)</span> <span class="o">==</span> <span class="n">m</span> <span class="ow">and</span> <span class="nb">all</span><span class="p">([</span><span class="nb">isinstance</span><span class="p">(</span><span class="n">ns</span><span class="p">,</span> <span class="nb">int</span><span class="p">)</span> <span class="k">for</span> <span class="n">ns</span> <span class="ow">in</span> <span class="n">Ns</span><span class="p">])</span> <span class="ow">and</span> <span class="nb">all</span><span class="p">([</span><span class="n">ns</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="k">for</span> <span class="n">ns</span> <span class="ow">in</span> <span class="n">Ns</span><span class="p">]),</span> \
+                <span class="sa">f</span><span class="s2">&quot;Ns=</span><span class="si">{</span><span class="n">Ns</span><span class="si">}</span><span class="s2"> is wrong.&quot;</span>
+
+        <span class="n">num_regions</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">prod</span><span class="p">(</span><span class="n">Ns</span><span class="p">)</span>
+
+        <span class="n">axis_indices</span> <span class="o">=</span> <span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">Ns</span><span class="p">[</span><span class="n">_</span><span class="p">])</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">m</span><span class="p">)]</span>
+        <span class="n">axis_indices</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">meshgrid</span><span class="p">(</span><span class="o">*</span><span class="n">axis_indices</span><span class="p">,</span> <span class="n">indexing</span><span class="o">=</span><span class="s1">&#39;ij&#39;</span><span class="p">)</span>
+        <span class="n">axis_indices</span> <span class="o">=</span> <span class="p">[</span><span class="n">ai</span><span class="o">.</span><span class="n">ravel</span><span class="p">(</span><span class="s1">&#39;F&#39;</span><span class="p">)</span> <span class="k">for</span> <span class="n">ai</span> <span class="ow">in</span> <span class="n">axis_indices</span><span class="p">]</span>
+
+        <span class="n">regions</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_indices</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">num_regions</span><span class="p">):</span>
+            <span class="n">indices</span> <span class="o">=</span> <span class="p">[</span><span class="n">ai</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="k">for</span> <span class="n">ai</span> <span class="ow">in</span> <span class="n">axis_indices</span><span class="p">]</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_indices</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">indices</span>
+            <span class="n">region_bounds</span> <span class="o">=</span> <span class="nb">list</span><span class="p">()</span>
+            <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">m</span><span class="p">):</span>
+                <span class="n">bds</span> <span class="o">=</span> <span class="n">bounds</span><span class="p">[</span><span class="n">j</span><span class="p">]</span>
+                <span class="n">lb</span><span class="p">,</span> <span class="n">up</span> <span class="o">=</span> <span class="n">bds</span>
+                <span class="n">N</span> <span class="o">=</span> <span class="n">Ns</span><span class="p">[</span><span class="n">j</span><span class="p">]</span>
+                <span class="n">delta</span> <span class="o">=</span> <span class="p">(</span><span class="n">up</span> <span class="o">-</span> <span class="n">lb</span><span class="p">)</span> <span class="o">/</span> <span class="n">N</span>
+                <span class="n">region_bounds</span><span class="o">.</span><span class="n">append</span><span class="p">([</span><span class="n">lb</span> <span class="o">+</span> <span class="n">delta</span> <span class="o">*</span> <span class="n">indices</span><span class="p">[</span><span class="n">j</span><span class="p">],</span> <span class="n">lb</span> <span class="o">+</span> <span class="n">delta</span> <span class="o">*</span> <span class="p">(</span><span class="n">indices</span><span class="p">[</span><span class="n">j</span><span class="p">]</span><span class="o">+</span><span class="mi">1</span><span class="p">)])</span>
+            <span class="n">regions</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">_MesPyRegionCrazyMapping</span><span class="p">(</span><span class="n">region_bounds</span><span class="p">,</span> <span class="n">c</span><span class="p">,</span> <span class="n">m</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_regions</span> <span class="o">=</span> <span class="n">regions</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_Ns</span> <span class="o">=</span> <span class="n">Ns</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_freeze</span><span class="p">()</span>
+</pre></div>
+
+                </article>
+              
+
+              
+              
+              
+              
+                <footer class="prev-next-footer d-print-none">
+                  
+<div class="prev-next-area">
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+<div class="bd-footer-content__inner container">
+  
+  <div class="footer-item">
+    
+<p class="component-author">
+By Andrea Brugnoli, Ramy Rashad, Stefano Stramigioli, Yi Zhang and more
+</p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+
+  <p class="copyright">
+    
+      © Copyright reserved under Apache-2.0 license.
+      <br/>
+    
+  </p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+  <div class="footer-item">
+    
+<div class="extra_footer">
+  <div>Last updated on 十一月 18, 2025, 19:20:03, China Standard Time</div>
+</div>
+  </div>
+  
+</div>
+          </footer>
+        
+
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script src="../../../../../_static/scripts/bootstrap.js?digest=dfe6caa3a7d634c4db9b"></script>
+<script src="../../../../../_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b"></script>
+
+  <footer class="bd-footer">
+  </footer>
+  </body>
+</html>

@@ -2,7 +2,7 @@
 <!DOCTYPE html>
 
 
-<html lang="en" >
+<html lang="en" data-content_root="../../" >
 
   <head>
     <meta charset="utf-8" />
@@ -13,35 +13,35 @@
   
   <script data-cfasync="false">
     document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
-    document.documentElement.dataset.theme = localStorage.getItem("theme") || "light";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
   </script>
   
   <!-- Loaded before other Sphinx assets -->
-  <link href="../../_static/styles/theme.css?digest=ac02cc09edc035673794" rel="stylesheet" />
-<link href="../../_static/styles/bootstrap.css?digest=ac02cc09edc035673794" rel="stylesheet" />
-<link href="../../_static/styles/pydata-sphinx-theme.css?digest=ac02cc09edc035673794" rel="stylesheet" />
+  <link href="../../_static/styles/theme.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+<link href="../../_static/styles/bootstrap.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+<link href="../../_static/styles/pydata-sphinx-theme.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
 
   
-  <link href="../../_static/vendor/fontawesome/6.1.2/css/all.min.css?digest=ac02cc09edc035673794" rel="stylesheet" />
-  <link rel="preload" as="font" type="font/woff2" crossorigin href="../../_static/vendor/fontawesome/6.1.2/webfonts/fa-solid-900.woff2" />
-<link rel="preload" as="font" type="font/woff2" crossorigin href="../../_static/vendor/fontawesome/6.1.2/webfonts/fa-brands-400.woff2" />
-<link rel="preload" as="font" type="font/woff2" crossorigin href="../../_static/vendor/fontawesome/6.1.2/webfonts/fa-regular-400.woff2" />
+  <link href="../../_static/vendor/fontawesome/6.5.2/css/all.min.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+  <link rel="preload" as="font" type="font/woff2" crossorigin href="../../_static/vendor/fontawesome/6.5.2/webfonts/fa-solid-900.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../../_static/vendor/fontawesome/6.5.2/webfonts/fa-brands-400.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../../_static/vendor/fontawesome/6.5.2/webfonts/fa-regular-400.woff2" />
 
-    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=a746c00c" />
-    <link rel="stylesheet" href="../../_static/styles/sphinx-book-theme.css?digest=14f4ca6b54d191a8c7657f6c759bf11a5fb86285" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=8f2a1f02" />
+    <link rel="stylesheet" type="text/css" href="../../_static/styles/sphinx-book-theme.css?v=eba8b062" />
     <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css?v=76b2166b" />
   
   <!-- Pre-loaded scripts that we'll load fully later -->
-  <link rel="preload" as="script" href="../../_static/scripts/bootstrap.js?digest=ac02cc09edc035673794" />
-<link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=ac02cc09edc035673794" />
-  <script src="../../_static/vendor/fontawesome/6.1.2/js/all.min.js?digest=ac02cc09edc035673794"></script>
+  <link rel="preload" as="script" href="../../_static/scripts/bootstrap.js?digest=dfe6caa3a7d634c4db9b" />
+<link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b" />
+  <script src="../../_static/vendor/fontawesome/6.5.2/js/all.min.js?digest=dfe6caa3a7d634c4db9b"></script>
 
-    <script src="../../_static/documentation_options.js?v=c73c0f3e"></script>
-    <script src="../../_static/doctools.js?v=888ff710"></script>
+    <script src="../../_static/documentation_options.js?v=9eb32ce0"></script>
+    <script src="../../_static/doctools.js?v=9bcbadda"></script>
     <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
     <script src="../../_static/copybutton.js?v=f281be69"></script>
-    <script src="../../_static/scripts/sphinx-book-theme.js?digest=5a5c038af52cf7bc1a1ec88eea08e6366ee68824"></script>
+    <script src="../../_static/scripts/sphinx-book-theme.js?v=887ef09a"></script>
     <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
     <script>DOCUMENTATION_OPTIONS.pagename = '_modules/src/manifold';</script>
     <link rel="icon" href="../../_static/favicon.png"/>
@@ -56,28 +56,23 @@
 
   
   
-  <a class="skip-link" href="#main-content">Skip to main content</a>
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
   
   <div id="pst-scroll-pixel-helper"></div>
-
   
   <button type="button" class="btn rounded-pill" id="pst-back-to-top">
-    <i class="fa-solid fa-arrow-up"></i>
-    Back to top
-  </button>
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
 
   
   <input type="checkbox"
           class="sidebar-toggle"
-          name="__primary"
-          id="__primary"/>
-  <label class="overlay overlay-primary" for="__primary"></label>
+          id="pst-primary-sidebar-checkbox"/>
+  <label class="overlay overlay-primary" for="pst-primary-sidebar-checkbox"></label>
   
   <input type="checkbox"
           class="sidebar-toggle"
-          name="__secondary"
-          id="__secondary"/>
-  <label class="overlay overlay-secondary" for="__secondary"></label>
+          id="pst-secondary-sidebar-checkbox"/>
+  <label class="overlay overlay-secondary" for="pst-secondary-sidebar-checkbox"></label>
   
   <div class="search-button__wrapper">
     <div class="search-button__overlay"></div>
@@ -100,19 +95,26 @@
 </form></div>
   </div>
 
-
-  <div class="bd-header-announcement container-fluid bd-header-announcement">
-    <div class="bd-header-announcement__content">
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+<aside class="bd-header-announcement" aria-label="Announcement">
+  <div class="bd-header-announcement__content">
         <p style='color:white;'> &#127867 PHYEM is coming</p>
     </div>
-  </div>
+</aside>
 
   
-    <nav class="bd-header navbar navbar-expand-lg bd-navbar">
-    </nav>
+    <header class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+    </header>
   
+
   <div class="bd-container">
     <div class="bd-container__inner bd-page-width">
+      
+      
+      
+        
       
       <div class="bd-sidebar-primary bd-sidebar">
         
@@ -127,9 +129,13 @@
   
     <div class="sidebar-primary-items__start sidebar-primary__section">
         <div class="sidebar-primary-item">
+
+  
+    
   
 
 <a class="navbar-brand logo" href="../../index.html">
+  
   
   
   
@@ -139,12 +145,12 @@
       
     
     
-    <img src="../../_static/logo-light.png" class="logo__image only-light" alt="Logo image"/>
-    <script>document.write(`<img src="../../_static/logo-dark.png" class="logo__image only-dark" alt="Logo image"/>`);</script>
+    <img src="../../_static/logo-light.png" class="logo__image only-light" alt="phyem, a finite element library powering LEGO-like simulations for (multi-)physics. - Home"/>
+    <script>document.write(`<img src="../../_static/logo-dark.png" class="logo__image only-dark" alt="phyem, a finite element library powering LEGO-like simulations for (multi-)physics. - Home"/>`);</script>
   
   
 </a></div>
-        <div class="sidebar-primary-item"><ul class="navbar-icon-links navbar-nav"
+        <div class="sidebar-primary-item"><ul class="navbar-icon-links"
     aria-label="Quick Links">
         <li class="nav-item">
           
@@ -155,7 +161,7 @@
           
           
           
-          <a href="https://www.mathischeap.com/" title="mathischeap" class="nav-link" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><img src="../../_static/favicon-mic.png" class="icon-link-image" alt="mathischeap"/></a>
+          <a href="https://www.mathischeap.com/" title="mathischeap" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><img src="../../_static/favicon-mic.png" class="icon-link-image" alt="mathischeap"/></a>
         </li>
         <li class="nav-item">
           
@@ -166,7 +172,7 @@
           
           
           
-          <a href="https://github.com/mathischeap/phyem" title="GitHub" class="nav-link" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><span><i class="fa-brands fa-square-github fa-lg" aria-hidden="true"></i></span>
+          <a href="https://github.com/mathischeap/phyem" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-square-github fa-lg" aria-hidden="true"></i>
             <span class="sr-only">GitHub</span></a>
         </li>
         <li class="nav-item">
@@ -178,10 +184,21 @@
           
           
           
-          <a href="https://app.netlify.com/sites/phyem/deploys" title="Netlify Status" class="nav-link" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><img src="https://api.netlify.com/api/v1/badges/6a559326-c54e-4a8f-a79a-a715648c73c2/deploy-status" class="icon-link-image" alt="Netlify Status"/></a>
+          <a href="https://app.netlify.com/sites/phyem/deploys" title="Netlify Status" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><img src="https://api.netlify.com/api/v1/badges/6a559326-c54e-4a8f-a79a-a715648c73c2/deploy-status" class="icon-link-image" alt="Netlify Status"/></a>
         </li>
 </ul></div>
-        <div class="sidebar-primary-item"><nav class="bd-links" id="bd-docs-nav" aria-label="Main">
+        <div class="sidebar-primary-item">
+
+ <script>
+ document.write(`
+   <button class="btn search-button-field search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass"></i>
+    <span class="search-button__default-text">Search</span>
+    <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+   </button>
+ `);
+ </script></div>
+        <div class="sidebar-primary-item"><nav class="bd-links bd-docs-nav" aria-label="Main">
     <div class="bd-toc-item navbar-nav active">
         
         <ul class="nav bd-sidenav bd-sidenav__home-link">
@@ -194,46 +211,46 @@
         <ul class="nav bd-sidenav">
 <li class="toctree-l1"><a class="reference internal" href="../../tutorial/about.html">About</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../tutorial/install.html">Installation</a></li>
-<li class="toctree-l1 has-children"><a class="reference internal" href="../../tutorial/documentations.html">Documentations</a><input class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-1"><i class="fa-solid fa-chevron-down"></i></label><ul>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../tutorial/documentations.html">Documentations</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
 <li class="toctree-l2"><a class="reference internal" href="../../tutorial/docs/presetting.html">1. Presetting</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../tutorial/docs/manifold_mesh.html">2. Manifold &amp; mesh</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../tutorial/docs/space_form.html">3. Space &amp; form</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../tutorial/docs/pde.html">4. PDE</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../tutorial/docs/wf.html">5. Weak formulation &amp; discretization</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../tutorial/docs/ap.html">6. Algebraic proxy</a></li>
-<li class="toctree-l2 has-children"><a class="reference internal" href="../../tutorial/docs/implementations.html">7. Implementations</a><input class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-2"><i class="fa-solid fa-chevron-down"></i></label><ul>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../../tutorial/docs/implementations.html">7. Implementations</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
 <li class="toctree-l3"><a class="reference internal" href="../../tutorial/docs/implementations/msepy.html">7.1. msepy</a></li>
 </ul>
-</li>
+</details></li>
 </ul>
-</li>
+</details></li>
 <li class="toctree-l1"><a class="reference internal" href="../../tutorial/summary.html">Summary</a></li>
 </ul>
 <ul class="nav bd-sidenav">
-<li class="toctree-l1 has-children"><a class="reference internal" href="../../jupyter/index.html">Jupyter notebooks 🪐</a><input class="toctree-checkbox" id="toctree-checkbox-3" name="toctree-checkbox-3" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-3"><i class="fa-solid fa-chevron-down"></i></label><ul>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../jupyter/index.html">Jupyter notebooks 🪐</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
 <li class="toctree-l2"><a class="reference internal" href="../../jupyter/general/first_equation.html">Set up your first equations</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../jupyter/general/discretize_linear_pH_system.html">How to discretize equations</a></li>
 </ul>
-</li>
-<li class="toctree-l1 has-children"><a class="reference internal" href="../../gallery/index.html">Gallery🖼</a><input class="toctree-checkbox" id="toctree-checkbox-4" name="toctree-checkbox-4" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-4"><i class="fa-solid fa-chevron-down"></i></label><ul>
-<li class="toctree-l2 has-children"><a class="reference internal" href="../../gallery/msepy_domains_and_meshes/index.html"><em>msepy</em> domains and meshes</a><input class="toctree-checkbox" id="toctree-checkbox-5" name="toctree-checkbox-5" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-5"><i class="fa-solid fa-chevron-down"></i></label><ul>
+</details></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../gallery/index.html">Gallery🖼</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../../gallery/msepy_domains_and_meshes/index.html"><em>msepy</em> domains and meshes</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
 <li class="toctree-l3"><a class="reference internal" href="../../gallery/msepy_domains_and_meshes/msepy/backward_step.html">Backward step</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../gallery/msepy_domains_and_meshes/msepy/crazy.html">Crazy domain and mesh</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../gallery/msepy_domains_and_meshes/msepy/cylinder_channel.html">Cylinder channel</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../gallery/msepy_domains_and_meshes/msepy/multi_crazy.html">Multi-crazy domain and mesh</a></li>
 </ul>
-</li>
+</details></li>
 <li class="toctree-l2"><a class="reference internal" href="../../gallery/div_grad/index.html">🟢 div-grad</a></li>
-<li class="toctree-l2 has-children"><a class="reference internal" href="../../gallery/Navier_Stokes/index.html">🌊 Navier-Stokes equations</a><input class="toctree-checkbox" id="toctree-checkbox-6" name="toctree-checkbox-6" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-6"><i class="fa-solid fa-chevron-down"></i></label><ul>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../../gallery/Navier_Stokes/index.html">🌊 Navier-Stokes equations</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
 <li class="toctree-l3"><a class="reference internal" href="../../gallery/Navier_Stokes/backward_facing_step/index.html">Backward facing step flow</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../gallery/Navier_Stokes/lid_driven_cavity/index.html">Lid-driven cavity</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../gallery/Navier_Stokes/normal_dipole_collision/index.html">Normal dipole collision</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../gallery/Navier_Stokes/shear_layer_rollup/index.html">Shear layer rollup</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../gallery/Navier_Stokes/Taylor_Green_vortex/index.html">Taylor-Green vortex</a></li>
 </ul>
-</li>
+</details></li>
 </ul>
-</li>
+</details></li>
 </ul>
 <ul class="nav bd-sidenav">
 <li class="toctree-l1"><a class="reference internal" href="../../contact.html">Contact</a></li>
@@ -253,7 +270,7 @@
 
       </div>
       
-      <main id="main-content" class="bd-main">
+      <main id="main-content" class="bd-main" role="main">
         
         
 
@@ -262,14 +279,14 @@
           <div class="bd-content">
             <div class="bd-article-container">
               
-              <div class="bd-header-article">
+              <div class="bd-header-article d-print-none">
 <div class="header-article-items header-article__inner">
   
     <div class="header-article-items__start">
       
-        <div class="header-article-item"><label class="sidebar-toggle primary-toggle btn btn-sm" for="__primary" title="Toggle primary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+        <div class="header-article-item"><button class="sidebar-toggle primary-toggle btn btn-sm" title="Toggle primary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
   <span class="fa-solid fa-bars"></span>
-</label></div>
+</button></div>
       
     </div>
   
@@ -343,19 +360,21 @@
 </button>
 
 
+
 <script>
 document.write(`
-  <button class="btn btn-sm navbar-btn theme-switch-button" title="light/dark" aria-label="light/dark" data-bs-placement="bottom" data-bs-toggle="tooltip">
-    <span class="theme-switch nav-link" data-mode="light"><i class="fa-solid fa-sun fa-lg"></i></span>
-    <span class="theme-switch nav-link" data-mode="dark"><i class="fa-solid fa-moon fa-lg"></i></span>
-    <span class="theme-switch nav-link" data-mode="auto"><i class="fa-solid fa-circle-half-stroke fa-lg"></i></span>
+  <button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button" title="light/dark" aria-label="light/dark" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="theme-switch fa-solid fa-sun fa-lg" data-mode="light"></i>
+    <i class="theme-switch fa-solid fa-moon fa-lg" data-mode="dark"></i>
+    <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"></i>
   </button>
 `);
 </script>
 
+
 <script>
 document.write(`
-  <button class="btn btn-sm navbar-btn search-button search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <button class="btn btn-sm pst-navbar-icon search-button search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
     <i class="fa-solid fa-magnifying-glass fa-lg"></i>
   </button>
 `);
@@ -383,7 +402,7 @@ document.write(`
               
                 
 <div id="searchbox"></div>
-                <article class="bd-article" role="main">
+                <article class="bd-article">
                   
   <h1>Source code for src.manifold</h1><div class="highlight"><pre>
 <span></span><span class="c1"># -*- coding: utf-8 -*-</span>
@@ -409,25 +428,21 @@ document.write(`
 <span class="sd">        :members: m, n</span>
 
 <span class="sd">&quot;&quot;&quot;</span>
-<span class="kn">import</span> <span class="nn">sys</span>
 
-<span class="k">if</span> <span class="s1">&#39;./&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">sys</span><span class="o">.</span><span class="n">path</span><span class="p">:</span>
-    <span class="n">sys</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">&#39;./&#39;</span><span class="p">)</span>
-
-<span class="kn">from</span> <span class="nn">tools.frozen</span> <span class="kn">import</span> <span class="n">Frozen</span>
-<span class="kn">from</span> <span class="nn">src.config</span> <span class="kn">import</span> <span class="n">get_embedding_space_dim</span>
-<span class="kn">from</span> <span class="nn">src.config</span> <span class="kn">import</span> <span class="n">_manifold_default_sym_repr</span>
-<span class="kn">from</span> <span class="nn">src.config</span> <span class="kn">import</span> <span class="n">_check_sym_repr</span>
-<span class="kn">from</span> <span class="nn">src.config</span> <span class="kn">import</span> <span class="n">_parse_lin_repr</span>
-<span class="kn">from</span> <span class="nn">src.config</span> <span class="kn">import</span> <span class="n">_manifold_default_lin_repr</span>
-<span class="kn">from</span> <span class="nn">src.config</span> <span class="kn">import</span> <span class="n">_manifold_partition_lin_repr</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">phyem.tools.frozen</span><span class="w"> </span><span class="kn">import</span> <span class="n">Frozen</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">phyem.src.config</span><span class="w"> </span><span class="kn">import</span> <span class="n">get_embedding_space_dim</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">phyem.src.config</span><span class="w"> </span><span class="kn">import</span> <span class="n">_manifold_default_sym_repr</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">phyem.src.config</span><span class="w"> </span><span class="kn">import</span> <span class="n">_check_sym_repr</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">phyem.src.config</span><span class="w"> </span><span class="kn">import</span> <span class="n">_parse_lin_repr</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">phyem.src.config</span><span class="w"> </span><span class="kn">import</span> <span class="n">_manifold_default_lin_repr</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">phyem.src.config</span><span class="w"> </span><span class="kn">import</span> <span class="n">_manifold_partition_lin_repr</span>
 
 <span class="n">_global_manifolds</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>  <span class="c1"># all manifolds are cached, and all sym_repr and lin_repr are different.</span>
 
 
 <div class="viewcode-block" id="manifold">
 <a class="viewcode-back" href="../../tutorial/docs/manifold_mesh.html#src.manifold.manifold">[docs]</a>
-<span class="k">def</span> <span class="nf">manifold</span><span class="p">(</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">manifold</span><span class="p">(</span>
         <span class="n">ndim</span><span class="p">,</span>
         <span class="n">sym_repr</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
         <span class="n">lin_repr</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
@@ -459,16 +474,16 @@ document.write(`
 
 
 
-<span class="k">def</span> <span class="nf">find_manifold</span><span class="p">(</span><span class="n">manifold_sym_repr</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">find_manifold</span><span class="p">(</span><span class="n">manifold_sym_repr</span><span class="p">):</span>
 <span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;&quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="n">_global_manifolds</span><span class="p">[</span><span class="n">manifold_sym_repr</span><span class="p">]</span>
 
 
 <div class="viewcode-block" id="Manifold">
 <a class="viewcode-back" href="../../tutorial/docs/manifold_mesh.html#src.manifold.Manifold">[docs]</a>
-<span class="k">class</span> <span class="nc">Manifold</span><span class="p">(</span><span class="n">Frozen</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">Manifold</span><span class="p">(</span><span class="n">Frozen</span><span class="p">):</span>
 
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span> <span class="n">ndim</span><span class="p">,</span>
         <span class="n">sym_repr</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
         <span class="n">lin_repr</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
@@ -532,40 +547,40 @@ document.write(`
         <span class="bp">self</span><span class="o">.</span><span class="n">_freeze</span><span class="p">()</span>
 
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">esd</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">esd</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="n">get_embedding_space_dim</span><span class="p">()</span>
 
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">m</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">m</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;The dimensions of the embedding space.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">esd</span>
 
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">ndim</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">ndim</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ndim</span>
 
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">n</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">n</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;The dimensions of the manifold.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">ndim</span>
 
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">udg</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">udg</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_udg</span>
 
-    <span class="k">def</span> <span class="nf">is_periodic</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">is_periodic</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_is_periodic</span>
 
-    <span class="k">def</span> <span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;&quot;&quot;&quot;</span>
         <span class="n">super_repr</span> <span class="o">=</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__repr__</span><span class="p">()</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;object&#39;</span><span class="p">)[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
         <span class="k">return</span> <span class="sa">f</span><span class="s1">&#39;&lt;Manifold </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_sym_repr</span><span class="si">}</span><span class="s1">&#39;</span> <span class="o">+</span> <span class="n">super_repr</span>  <span class="c1"># this must be unique.</span>
 
-    <span class="k">def</span> <span class="nf">boundary</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">sym_repr</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">boundary</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">sym_repr</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;&quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_boundary</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">ndim</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
@@ -584,24 +599,25 @@ document.write(`
                 <span class="bp">self</span><span class="o">.</span><span class="n">_boundary</span><span class="o">.</span><span class="n">_inclusion</span> <span class="o">=</span> <span class="bp">self</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_boundary</span>
 
-    <span class="k">def</span> <span class="nf">inclusion</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">inclusion</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_inclusion</span>
 
-    <span class="k">def</span> <span class="nf">cap</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">,</span> <span class="n">sym_repr</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">cap</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">,</span> <span class="n">sym_repr</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;&quot;&quot;&quot;</span>
         <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">()</span>
 
-    <span class="k">def</span> <span class="nf">interface</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">,</span> <span class="n">sym_repr</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">interface</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">,</span> <span class="n">sym_repr</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;&quot;&quot;&quot;</span>
         <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">()</span>
 
-    <span class="k">def</span> <span class="nf">partition</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">submanifolds_sym_repr</span><span class="p">,</span> <span class="n">config_name</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">partition</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">submanifolds_sym_repr</span><span class="p">,</span> <span class="n">config_name</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;partition of the manifold.&quot;&quot;&quot;</span>
         <span class="k">for</span> <span class="n">sym_repr</span> <span class="ow">in</span> <span class="n">submanifolds_sym_repr</span><span class="p">:</span>
             <span class="k">assert</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">sym_repr</span><span class="p">,</span> <span class="nb">str</span><span class="p">),</span> <span class="sa">f</span><span class="s2">&quot;please put sym_repr of partitions in str.&quot;</span>
         <span class="n">num_of_partitions</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">submanifolds_sym_repr</span><span class="p">)</span>
-        <span class="k">assert</span> <span class="n">num_of_partitions</span> <span class="o">&gt;=</span> <span class="mi">2</span> <span class="ow">and</span> <span class="n">num_of_partitions</span> <span class="o">%</span> <span class="mi">2</span> <span class="o">==</span> <span class="mi">0</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;I need a integer &gt;= 2.&quot;</span>
+        <span class="c1"># assert num_of_partitions &gt;= 2 and num_of_partitions % 2 == 0, f&quot;I need a integer &gt;= 2.&quot;</span>
+        <span class="k">assert</span> <span class="n">num_of_partitions</span> <span class="o">&gt;=</span> <span class="mi">2</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;I need a integer &gt;= 2.&quot;</span>
         <span class="n">partitions</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">()</span>
 
         <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">num_of_partitions</span><span class="p">):</span>
@@ -655,29 +671,30 @@ document.write(`
             <span class="bp">self</span><span class="o">.</span><span class="n">_partitions</span><span class="p">[</span><span class="n">config_name</span><span class="p">]</span> <span class="o">=</span> <span class="n">partitions</span>
             <span class="k">return</span> <span class="n">partitions</span>
 
-    <span class="k">def</span> <span class="nf">_manifold_text</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_manifold_text</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;generate text for printing representations.&quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="sa">rf</span><span class="s1">&#39;In $</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_sym_repr</span><span class="si">}</span><span class="s1">\subset\mathbb&#39;</span> <span class="o">+</span> <span class="s1">&#39;</span><span class="si">{R}</span><span class="s1">^{&#39;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">get_embedding_space_dim</span><span class="p">())</span> <span class="o">+</span> <span class="s1">&#39;}$, &#39;</span></div>
+        <span class="c1"># return rf&#39;In ${self._sym_repr}\subset\mathbb&#39; + &#39;{R}^{&#39; + str(get_embedding_space_dim()) + &#39;}$, &#39;</span>
+        <span class="k">return</span> <span class="sa">rf</span><span class="s1">&#39;On $</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_sym_repr</span><span class="si">}</span><span class="s1">$ in </span><span class="si">{</span><span class="n">get_embedding_space_dim</span><span class="p">()</span><span class="si">}</span><span class="s1">D space, &#39;</span></div>
 
 
 
-<span class="k">class</span> <span class="nc">NullManifold</span><span class="p">(</span><span class="n">Frozen</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">NullManifold</span><span class="p">(</span><span class="n">Frozen</span><span class="p">):</span>
 <span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;&quot;&quot;&quot;</span>
 
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ndim</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ndim</span><span class="p">):</span>
 <span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;&quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_ndim</span> <span class="o">=</span> <span class="n">ndim</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_freeze</span><span class="p">()</span>
 
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">ndim</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">ndim</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ndim</span>
 
 
 <span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s1">&#39;__main__&#39;</span><span class="p">:</span>
     <span class="c1"># python src/manifold.py</span>
-    <span class="kn">import</span> <span class="nn">__init__</span> <span class="k">as</span> <span class="nn">ph</span>
+    <span class="kn">import</span><span class="w"> </span><span class="nn">phyem</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">ph</span>
 
     <span class="n">m1</span> <span class="o">=</span> <span class="n">ph</span><span class="o">.</span><span class="n">manifold</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
     <span class="n">m0</span> <span class="o">=</span> <span class="n">m1</span><span class="o">.</span><span class="n">boundary</span><span class="p">()</span>
@@ -691,8 +708,8 @@ document.write(`
               
               
               
-                <footer class="prev-next-footer">
-                  <!-- Previous / next buttons -->
+                <footer class="prev-next-footer d-print-none">
+                  
 <div class="prev-next-area">
 </div>
                 </footer>
@@ -717,6 +734,7 @@ By Andrea Brugnoli, Ramy Rashad, Stefano Stramigioli, Yi Zhang and more
   
   <div class="footer-item">
     
+
   <p class="copyright">
     
       © Copyright reserved under Apache-2.0 license.
@@ -733,7 +751,7 @@ By Andrea Brugnoli, Ramy Rashad, Stefano Stramigioli, Yi Zhang and more
   <div class="footer-item">
     
 <div class="extra_footer">
-  <div>Last updated on 八月 22, 2024, 16:13:32, China Standard Time</div>
+  <div>Last updated on 十一月 18, 2025, 18:27:15, China Standard Time</div>
 </div>
   </div>
   
@@ -746,8 +764,8 @@ By Andrea Brugnoli, Ramy Rashad, Stefano Stramigioli, Yi Zhang and more
   </div>
   
   <!-- Scripts loaded after <body> so the DOM is not blocked -->
-  <script src="../../_static/scripts/bootstrap.js?digest=ac02cc09edc035673794"></script>
-<script src="../../_static/scripts/pydata-sphinx-theme.js?digest=ac02cc09edc035673794"></script>
+  <script src="../../_static/scripts/bootstrap.js?digest=dfe6caa3a7d634c4db9b"></script>
+<script src="../../_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b"></script>
 
   <footer class="bd-footer">
   </footer>

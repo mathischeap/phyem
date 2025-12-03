@@ -4,12 +4,7 @@ r"""
 
 python tests/msepy/dualNS2/TGV.py
 """
-import sys
-
-if './' not in sys.path:
-    sys.path.append('./')
-
-import __init__ as ph
+import phyem as ph
 
 
 def TGV2(N, K, steps):

@@ -122,7 +122,7 @@ def scatter(
         plt.savefig(saveto, bbox_inches='tight', pad_inches=pad_inches, dpi=250)
         plt.close()
     else:
-        from src.config import _setting
+        from phyem.src.config import _setting
         plt.show(block=_setting['block'])
     # =============================================================================================1
     return 0

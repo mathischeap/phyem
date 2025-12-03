@@ -8,7 +8,7 @@ Mesh
 
 We define an abstract mesh based on an abstract manifold by calling ``ph.mesh`` method,
 
-    .. autofunction:: src.mesh.mesh
+    .. autofunction:: phyem.src.mesh.mesh
 
 As an example,
 
@@ -16,7 +16,7 @@ As an example,
 
 The output, ``mesh``, is an instance of :class:`Mesh`. And similarly, it is abstract at this stage.
 
-    .. autoclass:: src.mesh.Mesh
+    .. autoclass:: phyem.src.mesh.Mesh
         :members: m, n, manifold
 
 You can print a list of defined meshes by
@@ -67,7 +67,7 @@ def mesh(manifold, sym_repr=None, lin_repr=None):
 
 def _list_meshes():
     """"""
-    from src.config import RANK, MASTER_RANK
+    from phyem.src.config import RANK, MASTER_RANK
     if RANK != MASTER_RANK:
         return
     else:

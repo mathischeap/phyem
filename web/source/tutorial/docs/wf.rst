@@ -1,7 +1,7 @@
 
 .. testsetup:: *
 
-    import __init__ as ph
+    import phyem as ph
     ph.config.set_embedding_space_dim(2)
     ph.config.set_high_accuracy(True)
     ph.config.set_pr_cache(True)
@@ -44,7 +44,7 @@ Weak formulation & discretization
 
     ⏱️ 20 minutes
 
-.. automodule:: src.wf.main
+.. automodule:: phyem.src.wf.main
     :undoc-members:
 
 |

@@ -296,7 +296,7 @@ class MseHttGatheringMatrix(Frozen):
 
     def find_global_numbering_of_ith_composition_global_dof(self, ith_composition, locally_global_dof):
         r"""For example, in the 3th composition, there is a dof globally numbered 15 in all dofs
-        of 3th composition, and in the chained-GM, it is totally globally numbered 1536.
+        of 3rd composition, and in the chained-GM, it is totally globally numbered 1536.
 
         Then we should have
             1536 = self.find_global_numbering_of_global_dof_of_ith_composition(3, 15)

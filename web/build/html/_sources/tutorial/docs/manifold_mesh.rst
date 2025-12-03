@@ -1,7 +1,7 @@
 
 .. testsetup:: *
 
-    import __init__ as ph
+    import phyem as ph
     ph.config.set_embedding_space_dim(2)
     ph.config.set_high_accuracy(True)
     ph.config.set_pr_cache(False)
@@ -22,11 +22,11 @@ Manifold & mesh
     ⏱️ 5 minutes
 
 
-.. automodule:: src.manifold
+.. automodule:: phyem.src.manifold
     :undoc-members:
 
 
-.. automodule:: src.mesh
+.. automodule:: phyem.src.mesh
     :undoc-members:
 
 .. note::

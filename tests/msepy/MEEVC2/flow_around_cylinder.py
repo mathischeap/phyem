@@ -3,14 +3,7 @@ r"""
 python tests/msepy/MEEVC2/flow_around_cylinder.py
 """
 
-import sys
-
 import numpy as np
-
-ph_dir = '../'  # customize it to your dir containing phyem
-if ph_dir not in sys.path:
-    sys.path.append(ph_dir)
-
 import phyem as ph
 
 ph.config.set_embedding_space_dim(2)

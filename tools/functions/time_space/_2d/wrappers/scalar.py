@@ -171,8 +171,10 @@ class T2dScalar(TimeSpaceFunctionBase):
             xi, et = np.meshgrid(nodes, nodes, indexing='ij')
             if _mesh.__class__.__name__ == 'MseHttMeshPartial':
                 ELEMENTS = _mesh.composition
+            elif _mesh.__class__.__name__ == 'MseHtt_MultiGrid_MeshPartial':
+                ELEMENTS = _mesh.get_level().composition
             else:
-                raise NotImplementedError()
+                raise NotImplementedError(_mesh.__class__.__name__)
             for i in ELEMENTS:
                 element = ELEMENTS[i]
                 X[i], Y[i] = element.ct.mapping(xi, et)

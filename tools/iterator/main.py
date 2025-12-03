@@ -14,7 +14,7 @@ from phyem.tools.miscellaneous.numpy_styple import NumpyStyleDocstringReader
 from phyem.src.config import RANK, MASTER_RANK, COMM
 
 try:
-    from myserver.tools._mr import ___write_info___, ___write_picture___
+    from yzServer.tools._mr import ___write_info___, ___write_picture___
     _ph_monitor_ = True
 except ModuleNotFoundError:
     _ph_monitor_ = False
@@ -175,7 +175,12 @@ class Iterator(Frozen):
                         print(f"  Results: {results}")
                     else:
                         for i, res in enumerate(results):
-                            print(f"  {i})-> {self._solver_ret[i]}: {res}")
+                            if isinstance(res, (list, tuple)) and all([isinstance(_, str) for _ in res]):
+                                for j, _res_j in enumerate(res):
+                                    print(f"  {i}.{j}) ~> {self._solver_ret[i]}[{j}]:\n{_res_j}")
+                                    print(flush=True)
+                            else:
+                                print(f"  {i})-> {self._solver_ret[i]}: {res}")
                     print('\n', flush=True)
                 else:
                     pass

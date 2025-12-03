@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 r"""
 """
+import math
 
 from phyem.src.spaces.operators import wedge as space_wedge
 from phyem.src.spaces.operators import Hodge as space_Hodge
@@ -492,10 +493,10 @@ def tensor_product(f1, f2):
 
 
 def multi(f1, f2, output_space):
-    r"""do f1 f2. For example, f3 = f1 f2 where f1, f2, f3 are all scalar. And we use output space to indicate
+    r"""do f1 * f2. For example, f3 = f1 * f2 where f1, f2, f3 are all scalar. And we use output space to indicate
     which space f3 will be in.
 
-    Or f3 = f1 f2 where f1 is scalar and f2 f3 are vector.
+    Or f3 = f1 * f2 where f1 is scalar and f2, f3 are vector.
     """
 
     lr_term1 = f1._lin_repr
@@ -524,6 +525,38 @@ def multi(f1, f2, output_space):
         sym_repr,  # symbolic representation
         lin_repr,
         False
+    )
+
+    return f
+
+
+def log(f, base, output_space):
+    r"""Do log_{base} of f. And the output is in a form in `output_space`."""
+
+    lr = f._lin_repr
+    sr = f._sym_repr
+
+    if base == math.e:
+        op_lin_repr = _global_operator_lin_repr_setting['log-e']
+        sr_operator = _global_operator_sym_repr_setting['log-e']
+    else:
+        raise NotImplementedError(f"base={base} is not implemented.")
+
+    if f.is_root():
+        lr = op_lin_repr + lr
+    else:
+        lr = op_lin_repr + _non_root_lin_sep[0] + lr + _non_root_lin_sep[1]
+
+    if f.is_root():
+        sr = sr_operator + sr
+    else:
+        sr = sr_operator + r"\left(" + sr + r"\right)"
+
+    f = f.__class__(
+        output_space,  # space
+        sr,  # symbolic representation
+        lr,
+        False,
     )
 
     return f

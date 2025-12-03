@@ -10,7 +10,7 @@ Implementations
     ⏱️ 5 minutes
 
 
-.. automodule:: src.fem
+.. automodule:: phyem.src.fem
     :undoc-members:
 
 |

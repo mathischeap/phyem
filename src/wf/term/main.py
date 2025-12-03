@@ -169,7 +169,7 @@ class _WeakFormulationTerm(Frozen):
 
     def pr(self):
         """Print the representations of this term."""
-        from src.config import RANK, MASTER_RANK
+        from phyem.src.config import RANK, MASTER_RANK
         if RANK != MASTER_RANK:
             return None
         else:
@@ -178,7 +178,7 @@ class _WeakFormulationTerm(Frozen):
             plt.text(0, 0.75, 'linguistic : ' + f"{self._lin_repr}", ha='left', va='center', size=15)
             plt.text(0, 0.25, 'symbolic : ' + f"${self._sym_repr}$", ha='left', va='center', size=15)
             plt.axis('off')
-            from src.config import _setting
+            from phyem.src.config import _setting
             plt.show(block=_setting['block'])
             return fig
 
@@ -403,7 +403,7 @@ class DualityPairingTerm(_WeakFormulationTerm):
 
     def restrict(self, sub_manifold_sym_repr):
         """"""
-        from src.manifold import find_manifold
+        from phyem.src.manifold import find_manifold
         sr1 = self._f0._sym_repr
         sr2 = self._f1._sym_repr
         lr1 = self._f0._lin_repr

@@ -247,6 +247,8 @@ def _clear_pr_cache():
     else:
         pass
 
+    return None
+
 
 def _clear_all():
     r"""clear all abstract objects.
@@ -406,6 +408,8 @@ _global_operator_lin_repr_setting = {  # coded operators
     'projection': r'$\pi$ ',
 
     'multi': r"$\ast$",
+
+    'log-e': r" $\ln$ ",
 }
 
 
@@ -433,6 +437,8 @@ _global_operator_sym_repr_setting = {  # coded operators
     'projection': r'{\pi}',
 
     'multi': r"",
+
+    'log-e': r"{\ln}",
 }
 
 
@@ -471,6 +477,11 @@ _wf_term_default_simple_patterns = {   # use only str to represent a simple patt
     '<A*|C>': r'$\left<\left.\mathrm{rf} \ast \mathrm{krf} \right| \mathrm{rf}\right>$',
     '<**|C>': r'$\left<\left.\mathrm{krf} \ast \mathrm{krf} \right| \mathrm{rf}\right>$',
 
+    '<A d(B)|C>': r'$\left<\left.\mathrm{rf} \ast \mathrm{d}(\mathrm{rf}) \right| \mathrm{rf}\right>$',
+    '<* d(B)|C>': r'$\left<\left.\mathrm{krf} \ast \mathrm{d}(\mathrm{rf}) \right| \mathrm{rf}\right>$',
+    '<A d(*)|C>': r'$\left<\left.\mathrm{rf} \ast \mathrm{d}(\mathrm{krf}) \right| \mathrm{rf}\right>$',
+    '<* d(*)|C>': r'$\left<\left.\mathrm{krf} \ast \mathrm{d}(\mathrm{krf}) \right| \mathrm{rf}\right>$',
+
     '<AB|d(C)>': r'$\left<\left.\mathrm{rf} \ast \mathrm{rf} \right| \mathrm{d}(\mathrm{rf})\right>$',
     '<*B|d(C)>': r'$\left<\left.\mathrm{krf} \ast \mathrm{rf} \right| \mathrm{d}(\mathrm{rf})\right>$',
     '<A*|d(C)>': r'$\left<\left.\mathrm{rf} \ast \mathrm{krf} \right| \mathrm{d}(\mathrm{rf})\right>$',
@@ -508,12 +519,19 @@ _wf_term_default_simple_patterns = {   # use only str to represent a simple patt
     '(A*, d(C))': r"(rf $\ast$ krf, d rf)",
     '(**, d(C))': r"(krf $\ast$ krf, d rf)",
 
+    '(A d(B), d(C))': r"(rf $\ast$ d(rf), d rf)",
+    '(* d(B), d(C))': r"(krf $\ast$ d(rf), d rf)",
+    '(A d(*), d(C))': r"(rf $\ast$ d(krf), d rf)",
+    '(* d(*), d(C))': r"(krf $\ast$ d(krf), d rf)",
+
     '(A, BC)': r"(rf, rf $\ast$ rf)",
     '(*, BC)': r"(krf, rf $\ast$ rf)",
     '(A, *C)': r"(rf, krf $\ast$ rf)",
     '(*, *C)': r"(krf, krf $\ast$ rf)",
 
     '(x,)': r'(rf $\times$ rf, rf)',   # nonlinear term.
+
+    '(log-e *, B)': r'($\ln$(krf), rf)',  # (log_e A, B) where A and B are root forms, and A is known
 
     '(d0*,0*tp)': r'(d krf-0, krf-0 $\otimes$ rf)',
     '(d0*,tp0*)': r'(d krf-0, rf $\otimes$ krf-0)',

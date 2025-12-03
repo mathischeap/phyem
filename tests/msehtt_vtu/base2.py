@@ -3,15 +3,9 @@ r"""
 mpiexec -n 4 python tests/msehtt_vtu/base2.py
 """
 
-import sys
-
 import numpy as np
 
-ph_dir = './'  # customize it to your dir containing phyem
-if ph_dir not in sys.path:
-    sys.path.append(ph_dir)
-
-import __init__ as ph
+import phyem as ph
 
 ph.config.set_embedding_space_dim(2)
 ph.config.set_high_accuracy(True)
@@ -44,11 +38,11 @@ o1 = Out1.make_form(r'\tilde{u}^1', 'outer-form-1')
 # ------- manually make a vtu interface file ---------------
 
 
-from msehtt.static.mesh.great.config.vtu import MseHttVtuInterface
+from phyem.msehtt.static.mesh.great.config.vtu import MseHttVtuInterface
 
 from random import uniform, randint
 
-from src.config import MASTER_RANK, RANK, COMM
+from phyem.src.config import MASTER_RANK, RANK, COMM
 
 
 if RANK == MASTER_RANK:
@@ -133,7 +127,7 @@ msehtt.config(tgm)(vif)
 
 msehtt_mesh = msehtt.base['meshes'][r'\mathfrak{M}']
 msehtt.config(msehtt_mesh)(tgm, including='all')
-# msehtt_mesh.visualize()
+msehtt_mesh.visualize()
 
 fi0 = obj['i0']
 fi1 = obj['i1']

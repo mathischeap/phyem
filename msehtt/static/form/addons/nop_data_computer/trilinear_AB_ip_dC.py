@@ -13,7 +13,7 @@ ___msehtt_static_cache_AB_ip_dC_3d_data___ = {}
 
 
 class AB_ip_dC(MseHttTrilinearBase):
-    r"""(AxB, d(C))"""
+    r"""(A * B, d(C))"""
     def __init__(self, A, B, C):
         super().__init__(A, B, C)
         assert A.tgm is B.tgm and A.tgm is C.tgm, f"the great meshes do not match!"

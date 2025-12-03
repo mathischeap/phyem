@@ -48,6 +48,7 @@ from phyem.src.form.main import _global_root_forms_lin_dict   # [root-form_lin_r
 import phyem.msepy.main as msepy                                # mimetic spectral elements, python implementation
 
 import phyem.msehtt.static.main as msehtt_static                # static version of msehtt
+import phyem.msehtt.multigrid.main as msehtt_static_multigrid
 import phyem.msehtt.adaptive.main as msehtt_adaptive            # adaptive version of msehtt
 
 # import msehtt_ncf.static.main as msehtt_ncf_static        # static version of msehtt-ncf
@@ -59,6 +60,8 @@ _implemented_finite_elements = {
     'msehtt':        msehtt_static,  # default version of msehtt is the static one.
     'msehtt-s':      msehtt_static,  # shortcut of msehtt-static
     'msehtt-static': msehtt_static,  # static version of msehtt
+
+    'msehtt-smg':    msehtt_static_multigrid,  # multigrid version of the static msehtt implementation.
 
     'msehtt-a':        msehtt_adaptive,
     'msehtt-adaptive': msehtt_adaptive,

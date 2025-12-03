@@ -1,17 +1,11 @@
 # -*- coding: utf-8 -*-
 r"""
-mpiexec -n 4 python tests/msehtt_vtu/mesh0.py
+mpiexec -n 2 python tests/msehtt_vtu/mesh0.py
 """
-
-import sys
 
 import numpy as np
 
-ph_dir = './'  # customize it to your dir containing phyem
-if ph_dir not in sys.path:
-    sys.path.append(ph_dir)
-
-import __init__ as ph
+import phyem as ph
 
 ph.config.set_embedding_space_dim(2)
 ph.config.set_high_accuracy(True)
@@ -41,7 +35,7 @@ i1 = Inn1.make_form(r'u^1', 'inner-form-1')
 o1 = Out1.make_form(r'\tilde{u}^1', 'outer-form-1')
 
 # ------- manually make a vtu interface file ---------------
-from msehtt.static.mesh.great.config.vtu import MseHttVtuInterface
+from phyem.msehtt.static.mesh.great.config.vtu import MseHttVtuInterface
 
 from random import uniform
 
@@ -137,48 +131,22 @@ scalar = ph.vc.scalar(fw)
 fo0.cf = scalar
 fo0[0].reduce()
 err0 = fo0[0].error()
-# print(err0)
+print(err0)
 
 fo2.cf = scalar
 fo2[0].reduce()
 # fo2[0].visualize()
 err2 = fo2[0].error()
-# print(err2)
+print(err2)
 
 fo1.cf = vector
 fo1[0].reduce()
 # fo1[0].visualize()
 err1o = fo1[0].error()
-# print(err1o)
+print(err1o)
 
 fi1.cf = vector
 fi1[0].reduce()
 # fo1[0].visualize()
 err1i = fi1[0].error()
-# print(err1o)
-
-# E = fo0.incidence_matrix
-# fo1[0].cochain = E @ fo0[0].cochain
-# # fo1[0].visualize()
-#
-# fi0.cf = scalar
-# fi0[0].reduce()
-# E = fi0.incidence_matrix
-# fi1[0].cochain = E @ fi0[0].cochain
-
-# E = fi1.incidence_matrix
-# fi2[0].cochain = E @ fi1[0].cochain
-# fi2[0].visualize()
-
-E = fo1.incidence_matrix
-fo2[0].cochain = E @ fo1[0].cochain
-fo2[0].visualize()
-
-# fo1[0].visualize()
-#
-#
-# fi1.cf = vector
-# fi1[0].reduce()
-# # fi1[0].visualize()
-# err1i = fi1[0].error()
-# # print(err1i)
+print(err1o)

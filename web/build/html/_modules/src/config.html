@@ -570,7 +570,7 @@ document.write(`
     <span class="k">else</span><span class="p">:</span>
         <span class="k">pass</span>
 
-    <span class="kn">from</span><span class="w"> </span><span class="nn">tools.os_</span><span class="w"> </span><span class="kn">import</span> <span class="n">mkdir</span><span class="p">,</span> <span class="n">empty_dir</span><span class="p">,</span> <span class="n">isdir</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">phyem.tools.os_</span><span class="w"> </span><span class="kn">import</span> <span class="n">mkdir</span><span class="p">,</span> <span class="n">empty_dir</span><span class="p">,</span> <span class="n">isdir</span>
     <span class="n">phcache_folder</span> <span class="o">=</span> <span class="n">_setting</span><span class="p">[</span><span class="sa">r</span><span class="s1">&#39;cache_folder&#39;</span><span class="p">]</span>
     <span class="k">if</span> <span class="n">isdir</span><span class="p">(</span><span class="n">phcache_folder</span><span class="p">):</span>
         <span class="k">pass</span>
@@ -578,7 +578,7 @@ document.write(`
         <span class="n">mkdir</span><span class="p">(</span><span class="n">phcache_folder</span><span class="p">)</span>
 
     <span class="kn">from</span><span class="w"> </span><span class="nn">time</span><span class="w"> </span><span class="kn">import</span> <span class="n">time</span>
-    <span class="kn">from</span><span class="w"> </span><span class="nn">tools.miscellaneous.random_</span><span class="w"> </span><span class="kn">import</span> <span class="n">string_digits</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">phyem.tools.miscellaneous.random_</span><span class="w"> </span><span class="kn">import</span> <span class="n">string_digits</span>
     <span class="kn">import</span><span class="w"> </span><span class="nn">matplotlib.pyplot</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">plt</span>
     <span class="kn">import</span><span class="w"> </span><span class="nn">matplotlib</span>
     <span class="n">matplotlib</span><span class="o">.</span><span class="n">use</span><span class="p">(</span><span class="s1">&#39;TkAgg&#39;</span><span class="p">)</span>
@@ -629,13 +629,14 @@ document.write(`
     <span class="n">_setting</span><span class="p">[</span><span class="s2">&quot;pr_cache_subfolder&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>  <span class="c1"># clean cache_subfolder</span>
 
     <span class="k">if</span> <span class="n">RANK</span> <span class="o">==</span> <span class="n">MASTER_RANK</span><span class="p">:</span>
-        <span class="kn">from</span><span class="w"> </span><span class="nn">tools.os_</span><span class="w"> </span><span class="kn">import</span> <span class="n">listdir</span><span class="p">,</span> <span class="n">isdir</span><span class="p">,</span> <span class="n">mkdir</span><span class="p">,</span> <span class="n">rmdir</span><span class="p">,</span> <span class="n">empty_dir</span>
+        <span class="kn">from</span><span class="w"> </span><span class="nn">phyem.tools.os_</span><span class="w"> </span><span class="kn">import</span> <span class="n">listdir</span><span class="p">,</span> <span class="n">isdir</span><span class="p">,</span> <span class="n">mkdir</span><span class="p">,</span> <span class="n">rmdir</span><span class="p">,</span> <span class="n">empty_dir</span>
 
         <span class="n">phcache_folder</span> <span class="o">=</span> <span class="n">_setting</span><span class="p">[</span><span class="sa">r</span><span class="s1">&#39;cache_folder&#39;</span><span class="p">]</span>
         <span class="k">if</span> <span class="n">isdir</span><span class="p">(</span><span class="n">phcache_folder</span><span class="p">):</span>
             <span class="k">pass</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="n">mkdir</span><span class="p">(</span><span class="n">phcache_folder</span><span class="p">)</span>
+            <span class="k">return</span> <span class="kc">None</span>
+
         <span class="n">all_ph_cache_files</span> <span class="o">=</span> <span class="n">listdir</span><span class="p">(</span><span class="n">phcache_folder</span><span class="p">)</span>  <span class="c1"># including folder names.</span>
 
         <span class="n">pr_prefix</span> <span class="o">=</span> <span class="n">_setting</span><span class="p">[</span><span class="s1">&#39;pr_cache_folder_prefix&#39;</span><span class="p">]</span>
@@ -668,39 +669,39 @@ document.write(`
 
 <span class="sd">    Make sure that, when we add new global cache, put it here.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="kn">from</span><span class="w"> </span><span class="nn">src.algebra.array</span><span class="w"> </span><span class="kn">import</span> <span class="n">_global_root_arrays</span>
-    <span class="kn">from</span><span class="w"> </span><span class="nn">src.algebra.nonlinear_operator</span><span class="w"> </span><span class="kn">import</span> <span class="n">_global_nop_arrays</span>
-    <span class="kn">from</span><span class="w"> </span><span class="nn">src.form.main</span><span class="w"> </span><span class="kn">import</span> <span class="n">_global_forms</span>
-    <span class="kn">from</span><span class="w"> </span><span class="nn">src.form.main</span><span class="w"> </span><span class="kn">import</span> <span class="n">_global_root_forms_lin_dict</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">phyem.src.algebra.array</span><span class="w"> </span><span class="kn">import</span> <span class="n">_global_root_arrays</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">phyem.src.algebra.nonlinear_operator</span><span class="w"> </span><span class="kn">import</span> <span class="n">_global_nop_arrays</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">phyem.src.form.main</span><span class="w"> </span><span class="kn">import</span> <span class="n">_global_forms</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">phyem.src.form.main</span><span class="w"> </span><span class="kn">import</span> <span class="n">_global_root_forms_lin_dict</span>
     <span class="n">_clear_a_dict</span><span class="p">(</span><span class="n">_global_root_arrays</span><span class="p">)</span>
     <span class="n">_clear_a_dict</span><span class="p">(</span><span class="n">_global_nop_arrays</span><span class="p">)</span>
     <span class="n">_clear_a_dict</span><span class="p">(</span><span class="n">_global_forms</span><span class="p">)</span>
     <span class="n">_clear_a_dict</span><span class="p">(</span><span class="n">_global_root_forms_lin_dict</span><span class="p">)</span>
-    <span class="kn">from</span><span class="w"> </span><span class="nn">src.form.parameters</span><span class="w"> </span><span class="kn">import</span> <span class="n">_global_root_constant_scalars</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">phyem.src.form.parameters</span><span class="w"> </span><span class="kn">import</span> <span class="n">_global_root_constant_scalars</span>
     <span class="n">_clear_a_dict</span><span class="p">(</span><span class="n">_global_root_constant_scalars</span><span class="p">)</span>
-    <span class="kn">from</span><span class="w"> </span><span class="nn">src.form.main</span><span class="w"> </span><span class="kn">import</span> <span class="n">_global_form_variables</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">phyem.src.form.main</span><span class="w"> </span><span class="kn">import</span> <span class="n">_global_form_variables</span>
     <span class="n">_global_form_variables</span><span class="p">[</span><span class="s1">&#39;update_cache&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">True</span>
 
-    <span class="kn">from</span><span class="w"> </span><span class="nn">src.manifold</span><span class="w"> </span><span class="kn">import</span> <span class="n">_global_manifolds</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">phyem.src.manifold</span><span class="w"> </span><span class="kn">import</span> <span class="n">_global_manifolds</span>
     <span class="n">_clear_a_dict</span><span class="p">(</span><span class="n">_global_manifolds</span><span class="p">)</span>
-    <span class="kn">from</span><span class="w"> </span><span class="nn">src.mesh</span><span class="w"> </span><span class="kn">import</span> <span class="n">_global_meshes</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">phyem.src.mesh</span><span class="w"> </span><span class="kn">import</span> <span class="n">_global_meshes</span>
     <span class="n">_clear_a_dict</span><span class="p">(</span><span class="n">_global_meshes</span><span class="p">)</span>
 
-    <span class="kn">from</span><span class="w"> </span><span class="nn">src.time_sequence</span><span class="w"> </span><span class="kn">import</span> <span class="n">_global_abstract_time_sequence</span>
-    <span class="kn">from</span><span class="w"> </span><span class="nn">src.time_sequence</span><span class="w"> </span><span class="kn">import</span> <span class="n">_global_abstract_time_interval</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">phyem.src.time_sequence</span><span class="w"> </span><span class="kn">import</span> <span class="n">_global_abstract_time_sequence</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">phyem.src.time_sequence</span><span class="w"> </span><span class="kn">import</span> <span class="n">_global_abstract_time_interval</span>
     <span class="n">_clear_a_dict</span><span class="p">(</span><span class="n">_global_abstract_time_sequence</span><span class="p">)</span>
     <span class="n">_clear_a_dict</span><span class="p">(</span><span class="n">_global_abstract_time_interval</span><span class="p">)</span>
 
-    <span class="kn">from</span><span class="w"> </span><span class="nn">src.spaces.main</span><span class="w"> </span><span class="kn">import</span> <span class="n">_config</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">phyem.src.spaces.main</span><span class="w"> </span><span class="kn">import</span> <span class="n">_config</span>
     <span class="n">_config</span><span class="p">[</span><span class="s1">&#39;current_mesh&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
-    <span class="kn">from</span><span class="w"> </span><span class="nn">src.spaces.main</span><span class="w"> </span><span class="kn">import</span> <span class="n">_degree_cache</span>
-    <span class="kn">from</span><span class="w"> </span><span class="nn">src.spaces.main</span><span class="w"> </span><span class="kn">import</span> <span class="n">_space_set</span>
-    <span class="kn">from</span><span class="w"> </span><span class="nn">src.spaces.main</span><span class="w"> </span><span class="kn">import</span> <span class="n">_mesh_set</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">phyem.src.spaces.main</span><span class="w"> </span><span class="kn">import</span> <span class="n">_degree_cache</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">phyem.src.spaces.main</span><span class="w"> </span><span class="kn">import</span> <span class="n">_space_set</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">phyem.src.spaces.main</span><span class="w"> </span><span class="kn">import</span> <span class="n">_mesh_set</span>
     <span class="n">_clear_a_dict</span><span class="p">(</span><span class="n">_degree_cache</span><span class="p">)</span>
     <span class="n">_clear_a_dict</span><span class="p">(</span><span class="n">_space_set</span><span class="p">)</span>
     <span class="n">_clear_a_dict</span><span class="p">(</span><span class="n">_mesh_set</span><span class="p">)</span>
 
-    <span class="kn">from</span><span class="w"> </span><span class="nn">src.wf.term.main</span><span class="w"> </span><span class="kn">import</span> <span class="n">_global_wf_terms</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">phyem.src.wf.term.main</span><span class="w"> </span><span class="kn">import</span> <span class="n">_global_wf_terms</span>
     <span class="n">_clear_a_dict</span><span class="p">(</span><span class="n">_global_wf_terms</span><span class="p">)</span>
 
 
@@ -754,6 +755,9 @@ document.write(`
         <span class="n">lk</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">key</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">lin_repr</span><span class="p">[:</span><span class="n">lk</span><span class="p">]</span> <span class="o">==</span> <span class="n">key</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">what</span><span class="p">,</span> <span class="n">lin_repr</span><span class="p">[</span><span class="n">lk</span><span class="p">:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">pass</span>
+    <span class="k">return</span> <span class="kc">None</span>
 
 
 <span class="n">_manifold_default_sym_repr</span> <span class="o">=</span> <span class="sa">r</span><span class="s1">&#39;\mathcal</span><span class="si">{M}</span><span class="s1">&#39;</span>
@@ -809,10 +813,15 @@ document.write(`
     <span class="s1">&#39;multiply&#39;</span><span class="p">:</span> <span class="sa">r</span><span class="s1">&#39; \emph</span><span class="si">{multiply}</span><span class="s1"> &#39;</span><span class="p">,</span>
 
     <span class="s1">&#39;cross_product&#39;</span><span class="p">:</span> <span class="sa">r</span><span class="s2">&quot;$\times$&quot;</span><span class="p">,</span>
+    <span class="s1">&#39;Cross_Product&#39;</span><span class="p">:</span> <span class="sa">r</span><span class="s2">&quot;-$\mathsf</span><span class="si">{X}</span><span class="s2">$-&quot;</span><span class="p">,</span>
+    <span class="s1">&#39;CrossProduct&#39;</span><span class="p">:</span> <span class="sa">r</span><span class="s2">&quot;-$\mathrm</span><span class="si">{x}</span><span class="s2">$-&quot;</span><span class="p">,</span>
+    <span class="s1">&#39;crossProduct&#39;</span><span class="p">:</span> <span class="sa">r</span><span class="s2">&quot;-$\mathsf</span><span class="si">{x}</span><span class="s2">$-&quot;</span><span class="p">,</span>
     <span class="s1">&#39;convect&#39;</span><span class="p">:</span> <span class="sa">r</span><span class="s2">&quot;$\cdot\nabla$&quot;</span><span class="p">,</span>
     <span class="s1">&#39;tensor_product&#39;</span><span class="p">:</span> <span class="sa">r</span><span class="s2">&quot;$\otimes$&quot;</span><span class="p">,</span>
 
-    <span class="s1">&#39;projection&#39;</span><span class="p">:</span> <span class="sa">r</span><span class="s1">&#39;$\pi$ &#39;</span>
+    <span class="s1">&#39;projection&#39;</span><span class="p">:</span> <span class="sa">r</span><span class="s1">&#39;$\pi$ &#39;</span><span class="p">,</span>
+
+    <span class="s1">&#39;multi&#39;</span><span class="p">:</span> <span class="sa">r</span><span class="s2">&quot;$\ast$&quot;</span><span class="p">,</span>
 <span class="p">}</span>
 
 
@@ -831,10 +840,15 @@ document.write(`
     <span class="s1">&#39;division&#39;</span><span class="p">:</span> <span class="p">[</span><span class="sa">r</span><span class="s1">&#39;\frac{&#39;</span><span class="p">,</span> <span class="sa">r</span><span class="s1">&#39;}{&#39;</span><span class="p">,</span> <span class="sa">r</span><span class="s2">&quot;}&quot;</span><span class="p">],</span>
 
     <span class="s1">&#39;cross_product&#39;</span><span class="p">:</span> <span class="sa">r</span><span class="s2">&quot;{\times}&quot;</span><span class="p">,</span>
+    <span class="s1">&#39;Cross_Product&#39;</span><span class="p">:</span> <span class="sa">r</span><span class="s2">&quot;{\mathsf</span><span class="si">{X}</span><span class="s2">}&quot;</span><span class="p">,</span>
+    <span class="s1">&#39;CrossProduct&#39;</span><span class="p">:</span> <span class="sa">r</span><span class="s2">&quot;{\mathrm</span><span class="si">{x}</span><span class="s2">}&quot;</span><span class="p">,</span>
+    <span class="s1">&#39;crossProduct&#39;</span><span class="p">:</span> <span class="sa">r</span><span class="s2">&quot;{\mathsf</span><span class="si">{x}</span><span class="s2">}&quot;</span><span class="p">,</span>
     <span class="s1">&#39;tensor_product&#39;</span><span class="p">:</span> <span class="sa">r</span><span class="s2">&quot;{\otimes}&quot;</span><span class="p">,</span>
     <span class="s1">&#39;convect&#39;</span><span class="p">:</span> <span class="sa">r</span><span class="s2">&quot;{\cdot\nabla}&quot;</span><span class="p">,</span>
 
-    <span class="s1">&#39;projection&#39;</span><span class="p">:</span> <span class="sa">r</span><span class="s1">&#39;{\pi}&#39;</span>
+    <span class="s1">&#39;projection&#39;</span><span class="p">:</span> <span class="sa">r</span><span class="s1">&#39;{\pi}&#39;</span><span class="p">,</span>
+
+    <span class="s1">&#39;multi&#39;</span><span class="p">:</span> <span class="sa">r</span><span class="s2">&quot;&quot;</span><span class="p">,</span>
 <span class="p">}</span>
 
 
@@ -866,9 +880,21 @@ document.write(`
     <span class="s1">&#39;&lt;*x*|C&gt;&#39;</span><span class="p">:</span> <span class="sa">r</span><span class="s1">&#39;$\left&lt;\left.\mathrm</span><span class="si">{krf}</span><span class="s1"> \times \mathrm</span><span class="si">{krf}</span><span class="s1"> \right| \mathrm</span><span class="si">{rf}</span><span class="s1">\right&gt;$&#39;</span><span class="p">,</span>
     <span class="s1">&#39;&lt;Ax*|C&gt;&#39;</span><span class="p">:</span> <span class="sa">r</span><span class="s1">&#39;$\left&lt;\left.\mathrm</span><span class="si">{rf}</span><span class="s1"> \times \mathrm</span><span class="si">{krf}</span><span class="s1"> \right| \mathrm</span><span class="si">{rf}</span><span class="s1">\right&gt;$&#39;</span><span class="p">,</span>
     <span class="s1">&#39;&lt;*xB|C&gt;&#39;</span><span class="p">:</span> <span class="sa">r</span><span class="s1">&#39;$\left&lt;\left.\mathrm</span><span class="si">{krf}</span><span class="s1"> \times \mathrm</span><span class="si">{rf}</span><span class="s1"> \right| \mathrm</span><span class="si">{rf}</span><span class="s1">\right&gt;$&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;&lt;AxB|C&gt;&#39;</span><span class="p">:</span> <span class="sa">r</span><span class="s1">&#39;$\left&lt;\left.\mathrm</span><span class="si">{rf}</span><span class="s1"> \times \mathrm</span><span class="si">{rf}</span><span class="s1"> \right| \mathrm</span><span class="si">{rf}</span><span class="s1">\right&gt;$&#39;</span><span class="p">,</span>
+
+    <span class="s1">&#39;&lt;AB|C&gt;&#39;</span><span class="p">:</span> <span class="sa">r</span><span class="s1">&#39;$\left&lt;\left.\mathrm</span><span class="si">{rf}</span><span class="s1"> \ast \mathrm</span><span class="si">{rf}</span><span class="s1"> \right| \mathrm</span><span class="si">{rf}</span><span class="s1">\right&gt;$&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;&lt;*B|C&gt;&#39;</span><span class="p">:</span> <span class="sa">r</span><span class="s1">&#39;$\left&lt;\left.\mathrm</span><span class="si">{krf}</span><span class="s1"> \ast \mathrm</span><span class="si">{rf}</span><span class="s1"> \right| \mathrm</span><span class="si">{rf}</span><span class="s1">\right&gt;$&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;&lt;A*|C&gt;&#39;</span><span class="p">:</span> <span class="sa">r</span><span class="s1">&#39;$\left&lt;\left.\mathrm</span><span class="si">{rf}</span><span class="s1"> \ast \mathrm</span><span class="si">{krf}</span><span class="s1"> \right| \mathrm</span><span class="si">{rf}</span><span class="s1">\right&gt;$&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;&lt;**|C&gt;&#39;</span><span class="p">:</span> <span class="sa">r</span><span class="s1">&#39;$\left&lt;\left.\mathrm</span><span class="si">{krf}</span><span class="s1"> \ast \mathrm</span><span class="si">{krf}</span><span class="s1"> \right| \mathrm</span><span class="si">{rf}</span><span class="s1">\right&gt;$&#39;</span><span class="p">,</span>
+
+    <span class="s1">&#39;&lt;AB|d(C)&gt;&#39;</span><span class="p">:</span> <span class="sa">r</span><span class="s1">&#39;$\left&lt;\left.\mathrm</span><span class="si">{rf}</span><span class="s1"> \ast \mathrm</span><span class="si">{rf}</span><span class="s1"> \right| \mathrm</span><span class="si">{d}</span><span class="s1">(\mathrm</span><span class="si">{rf}</span><span class="s1">)\right&gt;$&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;&lt;*B|d(C)&gt;&#39;</span><span class="p">:</span> <span class="sa">r</span><span class="s1">&#39;$\left&lt;\left.\mathrm</span><span class="si">{krf}</span><span class="s1"> \ast \mathrm</span><span class="si">{rf}</span><span class="s1"> \right| \mathrm</span><span class="si">{d}</span><span class="s1">(\mathrm</span><span class="si">{rf}</span><span class="s1">)\right&gt;$&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;&lt;A*|d(C)&gt;&#39;</span><span class="p">:</span> <span class="sa">r</span><span class="s1">&#39;$\left&lt;\left.\mathrm</span><span class="si">{rf}</span><span class="s1"> \ast \mathrm</span><span class="si">{krf}</span><span class="s1"> \right| \mathrm</span><span class="si">{d}</span><span class="s1">(\mathrm</span><span class="si">{rf}</span><span class="s1">)\right&gt;$&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;&lt;**|d(C)&gt;&#39;</span><span class="p">:</span> <span class="sa">r</span><span class="s1">&#39;$\left&lt;\left.\mathrm</span><span class="si">{krf}</span><span class="s1"> \ast \mathrm</span><span class="si">{krf}</span><span class="s1"> \right| \mathrm</span><span class="si">{d}</span><span class="s1">(\mathrm</span><span class="si">{rf}</span><span class="s1">)\right&gt;$&#39;</span><span class="p">,</span>
 
     <span class="s1">&#39;&lt;*x*|d(C)&gt;&#39;</span><span class="p">:</span> <span class="sa">r</span><span class="s1">&#39;$\left&lt;\left.\mathrm</span><span class="si">{krf}</span><span class="s1"> \times \mathrm</span><span class="si">{krf}</span><span class="s1"> \right| \mathrm</span><span class="si">{d}</span><span class="s1">(\mathrm</span><span class="si">{rf}</span><span class="s1">)\right&gt;$&#39;</span><span class="p">,</span>
 
+    <span class="s1">&#39;(A .V B, C)&#39;</span><span class="p">:</span> <span class="sa">r</span><span class="s2">&quot;$\left(\mathrm</span><span class="si">{rf}</span><span class="s2"> \cdot\nabla \mathrm</span><span class="si">{rf}</span><span class="s2">, \mathrm</span><span class="si">{rf}</span><span class="s2">\right)$&quot;</span><span class="p">,</span>
     <span class="s1">&#39;(* .V *, C)&#39;</span><span class="p">:</span> <span class="sa">r</span><span class="s2">&quot;$\left(\mathrm</span><span class="si">{krf}</span><span class="s2"> \cdot\nabla \mathrm</span><span class="si">{krf}</span><span class="s2">, \mathrm</span><span class="si">{rf}</span><span class="s2">\right)$&quot;</span><span class="p">,</span>
 
     <span class="s1">&#39;&lt;AxB|CxD&gt;&#39;</span><span class="p">:</span> <span class="sa">r</span><span class="s2">&quot;$\left&lt;\left.\mathrm</span><span class="si">{rf}</span><span class="s2"> \times \mathrm</span><span class="si">{rf}</span><span class="s2"> \right| \mathrm</span><span class="si">{rf}</span><span class="s2"> \times \mathrm</span><span class="si">{rf}</span><span class="s2">\right&gt;$&quot;</span><span class="p">,</span>
@@ -886,6 +912,22 @@ document.write(`
     <span class="s1">&#39;(*x,d)&#39;</span><span class="p">:</span> <span class="sa">r</span><span class="s2">&quot;(krf $\times$ rf, d rf)&quot;</span><span class="p">,</span>
     <span class="s1">&#39;(x*,d)&#39;</span><span class="p">:</span> <span class="sa">r</span><span class="s2">&quot;(rf $\times$ krf, d rf)&quot;</span><span class="p">,</span>
     <span class="s1">&#39;(*x*,d)&#39;</span><span class="p">:</span> <span class="sa">r</span><span class="s2">&quot;(krf $\times$ krf, d rf)&quot;</span><span class="p">,</span>   <span class="c1"># vector</span>
+    <span class="s1">&#39;(AxB,dC)&#39;</span><span class="p">:</span> <span class="sa">r</span><span class="s2">&quot;(rf $\times$ rf, d rf)&quot;</span><span class="p">,</span>
+
+    <span class="s1">&#39;(AB, C)&#39;</span><span class="p">:</span> <span class="sa">r</span><span class="s2">&quot;(rf $\ast$ rf, rf)&quot;</span><span class="p">,</span>
+    <span class="s1">&#39;(*B, C)&#39;</span><span class="p">:</span> <span class="sa">r</span><span class="s2">&quot;(krf $\ast$ rf, rf)&quot;</span><span class="p">,</span>
+    <span class="s1">&#39;(A*, C)&#39;</span><span class="p">:</span> <span class="sa">r</span><span class="s2">&quot;(rf $\ast$ krf, rf)&quot;</span><span class="p">,</span>
+    <span class="s1">&#39;(**, C)&#39;</span><span class="p">:</span> <span class="sa">r</span><span class="s2">&quot;(krf $\ast$ krf, rf)&quot;</span><span class="p">,</span>
+
+    <span class="s1">&#39;(AB, d(C))&#39;</span><span class="p">:</span> <span class="sa">r</span><span class="s2">&quot;(rf $\ast$ rf, d rf)&quot;</span><span class="p">,</span>
+    <span class="s1">&#39;(*B, d(C))&#39;</span><span class="p">:</span> <span class="sa">r</span><span class="s2">&quot;(krf $\ast$ rf, d rf)&quot;</span><span class="p">,</span>
+    <span class="s1">&#39;(A*, d(C))&#39;</span><span class="p">:</span> <span class="sa">r</span><span class="s2">&quot;(rf $\ast$ krf, d rf)&quot;</span><span class="p">,</span>
+    <span class="s1">&#39;(**, d(C))&#39;</span><span class="p">:</span> <span class="sa">r</span><span class="s2">&quot;(krf $\ast$ krf, d rf)&quot;</span><span class="p">,</span>
+
+    <span class="s1">&#39;(A, BC)&#39;</span><span class="p">:</span> <span class="sa">r</span><span class="s2">&quot;(rf, rf $\ast$ rf)&quot;</span><span class="p">,</span>
+    <span class="s1">&#39;(*, BC)&#39;</span><span class="p">:</span> <span class="sa">r</span><span class="s2">&quot;(krf, rf $\ast$ rf)&quot;</span><span class="p">,</span>
+    <span class="s1">&#39;(A, *C)&#39;</span><span class="p">:</span> <span class="sa">r</span><span class="s2">&quot;(rf, krf $\ast$ rf)&quot;</span><span class="p">,</span>
+    <span class="s1">&#39;(*, *C)&#39;</span><span class="p">:</span> <span class="sa">r</span><span class="s2">&quot;(krf, krf $\ast$ rf)&quot;</span><span class="p">,</span>
 
     <span class="s1">&#39;(x,)&#39;</span><span class="p">:</span> <span class="sa">r</span><span class="s1">&#39;(rf $\times$ rf, rf)&#39;</span><span class="p">,</span>   <span class="c1"># nonlinear term.</span>
 
@@ -959,7 +1001,7 @@ By Andrea Brugnoli, Ramy Rashad, Stefano Stramigioli, Yi Zhang and more
   <div class="footer-item">
     
 <div class="extra_footer">
-  <div>Last updated on March 15, 2025, 21:49:28, China Standard Time</div>
+  <div>Last updated on 十一月 18, 2025, 18:27:15, China Standard Time</div>
 </div>
   </div>
   

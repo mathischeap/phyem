@@ -3,8 +3,8 @@
 r"""
 .. testsetup:: *
 
-    import __init__ as ph
-    from msepy.manifold.predefined.cylinder_channel import _make_an_illustration
+    import phyem as ph
+    from phyem.msepy.manifold.predefined.cylinder_channel import _make_an_illustration
     _make_an_illustration(
         './source/gallery/msepy_domains_and_meshes/msepy/cylinder_channel_2d.png'
     )
@@ -24,7 +24,7 @@ The 2d domain is illustrated in the following figure.
     The illustration of the 2d cylinder channel domain.
 
 
-.. autofunction:: msepy.manifold.predefined.cylinder_channel.cylinder_channel
+.. autofunction:: phyem.msepy.manifold.predefined.cylinder_channel.cylinder_channel
 
 Boundary units
 ==============
@@ -100,7 +100,6 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 from phyem.msepy.manifold.predefined._helpers import _LinearTransformation, _Transfinite2
-
 
 
 def _make_an_illustration(saveto, r=1, dl=10, dr=25, h=6):

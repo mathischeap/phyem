@@ -1,7 +1,8 @@
 # -*- coding: utf-8 -*-
 r"""
 """
-from phyem.msehtt.static.mesh.great.elements.types.orthogonal_hexahedron import MseHttGreatMeshOrthogonalHexahedronElement
+from phyem.msehtt.static.mesh.great.elements.types.orthogonal_hexahedron import (
+    MseHttGreatMeshOrthogonalHexahedronElement)
 
 
 class Vtu_11_Voxel(MseHttGreatMeshOrthogonalHexahedronElement):

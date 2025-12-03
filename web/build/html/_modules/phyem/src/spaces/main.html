@@ -1,0 +1,1107 @@
+
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="../../../../" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>phyem.src.spaces.main &#8212; phyem, a finite element library powering LEGO-like simulations for (multi-)physics.</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
+  </script>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../../../../_static/styles/theme.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+<link href="../../../../_static/styles/bootstrap.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+<link href="../../../../_static/styles/pydata-sphinx-theme.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+
+  
+  <link href="../../../../_static/vendor/fontawesome/6.5.2/css/all.min.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+  <link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../_static/vendor/fontawesome/6.5.2/webfonts/fa-solid-900.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../_static/vendor/fontawesome/6.5.2/webfonts/fa-brands-400.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../_static/vendor/fontawesome/6.5.2/webfonts/fa-regular-400.woff2" />
+
+    <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css?v=8f2a1f02" />
+    <link rel="stylesheet" type="text/css" href="../../../../_static/styles/sphinx-book-theme.css?v=eba8b062" />
+    <link rel="stylesheet" type="text/css" href="../../../../_static/copybutton.css?v=76b2166b" />
+  
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../../../../_static/scripts/bootstrap.js?digest=dfe6caa3a7d634c4db9b" />
+<link rel="preload" as="script" href="../../../../_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b" />
+  <script src="../../../../_static/vendor/fontawesome/6.5.2/js/all.min.js?digest=dfe6caa3a7d634c4db9b"></script>
+
+    <script src="../../../../_static/documentation_options.js?v=9eb32ce0"></script>
+    <script src="../../../../_static/doctools.js?v=9bcbadda"></script>
+    <script src="../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../../../_static/clipboard.min.js?v=a7894cd8"></script>
+    <script src="../../../../_static/copybutton.js?v=f281be69"></script>
+    <script src="../../../../_static/scripts/sphinx-book-theme.js?v=887ef09a"></script>
+    <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = '_modules/phyem/src/spaces/main';</script>
+    <link rel="icon" href="../../../../_static/favicon.png"/>
+    <link rel="index" title="Index" href="../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../search.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="">
+
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          id="pst-primary-sidebar-checkbox"/>
+  <label class="overlay overlay-primary" for="pst-primary-sidebar-checkbox"></label>
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          id="pst-secondary-sidebar-checkbox"/>
+  <label class="overlay overlay-secondary" for="pst-secondary-sidebar-checkbox"></label>
+  
+  <div class="search-button__wrapper">
+    <div class="search-button__overlay"></div>
+    <div class="search-button__search-container">
+<form class="bd-search d-flex align-items-center"
+      action="../../../../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         id="search-input"
+         placeholder="Search..."
+         aria-label="Search..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form></div>
+  </div>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+<aside class="bd-header-announcement" aria-label="Announcement">
+  <div class="bd-header-announcement__content">
+        <p style='color:white;'> &#127867 PHYEM is coming</p>
+    </div>
+</aside>
+
+  
+    <header class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+        
+      
+      <div class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+    
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item">
+
+  
+    
+  
+
+<a class="navbar-brand logo" href="../../../../index.html">
+  
+  
+  
+  
+  
+    
+    
+      
+    
+    
+    <img src="../../../../_static/logo-light.png" class="logo__image only-light" alt="phyem, a finite element library powering LEGO-like simulations for (multi-)physics. - Home"/>
+    <script>document.write(`<img src="../../../../_static/logo-dark.png" class="logo__image only-dark" alt="phyem, a finite element library powering LEGO-like simulations for (multi-)physics. - Home"/>`);</script>
+  
+  
+</a></div>
+        <div class="sidebar-primary-item"><ul class="navbar-icon-links"
+    aria-label="Quick Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://www.mathischeap.com/" title="mathischeap" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><img src="../../../../_static/favicon-mic.png" class="icon-link-image" alt="mathischeap"/></a>
+        </li>
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/mathischeap/phyem" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-square-github fa-lg" aria-hidden="true"></i>
+            <span class="sr-only">GitHub</span></a>
+        </li>
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://app.netlify.com/sites/phyem/deploys" title="Netlify Status" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><img src="https://api.netlify.com/api/v1/badges/6a559326-c54e-4a8f-a79a-a715648c73c2/deploy-status" class="icon-link-image" alt="Netlify Status"/></a>
+        </li>
+</ul></div>
+        <div class="sidebar-primary-item">
+
+ <script>
+ document.write(`
+   <button class="btn search-button-field search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass"></i>
+    <span class="search-button__default-text">Search</span>
+    <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+   </button>
+ `);
+ </script></div>
+        <div class="sidebar-primary-item"><nav class="bd-links bd-docs-nav" aria-label="Main">
+    <div class="bd-toc-item navbar-nav active">
+        
+        <ul class="nav bd-sidenav bd-sidenav__home-link">
+            <li class="toctree-l1">
+                <a class="reference internal" href="../../../../index.html">
+                    Welcome
+                </a>
+            </li>
+        </ul>
+        <ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../../../../tutorial/about.html">About</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../tutorial/install.html">Installation</a></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../../../tutorial/documentations.html">Documentations</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../../tutorial/docs/presetting.html">1. Presetting</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../tutorial/docs/manifold_mesh.html">2. Manifold &amp; mesh</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../tutorial/docs/space_form.html">3. Space &amp; form</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../tutorial/docs/pde.html">4. PDE</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../tutorial/docs/wf.html">5. Weak formulation &amp; discretization</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../tutorial/docs/ap.html">6. Algebraic proxy</a></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../../../../tutorial/docs/implementations.html">7. Implementations</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../../tutorial/docs/implementations/msepy.html">7.1. msepy</a></li>
+</ul>
+</details></li>
+</ul>
+</details></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../tutorial/summary.html">Summary</a></li>
+</ul>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../../../jupyter/index.html">Jupyter notebooks 🪐</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../../jupyter/general/first_equation.html">Set up your first equations</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../jupyter/general/discretize_linear_pH_system.html">How to discretize equations</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../../../gallery/index.html">Gallery🖼</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../../../../gallery/msepy_domains_and_meshes/index.html"><em>msepy</em> domains and meshes</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../../gallery/msepy_domains_and_meshes/msepy/backward_step.html">Backward step</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../gallery/msepy_domains_and_meshes/msepy/crazy.html">Crazy domain and mesh</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../gallery/msepy_domains_and_meshes/msepy/cylinder_channel.html">Cylinder channel</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../gallery/msepy_domains_and_meshes/msepy/multi_crazy.html">Multi-crazy domain and mesh</a></li>
+</ul>
+</details></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../gallery/div_grad/index.html">🟢 div-grad</a></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../../../../gallery/Navier_Stokes/index.html">🌊 Navier-Stokes equations</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../../gallery/Navier_Stokes/backward_facing_step/index.html">Backward facing step flow</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../gallery/Navier_Stokes/lid_driven_cavity/index.html">Lid-driven cavity</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../gallery/Navier_Stokes/normal_dipole_collision/index.html">Normal dipole collision</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../gallery/Navier_Stokes/shear_layer_rollup/index.html">Shear layer rollup</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../gallery/Navier_Stokes/Taylor_Green_vortex/index.html">Taylor-Green vortex</a></li>
+</ul>
+</details></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../gallery/MHD/index.html">🧲 MHD</a></li>
+</ul>
+</details></li>
+</ul>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../../../../contact.html">Contact</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../contributors.html">Contributors</a></li>
+</ul>
+
+    </div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+  </div>
+  
+  <div id="rtd-footer-container"></div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+
+<div class="sbt-scroll-pixel-helper"></div>
+
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item"><button class="sidebar-toggle primary-toggle btn btn-sm" title="Toggle primary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <span class="fa-solid fa-bars"></span>
+</button></div>
+      
+    </div>
+  
+  
+    <div class="header-article-items__end">
+      
+        <div class="header-article-item">
+
+<div class="article-header-buttons">
+
+
+
+
+
+<div class="dropdown dropdown-source-buttons">
+  <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Source repositories">
+    <i class="fab fa-github"></i>
+  </button>
+  <ul class="dropdown-menu">
+      
+      
+      
+      <li><a href="https://github.com/mathischeap/phyem" target="_blank"
+   class="btn btn-sm btn-source-repository-button dropdown-item"
+   title="Source repository"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fab fa-github"></i>
+  </span>
+<span class="btn__text-container">Repository</span>
+</a>
+</li>
+      
+      
+      
+      
+      <li><a href="https://github.com/mathischeap/phyem/issues/new?title=Issue%20on%20page%20%2F_modules/phyem/src/spaces/main.html&body=Your%20issue%20content%20here." target="_blank"
+   class="btn btn-sm btn-source-issues-button dropdown-item"
+   title="Open an issue"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-lightbulb"></i>
+  </span>
+<span class="btn__text-container">Open issue</span>
+</a>
+</li>
+      
+  </ul>
+</div>
+
+
+
+
+<button onclick="toggleFullScreen()"
+  class="btn btn-sm btn-fullscreen-button"
+  title="Fullscreen mode"
+  data-bs-placement="bottom" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-expand"></i>
+  </span>
+
+</button>
+
+
+
+<script>
+document.write(`
+  <button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button" title="light/dark" aria-label="light/dark" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="theme-switch fa-solid fa-sun fa-lg" data-mode="light"></i>
+    <i class="theme-switch fa-solid fa-moon fa-lg" data-mode="dark"></i>
+    <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"></i>
+  </button>
+`);
+</script>
+
+
+<script>
+document.write(`
+  <button class="btn btn-sm pst-navbar-icon search-button search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass fa-lg"></i>
+  </button>
+`);
+</script>
+
+</div></div>
+      
+    </div>
+  
+</div>
+</div>
+              
+              
+
+<div id="jb-print-docs-body" class="onlyprint">
+    <h1></h1>
+    <!-- Table of contents -->
+    <div id="print-main-content">
+        <div id="jb-print-toc">
+            
+        </div>
+    </div>
+</div>
+
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <h1>Source code for phyem.src.spaces.main</h1><div class="highlight"><pre>
+<span></span><span class="c1"># -*- coding: utf-8 -*-</span>
+<span class="c1"># noinspection PyUnresolvedReferences</span>
+<span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
+
+<span class="sd">.. _docs-space:</span>
+
+<span class="sd">Space</span>
+<span class="sd">=====</span>
+
+<span class="sd">Having abstract meshes, you can define abstract finite dimensional function spaces on them.</span>
+<span class="sd">To do so, we first need to set the target mesh by calling</span>
+
+<span class="sd">&gt;&gt;&gt; ph.space.set_mesh(mesh)</span>
+
+<span class="sd">Note that if there is only one mesh defined, above command can be omitted.</span>
+
+<span class="sd">Then, to define a finite dimensional function space on this mesh, call function ``ph.space.new``,</span>
+
+<span class="sd">    .. autofunction:: phyem.src.spaces.main.new</span>
+
+<span class="sd">So far, we have implemented the following spaces.</span>
+
+<span class="sd">.. admonition:: Implemented spaces</span>
+
+<span class="sd">    +-------------------------+-----------------+------------------------------+-------------------------------------+</span>
+<span class="sd">    | **description**         |**abbr.**        |    **arg**                   |    **kwarg**                        |</span>
+<span class="sd">    +-------------------------+-----------------+------------------------------+-------------------------------------+</span>
+<span class="sd">    | scalar-valued form      | ``&#39;Lambda&#39;``    | ``k`` : int.                 |   ``orientation``:                  |</span>
+<span class="sd">    | space                   |                 | It is a :math:`k`-form       |   {``&#39;inner&#39;``, ``&#39;outer&#39;``}.       |</span>
+<span class="sd">    |                         |                 | space.                       |   The orientation of the form space.|</span>
+<span class="sd">    |                         |                 |                              |   The default orientation is        |</span>
+<span class="sd">    |                         |                 |                              |   ``&#39;outer&#39;``.                      |</span>
+<span class="sd">    |                         |                 |                              |                                     |</span>
+<span class="sd">    +-------------------------+-----------------+------------------------------+-------------------------------------+</span>
+
+<span class="sd">For example, to make spaces of outer orientated 1-forms and 2-forms, do</span>
+
+<span class="sd">&gt;&gt;&gt; Out1 = ph.space.new(&#39;Lambda&#39;, 1, orientation=&#39;outer&#39;)</span>
+<span class="sd">&gt;&gt;&gt; Out2 = ph.space.new(&#39;Lambda&#39;, 2, orientation=&#39;outer&#39;)</span>
+
+<span class="sd">And we can list all existing spaces by calling ``ph.list_spaces`` method,</span>
+
+<span class="sd">&gt;&gt;&gt; ph.list_spaces()  # doctest: +ELLIPSIS</span>
+<span class="sd">Implemented spaces:...</span>
+
+<span class="sd">.. automodule:: phyem.src.spaces.base</span>
+<span class="sd">    :undoc-members:</span>
+
+<span class="sd">&quot;&quot;&quot;</span>
+
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">importlib</span><span class="w"> </span><span class="kn">import</span> <span class="n">import_module</span>
+
+<span class="n">_config</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s1">&#39;current_mesh&#39;</span><span class="p">:</span> <span class="s1">&#39;&#39;</span><span class="p">,</span>
+<span class="p">}</span>
+<span class="n">_mesh_set</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>
+<span class="n">_space_set</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>
+
+<span class="n">_sep</span> <span class="o">=</span> <span class="s1">&#39; -&gt;- &#39;</span>
+
+
+<span class="c1"># whenever new space is implemented, add it below.</span>
+<span class="n">_implemented_spaces</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="c1"># indicator: (class path                    ,  class name            , description                 , parameters),</span>
+    <span class="s1">&#39;Lambda&#39;</span><span class="p">:</span>    <span class="p">(</span><span class="s1">&#39;phyem.src.spaces.continuous.Lambda&#39;</span><span class="p">,</span> <span class="s1">&#39;ScalarValuedFormSpace&#39;</span><span class="p">,</span> <span class="s1">&#39;scalar valued k-form space&#39;</span><span class="p">,</span> <span class="p">[</span><span class="s1">&#39;k&#39;</span><span class="p">,</span> <span class="p">]),</span>
+    <span class="s1">&#39;bundle&#39;</span><span class="p">:</span>    <span class="p">(</span><span class="s1">&#39;phyem.src.spaces.continuous.bundle&#39;</span><span class="p">,</span> <span class="s1">&#39;BundleValuedFormSpace&#39;</span><span class="p">,</span> <span class="s1">&#39;bundle valued k-form space&#39;</span><span class="p">,</span> <span class="p">[</span><span class="s1">&#39;k&#39;</span><span class="p">,</span> <span class="p">]),</span>
+    <span class="s1">&#39;bundle-diagonal&#39;</span><span class="p">:</span> <span class="p">(</span>
+        <span class="s1">&#39;phyem.src.spaces.continuous.bundle_diagonal&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;DiagonalBundleValuedFormSpace&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;diagonal bundle valued k-form space&#39;</span><span class="p">,</span>
+        <span class="p">[</span><span class="s1">&#39;k&#39;</span><span class="p">,</span> <span class="p">]</span>
+    <span class="p">),</span>
+<span class="p">}</span>
+
+
+<div class="viewcode-block" id="new">
+<a class="viewcode-back" href="../../../../tutorial/docs/space_form.html#phyem.src.spaces.main.new">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">new</span><span class="p">(</span><span class="n">abbr</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="n">mesh</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Generate a spaces on the mesh.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    abbr : str</span>
+<span class="sd">        The abbr. of the space.</span>
+<span class="sd">    args :</span>
+<span class="sd">        The arguments to be sent to the space.</span>
+<span class="sd">    mesh : {:class:`Mesh`, None}, optional</span>
+<span class="sd">        We want to generate space on this mesh. If it is ``None``, we use the current target mesh.</span>
+<span class="sd">        The default value is ``None``.</span>
+<span class="sd">    kwargs :</span>
+<span class="sd">        The keyword arguments to be sent to the space.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    space :</span>
+<span class="sd">        The finite dimensional space.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">_config</span><span class="p">[</span><span class="s1">&#39;current_mesh&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;&#39;</span> <span class="ow">and</span> <span class="n">mesh</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;pls set a mesh firstly by using &#39;space.set_mesh&#39; or specify &#39;mesh&#39;.&quot;</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">pass</span>
+
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">abbr</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>  <span class="c1"># make only 1 space</span>
+        <span class="k">pass</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">()</span>
+
+    <span class="n">mesh_sr</span> <span class="o">=</span> <span class="n">_config</span><span class="p">[</span><span class="s1">&#39;current_mesh&#39;</span><span class="p">]</span>
+
+    <span class="k">if</span> <span class="n">mesh</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">mesh</span> <span class="o">=</span> <span class="n">_mesh_set</span><span class="p">[</span><span class="n">mesh_sr</span><span class="p">]</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="c1"># noinspection PyUnresolvedReferences</span>
+        <span class="n">mesh_sr</span> <span class="o">=</span> <span class="n">mesh</span><span class="o">.</span><span class="n">_sym_repr</span>
+        <span class="k">if</span> <span class="n">mesh_sr</span> <span class="ow">in</span> <span class="n">_mesh_set</span><span class="p">:</span>
+            <span class="k">pass</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">_mesh_set</span><span class="p">[</span><span class="n">mesh_sr</span><span class="p">]</span> <span class="o">=</span> <span class="n">mesh</span>
+            <span class="n">_space_set</span><span class="p">[</span><span class="n">mesh_sr</span><span class="p">]</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>
+
+    <span class="n">current_spaces</span> <span class="o">=</span> <span class="n">_space_set</span><span class="p">[</span><span class="n">mesh_sr</span><span class="p">]</span>
+
+    <span class="k">assert</span> <span class="n">abbr</span> <span class="ow">in</span> <span class="n">_implemented_spaces</span><span class="p">,</span> \
+        <span class="sa">f</span><span class="s2">&quot;space abbr.=</span><span class="si">{</span><span class="n">abbr</span><span class="si">}</span><span class="s2"> not implemented. do &#39;ph.space.list_()&#39; to see all implemented spaces.&quot;</span>
+
+    <span class="n">space_class_path</span><span class="p">,</span> <span class="n">space_class_name</span> <span class="o">=</span> <span class="n">_implemented_spaces</span><span class="p">[</span><span class="n">abbr</span><span class="p">][</span><span class="mi">0</span><span class="p">:</span><span class="mi">2</span><span class="p">]</span>
+
+    <span class="n">space_class</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">import_module</span><span class="p">(</span><span class="n">space_class_path</span><span class="p">),</span> <span class="n">space_class_name</span><span class="p">)</span>
+
+    <span class="n">space</span> <span class="o">=</span> <span class="n">space_class</span><span class="p">(</span><span class="n">mesh</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+
+    <span class="n">srp</span> <span class="o">=</span> <span class="n">space</span><span class="o">.</span><span class="n">_sym_repr</span>  <span class="c1"># do not use __repr__()</span>
+
+    <span class="k">if</span> <span class="n">srp</span> <span class="ow">in</span> <span class="n">current_spaces</span><span class="p">:</span>
+        <span class="k">pass</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">current_spaces</span><span class="p">[</span><span class="n">srp</span><span class="p">]</span> <span class="o">=</span> <span class="n">space</span>
+
+    <span class="n">space</span> <span class="o">=</span> <span class="n">current_spaces</span><span class="p">[</span><span class="n">srp</span><span class="p">]</span>
+
+    <span class="k">return</span> <span class="n">space</span></div>
+
+
+
+<span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="s1">&#39;_VarSetting_mass_matrix&#39;</span><span class="p">,</span>                     <span class="c1">#</span>
+    <span class="s1">&#39;_VarSetting_trace_matrix&#39;</span><span class="p">,</span>                    <span class="c1"># trace matrix</span>
+    <span class="s1">&#39;_VarSetting_d_matrix&#39;</span><span class="p">,</span>                        <span class="c1">#</span>
+    <span class="s1">&#39;_VarSetting_d_matrix_transpose&#39;</span><span class="p">,</span>              <span class="c1">#</span>
+    <span class="s1">&#39;_VarSetting_pi_matrix&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;_VarSetting_star_matrix&#39;</span><span class="p">,</span>                     <span class="c1"># Hodge matrix</span>
+    <span class="s1">&#39;_VarSetting_dp_matrix&#39;</span><span class="p">,</span>                       <span class="c1"># &lt;A|B&gt;</span>
+
+    <span class="s1">&#39;_VarSetting_boundary_dp_vector&#39;</span><span class="p">,</span>              <span class="c1">#</span>
+
+    <span class="s1">&#39;_VarSetting_astA_convect_astB_ip_tC&#39;</span><span class="p">,</span>         <span class="c1"># (*A .V *B, @C), AB are known, vector.</span>
+
+    <span class="s1">&#39;_VarSetting_astA_x_astB_ip_tC&#39;</span><span class="p">,</span>               <span class="c1">#</span>
+    <span class="s1">&#39;_VarSetting_astA_x_B_ip_tC&#39;</span><span class="p">,</span>                  <span class="c1">#</span>
+    <span class="s1">&#39;_VarSetting_A_x_astB_ip_tC&#39;</span><span class="p">,</span>                  <span class="c1">#</span>
+    <span class="s1">&#39;_VarSetting_A_x_B_ip_C&#39;</span><span class="p">,</span>                      <span class="c1"># nonlinear</span>
+
+    <span class="s1">&#39;_VarSetting_astA_x_astB__dp__tC&#39;</span><span class="p">,</span>             <span class="c1"># vector &lt;*A x *B | @C&gt;, AB are known</span>
+    <span class="s1">&#39;_VarSetting_astA_x_B__dp__tC&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;_VarSetting_A_x_astB__dp__tC&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;_VarSetting_A_x_B__dp__C&#39;</span><span class="p">,</span>                      <span class="c1"># nonlinear</span>
+
+    <span class="s1">&#39;_VarSetting_astA_x_astB__ip__astC_x_tD&#39;</span><span class="p">,</span>      <span class="c1"># vector  (*A x *B, *C x @D), ABC known, D test.</span>
+    <span class="s1">&#39;_VarSetting_A_x_astB__ip__astC_x_tD&#39;</span><span class="p">,</span>         <span class="c1"># matrix  (A x *B, *C x @D), BC known, D test.</span>
+
+    <span class="s1">&#39;_VarSetting_astA_x_astB__dp__astC_x_tD&#39;</span><span class="p">,</span>      <span class="c1"># vector  &lt;*A x *B | *C x @D&gt;, ABC known, D test.</span>
+
+    <span class="c1"># (A, BC) ---------------------------------------------------------------------</span>
+    <span class="s1">&#39;_VarSetting_A_ip_BC&#39;</span><span class="p">,</span>                         <span class="c1"># (A, BC); nonlinear; A, B, C all unknown</span>
+    <span class="s1">&#39;_VarSetting_astA_ip_B_tC&#39;</span><span class="p">,</span>                    <span class="c1"># (A, BC); linear, A given, matrix, C test form</span>
+    <span class="s1">&#39;_VarSetting_A_ip_astB_tC&#39;</span><span class="p">,</span>                    <span class="c1"># (A, BC); linear, B given, matrix, C test form</span>
+    <span class="s1">&#39;_VarSetting_astA_ip_astB_tC&#39;</span><span class="p">,</span>                 <span class="c1"># (A, BC); A and B given, vector, C test form</span>
+
+    <span class="c1"># &lt;AB|C&gt; ---------------------------------------------------------------------</span>
+    <span class="s1">&#39;_VarSetting_AB_dp_C&#39;</span><span class="p">,</span>                         <span class="c1"># &lt;AB|C&gt; nonlinear; A, B, C all unknown</span>
+    <span class="s1">&#39;_VarSetting_astA_B_dp_tC&#39;</span><span class="p">,</span>                    <span class="c1"># &lt;AB|C&gt;; linear, A given, matrix, C test form</span>
+    <span class="s1">&#39;_VarSetting_A_astB_dp_tC&#39;</span><span class="p">,</span>                    <span class="c1"># &lt;AB|C&gt;; linear, B given, matrix, C test form</span>
+    <span class="s1">&#39;_VarSetting_astA_astB_dp_tC&#39;</span><span class="p">,</span>                 <span class="c1"># &lt;AB|C&gt;; A and B given, vector, C test form</span>
+
+    <span class="c1"># (AB, C) ---------------------------------------------------------------------</span>
+    <span class="s1">&#39;_VarSetting_AB_ip_C&#39;</span><span class="p">,</span>                         <span class="c1"># (AB, C) nonlinear; A, B, C all unknown</span>
+    <span class="s1">&#39;_VarSetting_astA_B_ip_tC&#39;</span><span class="p">,</span>                    <span class="c1"># (AB, C); linear, A given, matrix, C test form</span>
+    <span class="s1">&#39;_VarSetting_A_astB_ip_tC&#39;</span><span class="p">,</span>                    <span class="c1"># (AB, C); linear, B given, matrix, C test form</span>
+    <span class="s1">&#39;_VarSetting_astA_astB_ip_tC&#39;</span><span class="p">,</span>                 <span class="c1"># (AB, C); A and B given, vector, C test form</span>
+
+    <span class="c1"># (AB, dC) ---------------------------------------------------------------------</span>
+    <span class="s1">&#39;_VarSetting_AB_ip_dC&#39;</span><span class="p">,</span>                         <span class="c1"># (AB, dC) nonlinear; A, B, C all unknown</span>
+    <span class="s1">&#39;_VarSetting_astA_B_ip_dtC&#39;</span><span class="p">,</span>                    <span class="c1"># (AB, dC); linear, A given, matrix, C test form</span>
+    <span class="s1">&#39;_VarSetting_A_astB_ip_dtC&#39;</span><span class="p">,</span>                    <span class="c1"># (AB, dC); linear, B given, matrix, C test form</span>
+    <span class="s1">&#39;_VarSetting_astA_astB_ip_dtC&#39;</span><span class="p">,</span>                 <span class="c1"># (AB, dC); A and B given, vector, C test form</span>
+
+    <span class="c1"># &lt;AB|dC&gt; ---------------------------------------------------------------------</span>
+    <span class="s1">&#39;_VarSetting_AB_dp_dC&#39;</span><span class="p">,</span>                         <span class="c1"># &lt;AB|dC&gt; nonlinear; A, B, C all unknown</span>
+    <span class="s1">&#39;_VarSetting_astA_B_dp_dtC&#39;</span><span class="p">,</span>                    <span class="c1"># &lt;AB|dC&gt;; linear, A given, matrix, C test form</span>
+    <span class="s1">&#39;_VarSetting_A_astB_dp_dtC&#39;</span><span class="p">,</span>                    <span class="c1"># &lt;AB|dC&gt;; linear, B given, matrix, C test form</span>
+    <span class="s1">&#39;_VarSetting_astA_astB_dp_dtC&#39;</span><span class="p">,</span>                 <span class="c1"># &lt;AB|dC&gt;; A and B given, vector, C test form</span>
+
+    <span class="c1"># bundle valued forms ---------------------------------------------------------</span>
+    <span class="s1">&#39;_VarSetting_dastA_astA_tp_tC&#39;</span><span class="p">,</span>                <span class="c1">#</span>
+    <span class="s1">&#39;_VarSetting_dastA_tB_tp_astA&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;_VarSetting_dtA_astB_tp_astB&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;_VarSetting_dA_B_tp_C__1Known&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;_VarSetting_dA_B_tp_C__2Known&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;_VarSetting_dA_B_tp_C&#39;</span><span class="p">,</span>                       <span class="c1"># nonlinear</span>
+    <span class="s1">&#39;_VarSetting_AxB_ip_dC&#39;</span><span class="p">,</span>                        <span class="c1"># nonlinear</span>
+
+    <span class="s1">&#39;_VarSetting_A_B_tp_C__1Known&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;_VarSetting_A_B_tp_C__2Known&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;_VarSetting_A_B_tp_C&#39;</span><span class="p">,</span>                       <span class="c1"># nonlinear</span>
+
+    <span class="s1">&#39;_VarSetting_IP_matrix_db_bf&#39;</span><span class="p">,</span>                <span class="c1">#</span>
+    <span class="s1">&#39;_VarSetting_IP_matrix_bf_db&#39;</span><span class="p">,</span>                <span class="c1">#</span>
+
+    <span class="c1"># &#39;_VarSetting_A_x_astB_ip_dC&#39;,                 # (A x B, dC)</span>
+    <span class="c1"># &#39;_VarSetting_astA_x_B_ip_dC&#39;,                 # (A x B, dC)</span>
+    <span class="c1"># &#39;_VarSetting_astA_x_astB_ip_dC&#39;,              # (A x B, dC)</span>
+<span class="p">]</span>
+
+
+<span class="c1"># ------ basic -----------------------------------------------------------------------------------</span>
+<span class="n">_VarSetting_mass_matrix</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="sa">r</span><span class="s2">&quot;\mathsf</span><span class="si">{M}</span><span class="s2">&quot;</span><span class="p">,</span>
+    <span class="n">_sep</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="s2">&quot;Mass:Mat&quot;</span><span class="p">,</span> <span class="s2">&quot;</span><span class="si">{space_pure_lin_repr}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="s2">&quot;</span><span class="si">{d0}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="s2">&quot;</span><span class="si">{d1}</span><span class="s2">&quot;</span><span class="p">]),</span>
+<span class="p">]</span>
+
+<span class="n">_VarSetting_trace_matrix</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="sa">r</span><span class="s2">&quot;\mathbb</span><span class="si">{T}</span><span class="s2">&quot;</span><span class="p">,</span>
+    <span class="n">_sep</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="s2">&quot;Trace:Mat&quot;</span><span class="p">,</span> <span class="s2">&quot;</span><span class="si">{space_pure_lin_repr}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="s2">&quot;</span><span class="si">{degree}</span><span class="s2">&quot;</span><span class="p">]),</span>
+<span class="p">]</span>
+
+<span class="c1"># _VarSetting_trace_mass_matrix = [</span>
+<span class="c1">#     r&quot;\mathbb{M}&quot;,</span>
+<span class="c1">#     _sep.join([&quot;Trace:Mat&quot;, &quot;{space_pure_lin_repr}&quot;, &quot;{degree}&quot;]),</span>
+<span class="c1"># ]</span>
+
+<span class="n">_VarSetting_d_matrix</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="sa">r</span><span class="s2">&quot;\mathsf</span><span class="si">{D}</span><span class="s2">&quot;</span><span class="p">,</span>
+    <span class="n">_sep</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="s2">&quot;d:Mat&quot;</span><span class="p">,</span> <span class="s2">&quot;</span><span class="si">{space_pure_lin_repr}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="s2">&quot;</span><span class="si">{d}</span><span class="s2">&quot;</span><span class="p">]),</span>
+<span class="p">]</span>
+
+<span class="n">_VarSetting_d_matrix_transpose</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="sa">r</span><span class="s2">&quot;\mathbb</span><span class="si">{D}</span><span class="s2">&quot;</span><span class="p">,</span>
+    <span class="n">_sep</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="s2">&quot;d:T:Mat&quot;</span><span class="p">,</span> <span class="s2">&quot;</span><span class="si">{space_pure_lin_repr}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="s2">&quot;</span><span class="si">{d}</span><span class="s2">&quot;</span><span class="p">]),</span>
+<span class="p">]</span>
+
+<span class="n">_VarSetting_pi_matrix</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="sa">r</span><span class="s2">&quot;\mathsf</span><span class="si">{P}</span><span class="s2">&quot;</span><span class="p">,</span>
+    <span class="n">_sep</span><span class="o">.</span><span class="n">join</span><span class="p">([</span>
+        <span class="s2">&quot;d:P:Mat&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;</span><span class="si">{space_pure_lin_repr_from}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="s2">&quot;</span><span class="si">{space_pure_lin_repr_to}</span><span class="s2">&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;</span><span class="si">{d_from}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="s2">&quot;</span><span class="si">{d_to}</span><span class="s2">&quot;</span>  <span class="c1"># degree_from, degree_to</span>
+    <span class="p">]),</span>
+<span class="p">]</span>
+
+<span class="n">_VarSetting_star_matrix</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="sa">r</span><span class="s2">&quot;\mathsf</span><span class="si">{H}</span><span class="s2">&quot;</span><span class="p">,</span>
+    <span class="n">_sep</span><span class="o">.</span><span class="n">join</span><span class="p">([</span>
+        <span class="s2">&quot;Hodge:Mat&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;</span><span class="si">{space_pure_lin_repr_from}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="s2">&quot;</span><span class="si">{space_pure_lin_repr_to}</span><span class="s2">&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;</span><span class="si">{d_from}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="s2">&quot;</span><span class="si">{d_to}</span><span class="s2">&quot;</span>   <span class="c1"># degree_from, degree_to</span>
+    <span class="p">]),</span>
+<span class="p">]</span>
+
+<span class="n">_VarSetting_dp_matrix</span> <span class="o">=</span> <span class="p">[</span>   <span class="c1"># &lt;A|B&gt; or &lt;B|A&gt; : 0 refers to the axis-0 space.</span>
+    <span class="sa">r</span><span class="s2">&quot;\mathsf</span><span class="si">{W}</span><span class="s2">&quot;</span><span class="p">,</span>
+    <span class="n">_sep</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="s2">&quot;Wedge:Mat&quot;</span><span class="p">,</span> <span class="s2">&quot;</span><span class="si">{s0}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="s2">&quot;</span><span class="si">{s1}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="s2">&quot;</span><span class="si">{d0}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="s2">&quot;</span><span class="si">{d1}</span><span class="s2">&quot;</span><span class="p">]),</span>
+<span class="p">]</span>
+
+<span class="c1"># Natural bc -------------------------------------------------------------------------------------</span>
+
+<span class="n">_VarSetting_boundary_dp_vector</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="c1"># once we know f0, we can find the correct basis functions it wedged with</span>
+    <span class="sa">r</span><span class="s2">&quot;\boldsymbol</span><span class="si">{b}</span><span class="s2">&quot;</span><span class="p">,</span>
+    <span class="n">_sep</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="s2">&quot;BoundaryDP:Vec&quot;</span><span class="p">,</span> <span class="s2">&quot;trStar[</span><span class="si">{f0}</span><span class="s2">]&quot;</span><span class="p">,</span> <span class="s2">&quot;tr[</span><span class="si">{f1}</span><span class="s2">]&quot;</span><span class="p">]),</span>
+    <span class="c1">#                            &lt;tr star bf0 | tr f1&gt;.</span>
+<span class="p">]</span>
+
+<span class="c1"># (A .V B, C) -------------------------------------------------------------------------------------</span>
+<span class="n">_VarSetting_astA_convect_astB_ip_tC</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="sa">r</span><span class="s2">&quot;\mathsf</span><span class="si">{V}</span><span class="s2">_{\left(</span><span class="si">{A}</span><span class="s2"> \cdot\nabla </span><span class="si">{B}</span><span class="s2">, \mathsf</span><span class="si">{t}</span><span class="s2">\right)}^{\left[\mathsf</span><span class="si">{t}</span><span class="s2">\right]}&quot;</span><span class="p">,</span>
+    <span class="n">_sep</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="s2">&quot;*convect*_ip&quot;</span><span class="p">,</span> <span class="s2">&quot;[</span><span class="si">{A}</span><span class="s2">]&quot;</span><span class="p">,</span> <span class="s2">&quot;[</span><span class="si">{B}</span><span class="s2">]&quot;</span><span class="p">,</span> <span class="s2">&quot;[</span><span class="si">{C}</span><span class="s2">]&quot;</span><span class="p">]),</span>
+<span class="p">]</span>
+
+<span class="c1"># (w x u, u) --------------------------------------------------------------------------------------</span>
+
+<span class="n">_VarSetting_astA_x_astB_ip_tC</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="sa">r</span><span class="s2">&quot;\mathsf</span><span class="si">{V}</span><span class="s2">_{\left(</span><span class="si">{A}</span><span class="s2">\times</span><span class="si">{B}</span><span class="s2">, \mathsf</span><span class="si">{t}</span><span class="s2">\right)}^{\left[\mathsf</span><span class="si">{t}</span><span class="s2">\right]}&quot;</span><span class="p">,</span>
+    <span class="n">_sep</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="s2">&quot;c_ip&quot;</span><span class="p">,</span> <span class="s2">&quot;[</span><span class="si">{A}</span><span class="s2">]&quot;</span><span class="p">,</span> <span class="s2">&quot;[</span><span class="si">{B}</span><span class="s2">]&quot;</span><span class="p">,</span> <span class="s2">&quot;[</span><span class="si">{C}</span><span class="s2">]&quot;</span><span class="p">]),</span>
+<span class="p">]</span>
+
+<span class="n">_VarSetting_astA_x_B_ip_tC</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="sa">r</span><span class="s2">&quot;\mathsf</span><span class="si">{M}</span><span class="s2">_{\left(</span><span class="si">{A}</span><span class="s2">\times \circ, \mathsf</span><span class="si">{t}</span><span class="s2">\right)}^{\left[\mathsf</span><span class="si">{t}</span><span class="s2">,\circ\right]}&quot;</span><span class="p">,</span>
+    <span class="n">_sep</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="s2">&quot;X_ip&quot;</span><span class="p">,</span> <span class="s2">&quot;[</span><span class="si">{A}</span><span class="s2">]&quot;</span><span class="p">,</span> <span class="s2">&quot;[</span><span class="si">{B}</span><span class="s2">]&quot;</span><span class="p">,</span> <span class="s2">&quot;[</span><span class="si">{C}</span><span class="s2">]&quot;</span><span class="p">]),</span>
+<span class="p">]</span>
+
+<span class="n">_VarSetting_A_x_astB_ip_tC</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="sa">r</span><span class="s2">&quot;\mathsf</span><span class="si">{M}</span><span class="s2">_{\left(\circ\times </span><span class="si">{B}</span><span class="s2">, \mathsf</span><span class="si">{t}</span><span class="s2">\right)}^{\left[\mathsf</span><span class="si">{t}</span><span class="s2">,\circ\right]}&quot;</span><span class="p">,</span>
+    <span class="n">_sep</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="s2">&quot;_Xip&quot;</span><span class="p">,</span> <span class="s2">&quot;[</span><span class="si">{A}</span><span class="s2">]&quot;</span><span class="p">,</span> <span class="s2">&quot;[</span><span class="si">{B}</span><span class="s2">]&quot;</span><span class="p">,</span> <span class="s2">&quot;[</span><span class="si">{C}</span><span class="s2">]&quot;</span><span class="p">]),</span>
+<span class="p">]</span>
+
+<span class="n">_VarSetting_A_x_B_ip_C</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="sa">r</span><span class="s2">&quot;\left(\mathsf{\cdot x\cdot},\cdot\right)&quot;</span><span class="p">,</span>
+    <span class="n">_sep</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="s2">&quot;_X_:&quot;</span><span class="p">,</span> <span class="s2">&quot;[</span><span class="si">{A}</span><span class="s2">]&quot;</span><span class="p">,</span> <span class="s2">&quot;[</span><span class="si">{B}</span><span class="s2">]&quot;</span><span class="p">,</span> <span class="s2">&quot;[</span><span class="si">{C}</span><span class="s2">]&quot;</span><span class="p">]),</span>
+<span class="p">]</span>
+
+<span class="c1"># (A, BC) ---------------------------------------------------------------------------------------</span>
+<span class="n">_VarSetting_A_ip_BC</span> <span class="o">=</span> <span class="p">[</span>               <span class="c1"># nonlinear</span>
+    <span class="sa">r</span><span class="s2">&quot;\left(\cdot,\cdot \ast \cdot\right)&quot;</span><span class="p">,</span>
+    <span class="n">_sep</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="s2">&quot;_;_*_:&quot;</span><span class="p">,</span> <span class="s2">&quot;[</span><span class="si">{A}</span><span class="s2">]&quot;</span><span class="p">,</span> <span class="s2">&quot;[</span><span class="si">{B}</span><span class="s2">]&quot;</span><span class="p">,</span> <span class="s2">&quot;[</span><span class="si">{C}</span><span class="s2">]&quot;</span><span class="p">]),</span>
+<span class="p">]</span>
+
+<span class="n">_VarSetting_astA_ip_B_tC</span> <span class="o">=</span> <span class="p">[</span>         <span class="c1"># A given; matrix</span>
+    <span class="sa">r</span><span class="s2">&quot;\mathsf</span><span class="si">{M}</span><span class="s2">_{\left(</span><span class="si">{A}</span><span class="s2">,\cdot \ast \mathsf</span><span class="si">{t}</span><span class="s2">\right)}^{\left[\mathsf</span><span class="si">{t}</span><span class="s2">,\circ\right]}&quot;</span><span class="p">,</span>
+    <span class="n">_sep</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="s2">&quot;X;_*_:&quot;</span><span class="p">,</span> <span class="s2">&quot;[</span><span class="si">{A}</span><span class="s2">]&quot;</span><span class="p">,</span> <span class="s2">&quot;[</span><span class="si">{B}</span><span class="s2">]&quot;</span><span class="p">,</span> <span class="s2">&quot;[</span><span class="si">{C}</span><span class="s2">]&quot;</span><span class="p">]),</span>
+<span class="p">]</span>
+
+<span class="n">_VarSetting_A_ip_astB_tC</span> <span class="o">=</span> <span class="p">[</span>         <span class="c1"># B given; matrix</span>
+    <span class="sa">r</span><span class="s2">&quot;\mathsf</span><span class="si">{M}</span><span class="s2">_{\left(\cdot,</span><span class="si">{B}</span><span class="s2"> \ast \mathsf</span><span class="si">{t}</span><span class="s2">\right)}^{\left[\mathsf</span><span class="si">{t}</span><span class="s2">,\circ\right]}&quot;</span><span class="p">,</span>
+    <span class="n">_sep</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="s2">&quot;_;X*_:&quot;</span><span class="p">,</span> <span class="s2">&quot;[</span><span class="si">{A}</span><span class="s2">]&quot;</span><span class="p">,</span> <span class="s2">&quot;[</span><span class="si">{B}</span><span class="s2">]&quot;</span><span class="p">,</span> <span class="s2">&quot;[</span><span class="si">{C}</span><span class="s2">]&quot;</span><span class="p">]),</span>
+<span class="p">]</span>
+
+<span class="n">_VarSetting_astA_ip_astB_tC</span> <span class="o">=</span> <span class="p">[</span>         <span class="c1"># A and B given; vector</span>
+    <span class="sa">r</span><span class="s2">&quot;\mathsf</span><span class="si">{V}</span><span class="s2">_{\left(</span><span class="si">{A}</span><span class="s2">,</span><span class="si">{B}</span><span class="s2"> \ast \mathsf</span><span class="si">{t}</span><span class="s2">\right)}^{\left[\mathsf</span><span class="si">{t}</span><span class="s2">\right]}&quot;</span><span class="p">,</span>
+    <span class="n">_sep</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="s2">&quot;X;X*_:&quot;</span><span class="p">,</span> <span class="s2">&quot;[</span><span class="si">{A}</span><span class="s2">]&quot;</span><span class="p">,</span> <span class="s2">&quot;[</span><span class="si">{B}</span><span class="s2">]&quot;</span><span class="p">,</span> <span class="s2">&quot;[</span><span class="si">{C}</span><span class="s2">]&quot;</span><span class="p">]),</span>
+<span class="p">]</span>
+
+<span class="c1"># &lt;AB|C&gt; -----------------------------------------------------------------------------------------</span>
+<span class="n">_VarSetting_AB_dp_C</span> <span class="o">=</span> <span class="p">[</span>               <span class="c1"># nonlinear</span>
+    <span class="sa">r</span><span class="s2">&quot;\left&lt;\left.\cdot \ast \cdot \right| \cdot\right&gt;&quot;</span><span class="p">,</span>
+    <span class="n">_sep</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="s2">&quot;_*_|_:&quot;</span><span class="p">,</span> <span class="s2">&quot;[</span><span class="si">{A}</span><span class="s2">]&quot;</span><span class="p">,</span> <span class="s2">&quot;[</span><span class="si">{B}</span><span class="s2">]&quot;</span><span class="p">,</span> <span class="s2">&quot;[</span><span class="si">{C}</span><span class="s2">]&quot;</span><span class="p">]),</span>
+<span class="p">]</span>
+
+<span class="n">_VarSetting_astA_B_dp_tC</span> <span class="o">=</span> <span class="p">[</span>         <span class="c1"># A given; matrix</span>
+    <span class="c1"># r&quot;M{A}&quot;,</span>
+    <span class="sa">r</span><span class="s2">&quot;\mathsf</span><span class="si">{M}</span><span class="s2">_{\left&lt;\left. </span><span class="si">{A}</span><span class="s2"> \ast \circ \right|\mathsf</span><span class="si">{t}</span><span class="s2">\right&gt;}^{\left[\mathsf</span><span class="si">{t}</span><span class="s2">,\circ\right]}&quot;</span><span class="p">,</span>
+    <span class="n">_sep</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="s2">&quot;X*_|_:&quot;</span><span class="p">,</span> <span class="s2">&quot;[</span><span class="si">{A}</span><span class="s2">]&quot;</span><span class="p">,</span> <span class="s2">&quot;[</span><span class="si">{B}</span><span class="s2">]&quot;</span><span class="p">,</span> <span class="s2">&quot;[</span><span class="si">{C}</span><span class="s2">]&quot;</span><span class="p">]),</span>
+<span class="p">]</span>
+
+<span class="n">_VarSetting_A_astB_dp_tC</span> <span class="o">=</span> <span class="p">[</span>         <span class="c1"># B given; matrix</span>
+    <span class="sa">r</span><span class="s2">&quot;\mathsf</span><span class="si">{M}</span><span class="s2">_{\left&lt;\left.\circ \ast </span><span class="si">{B}</span><span class="s2"> \right|\mathsf</span><span class="si">{t}</span><span class="s2">\right&gt;}^{\left[\mathsf</span><span class="si">{t}</span><span class="s2">,\circ\right]}&quot;</span><span class="p">,</span>
+    <span class="n">_sep</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="s2">&quot;_*X|_:&quot;</span><span class="p">,</span> <span class="s2">&quot;[</span><span class="si">{A}</span><span class="s2">]&quot;</span><span class="p">,</span> <span class="s2">&quot;[</span><span class="si">{B}</span><span class="s2">]&quot;</span><span class="p">,</span> <span class="s2">&quot;[</span><span class="si">{C}</span><span class="s2">]&quot;</span><span class="p">]),</span>
+<span class="p">]</span>
+
+<span class="n">_VarSetting_astA_astB_dp_tC</span> <span class="o">=</span> <span class="p">[</span>         <span class="c1"># A and B given; vector</span>
+    <span class="sa">r</span><span class="s2">&quot;\mathsf</span><span class="si">{V}</span><span class="s2">_{\left&lt;\left. </span><span class="si">{A}</span><span class="s2"> \ast </span><span class="si">{B}</span><span class="s2"> \right|\mathsf</span><span class="si">{t}</span><span class="s2">\right&gt;}^{\left[\mathsf</span><span class="si">{t}</span><span class="s2">\right]}&quot;</span><span class="p">,</span>
+    <span class="n">_sep</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="s2">&quot;X*X|_:&quot;</span><span class="p">,</span> <span class="s2">&quot;[</span><span class="si">{A}</span><span class="s2">]&quot;</span><span class="p">,</span> <span class="s2">&quot;[</span><span class="si">{B}</span><span class="s2">]&quot;</span><span class="p">,</span> <span class="s2">&quot;[</span><span class="si">{C}</span><span class="s2">]&quot;</span><span class="p">]),</span>
+<span class="p">]</span>
+
+<span class="c1"># (AB, C) -----------------------------------------------------------------------------------------</span>
+<span class="n">_VarSetting_AB_ip_C</span> <span class="o">=</span> <span class="p">[</span>               <span class="c1"># nonlinear</span>
+    <span class="sa">r</span><span class="s2">&quot;\left(\cdot \ast \cdot,\cdot\right)&quot;</span><span class="p">,</span>
+    <span class="n">_sep</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="s2">&quot;_*_,_:&quot;</span><span class="p">,</span> <span class="s2">&quot;[</span><span class="si">{A}</span><span class="s2">]&quot;</span><span class="p">,</span> <span class="s2">&quot;[</span><span class="si">{B}</span><span class="s2">]&quot;</span><span class="p">,</span> <span class="s2">&quot;[</span><span class="si">{C}</span><span class="s2">]&quot;</span><span class="p">]),</span>
+<span class="p">]</span>
+
+<span class="n">_VarSetting_astA_B_ip_tC</span> <span class="o">=</span> <span class="p">[</span>         <span class="c1"># A given; matrix</span>
+    <span class="sa">r</span><span class="s2">&quot;\mathsf</span><span class="si">{M}</span><span class="s2">_{\left(</span><span class="si">{A}</span><span class="s2"> \ast \circ ,\mathsf</span><span class="si">{t}</span><span class="s2">\right)}^{\left[\mathsf</span><span class="si">{t}</span><span class="s2">,\circ\right]}&quot;</span><span class="p">,</span>
+    <span class="n">_sep</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="s2">&quot;X*_,_:&quot;</span><span class="p">,</span> <span class="s2">&quot;[</span><span class="si">{A}</span><span class="s2">]&quot;</span><span class="p">,</span> <span class="s2">&quot;[</span><span class="si">{B}</span><span class="s2">]&quot;</span><span class="p">,</span> <span class="s2">&quot;[</span><span class="si">{C}</span><span class="s2">]&quot;</span><span class="p">]),</span>
+<span class="p">]</span>
+
+<span class="n">_VarSetting_A_astB_ip_tC</span> <span class="o">=</span> <span class="p">[</span>         <span class="c1"># B given; matrix</span>
+    <span class="sa">r</span><span class="s2">&quot;\mathsf</span><span class="si">{M}</span><span class="s2">_{\left( \circ \ast </span><span class="si">{B}</span><span class="s2"> ,\mathsf</span><span class="si">{t}</span><span class="s2">\right)}^{\left[\mathsf</span><span class="si">{t}</span><span class="s2">,\circ\right]}&quot;</span><span class="p">,</span>
+    <span class="n">_sep</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="s2">&quot;_*X,_:&quot;</span><span class="p">,</span> <span class="s2">&quot;[</span><span class="si">{A}</span><span class="s2">]&quot;</span><span class="p">,</span> <span class="s2">&quot;[</span><span class="si">{B}</span><span class="s2">]&quot;</span><span class="p">,</span> <span class="s2">&quot;[</span><span class="si">{C}</span><span class="s2">]&quot;</span><span class="p">]),</span>
+<span class="p">]</span>
+
+<span class="n">_VarSetting_astA_astB_ip_tC</span> <span class="o">=</span> <span class="p">[</span>         <span class="c1"># A and B given; vector</span>
+    <span class="sa">r</span><span class="s2">&quot;\mathsf</span><span class="si">{V}</span><span class="s2">_{\left( </span><span class="si">{A}</span><span class="s2"> \ast </span><span class="si">{B}</span><span class="s2"> ,\mathsf</span><span class="si">{t}</span><span class="s2">\right)}^{\left[\mathsf</span><span class="si">{t}</span><span class="s2">\right]}&quot;</span><span class="p">,</span>
+    <span class="n">_sep</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="s2">&quot;X*X,_:&quot;</span><span class="p">,</span> <span class="s2">&quot;[</span><span class="si">{A}</span><span class="s2">]&quot;</span><span class="p">,</span> <span class="s2">&quot;[</span><span class="si">{B}</span><span class="s2">]&quot;</span><span class="p">,</span> <span class="s2">&quot;[</span><span class="si">{C}</span><span class="s2">]&quot;</span><span class="p">]),</span>
+<span class="p">]</span>
+
+<span class="c1"># (AB, d(C)) -----------------------------------------------------------------------------------------</span>
+<span class="n">_VarSetting_AB_ip_dC</span> <span class="o">=</span> <span class="p">[</span>               <span class="c1"># nonlinear</span>
+    <span class="sa">r</span><span class="s2">&quot;\left(\cdot \ast \cdot,\mathrm</span><span class="si">{d}</span><span class="s2">\cdot\right)&quot;</span><span class="p">,</span>
+    <span class="n">_sep</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="s2">&quot;_*_,d_:&quot;</span><span class="p">,</span> <span class="s2">&quot;[</span><span class="si">{A}</span><span class="s2">]&quot;</span><span class="p">,</span> <span class="s2">&quot;[</span><span class="si">{B}</span><span class="s2">]&quot;</span><span class="p">,</span> <span class="s2">&quot;[</span><span class="si">{C}</span><span class="s2">]&quot;</span><span class="p">]),</span>
+<span class="p">]</span>
+
+<span class="n">_VarSetting_astA_B_ip_dtC</span> <span class="o">=</span> <span class="p">[</span>         <span class="c1"># A given; matrix</span>
+    <span class="c1"># r&quot;M{A}&quot;,</span>
+    <span class="sa">r</span><span class="s2">&quot;\mathsf</span><span class="si">{M}</span><span class="s2">_{\left(</span><span class="si">{A}</span><span class="s2"> \ast \circ ,\mathrm</span><span class="si">{d}</span><span class="s2">\mathsf</span><span class="si">{t}</span><span class="s2">\right)}^{\left[\mathsf</span><span class="si">{t}</span><span class="s2">,\circ\right]}&quot;</span><span class="p">,</span>
+    <span class="n">_sep</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="s2">&quot;X*_,d_:&quot;</span><span class="p">,</span> <span class="s2">&quot;[</span><span class="si">{A}</span><span class="s2">]&quot;</span><span class="p">,</span> <span class="s2">&quot;[</span><span class="si">{B}</span><span class="s2">]&quot;</span><span class="p">,</span> <span class="s2">&quot;[</span><span class="si">{C}</span><span class="s2">]&quot;</span><span class="p">]),</span>
+<span class="p">]</span>
+
+<span class="n">_VarSetting_A_astB_ip_dtC</span> <span class="o">=</span> <span class="p">[</span>         <span class="c1"># B given; matrix</span>
+    <span class="sa">r</span><span class="s2">&quot;\mathsf</span><span class="si">{M}</span><span class="s2">_{\left( \circ \ast </span><span class="si">{B}</span><span class="s2"> ,\mathrm</span><span class="si">{d}</span><span class="s2">\mathsf</span><span class="si">{t}</span><span class="s2">\right)}^{\left[\mathsf</span><span class="si">{t}</span><span class="s2">,\circ\right]}&quot;</span><span class="p">,</span>
+    <span class="n">_sep</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="s2">&quot;_*X,d_:&quot;</span><span class="p">,</span> <span class="s2">&quot;[</span><span class="si">{A}</span><span class="s2">]&quot;</span><span class="p">,</span> <span class="s2">&quot;[</span><span class="si">{B}</span><span class="s2">]&quot;</span><span class="p">,</span> <span class="s2">&quot;[</span><span class="si">{C}</span><span class="s2">]&quot;</span><span class="p">]),</span>
+<span class="p">]</span>
+
+<span class="n">_VarSetting_astA_astB_ip_dtC</span> <span class="o">=</span> <span class="p">[</span>         <span class="c1"># A and B given; vector</span>
+    <span class="sa">r</span><span class="s2">&quot;\mathsf</span><span class="si">{V}</span><span class="s2">_{\left( </span><span class="si">{A}</span><span class="s2"> \ast </span><span class="si">{B}</span><span class="s2"> ,\mathrm</span><span class="si">{d}</span><span class="s2">\mathsf</span><span class="si">{t}</span><span class="s2">\right)}^{\left[\mathsf</span><span class="si">{t}</span><span class="s2">\right]}&quot;</span><span class="p">,</span>
+    <span class="n">_sep</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="s2">&quot;X*X,d_:&quot;</span><span class="p">,</span> <span class="s2">&quot;[</span><span class="si">{A}</span><span class="s2">]&quot;</span><span class="p">,</span> <span class="s2">&quot;[</span><span class="si">{B}</span><span class="s2">]&quot;</span><span class="p">,</span> <span class="s2">&quot;[</span><span class="si">{C}</span><span class="s2">]&quot;</span><span class="p">]),</span>
+<span class="p">]</span>
+
+<span class="c1"># &lt;AB|dC&gt; -----------------------------------------------------------------------------------------</span>
+<span class="n">_VarSetting_AB_dp_dC</span> <span class="o">=</span> <span class="p">[</span>               <span class="c1"># nonlinear</span>
+    <span class="sa">r</span><span class="s2">&quot;\left&lt;\left.\cdot \ast \mathrm</span><span class="si">{d}</span><span class="s2">\cdot\right|\cdot\right&gt;&quot;</span><span class="p">,</span>
+    <span class="n">_sep</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="s2">&quot;_*_|d_:&quot;</span><span class="p">,</span> <span class="s2">&quot;[</span><span class="si">{A}</span><span class="s2">]&quot;</span><span class="p">,</span> <span class="s2">&quot;[</span><span class="si">{B}</span><span class="s2">]&quot;</span><span class="p">,</span> <span class="s2">&quot;[</span><span class="si">{C}</span><span class="s2">]&quot;</span><span class="p">]),</span>
+<span class="p">]</span>
+
+<span class="n">_VarSetting_astA_B_dp_dtC</span> <span class="o">=</span> <span class="p">[</span>         <span class="c1"># A given; matrix</span>
+    <span class="sa">r</span><span class="s2">&quot;\mathsf</span><span class="si">{M}</span><span class="s2">_{\left&lt;</span><span class="si">{A}</span><span class="s2">\left. \ast \circ\right|\mathrm</span><span class="si">{d}</span><span class="s2">\mathsf</span><span class="si">{t}</span><span class="s2">\right&gt;}^{\left[\mathsf</span><span class="si">{t}</span><span class="s2">,\circ\right]}&quot;</span><span class="p">,</span>
+    <span class="n">_sep</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="s2">&quot;X*_|d_:&quot;</span><span class="p">,</span> <span class="s2">&quot;[</span><span class="si">{A}</span><span class="s2">]&quot;</span><span class="p">,</span> <span class="s2">&quot;[</span><span class="si">{B}</span><span class="s2">]&quot;</span><span class="p">,</span> <span class="s2">&quot;[</span><span class="si">{C}</span><span class="s2">]&quot;</span><span class="p">]),</span>
+<span class="p">]</span>
+
+<span class="n">_VarSetting_A_astB_dp_dtC</span> <span class="o">=</span> <span class="p">[</span>         <span class="c1"># B given; matrix</span>
+    <span class="sa">r</span><span class="s2">&quot;\mathsf</span><span class="si">{M}</span><span class="s2">_{\left&lt;\left. \circ \ast </span><span class="si">{B}</span><span class="s2">\right|\mathrm</span><span class="si">{d}</span><span class="s2">\mathsf</span><span class="si">{t}</span><span class="s2">\right&gt;}^{\left[\mathsf</span><span class="si">{t}</span><span class="s2">,\circ\right]}&quot;</span><span class="p">,</span>
+    <span class="n">_sep</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="s2">&quot;_*X|d_:&quot;</span><span class="p">,</span> <span class="s2">&quot;[</span><span class="si">{A}</span><span class="s2">]&quot;</span><span class="p">,</span> <span class="s2">&quot;[</span><span class="si">{B}</span><span class="s2">]&quot;</span><span class="p">,</span> <span class="s2">&quot;[</span><span class="si">{C}</span><span class="s2">]&quot;</span><span class="p">]),</span>
+<span class="p">]</span>
+
+<span class="n">_VarSetting_astA_astB_dp_dtC</span> <span class="o">=</span> <span class="p">[</span>         <span class="c1"># A and B given; vector</span>
+    <span class="sa">r</span><span class="s2">&quot;\mathsf</span><span class="si">{V}</span><span class="s2">_{\left&lt; \left.</span><span class="si">{A}</span><span class="s2"> \ast </span><span class="si">{B}</span><span class="s2">\right|\mathrm</span><span class="si">{d}</span><span class="s2">\mathsf</span><span class="si">{t}</span><span class="s2">\right&gt;}^{\left[\mathsf</span><span class="si">{t}</span><span class="s2">\right]}&quot;</span><span class="p">,</span>
+    <span class="n">_sep</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="s2">&quot;X*X|d_:&quot;</span><span class="p">,</span> <span class="s2">&quot;[</span><span class="si">{A}</span><span class="s2">]&quot;</span><span class="p">,</span> <span class="s2">&quot;[</span><span class="si">{B}</span><span class="s2">]&quot;</span><span class="p">,</span> <span class="s2">&quot;[</span><span class="si">{C}</span><span class="s2">]&quot;</span><span class="p">]),</span>
+<span class="p">]</span>
+
+<span class="c1"># --------------- &lt;A x B | C&gt; --------------------------------------------------------------------</span>
+<span class="n">_VarSetting_astA_x_astB__dp__tC</span> <span class="o">=</span> <span class="p">[</span>   <span class="c1"># &lt;*A x *B | @D&gt;</span>
+    <span class="sa">r</span><span class="s2">&quot;\mathsf</span><span class="si">{V}</span><span class="s2">_{\left\langle\left.</span><span class="si">{A}</span><span class="s2">\times </span><span class="si">{B}</span><span class="s2"> \right| \mathsf</span><span class="si">{t}</span><span class="s2">\right\rangle}^{\left[\mathsf</span><span class="si">{t}</span><span class="s2">\right]}&quot;</span><span class="p">,</span>
+    <span class="n">_sep</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="s2">&quot;&lt;*x*|C&gt;&quot;</span><span class="p">,</span> <span class="s2">&quot;[</span><span class="si">{A}</span><span class="s2">]&quot;</span><span class="p">,</span> <span class="s2">&quot;[</span><span class="si">{B}</span><span class="s2">]&quot;</span><span class="p">,</span> <span class="s2">&quot;[</span><span class="si">{C}</span><span class="s2">]&quot;</span><span class="p">])</span>
+<span class="p">]</span>
+
+<span class="n">_VarSetting_astA_x_B__dp__tC</span> <span class="o">=</span> <span class="p">[</span>   <span class="c1"># &lt;*A x B | @D&gt;</span>
+    <span class="sa">r</span><span class="s2">&quot;\mathsf</span><span class="si">{M}</span><span class="s2">_{\left\langle\left.</span><span class="si">{A}</span><span class="s2">\times \circ \right| \mathsf</span><span class="si">{t}</span><span class="s2">\right\rangle}^{\left[\mathsf</span><span class="si">{t}</span><span class="s2">,\circ\right]}&quot;</span><span class="p">,</span>
+    <span class="n">_sep</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="s2">&quot;&lt;*xB|C&gt;&quot;</span><span class="p">,</span> <span class="s2">&quot;[</span><span class="si">{A}</span><span class="s2">]&quot;</span><span class="p">,</span> <span class="s2">&quot;[</span><span class="si">{B}</span><span class="s2">]&quot;</span><span class="p">,</span> <span class="s2">&quot;[</span><span class="si">{C}</span><span class="s2">]&quot;</span><span class="p">])</span>
+<span class="p">]</span>
+
+<span class="n">_VarSetting_A_x_astB__dp__tC</span> <span class="o">=</span> <span class="p">[</span>   <span class="c1"># &lt;A x *B | @D&gt;</span>
+    <span class="sa">r</span><span class="s2">&quot;\mathsf</span><span class="si">{M}</span><span class="s2">_{\left\langle\left. \circ \times </span><span class="si">{B}</span><span class="s2"> \right| \mathsf</span><span class="si">{t}</span><span class="s2">\right\rangle}^{\left[\mathsf</span><span class="si">{t}</span><span class="s2">,\circ\right]}&quot;</span><span class="p">,</span>
+    <span class="n">_sep</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="s2">&quot;&lt;Ax*|C&gt;&quot;</span><span class="p">,</span> <span class="s2">&quot;[</span><span class="si">{A}</span><span class="s2">]&quot;</span><span class="p">,</span> <span class="s2">&quot;[</span><span class="si">{B}</span><span class="s2">]&quot;</span><span class="p">,</span> <span class="s2">&quot;[</span><span class="si">{C}</span><span class="s2">]&quot;</span><span class="p">])</span>
+<span class="p">]</span>
+
+<span class="n">_VarSetting_A_x_B__dp__C</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="sa">r</span><span class="s2">&quot;\left&lt;\left.\mathsf{\cdot x\cdot}\right|\cdot\right&gt;&quot;</span><span class="p">,</span>
+    <span class="n">_sep</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="s2">&quot;_XD_:&quot;</span><span class="p">,</span> <span class="s2">&quot;[</span><span class="si">{A}</span><span class="s2">]&quot;</span><span class="p">,</span> <span class="s2">&quot;[</span><span class="si">{B}</span><span class="s2">]&quot;</span><span class="p">,</span> <span class="s2">&quot;[</span><span class="si">{C}</span><span class="s2">]&quot;</span><span class="p">]),</span>
+<span class="p">]</span>
+
+<span class="c1"># --------------- (A x B, C x D) ----------------------------------------------------</span>
+<span class="n">_VarSetting_astA_x_astB__ip__astC_x_tD</span> <span class="o">=</span> <span class="p">[</span>   <span class="c1"># (*A x *B, *C x @D)</span>
+    <span class="sa">r</span><span class="s2">&quot;\mathsf</span><span class="si">{V}</span><span class="s2">_{\left(</span><span class="si">{A}</span><span class="s2"> \times </span><span class="si">{B}</span><span class="s2">, </span><span class="si">{C}</span><span class="s2"> \times \mathsf</span><span class="si">{t}</span><span class="s2">\right)}^{\left[\mathsf</span><span class="si">{t}</span><span class="s2">\right]}&quot;</span><span class="p">,</span>
+    <span class="n">_sep</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="s2">&quot;(*x*,*xD)&quot;</span><span class="p">,</span> <span class="s2">&quot;[</span><span class="si">{A}</span><span class="s2">]&quot;</span><span class="p">,</span> <span class="s2">&quot;[</span><span class="si">{B}</span><span class="s2">]&quot;</span><span class="p">,</span> <span class="s2">&quot;[</span><span class="si">{C}</span><span class="s2">]&quot;</span><span class="p">,</span> <span class="s2">&quot;[</span><span class="si">{D}</span><span class="s2">]&quot;</span><span class="p">]),</span>
+<span class="p">]</span>
+
+<span class="n">_VarSetting_A_x_astB__ip__astC_x_tD</span> <span class="o">=</span> <span class="p">[</span>    <span class="c1"># (A x *B, *C x @D)</span>
+    <span class="sa">r</span><span class="s2">&quot;\mathsf</span><span class="si">{M}</span><span class="s2">_{\left(\circ \times </span><span class="si">{B}</span><span class="s2">, </span><span class="si">{C}</span><span class="s2"> \times \mathsf</span><span class="si">{t}</span><span class="s2">\right)}^{\left[\mathsf</span><span class="si">{t}</span><span class="s2">,\circ\right]}&quot;</span><span class="p">,</span>
+    <span class="n">_sep</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="s2">&quot;(Ax*,*xD)&quot;</span><span class="p">,</span> <span class="s2">&quot;[</span><span class="si">{A}</span><span class="s2">]&quot;</span><span class="p">,</span> <span class="s2">&quot;[</span><span class="si">{B}</span><span class="s2">]&quot;</span><span class="p">,</span> <span class="s2">&quot;[</span><span class="si">{C}</span><span class="s2">]&quot;</span><span class="p">,</span> <span class="s2">&quot;[</span><span class="si">{D}</span><span class="s2">]&quot;</span><span class="p">]),</span>
+<span class="p">]</span>
+
+<span class="c1"># --------------- &lt;A x B | C x D&gt; ----------------------------------------------------</span>
+<span class="n">_VarSetting_astA_x_astB__dp__astC_x_tD</span> <span class="o">=</span> <span class="p">[</span>  <span class="c1"># &lt;*A x *B | *C x @D&gt;</span>
+    <span class="sa">r</span><span class="s2">&quot;\mathsf</span><span class="si">{V}</span><span class="s2">_{\left\langle\left.</span><span class="si">{A}</span><span class="s2">\times </span><span class="si">{B}</span><span class="s2"> \right| </span><span class="si">{C}</span><span class="s2">\times \mathsf</span><span class="si">{t}</span><span class="s2">\right\rangle}^{\left[\mathsf</span><span class="si">{t}</span><span class="s2">\right]}&quot;</span><span class="p">,</span>
+    <span class="n">_sep</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="s2">&quot;&lt;*x*|*xD&gt;&quot;</span><span class="p">,</span> <span class="s2">&quot;[</span><span class="si">{A}</span><span class="s2">]&quot;</span><span class="p">,</span> <span class="s2">&quot;[</span><span class="si">{B}</span><span class="s2">]&quot;</span><span class="p">,</span> <span class="s2">&quot;[</span><span class="si">{C}</span><span class="s2">]&quot;</span><span class="p">,</span> <span class="s2">&quot;[</span><span class="si">{D}</span><span class="s2">]&quot;</span><span class="p">]),</span>
+<span class="p">]</span>
+
+
+<span class="c1"># -----(dA, B otimes C) --------------------------------------------------------------------------</span>
+
+<span class="n">_VarSetting_dastA_astA_tp_tC</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="sa">r</span><span class="s2">&quot;\left&lt;\mathsf{d\cdot,\cdot\otimes\_}\right&gt;&quot;</span><span class="p">,</span>
+    <span class="n">_sep</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="s2">&quot;d*A--*A-tp-tC&quot;</span><span class="p">,</span> <span class="s2">&quot;[</span><span class="si">{A}</span><span class="s2">]&quot;</span><span class="p">,</span> <span class="s2">&quot;[</span><span class="si">{C}</span><span class="s2">]&quot;</span><span class="p">]),</span>
+<span class="p">]</span>
+
+<span class="n">_VarSetting_dastA_tB_tp_astA</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="sa">r</span><span class="s2">&quot;\left&lt;\mathsf{d\cdot,\_\otimes\cdot}\right&gt;&quot;</span><span class="p">,</span>
+    <span class="n">_sep</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="s2">&quot;d*A--tB-tp-*A&quot;</span><span class="p">,</span> <span class="s2">&quot;[</span><span class="si">{A}</span><span class="s2">]&quot;</span><span class="p">,</span> <span class="s2">&quot;[</span><span class="si">{B}</span><span class="s2">]&quot;</span><span class="p">]),</span>
+<span class="p">]</span>
+
+<span class="n">_VarSetting_dtA_astB_tp_astB</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="sa">r</span><span class="s2">&quot;\left&lt;\mathsf{d\_,\cdot\otimes\cdot}\right&gt;&quot;</span><span class="p">,</span>
+    <span class="n">_sep</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="s2">&quot;dtA--*B-tp-*B&quot;</span><span class="p">,</span> <span class="s2">&quot;[</span><span class="si">{A}</span><span class="s2">]&quot;</span><span class="p">,</span> <span class="s2">&quot;[</span><span class="si">{B}</span><span class="s2">]&quot;</span><span class="p">]),</span>
+<span class="p">]</span>
+
+
+<span class="n">_VarSetting_dA_B_tp_C__1Known</span> <span class="o">=</span> <span class="p">[</span>   <span class="c1"># A, B, C are different; and it must have a test form</span>
+    <span class="sa">r</span><span class="s2">&quot;\left&lt;\mathsf{d\_,\_\otimes\_}\right&gt;&quot;</span><span class="p">,</span>
+    <span class="n">_sep</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="s2">&quot;dA--B-tp-C:1:Known&quot;</span><span class="p">,</span> <span class="s2">&quot;[</span><span class="si">{A}</span><span class="s2">]&quot;</span><span class="p">,</span> <span class="s2">&quot;[</span><span class="si">{B}</span><span class="s2">]&quot;</span><span class="p">,</span> <span class="s2">&quot;[</span><span class="si">{C}</span><span class="s2">]&quot;</span><span class="p">,</span> <span class="s2">&quot;[</span><span class="si">{K}</span><span class="s2">]&quot;</span><span class="p">,</span> <span class="s2">&quot;[</span><span class="si">{T}</span><span class="s2">]&quot;</span><span class="p">,</span> <span class="s2">&quot;[</span><span class="si">{U}</span><span class="s2">]&quot;</span><span class="p">]),</span>
+<span class="p">]</span>
+
+
+<span class="n">_VarSetting_dA_B_tp_C__2Known</span> <span class="o">=</span> <span class="p">[</span>  <span class="c1"># A, B, C are different; two of them are known, and the rest one is the test form</span>
+    <span class="sa">r</span><span class="s2">&quot;\left&lt;\mathsf{d\_,\_\otimes\_}\right&gt;&quot;</span><span class="p">,</span>
+    <span class="n">_sep</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="s2">&quot;dA--B-tp-C:2:Known&quot;</span><span class="p">,</span> <span class="s2">&quot;[</span><span class="si">{A}</span><span class="s2">]&quot;</span><span class="p">,</span> <span class="s2">&quot;[</span><span class="si">{B}</span><span class="s2">]&quot;</span><span class="p">,</span> <span class="s2">&quot;[</span><span class="si">{C}</span><span class="s2">]&quot;</span><span class="p">,</span> <span class="s2">&quot;[</span><span class="si">{K1}</span><span class="s2">]&quot;</span><span class="p">,</span> <span class="s2">&quot;[</span><span class="si">{K2}</span><span class="s2">]&quot;</span><span class="p">,</span> <span class="s2">&quot;[</span><span class="si">{T}</span><span class="s2">]&quot;</span><span class="p">]),</span>
+<span class="p">]</span>
+
+
+<span class="n">_VarSetting_dA_B_tp_C</span> <span class="o">=</span> <span class="p">[</span>  <span class="c1"># A, B, C are different; # nonlinear</span>
+    <span class="sa">r</span><span class="s2">&quot;\left&lt;\mathsf{d\cdot,\cdot\otimes\cdot}\right&gt;&quot;</span><span class="p">,</span>
+    <span class="n">_sep</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="s2">&quot;dA--B-tp-C&quot;</span><span class="p">,</span> <span class="s2">&quot;[</span><span class="si">{A}</span><span class="s2">]&quot;</span><span class="p">,</span> <span class="s2">&quot;[</span><span class="si">{B}</span><span class="s2">]&quot;</span><span class="p">,</span> <span class="s2">&quot;[</span><span class="si">{C}</span><span class="s2">]&quot;</span><span class="p">]),</span>
+<span class="p">]</span>
+
+<span class="c1"># (AxB, dc): nonlinear --------------------------------------------</span>
+
+<span class="n">_VarSetting_AxB_ip_dC</span> <span class="o">=</span> <span class="p">[</span>  <span class="c1"># A, B, C are different; # nonlinear</span>
+    <span class="sa">r</span><span class="s2">&quot;\left(\mathsf{\cdot x\cdot}, \mathsf</span><span class="si">{d}</span><span class="s2">\cdot\right)&quot;</span><span class="p">,</span>
+    <span class="n">_sep</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="s2">&quot;AxB_ip_dC&quot;</span><span class="p">,</span> <span class="s2">&quot;[</span><span class="si">{A}</span><span class="s2">]&quot;</span><span class="p">,</span> <span class="s2">&quot;[</span><span class="si">{B}</span><span class="s2">]&quot;</span><span class="p">,</span> <span class="s2">&quot;[</span><span class="si">{C}</span><span class="s2">]&quot;</span><span class="p">]),</span>
+<span class="p">]</span>
+
+<span class="c1"># (A, B otimes C) -------------------------------------------------------</span>
+
+<span class="n">_VarSetting_A_B_tp_C__1Known</span> <span class="o">=</span> <span class="p">[</span>   <span class="c1"># A, B, C are different; and it must have a test form</span>
+    <span class="sa">r</span><span class="s2">&quot;\left&lt;\mathsf{\_,\_\otimes\_}\right&gt;&quot;</span><span class="p">,</span>
+    <span class="n">_sep</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="s2">&quot;A--B-tp-C:1:Known&quot;</span><span class="p">,</span> <span class="s2">&quot;[</span><span class="si">{A}</span><span class="s2">]&quot;</span><span class="p">,</span> <span class="s2">&quot;[</span><span class="si">{B}</span><span class="s2">]&quot;</span><span class="p">,</span> <span class="s2">&quot;[</span><span class="si">{C}</span><span class="s2">]&quot;</span><span class="p">,</span> <span class="s2">&quot;[</span><span class="si">{K}</span><span class="s2">]&quot;</span><span class="p">,</span> <span class="s2">&quot;[</span><span class="si">{T}</span><span class="s2">]&quot;</span><span class="p">,</span> <span class="s2">&quot;[</span><span class="si">{U}</span><span class="s2">]&quot;</span><span class="p">]),</span>
+<span class="p">]</span>
+
+
+<span class="n">_VarSetting_A_B_tp_C__2Known</span> <span class="o">=</span> <span class="p">[</span>  <span class="c1"># A, B, C are different; two of them are known, and the rest one is the test form</span>
+    <span class="sa">r</span><span class="s2">&quot;\left&lt;\mathsf{\_,\_\otimes\_}\right&gt;&quot;</span><span class="p">,</span>
+    <span class="n">_sep</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="s2">&quot;A--B-tp-C:2:Known&quot;</span><span class="p">,</span> <span class="s2">&quot;[</span><span class="si">{A}</span><span class="s2">]&quot;</span><span class="p">,</span> <span class="s2">&quot;[</span><span class="si">{B}</span><span class="s2">]&quot;</span><span class="p">,</span> <span class="s2">&quot;[</span><span class="si">{C}</span><span class="s2">]&quot;</span><span class="p">,</span> <span class="s2">&quot;[</span><span class="si">{K1}</span><span class="s2">]&quot;</span><span class="p">,</span> <span class="s2">&quot;[</span><span class="si">{K2}</span><span class="s2">]&quot;</span><span class="p">,</span> <span class="s2">&quot;[</span><span class="si">{T}</span><span class="s2">]&quot;</span><span class="p">]),</span>
+<span class="p">]</span>
+
+
+<span class="n">_VarSetting_A_B_tp_C</span> <span class="o">=</span> <span class="p">[</span>  <span class="c1"># A, B, C are different; # nonlinear</span>
+    <span class="sa">r</span><span class="s2">&quot;\left&lt;\mathsf{\cdot,\cdot\otimes\cdot}\right&gt;&quot;</span><span class="p">,</span>
+    <span class="n">_sep</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="s2">&quot;A--B-tp-C&quot;</span><span class="p">,</span> <span class="s2">&quot;[</span><span class="si">{A}</span><span class="s2">]&quot;</span><span class="p">,</span> <span class="s2">&quot;[</span><span class="si">{B}</span><span class="s2">]&quot;</span><span class="p">,</span> <span class="s2">&quot;[</span><span class="si">{C}</span><span class="s2">]&quot;</span><span class="p">]),</span>
+<span class="p">]</span>
+
+
+<span class="c1"># (bundle form, special diagonal bundle form)------------------------------------------------------</span>
+
+<span class="n">_VarSetting_IP_matrix_db_bf</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="sa">r</span><span class="s2">&quot;\mathbb</span><span class="si">{M}</span><span class="s2">_{\mathcal</span><span class="si">{S}</span><span class="s2">}&quot;</span><span class="p">,</span>
+    <span class="n">_sep</span><span class="o">.</span><span class="n">join</span><span class="p">(</span>
+        <span class="p">[</span><span class="s2">&quot;db-M-bf&quot;</span><span class="p">,</span> <span class="s2">&quot;</span><span class="si">{db_space_pure_lin_repr}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="s2">&quot;</span><span class="si">{bf_space_pure_lin_repr}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="s2">&quot;</span><span class="si">{degree_db}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="s2">&quot;</span><span class="si">{degree_bf}</span><span class="s2">&quot;</span><span class="p">]</span>
+    <span class="p">),</span>
+<span class="p">]</span>
+
+<span class="n">_VarSetting_IP_matrix_bf_db</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="sa">r</span><span class="s2">&quot;\mathbb</span><span class="si">{M}</span><span class="s2">^{\mathsf</span><span class="si">{T}</span><span class="s2">}_{\mathcal</span><span class="si">{S}</span><span class="s2">}&quot;</span><span class="p">,</span>
+    <span class="n">_sep</span><span class="o">.</span><span class="n">join</span><span class="p">(</span>
+        <span class="p">[</span><span class="s2">&quot;bf-M-db&quot;</span><span class="p">,</span> <span class="s2">&quot;</span><span class="si">{bf_space_pure_lin_repr}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="s2">&quot;</span><span class="si">{db_space_pure_lin_repr}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="s2">&quot;</span><span class="si">{degree_bf}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="s2">&quot;</span><span class="si">{degree_db}</span><span class="s2">&quot;</span><span class="p">]</span>
+    <span class="p">),</span>
+<span class="p">]</span>
+
+<span class="n">_default_space_degree_repr</span> <span class="o">=</span> <span class="s1">&#39;:D-&#39;</span>
+
+<span class="n">_degree_cache</span> <span class="o">=</span> <span class="p">{}</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_degree_str_maker</span><span class="p">(</span><span class="n">degree</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;&quot;&quot;&quot;</span>
+    <span class="n">str_degree</span> <span class="o">=</span> <span class="n">degree</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">degree</span><span class="p">)</span>
+    <span class="n">_degree_cache</span><span class="p">[</span><span class="n">str_degree</span><span class="p">]</span> <span class="o">=</span> <span class="n">degree</span>
+    <span class="k">return</span> <span class="n">str_degree</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_str_degree_parser</span><span class="p">(</span><span class="n">str_degree</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;&quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">_degree_cache</span><span class="p">[</span><span class="n">str_degree</span><span class="p">]</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">set_mesh</span><span class="p">(</span><span class="n">mesh</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;&quot;&quot;&quot;</span>
+    <span class="k">assert</span> <span class="n">mesh</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span> <span class="o">==</span> <span class="s1">&#39;Mesh&#39;</span><span class="p">,</span> \
+        <span class="sa">f</span><span class="s2">&quot;I need a Mesh instance.&quot;</span>
+    <span class="n">sr</span> <span class="o">=</span> <span class="n">mesh</span><span class="o">.</span><span class="n">_sym_repr</span>
+    <span class="k">if</span> <span class="n">sr</span> <span class="ow">in</span> <span class="n">_mesh_set</span><span class="p">:</span>
+        <span class="k">pass</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">_mesh_set</span><span class="p">[</span><span class="n">sr</span><span class="p">]</span> <span class="o">=</span> <span class="n">mesh</span>
+        <span class="n">_space_set</span><span class="p">[</span><span class="n">sr</span><span class="p">]</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>
+
+    <span class="n">_config</span><span class="p">[</span><span class="s1">&#39;current_mesh&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">sr</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_list_spaces</span><span class="p">():</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;&quot;&quot;&quot;</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">phyem.src.config</span><span class="w"> </span><span class="kn">import</span> <span class="n">RANK</span><span class="p">,</span> <span class="n">MASTER_RANK</span>
+    <span class="k">if</span> <span class="n">RANK</span> <span class="o">!=</span> <span class="n">MASTER_RANK</span><span class="p">:</span>
+        <span class="k">return</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">pass</span>
+
+    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Implemented spaces:&#39;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">{:&gt;15}</span><span class="s1"> - </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="s1">&#39;abbreviation&#39;</span><span class="p">,</span> <span class="s1">&#39;description&#39;</span><span class="p">))</span>
+    <span class="k">for</span> <span class="n">abbr</span> <span class="ow">in</span> <span class="n">_implemented_spaces</span><span class="p">:</span>
+        <span class="n">description</span> <span class="o">=</span> <span class="n">_implemented_spaces</span><span class="p">[</span><span class="n">abbr</span><span class="p">][</span><span class="mi">2</span><span class="p">]</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">{:&gt;15}</span><span class="s1"> | </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">abbr</span><span class="p">,</span> <span class="n">description</span><span class="p">))</span>
+
+    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1"> Existing spaces:&#39;</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">mesh</span> <span class="ow">in</span> <span class="n">_space_set</span><span class="p">:</span>
+        <span class="n">spaces</span> <span class="o">=</span> <span class="n">_space_set</span><span class="p">[</span><span class="n">mesh</span><span class="p">]</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">{:&gt;15}</span><span class="s1"> </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="s1">&#39;On mesh&#39;</span><span class="p">,</span> <span class="n">mesh</span><span class="p">))</span>
+        <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">sr</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">spaces</span><span class="p">):</span>
+            <span class="n">space</span> <span class="o">=</span> <span class="n">spaces</span><span class="p">[</span><span class="n">sr</span><span class="p">]</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">{:&gt;15}</span><span class="s1">: </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">space</span><span class="o">.</span><span class="n">_sym_repr</span><span class="p">))</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">finite</span><span class="p">(</span><span class="n">degree</span><span class="p">,</span> <span class="n">mesh</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">spaces</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    degree</span>
+<span class="sd">    mesh</span>
+<span class="sd">    spaces</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">mesh</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>  <span class="c1"># do it for all spaces on all meshes.</span>
+        <span class="k">for</span> <span class="n">mesh_sr</span> <span class="ow">in</span> <span class="n">_mesh_set</span><span class="p">:</span>
+            <span class="n">mesh</span> <span class="o">=</span> <span class="n">_mesh_set</span><span class="p">[</span><span class="n">mesh_sr</span><span class="p">]</span>
+            <span class="n">finite</span><span class="p">(</span><span class="n">degree</span><span class="p">,</span> <span class="n">mesh</span><span class="o">=</span><span class="n">mesh</span><span class="p">,</span> <span class="n">spaces</span><span class="o">=</span><span class="n">spaces</span><span class="p">)</span>
+        <span class="k">return</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">assert</span> <span class="n">mesh</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span> <span class="o">==</span> <span class="s1">&#39;Mesh&#39;</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;Mesh = </span><span class="si">{</span><span class="n">mesh</span><span class="si">}</span><span class="s2"> is not a Mesh object.&quot;</span>
+        <span class="n">mesh_sr</span> <span class="o">=</span> <span class="n">mesh</span><span class="o">.</span><span class="n">_sym_repr</span>
+
+    <span class="n">all_current_spaces</span> <span class="o">=</span> <span class="n">_space_set</span><span class="p">[</span><span class="n">mesh_sr</span><span class="p">]</span>
+
+    <span class="k">if</span> <span class="n">spaces</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">spaces</span> <span class="o">=</span> <span class="n">all_current_spaces</span><span class="o">.</span><span class="n">values</span><span class="p">()</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">spaces</span><span class="p">,</span> <span class="p">(</span><span class="nb">list</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">)):</span>
+            <span class="n">spaces</span> <span class="o">=</span> <span class="p">[</span><span class="n">spaces</span><span class="p">,</span> <span class="p">]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">pass</span>
+
+    <span class="k">for</span> <span class="n">sp</span> <span class="ow">in</span> <span class="n">spaces</span><span class="p">:</span>
+        <span class="k">assert</span> <span class="n">sp</span><span class="o">.</span><span class="n">_sym_repr</span> <span class="ow">in</span> <span class="n">all_current_spaces</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;space: </span><span class="si">{</span><span class="n">sp</span><span class="si">}</span><span class="s2"> is not a space in current mesh </span><span class="si">{</span><span class="n">mesh</span><span class="si">}</span><span class="s2">.&quot;</span>
+
+    <span class="k">for</span> <span class="n">space</span> <span class="ow">in</span> <span class="n">spaces</span><span class="p">:</span>
+        <span class="n">space</span><span class="o">.</span><span class="n">finite</span><span class="o">.</span><span class="n">specify_all</span><span class="p">(</span><span class="n">degree</span><span class="p">)</span>
+</pre></div>
+
+                </article>
+              
+
+              
+              
+              
+              
+                <footer class="prev-next-footer d-print-none">
+                  
+<div class="prev-next-area">
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+<div class="bd-footer-content__inner container">
+  
+  <div class="footer-item">
+    
+<p class="component-author">
+By Andrea Brugnoli, Ramy Rashad, Stefano Stramigioli, Yi Zhang and more
+</p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+
+  <p class="copyright">
+    
+      © Copyright reserved under Apache-2.0 license.
+      <br/>
+    
+  </p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+  <div class="footer-item">
+    
+<div class="extra_footer">
+  <div>Last updated on 十一月 18, 2025, 19:20:03, China Standard Time</div>
+</div>
+  </div>
+  
+</div>
+          </footer>
+        
+
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script src="../../../../_static/scripts/bootstrap.js?digest=dfe6caa3a7d634c4db9b"></script>
+<script src="../../../../_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b"></script>
+
+  <footer class="bd-footer">
+  </footer>
+  </body>
+</html>

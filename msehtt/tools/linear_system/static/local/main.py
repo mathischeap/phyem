@@ -393,7 +393,7 @@ class MseHttStaticLocalLinearSystem(Frozen):
             plt.text(0.05, 0.47, text, ha='left', va='top', size=15)
         plt.title(f'Local-Linear-System evaluated @ [{self._str_args}]')
         plt.tight_layout()
-        from src.config import _setting, _pr_cache
+        from phyem.src.config import _setting, _pr_cache
         if _setting['pr_cache']:
             _pr_cache(fig, filename='msepy_staticLocalLinearSystem')
         else:

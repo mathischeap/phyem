@@ -5,12 +5,6 @@ r"""A *phyem* implementation of the normal dipole collision test case in Section
 By `Yi Zhang <https://mathischeap.com/>`_.
 
 """
-import sys
-
-ph_dir = '../'  # customize it to your dir containing phyem
-if ph_dir not in sys.path:
-    sys.path.append(ph_dir)
-
 import phyem as ph
 
 ph.config.set_embedding_space_dim(2)

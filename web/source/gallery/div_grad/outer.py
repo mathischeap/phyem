@@ -2,7 +2,7 @@
 r"""
 """
 
-import __init__ as ph
+import phyem as ph
 import numpy as np
 
 

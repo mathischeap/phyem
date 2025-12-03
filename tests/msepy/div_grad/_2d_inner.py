@@ -3,14 +3,9 @@ r"""
 python tests/msepy/div_grad/_2d_inner.py
 """
 
-import sys
-
-if './' not in sys.path:
-    sys.path.append('./')
-
 import numpy as np
 
-import __init__ as ph
+import phyem as ph
 n = 2
 ls, mp = ph.samples.wf_div_grad(n=n, degree=3, orientation='inner', periodic=False)
 # ls.pr()

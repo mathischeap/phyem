@@ -38,43 +38,39 @@ class MseHttLinearSystemSolve(Frozen):
         """`b` of the linear system `Ax=b`."""
         return self._Axb.b
 
-    def __call__(self, scheme, x0=None, package=None, **kwargs):
+    def __call__(self, scheme, x0=None, **kwargs):
         """"""
-        package_name, scheme_name = self._package_scheme_parser_(package, scheme)
+        package_name, scheme_name = self._package_scheme_parser_(scheme)
         x0 = self._x0_parser_(x0)
         assert hasattr(self, f"_package_{package_name}"), f"I have no solver package: {package_name}."
         _package = getattr(self, f"_package_{package_name}")
         assert hasattr(_package, scheme_name), f"package {scheme_name} has no scheme: {scheme_name}"
         scheme = getattr(_package, scheme_name)
         if x0 is None:
-            results = scheme(self.A, self.b, **kwargs)
+            x, message, info = scheme(self.A, self.b, **kwargs)
         else:
-            results = scheme(self.A, self.b, x0, **kwargs)
-        return results
+            x, message, info = scheme(self.A, self.b, x0, **kwargs)
+        return x, message, info
 
-    def _package_scheme_parser_(self, package_name, scheme_name):
+    def _package_scheme_parser_(self, scheme_name):
         """"""
-        if package_name is None:  # provide scheme_indicator
-            if scheme_name in ('spsolve', 'direct'):
-                package_name = 'scipy'
-                scheme_name = 'spsolve'
-            elif scheme_name == 'ppsp':
-                if self._package_pypardiso is None:
-                    import phyem.msehtt.tools.linear_system.static.global_.solvers.pypardiso_ as _pypardiso
-                    self._package_pypardiso = _pypardiso
-                else:
-                    pass
-                package_name = 'pypardiso'
-                scheme_name = 'spsolve'
-            elif scheme_name == 'gmres':
-                package_name = 'mpi_py'
-            elif scheme_name == 'lgmres':
-                package_name = 'mpi_py'
+        if scheme_name in ('spsolve', 'direct'):
+            package_name = 'scipy'
+            scheme_name = 'spsolve'
+        elif scheme_name == 'ppsp':
+            if self._package_pypardiso is None:
+                import phyem.msehtt.tools.linear_system.static.global_.solvers.pypardiso_ as _pypardiso
+                self._package_pypardiso = _pypardiso
             else:
-                raise NotImplementedError(f"default package not set for scheme={scheme_name}, set it manually.")
+                pass
+            package_name = 'pypardiso'
+            scheme_name = 'spsolve'
+        elif scheme_name == 'gmres':
+            package_name = 'mpi_py'
+        elif scheme_name == 'lgmres':
+            package_name = 'mpi_py'
         else:
-            pass
-
+            raise NotImplementedError(f"default package not set for scheme={scheme_name}, set it manually.")
         return package_name, scheme_name
 
     def _x0_parser_(self, x0):

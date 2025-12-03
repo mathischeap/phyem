@@ -66,6 +66,21 @@ def _inner_simpler_pattern_examiner_scalar_valued_forms(factor, f0, f1, extra_in
             else:
                 pass
 
+        # --- (log-e of root-sf, root-sf) ------------------------------------------------------------------------
+        # (log_e A, B) where A and B are root-forms.
+        lin_log_e = _global_operator_lin_repr_setting['log-e']
+        if f0._lin_repr[:len(lin_log_e)] == lin_log_e:
+            bf0 = _find_form(f0._lin_repr, upon='log-e')
+            if bf0 is None:
+                pass
+            elif bf0.is_root() and f1.is_root():
+                return _simple_patterns['(log-e *, B)'], {
+                    'rsf0': bf0,   # root-scalar-form-0
+                    'rsf1': f1,    # root-scalar-form-1
+                }
+            else:
+                pass
+
         # -------- (root-sf, d of root-sf) -------------------------------------------------------------------
         lin_d = _global_operator_lin_repr_setting['d']
         if f1._lin_repr[:len(lin_d)] == lin_d:
@@ -1046,6 +1061,43 @@ def _inner_simpler_pattern_examiner_scalar_valued_forms(factor, f0, f1, extra_in
                         'C': C,
                     }
 
+            elif A.is_root() and not B.is_root() and C.is_root():
+                # (A nrtF, d(C)) where ntf is not a root form.
+                B = _find_form(B._lin_repr, upon=d)
+                if B is not None and B.is_root():
+                    # (A * dB, d(C)) where ntf is not a root form.
+                    if 'known-forms' in extra_info:
+                        kfs = extra_info['known-forms']
+                        if isinstance(kfs, (list, tuple)) and (A in kfs) and (B in kfs):
+                            return _simple_patterns['(* d(*), d(C))'], {
+                                'A': A,  # root-scalar-form-0
+                                'B': B,  # root-scalar-form-1
+                                'C': C,
+                            }
+                        elif A is kfs:
+                            return _simple_patterns['(* d(B), d(C))'], {
+                                'A': A,  # root-scalar-form-0
+                                'B': B,  # root-scalar-form-1
+                                'C': C,
+                            }
+                        elif B is kfs:
+                            return _simple_patterns['(A d(*), d(C))'], {
+                                'A': A,  # root-scalar-form-0
+                                'B': B,  # root-scalar-form-1
+                                'C': C,
+                            }
+                        else:
+                            raise Exception()
+                    else:
+                        # nonlinear
+                        return _simple_patterns['(A d(B), d(C))'], {
+                            'A': A,  # root-scalar-form-0
+                            'B': B,  # root-scalar-form-1
+                            'C': C,  # root-scalar-form-2
+                        }
+                else:
+                    pass
+
         # !!! {NEW PATTERN} !!! :  (A, BC) -------------------------------------------------------
         multi_lin = _global_operator_lin_repr_setting['multi']
         existing1 = multi_lin in f1._lin_repr
@@ -1421,7 +1473,8 @@ def _dp_simpler_pattern_examiner_scalar_valued_forms(factor, f0, f1, extra_info)
             A_lin, B_lin = f0._lin_repr.split(multi_lin)
             A = _find_form(A_lin)
             B = _find_form(B_lin)
-            if A.is_root() and B.is_root() and f1.is_root():
+
+            if A is not None and B is not None and A.is_root() and B.is_root():
                 if 'known-forms' in extra_info:
                     kfs = extra_info['known-forms']
                     if isinstance(kfs, (list, tuple)) and (A in kfs) and (B in kfs):
@@ -1451,6 +1504,59 @@ def _dp_simpler_pattern_examiner_scalar_valued_forms(factor, f0, f1, extra_info)
                         'B': B,  # root-scalar-form-1
                         'C': f1,
                     }
+
+            elif A is not None and A.is_root():
+                # case: < AB | C >
+                # where B is not a root-form. We may have not yet find B from `_find_form`
+                # So, so far, B could be None
+                if lin_d in B_lin:
+                    # B is d of something.
+                    nr0, nr1 = _non_root_lin_sep
+                    if nr0 in B_lin and B_lin.count(nr0) == 1 and nr1 in B_lin and B_lin.count(nr1) == 1:
+                        B_lin = B_lin[len(nr0):-len(nr1)]
+                    else:
+                        pass
+
+                    rf_in_B = _find_form(B_lin, upon=d)
+
+                    if rf_in_B is not None and rf_in_B.is_root():
+                        # B is d of a root form, so B := d(B)
+                        # < A d(B) | C>
+                        if 'known-forms' in extra_info:
+                            kfs = extra_info['known-forms']
+                            if isinstance(kfs, (list, tuple)) and (A in kfs) and (rf_in_B in kfs):
+                                return _simple_patterns['<* d(*)|C>'], {
+                                    'A': A,  # root-scalar-form-0
+                                    'B': rf_in_B,  # root-scalar-form-1
+                                    'C': f1,
+                                }
+                            elif A is kfs:
+                                return _simple_patterns['<* d(B)|C>'], {
+                                    'A': A,  # root-scalar-form-0
+                                    'B': rf_in_B,  # root-scalar-form-1
+                                    'C': f1,
+                                }
+                            elif rf_in_B is kfs:
+                                return _simple_patterns['<A d(*)|C>'], {
+                                    'A': A,  # root-scalar-form-0
+                                    'B': rf_in_B,  # root-scalar-form-1
+                                    'C': f1,
+                                }
+                            else:
+                                raise Exception()
+                        else:
+                            # nonlinear
+                            return _simple_patterns['<A d(B)|C>'], {
+                                'A': A,  # root-scalar-form-0
+                                'B': rf_in_B,  # root-scalar-form-1
+                                'C': f1,
+                            }
+
+                    else:
+                        pass
+
+                else:
+                    pass
 
         # !!! {NEW PATTERN} !!! :  < AB | d(C)> -------------------------------------------------------------------
         multi_lin = _global_operator_lin_repr_setting['multi']

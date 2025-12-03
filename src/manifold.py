@@ -8,7 +8,7 @@ Manifold
 We define an abstract bounded, connected and contractible
 computational domain (manifold) by calling ``ph.manifold`` method,
 
-    .. autofunction:: src.manifold.manifold
+    .. autofunction:: phyem.src.manifold.manifold
 
 A common call is
 
@@ -17,7 +17,7 @@ A common call is
 The output, ``manifold``, is an instance of :class:`Manifold`. It is abstract at this stage because we do not
 specify any exact parameters, for example size and shape, of it.
 
-    .. autoclass:: src.manifold.Manifold
+    .. autoclass:: phyem.src.manifold.Manifold
         :members: m, n
 
 """
@@ -261,7 +261,8 @@ class Manifold(Frozen):
 
     def _manifold_text(self):
         r"""generate text for printing representations."""
-        return rf'In ${self._sym_repr}\subset\mathbb' + '{R}^{' + str(get_embedding_space_dim()) + '}$, '
+        # return rf'In ${self._sym_repr}\subset\mathbb' + '{R}^{' + str(get_embedding_space_dim()) + '}$, '
+        return rf'On ${self._sym_repr}$ in {get_embedding_space_dim()}D space, '
 
 
 class NullManifold(Frozen):

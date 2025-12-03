@@ -134,6 +134,10 @@ class AxB_ip_dC(MseHttTrilinearBase):
 
             else:
                 detJ = element.ct.Jacobian(*metric_coo)
+                # Remember, d of C has been included into reconstructing matrix of C, i.e. rmC.
+
+                # So, we only need to consider it like `int_{(A x B, C)}`, i.e. integral of (A x B, C).
+
                 if indicator == 'm2n2=(1, 2, 2)':  # on 2d manifold in 2d space, A is scalar, B, C are vector.
                     # A is a 0-form, B, C are 1-forms!
                     # so, A = [0 0 w]^T, B = [u v 0]^T, C = [a b 0]^T,

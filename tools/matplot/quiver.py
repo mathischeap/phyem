@@ -169,7 +169,7 @@ def quiver(
 
     # ---------------------- save to --------------------------------------------------------
     if saveto is None or saveto is False:
-        from src.config import _setting
+        from phyem.src.config import _setting
         plt.show(block=_setting['block'])
 
     else:

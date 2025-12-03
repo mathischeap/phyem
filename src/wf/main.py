@@ -568,7 +568,7 @@ class WeakFormulation(Frozen):
         """Even when bc is not defined. We can check it from the simple pattern of terms."""
         nbc_efs = set()
         other_efs = set()
-        from src.config import _wf_term_default_simple_patterns as _simple_patterns
+        from phyem.src.config import _wf_term_default_simple_patterns as _simple_patterns
         for i in self._term_dict:   # ith equation
             for terms in self._term_dict[i]:
                 for term in terms:
@@ -680,7 +680,7 @@ class WeakFormulation(Frozen):
 
     def _pr_pattern(self, indexing=True):
         """"""
-        from src.config import RANK, MASTER_RANK
+        from phyem.src.config import RANK, MASTER_RANK
         if RANK != MASTER_RANK:
             return None
         else:
@@ -758,7 +758,7 @@ class WeakFormulation(Frozen):
         plt.axis((0, 1, 0, 1))
         plt.axis('off')
         plt.text(0.05, 0.5, pattern_text, ha='left', va='center', size=15)
-        from src.config import _setting, _pr_cache
+        from phyem.src.config import _setting, _pr_cache
         if _setting['pr_cache']:
             _pr_cache(fig, filename='weakFormulation_patterns')
         else:
@@ -779,7 +779,7 @@ class WeakFormulation(Frozen):
         saveto : {None, str}, optional
 
         """
-        from src.config import RANK, MASTER_RANK
+        from phyem.src.config import RANK, MASTER_RANK
         if RANK != MASTER_RANK:
             return None
         else:
@@ -791,6 +791,7 @@ class WeakFormulation(Frozen):
             pass
 
         seek_text = self._mesh.manifold._manifold_text()
+
         if self.unknowns is None:
             seek_text += r'for $\left('
             form_sr_list = list()
@@ -889,7 +890,7 @@ class WeakFormulation(Frozen):
             plt.savefig(saveto, bbox_inches='tight', dpi=200)
             return None
         else:
-            from src.config import _setting, _pr_cache
+            from phyem.src.config import _setting, _pr_cache
             if _setting['pr_cache']:
                 _pr_cache(fig, filename='weakFormulation')
             else:
@@ -926,13 +927,13 @@ class WeakFormulation(Frozen):
 
         Returns
         -------
-        mp : :class:`src.wf.mp.main.MatrixProxy`
+        mp : :class:`phyem.src.wf.mp.main.MatrixProxy`
         """
         return MatrixProxy(self)
 
     def _pr_temporal_advancing(self, ts, time_instant_hierarchy):
         """This method should be called from somewhere else."""
-        from src.config import RANK, MASTER_RANK
+        from phyem.src.config import RANK, MASTER_RANK
         if RANK != MASTER_RANK:
             return
         else:
@@ -982,7 +983,7 @@ class WeakFormulation(Frozen):
                 ntf_group[bf_plr] = list()
             ntf_group[bf_plr].append(ntf)
 
-        from src.time_sequence import ConstantTimeSequence
+        from phyem.src.time_sequence import ConstantTimeSequence
         evaluate_sym = _form_evaluate_at_repr_setting['sym']
         if ts.__class__ is ConstantTimeSequence:
             vertical_length = (ts._t_max - ts._t_0) * 0.02
@@ -1176,7 +1177,7 @@ class WeakFormulation(Frozen):
 
                     # ----- save -----------------------------------------------------
                     plt.tight_layout()
-                    from src.config import _setting, _pr_cache
+                    from phyem.src.config import _setting, _pr_cache
                     if _setting['pr_cache']:
                         _pr_cache(fig, filename='weakFormulationTimeAdvancing')
                     else:

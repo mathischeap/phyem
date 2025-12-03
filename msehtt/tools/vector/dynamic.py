@@ -20,5 +20,6 @@ class MseHttDynamicLocalVector(Frozen):
     def __call__(self, *args, **kwargs):
         static = self._vec_caller(*args, **kwargs)
         # it should be a static local vector or its subclass
-        assert isinstance(static, MseHttStaticLocalVector) or issubclass(static, MseHttStaticLocalVector)
+        assert isinstance(static, MseHttStaticLocalVector) or issubclass(static, MseHttStaticLocalVector), \
+            f"Now, it is {static} of type {static.__class__}!"
         return static

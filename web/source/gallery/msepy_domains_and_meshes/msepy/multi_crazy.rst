@@ -5,5 +5,5 @@
 Multi-crazy domain and mesh
 ===========================
 
-.. automodule:: msepy.manifold.predefined.crazy_multi
+.. automodule:: phyem.msepy.manifold.predefined.crazy_multi
     :undoc-members: crazy_multi

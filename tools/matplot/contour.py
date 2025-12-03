@@ -319,7 +319,7 @@ def contour(
         return fig
     else:
         if saveto is None:
-            from src.config import _setting
+            from phyem.src.config import _setting
             matplotlib.use('TkAgg')
             plt.show(block=_setting['block'])
         else:

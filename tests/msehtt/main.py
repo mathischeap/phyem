@@ -2,19 +2,18 @@
 r"""
 python tests/msehtt/main.py 5
 """
-
 import subprocess
 import sys
 
 from phyem.src.config import SIZE
-assert SIZE == 1, f"can only use 1 rank for the test."
+assert SIZE == 1, f"can only use 1 rank for the msehtt-test-kernel. It will call subprocess with MPI."
 from phyem import php
 
 if len(sys.argv) == 1:
     use_ranks = 5
 else:
     use_ranks = int(sys.argv[1])
-    assert 1 < use_ranks <= 12, f"use_ranks={use_ranks} is wrong."
+    assert 1 < use_ranks <= 12, f"use_ranks={use_ranks} is wrong. It should be a integer in [1, 12]."
 
 print(rf"Starting <<<msehtt.tests>>> with {use_ranks} ranks....")
 exec_cmd = f"mpiexec -n {use_ranks} python "
@@ -37,6 +36,7 @@ for i in range(7):
     )
     for line in popen.stdout:
         print(line[:-1])
+    popen.kill()
 
 tasks = [
     "solvers",
@@ -65,15 +65,34 @@ tasks = [
 
     "adaptive/base2",
     "adaptive/Poisson2",
-    "adaptive/trf_tests",
+    ("adaptive/trf_tests", 5),  # means we can use at most 5 ranks.
+
+    "multigrid/Poisson2",
+    "multigrid/Poisson3",
+    "multigrid/Poisson2_periodic",
+    "multigrid/PNPNS_decoupled_linearized",
 ]
 
 for task in tasks:
-    php('>>> msehtt >>>', task)
-    popen = subprocess.Popen(exec_cmd + rf"{source_dir}/{task}.py", stdout=subprocess.PIPE, universal_newlines=True)
+    if isinstance(task, str):
+        the_task = task
+        task_exec_cmd = exec_cmd
+    elif isinstance(task, tuple):  # we provide a task dir and the max amount of ranks it can use.
+        the_task = task[0]
+        task_max_ranks = task[1]
+        if task_max_ranks < use_ranks:
+            task_exec_cmd = f"mpiexec -n {task_max_ranks} python "
+        else:
+            task_exec_cmd = exec_cmd
+    else:
+        raise NotImplementedError(task)
+
+    php('>>> msehtt >>>', the_task)
+    popen = subprocess.Popen(
+        task_exec_cmd + rf"{source_dir}/{the_task}.py", stdout=subprocess.PIPE, universal_newlines=True)
     for line in popen.stdout:
         print(line[:-1])
-
+    popen.kill()
 
 # -------- update records ------------------------------------------------------------------------
 ranking.report_ranking()

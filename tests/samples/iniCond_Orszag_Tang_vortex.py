@@ -23,10 +23,8 @@ See Section 5.3 of
     pass
 
 These initial conditions are implemented. To initialize an ideal Orszag-Tang Vortex, for example,  do
-
->>> from math import inf
 >>> ph.samples.InitialConditionOrszagTangVortex()  # doctest: +ELLIPSIS
-<tests.samples.iniCond_Orszag_Tang_vortex.InitialConditionOrszagTangVortex object at ...
+<phyem.tests.samples.iniCond_Orszag_Tang_vortex.InitialConditionOrszagTangVortex object at ...
 
 """
 from numpy import sin, cos, pi, inf

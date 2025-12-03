@@ -58,6 +58,13 @@ __all__ = [
     '_VarPar_astA_astB_dp_tC',      # linear; <AB|C>; A and B given, C test form, Vector
     # ==========================================================================================
 
+    # <A d(B)|C> -------------------------------------------------------------------------------
+    '_VarPar_A_d_B_dp_C',         # <A d(B)|C> nonlinear; A, B, C all unknown
+    '_VarPar_astA_d_B_dp_tC',     # <A d(B)|C>; linear, A given, matrix, C test form
+    '_VarPar_A_d_astB_dp_tC',     # <A d(B)|C>; linear, B given, matrix, C test form
+    '_VarPar_astA_d_astB_dp_tC',  # <A d(B)|C>; A and B given, vector, C test form
+    # ==========================================================================================
+
     # ------ (AB, C) ---------------------------------------------------------------------------
     '_VarPar_AB_ip_C',              # nonlinear; (AB, C); A, B, C are all unknown
     '_VarPar_astA_B_ip_tC',         # linear; (AB, C); A given, C test form, Matrix
@@ -72,12 +79,24 @@ __all__ = [
     '_VarPar_astA_astB_ip_dtC',
     # ==========================================================================================
 
+    # -------- (A d(B), dC) ------------------------------------------------------------------------
+    '_VarPar_A_d_B_ip_dC',               # (A d(B), dC) nonlinear; A, B, C all unknown
+    '_VarPar_astA_d_B_ip_dtC',           # (A d(B), dC) linear, A given, matrix, C test form
+    '_VarPar_A_d_astB_ip_dtC',           # (A d(B), dC) linear, B given, matrix, C test form
+    '_VarPar_astA_d_astB_ip_dtC',        # (A d(B), dC) A and B given, vector, C test form
+    # ==========================================================================================
+
     # -------- <AB|dC> ------------------------------------------------------------------------
     '_VarPar_AB_dp_dC',
     '_VarPar_astA_B_dp_dtC',
     '_VarPar_A_astB_dp_dtC',
     '_VarPar_astA_astB_dp_dtC',
     # ==========================================================================================
+
+    # ------ MORE TERMS ABOUT NONLINEARITY ----------------------------------------------------
+    "_VarPar_log_e_astA_ip_tB",        # (log-e A, B) where A is given and B is the test form
+
+    # ===========================================================================================
 
     '_VarPar_astA_x_astB_dp_tC',    # <A x B | C>
     '_VarPar_astA_x_B_dp_tC',
@@ -594,6 +613,91 @@ def _VarPar_astA_astB_dp_tC(gA, gB, tC):
     return ra
 
 
+# -------- <A d(B)|C> --------------------------------------------------------------------------------
+
+def _VarPar_A_d_B_dp_C(A, B, C):
+    r"""<A d(B)|C>; nonlinear, A, B, C are all unknown."""
+    sym, lin = _VarSetting_A_d_B_dp_C[:2]
+
+    sym += rf"\left({A._sym_repr}, {B._sym_repr}, {C._sym_repr}\right)"
+    lin = lin.replace('{A}', A._pure_lin_repr)
+    lin = lin.replace('{B}', B._pure_lin_repr)
+    lin = lin.replace('{C}', C._pure_lin_repr)
+
+    mda = AbstractNonlinearOperator(sym, lin)
+    return mda
+
+
+def _VarPar_astA_d_B_dp_tC(gA, B, tC):
+    r"""<A d(B)|C>; linear (matrix), A given, C test form."""
+    sym, lin = _VarSetting_astA_d_B_dp_tC[:2]
+    sym = sym.replace(r'{A}', gA._sym_repr)
+
+    lin = lin.replace('{A}', gA._pure_lin_repr)
+    lin = lin.replace('{B}', B._pure_lin_repr)
+    lin = lin.replace('{C}', tC._pure_lin_repr)
+
+    s0 = tC.space
+    s1 = B.space
+    d0 = tC._degree
+    d1 = B._degree
+    str_d0 = _degree_str_maker(d0)
+    str_d1 = _degree_str_maker(d1)
+
+    shape0 = s0._sym_repr + _default_space_degree_repr + str_d0
+    shape1 = s1._sym_repr + _default_space_degree_repr + str_d1
+
+    shape = (shape0, shape1)
+    ra = _root_array(sym, lin, shape)
+    return ra
+
+
+def _VarPar_A_d_astB_dp_tC(A, gB, tC):
+    r"""<A d(B)|C>; linear (matrix), B given, C test form."""
+    sym, lin = _VarSetting_A_d_astB_dp_tC[:2]
+    sym = sym.replace(r'{B}', gB._sym_repr)
+
+    lin = lin.replace('{A}', A._pure_lin_repr)
+    lin = lin.replace('{B}', gB._pure_lin_repr)
+    lin = lin.replace('{C}', tC._pure_lin_repr)
+
+    s0 = tC.space
+    s1 = A.space
+    d0 = tC._degree
+    d1 = A._degree
+    str_d0 = _degree_str_maker(d0)
+    str_d1 = _degree_str_maker(d1)
+
+    shape0 = s0._sym_repr + _default_space_degree_repr + str_d0
+    shape1 = s1._sym_repr + _default_space_degree_repr + str_d1
+
+    shape = (shape0, shape1)
+    ra = _root_array(sym, lin, shape)
+    return ra
+
+
+def _VarPar_astA_d_astB_dp_tC(gA, gB, tC):
+    r"""<A d(B)|C>; linear (vector), A and B given, C test form."""
+    sym, lin = _VarSetting_astA_d_astB_dp_tC[:2]
+
+    sym = sym.replace(r'{A}', gA._sym_repr)
+    sym = sym.replace(r'{B}', gB._sym_repr)
+
+    lin = lin.replace('{A}', gA._pure_lin_repr)
+    lin = lin.replace('{B}', gB._pure_lin_repr)
+    lin = lin.replace('{C}', tC._pure_lin_repr)
+
+    s0 = tC.space
+    d0 = tC._degree
+    str_d0 = _degree_str_maker(d0)
+
+    shape0 = s0._sym_repr + _default_space_degree_repr + str_d0
+
+    shape = (shape0, 1)
+    ra = _root_array(sym, lin, shape)
+    return ra
+
+
 # -------- (AB, C) --------------------------------------------------------------------------------
 
 def _VarPar_AB_ip_C(A, B, C):
@@ -763,6 +867,90 @@ def _VarPar_astA_astB_ip_dtC(gA, gB, tC):
     return ra
 
 
+# --------- (A d(B), dC) -------------------------------------------------------------------------------
+def _VarPar_A_d_B_ip_dC(A, B, C):
+    r"""(A d(B), dC); nonlinear, A, B, C are all unknown."""
+    sym, lin = _VarSetting_A_d_B_ip_dC[:2]
+
+    sym += rf"\left({A._sym_repr}, {B._sym_repr}, {C._sym_repr}\right)"
+    lin = lin.replace('{A}', A._pure_lin_repr)
+    lin = lin.replace('{B}', B._pure_lin_repr)
+    lin = lin.replace('{C}', C._pure_lin_repr)
+
+    mda = AbstractNonlinearOperator(sym, lin)
+    return mda
+
+
+def _VarPar_astA_d_B_ip_dtC(gA, B, tC):
+    r"""(A d(B), dC); linear (matrix), A given, C test form."""
+    sym, lin = _VarSetting_astA_d_B_ip_dtC[:2]
+    sym = sym.replace(r'{A}', gA._sym_repr)
+
+    lin = lin.replace('{A}', gA._pure_lin_repr)
+    lin = lin.replace('{B}', B._pure_lin_repr)
+    lin = lin.replace('{C}', tC._pure_lin_repr)
+
+    s0 = tC.space
+    s1 = B.space
+    d0 = tC._degree
+    d1 = B._degree
+    str_d0 = _degree_str_maker(d0)
+    str_d1 = _degree_str_maker(d1)
+
+    shape0 = s0._sym_repr + _default_space_degree_repr + str_d0
+    shape1 = s1._sym_repr + _default_space_degree_repr + str_d1
+
+    shape = (shape0, shape1)
+    ra = _root_array(sym, lin, shape)
+    return ra
+
+
+def _VarPar_A_d_astB_ip_dtC(A, gB, tC):
+    r"""(A d(B), dC); linear (matrix), B given, C test form."""
+    sym, lin = _VarSetting_A_d_astB_ip_dtC[:2]
+    sym = sym.replace(r'{B}', gB._sym_repr)
+
+    lin = lin.replace('{A}', A._pure_lin_repr)
+    lin = lin.replace('{B}', gB._pure_lin_repr)
+    lin = lin.replace('{C}', tC._pure_lin_repr)
+
+    s0 = tC.space
+    s1 = A.space
+    d0 = tC._degree
+    d1 = A._degree
+    str_d0 = _degree_str_maker(d0)
+    str_d1 = _degree_str_maker(d1)
+
+    shape0 = s0._sym_repr + _default_space_degree_repr + str_d0
+    shape1 = s1._sym_repr + _default_space_degree_repr + str_d1
+
+    shape = (shape0, shape1)
+    ra = _root_array(sym, lin, shape)
+    return ra
+
+
+def _VarPar_astA_d_astB_ip_dtC(gA, gB, tC):
+    r"""(A d(B), dC); linear (vector), A and B given, C test form."""
+    sym, lin = _VarSetting_astA_d_astB_ip_dtC[:2]
+
+    sym = sym.replace(r'{A}', gA._sym_repr)
+    sym = sym.replace(r'{B}', gB._sym_repr)
+
+    lin = lin.replace('{A}', gA._pure_lin_repr)
+    lin = lin.replace('{B}', gB._pure_lin_repr)
+    lin = lin.replace('{C}', tC._pure_lin_repr)
+
+    s0 = tC.space
+    d0 = tC._degree
+    str_d0 = _degree_str_maker(d0)
+
+    shape0 = s0._sym_repr + _default_space_degree_repr + str_d0
+
+    shape = (shape0, 1)
+    ra = _root_array(sym, lin, shape)
+    return ra
+
+
 # --------- <AB|dC> -------------------------------------------------------------------------------
 def _VarPar_AB_dp_dC(A, B, C):
     r"""<AB|dC>; nonlinear, A, B, C are all unknown."""
@@ -838,6 +1026,27 @@ def _VarPar_astA_astB_dp_dtC(gA, gB, tC):
 
     s0 = tC.space
     d0 = tC._degree
+    str_d0 = _degree_str_maker(d0)
+
+    shape0 = s0._sym_repr + _default_space_degree_repr + str_d0
+
+    shape = (shape0, 1)
+    ra = _root_array(sym, lin, shape)
+    return ra
+
+
+# -------------------- MORE NONLINEAR TERMS --------------------------------------------------------
+
+def _VarPar_log_e_astA_ip_tB(A, tB):
+    r"""(log_e A, B) where B is given."""
+    sym, lin = _VarSetting_log_e_astA_ip_tB[:2]
+
+    sym = sym.replace('{A}', A._sym_repr)
+    lin = lin.replace('{A}', A._pure_lin_repr)
+    lin = lin.replace('{B}', tB._pure_lin_repr)
+
+    s0 = tB.space
+    d0 = tB._degree
     str_d0 = _degree_str_maker(d0)
 
     shape0 = s0._sym_repr + _default_space_degree_repr + str_d0

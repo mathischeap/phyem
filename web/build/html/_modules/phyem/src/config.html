@@ -1,0 +1,1024 @@
+
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="../../../" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>phyem.src.config &#8212; phyem, a finite element library powering LEGO-like simulations for (multi-)physics.</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
+  </script>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../../../_static/styles/theme.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+<link href="../../../_static/styles/bootstrap.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+<link href="../../../_static/styles/pydata-sphinx-theme.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+
+  
+  <link href="../../../_static/vendor/fontawesome/6.5.2/css/all.min.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+  <link rel="preload" as="font" type="font/woff2" crossorigin href="../../../_static/vendor/fontawesome/6.5.2/webfonts/fa-solid-900.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../../../_static/vendor/fontawesome/6.5.2/webfonts/fa-brands-400.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../../../_static/vendor/fontawesome/6.5.2/webfonts/fa-regular-400.woff2" />
+
+    <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=8f2a1f02" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/styles/sphinx-book-theme.css?v=eba8b062" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/copybutton.css?v=76b2166b" />
+  
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../../../_static/scripts/bootstrap.js?digest=dfe6caa3a7d634c4db9b" />
+<link rel="preload" as="script" href="../../../_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b" />
+  <script src="../../../_static/vendor/fontawesome/6.5.2/js/all.min.js?digest=dfe6caa3a7d634c4db9b"></script>
+
+    <script src="../../../_static/documentation_options.js?v=9eb32ce0"></script>
+    <script src="../../../_static/doctools.js?v=9bcbadda"></script>
+    <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../../_static/clipboard.min.js?v=a7894cd8"></script>
+    <script src="../../../_static/copybutton.js?v=f281be69"></script>
+    <script src="../../../_static/scripts/sphinx-book-theme.js?v=887ef09a"></script>
+    <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = '_modules/phyem/src/config';</script>
+    <link rel="icon" href="../../../_static/favicon.png"/>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="">
+
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          id="pst-primary-sidebar-checkbox"/>
+  <label class="overlay overlay-primary" for="pst-primary-sidebar-checkbox"></label>
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          id="pst-secondary-sidebar-checkbox"/>
+  <label class="overlay overlay-secondary" for="pst-secondary-sidebar-checkbox"></label>
+  
+  <div class="search-button__wrapper">
+    <div class="search-button__overlay"></div>
+    <div class="search-button__search-container">
+<form class="bd-search d-flex align-items-center"
+      action="../../../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         id="search-input"
+         placeholder="Search..."
+         aria-label="Search..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form></div>
+  </div>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+<aside class="bd-header-announcement" aria-label="Announcement">
+  <div class="bd-header-announcement__content">
+        <p style='color:white;'> &#127867 PHYEM is coming</p>
+    </div>
+</aside>
+
+  
+    <header class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+        
+      
+      <div class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+    
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item">
+
+  
+    
+  
+
+<a class="navbar-brand logo" href="../../../index.html">
+  
+  
+  
+  
+  
+    
+    
+      
+    
+    
+    <img src="../../../_static/logo-light.png" class="logo__image only-light" alt="phyem, a finite element library powering LEGO-like simulations for (multi-)physics. - Home"/>
+    <script>document.write(`<img src="../../../_static/logo-dark.png" class="logo__image only-dark" alt="phyem, a finite element library powering LEGO-like simulations for (multi-)physics. - Home"/>`);</script>
+  
+  
+</a></div>
+        <div class="sidebar-primary-item"><ul class="navbar-icon-links"
+    aria-label="Quick Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://www.mathischeap.com/" title="mathischeap" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><img src="../../../_static/favicon-mic.png" class="icon-link-image" alt="mathischeap"/></a>
+        </li>
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/mathischeap/phyem" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-square-github fa-lg" aria-hidden="true"></i>
+            <span class="sr-only">GitHub</span></a>
+        </li>
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://app.netlify.com/sites/phyem/deploys" title="Netlify Status" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><img src="https://api.netlify.com/api/v1/badges/6a559326-c54e-4a8f-a79a-a715648c73c2/deploy-status" class="icon-link-image" alt="Netlify Status"/></a>
+        </li>
+</ul></div>
+        <div class="sidebar-primary-item">
+
+ <script>
+ document.write(`
+   <button class="btn search-button-field search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass"></i>
+    <span class="search-button__default-text">Search</span>
+    <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+   </button>
+ `);
+ </script></div>
+        <div class="sidebar-primary-item"><nav class="bd-links bd-docs-nav" aria-label="Main">
+    <div class="bd-toc-item navbar-nav active">
+        
+        <ul class="nav bd-sidenav bd-sidenav__home-link">
+            <li class="toctree-l1">
+                <a class="reference internal" href="../../../index.html">
+                    Welcome
+                </a>
+            </li>
+        </ul>
+        <ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../../../tutorial/about.html">About</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../tutorial/install.html">Installation</a></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../../tutorial/documentations.html">Documentations</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../tutorial/docs/presetting.html">1. Presetting</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../tutorial/docs/manifold_mesh.html">2. Manifold &amp; mesh</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../tutorial/docs/space_form.html">3. Space &amp; form</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../tutorial/docs/pde.html">4. PDE</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../tutorial/docs/wf.html">5. Weak formulation &amp; discretization</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../tutorial/docs/ap.html">6. Algebraic proxy</a></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../../../tutorial/docs/implementations.html">7. Implementations</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../tutorial/docs/implementations/msepy.html">7.1. msepy</a></li>
+</ul>
+</details></li>
+</ul>
+</details></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../tutorial/summary.html">Summary</a></li>
+</ul>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../../jupyter/index.html">Jupyter notebooks 🪐</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../jupyter/general/first_equation.html">Set up your first equations</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../jupyter/general/discretize_linear_pH_system.html">How to discretize equations</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../../gallery/index.html">Gallery🖼</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../../../gallery/msepy_domains_and_meshes/index.html"><em>msepy</em> domains and meshes</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../gallery/msepy_domains_and_meshes/msepy/backward_step.html">Backward step</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../gallery/msepy_domains_and_meshes/msepy/crazy.html">Crazy domain and mesh</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../gallery/msepy_domains_and_meshes/msepy/cylinder_channel.html">Cylinder channel</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../gallery/msepy_domains_and_meshes/msepy/multi_crazy.html">Multi-crazy domain and mesh</a></li>
+</ul>
+</details></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../gallery/div_grad/index.html">🟢 div-grad</a></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../../../gallery/Navier_Stokes/index.html">🌊 Navier-Stokes equations</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../gallery/Navier_Stokes/backward_facing_step/index.html">Backward facing step flow</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../gallery/Navier_Stokes/lid_driven_cavity/index.html">Lid-driven cavity</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../gallery/Navier_Stokes/normal_dipole_collision/index.html">Normal dipole collision</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../gallery/Navier_Stokes/shear_layer_rollup/index.html">Shear layer rollup</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../gallery/Navier_Stokes/Taylor_Green_vortex/index.html">Taylor-Green vortex</a></li>
+</ul>
+</details></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../gallery/MHD/index.html">🧲 MHD</a></li>
+</ul>
+</details></li>
+</ul>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../../../contact.html">Contact</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../contributors.html">Contributors</a></li>
+</ul>
+
+    </div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+  </div>
+  
+  <div id="rtd-footer-container"></div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+
+<div class="sbt-scroll-pixel-helper"></div>
+
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item"><button class="sidebar-toggle primary-toggle btn btn-sm" title="Toggle primary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <span class="fa-solid fa-bars"></span>
+</button></div>
+      
+    </div>
+  
+  
+    <div class="header-article-items__end">
+      
+        <div class="header-article-item">
+
+<div class="article-header-buttons">
+
+
+
+
+
+<div class="dropdown dropdown-source-buttons">
+  <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Source repositories">
+    <i class="fab fa-github"></i>
+  </button>
+  <ul class="dropdown-menu">
+      
+      
+      
+      <li><a href="https://github.com/mathischeap/phyem" target="_blank"
+   class="btn btn-sm btn-source-repository-button dropdown-item"
+   title="Source repository"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fab fa-github"></i>
+  </span>
+<span class="btn__text-container">Repository</span>
+</a>
+</li>
+      
+      
+      
+      
+      <li><a href="https://github.com/mathischeap/phyem/issues/new?title=Issue%20on%20page%20%2F_modules/phyem/src/config.html&body=Your%20issue%20content%20here." target="_blank"
+   class="btn btn-sm btn-source-issues-button dropdown-item"
+   title="Open an issue"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-lightbulb"></i>
+  </span>
+<span class="btn__text-container">Open issue</span>
+</a>
+</li>
+      
+  </ul>
+</div>
+
+
+
+
+<button onclick="toggleFullScreen()"
+  class="btn btn-sm btn-fullscreen-button"
+  title="Fullscreen mode"
+  data-bs-placement="bottom" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-expand"></i>
+  </span>
+
+</button>
+
+
+
+<script>
+document.write(`
+  <button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button" title="light/dark" aria-label="light/dark" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="theme-switch fa-solid fa-sun fa-lg" data-mode="light"></i>
+    <i class="theme-switch fa-solid fa-moon fa-lg" data-mode="dark"></i>
+    <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"></i>
+  </button>
+`);
+</script>
+
+
+<script>
+document.write(`
+  <button class="btn btn-sm pst-navbar-icon search-button search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass fa-lg"></i>
+  </button>
+`);
+</script>
+
+</div></div>
+      
+    </div>
+  
+</div>
+</div>
+              
+              
+
+<div id="jb-print-docs-body" class="onlyprint">
+    <h1></h1>
+    <!-- Table of contents -->
+    <div id="print-main-content">
+        <div id="jb-print-toc">
+            
+        </div>
+    </div>
+</div>
+
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <h1>Source code for phyem.src.config</h1><div class="highlight"><pre>
+<span></span><span class="c1"># -*- coding: utf-8 -*-</span>
+<span class="c1"># noinspection PyUnresolvedReferences</span>
+<span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
+
+<span class="sd">.. note::</span>
+
+<span class="sd">    *phyem* is ready by itself with default global parameters. You can direct initialize a simulation with these</span>
+<span class="sd">    default global parameters.</span>
+
+<span class="sd">If you want to customize global parameters, you can do use following functions:</span>
+
+<span class="sd">    .. autofunction:: set_embedding_space_dim</span>
+
+<span class="sd">    .. autofunction:: set_high_accuracy</span>
+
+<span class="sd">    .. autofunction:: set_pr_cache</span>
+
+<span class="sd">For example,</span>
+
+<span class="sd">&gt;&gt;&gt; ph.config.set_embedding_space_dim(2)</span>
+<span class="sd">&gt;&gt;&gt; ph.config.set_high_accuracy(True)</span>
+<span class="sd">&gt;&gt;&gt; ph.config.set_pr_cache(False)</span>
+
+<span class="sd">These commands set the embedding space to be 2-dimensional, ask *phyem* to have a high accuracy and not</span>
+<span class="sd">to use *pr* cache (or to present *pr* outputs in real time). These parameters are same to the default values; they have</span>
+<span class="sd">no effects (thus we preferably omit them).</span>
+
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="n">_global_variables</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s1">&#39;embedding_space_dim&#39;</span><span class="p">:</span> <span class="mi">2</span><span class="p">,</span>      <span class="c1"># default embedding_space_dim is 2.</span>
+    <span class="s1">&#39;zero_entry_threshold&#39;</span><span class="p">:</span> <span class="mf">1e-12</span>  <span class="c1"># set to be zero when it is lower than this</span>
+<span class="p">}</span>
+
+
+<span class="c1"># MPI setting</span>
+<span class="k">try</span><span class="p">:</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">mpi4py</span><span class="w"> </span><span class="kn">import</span> <span class="n">MPI</span>
+    <span class="n">COMM</span> <span class="o">=</span> <span class="n">MPI</span><span class="o">.</span><span class="n">COMM_WORLD</span>
+    <span class="n">RANK</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="n">COMM</span><span class="o">.</span><span class="n">Get_rank</span><span class="p">()</span>
+    <span class="n">SIZE</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="n">COMM</span><span class="o">.</span><span class="n">Get_size</span><span class="p">()</span>
+<span class="k">except</span> <span class="ne">ModuleNotFoundError</span><span class="p">:</span>  <span class="c1"># no `mpi4py` installed.</span>
+    <span class="n">COMM</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">RANK</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="n">SIZE</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span>
+
+<span class="n">MASTER_RANK</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span>  <span class="c1"># DO NOT change this</span>
+
+
+<span class="n">_setting</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s2">&quot;block&quot;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>   <span class="c1"># matplot block</span>
+    <span class="s2">&quot;cache_folder&quot;</span><span class="p">:</span> <span class="s1">&#39;__phcache__&#39;</span><span class="p">,</span>  <span class="c1"># the default cache folder name</span>
+    <span class="s2">&quot;pr_cache&quot;</span><span class="p">:</span> <span class="kc">False</span><span class="p">,</span>   <span class="c1"># if this is True, all pr will save to the cache folder and will not show()</span>
+    <span class="s2">&quot;pr_cache_maximum&quot;</span><span class="p">:</span> <span class="mi">3</span><span class="p">,</span>  <span class="c1"># We clean toward this number when it is more than twice</span>
+    <span class="s2">&quot;pr_cache_counter&quot;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>  <span class="c1"># we have cache how many times?</span>
+    <span class="s2">&quot;pr_cache_subfolder&quot;</span><span class="p">:</span> <span class="s1">&#39;&#39;</span><span class="p">,</span>  <span class="c1"># we cache where in particular?</span>
+    <span class="s2">&quot;pr_cache_folder_prefix&quot;</span><span class="p">:</span> <span class="s1">&#39;Pr_&#39;</span><span class="p">,</span>  <span class="c1"># we cache where in particular?</span>
+    <span class="s2">&quot;pr_cache_current_folder&quot;</span><span class="p">:</span> <span class="s1">&#39;current&#39;</span><span class="p">,</span>  <span class="c1"># we cache where in particular?</span>
+    <span class="s2">&quot;high_accuracy&quot;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>  <span class="c1"># influence sparsity of some matrices.</span>
+    <span class="s2">&quot;auto_cleaning&quot;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>  <span class="c1"># automatic memory saving</span>
+<span class="p">}</span>
+
+
+<div class="viewcode-block" id="set_embedding_space_dim">
+<a class="viewcode-back" href="../../../tutorial/docs/presetting.html#phyem.src.config.set_embedding_space_dim">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">set_embedding_space_dim</span><span class="p">(</span><span class="n">ndim</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;To set the dimensions of the space where our simulation problem is defined, i.e., the embedding space.</span>
+<span class="sd">    The default dimensions are 2.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    ndim : {1, 2, 3}</span>
+<span class="sd">        *phyem* can only simulate problems in 1-, 2- or 3-d space.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">assert</span> <span class="n">ndim</span> <span class="o">%</span> <span class="mi">1</span> <span class="o">==</span> <span class="mi">0</span> <span class="ow">and</span> <span class="n">ndim</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;ndim=</span><span class="si">{</span><span class="n">ndim</span><span class="si">}</span><span class="s2"> is wrong, it must be a positive integer.&quot;</span>
+    <span class="n">_global_variables</span><span class="p">[</span><span class="s1">&#39;embedding_space_dim&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">ndim</span>
+    <span class="n">_clear_all</span><span class="p">()</span>   <span class="c1"># whenever we change or reset the space dim, we clear all abstract objects.</span>
+    <span class="n">_clear_pr_cache</span><span class="p">()</span></div>
+
+
+
+<div class="viewcode-block" id="set_high_accuracy">
+<a class="viewcode-back" href="../../../tutorial/docs/presetting.html#phyem.src.config.set_high_accuracy">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">set_high_accuracy</span><span class="p">(</span><span class="n">_bool</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;*phyem* may trade for higher accuracy in the cost of losing a little performance. Turn this feature</span>
+<span class="sd">    on or off through this function. The default value is ``True``.</span>
+
+<span class="sd">    For example, *phyem* can use numerical quadrature of a higher degree (thus of higher accuracy)</span>
+<span class="sd">    to compute the mass matrices, which could</span>
+<span class="sd">    decrease the sparsity and sequentially slow down the assembling and solving processes slightly.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    _bool : bool</span>
+<span class="sd">        If ``_bool`` is ``True``, *phyem* occasionally has a higher accuracy.</span>
+<span class="sd">        The real effect depends on the problem you are solving.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">assert</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">_bool</span><span class="p">,</span> <span class="nb">bool</span><span class="p">),</span> <span class="sa">f</span><span class="s2">&quot;give me True or False&quot;</span>
+    <span class="n">_setting</span><span class="p">[</span><span class="s1">&#39;high_accuracy&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">_bool</span></div>
+
+
+
+<div class="viewcode-block" id="set_pr_cache">
+<a class="viewcode-back" href="../../../tutorial/docs/presetting.html#phyem.src.config.set_pr_cache">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">set_pr_cache</span><span class="p">(</span><span class="n">_bool</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot; The abbreviation `pr` stands for `print representation`.</span>
+<span class="sd">    Many classes in *phyem* have the ``pr`` method. Calling it of an instance by ``.pr()`` will usually invoke</span>
+<span class="sd">    the ``matplotlib`` and ``LaTeX`` pakages to render a picture which proper illustrates the instance.</span>
+<span class="sd">    By turning the *pr* cache on, all outputs resulting from ``pr`` methods will be saved to</span>
+<span class="sd">    ``./__phcache__/Pr_current/`` instead of being shown in real time.</span>
+
+<span class="sd">    The default value is ``False``.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    _bool : bool</span>
+<span class="sd">        If ``_bool`` is ``True``, all outputs resulting from ``pr`` methods will be saved</span>
+<span class="sd">        to ``./__phcache__/Pr_current/``.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">assert</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">_bool</span><span class="p">,</span> <span class="nb">bool</span><span class="p">),</span> <span class="sa">f</span><span class="s2">&quot;give me True or False&quot;</span>
+    <span class="n">_setting</span><span class="p">[</span><span class="s1">&#39;pr_cache&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">_bool</span></div>
+
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">set_auto_cleaning</span><span class="p">(</span><span class="n">_bool_or_factor</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    _bool_or_factor</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">_bool_or_factor</span><span class="p">,</span> <span class="nb">bool</span><span class="p">):</span>
+        <span class="k">pass</span>
+    <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">_bool_or_factor</span><span class="p">,</span> <span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="nb">float</span><span class="p">)):</span>
+        <span class="n">_bool_or_factor</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">_bool_or_factor</span><span class="p">)</span>
+        <span class="k">assert</span> <span class="n">_bool_or_factor</span> <span class="o">&gt;=</span> <span class="mi">2</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;must set clean factor &gt;= 2.&quot;</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;clean factor to be a bool or a positive integer.&quot;</span><span class="p">)</span>
+    <span class="n">_setting</span><span class="p">[</span><span class="s1">&#39;auto_cleaning&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">_bool_or_factor</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_pr_cache</span><span class="p">(</span><span class="n">fig</span><span class="p">,</span> <span class="n">filename</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    fig</span>
+<span class="sd">    filename :</span>
+<span class="sd">        The filename received from particular pr method. It will be put into the final filename.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">RANK</span> <span class="o">!=</span> <span class="n">MASTER_RANK</span><span class="p">:</span>
+        <span class="k">return</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">pass</span>
+
+    <span class="kn">from</span><span class="w"> </span><span class="nn">phyem.tools.os_</span><span class="w"> </span><span class="kn">import</span> <span class="n">mkdir</span><span class="p">,</span> <span class="n">empty_dir</span><span class="p">,</span> <span class="n">isdir</span>
+    <span class="n">phcache_folder</span> <span class="o">=</span> <span class="n">_setting</span><span class="p">[</span><span class="sa">r</span><span class="s1">&#39;cache_folder&#39;</span><span class="p">]</span>
+    <span class="k">if</span> <span class="n">isdir</span><span class="p">(</span><span class="n">phcache_folder</span><span class="p">):</span>
+        <span class="k">pass</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">mkdir</span><span class="p">(</span><span class="n">phcache_folder</span><span class="p">)</span>
+
+    <span class="kn">from</span><span class="w"> </span><span class="nn">time</span><span class="w"> </span><span class="kn">import</span> <span class="n">time</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">phyem.tools.miscellaneous.random_</span><span class="w"> </span><span class="kn">import</span> <span class="n">string_digits</span>
+    <span class="kn">import</span><span class="w"> </span><span class="nn">matplotlib.pyplot</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">plt</span>
+    <span class="kn">import</span><span class="w"> </span><span class="nn">matplotlib</span>
+    <span class="n">matplotlib</span><span class="o">.</span><span class="n">use</span><span class="p">(</span><span class="s1">&#39;TkAgg&#39;</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">filename</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">filename_personal</span> <span class="o">=</span> <span class="sa">rf</span><span class="s1">&#39;/</span><span class="si">{</span><span class="n">_setting</span><span class="p">[</span><span class="s2">&quot;pr_cache_counter&quot;</span><span class="p">]</span><span class="si">}</span><span class="s1">.png&#39;</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">filename_personal</span> <span class="o">=</span> <span class="sa">rf</span><span class="s1">&#39;/</span><span class="si">{</span><span class="n">_setting</span><span class="p">[</span><span class="s2">&quot;pr_cache_counter&quot;</span><span class="p">]</span><span class="si">}</span><span class="s1">_</span><span class="si">{</span><span class="n">filename</span><span class="si">}</span><span class="s1">.png&#39;</span>
+
+    <span class="k">if</span> <span class="n">_setting</span><span class="p">[</span><span class="s2">&quot;pr_cache_counter&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="n">str_time</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">time</span><span class="p">())</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;.&#39;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">subfolder_name</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="n">phcache_folder</span> <span class="o">+</span> <span class="sa">r</span><span class="s2">&quot;/&quot;</span> <span class="o">+</span> <span class="n">_setting</span><span class="p">[</span><span class="s2">&quot;pr_cache_folder_prefix&quot;</span><span class="p">]</span> <span class="o">+</span>
+            <span class="n">str_time</span> <span class="o">+</span> <span class="s1">&#39;_&#39;</span> <span class="o">+</span> <span class="n">string_digits</span><span class="p">(</span><span class="mi">12</span><span class="p">)</span>  <span class="c1"># how we name the random folder</span>
+        <span class="p">)</span>
+        <span class="n">_setting</span><span class="p">[</span><span class="s2">&quot;pr_cache_subfolder&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">subfolder_name</span>
+        <span class="n">mkdir</span><span class="p">(</span><span class="n">subfolder_name</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">subfolder_name</span> <span class="o">=</span> <span class="n">_setting</span><span class="p">[</span><span class="s2">&quot;pr_cache_subfolder&quot;</span><span class="p">]</span>
+        <span class="k">assert</span> <span class="n">subfolder_name</span> <span class="o">!=</span> <span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;something is wrong!&quot;</span>
+
+    <span class="n">plt</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span><span class="n">subfolder_name</span> <span class="o">+</span> <span class="n">filename_personal</span><span class="p">,</span> <span class="n">bbox_inches</span><span class="o">=</span><span class="s1">&#39;tight&#39;</span><span class="p">,</span> <span class="n">dpi</span><span class="o">=</span><span class="mi">200</span><span class="p">)</span>
+
+    <span class="n">folder_current</span> <span class="o">=</span> <span class="p">(</span>
+        <span class="n">phcache_folder</span> <span class="o">+</span> <span class="s1">&#39;/&#39;</span> <span class="o">+</span> <span class="n">_setting</span><span class="p">[</span><span class="s2">&quot;pr_cache_folder_prefix&quot;</span><span class="p">]</span> <span class="o">+</span> <span class="n">_setting</span><span class="p">[</span><span class="s2">&quot;pr_cache_current_folder&quot;</span><span class="p">]</span>
+    <span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">_setting</span><span class="p">[</span><span class="s2">&quot;pr_cache_counter&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="n">mkdir</span><span class="p">(</span><span class="n">folder_current</span><span class="p">)</span>   <span class="c1"># do nothing if the folder exists</span>
+        <span class="n">empty_dir</span><span class="p">(</span><span class="n">folder_current</span><span class="p">)</span>  <span class="c1"># remove old files if there is any.</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">pass</span>
+
+    <span class="n">plt</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span><span class="n">folder_current</span> <span class="o">+</span> <span class="n">filename_personal</span><span class="p">,</span> <span class="n">bbox_inches</span><span class="o">=</span><span class="s1">&#39;tight&#39;</span><span class="p">,</span> <span class="n">dpi</span><span class="o">=</span><span class="mi">200</span><span class="p">)</span>
+
+    <span class="n">_setting</span><span class="p">[</span><span class="s2">&quot;pr_cache_counter&quot;</span><span class="p">]</span> <span class="o">+=</span> <span class="mi">1</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">close</span><span class="p">(</span><span class="n">fig</span><span class="p">)</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_set_matplot_block</span><span class="p">(</span><span class="n">block</span><span class="p">):</span>
+<span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;&quot;&quot;&quot;</span>
+    <span class="n">_setting</span><span class="p">[</span><span class="s1">&#39;block&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">block</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_clear_pr_cache</span><span class="p">():</span>
+<span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;&quot;&quot;&quot;</span>
+    <span class="n">_setting</span><span class="p">[</span><span class="s2">&quot;pr_cache_counter&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span>  <span class="c1"># reset cache counting</span>
+    <span class="n">_setting</span><span class="p">[</span><span class="s2">&quot;pr_cache_subfolder&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>  <span class="c1"># clean cache_subfolder</span>
+
+    <span class="k">if</span> <span class="n">RANK</span> <span class="o">==</span> <span class="n">MASTER_RANK</span><span class="p">:</span>
+        <span class="kn">from</span><span class="w"> </span><span class="nn">phyem.tools.os_</span><span class="w"> </span><span class="kn">import</span> <span class="n">listdir</span><span class="p">,</span> <span class="n">isdir</span><span class="p">,</span> <span class="n">mkdir</span><span class="p">,</span> <span class="n">rmdir</span><span class="p">,</span> <span class="n">empty_dir</span>
+
+        <span class="n">phcache_folder</span> <span class="o">=</span> <span class="n">_setting</span><span class="p">[</span><span class="sa">r</span><span class="s1">&#39;cache_folder&#39;</span><span class="p">]</span>
+        <span class="k">if</span> <span class="n">isdir</span><span class="p">(</span><span class="n">phcache_folder</span><span class="p">):</span>
+            <span class="k">pass</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">None</span>
+
+        <span class="n">all_ph_cache_files</span> <span class="o">=</span> <span class="n">listdir</span><span class="p">(</span><span class="n">phcache_folder</span><span class="p">)</span>  <span class="c1"># including folder names.</span>
+
+        <span class="n">pr_prefix</span> <span class="o">=</span> <span class="n">_setting</span><span class="p">[</span><span class="s1">&#39;pr_cache_folder_prefix&#39;</span><span class="p">]</span>
+        <span class="n">current_file</span> <span class="o">=</span> <span class="n">_setting</span><span class="p">[</span><span class="s2">&quot;pr_cache_folder_prefix&quot;</span><span class="p">]</span> <span class="o">+</span> <span class="n">_setting</span><span class="p">[</span><span class="s2">&quot;pr_cache_current_folder&quot;</span><span class="p">]</span>
+        <span class="n">len_prefix</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">pr_prefix</span><span class="p">)</span>
+        <span class="n">number_pr_files</span> <span class="o">=</span> <span class="mi">0</span>  <span class="c1"># excluding the current file</span>
+        <span class="n">pr_files</span> <span class="o">=</span> <span class="nb">list</span><span class="p">()</span>  <span class="c1"># excluding the current file</span>
+        <span class="k">for</span> <span class="n">cache_file</span> <span class="ow">in</span> <span class="n">all_ph_cache_files</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">cache_file</span><span class="p">[:</span><span class="n">len_prefix</span><span class="p">]</span> <span class="o">==</span> <span class="n">pr_prefix</span> <span class="ow">and</span> <span class="n">cache_file</span> <span class="o">!=</span> <span class="n">current_file</span><span class="p">:</span>
+                <span class="n">number_pr_files</span> <span class="o">+=</span> <span class="mi">1</span>
+                <span class="n">pr_files</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">cache_file</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">pass</span>
+        <span class="n">pr_cache_maximum</span> <span class="o">=</span> <span class="n">_setting</span><span class="p">[</span><span class="s2">&quot;pr_cache_maximum&quot;</span><span class="p">]</span>
+        <span class="k">assert</span> <span class="n">pr_cache_maximum</span> <span class="o">&gt;</span> <span class="mi">1</span> <span class="ow">and</span> <span class="n">pr_cache_maximum</span> <span class="o">%</span> <span class="mi">1</span> <span class="o">==</span> <span class="mi">0</span><span class="p">,</span> \
+            <span class="sa">f</span><span class="s2">&quot;_setting[&#39;pr_cache_maximum&#39;] = </span><span class="si">{</span><span class="n">pr_cache_maximum</span><span class="si">}</span><span class="s2"> is illegal, give me a positive integer (&gt;1).&quot;</span>
+        <span class="k">if</span> <span class="n">number_pr_files</span> <span class="o">&gt;=</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">pr_cache_maximum</span><span class="p">:</span>
+            <span class="n">files_2b_clean</span> <span class="o">=</span> <span class="n">pr_files</span><span class="p">[:</span><span class="n">pr_cache_maximum</span> <span class="o">+</span> <span class="mi">1</span><span class="p">]</span>
+            <span class="k">for</span> <span class="n">file</span> <span class="ow">in</span> <span class="n">files_2b_clean</span><span class="p">:</span>
+                <span class="n">empty_dir</span><span class="p">(</span><span class="n">phcache_folder</span> <span class="o">+</span> <span class="sa">r</span><span class="s2">&quot;/&quot;</span> <span class="o">+</span> <span class="n">file</span><span class="p">)</span>
+                <span class="n">rmdir</span><span class="p">(</span><span class="n">phcache_folder</span> <span class="o">+</span> <span class="sa">r</span><span class="s2">&quot;/&quot;</span> <span class="o">+</span> <span class="n">file</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">pass</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">pass</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_clear_all</span><span class="p">():</span>
+<span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;clear all abstract objects.</span>
+
+<span class="sd">    Make sure that, when we add new global cache, put it here.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">phyem.src.algebra.array</span><span class="w"> </span><span class="kn">import</span> <span class="n">_global_root_arrays</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">phyem.src.algebra.nonlinear_operator</span><span class="w"> </span><span class="kn">import</span> <span class="n">_global_nop_arrays</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">phyem.src.form.main</span><span class="w"> </span><span class="kn">import</span> <span class="n">_global_forms</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">phyem.src.form.main</span><span class="w"> </span><span class="kn">import</span> <span class="n">_global_root_forms_lin_dict</span>
+    <span class="n">_clear_a_dict</span><span class="p">(</span><span class="n">_global_root_arrays</span><span class="p">)</span>
+    <span class="n">_clear_a_dict</span><span class="p">(</span><span class="n">_global_nop_arrays</span><span class="p">)</span>
+    <span class="n">_clear_a_dict</span><span class="p">(</span><span class="n">_global_forms</span><span class="p">)</span>
+    <span class="n">_clear_a_dict</span><span class="p">(</span><span class="n">_global_root_forms_lin_dict</span><span class="p">)</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">phyem.src.form.parameters</span><span class="w"> </span><span class="kn">import</span> <span class="n">_global_root_constant_scalars</span>
+    <span class="n">_clear_a_dict</span><span class="p">(</span><span class="n">_global_root_constant_scalars</span><span class="p">)</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">phyem.src.form.main</span><span class="w"> </span><span class="kn">import</span> <span class="n">_global_form_variables</span>
+    <span class="n">_global_form_variables</span><span class="p">[</span><span class="s1">&#39;update_cache&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">True</span>
+
+    <span class="kn">from</span><span class="w"> </span><span class="nn">phyem.src.manifold</span><span class="w"> </span><span class="kn">import</span> <span class="n">_global_manifolds</span>
+    <span class="n">_clear_a_dict</span><span class="p">(</span><span class="n">_global_manifolds</span><span class="p">)</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">phyem.src.mesh</span><span class="w"> </span><span class="kn">import</span> <span class="n">_global_meshes</span>
+    <span class="n">_clear_a_dict</span><span class="p">(</span><span class="n">_global_meshes</span><span class="p">)</span>
+
+    <span class="kn">from</span><span class="w"> </span><span class="nn">phyem.src.time_sequence</span><span class="w"> </span><span class="kn">import</span> <span class="n">_global_abstract_time_sequence</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">phyem.src.time_sequence</span><span class="w"> </span><span class="kn">import</span> <span class="n">_global_abstract_time_interval</span>
+    <span class="n">_clear_a_dict</span><span class="p">(</span><span class="n">_global_abstract_time_sequence</span><span class="p">)</span>
+    <span class="n">_clear_a_dict</span><span class="p">(</span><span class="n">_global_abstract_time_interval</span><span class="p">)</span>
+
+    <span class="kn">from</span><span class="w"> </span><span class="nn">phyem.src.spaces.main</span><span class="w"> </span><span class="kn">import</span> <span class="n">_config</span>
+    <span class="n">_config</span><span class="p">[</span><span class="s1">&#39;current_mesh&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">phyem.src.spaces.main</span><span class="w"> </span><span class="kn">import</span> <span class="n">_degree_cache</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">phyem.src.spaces.main</span><span class="w"> </span><span class="kn">import</span> <span class="n">_space_set</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">phyem.src.spaces.main</span><span class="w"> </span><span class="kn">import</span> <span class="n">_mesh_set</span>
+    <span class="n">_clear_a_dict</span><span class="p">(</span><span class="n">_degree_cache</span><span class="p">)</span>
+    <span class="n">_clear_a_dict</span><span class="p">(</span><span class="n">_space_set</span><span class="p">)</span>
+    <span class="n">_clear_a_dict</span><span class="p">(</span><span class="n">_mesh_set</span><span class="p">)</span>
+
+    <span class="kn">from</span><span class="w"> </span><span class="nn">phyem.src.wf.term.main</span><span class="w"> </span><span class="kn">import</span> <span class="n">_global_wf_terms</span>
+    <span class="n">_clear_a_dict</span><span class="p">(</span><span class="n">_global_wf_terms</span><span class="p">)</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_clear_a_dict</span><span class="p">(</span><span class="n">the_dict</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;&quot;&quot;&quot;</span>
+    <span class="n">keys</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">the_dict</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
+    <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">keys</span><span class="p">:</span>
+        <span class="k">del</span> <span class="n">the_dict</span><span class="p">[</span><span class="n">key</span><span class="p">]</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">get_embedding_space_dim</span><span class="p">():</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;&quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">_global_variables</span><span class="p">[</span><span class="s1">&#39;embedding_space_dim&#39;</span><span class="p">]</span>
+
+
+<span class="c1"># lib setting config ...............</span>
+<span class="n">_abstract_time_sequence_default_lin_repr</span> <span class="o">=</span> <span class="s1">&#39;Ts&#39;</span>
+<span class="n">_manifold_default_lin_repr</span> <span class="o">=</span> <span class="s1">&#39;Manifold&#39;</span>
+<span class="n">_mesh_default_lin_repr</span> <span class="o">=</span> <span class="s1">&#39;Mesh&#39;</span>
+
+
+<span class="n">_global_lin_repr_setting</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="c1"># objects</span>
+    <span class="s1">&#39;manifold&#39;</span><span class="p">:</span> <span class="p">[</span><span class="sa">r</span><span class="s1">&#39;\underline{&#39;</span><span class="p">,</span> <span class="s1">&#39;}&#39;</span><span class="p">],</span>
+    <span class="s1">&#39;mesh&#39;</span><span class="p">:</span> <span class="p">[</span><span class="sa">r</span><span class="s1">&#39;\textrm{&#39;</span><span class="p">,</span> <span class="sa">r</span><span class="s1">&#39;}&#39;</span><span class="p">],</span>
+    <span class="s1">&#39;form&#39;</span><span class="p">:</span> <span class="p">[</span><span class="sa">r</span><span class="s1">&#39;\textsf{&#39;</span><span class="p">,</span> <span class="sa">r</span><span class="s1">&#39;}&#39;</span><span class="p">],</span>
+    <span class="s1">&#39;scalar_parameter&#39;</span><span class="p">:</span> <span class="p">[</span><span class="sa">r</span><span class="s1">&#39;\textsc{&#39;</span><span class="p">,</span> <span class="sa">r</span><span class="s1">&#39;}&#39;</span><span class="p">],</span>
+    <span class="s1">&#39;abstract_time_sequence&#39;</span><span class="p">:</span> <span class="p">[</span><span class="sa">r</span><span class="s1">&#39;\textit{&#39;</span><span class="p">,</span> <span class="sa">r</span><span class="s1">&#39;}&#39;</span><span class="p">],</span>
+    <span class="s1">&#39;abstract_time_interval&#39;</span><span class="p">:</span> <span class="p">[</span><span class="sa">r</span><span class="s1">&#39;\texttt{&#39;</span><span class="p">,</span> <span class="sa">r</span><span class="s1">&#39;}&#39;</span><span class="p">],</span>   <span class="c1"># do not use `textsc`.</span>
+    <span class="s1">&#39;abstract_time_instant&#39;</span><span class="p">:</span> <span class="p">[</span><span class="sa">r</span><span class="s1">&#39;\textsl{&#39;</span><span class="p">,</span> <span class="sa">r</span><span class="s1">&#39;}&#39;</span><span class="p">],</span>
+    <span class="s1">&#39;array&#39;</span><span class="p">:</span> <span class="p">[</span><span class="sa">r</span><span class="s1">&#39;\textbf{&#39;</span><span class="p">,</span> <span class="sa">r</span><span class="s1">&#39;}&#39;</span><span class="p">],</span>
+    <span class="s1">&#39;multidimensional_array&#39;</span><span class="p">:</span> <span class="p">[</span><span class="sa">r</span><span class="s1">&#39;\textlf{&#39;</span><span class="p">,</span> <span class="sa">r</span><span class="s1">&#39;}&#39;</span><span class="p">],</span>
+    <span class="s1">&#39;TermNonLinearAlgebraicProxy&#39;</span><span class="p">:</span> <span class="p">[</span><span class="sa">r</span><span class="s1">&#39;\textmd{&#39;</span><span class="p">,</span> <span class="sa">r</span><span class="s1">&#39;}&#39;</span><span class="p">],</span>
+<span class="p">}</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_parse_lin_repr</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="n">pure_lin_repr</span><span class="p">):</span>
+<span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;&quot;&quot;&quot;</span>
+    <span class="k">assert</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">pure_lin_repr</span><span class="p">,</span> <span class="nb">str</span><span class="p">)</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="n">pure_lin_repr</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">,</span> \
+        <span class="sa">f</span><span class="s2">&quot;linguistic_representation must be str of length &gt; 0.&quot;</span>
+    <span class="k">assert</span> <span class="nb">all</span><span class="p">([</span><span class="n">_</span> <span class="ow">not</span> <span class="ow">in</span> <span class="sa">r</span><span class="s2">&quot;{$\}&quot;</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="n">pure_lin_repr</span><span class="p">]),</span> <span class="p">(</span>
+            <span class="sa">f</span><span class="s2">&quot;pure_lin_repr=</span><span class="si">{</span><span class="n">pure_lin_repr</span><span class="si">}</span><span class="s2"> illegal, cannot contain&quot;</span> <span class="o">+</span> <span class="sa">r</span><span class="s2">&quot;&#39;{\}&#39;.&quot;</span><span class="p">)</span>
+    <span class="n">start</span><span class="p">,</span> <span class="n">end</span> <span class="o">=</span> <span class="n">_global_lin_repr_setting</span><span class="p">[</span><span class="n">obj</span><span class="p">]</span>
+    <span class="k">return</span> <span class="n">start</span> <span class="o">+</span> <span class="n">pure_lin_repr</span> <span class="o">+</span> <span class="n">end</span><span class="p">,</span> <span class="n">pure_lin_repr</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_parse_type_and_pure_lin_repr</span><span class="p">(</span><span class="n">lin_repr</span><span class="p">):</span>
+<span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;&quot;&quot;&quot;</span>
+    <span class="k">for</span> <span class="n">what</span> <span class="ow">in</span> <span class="n">_global_lin_repr_setting</span><span class="p">:</span>
+        <span class="n">key</span> <span class="o">=</span> <span class="n">_global_lin_repr_setting</span><span class="p">[</span><span class="n">what</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">lk</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">key</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">lin_repr</span><span class="p">[:</span><span class="n">lk</span><span class="p">]</span> <span class="o">==</span> <span class="n">key</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">what</span><span class="p">,</span> <span class="n">lin_repr</span><span class="p">[</span><span class="n">lk</span><span class="p">:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">pass</span>
+    <span class="k">return</span> <span class="kc">None</span>
+
+
+<span class="n">_manifold_default_sym_repr</span> <span class="o">=</span> <span class="sa">r</span><span class="s1">&#39;\mathcal</span><span class="si">{M}</span><span class="s1">&#39;</span>
+<span class="n">_mesh_default_sym_repr</span> <span class="o">=</span> <span class="sa">r</span><span class="s1">&#39;\mathfrak</span><span class="si">{M}</span><span class="s1">&#39;</span>
+<span class="n">_abstract_time_sequence_default_sym_repr</span> <span class="o">=</span> <span class="sa">r</span><span class="s1">&#39;\mathtt</span><span class="si">{T}</span><span class="s1">^S&#39;</span>
+<span class="n">_abstract_time_interval_default_sym_repr</span> <span class="o">=</span> <span class="sa">r</span><span class="s1">&#39;\Delta t&#39;</span>
+
+
+<span class="n">_mesh_partition_sym_repr</span> <span class="o">=</span> <span class="p">[</span><span class="sa">r</span><span class="s2">&quot;\partial\mathfrak</span><span class="si">{M}</span><span class="s2">\left(&quot;</span><span class="p">,</span> <span class="sa">r</span><span class="s2">&quot;\right)&quot;</span><span class="p">]</span>
+<span class="n">_mesh_partition_lin_repr</span> <span class="o">=</span> <span class="sa">r</span><span class="s2">&quot;mesh-over: &quot;</span>
+
+<span class="n">_manifold_partition_lin_repr</span> <span class="o">=</span> <span class="s2">&quot;=sub&quot;</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_check_sym_repr</span><span class="p">(</span><span class="n">sym_repr</span><span class="p">):</span>   <span class="c1"># not used for forms as they have their own checker.</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;&quot;&quot;&quot;</span>
+    <span class="k">assert</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">sym_repr</span><span class="p">,</span> <span class="nb">str</span><span class="p">),</span> <span class="sa">f</span><span class="s2">&quot;sym_repr = </span><span class="si">{</span><span class="n">sym_repr</span><span class="si">}</span><span class="s2"> illegal, must be a string.&quot;</span>
+    <span class="n">pure_sym_repr</span> <span class="o">=</span> <span class="n">sym_repr</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39; &#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">)</span>
+    <span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="n">pure_sym_repr</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;sym_repr=</span><span class="si">{</span><span class="n">sym_repr</span><span class="si">}</span><span class="s2"> illegal, it cannot be empty.&quot;</span>
+    <span class="k">return</span> <span class="n">sym_repr</span>
+
+
+<span class="n">_form_evaluate_at_repr_setting</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s1">&#39;sym&#39;</span><span class="p">:</span> <span class="p">[</span><span class="sa">r</span><span class="s2">&quot;\left.&quot;</span><span class="p">,</span> <span class="sa">r</span><span class="s2">&quot;\right|^{(&quot;</span><span class="p">,</span> <span class="s2">&quot;)}&quot;</span><span class="p">],</span>
+    <span class="s1">&#39;lin&#39;</span><span class="p">:</span> <span class="s2">&quot;@&quot;</span><span class="p">,</span>
+<span class="p">}</span>
+
+<span class="n">_root_form_ap_vec_setting</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s1">&#39;sym&#39;</span><span class="p">:</span> <span class="p">[</span><span class="sa">r</span><span class="s2">&quot;\vec{&quot;</span><span class="p">,</span> <span class="sa">r</span><span class="s2">&quot;}&quot;</span><span class="p">],</span>
+    <span class="s1">&#39;lin&#39;</span><span class="p">:</span> <span class="s2">&quot;+vec&quot;</span>
+<span class="p">}</span>
+
+<span class="n">_transpose_text</span> <span class="o">=</span> <span class="s1">&#39;-transpose&#39;</span>
+
+<span class="n">_abstract_array_factor_sep</span> <span class="o">=</span> <span class="sa">r</span><span class="s1">&#39;\{*\}&#39;</span>
+<span class="n">_abstract_array_connector</span> <span class="o">=</span> <span class="sa">r</span><span class="s1">&#39;\{@\}&#39;</span>
+
+
+<span class="n">_global_operator_lin_repr_setting</span> <span class="o">=</span> <span class="p">{</span>  <span class="c1"># coded operators</span>
+    <span class="s1">&#39;plus&#39;</span><span class="p">:</span> <span class="sa">r</span><span class="s2">&quot; $+$ &quot;</span><span class="p">,</span>
+    <span class="s1">&#39;minus&#39;</span><span class="p">:</span> <span class="sa">r</span><span class="s2">&quot; $-$ &quot;</span><span class="p">,</span>
+    <span class="s1">&#39;wedge&#39;</span><span class="p">:</span> <span class="sa">r</span><span class="s2">&quot; $\wedge$ &quot;</span><span class="p">,</span>
+    <span class="s1">&#39;Hodge&#39;</span><span class="p">:</span> <span class="sa">r</span><span class="s1">&#39;$\star$ &#39;</span><span class="p">,</span>
+    <span class="s1">&#39;d&#39;</span><span class="p">:</span> <span class="sa">r</span><span class="s1">&#39;$\mathrm</span><span class="si">{d}</span><span class="s1">$ &#39;</span><span class="p">,</span>
+    <span class="s1">&#39;codifferential&#39;</span><span class="p">:</span> <span class="sa">r</span><span class="s1">&#39;$\mathrm</span><span class="si">{d}</span><span class="s1">^{\ast}$ &#39;</span><span class="p">,</span>
+    <span class="s1">&#39;time_derivative&#39;</span><span class="p">:</span> <span class="sa">r</span><span class="s1">&#39;$\partial_</span><span class="si">{t}</span><span class="s1">$ &#39;</span><span class="p">,</span>
+    <span class="s1">&#39;trace&#39;</span><span class="p">:</span> <span class="sa">r</span><span class="s1">&#39;\emph</span><span class="si">{tr}</span><span class="s1"> &#39;</span><span class="p">,</span>
+
+    <span class="s1">&#39;L2-inner-product&#39;</span><span class="p">:</span> <span class="p">[</span><span class="sa">r</span><span class="s2">&quot;$($&quot;</span><span class="p">,</span> <span class="sa">r</span><span class="s1">&#39;\emph{,} &#39;</span><span class="p">,</span> <span class="sa">r</span><span class="s2">&quot;$)$ \emph</span><span class="si">{over}</span><span class="s2"> &quot;</span><span class="p">],</span>
+    <span class="s1">&#39;duality-pairing&#39;</span><span class="p">:</span> <span class="p">[</span><span class="sa">r</span><span class="s2">&quot;$&lt;$&quot;</span><span class="p">,</span> <span class="sa">r</span><span class="s1">&#39;\emph{,} &#39;</span><span class="p">,</span> <span class="sa">r</span><span class="s2">&quot;$&gt;$ \emph</span><span class="si">{over}</span><span class="s2"> &quot;</span><span class="p">],</span>
+
+    <span class="s1">&#39;division&#39;</span><span class="p">:</span> <span class="sa">r</span><span class="s1">&#39; \emph{divided by} &#39;</span><span class="p">,</span>
+    <span class="s1">&#39;multiply&#39;</span><span class="p">:</span> <span class="sa">r</span><span class="s1">&#39; \emph</span><span class="si">{multiply}</span><span class="s1"> &#39;</span><span class="p">,</span>
+
+    <span class="s1">&#39;cross_product&#39;</span><span class="p">:</span> <span class="sa">r</span><span class="s2">&quot;$\times$&quot;</span><span class="p">,</span>
+    <span class="s1">&#39;Cross_Product&#39;</span><span class="p">:</span> <span class="sa">r</span><span class="s2">&quot;-$\mathsf</span><span class="si">{X}</span><span class="s2">$-&quot;</span><span class="p">,</span>
+    <span class="s1">&#39;CrossProduct&#39;</span><span class="p">:</span> <span class="sa">r</span><span class="s2">&quot;-$\mathrm</span><span class="si">{x}</span><span class="s2">$-&quot;</span><span class="p">,</span>
+    <span class="s1">&#39;crossProduct&#39;</span><span class="p">:</span> <span class="sa">r</span><span class="s2">&quot;-$\mathsf</span><span class="si">{x}</span><span class="s2">$-&quot;</span><span class="p">,</span>
+    <span class="s1">&#39;convect&#39;</span><span class="p">:</span> <span class="sa">r</span><span class="s2">&quot;$\cdot\nabla$&quot;</span><span class="p">,</span>
+    <span class="s1">&#39;tensor_product&#39;</span><span class="p">:</span> <span class="sa">r</span><span class="s2">&quot;$\otimes$&quot;</span><span class="p">,</span>
+
+    <span class="s1">&#39;projection&#39;</span><span class="p">:</span> <span class="sa">r</span><span class="s1">&#39;$\pi$ &#39;</span><span class="p">,</span>
+
+    <span class="s1">&#39;multi&#39;</span><span class="p">:</span> <span class="sa">r</span><span class="s2">&quot;$\ast$&quot;</span><span class="p">,</span>
+<span class="p">}</span>
+
+
+<span class="n">_non_root_lin_sep</span> <span class="o">=</span> <span class="p">[</span><span class="sa">r</span><span class="s1">&#39;\{&#39;</span><span class="p">,</span> <span class="sa">r</span><span class="s1">&#39;\}&#39;</span><span class="p">]</span>
+
+
+<span class="n">_global_operator_sym_repr_setting</span> <span class="o">=</span> <span class="p">{</span>  <span class="c1"># coded operators</span>
+    <span class="s1">&#39;plus&#39;</span><span class="p">:</span> <span class="sa">r</span><span class="s2">&quot;+&quot;</span><span class="p">,</span>
+    <span class="s1">&#39;minus&#39;</span><span class="p">:</span> <span class="sa">r</span><span class="s2">&quot;-&quot;</span><span class="p">,</span>
+    <span class="s1">&#39;wedge&#39;</span><span class="p">:</span> <span class="sa">r</span><span class="s2">&quot;{\wedge}&quot;</span><span class="p">,</span>
+    <span class="s1">&#39;Hodge&#39;</span><span class="p">:</span> <span class="sa">r</span><span class="s1">&#39;{\star}&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;d&#39;</span><span class="p">:</span> <span class="sa">r</span><span class="s1">&#39;\mathrm</span><span class="si">{d}</span><span class="s1">&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;codifferential&#39;</span><span class="p">:</span> <span class="sa">r</span><span class="s1">&#39;\mathrm</span><span class="si">{d}</span><span class="s1">^{\ast}&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;time_derivative&#39;</span><span class="p">:</span> <span class="sa">r</span><span class="s1">&#39;\partial_</span><span class="si">{t}</span><span class="s1">&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;trace&#39;</span><span class="p">:</span> <span class="sa">r</span><span class="s1">&#39;\mathrm</span><span class="si">{tr}</span><span class="s1">&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;division&#39;</span><span class="p">:</span> <span class="p">[</span><span class="sa">r</span><span class="s1">&#39;\frac{&#39;</span><span class="p">,</span> <span class="sa">r</span><span class="s1">&#39;}{&#39;</span><span class="p">,</span> <span class="sa">r</span><span class="s2">&quot;}&quot;</span><span class="p">],</span>
+
+    <span class="s1">&#39;cross_product&#39;</span><span class="p">:</span> <span class="sa">r</span><span class="s2">&quot;{\times}&quot;</span><span class="p">,</span>
+    <span class="s1">&#39;Cross_Product&#39;</span><span class="p">:</span> <span class="sa">r</span><span class="s2">&quot;{\mathsf</span><span class="si">{X}</span><span class="s2">}&quot;</span><span class="p">,</span>
+    <span class="s1">&#39;CrossProduct&#39;</span><span class="p">:</span> <span class="sa">r</span><span class="s2">&quot;{\mathrm</span><span class="si">{x}</span><span class="s2">}&quot;</span><span class="p">,</span>
+    <span class="s1">&#39;crossProduct&#39;</span><span class="p">:</span> <span class="sa">r</span><span class="s2">&quot;{\mathsf</span><span class="si">{x}</span><span class="s2">}&quot;</span><span class="p">,</span>
+    <span class="s1">&#39;tensor_product&#39;</span><span class="p">:</span> <span class="sa">r</span><span class="s2">&quot;{\otimes}&quot;</span><span class="p">,</span>
+    <span class="s1">&#39;convect&#39;</span><span class="p">:</span> <span class="sa">r</span><span class="s2">&quot;{\cdot\nabla}&quot;</span><span class="p">,</span>
+
+    <span class="s1">&#39;projection&#39;</span><span class="p">:</span> <span class="sa">r</span><span class="s1">&#39;{\pi}&#39;</span><span class="p">,</span>
+
+    <span class="s1">&#39;multi&#39;</span><span class="p">:</span> <span class="sa">r</span><span class="s2">&quot;&quot;</span><span class="p">,</span>
+<span class="p">}</span>
+
+
+<span class="n">_wf_term_default_simple_patterns</span> <span class="o">=</span> <span class="p">{</span>   <span class="c1"># use only str to represent a simple pattern.</span>
+    <span class="c1"># indicator : simple pattern</span>
+    <span class="s1">&#39;(pt,)&#39;</span><span class="p">:</span> <span class="s1">&#39;(partial_t rf, f)&#39;</span><span class="p">,</span>   <span class="c1"># (partial_time_derivative of root-sf, sf)</span>
+    <span class="s1">&#39;(cd,)&#39;</span><span class="p">:</span> <span class="s1">&#39;(codifferential f, f)&#39;</span><span class="p">,</span>
+
+    <span class="c1"># below, we have simple patterns only for root-sf.</span>
+    <span class="s1">&#39;(rt,rt)&#39;</span><span class="p">:</span> <span class="s1">&#39;(rf, rf)&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;&lt;|&gt;&#39;</span><span class="p">:</span> <span class="sa">r</span><span class="s2">&quot;$\left&lt;\left. \mathrm</span><span class="si">{rf}</span><span class="s2"> \right| \mathrm</span><span class="si">{rf}</span><span class="s2"> \right&gt;$&quot;</span><span class="p">,</span>              <span class="c1"># &lt;A|B&gt;</span>
+    <span class="s1">&#39;(d,)&#39;</span><span class="p">:</span> <span class="s1">&#39;(d rf, rf)&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;&lt;d,&gt;&#39;</span><span class="p">:</span> <span class="s1">&#39;&lt;d rf, dual-rf&gt;&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;(,d)&#39;</span><span class="p">:</span> <span class="s1">&#39;(rf, d rf)&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;&lt;,d&gt;&#39;</span><span class="p">:</span> <span class="s1">&#39;&lt;dual-rf, d rf&gt;&#39;</span><span class="p">,</span>
+
+    <span class="s1">&#39;(d,d)&#39;</span><span class="p">:</span> <span class="s1">&#39;(d rf, d rf)&#39;</span><span class="p">,</span>
+
+    <span class="s1">&#39;(d(*A),B)&#39;</span><span class="p">:</span> <span class="sa">r</span><span class="s2">&quot;$\left(\mathrm</span><span class="si">{d}</span><span class="s2">\left(\star A\right),B\right)$&quot;</span><span class="p">,</span>
+
+    <span class="s1">&#39;(&lt;db&gt;,d&lt;b&gt;)&#39;</span><span class="p">:</span> <span class="s1">&#39;(root-diagonal-bf, d root-bf)&#39;</span><span class="p">,</span>
+
+    <span class="s1">&#39;&lt;tr star | tr &gt;&#39;</span><span class="p">:</span> <span class="sa">r</span><span class="s1">&#39;$\left\langle\right.$ tr star rf $|$ trace rf$\left.\right\rangle$&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;&lt;tr star | tr &gt; - restrict&#39;</span><span class="p">:</span> <span class="sa">r</span><span class="s1">&#39;$\left\langle\right.$ tr star rf $||$ trace rf$\left.\right\rangle$&#39;</span><span class="p">,</span>
+
+    <span class="s1">&#39;(A, trB)&#39;</span><span class="p">:</span> <span class="sa">r</span><span class="s2">&quot;$(A, \mathrm</span><span class="si">{tr}</span><span class="s2"> B)$&quot;</span><span class="p">,</span>
+    <span class="s1">&#39;(trB, A)&#39;</span><span class="p">:</span> <span class="sa">r</span><span class="s2">&quot;$(\mathrm</span><span class="si">{tr}</span><span class="s2"> B, A)$&quot;</span><span class="p">,</span>
+
+    <span class="s1">&#39;&lt;*x*|C&gt;&#39;</span><span class="p">:</span> <span class="sa">r</span><span class="s1">&#39;$\left&lt;\left.\mathrm</span><span class="si">{krf}</span><span class="s1"> \times \mathrm</span><span class="si">{krf}</span><span class="s1"> \right| \mathrm</span><span class="si">{rf}</span><span class="s1">\right&gt;$&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;&lt;Ax*|C&gt;&#39;</span><span class="p">:</span> <span class="sa">r</span><span class="s1">&#39;$\left&lt;\left.\mathrm</span><span class="si">{rf}</span><span class="s1"> \times \mathrm</span><span class="si">{krf}</span><span class="s1"> \right| \mathrm</span><span class="si">{rf}</span><span class="s1">\right&gt;$&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;&lt;*xB|C&gt;&#39;</span><span class="p">:</span> <span class="sa">r</span><span class="s1">&#39;$\left&lt;\left.\mathrm</span><span class="si">{krf}</span><span class="s1"> \times \mathrm</span><span class="si">{rf}</span><span class="s1"> \right| \mathrm</span><span class="si">{rf}</span><span class="s1">\right&gt;$&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;&lt;AxB|C&gt;&#39;</span><span class="p">:</span> <span class="sa">r</span><span class="s1">&#39;$\left&lt;\left.\mathrm</span><span class="si">{rf}</span><span class="s1"> \times \mathrm</span><span class="si">{rf}</span><span class="s1"> \right| \mathrm</span><span class="si">{rf}</span><span class="s1">\right&gt;$&#39;</span><span class="p">,</span>
+
+    <span class="s1">&#39;&lt;AB|C&gt;&#39;</span><span class="p">:</span> <span class="sa">r</span><span class="s1">&#39;$\left&lt;\left.\mathrm</span><span class="si">{rf}</span><span class="s1"> \ast \mathrm</span><span class="si">{rf}</span><span class="s1"> \right| \mathrm</span><span class="si">{rf}</span><span class="s1">\right&gt;$&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;&lt;*B|C&gt;&#39;</span><span class="p">:</span> <span class="sa">r</span><span class="s1">&#39;$\left&lt;\left.\mathrm</span><span class="si">{krf}</span><span class="s1"> \ast \mathrm</span><span class="si">{rf}</span><span class="s1"> \right| \mathrm</span><span class="si">{rf}</span><span class="s1">\right&gt;$&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;&lt;A*|C&gt;&#39;</span><span class="p">:</span> <span class="sa">r</span><span class="s1">&#39;$\left&lt;\left.\mathrm</span><span class="si">{rf}</span><span class="s1"> \ast \mathrm</span><span class="si">{krf}</span><span class="s1"> \right| \mathrm</span><span class="si">{rf}</span><span class="s1">\right&gt;$&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;&lt;**|C&gt;&#39;</span><span class="p">:</span> <span class="sa">r</span><span class="s1">&#39;$\left&lt;\left.\mathrm</span><span class="si">{krf}</span><span class="s1"> \ast \mathrm</span><span class="si">{krf}</span><span class="s1"> \right| \mathrm</span><span class="si">{rf}</span><span class="s1">\right&gt;$&#39;</span><span class="p">,</span>
+
+    <span class="s1">&#39;&lt;AB|d(C)&gt;&#39;</span><span class="p">:</span> <span class="sa">r</span><span class="s1">&#39;$\left&lt;\left.\mathrm</span><span class="si">{rf}</span><span class="s1"> \ast \mathrm</span><span class="si">{rf}</span><span class="s1"> \right| \mathrm</span><span class="si">{d}</span><span class="s1">(\mathrm</span><span class="si">{rf}</span><span class="s1">)\right&gt;$&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;&lt;*B|d(C)&gt;&#39;</span><span class="p">:</span> <span class="sa">r</span><span class="s1">&#39;$\left&lt;\left.\mathrm</span><span class="si">{krf}</span><span class="s1"> \ast \mathrm</span><span class="si">{rf}</span><span class="s1"> \right| \mathrm</span><span class="si">{d}</span><span class="s1">(\mathrm</span><span class="si">{rf}</span><span class="s1">)\right&gt;$&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;&lt;A*|d(C)&gt;&#39;</span><span class="p">:</span> <span class="sa">r</span><span class="s1">&#39;$\left&lt;\left.\mathrm</span><span class="si">{rf}</span><span class="s1"> \ast \mathrm</span><span class="si">{krf}</span><span class="s1"> \right| \mathrm</span><span class="si">{d}</span><span class="s1">(\mathrm</span><span class="si">{rf}</span><span class="s1">)\right&gt;$&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;&lt;**|d(C)&gt;&#39;</span><span class="p">:</span> <span class="sa">r</span><span class="s1">&#39;$\left&lt;\left.\mathrm</span><span class="si">{krf}</span><span class="s1"> \ast \mathrm</span><span class="si">{krf}</span><span class="s1"> \right| \mathrm</span><span class="si">{d}</span><span class="s1">(\mathrm</span><span class="si">{rf}</span><span class="s1">)\right&gt;$&#39;</span><span class="p">,</span>
+
+    <span class="s1">&#39;&lt;*x*|d(C)&gt;&#39;</span><span class="p">:</span> <span class="sa">r</span><span class="s1">&#39;$\left&lt;\left.\mathrm</span><span class="si">{krf}</span><span class="s1"> \times \mathrm</span><span class="si">{krf}</span><span class="s1"> \right| \mathrm</span><span class="si">{d}</span><span class="s1">(\mathrm</span><span class="si">{rf}</span><span class="s1">)\right&gt;$&#39;</span><span class="p">,</span>
+
+    <span class="s1">&#39;(A .V B, C)&#39;</span><span class="p">:</span> <span class="sa">r</span><span class="s2">&quot;$\left(\mathrm</span><span class="si">{rf}</span><span class="s2"> \cdot\nabla \mathrm</span><span class="si">{rf}</span><span class="s2">, \mathrm</span><span class="si">{rf}</span><span class="s2">\right)$&quot;</span><span class="p">,</span>
+    <span class="s1">&#39;(* .V *, C)&#39;</span><span class="p">:</span> <span class="sa">r</span><span class="s2">&quot;$\left(\mathrm</span><span class="si">{krf}</span><span class="s2"> \cdot\nabla \mathrm</span><span class="si">{krf}</span><span class="s2">, \mathrm</span><span class="si">{rf}</span><span class="s2">\right)$&quot;</span><span class="p">,</span>
+
+    <span class="s1">&#39;&lt;AxB|CxD&gt;&#39;</span><span class="p">:</span> <span class="sa">r</span><span class="s2">&quot;$\left&lt;\left.\mathrm</span><span class="si">{rf}</span><span class="s2"> \times \mathrm</span><span class="si">{rf}</span><span class="s2"> \right| \mathrm</span><span class="si">{rf}</span><span class="s2"> \times \mathrm</span><span class="si">{rf}</span><span class="s2">\right&gt;$&quot;</span><span class="p">,</span>
+    <span class="s1">&#39;&lt;*x*|*xD&gt;&#39;</span><span class="p">:</span> <span class="sa">r</span><span class="s2">&quot;$\left&lt;\left.\mathrm</span><span class="si">{krf}</span><span class="s2"> \times \mathrm</span><span class="si">{krf}</span><span class="s2"> \right| \mathrm</span><span class="si">{krf}</span><span class="s2"> \times \mathrm</span><span class="si">{rf}</span><span class="s2">\right&gt;$&quot;</span><span class="p">,</span>
+
+    <span class="s1">&#39;(,d-pi)&#39;</span><span class="p">:</span> <span class="s1">&#39;(rf, d(pi(rf)))&#39;</span><span class="p">,</span>
+
+    <span class="s1">&#39;(*x*,)&#39;</span><span class="p">:</span> <span class="sa">r</span><span class="s1">&#39;(krf $\times$ krf, rf)&#39;</span><span class="p">,</span>   <span class="c1"># vector</span>
+    <span class="s1">&#39;(*x,)&#39;</span><span class="p">:</span> <span class="sa">r</span><span class="s1">&#39;(krf $\times$ rf, rf)&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;(x*,)&#39;</span><span class="p">:</span> <span class="sa">r</span><span class="s1">&#39;(rf $\times$ krf, rf)&#39;</span><span class="p">,</span>
+
+    <span class="s1">&#39;(*x*,*x)&#39;</span><span class="p">:</span> <span class="sa">r</span><span class="s2">&quot;(krf $\times$ krf, krf $\times$ rf)&quot;</span><span class="p">,</span>  <span class="c1"># vector , (*A x *B, *C x D)</span>
+    <span class="s1">&#39;(x*,*x)&#39;</span><span class="p">:</span> <span class="sa">r</span><span class="s2">&quot;(rf $\times$ krf, krf $\times$ rf)&quot;</span><span class="p">,</span>    <span class="c1"># matrix , (A x *B, *C x D)</span>
+
+    <span class="s1">&#39;(*x,d)&#39;</span><span class="p">:</span> <span class="sa">r</span><span class="s2">&quot;(krf $\times$ rf, d rf)&quot;</span><span class="p">,</span>
+    <span class="s1">&#39;(x*,d)&#39;</span><span class="p">:</span> <span class="sa">r</span><span class="s2">&quot;(rf $\times$ krf, d rf)&quot;</span><span class="p">,</span>
+    <span class="s1">&#39;(*x*,d)&#39;</span><span class="p">:</span> <span class="sa">r</span><span class="s2">&quot;(krf $\times$ krf, d rf)&quot;</span><span class="p">,</span>   <span class="c1"># vector</span>
+    <span class="s1">&#39;(AxB,dC)&#39;</span><span class="p">:</span> <span class="sa">r</span><span class="s2">&quot;(rf $\times$ rf, d rf)&quot;</span><span class="p">,</span>
+
+    <span class="s1">&#39;(AB, C)&#39;</span><span class="p">:</span> <span class="sa">r</span><span class="s2">&quot;(rf $\ast$ rf, rf)&quot;</span><span class="p">,</span>
+    <span class="s1">&#39;(*B, C)&#39;</span><span class="p">:</span> <span class="sa">r</span><span class="s2">&quot;(krf $\ast$ rf, rf)&quot;</span><span class="p">,</span>
+    <span class="s1">&#39;(A*, C)&#39;</span><span class="p">:</span> <span class="sa">r</span><span class="s2">&quot;(rf $\ast$ krf, rf)&quot;</span><span class="p">,</span>
+    <span class="s1">&#39;(**, C)&#39;</span><span class="p">:</span> <span class="sa">r</span><span class="s2">&quot;(krf $\ast$ krf, rf)&quot;</span><span class="p">,</span>
+
+    <span class="s1">&#39;(AB, d(C))&#39;</span><span class="p">:</span> <span class="sa">r</span><span class="s2">&quot;(rf $\ast$ rf, d rf)&quot;</span><span class="p">,</span>
+    <span class="s1">&#39;(*B, d(C))&#39;</span><span class="p">:</span> <span class="sa">r</span><span class="s2">&quot;(krf $\ast$ rf, d rf)&quot;</span><span class="p">,</span>
+    <span class="s1">&#39;(A*, d(C))&#39;</span><span class="p">:</span> <span class="sa">r</span><span class="s2">&quot;(rf $\ast$ krf, d rf)&quot;</span><span class="p">,</span>
+    <span class="s1">&#39;(**, d(C))&#39;</span><span class="p">:</span> <span class="sa">r</span><span class="s2">&quot;(krf $\ast$ krf, d rf)&quot;</span><span class="p">,</span>
+
+    <span class="s1">&#39;(A, BC)&#39;</span><span class="p">:</span> <span class="sa">r</span><span class="s2">&quot;(rf, rf $\ast$ rf)&quot;</span><span class="p">,</span>
+    <span class="s1">&#39;(*, BC)&#39;</span><span class="p">:</span> <span class="sa">r</span><span class="s2">&quot;(krf, rf $\ast$ rf)&quot;</span><span class="p">,</span>
+    <span class="s1">&#39;(A, *C)&#39;</span><span class="p">:</span> <span class="sa">r</span><span class="s2">&quot;(rf, krf $\ast$ rf)&quot;</span><span class="p">,</span>
+    <span class="s1">&#39;(*, *C)&#39;</span><span class="p">:</span> <span class="sa">r</span><span class="s2">&quot;(krf, krf $\ast$ rf)&quot;</span><span class="p">,</span>
+
+    <span class="s1">&#39;(x,)&#39;</span><span class="p">:</span> <span class="sa">r</span><span class="s1">&#39;(rf $\times$ rf, rf)&#39;</span><span class="p">,</span>   <span class="c1"># nonlinear term.</span>
+
+    <span class="s1">&#39;(d0*,0*tp)&#39;</span><span class="p">:</span> <span class="sa">r</span><span class="s1">&#39;(d krf-0, krf-0 $\otimes$ rf)&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;(d0*,tp0*)&#39;</span><span class="p">:</span> <span class="sa">r</span><span class="s1">&#39;(d krf-0, rf $\otimes$ krf-0)&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;(d,0*tp0*)&#39;</span><span class="p">:</span> <span class="sa">r</span><span class="s1">&#39;(d rf, krf-0 $\otimes$ krf-0)&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;(d,tp):1K&#39;</span><span class="p">:</span> <span class="sa">r</span><span class="s1">&#39;(d rf, rf $\otimes$ rf):1K&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;(d,tp):2K&#39;</span><span class="p">:</span> <span class="sa">r</span><span class="s1">&#39;(d rf, rf $\otimes$ rf):2K&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;(d,tp)&#39;</span><span class="p">:</span> <span class="sa">r</span><span class="s1">&#39;(d rf, rf $\otimes$ rf)&#39;</span><span class="p">,</span>
+
+    <span class="s1">&#39;(,tp):1K&#39;</span><span class="p">:</span> <span class="sa">r</span><span class="s1">&#39;(rf, rf $\otimes$ rf):1K&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;(,tp):2K&#39;</span><span class="p">:</span> <span class="sa">r</span><span class="s1">&#39;(rf, rf $\otimes$ rf):2K&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;(,tp)&#39;</span><span class="p">:</span> <span class="sa">r</span><span class="s1">&#39;(rf, rf $\otimes$ rf)&#39;</span><span class="p">,</span>
+<span class="p">}</span>
+
+<span class="n">_pde_test_form_lin_repr</span> <span class="o">=</span> <span class="s1">&#39;th-test-form&#39;</span>
+
+<span class="n">_nonlinear_ap_test_form_repr</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s1">&#39;sym&#39;</span><span class="p">:</span> <span class="sa">r</span><span class="s1">&#39; \wr &#39;</span><span class="p">,</span>
+    <span class="s1">&#39;lin&#39;</span><span class="p">:</span> <span class="s1">&#39; &gt;=~=&lt; &#39;</span><span class="p">,</span>
+<span class="p">}</span>
+</pre></div>
+
+                </article>
+              
+
+              
+              
+              
+              
+                <footer class="prev-next-footer d-print-none">
+                  
+<div class="prev-next-area">
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+<div class="bd-footer-content__inner container">
+  
+  <div class="footer-item">
+    
+<p class="component-author">
+By Andrea Brugnoli, Ramy Rashad, Stefano Stramigioli, Yi Zhang and more
+</p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+
+  <p class="copyright">
+    
+      © Copyright reserved under Apache-2.0 license.
+      <br/>
+    
+  </p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+  <div class="footer-item">
+    
+<div class="extra_footer">
+  <div>Last updated on 十一月 18, 2025, 19:20:03, China Standard Time</div>
+</div>
+  </div>
+  
+</div>
+          </footer>
+        
+
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script src="../../../_static/scripts/bootstrap.js?digest=dfe6caa3a7d634c4db9b"></script>
+<script src="../../../_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b"></script>
+
+  <footer class="bd-footer">
+  </footer>
+  </body>
+</html>

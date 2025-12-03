@@ -6,8 +6,8 @@ r"""
     None_or_custom_path_2 = './source/gallery/msepy_domains_and_meshes/msepy/backward_step2.png'
     None_or_custom_path_3 = './source/gallery/msepy_domains_and_meshes/msepy/backward_step3.png'
 
-    import __init__ as ph
-    from msepy.manifold.predefined.backward_step import _make_an_illustration
+    import phyem as ph
+    from phyem.msepy.manifold.predefined.backward_step import _make_an_illustration
     _make_an_illustration(
         './source/gallery/msepy_domains_and_meshes/msepy/backward_step_illustration.png'
     )
@@ -25,10 +25,11 @@ illustrated in the following figure.
 
     The illustration of the backward step domain.
 
-When :math:`n=3`, The domain is extended to the thrid axis, :math:`z`-axis, perpendicular to the plane. The parameters
-are
+When :math:`n=3`, The domain is extended to the thrid axis, :math:`z`-axis, perpendicular to the plane.
+The parameters are
 
-.. autofunction:: msepy.manifold.predefined.backward_step.backward_step
+.. autofunction:: phyem.msepy.manifold.predefined.backward_step.backward_step
+
 
 Boundary units
 ==============
@@ -115,10 +116,7 @@ To make a two-dimensional backward step mesh of :math:`3*24*6` elements, just do
 
 ↩️  Back to :ref:`GALLERY-msepy-domains-and-meshes`.
 """
-
 import matplotlib.pyplot as plt
-
-
 from phyem.msepy.manifold.predefined._helpers import _LinearTransformation
 
 

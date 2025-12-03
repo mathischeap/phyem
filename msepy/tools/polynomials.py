@@ -412,17 +412,17 @@ class _OneDimPolynomial(Frozen):
 
 if __name__ == "__main__":
     # python msepy/tools/polynomials.py
-    nodes = Quadrature(10, category='Lobatto').quad_nodes
+    nodes = Quadrature(2, category='Lobatto').quad_nodes
     # print(nodes.__class__)
     p1 = _OneDimPolynomial(np.array(nodes))
-    # p1.plot_lagrange_basis(  # plot_lagrange_basis
-    #     dual=False,
-    #     title=False,
-    #     figsize=(6, 4), tick_size=20, label_size=20,  # fill_between=2,
-    # )
-
-    p1.plot_edge_basis(
+    p1.plot_lagrange_basis(  # plot_lagrange_basis
         dual=False,
         title=False,
-        figsize=(6, 4), tick_size=20, label_size=20,  fill_between=1,
+        figsize=(6, 4), tick_size=20, label_size=20,  # fill_between=2,
     )
+
+    # p1.plot_edge_basis(
+    #     dual=False,
+    #     title=False,
+    #     figsize=(6, 4), tick_size=20, label_size=20,  fill_between=1,
+    # )

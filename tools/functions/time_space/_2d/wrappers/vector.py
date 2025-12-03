@@ -213,6 +213,8 @@ class T2dVector(TimeSpaceFunctionBase):
             xi, et = np.meshgrid(nodes, nodes, indexing='ij')
             if _mesh.__class__.__name__ == 'MseHttMeshPartial':
                 ELEMENTS = _mesh.composition
+            elif _mesh.__class__.__name__ == 'MseHtt_MultiGrid_MeshPartial':
+                ELEMENTS = _mesh.get_level().composition
             else:
                 raise NotImplementedError()
             for i in ELEMENTS:

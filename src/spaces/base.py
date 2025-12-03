@@ -3,7 +3,7 @@
 r"""
 Each space is an instance of a particular space class which inherits :class:`SpaceBase`.
 
-    .. autoclass:: src.spaces.base.SpaceBase
+    .. autoclass:: phyem.src.spaces.base.SpaceBase
         :members: mesh, manifold, m, n, make_form
 
 

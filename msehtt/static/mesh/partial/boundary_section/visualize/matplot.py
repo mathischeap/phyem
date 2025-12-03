@@ -41,6 +41,8 @@ class MseHttBoundarySectionPartialMeshVisualizeMatplot(Frozen):
         else:
             raise NotImplementedError(mn)
 
+        return None
+
     def _plot_boundary_section_of_2d_mesh_in_2d_space(
             self,
             ddf=1,
@@ -86,7 +88,7 @@ class MseHttBoundarySectionPartialMeshVisualizeMatplot(Frozen):
         if saveto is not None and saveto != '':
             plt.savefig(saveto, bbox_inches='tight')
         else:
-            from src.config import _setting, _pr_cache
+            from phyem.src.config import _setting, _pr_cache
             if _setting['pr_cache']:
                 _pr_cache(fig, filename='msehtt_partial_mesh_boundary_section')
             else:
@@ -117,11 +119,15 @@ class MseHttBoundarySectionPartialMeshVisualizeMatplot(Frozen):
 
         fig = plt.figure(figsize=(12, 8))
         ax = fig.add_subplot(111, projection='3d')
+        # noinspection PyUnresolvedReferences
         ax.xaxis.set_pane_color((1.0, 1.0, 1.0, 0.0))
+        # noinspection PyUnresolvedReferences
         ax.yaxis.set_pane_color((1.0, 1.0, 1.0, 0.0))
         ax.zaxis.set_pane_color((1.0, 1.0, 1.0, 0.0))
         # make the grid lines transparent
+        # noinspection PyUnresolvedReferences
         ax.xaxis._axinfo["grid"]['color'] = (1, 1, 1, 0)
+        # noinspection PyUnresolvedReferences
         ax.yaxis._axinfo["grid"]['color'] = (1, 1, 1, 0)
         ax.zaxis._axinfo["grid"]['color'] = (1, 1, 1, 0)
 
@@ -148,7 +154,7 @@ class MseHttBoundarySectionPartialMeshVisualizeMatplot(Frozen):
         if saveto is not None and saveto != '':
             plt.savefig(saveto, bbox_inches='tight')
         else:
-            from src.config import _setting, _pr_cache
+            from phyem.src.config import _setting, _pr_cache
             if _setting['pr_cache']:
                 _pr_cache(fig, filename='msehtt_partial_mesh_boundary_section')
             else:

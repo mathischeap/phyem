@@ -56,8 +56,8 @@ class MsePyRootFormVisualizeVTK(Frozen):
                 data_only=True, builder=True,
             )
 
-            from msepy.form.main import MsePyRootForm
-            from msepy.form.addons.static import MsePyRootFormStaticCopy
+            from phyem.msepy.form.main import MsePyRootForm
+            from phyem.msepy.form.addons.static import MsePyRootFormStaticCopy
 
             for of in other_forms:
                 if of.__class__ is MsePyRootFormStaticCopy:
@@ -73,7 +73,7 @@ class MsePyRootFormVisualizeVTK(Frozen):
                     )
                     v.update(v_of)
                 else:
-                    raise NotImplementedError()
+                    raise NotImplementedError(of.__class__)
 
             vtk_builder(saveto, point_data=v)
 

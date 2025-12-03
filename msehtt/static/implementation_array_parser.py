@@ -15,6 +15,7 @@ from phyem.msehtt.tools.matrix.static.local import MseHttStaticLocalMatrix
 from phyem.msehtt.tools.vector.dynamic import MseHttDynamicLocalVector
 from phyem.msehtt.tools.vector.static.local import MseHttStaticLocalVector
 
+from phyem.src.form.others import _find_form
 
 # noinspection PyUnresolvedReferences
 from phyem.src.spaces.main import *
@@ -31,7 +32,11 @@ _setting_ = {
 from phyem.msehtt.static.form.addons.nop_data_computer.trilinear_AxB_ip_C import AxB_ip_C
 from phyem.msehtt.static.form.addons.nop_data_computer.trilinear_AxB_dp_C import AxB_dp_C
 from phyem.msehtt.static.form.addons.nop_data_computer.trilinear_AB_ip_dC import AB_ip_dC
+from phyem.msehtt.static.form.addons.nop_data_computer.trilinear_AdB_ip_C import AdB_ip_C
+from phyem.msehtt.static.form.addons.nop_data_computer.trilinear_AdB_ip_dC import AdB_ip_dC
 from phyem.msehtt.static.form.addons.nop_data_computer.trilinear_ABC import T_ABC
+
+from phyem.msehtt.static.form.addons.nop_data_computer.log_A_ip_B import LogAB
 
 
 def _indicator_check():
@@ -76,6 +81,28 @@ def _base_forms():
 def _base_meshes():
     """"""
     return _setting_['base']['meshes']
+
+
+def _find_implementation_of_root_form_from_its_lin_repr(lin_repr):
+    r""""""
+    if lin_repr[0] == '[' and lin_repr[-1] == ']':
+        clean_lin_repr = lin_repr[1:-1]
+    else:
+        clean_lin_repr = lin_repr
+    abstract_rf = _find_form(clean_lin_repr)
+
+    assert abstract_rf.is_root(), f"we must have found a root form"
+    all_forms = _base_forms()
+
+    msehtt_base_form = None
+    for _pure_lin_repr in all_forms:
+        if _pure_lin_repr == abstract_rf._pure_lin_repr:
+            msehtt_base_form = all_forms[_pure_lin_repr]
+            break
+        else:
+            pass
+    assert msehtt_base_form is not None, f"We must have found a implemented root-form."
+    return msehtt_base_form
 
 
 def _find_from_bracket_ABC(default_repr, *ABC, key_words=("{A}", "{B}", "{C}")):
@@ -195,6 +222,17 @@ def Parse__E_matrix(space, degree):
         signature=space.__repr__() + '+EE+' + _degree_str_maker(degree),
     )
     return E, None  # time_indicator is None, mean E is same at all time.
+
+
+def Parse__log_e_astA_ip_tB(gA_lin_repr, tB_lin_repr):
+    r"""Return a matrix M for  B.T @ M @ A. So, the default setting is B is a test form.
+    """
+    gA = _find_implementation_of_root_form_from_its_lin_repr(gA_lin_repr)
+    tB = _find_implementation_of_root_form_from_its_lin_repr(tB_lin_repr)
+    nop = LogAB(gA, tB)
+    V = nop.vector(tB)  # returns a dynamic vector about tB
+    assert V.__class__ is MseHttDynamicLocalVector, f"must be!"
+    return V, gA.cochain._ati_time_caller
 
 
 def Parse__trStar_rf0_dp_tr_s1_vector(dls, tr_star_rf0, tr_rf1):
@@ -458,6 +496,35 @@ def Parse__astA_astB_ip_dtC(gA, gB, tC):
 # ==================================================================================================
 
 
+# -------- (A d(B), d(C)) ------------------------------------------------------------------------------
+
+def Parse__A_d_astB_ip_dtC(A, gB, tC):
+    r""""""
+    A, gB, tC = _find_from_bracket_ABC(_VarSetting_A_d_astB_ip_dtC, A, gB, tC)
+    noc = AdB_ip_dC(A, gB, tC)
+    M = noc(2, tC, A)
+    return M, gB.cochain._ati_time_caller  # since B is given, its ati determine the time of C.
+
+
+def Parse__astA_d_B_ip_dtC(gA, B, tC):
+    r""""""
+    gA, B, tC = _find_from_bracket_ABC(_VarSetting_astA_d_B_ip_dtC, gA, B, tC)
+    noc = AdB_ip_dC(gA, B, tC)
+    M = noc(2, tC, B)
+    return M, gA.cochain._ati_time_caller  # since B is given, its ati determine the time of C.
+
+
+def Parse__astA_d_astB_ip_dtC(gA, gB, tC):
+    """"""
+    gA, gB, tC = _find_from_bracket_ABC(_VarSetting_astA_d_astB_ip_dtC, gA, gB, tC)
+    noc = AdB_ip_dC(gA, gB, tC)
+    v, time_caller = noc(1, tC)
+    return v, time_caller
+
+
+# ==================================================================================================
+
+
 # -------- <AB|d(C)> ------------------------------------------------------------------------------
 
 def Parse__A_astB_dp_dtC(A, gB, tC):
@@ -538,6 +605,35 @@ def Parse__astA_astB_dp_tC(gA, gB, tC):
     """"""
     gA, gB, tC = _find_from_bracket_ABC(_VarSetting_astA_astB_dp_tC, gA, gB, tC)
     noc = T_ABC(gA, gB, tC)
+    v, time_caller = noc(1, tC)
+    return v, time_caller
+
+
+# ==================================================================================================
+
+
+# -------- <A d(B)|C> ------------------------------------------------------------------------------
+
+def Parse__A_d_astB_dp_tC(A, gB, tC):
+    r""""""
+    A, gB, tC = _find_from_bracket_ABC(_VarSetting_A_d_astB_dp_tC, A, gB, tC)
+    noc = AdB_ip_C(A, gB, tC)
+    M = noc(2, tC, A)
+    return M, gB.cochain._ati_time_caller  # since B is given, its ati determine the time of C.
+
+
+def Parse__astA_d_B_dp_tC(gA, B, tC):
+    r""""""
+    gA, B, tC = _find_from_bracket_ABC(_VarSetting_astA_d_B_dp_tC, gA, B, tC)
+    noc = AdB_ip_C(gA, B, tC)
+    M = noc(2, tC, B)
+    return M, gA.cochain._ati_time_caller  # since B is given, its ati determine the time of C.
+
+
+def Parse__astA_d_astB_dp_tC(gA, gB, tC):
+    """"""
+    gA, gB, tC = _find_from_bracket_ABC(_VarSetting_astA_d_astB_dp_tC, gA, gB, tC)
+    noc = AdB_ip_C(gA, gB, tC)
     v, time_caller = noc(1, tC)
     return v, time_caller
 

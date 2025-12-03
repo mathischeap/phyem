@@ -252,6 +252,7 @@
 <li class="toctree-l3"><a class="reference internal" href="../../Navier_Stokes/Taylor_Green_vortex/index.html">Taylor-Green vortex</a></li>
 </ul>
 </details></li>
+<li class="toctree-l2"><a class="reference internal" href="../../MHD/index.html">🧲 MHD</a></li>
 </ul>
 </details></li>
 </ul>
@@ -453,7 +454,7 @@ document.write(`
             </div>
             <nav aria-label="Page">
                 <ul class="visible nav section-nav flex-column">
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#msepy.manifold.predefined.backward_step.backward_step"><code class="docutils literal notranslate"><span class="pre">backward_step()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#phyem.msepy.manifold.predefined.backward_step.backward_step"><code class="docutils literal notranslate"><span class="pre">backward_step()</span></code></a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#boundary-units">Boundary units</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#examples">Examples</a><ul class="nav section-nav flex-column">
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#d">3d</a></li>
@@ -471,8 +472,8 @@ document.write(`
 <div id="searchbox"></div>
                 <article class="bd-article">
                   
-  <section id="module-msepy.manifold.predefined.backward_step">
-<span id="backward-step"></span><span id="gallery-msepy-domains-and-meshes-backward-step"></span><h1>Backward step<a class="headerlink" href="#module-msepy.manifold.predefined.backward_step" title="Link to this heading">#</a></h1>
+  <section id="module-phyem.msepy.manifold.predefined.backward_step">
+<span id="backward-step"></span><span id="gallery-msepy-domains-and-meshes-backward-step"></span><h1>Backward step<a class="headerlink" href="#module-phyem.msepy.manifold.predefined.backward_step" title="Link to this heading">#</a></h1>
 <p>The backward step is a mesh (or domain) in <span class="math notranslate nohighlight">\(\mathbb{R}^n\)</span>, <span class="math notranslate nohighlight">\(n\in\left\lbrace2,3\right\rbrace\)</span>. The domain is
 illustrated in the following figure.</p>
 <figure class="align-default" id="id2">
@@ -482,11 +483,11 @@ illustrated in the following figure.</p>
 <p><span class="caption-number">Fig. 1 </span><span class="caption-text">The illustration of the backward step domain.</span><a class="headerlink" href="#id2" title="Link to this image">#</a></p>
 </figcaption>
 </figure>
-<p>When <span class="math notranslate nohighlight">\(n=3\)</span>, The domain is extended to the thrid axis, <span class="math notranslate nohighlight">\(z\)</span>-axis, perpendicular to the plane. The parameters
-are</p>
+<p>When <span class="math notranslate nohighlight">\(n=3\)</span>, The domain is extended to the thrid axis, <span class="math notranslate nohighlight">\(z\)</span>-axis, perpendicular to the plane.
+The parameters are</p>
 <dl class="py function">
-<dt class="sig sig-object py" id="msepy.manifold.predefined.backward_step.backward_step">
-<span class="sig-name descname"><span class="pre">backward_step</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x1</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">x2</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y1</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.25</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y2</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.25</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">z</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">periodic</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/msepy/manifold/predefined/backward_step.html#backward_step"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#msepy.manifold.predefined.backward_step.backward_step" title="Link to this definition">#</a></dt>
+<dt class="sig sig-object py" id="phyem.msepy.manifold.predefined.backward_step.backward_step">
+<span class="sig-name descname"><span class="pre">backward_step</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x1</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">x2</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y1</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.25</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y2</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.25</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">z</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">periodic</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/phyem/msepy/manifold/predefined/backward_step.html#backward_step"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#phyem.msepy.manifold.predefined.backward_step.backward_step" title="Link to this definition">#</a></dt>
 <dd><dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><dl class="simple">
@@ -647,7 +648,7 @@ is splited into 3 regions).</p>
   </div>
   <nav class="bd-toc-nav page-toc">
     <ul class="visible nav section-nav flex-column">
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#msepy.manifold.predefined.backward_step.backward_step"><code class="docutils literal notranslate"><span class="pre">backward_step()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#phyem.msepy.manifold.predefined.backward_step.backward_step"><code class="docutils literal notranslate"><span class="pre">backward_step()</span></code></a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#boundary-units">Boundary units</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#examples">Examples</a><ul class="nav section-nav flex-column">
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#d">3d</a></li>
@@ -692,7 +693,7 @@ By Andrea Brugnoli, Ramy Rashad, Stefano Stramigioli, Yi Zhang and more
   <div class="footer-item">
     
 <div class="extra_footer">
-  <div>Last updated on March 16, 2025, 15:57:13, China Standard Time</div>
+  <div>Last updated on 十一月 18, 2025, 19:20:03, China Standard Time</div>
 </div>
   </div>
   

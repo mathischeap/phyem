@@ -5,7 +5,7 @@ r"""
 
     None_or_custom_path_3 = './source/gallery/msepy_domains_and_meshes/msepy/crazy_3d_c.png'
     None_or_custom_path_2 = './source/gallery/msepy_domains_and_meshes/msepy/crazy_2d_c.png'
-    import __init__ as ph
+    import phyem as ph
 
 .. testcleanup::
 
@@ -18,7 +18,7 @@ In :math:`\mathbb{R}^n` :math:`(n\in\left\lbrace1,2,3\right\rbrace)`, the crazy 
 and :math:`[a, b]`, :math:`[e, f]`, :math:`\cdots` :math:`(a, b, e, f, \cdots \in \mathbb{R})` are the bounds.
 The parameters of a crazy domain are
 
-.. autofunction:: msepy.manifold.predefined.crazy.crazy
+.. autofunction:: phyem.msepy.manifold.predefined.crazy.crazy
 
 .. note::
 

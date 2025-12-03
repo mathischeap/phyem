@@ -19,7 +19,19 @@ from phyem.msehtt.tools.matrix.static.global_ import MseHttGlobalMatrix
 class MseHttStaticLocalMatrix(Frozen):
     r""""""
     def __init__(self, data, gm_row, gm_col, cache_key=None, special_indicator=None, signature=None):
-        """"""
+        """
+
+        Parameters
+        ----------
+        data
+        gm_row
+        gm_col
+        cache_key
+        special_indicator
+        signature :
+            Different instances with the same signature (if it is not `unique`) are the same.
+
+        """
         assert gm_row.__class__ is MseHttGatheringMatrix, f"gm row class wrong."
         assert gm_col.__class__ is MseHttGatheringMatrix, f"gm col class wrong."
         assert len(gm_row) == len(gm_col), f"gm length dis-match."
@@ -667,8 +679,11 @@ class MseHttStaticLocalMatrixAssemble(Frozen):
         format :
         cache :
             We can manually cache the assembled matrix by set ``cache`` to be a string. When next time
-            it sees the same `cache` it will return the cached matrix from the cache, i.e.,
-            ``_msepy_assembled_StaticMatrix_cache``.
+            it sees the same `cache` it will return the cached matrix from the cache.
+
+            Pls use it very carefully. Otherwise, you may return a cached matrix that is not suitable for
+            the system.
+
         threshold :
         customizations :
             Sometimes, we need to make changes in the assembled matrix. We need to put the information

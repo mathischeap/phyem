@@ -3,7 +3,6 @@ r"""
 mpiexec -n 4 python tests/msehtt/flow_around_cylinder.py
 """
 import numpy as np
-
 import phyem as ph
 
 ph.config.set_embedding_space_dim(2)

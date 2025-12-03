@@ -202,9 +202,9 @@ class OrdinaryDifferentialEquation(Frozen):
 
     def pr(self, indexing=True, figsize=(12, 4)):
         """print representations"""
-        from src.config import RANK, MASTER_RANK
+        from phyem.src.config import RANK, MASTER_RANK
         if RANK != MASTER_RANK:
-            return
+            return None
         else:
             pass
 
@@ -252,7 +252,7 @@ class OrdinaryDifferentialEquation(Frozen):
         plt.axis('off')
         plt.text(0.05, 0.5, sym, ha='left', va='center', size=15)
         plt.tight_layout()
-        from src.config import _setting
+        from phyem.src.config import _setting
         plt.show(block=_setting['block'])
         return fig
 

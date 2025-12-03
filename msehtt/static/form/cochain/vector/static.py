@@ -16,7 +16,6 @@ class MseHttStaticCochainVector(MseHttStaticLocalVector):
 
     def override(self):
         """override `self._data` to be the cochain of `self._f` at time `self._t`."""
-
         assert self._dtype != 'None', f"I have no data."
         self._f[self._time].cochain = self.data_dict
 

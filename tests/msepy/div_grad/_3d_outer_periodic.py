@@ -3,13 +3,8 @@ r"""
 """
 
 # python tests/msepy/div_grad/_3d_outer_periodic.py
-
-import sys
-
-if './' not in sys.path:
-    sys.path.append('./')
 import numpy as np
-import __init__ as ph
+import phyem as ph
 
 ls, mp = ph.samples.wf_div_grad(n=3, degree=3, orientation='outer', periodic=True)
 # ls.pr()

@@ -672,7 +672,7 @@ class MseHttGreatMesh(Frozen):
 
     @staticmethod
     def ___clean_elements___(element_type_dict, element_parameter_dict, element_map_dict):
-        r""""""
+        r"""To remove illegal elements. For example, remove these elements whose area is zero."""
         # TODO:
         return element_type_dict, element_parameter_dict, element_map_dict
 
@@ -683,6 +683,7 @@ class MseHttGreatMesh(Frozen):
     ):
         r""""""
         if renumbering_indicator is True:  # Renumbering element indices as integers.
+            # the default renumbering method. All elements are numbered as integers from 0.
             if RANK == MASTER_RANK:
                 renumbering_dict = {}
                 current = 0
@@ -1045,6 +1046,204 @@ class MseHttGreatMesh(Frozen):
                 new_element_map_dict[e_i_1] = [_01_, _1_, _12_, _0123_]
                 new_element_map_dict[e_i_2] = [_0123_, _12_, _2_, _23_]
                 new_element_map_dict[e_i_3] = [_30_, _0123_, _23_, _3_]
+
+            elif e_type in (11, 'orthogonal hexahedron'):  # voxel or orthogonal hexahedron element
+                #   z- face
+                #         A(node0)     J       (node2)
+                #           _____________________ D
+                #           |         |         |
+                #           |         |         |
+                #           |         |E        |
+                #         F |-------------------|H
+                #           |         |         |
+                #           |         |         |
+                #         B |_________|_________| C
+                #        (node1)      G         (node3)
+                #
+                #
+                #   x0 face:
+                #
+                #          U__________Y__________W
+                #           |         |         |
+                #           |         |         |
+                #           |         |V        |
+                #         Z |-------------------|O
+                #           |         |         |
+                #           |         |         |
+                #           |_________|_________|
+                #          X          I          a
+                #
+                #
+                #   z+ face
+                #         K(node4)     P       (node6)
+                #           _____________________ M
+                #           |         |         |
+                #           |         |         |
+                #           |         |T        |
+                #         R |-------------------|S
+                #           |         |         |
+                #           |         |         |
+                #         L |_________|_________| N
+                #        (node5)      Q         (node7)
+
+                if e_type == 'orthogonal hexahedron':
+                    origin_x, origin_y, origin_z = e_para['origin']
+                    delta_x, delta_y, delta_z = e_para['delta']
+                elif e_type == 11:
+                    x0, y0, z0 = e_para[0]
+                    x1, _, _ = e_para[1]
+                    _, y2, _ = e_para[2]
+                    _, _, z4 = e_para[4]
+                    origin_x, origin_y, origin_z = x0, y0, z0
+                    delta_x, delta_y, delta_z = x1 - x0, y2 - y0, z4 - z0
+                else:
+                    raise Exception()
+
+                U = (origin_x, origin_y, origin_z + delta_z/2)
+                a = (origin_x + delta_x, origin_y + delta_y, origin_z + delta_z/2)
+                X = (origin_x + delta_x, origin_y, origin_z + delta_z/2)
+                W = (origin_x, origin_y + delta_y, origin_z + delta_z/2)
+
+                Ux, Uy, Uz = U
+                ax, ay, az = a
+                Xx, Xy, Xz = X
+                Wx, Wy, Wz = W
+
+                V = ((Ux + Xx + ax + Wx) / 4, (Uy + Xy + ay + Wy) / 4, Uz)
+                Z = ((Ux + Xx) / 2, (Uy + Xy) / 2, Uz)
+                i = ((Xx + ax) / 2, (Xy + ay) / 2, Uz)
+                o = ((ax + Wx) / 2, (ay + Wy) / 2, Uz)
+                Y = ((Ux + Wx) / 2, (Uy + Wy) / 2, Uz)
+
+                A = (origin_x, origin_y, origin_z)
+                C = (origin_x + delta_x, origin_y + delta_y, origin_z)
+                B = (origin_x + delta_x, origin_y, origin_z)
+                D = (origin_x, origin_y + delta_y, origin_z)
+
+                Ax, Ay, Az = A
+                Bx, By, Bz = B
+                Cx, Cy, Cz = C
+                Dx, Dy, Dz = D
+
+                E = ((Ax + Bx + Cx + Dx) / 4, (Ay + By + Cy + Dy) / 4, Az)
+                F = ((Ax + Bx) / 2, (Ay + By) / 2, Az)
+                G = ((Bx + Cx) / 2, (By + Cy) / 2, Az)
+                H = ((Cx + Dx) / 2, (Cy + Dy) / 2, Az)
+                J = ((Dx + Ax) / 2, (Dy + Ay) / 2, Az)
+
+                K = (origin_x, origin_y, origin_z + delta_z)
+                N = (origin_x + delta_x, origin_y + delta_y, origin_z + delta_z)
+                L = (origin_x + delta_x, origin_y, origin_z + delta_z)
+                M = (origin_x, origin_y + delta_y, origin_z + delta_z)
+
+                Kx, Ky, Kz = K
+                Nx, Ny, Nz = N
+                Lx, Ly, Lz = L
+                Mx, My, Mz = M
+
+                T = ((Kx + Lx + Mx + Nx) / 4, (Ky + Ly + My + Ny) / 4, Kz)
+                R = ((Kx + Lx) / 2, (Ky + Ly) / 2, Kz)
+                Q = ((Lx + Nx) / 2, (Ly + Ny) / 2, Kz)
+                S = ((Nx + Mx) / 2, (Ny + My) / 2, Kz)
+                P = ((Mx + Kx) / 2, (My + Ky) / 2, Kz)
+
+                _A_, _B_, _D_, _C_, _K_, _L_, _M_, _N_ = e_map
+
+                _E_ = [_A_, _B_, _C_, _D_]
+                _F_ = [_A_, _B_]
+                _G_ = [_B_, _C_]
+                _H_ = [_D_, _C_]
+                _J_ = [_A_, _D_]
+                _E_.sort()
+                _F_.sort()
+                _G_.sort()
+                _H_.sort()
+                _J_.sort()
+                _E_ = tuple(_E_)
+                _F_ = tuple(_F_)
+                _G_ = tuple(_G_)
+                _H_ = tuple(_H_)
+                _J_ = tuple(_J_)
+
+                _T_ = [_K_, _L_, _M_, _N_]
+                _R_ = [_K_, _L_]
+                _Q_ = [_L_, _N_]
+                _S_ = [_M_, _N_]
+                _P_ = [_K_, _M_]
+                _T_.sort()
+                _R_.sort()
+                _Q_.sort()
+                _S_.sort()
+                _P_.sort()
+                _T_ = tuple(_T_)
+                _R_ = tuple(_R_)
+                _Q_ = tuple(_Q_)
+                _S_ = tuple(_S_)
+                _P_ = tuple(_P_)
+
+                _U_ = [_A_, _K_]
+                _X_ = [_B_, _L_]
+                _W_ = [_D_, _M_]
+                _a_ = [_C_, _N_]
+                _U_.sort()
+                _X_.sort()
+                _W_.sort()
+                _a_.sort()
+                _U_ = tuple(_U_)
+                _X_ = tuple(_X_)
+                _W_ = tuple(_W_)
+                _a_ = tuple(_a_)
+
+                _Z_ = [_A_, _B_, _K_, _L_]
+                _Y_ = [_A_, _D_, _K_, _M_]
+                _I_ = [_B_, _C_, _L_, _N_]
+                _O_ = [_D_, _C_, _M_, _N_]
+
+                _Z_.sort()
+                _Y_.sort()
+                _I_.sort()
+                _O_.sort()
+
+                _Z_ = tuple(_Z_)
+                _Y_ = tuple(_Y_)
+                _I_ = tuple(_I_)
+                _O_ = tuple(_O_)
+
+                _V_ = (_A_, _B_, _C_, _D_, _K_, _L_, _M_, _N_)
+
+                element_index = str(e_index)
+                e_i_0 = element_index + ':oH>0'
+                e_i_1 = element_index + ':oH>1'
+                e_i_2 = element_index + ':oH>2'
+                e_i_3 = element_index + ':oH>3'
+                e_i_4 = element_index + ':oH>4'
+                e_i_5 = element_index + ':oH>5'
+                e_i_6 = element_index + ':oH>6'
+                e_i_7 = element_index + ':oH>7'
+                new_element_type_dict[e_i_0] = 11
+                new_element_type_dict[e_i_1] = 11
+                new_element_type_dict[e_i_2] = 11
+                new_element_type_dict[e_i_3] = 11
+                new_element_type_dict[e_i_4] = 11
+                new_element_type_dict[e_i_5] = 11
+                new_element_type_dict[e_i_6] = 11
+                new_element_type_dict[e_i_7] = 11
+                new_element_parameter_dict[e_i_0] = [A, F, J, E, U, Z, Y, V]
+                new_element_parameter_dict[e_i_1] = [F, B, E, G, Z, X, V, i]
+                new_element_parameter_dict[e_i_2] = [J, E, D, H, Y, V, W, o]
+                new_element_parameter_dict[e_i_3] = [E, G, H, C, V, i, o, a]
+                new_element_parameter_dict[e_i_4] = [U, Z, Y, V, K, R, P, T]
+                new_element_parameter_dict[e_i_5] = [Z, X, V, i, R, L, T, Q]
+                new_element_parameter_dict[e_i_6] = [Y, V, W, o, P, T, M, S]
+                new_element_parameter_dict[e_i_7] = [V, i, o, a, T, Q, S, N]
+                new_element_map_dict[e_i_0] = [_A_, _F_, _J_, _E_, _U_, _Z_, _Y_, _V_]
+                new_element_map_dict[e_i_1] = [_F_, _B_, _E_, _G_, _Z_, _X_, _V_, _I_]
+                new_element_map_dict[e_i_2] = [_J_, _E_, _D_, _H_, _Y_, _V_, _W_, _O_]
+                new_element_map_dict[e_i_3] = [_E_, _G_, _H_, _C_, _V_, _I_, _O_, _a_]
+                new_element_map_dict[e_i_4] = [_U_, _Z_, _Y_, _V_, _K_, _R_, _P_, _T_]
+                new_element_map_dict[e_i_5] = [_Z_, _X_, _V_, _I_, _R_, _L_, _T_, _Q_]
+                new_element_map_dict[e_i_6] = [_Y_, _V_, _W_, _O_, _P_, _T_, _M_, _S_]
+                new_element_map_dict[e_i_7] = [_V_, _I_, _O_, _a_, _T_, _Q_, _S_, _N_]
 
             elif e_type == 'unique curvilinear quad':  # unique curvilinear quad
                 #         A(node0)    J            (node3)

@@ -6,5 +6,5 @@ Backward step
 =============
 
 
-.. automodule:: msepy.manifold.predefined.backward_step
+.. automodule:: phyem.msepy.manifold.predefined.backward_step
     :undoc-members: backward_step

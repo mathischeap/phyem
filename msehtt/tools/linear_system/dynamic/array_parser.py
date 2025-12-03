@@ -10,7 +10,6 @@ from phyem.src.config import _root_form_ap_vec_setting
 _root_form_ap_lin_repr = _root_form_ap_vec_setting['lin']
 _len_rf_ap_lin_repr = len(_root_form_ap_lin_repr)
 
-
 root_array_lin_repr = _global_lin_repr_setting['array']
 _front, _back = root_array_lin_repr
 _len_front = len(_front)
@@ -102,6 +101,19 @@ def msehtt_root_array_parser(dls, array_lin_repr):
                        _VarSetting_astA_astB_ip_dtC):
             A, _ti = PARSER.Parse__astA_astB_ip_dtC(*info_indicators)
 
+        # ------------- (A d(B), d(C)) ------------------------------------------------------------------
+        elif type_indicator == PARSER._find_indicator(
+                       _VarSetting_astA_d_B_ip_dtC):
+            A, _ti = PARSER.Parse__astA_d_B_ip_dtC(*info_indicators)
+
+        elif type_indicator == PARSER._find_indicator(
+                       _VarSetting_A_d_astB_ip_dtC):
+            A, _ti = PARSER.Parse__A_d_astB_ip_dtC(*info_indicators)
+
+        elif type_indicator == PARSER._find_indicator(
+                       _VarSetting_astA_d_astB_ip_dtC):
+            A, _ti = PARSER.Parse__astA_d_astB_ip_dtC(*info_indicators)
+
         # ------------- <AB|d(C)> ------------------------------------------------------------------
         elif type_indicator == PARSER._find_indicator(
                        _VarSetting_astA_B_dp_dtC):
@@ -141,6 +153,19 @@ def msehtt_root_array_parser(dls, array_lin_repr):
                        _VarSetting_astA_astB_dp_tC):
             A, _ti = PARSER.Parse__astA_astB_dp_tC(*info_indicators)
 
+        # ------------- <A d(B)|C> ------------------------------------------------------------------
+        elif type_indicator == PARSER._find_indicator(
+                       _VarSetting_astA_d_B_dp_tC):
+            A, _ti = PARSER.Parse__astA_d_B_dp_tC(*info_indicators)
+
+        elif type_indicator == PARSER._find_indicator(
+                       _VarSetting_A_d_astB_dp_tC):
+            A, _ti = PARSER.Parse__A_d_astB_dp_tC(*info_indicators)
+
+        elif type_indicator == PARSER._find_indicator(
+                       _VarSetting_astA_d_astB_dp_tC):
+            A, _ti = PARSER.Parse__astA_d_astB_dp_tC(*info_indicators)
+
         # ------------- (AB, C) ------------------------------------------------------------------
         elif type_indicator == PARSER._find_indicator(
                        _VarSetting_astA_B_ip_tC):
@@ -153,6 +178,11 @@ def msehtt_root_array_parser(dls, array_lin_repr):
         elif type_indicator == PARSER._find_indicator(
                        _VarSetting_astA_astB_ip_tC):
             A, _ti = PARSER.Parse__astA_astB_ip_tC(*info_indicators)
+
+        # ------- MORE NONLINEAR TERM RELATED ------------------------------------------------------
+        elif type_indicator == PARSER._find_indicator(
+                       _VarSetting_log_e_astA_ip_tB):
+            A, _ti = PARSER.Parse__log_e_astA_ip_tB(*info_indicators)
 
         # ===========================================================================================
 

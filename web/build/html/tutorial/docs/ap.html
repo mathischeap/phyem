@@ -250,6 +250,7 @@
 <li class="toctree-l3"><a class="reference internal" href="../../gallery/Navier_Stokes/Taylor_Green_vortex/index.html">Taylor-Green vortex</a></li>
 </ul>
 </details></li>
+<li class="toctree-l2"><a class="reference internal" href="../../gallery/MHD/index.html">🧲 MHD</a></li>
 </ul>
 </details></li>
 </ul>
@@ -452,17 +453,17 @@ document.write(`
             <nav aria-label="Page">
                 <ul class="visible nav section-nav flex-column">
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#matrix-proxy">6.1. Matrix proxy</a><ul class="nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#src.wf.mp.main.MatrixProxy"><code class="docutils literal notranslate"><span class="pre">MatrixProxy</span></code></a><ul class="nav section-nav flex-column">
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#src.wf.mp.main.MatrixProxy.ls"><code class="docutils literal notranslate"><span class="pre">MatrixProxy.ls()</span></code></a></li>
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#src.wf.mp.main.MatrixProxy.nls"><code class="docutils literal notranslate"><span class="pre">MatrixProxy.nls()</span></code></a></li>
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#src.wf.mp.main.MatrixProxy.pr"><code class="docutils literal notranslate"><span class="pre">MatrixProxy.pr()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#phyem.src.wf.mp.main.MatrixProxy"><code class="docutils literal notranslate"><span class="pre">MatrixProxy</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#phyem.src.wf.mp.main.MatrixProxy.ls"><code class="docutils literal notranslate"><span class="pre">MatrixProxy.ls()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#phyem.src.wf.mp.main.MatrixProxy.nls"><code class="docutils literal notranslate"><span class="pre">MatrixProxy.nls()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#phyem.src.wf.mp.main.MatrixProxy.pr"><code class="docutils literal notranslate"><span class="pre">MatrixProxy.pr()</span></code></a></li>
 </ul>
 </li>
 </ul>
 </li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#algebraic-representation">6.2. Algebraic representation</a><ul class="nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#src.wf.mp.main.MatrixProxyLinearSystem"><code class="docutils literal notranslate"><span class="pre">MatrixProxyLinearSystem</span></code></a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#src.wf.mp.main.MatrixProxyNoneLinearSystem"><code class="docutils literal notranslate"><span class="pre">MatrixProxyNoneLinearSystem</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#phyem.src.wf.mp.main.MatrixProxyLinearSystem"><code class="docutils literal notranslate"><span class="pre">MatrixProxyLinearSystem</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#phyem.src.wf.mp.main.MatrixProxyNoneLinearSystem"><code class="docutils literal notranslate"><span class="pre">MatrixProxyNoneLinearSystem</span></code></a></li>
 </ul>
 </li>
 </ul>
@@ -483,25 +484,25 @@ document.write(`
 <p>⏱️ 5 minutes</p>
 </aside>
 <section id="matrix-proxy">
-<span id="ap-mp"></span><span id="module-src.wf.mp.main"></span><h2><span class="section-number">6.1. </span>Matrix proxy<a class="headerlink" href="#matrix-proxy" title="Link to this heading">#</a></h2>
+<span id="ap-mp"></span><span id="module-phyem.src.wf.mp.main"></span><h2><span class="section-number">6.1. </span>Matrix proxy<a class="headerlink" href="#matrix-proxy" title="Link to this heading">#</a></h2>
 <p>With the fully discrete weak formulation <code class="docutils literal notranslate"><span class="pre">wf</span></code>, we can bring it into its algebraic proxy by calling its method
 <code class="docutils literal notranslate"><span class="pre">mp</span></code>, standing for <em>matrix proxy</em>,</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">mp</span> <span class="o">=</span> <span class="n">wf</span><span class="o">.</span><span class="n">mp</span><span class="p">()</span>
 </pre></div>
 </div>
-<p>which is an instance of <a class="reference internal" href="#src.wf.mp.main.MatrixProxy" title="src.wf.mp.main.MatrixProxy"><code class="xref py py-class docutils literal notranslate"><span class="pre">MatrixProxy</span></code></a>,</p>
+<p>which is an instance of <a class="reference internal" href="#phyem.src.wf.mp.main.MatrixProxy" title="phyem.src.wf.mp.main.MatrixProxy"><code class="xref py py-class docutils literal notranslate"><span class="pre">MatrixProxy</span></code></a>,</p>
 <blockquote>
 <div><dl class="py class">
-<dt class="sig sig-object py" id="src.wf.mp.main.MatrixProxy">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">MatrixProxy</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">wf</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/src/wf/mp/main.html#MatrixProxy"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#src.wf.mp.main.MatrixProxy" title="Link to this definition">#</a></dt>
+<dt class="sig sig-object py" id="phyem.src.wf.mp.main.MatrixProxy">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">MatrixProxy</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">wf</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/phyem/src/wf/mp/main.html#MatrixProxy"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#phyem.src.wf.mp.main.MatrixProxy" title="Link to this definition">#</a></dt>
 <dd><dl class="py method">
-<dt class="sig sig-object py" id="src.wf.mp.main.MatrixProxy.ls">
-<span class="sig-name descname"><span class="pre">ls</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/src/wf/mp/main.html#MatrixProxy.ls"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#src.wf.mp.main.MatrixProxy.ls" title="Link to this definition">#</a></dt>
+<dt class="sig sig-object py" id="phyem.src.wf.mp.main.MatrixProxy.ls">
+<span class="sig-name descname"><span class="pre">ls</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/phyem/src/wf/mp/main.html#MatrixProxy.ls"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#phyem.src.wf.mp.main.MatrixProxy.ls" title="Link to this definition">#</a></dt>
 <dd><p>Convert self to an abstract linear system.</p>
 <dl class="field-list">
 <dt class="field-odd">Returns<span class="colon">:</span></dt>
 <dd class="field-odd"><dl>
-<dt><strong>ls</strong><span class="classifier"><a class="reference internal" href="#src.wf.mp.main.MatrixProxyLinearSystem" title="src.wf.mp.main.MatrixProxyLinearSystem"><code class="xref py py-class docutils literal notranslate"><span class="pre">MatrixProxyLinearSystem</span></code></a></span></dt><dd><p>The linear system instance.</p>
+<dt><strong>ls</strong><span class="classifier"><a class="reference internal" href="#phyem.src.wf.mp.main.MatrixProxyLinearSystem" title="phyem.src.wf.mp.main.MatrixProxyLinearSystem"><code class="xref py py-class docutils literal notranslate"><span class="pre">MatrixProxyLinearSystem</span></code></a></span></dt><dd><p>The linear system instance.</p>
 </dd>
 </dl>
 </dd>
@@ -509,13 +510,13 @@ document.write(`
 </dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="src.wf.mp.main.MatrixProxy.nls">
-<span class="sig-name descname"><span class="pre">nls</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/src/wf/mp/main.html#MatrixProxy.nls"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#src.wf.mp.main.MatrixProxy.nls" title="Link to this definition">#</a></dt>
+<dt class="sig sig-object py" id="phyem.src.wf.mp.main.MatrixProxy.nls">
+<span class="sig-name descname"><span class="pre">nls</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/phyem/src/wf/mp/main.html#MatrixProxy.nls"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#phyem.src.wf.mp.main.MatrixProxy.nls" title="Link to this definition">#</a></dt>
 <dd><p>Convert self to an abstract nonlinear system.</p>
 <dl class="field-list">
 <dt class="field-odd">Returns<span class="colon">:</span></dt>
 <dd class="field-odd"><dl>
-<dt><strong>nls</strong><span class="classifier"><a class="reference internal" href="#src.wf.mp.main.MatrixProxyNoneLinearSystem" title="src.wf.mp.main.MatrixProxyNoneLinearSystem"><code class="xref py py-class docutils literal notranslate"><span class="pre">MatrixProxyNoneLinearSystem</span></code></a></span></dt><dd><p>The nonlinear system instance.</p>
+<dt><strong>nls</strong><span class="classifier"><a class="reference internal" href="#phyem.src.wf.mp.main.MatrixProxyNoneLinearSystem" title="phyem.src.wf.mp.main.MatrixProxyNoneLinearSystem"><code class="xref py py-class docutils literal notranslate"><span class="pre">MatrixProxyNoneLinearSystem</span></code></a></span></dt><dd><p>The nonlinear system instance.</p>
 </dd>
 </dl>
 </dd>
@@ -523,8 +524,8 @@ document.write(`
 </dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="src.wf.mp.main.MatrixProxy.pr">
-<span class="sig-name descname"><span class="pre">pr</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">figsize</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">(12,</span> <span class="pre">8)</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/src/wf/mp/main.html#MatrixProxy.pr"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#src.wf.mp.main.MatrixProxy.pr" title="Link to this definition">#</a></dt>
+<dt class="sig sig-object py" id="phyem.src.wf.mp.main.MatrixProxy.pr">
+<span class="sig-name descname"><span class="pre">pr</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">figsize</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">(12,</span> <span class="pre">8)</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/phyem/src/wf/mp/main.html#MatrixProxy.pr"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#phyem.src.wf.mp.main.MatrixProxy.pr" title="Link to this definition">#</a></dt>
 <dd><p>Print the representation, a figure, of this weak formulation.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -550,20 +551,20 @@ applied when it is the case. The default value is <code class="docutils literal 
 <span id="ap-ap"></span><h2><span class="section-number">6.2. </span>Algebraic representation<a class="headerlink" href="#algebraic-representation" title="Link to this heading">#</a></h2>
 <p>Depend on <code class="docutils literal notranslate"><span class="pre">mp</span></code> is linear or nonlinear, an algebraic system can be produced
 through either method <code class="docutils literal notranslate"><span class="pre">ls</span></code> or <code class="docutils literal notranslate"><span class="pre">nls</span></code> of <code class="docutils literal notranslate"><span class="pre">mp</span></code>,
-see <a class="reference internal" href="#src.wf.mp.main.MatrixProxy.ls" title="src.wf.mp.main.MatrixProxy.ls"><code class="xref py py-meth docutils literal notranslate"><span class="pre">MatrixProxy.ls()</span></code></a> and <a class="reference internal" href="#src.wf.mp.main.MatrixProxy.nls" title="src.wf.mp.main.MatrixProxy.nls"><code class="xref py py-meth docutils literal notranslate"><span class="pre">MatrixProxy.nls()</span></code></a>.</p>
-<p>Method <code class="docutils literal notranslate"><span class="pre">ls</span></code> gives an instance of <a class="reference internal" href="#src.wf.mp.main.MatrixProxyLinearSystem" title="src.wf.mp.main.MatrixProxyLinearSystem"><code class="xref py py-class docutils literal notranslate"><span class="pre">MatrixProxyLinearSystem</span></code></a>, i.e.,</p>
+see <a class="reference internal" href="#phyem.src.wf.mp.main.MatrixProxy.ls" title="phyem.src.wf.mp.main.MatrixProxy.ls"><code class="xref py py-meth docutils literal notranslate"><span class="pre">MatrixProxy.ls()</span></code></a> and <a class="reference internal" href="#phyem.src.wf.mp.main.MatrixProxy.nls" title="phyem.src.wf.mp.main.MatrixProxy.nls"><code class="xref py py-meth docutils literal notranslate"><span class="pre">MatrixProxy.nls()</span></code></a>.</p>
+<p>Method <code class="docutils literal notranslate"><span class="pre">ls</span></code> gives an instance of <a class="reference internal" href="#phyem.src.wf.mp.main.MatrixProxyLinearSystem" title="phyem.src.wf.mp.main.MatrixProxyLinearSystem"><code class="xref py py-class docutils literal notranslate"><span class="pre">MatrixProxyLinearSystem</span></code></a>, i.e.,</p>
 <blockquote>
 <div><dl class="py class">
-<dt class="sig sig-object py" id="src.wf.mp.main.MatrixProxyLinearSystem">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">MatrixProxyLinearSystem</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">mp</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ls</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mp_bc</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/src/wf/mp/linear_system.html#MatrixProxyLinearSystem"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#src.wf.mp.main.MatrixProxyLinearSystem" title="Link to this definition">#</a></dt>
+<dt class="sig sig-object py" id="phyem.src.wf.mp.main.MatrixProxyLinearSystem">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">MatrixProxyLinearSystem</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">mp</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ls</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mp_bc</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/phyem/src/wf/mp/linear_system.html#MatrixProxyLinearSystem"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#phyem.src.wf.mp.main.MatrixProxyLinearSystem" title="Link to this definition">#</a></dt>
 <dd></dd></dl>
 
 </div></blockquote>
-<p>And method <code class="docutils literal notranslate"><span class="pre">nls</span></code> leads to an instance of <a class="reference internal" href="#src.wf.mp.main.MatrixProxyNoneLinearSystem" title="src.wf.mp.main.MatrixProxyNoneLinearSystem"><code class="xref py py-class docutils literal notranslate"><span class="pre">MatrixProxyNoneLinearSystem</span></code></a>, namely,</p>
+<p>And method <code class="docutils literal notranslate"><span class="pre">nls</span></code> leads to an instance of <a class="reference internal" href="#phyem.src.wf.mp.main.MatrixProxyNoneLinearSystem" title="phyem.src.wf.mp.main.MatrixProxyNoneLinearSystem"><code class="xref py py-class docutils literal notranslate"><span class="pre">MatrixProxyNoneLinearSystem</span></code></a>, namely,</p>
 <blockquote>
 <div><dl class="py class">
-<dt class="sig sig-object py" id="src.wf.mp.main.MatrixProxyNoneLinearSystem">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">MatrixProxyNoneLinearSystem</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">mp</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mp_ls</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">nls</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/src/wf/mp/nonlinear_system.html#MatrixProxyNoneLinearSystem"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#src.wf.mp.main.MatrixProxyNoneLinearSystem" title="Link to this definition">#</a></dt>
+<dt class="sig sig-object py" id="phyem.src.wf.mp.main.MatrixProxyNoneLinearSystem">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">MatrixProxyNoneLinearSystem</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">mp</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mp_ls</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">nls</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/phyem/src/wf/mp/nonlinear_system.html#MatrixProxyNoneLinearSystem"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#phyem.src.wf.mp.main.MatrixProxyNoneLinearSystem" title="Link to this definition">#</a></dt>
 <dd></dd></dl>
 
 </div></blockquote>
@@ -633,17 +634,17 @@ which will <em>objectivize</em> it, for example by making matrices 2-dimensional
   <nav class="bd-toc-nav page-toc">
     <ul class="visible nav section-nav flex-column">
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#matrix-proxy">6.1. Matrix proxy</a><ul class="nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#src.wf.mp.main.MatrixProxy"><code class="docutils literal notranslate"><span class="pre">MatrixProxy</span></code></a><ul class="nav section-nav flex-column">
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#src.wf.mp.main.MatrixProxy.ls"><code class="docutils literal notranslate"><span class="pre">MatrixProxy.ls()</span></code></a></li>
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#src.wf.mp.main.MatrixProxy.nls"><code class="docutils literal notranslate"><span class="pre">MatrixProxy.nls()</span></code></a></li>
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#src.wf.mp.main.MatrixProxy.pr"><code class="docutils literal notranslate"><span class="pre">MatrixProxy.pr()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#phyem.src.wf.mp.main.MatrixProxy"><code class="docutils literal notranslate"><span class="pre">MatrixProxy</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#phyem.src.wf.mp.main.MatrixProxy.ls"><code class="docutils literal notranslate"><span class="pre">MatrixProxy.ls()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#phyem.src.wf.mp.main.MatrixProxy.nls"><code class="docutils literal notranslate"><span class="pre">MatrixProxy.nls()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#phyem.src.wf.mp.main.MatrixProxy.pr"><code class="docutils literal notranslate"><span class="pre">MatrixProxy.pr()</span></code></a></li>
 </ul>
 </li>
 </ul>
 </li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#algebraic-representation">6.2. Algebraic representation</a><ul class="nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#src.wf.mp.main.MatrixProxyLinearSystem"><code class="docutils literal notranslate"><span class="pre">MatrixProxyLinearSystem</span></code></a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#src.wf.mp.main.MatrixProxyNoneLinearSystem"><code class="docutils literal notranslate"><span class="pre">MatrixProxyNoneLinearSystem</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#phyem.src.wf.mp.main.MatrixProxyLinearSystem"><code class="docutils literal notranslate"><span class="pre">MatrixProxyLinearSystem</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#phyem.src.wf.mp.main.MatrixProxyNoneLinearSystem"><code class="docutils literal notranslate"><span class="pre">MatrixProxyNoneLinearSystem</span></code></a></li>
 </ul>
 </li>
 </ul>
@@ -684,7 +685,7 @@ By Andrea Brugnoli, Ramy Rashad, Stefano Stramigioli, Yi Zhang and more
   <div class="footer-item">
     
 <div class="extra_footer">
-  <div>Last updated on March 16, 2025, 15:57:13, China Standard Time</div>
+  <div>Last updated on 十一月 18, 2025, 19:20:03, China Standard Time</div>
 </div>
   </div>
   

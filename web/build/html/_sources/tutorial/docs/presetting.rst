@@ -1,7 +1,7 @@
 
 .. testsetup:: *
 
-    import __init__ as ph
+    import phyem as ph
 
 .. testcleanup::
 
@@ -42,7 +42,7 @@ Import
 Set
 ===
 
-.. automodule:: src.config
+.. automodule:: phyem.src.config
     :undoc-members:
 
 |

@@ -1,7 +1,7 @@
 
 .. testsetup:: *
 
-    import __init__ as ph
+    import phyem as ph
     ph.config.set_embedding_space_dim(2)
     ph.config.set_high_accuracy(True)
     ph.config.set_pr_cache(True)
@@ -24,11 +24,11 @@ Space & form
     ⏱️ 10 minutes
 
 
-.. automodule:: src.spaces.main
+.. automodule:: phyem.src.spaces.main
     :undoc-members:
 
 
-.. automodule:: src.form.main
+.. automodule:: phyem.src.form.main
     :undoc-members:
 
 

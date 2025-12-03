@@ -344,7 +344,7 @@ def __matplot__(
         plt.savefig(saveto, bbox_inches='tight', pad_inches=pad_inches)
         plt.close()
     else:
-        from src.config import _setting
+        from phyem.src.config import _setting
         plt.show(block=_setting['block'])
     # =============================================================================================1
     return 0

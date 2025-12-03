@@ -2,8 +2,8 @@
 
 .. testsetup:: *
 
-    from web.source.gallery.div_grad.outer_periodic import div_grad_2d_periodic_manufactured_test
-    from web.source.gallery.div_grad.outer import div_grad_2d_general_bc_manufactured_test
+    from phyem.web.source.gallery.div_grad.outer_periodic import div_grad_2d_periodic_manufactured_test
+    from phyem.web.source.gallery.div_grad.outer import div_grad_2d_general_bc_manufactured_test
 
 .. testcleanup::
 
@@ -55,7 +55,7 @@ Exact solutions of :math:`u^1` and :math:`f^2` then follow.
 We consider the domain to be :math:`\Omega = (x,y) \in [0,1]^2` and it is fully periodic.
 We use the :ref:`GALLERY-msepy-domains-and-meshes=multi-crazy` for this test. The solver is given below.
 
-    .. autofunction:: web.source.gallery.div_grad.outer_periodic.div_grad_2d_periodic_manufactured_test
+    .. autofunction:: phyem.web.source.gallery.div_grad.outer_periodic.div_grad_2d_periodic_manufactured_test
 
 Examples
 --------
@@ -90,7 +90,7 @@ on faces :math:`y=0` and :math:`y=1`, and natural boundary condition
 
 The implementation is
 
-    .. autofunction:: web.source.gallery.div_grad.outer.div_grad_2d_general_bc_manufactured_test
+    .. autofunction:: phyem.web.source.gallery.div_grad.outer.div_grad_2d_general_bc_manufactured_test
 
 
 Examples

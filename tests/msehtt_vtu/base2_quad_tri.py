@@ -3,15 +3,9 @@ r"""
 mpiexec -n 4 python tests/msehtt_vtu/base2_quad_tri.py
 """
 
-import sys
-
 import numpy as np
 
-ph_dir = './'  # customize it to your dir containing phyem
-if ph_dir not in sys.path:
-    sys.path.append(ph_dir)
-
-import __init__ as ph
+import phyem as ph
 
 ph.config.set_embedding_space_dim(2)
 ph.config.set_high_accuracy(True)
@@ -45,11 +39,11 @@ boundary = mesh.boundary()
 # ------- manually make a vtu interface file ---------------
 
 
-from msehtt.static.mesh.great.config.vtu import MseHttVtuInterface
+from phyem.msehtt.static.mesh.great.config.vtu import MseHttVtuInterface
 
 from random import uniform, randint
 
-from src.config import MASTER_RANK, RANK, COMM
+from phyem.src.config import MASTER_RANK, RANK, COMM
 
 
 if RANK == MASTER_RANK:

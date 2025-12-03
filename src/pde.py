@@ -10,7 +10,7 @@ Initialization
 
 To initialize/construct a PDE instance, call the method ``ph.pde``,
 
-    .. autofunction:: src.pde.pde
+    .. autofunction:: phyem.src.pde.pde
 
 For instance, if we want to solve the 2-dimensional linear port Hamitolian problem, i.e.,
 
@@ -57,7 +57,7 @@ Sending ``expression`` and ``interpreter`` to ``ph.pde`` initializes a PDE insta
 
 which is an instance of :class:`PartialDifferentialEquations`,
 
-    .. autoclass:: src.pde.PartialDifferentialEquations
+    .. autoclass:: phyem.src.pde.PartialDifferentialEquations
         :members: pr, test_with, unknowns, bc, derive
 
 We need to set the unknowns of the pde, which is done through setting the property ``unknowns``,
