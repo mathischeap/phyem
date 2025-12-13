@@ -45,7 +45,13 @@ def ___mm332_orthogonal_hexahedron___(element, degree):
     else:
         p, btype = element.degree_parser(degree)
         quad_degree = (p[0], p[1], p[2])
-        quad = quadrature(quad_degree, btype)
+        BTYPE = []
+        for bt in btype:
+            if bt in ('Gauss', 'Lobatto'):
+                BTYPE.append(bt)
+            else:
+                BTYPE.append('Gauss')
+        quad = quadrature(quad_degree, tuple(BTYPE))
         quad_nodes = quad.quad_nodes
         quad_weights = quad.quad_weights_ravel
         xi_et_sg, bf = element.bf('m3n3k2', degree, *quad_nodes)

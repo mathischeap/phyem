@@ -27,6 +27,22 @@ def Lobatto_polynomials_of_degree(p):
         return polynomials
 
 
+_cache_polynomials_on_nodes_ = {}
+
+
+def polynomials_on_nodes(nodes):
+    r""""""
+    if isinstance(nodes, str) and nodes[:10] == 'CUS-NODES@':
+        if nodes in _cache_polynomials_on_nodes_:
+            return _cache_polynomials_on_nodes_[nodes]
+        NODES = Quadrature.___PRIVATE_compute_CUS_NODES___(nodes)[0]
+        polynomials = _OneDimPolynomial(NODES)
+        _cache_polynomials_on_nodes_[nodes] = polynomials
+        return polynomials
+    else:
+        raise NotImplementedError(f"polynomials_on_nodes not implemented for nodes={nodes}.")
+
+
 class _OneDimPolynomial(Frozen):
     """
     The 1d polynomial basis function space.

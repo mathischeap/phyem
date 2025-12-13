@@ -96,6 +96,7 @@ class MseHtt_MultiGrid_MeshPartial(Frozen):
         else:
             raise NotImplementedError(top_config_including.__class__)
 
-    def visualize(self, *args, **kwargs):
+    @property
+    def visualize(self):
         r"""Visualize the max-level mesh."""
-        return self.get_level().visualize(*args, **kwargs)
+        return self.get_level().visualize

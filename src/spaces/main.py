@@ -609,7 +609,7 @@ _degree_cache = {}
 
 def _degree_str_maker(degree):
     """"""
-    str_degree = degree.__class__.__name__ + str(degree)
+    str_degree = degree.__class__.__name__ + '>D<' + str(degree)
     _degree_cache[str_degree] = degree
     return str_degree
 

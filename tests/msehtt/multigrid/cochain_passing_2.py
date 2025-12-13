@@ -1,16 +1,16 @@
 r"""
-mpiexec -n 4 python tests/msehtt/multigrid/mesh2d_example0.py
+mpiexec -n 4 python tests/msehtt/multigrid/cochain_passing_2.py
 """
 import numpy as np
 import phyem as ph
 
-N = 3
+N = 2
 
 ph.config.set_embedding_space_dim(2)
 ph.config.set_high_accuracy(True)
 ph.config.set_pr_cache(False)
 
-manifold = ph.manifold(2)
+manifold = ph.manifold(2, periodic=True)
 mesh = ph.mesh(manifold)
 
 Out0 = ph.space.new('Lambda', 0, orientation='outer')
@@ -36,8 +36,8 @@ msehtt, obj = ph.fem.apply('msehtt-smg', locals())
 
 tgm = msehtt.tgm()
 
-msehtt.config(tgm)('crazy', element_layout=5, c=0, mgc=3)
-tgm.visualize()
+msehtt.config(tgm)('crazy', element_layout=6, c=0, mgc=2, periodic=True)
+# tgm.visualize()
 
 _mesh = obj['mesh']
 msehtt.config(_mesh)(tgm, including='all')
@@ -76,7 +76,6 @@ def fw0_square(x, y):
 vector = ph.vc.vector(fx, fy)
 scalar = ph.vc.scalar(fw)
 
-
 fo0.cf = scalar
 fi0.cf = scalar
 fo1.cf = vector
@@ -84,9 +83,21 @@ fi1.cf = vector
 fo2.cf = scalar
 fi2.cf = scalar
 
-fo0[0].reduce()
-fi0[0].reduce()
-fo1[0].reduce()
-fi1[0].reduce()
-fo2[0].reduce()
-fi2[0].reduce()
+fo0.get_level(1)[0].reduce()
+tgm.pass_cochain(fo0.get_level(1), 0, fo0.get_level(0), 0, complete_only=True)
+error0 = fo0.get_level(0)[0].error()
+
+fi1.get_level(1)[0].reduce()
+tgm.pass_cochain(fi1.get_level(1), 0, fi1.get_level(0), 0, complete_only=True)
+error1o = fi1.get_level(0)[0].error()
+
+fo1.get_level(1)[0].reduce()
+tgm.pass_cochain(fo1.get_level(1), 0, fo1.get_level(0), 0, complete_only=True)
+error1i = fo1.get_level(0)[0].error()
+
+fi2.get_level(1)[0].reduce()
+tgm.pass_cochain(fi2.get_level(1), 0, fi2.get_level(0), 0, complete_only=True)
+error2 = fi2.get_level(0)[0].error()
+
+error_array = np.array([error0, error1o, error1i, error2])
+np.testing.assert_array_almost_equal(error_array, np.array([0.00467257, 0.02882566, 0.02882566, 0.02845538]))

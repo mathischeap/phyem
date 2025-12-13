@@ -416,12 +416,15 @@ def _msepy_data_preparation(d_, degree):
     """"""
     p, btype = MseHttGreatMeshOrthogonalRectangleElement.degree_parser(degree)
 
-    key = str(p) + btype + d_
+    key = str(p) + str(btype) + d_
 
     if key in _cache_rd_221_dp_:
         return _cache_rd_221_dp_[key]
 
-    nodes = [quadrature(_, category=btype).quad[0] for _ in p]
+    nodes = list()
+    for _, bt in zip(p, btype):
+        nodes.append(quadrature(_, bt).quad[0])
+
     qp = (p[0] + 2, p[1] + 2)
     quad_nodes, quad_weights = quadrature(qp, category='Gauss').quad
     p_x, p_y = qp

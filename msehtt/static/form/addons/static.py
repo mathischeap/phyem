@@ -193,6 +193,10 @@ class MseHttFormStaticCopy(Frozen):
         else:
             return float(self._f.norm(self.cochain, norm_type=norm_type, component_wise=False))
 
+    def mass(self):
+        r"""Compute integral of self over the domain: (self, 1)_Omega. So this only make sense for scalar."""
+        return self._f.mass(self.cochain)
+
     def inner_product(self, other, inner_type='L2'):
         r""""""
         return self._f.inner_product(
@@ -231,19 +235,36 @@ class ___MseHtt_Static_Form_Copy_Numeric___(Frozen):
         self._freeze()
 
     def rws(self, ddf=1, component_wise=False, **kwargs):
+        r"""Return a rws-dds only in the master rank. Return None in the slave ranks."""
         return self._f.numeric.rws(self._t, ddf=ddf, component_wise=component_wise, **kwargs)
 
     @property
     def dtype(self):
+        r"""Like '2d-scalar', '2d-vector', '3d-scalar', '3d-vector', etc."""
         return self._f.numeric.dtype
 
-    def interpolate(self, ddf=1, data_only=False, component_wise=False, rankwise=True):
-        if rankwise:
-            return self._f.numeric._interpolate_(self._t, ddf=ddf, data_only=data_only, component_wise=component_wise)
+    def interpolate(self, ddf=1, data_only=False, component_wise=False, rank_wise=True):
+        r"""
+        Returns two outputs: dtype(str) and interpolation.
+
+        If rank_wise is True:
+
+            This interpolation is rank-wise. It will only give reasonable results when we evaluate the
+            interpolation using coordinates which are in the local elements.
+
+        else:
+
+            In the master rank: return dtype(str) and a globally reasonable interpolation.
+
+            In the slave ranks: return dtype(str) and None.
+
+        """
+        if rank_wise:
+            return self._f.numeric._interpolate_(
+                self._t, ddf=ddf, data_only=data_only, component_wise=component_wise)
         else:
             return self._f.numeric._interpolate_global_(
-                self._t, ddf=ddf, data_only=data_only, component_wise=component_wise
-            )
+                self._t, ddf=ddf, data_only=data_only, component_wise=component_wise)
 
     def value(self, *coo):
         r"""Find the value of the form at this coordinate."""
@@ -252,7 +273,7 @@ class ___MseHtt_Static_Form_Copy_Numeric___(Frozen):
         the_element_index = in_elements_indexed[0]
 
         # we only make the interpolator in one RANK.
-        dtype, itp = self.interpolate(component_wise=True)
+        dtype, itp = self.interpolate(data_only=False, component_wise=True, rank_wise=True)
         # return itp locally in all ranks. These interpolations are only valid in the local elements.
 
         if dtype == '2d-scalar':
@@ -262,7 +283,31 @@ class ___MseHtt_Static_Form_Copy_Numeric___(Frozen):
                 value = w(x, y)
             else:
                 value = 0
-            return COMM.allreduce(value, op=MPI.SUM)
+            value = COMM.allreduce(value, op=MPI.SUM)
+            return float(value)
+
+        elif dtype == '3d-scalar':
+            if the_element_index in elements:
+                w = itp[0]
+                x, y, z = coo
+                value = w(x, y, z)
+            else:
+                value = 0
+            value = COMM.allreduce(value, op=MPI.SUM)
+            return float(value)
+
+        elif dtype == '2d-vector':
+            if the_element_index in elements:
+                U, V = itp
+                x, y = coo
+                vx = U(x, y)
+                vy = V(x, y)
+            else:
+                vx = 0
+                vy = 0
+            vx = COMM.allreduce(vx, op=MPI.SUM)
+            vy = COMM.allreduce(vy, op=MPI.SUM)
+            return float(vx), float(vy)
 
         elif dtype == '3d-vector':
             if the_element_index in elements:

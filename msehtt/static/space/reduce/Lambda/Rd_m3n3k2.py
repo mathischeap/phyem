@@ -124,7 +124,7 @@ def _msepy_data_preparation(degree):
     """
 
     p, btype = MseHttGreatMeshOrthogonalHexahedronElement.degree_parser(degree)
-    key = str(p) + btype
+    key = str(p) + str(btype)
 
     if key in _cache332_data_:
         data = _cache332_data_[key]
@@ -137,7 +137,10 @@ def _msepy_data_preparation(degree):
             p[0] * (p[1] + 1) * p[2],
             p[0] * p[1] * (p[2] + 1),
         ]
-        nodes = [quadrature(_, btype).quad[0] for _ in p]
+
+        nodes = list()
+        for _, bt in zip(p, btype):
+            nodes.append(quadrature(_, bt).quad[0])
 
         # dy dz face ________________________________________________________________________
         xi = np.zeros((num_basis_components[0], quad_degree[1] + 1, quad_degree[2] + 1))

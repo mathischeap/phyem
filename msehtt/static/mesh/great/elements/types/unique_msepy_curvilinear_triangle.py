@@ -151,9 +151,9 @@ class MseHtt_GreatMesh_Unique_Msepy_Curvilinear_Triangle_Element(MseHttGreatMesh
         y = np.array([-1, 0, 1])
         x, y = self.ct.mapping(x, y)
         return {
-            0: r"%.7f-%.7f" % (x[0], y[0]),
-            1: r"%.7f-%.7f" % (x[1], y[1]),
-            2: r"%.7f-%.7f" % (x[2], y[2]),
+            0: r"%.7f-%.7f" % (round(x[0], 7), round(y[0], 7)),
+            1: r"%.7f-%.7f" % (round(x[1], 7), round(y[1], 7)),
+            2: r"%.7f-%.7f" % (round(x[2], 7), round(y[2], 7)),
         }
 
     @property

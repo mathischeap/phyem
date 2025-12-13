@@ -15,6 +15,9 @@ from phyem.msehtt.static.space.reconstruction_matrix_for_element_face.main impor
 from phyem.msehtt.static.space.integrate_matrix_over_sub_geometry.main import MseHttSpace_IntMatOverSubGeo
 from phyem.msehtt.static.space.reconstruct_on_element_face.main import MseHttSpace_RConEF
 from phyem.msehtt.static.space.inner_product.main import MseHttSpace_InnerProduct
+from phyem.msehtt.static.space.mass.main import MseHttSpace_MASS
+
+from phyem.msehtt.static.space.find.dof_geometry.main import MseHttSpace_FindDofGeometry
 
 
 def _distribute_IMPLEMENTATION_space(indicator, m, n, **kwargs):
@@ -89,7 +92,8 @@ class MseHttSpace(Frozen):
         self._RConEF = None
         self._int_mat_over_sub_geo = None
         self._ip_ = None
-
+        self._fdg = MseHttSpace_FindDofGeometry(self)
+        self._mass = None
         self._freeze()
 
     # ------------ IMPLEMENTATION FORM ---------------------------------------------------------------------
@@ -313,3 +317,16 @@ class MseHttSpace(Frozen):
         if self._ip_ is None:
             self._ip_ = MseHttSpace_InnerProduct(self)
         return self._ip_
+
+    @property
+    def find_dof_geometry(self):
+        r"""Find a geometry of a dof.
+        """
+        return self._fdg
+
+    @property
+    def mass(self):
+        r"""To compute the mass of a form, i.e. (f, 1)_Omega. So it only makes sense for scalar forms."""
+        if self._mass is None:
+            self._mass = MseHttSpace_MASS(self)
+        return self._mass

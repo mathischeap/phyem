@@ -42,12 +42,12 @@ class MseHttLinearSystem(Frozen):
 
     @property
     def A(self):
-        r"""A of Ax=b."""
+        r"""`A` of `Ax=b`."""
         return self._A
 
     @property
     def b(self):
-        r"""b of Ax=b."""
+        r"""`b` of `Ax=b`."""
         return self._b
 
     @property

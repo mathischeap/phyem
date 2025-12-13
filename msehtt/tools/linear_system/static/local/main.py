@@ -204,7 +204,9 @@ class MseHttStaticLocalLinearSystem(Frozen):
         preconditioner :
         threshold :
         customizations :
-            The customizations that need to be done in the assembled system.
+            The customizations that need to be done in the assembled system. These customizations are not done
+            through local A matrix and local b vector. Thus, if we have solved the assembled system of the assembled
+            global matrix, we need to take care the output before using the output as cochains of unknowns.
 
             customizations = [
                 {

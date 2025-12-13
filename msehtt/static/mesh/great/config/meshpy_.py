@@ -73,7 +73,7 @@ class MseHtt_API_2_MeshPy(Frozen):
         COO = {}
         for i, ___ in enumerate(mesh_points):
             coo[i] = ___
-            coo_str = "%.9f" % ___[0] + ',' + "%.9f" % ___[1]
+            coo_str = "%.9f" % round(___[0], 9) + ',' + "%.9f" % round(___[1], 9)
             if coo_str in renumbering:
                 pass
             else:
@@ -121,9 +121,9 @@ class MseHtt_API_2_MeshPy(Frozen):
                 else:
                     pass
 
-                coo_str_A = "%.9f" % A[0] + ',' + "%.9f" % A[1]
-                coo_str_B = "%.9f" % B[0] + ',' + "%.9f" % B[1]
-                coo_str_C = "%.9f" % C[0] + ',' + "%.9f" % C[1]
+                coo_str_A = "%.9f" % round(A[0], 9) + ',' + "%.9f" % round(A[1], 9)
+                coo_str_B = "%.9f" % round(B[0], 9) + ',' + "%.9f" % round(B[1], 9)
+                coo_str_C = "%.9f" % round(C[0], 9) + ',' + "%.9f" % round(C[1], 9)
                 TRUE_CONNECTION = [
                     renumbering[coo_str_A], renumbering[coo_str_B], renumbering[coo_str_C]
                 ]

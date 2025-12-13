@@ -1061,7 +1061,7 @@ class MseHttGreatMesh(Frozen):
                 #        (node1)      G         (node3)
                 #
                 #
-                #   x0 face:
+                #   z0 face:
                 #
                 #          U__________Y__________W
                 #           |         |         |
@@ -1071,7 +1071,7 @@ class MseHttGreatMesh(Frozen):
                 #           |         |         |
                 #           |         |         |
                 #           |_________|_________|
-                #          X          I          a
+                #          X          i          a
                 #
                 #
                 #   z+ face

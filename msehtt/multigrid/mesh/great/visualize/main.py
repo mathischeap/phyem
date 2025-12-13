@@ -140,7 +140,7 @@ def _plot_2d_MG_great_mesh_for_m2n2(
                     x, y = line_xy_coo
                     plt.plot(x, y, linewidth=base_linewidth, color=colors(lvl))
 
-        base_linewidth *= 1.5
+        base_linewidth *= 1.25
 
     # deal with title -----------------------------------------------
     if title is None:

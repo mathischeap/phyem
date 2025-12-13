@@ -25,7 +25,12 @@ class MseHtt_MultiGrid_FormStaticCopy(Frozen):
         return self._f.cf[self._t]
 
     def reduce(self, cf=None):
-        r"""Reduce for the msehtt form on all level meshes."""
+        r"""Reduce for the msehtt form on all level meshes.
+
+        cf :
+            cf @ t.
+
+        """
         for lvl in self._f.tgm.level_range:
             lvl_form_at_t = self._f.get_level(lvl)[self._t]
             if cf is None:

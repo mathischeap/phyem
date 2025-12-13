@@ -10,7 +10,9 @@ from phyem.msehtt.multigrid.default import default_uniform_multigrid_refining_fa
 from phyem.msehtt.multigrid.default import default_uniform_max_levels
 
 from phyem.msehtt.multigrid.mesh.great.pass_ import MseHtt_MultiGrid_GreatMesh_Pass
+from phyem.msehtt.multigrid.mesh.great.dof_correspondence.main import MseHtt_MultiGrid_GreatMesh_DofCorrespondence
 from phyem.msehtt.multigrid.mesh.great.visualize.main import MseHtt_MultiGrid_GreatMesh_Visualize
+from phyem.msehtt.multigrid.mesh.great.hierarchy import MseHtt_MultiGrid_GreatMesh_Hierarchy
 
 
 class MseHtt_MultiGrid_GreatMesh(Frozen):
@@ -29,7 +31,9 @@ class MseHtt_MultiGrid_GreatMesh(Frozen):
         }
         self.___uniform_level_range___ = None
         self._pass = MseHtt_MultiGrid_GreatMesh_Pass(self)
+        self._dof_cor_ = MseHtt_MultiGrid_GreatMesh_DofCorrespondence(self)
         self._visualize_ = None
+        self._hierarchy_ = MseHtt_MultiGrid_GreatMesh_Hierarchy(self)
         self._freeze()
 
     def __repr__(self):
@@ -104,10 +108,16 @@ class MseHtt_MultiGrid_GreatMesh(Frozen):
         lvl_mesh = MseHttGreatMesh()
         args, kwargs = self._msehtt_mesh_args_kwargs
         if rff == 2:
-            lvl_mesh._config(*args, **kwargs, ts=lvl, renumbering=True)
+            lvl_mesh._config(*args, **kwargs, ts=lvl, renumbering=True)  # must use renumbering.
         else:
-            lvl_mesh._config(*args, **kwargs, ts=lvl, ts_rff=rff, renumbering=True)  # Not implemented.
+            lvl_mesh._config(*args, **kwargs, ts=lvl, ts_rff=rff, renumbering=True)
+            # must use renumbering; Not implemented.
         self._levels[lvl] = lvl_mesh
+
+    @property
+    def hierarchy(self):
+        """hierarchy of the level meshes."""
+        return self._hierarchy_
 
     # -----------------------------------------------------------------------------------------
     @property
@@ -124,7 +134,7 @@ class MseHtt_MultiGrid_GreatMesh(Frozen):
     def level_range(self):
         r"""Return the range of all possible levels.
 
-        It must be iterable. Its sequence must show a good logic,
+        It must be iterable. Its sequence must show a good logic.
         and the max-level mesh must be at its end.
 
         ANd `level_range[0]` must be 0.
@@ -147,9 +157,19 @@ class MseHtt_MultiGrid_GreatMesh(Frozen):
             return self.get_level(lvl).visualize(**kwargs)
 
     @property
+    def dof_correspondence(self):
+        r"""Wrapper of all methods that find the relations between dofs of forms on difference levels."""
+        return self._dof_cor_
+
+    @property
     def pass_cochain(self):
         r"""pass a cochain of a form to another form."""
         return self._pass.cochain
+
+    @property
+    def pass_vector(self):
+        r"""Pass a vector from one level to another level as a cochain."""
+        return self._pass.vector_through_cochain
 
     def find_level(self, obj):
         r"""Find level of the obj."""

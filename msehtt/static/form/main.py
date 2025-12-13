@@ -336,7 +336,7 @@ class MseHttForm(Frozen):
         return element_signature_dict
 
     def saveto(self, filename, what=None):
-        """save me to a file.
+        r"""save me to a file.
 
         Basically, we only save the co-chains of all available times.
         """
@@ -393,7 +393,7 @@ class MseHttForm(Frozen):
             pass
 
     def read(self, filename):
-        """Read to my cochain from a file whose key is equal to 'msehtt-static-form'.
+        r"""Read to my cochain from a file whose key is equal to 'msehtt-static-form'.
 
         Since I am only reading to my cochain, it returns no new object, it cannot be called
         from `ph.read`. Please call me from a particular form.
@@ -434,7 +434,7 @@ class MseHttForm(Frozen):
             self.cochain._set(t, local_cochain[t])
 
     def __getitem__(self, t):
-        """"""
+        r"""Return a particular form of a chain at time `t`."""
         if t is None:
             t = self.cochain.newest  # newest time
         elif isinstance(t, str):
@@ -462,7 +462,9 @@ class MseHttForm(Frozen):
             raise Exception(f"cannot accept t={t}.")
 
     def __call__(self, t, extrapolate=False):
-        """"""
+        r"""To find `self[t]` but this `t` may not be in the cochain. If this is the case,
+        we will do interpolation to find a cochain for `t`.
+        """
         if isinstance(t, str):
             # when use str, we are looking for the form at a time step.
             from phyem.src.time_sequence import _global_abstract_time_sequence
@@ -489,24 +491,25 @@ class MseHttForm(Frozen):
 
     @property
     def cochain(self):
-        """The cochain class."""
+        r"""The cochain class."""
         if self._cochain is None:
             self._cochain = MseHttCochain(self)
         return self._cochain
 
     def reduce(self, cf_at_t):
-        """"""
+        r""""""
         return self._space.reduce(cf_at_t, self.degree)
 
     def reconstruct(self, cochain, *meshgrid, ravel=False, element_range=None):
-        """"""
+        r""""""
         return self._space.reconstruct(self.degree, cochain, *meshgrid, ravel=ravel, element_range=element_range)
 
     def error(self, cf, cochain, error_type='L2'):
-        """"""
+        r""""""
         return self._space.error(cf, cochain, self.degree, error_type=error_type)
 
     def visualize(self, t):
+        r"""To visualize the form at `t`."""
         if self._is_base():
             return MseHttFormVisualize(self, t)
         else:
@@ -514,6 +517,7 @@ class MseHttForm(Frozen):
 
     @property
     def incidence_matrix(self):
+        r"""The incidence matrix."""
         if self._im is None:
             gm0 = self.space.gathering_matrix._next(self.degree)
             gm1 = self.cochain.gathering_matrix
@@ -527,8 +531,14 @@ class MseHttForm(Frozen):
         return self._im
 
     def norm(self, cochain, norm_type='L2', component_wise=False):
-        """"""
+        r"""Return the nor of type `norm_type` for the form when its cochain is `cochain`."""
         return self.space.norm(self.degree, cochain, norm_type=norm_type, component_wise=component_wise)
+
+    def mass(self, cochain):
+        r"""Return the mass of this form when its cochain is `cochain`. The mass is (self, 1)_Omega. So
+        it makes sense only when it is a scalar.
+        """
+        return self.space.mass(self.degree, cochain)
 
     def inner_product(
             self, self_cochain, other_form, other_degree, other_cochain, inner_type='L2'):
@@ -558,18 +568,18 @@ class MseHttForm(Frozen):
 
     @property
     def bi(self):
-        """boundary integrate."""
+        r"""boundary integrate."""
         if self._bi is None:
             self._bi = MseHttStaticForm_Boundary_Integrate(self)
         return self._bi
 
     def reconstruction_matrix(self, *meshgrid):
-        """Return the reconstruction matrix for all rank elements."""
+        r"""Return the reconstruction matrix for all rank elements."""
         return self.space.reconstruction_matrix(self.degree, *meshgrid)
 
     @property
     def numeric(self):
-        """"""
+        r""""""
         if self._is_base():
             if self._numeric is None:
                 self._numeric = MseHtt_Form_Numeric(self)
@@ -578,7 +588,7 @@ class MseHttForm(Frozen):
             return self._base.numeric
 
     def norm_residual(self, from_time=None, to_time=None, norm_type='L2'):
-        """By default, use L2-norm."""
+        r"""By default, use L2-norm."""
         if to_time is None or from_time is None:
             all_cochain_times = list(self.cochain._tcd.keys())
             all_cochain_times.sort()

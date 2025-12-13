@@ -30,11 +30,13 @@ class MseHttGlobalVectorDistributed(Frozen):
         else:
             raise NotImplementedError()
 
-        self._V = V
         if gm is None:
             pass
         else:
             assert gm.__class__ is MseHttGatheringMatrix, f"gathering matrix must be {MseHttGatheringMatrix}."
+            assert V.shape == (gm._num_global_dofs,), f"vector shape does not match the number of global dofs in gm."
+
+        self._V = V
         self._gm = gm
         self._dtype = 'vector-distributed'
         self._shape_ = self._V.shape

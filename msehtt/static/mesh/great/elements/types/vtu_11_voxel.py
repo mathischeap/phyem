@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 r"""
 """
+import numpy as np
 from phyem.msehtt.static.mesh.great.elements.types.orthogonal_hexahedron import (
     MseHttGreatMeshOrthogonalHexahedronElement)
 
@@ -18,12 +19,15 @@ class Vtu_11_Voxel(MseHttGreatMeshOrthogonalHexahedronElement):
         x6, y6, z6 = parameters[6]
         x7, y7, z7 = parameters[7]
 
-        assert x2 == x0 == x4 == x6, f"must be a voxel."
-        assert x1 == x3 == x5 == x7, f"must be a voxel."
-        assert y0 == y1 == y4 == y5, f"must be a voxel."
-        assert y2 == y3 == y6 == y7, f"must be a voxel."
-        assert z0 == z1 == z2 == z3, f"must be a voxel."
-        assert z4 == z5 == z6 == z7, f"must be a voxel."
+        check_array = np.sum(np.abs(np.array([
+            [x2 - x0, x2 - x4, x2 - x6],
+            [x1 - x3, x1 - x5, x1 - x7],
+            [y0 - y1, y0 - y4, y0 - y5],
+            [y2 - y3, y2 - y6, y2 - y7],
+            [z0 - z1, z0 - z2, z0 - z3],
+            [z4 - z5, z4 - z6, z4 - z7]]
+        )))
+        np.testing.assert_almost_equal(check_array, 0)
 
         parameters = {
             'origin': (x0, y0, z0),

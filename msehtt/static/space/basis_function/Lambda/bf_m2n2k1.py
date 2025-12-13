@@ -3,7 +3,7 @@ r"""
 """
 import numpy as np
 
-from phyem.msepy.tools.polynomials import Lobatto_polynomials_of_degree
+from phyem.msepy.tools.polynomials import Lobatto_polynomials_of_degree, polynomials_on_nodes
 from phyem.tools.miscellaneous.ndarray_cache import add_to_ndarray_cache, ndarray_key_comparer
 
 
@@ -15,20 +15,27 @@ _cache_bf221o_mq_ = {}
 
 def ___bf221o_outer_msepy_quadrilateral___(p, btype, xi_1d, eta_1d):
     """"""
-    key = str(p[0]) + '-' + str(p[1]) + '-' + btype
+    key = str(p[0]) + '-' + str(p[1]) + '-' + str(btype)
     cached, data = ndarray_key_comparer(_cache_bf221o_mq_, [xi_1d, eta_1d], check_str=key)
     if cached:
         return data
     else:
         pass
 
-    if btype == 'Lobatto':
+    if btype == ('Lobatto', 'Lobatto'):
         bfs = (
             Lobatto_polynomials_of_degree(p[0]),
             Lobatto_polynomials_of_degree(p[1]),
         )
     else:
-        raise NotImplementedError()
+        bfs = []
+        for pi, bt in enumerate(btype):
+            if bt == 'Lobatto':
+                BasisFunction = Lobatto_polynomials_of_degree(pi)
+            else:
+                BasisFunction = polynomials_on_nodes(bt)
+            bfs.append(BasisFunction)
+        bfs = tuple(bfs)
 
     xi, eta = np.meshgrid(xi_1d, eta_1d, indexing='ij')
     mesh_grid = (xi.ravel('F'), eta.ravel('F'))
@@ -52,20 +59,27 @@ _cache_bf221o_vtu5_ = {}
 
 def ___bf221o_outer_vtu_5___(p, btype, xi_1d, eta_1d):
     """"""
-    key = str(p[0]) + '-' + str(p[1]) + '-' + btype
+    key = str(p[0]) + '-' + str(p[1]) + '-' + str(btype)
     cached, data = ndarray_key_comparer(_cache_bf221o_vtu5_, [xi_1d, eta_1d], check_str=key)
     if cached:
         return data
     else:
         pass
 
-    if btype == 'Lobatto':
+    if btype == ('Lobatto', 'Lobatto'):
         bfs = (
             Lobatto_polynomials_of_degree(p[0]),
             Lobatto_polynomials_of_degree(p[1]),
         )
     else:
-        raise NotImplementedError()
+        bfs = []
+        for pi, bt in enumerate(btype):
+            if bt == 'Lobatto':
+                BasisFunction = Lobatto_polynomials_of_degree(pi)
+            else:
+                BasisFunction = polynomials_on_nodes(bt)
+            bfs.append(BasisFunction)
+        bfs = tuple(bfs)
 
     xi, eta = np.meshgrid(xi_1d, eta_1d, indexing='ij')
     mesh_grid = (xi.ravel('F'), eta.ravel('F'))
@@ -92,20 +106,27 @@ _cache_bf221i_mq_ = {}
 
 def ___bf221i_inner_msepy_quadrilateral___(p, btype, xi_1d, eta_1d):
     r""""""
-    key = str(p[0]) + '-' + str(p[1]) + '-' + btype
+    key = str(p[0]) + '-' + str(p[1]) + '-' + str(btype)
     cached, data = ndarray_key_comparer(_cache_bf221i_mq_, [xi_1d, eta_1d], check_str=key)
     if cached:
         return data
     else:
         pass
 
-    if btype == 'Lobatto':
+    if btype == ('Lobatto', 'Lobatto'):
         bfs = (
             Lobatto_polynomials_of_degree(p[0]),
             Lobatto_polynomials_of_degree(p[1]),
         )
     else:
-        raise NotImplementedError()
+        bfs = []
+        for pi, bt in enumerate(btype):
+            if bt == 'Lobatto':
+                BasisFunction = Lobatto_polynomials_of_degree(pi)
+            else:
+                BasisFunction = polynomials_on_nodes(bt)
+            bfs.append(BasisFunction)
+        bfs = tuple(bfs)
 
     xi, eta = np.meshgrid(xi_1d, eta_1d, indexing='ij')
     mesh_grid = (xi.ravel('F'), eta.ravel('F'))
@@ -126,20 +147,27 @@ _cache_bf221i_vtu5_ = {}
 
 def ___bf221i_inner_vtu_5___(p, btype, xi_1d, eta_1d):
     r""""""
-    key = str(p[0]) + '-' + str(p[1]) + '-' + btype
+    key = str(p[0]) + '-' + str(p[1]) + '-' + str(btype)
     cached, data = ndarray_key_comparer(_cache_bf221i_vtu5_, [xi_1d, eta_1d], check_str=key)
     if cached:
         return data
     else:
         pass
 
-    if btype == 'Lobatto':
+    if btype == ('Lobatto', 'Lobatto'):
         bfs = (
             Lobatto_polynomials_of_degree(p[0]),
             Lobatto_polynomials_of_degree(p[1]),
         )
     else:
-        raise NotImplementedError()
+        bfs = []
+        for pi, bt in enumerate(btype):
+            if bt == 'Lobatto':
+                BasisFunction = Lobatto_polynomials_of_degree(pi)
+            else:
+                BasisFunction = polynomials_on_nodes(bt)
+            bfs.append(BasisFunction)
+        bfs = tuple(bfs)
 
     xi, eta = np.meshgrid(xi_1d, eta_1d, indexing='ij')
     mesh_grid = (xi.ravel('F'), eta.ravel('F'))

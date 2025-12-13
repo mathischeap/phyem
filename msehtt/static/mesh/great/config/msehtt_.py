@@ -181,10 +181,10 @@ def _parse_regions(regions):
             y0, y1, y2, y3 = COO[1]
 
             nodes = [
-                r"%.7f-%.7f" % (x0, y0),
-                r"%.7f-%.7f" % (x1, y1),
-                r"%.7f-%.7f" % (x2, y2),
-                r"%.7f-%.7f" % (x3, y3),
+                r"%.7f-%.7f" % (round(x0, 7), round(y0, 7)),
+                r"%.7f-%.7f" % (round(x1, 7), round(y1, 7)),
+                r"%.7f-%.7f" % (round(x2, 7), round(y2, 7)),
+                r"%.7f-%.7f" % (round(x3, 7), round(y3, 7)),
             ]
         elif Ndim == 3:
             x0, x1, x2, x3, x4, x5, x6, x7 = COO[0]
@@ -192,14 +192,14 @@ def _parse_regions(regions):
             z0, z1, z2, z3, z4, z5, z6, z7 = COO[1]
 
             nodes = [
-                r"%.7f-%.7f-%.7f" % (x0, y0, z0),
-                r"%.7f-%.7f-%.7f" % (x1, y1, z1),
-                r"%.7f-%.7f-%.7f" % (x2, y2, z2),
-                r"%.7f-%.7f-%.7f" % (x3, y3, z3),
-                r"%.7f-%.7f-%.7f" % (x4, y4, z4),
-                r"%.7f-%.7f-%.7f" % (x5, y5, z5),
-                r"%.7f-%.7f-%.7f" % (x6, y6, z6),
-                r"%.7f-%.7f-%.7f" % (x7, y7, z7),
+                r"%.7f-%.7f-%.7f" % (round(x0, 7), round(y0, 7), round(z0, 7)),
+                r"%.7f-%.7f-%.7f" % (round(x1, 7), round(y1, 7), round(z1, 7)),
+                r"%.7f-%.7f-%.7f" % (round(x2, 7), round(y2, 7), round(z2, 7)),
+                r"%.7f-%.7f-%.7f" % (round(x3, 7), round(y3, 7), round(z3, 7)),
+                r"%.7f-%.7f-%.7f" % (round(x4, 7), round(y4, 7), round(z4, 7)),
+                r"%.7f-%.7f-%.7f" % (round(x5, 7), round(y5, 7), round(z5, 7)),
+                r"%.7f-%.7f-%.7f" % (round(x6, 7), round(y6, 7), round(z6, 7)),
+                r"%.7f-%.7f-%.7f" % (round(x7, 7), round(y7, 7), round(z7, 7)),
             ]
         else:
             raise Exception()
@@ -468,14 +468,14 @@ def ___parse_2d_element_map___(region_index, region_nodes, element_node):
 
         fn0, fn1 = face_nodes
         if fn0 < fn1:
-            return fn0, fn1, "%.7f" % dis0
+            return fn0, fn1, "%.7f" % round(dis0, 7)
         elif fn0 > fn1:
-            return fn1, fn0, "%.7f" % dis1
+            return fn1, fn0, "%.7f" % round(dis1, 7)
         else:
             raise Exception(f"region node numbering must be different.")
 
     else:
-        return region_index, '%.7f' % x, '-%.7f' % y
+        return region_index, '%.7f' % round(x, 7), '-%.7f' % round(y, 7)
 
 
 class _RegionElementCT_2d_(Frozen):

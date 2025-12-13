@@ -1,6 +1,8 @@
 # -*- coding: utf-8 -*-
 r"""
 """
+import math
+
 import numpy as np
 from functools import partial
 from scipy.special import legendre, roots_legendre
@@ -21,9 +23,22 @@ def quadrature(p, category):
     if key in _cache_quad_:
         return _cache_quad_[key]
     else:
+        if isinstance(p, int):
+            assert isinstance(category, str), f"when give a integer p, category must be a str."
+        elif isinstance(p, (list, tuple)) and all([isinstance(_, int) for _ in p]):
+            if isinstance(category, str):
+                category = [category for _ in range(len(p))]
+            else:
+                assert len(category) == len(p)
+                assert all([isinstance(_, str) for _ in category])
+        else:
+            raise NotImplementedError()
         qd = Quadrature(p, category=category)
         _cache_quad_[key] = qd
         return qd
+
+
+___cus_nodes_cache___ = {}
 
 
 class Quadrature(object):
@@ -48,8 +63,14 @@ class Quadrature(object):
         p = [int(_) for _ in p]
         self._p_ = p
         _category_ = [category for _ in range(self.ndim)] if isinstance(category, str) else category
-        assert all([ci in self.___PRIVATE_coded_quadrature___() for ci in _category_]), \
-            f"quad category = {_category_} wrong."
+        if all([ci in self.___PRIVATE_coded_quadrature___() for ci in _category_]):
+            pass
+        else:
+            for cat in _category_:
+                if cat[:10] == 'CUS-NODES@':
+                    pass
+                else:
+                    raise Exception(f"quad category = {_category_} wrong.")
         self._category_ = _category_
         self._cache_key = str(p) + '-'.join(_category_)
         self.___PRIVATE_check_p___()
@@ -91,8 +112,13 @@ class Quadrature(object):
                 pass
             elif ci == 'Lobatto':
                 assert self.p[i] >= 1
+            elif ci[:10] == 'CUS-NODES@':
+                edge_partition = ci[10:].split('-')
+                assert self.p[i] == len(edge_partition), \
+                    f"p={self.p[i]} does not match category={ci}."
+
             else:
-                raise Exception()
+                raise Exception(f"category[{i}] = {ci} is not valid.")
 
     @property
     def ndim(self):
@@ -144,11 +170,23 @@ class Quadrature(object):
 
         else:
             if self.ndim == 1:
-                _quad_ = getattr(self, '___PRIVATE_compute_'+self.category[0]+'___')(self.p[0])
+                cat = self.category[0]
+                if cat in ('Lobatto', 'Gauss'):
+                    _quad_ = getattr(self, '___PRIVATE_compute_' + cat + '___')(self.p[0])
+                elif cat[:10] == 'CUS-NODES@':
+                    _quad_ = self.___PRIVATE_compute_CUS_NODES___(cat)
+                else:
+                    raise NotImplementedError(f"compute quad for category ={cat} not implemented")
             else:
                 _quad_ = ([], [])
                 for i in range(self.ndim):
-                    nodes, weights = getattr(self, '___PRIVATE_compute_'+self.category[i]+'___')(self.p[i])
+                    cat = self.category[i]
+                    if cat in ('Lobatto', 'Gauss'):
+                        nodes, weights = getattr(self, '___PRIVATE_compute_' + cat + '___')(self.p[i])
+                    elif cat[:10] == 'CUS-NODES@':
+                        nodes, weights = self.___PRIVATE_compute_CUS_NODES___(cat)
+                    else:
+                        raise NotImplementedError(f"compute quad for category ={cat} not implemented")
                     _quad_[0].append(nodes)
                     _quad_[1].append(weights)
 
@@ -219,6 +257,31 @@ class Quadrature(object):
         # return np.polynomial.legendre.leggauss(p+1)
         # return _gg(p)
         return roots_legendre(p+1)
+
+    @classmethod
+    def ___PRIVATE_compute_CUS_NODES___(cls, partition):
+        r"""For example:
+            partition=CUS-NODES@0.111111111111-0.222222222222-0.333333333333-0.222222222222-0.111111111111
+
+        """
+        if partition in ___cus_nodes_cache___:
+            return ___cus_nodes_cache___[partition]
+        else:
+            pass
+        assert partition[:10] == "CUS-NODES@", f"partition={partition} is wrong."
+        edge_partition = [float(_) for _ in partition[10:].split('-')]
+        assert math.isclose(sum(edge_partition), 1, abs_tol=1e-12), f"partition error too large, wrong!"
+        current_at = -1
+        nodes = [-1, ]
+        for par in edge_partition:
+            edge = 2 * par
+            nodes.append(current_at + edge)
+            current_at += edge
+        assert math.isclose(current_at, 1, abs_tol=1e-12), f"partition error too large, wrong!"
+        nodes[-1] = 1
+        ___cus_nodes_cache___[partition] = np.array(nodes), None
+        # weights are None, do not use these nodes for numerical quadrature.
+        return ___cus_nodes_cache___[partition]
 
     @staticmethod
     def ___PRIVATE_legendre_prime___(x, n):

@@ -44,6 +44,8 @@ def ___to_220_msepy_quadrilateral___(element, ff_local_cochain, degree):
     r""""""
 
     p, btype = element.degree_parser(degree)
-    nodes = [quadrature(_, btype).quad[0] for _ in p]
+    nodes = list()
+    for _, bt in zip(p, btype):
+        nodes.append(quadrature(_, bt).quad[0])
     _, _, u, v = ___rc221o_msepy_quadrilateral___(element, degree, ff_local_cochain, *nodes, ravel=True)
     return u, v

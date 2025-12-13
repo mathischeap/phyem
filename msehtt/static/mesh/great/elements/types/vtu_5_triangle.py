@@ -39,7 +39,10 @@ class Vtu5Triangle(MseHttGreatMeshBaseElement):
         a, b, _ = angles_of_triangle(*parameters)
         c = angle(parameters[0], parameters[1])
         d = distance(parameters[0], parameters[1])
-        self._metric_signature = f"5:a%.3f" % a + "b%.3f" % b + "c%.3f" % c + "d%.6f" % d
+        self._metric_signature = (f"5:a%.3f" % round(a, 3) +
+                                  "b%.3f" % round(b, 3) +
+                                  "c%.3f" % round(c, 3) +
+                                  "d%.6f" % round(d, 6))
 
         super().__init__()
         self._index = element_index
@@ -142,9 +145,9 @@ class Vtu5Triangle(MseHttGreatMeshBaseElement):
         y = np.array([-1, 0, 1])
         x, y = self.ct.mapping(x, y)
         return {
-            0: r"%.7f-%.7f" % (x[0], y[0]),
-            1: r"%.7f-%.7f" % (x[1], y[1]),
-            2: r"%.7f-%.7f" % (x[2], y[2]),
+            0: r"%.7f-%.7f" % (round(x[0], 7), round(y[0], 7)),
+            1: r"%.7f-%.7f" % (round(x[1], 7), round(y[1], 7)),
+            2: r"%.7f-%.7f" % (round(x[2], 7), round(y[2], 7)),
         }
 
     @property

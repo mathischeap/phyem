@@ -48,7 +48,13 @@ def ___mm221o_orthogonal_rectangle___(element, degree):
     else:
         p, btype = element.degree_parser(degree)
         quad_degree = (p[0], p[1])
-        quad = quadrature(quad_degree, btype)
+        BTYPE = []
+        for bt in btype:
+            if bt in ('Gauss', 'Lobatto'):
+                BTYPE.append(bt)
+            else:
+                BTYPE.append('Gauss')
+        quad = quadrature(quad_degree, tuple(BTYPE))
         quad_nodes = quad.quad_nodes
         quad_weights = quad.quad_weights_ravel
         xi_et, bf = element.bf('m2n2k1_outer', degree, *quad_nodes)
@@ -234,7 +240,13 @@ def ___mm221i_orthogonal_rectangle___(element, degree):
     else:
         p, btype = element.degree_parser(degree)
         quad_degree = (p[0], p[1])
-        quad = quadrature(quad_degree, btype)
+        BTYPE = []
+        for bt in btype:
+            if bt in ('Gauss', 'Lobatto'):
+                BTYPE.append(bt)
+            else:
+                BTYPE.append('Gauss')
+        quad = quadrature(quad_degree, tuple(BTYPE))
         quad_nodes = quad.quad_nodes
         quad_weights = quad.quad_weights_ravel
         xi_et, bf = element.bf('m2n2k1_inner', degree, *quad_nodes)

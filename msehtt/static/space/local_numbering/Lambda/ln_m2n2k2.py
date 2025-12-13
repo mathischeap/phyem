@@ -6,7 +6,12 @@ from numpy import arange
 
 def local_numbering_Lambda__m2n2k2(etype, p):
     """Do the numbering for the outer 1-form on a 2d mesh in 2d space."""
-    if etype in ('unique msepy curvilinear quadrilateral', 'orthogonal rectangle', 5):
+    if etype in (
+        5,
+        9,
+        'unique msepy curvilinear quadrilateral',
+        'orthogonal rectangle',
+    ):
         local_numbering = _ln_m2n2k2_msepy_quadrilateral_(p)
     else:
         raise NotImplementedError(f"{__name__} not implemented for etype={etype}")

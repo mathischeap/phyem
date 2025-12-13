@@ -140,7 +140,8 @@ def contour(
     pad_inches
     dpi
     intermediate
-    magnitude
+    magnitude :
+        plot log10(abs(v))
     top_right_bounds
 
     aspect

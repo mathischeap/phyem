@@ -212,24 +212,56 @@ class DDSRegionWiseStructured(Frozen):
             raise NotImplementedError()
 
     # -- visualization -----------------------------------------------------------------------------------------
-    def visualize(self, magnitude=False, saveto=None, **kwargs):
+    def visualize(self, **kwargs):
         """"""
         if self.classification == '2d scalar':
-            return self._2d_scalar_field(magnitude=magnitude, saveto=saveto, **kwargs)
+            return self._2d_scalar_field(**kwargs)
 
         elif self.classification == '2d vector':
-            return self._2d_vector_field(magnitude=magnitude, saveto=saveto, **kwargs)
+            return self._2d_vector_field(**kwargs)
 
         elif self.classification == '3d vector':
-            return self._3d_vector_field(magnitude=magnitude, saveto=saveto, **kwargs)
+            return self._3d_vector_field(**kwargs)
 
         else:
             raise NotImplementedError(f"not implemented for dds-rws of type: {self.classification}")
 
-    def _2d_scalar_field(self, plot_type='contourf', magnitude=False, saveto=None, **kwargs):
-        """"""
+    def _2d_scalar_field(
+            self, plot_type='contourf',
+            shift_according_to=None,
+            magnitude=False,
+            saveto=None,
+            **kwargs
+    ):
+        """
+        Parameters
+        ----------
+        plot_type
+        shift_according_to
+            If it is not None, we will shift the values of this 2d scalar.
+                - :::SHIFT-CASE-1::: If shift_according_to = (x, y, v0):
+                    We will shift the value to make it is v0 at (x, y).
+
+        magnitude
+        saveto
+        kwargs
+
+        """
         x, y = self._coo_dict_list
         v = self._val_dict_list[0]
+
+        if shift_according_to is None:
+            pass
+        else:
+            if isinstance(shift_according_to, (list, tuple)) and len(shift_according_to) == 3:
+                # :::SHIFT-CASE-1:::
+                x, y, v0 = shift_according_to
+                v0_original = self.value(x, y)
+                diff = v0 - v0_original
+                new_scalar = self + diff
+                return new_scalar._2d_scalar_field(plot_type=plot_type, magnitude=magnitude, saveto=saveto, **kwargs)
+            else:
+                raise NotImplementedError(f"cannot deal with shift_according_to={shift_according_to}.")
 
         if plot_type == 'contourf':
             fig = contourf(x, y, v, magnitude=magnitude, saveto=saveto, **kwargs)
@@ -242,10 +274,42 @@ class DDSRegionWiseStructured(Frozen):
 
         return fig
 
-    def _2d_vector_field(self, plot_type='contourf', magnitude=False, saveto=None, **kwargs):
-        """"""
+    def _2d_vector_field(
+            self, plot_type='contourf',
+            norm=False,
+            magnitude=False,
+            saveto=None,
+            **kwargs
+    ):
+        """
+        Parameters
+        ----------
+        plot_type
+        norm
+            - NORM CASE 1: False
+                We do nothing
+            - NORM CASE 2: True
+                We plot the length, |vec|, of the vector; we plot |vec| = sqrt(u^2 + v^2).
+
+        magnitude
+        saveto
+        kwargs
+        """
         x, y = self._coo_dict_list
         v0, v1 = self._val_dict_list
+
+        # noinspection PySimplifyBooleanCheck
+        if norm is False:  # not a typo, do not change this
+            # NORM CASE 1
+            pass
+        # noinspection PySimplifyBooleanCheck
+        elif norm is True:  # not a typo, do not change this
+            # NORM CASE 2
+            _2d_scalar = self.norm(norm_type=None)
+            return _2d_scalar._2d_scalar_field(plot_type=plot_type, magnitude=magnitude, saveto=saveto, **kwargs)
+
+        else:
+            raise NotImplementedError(f"`_2d_vector_field` plot for norm={norm} is not implemented yet")
 
         if plot_type == 'contourf':
             if saveto is None:
@@ -505,6 +569,32 @@ class DDSRegionWiseStructured(Frozen):
         else:
             raise NotImplementedError(f"dds-rws to the power of {power} is not implemented.")
 
+    def norm(self, norm_type=None):
+        r"""
+        Parameters
+        ---------
+        norm_type :
+            - CLASSIFICATION 1: 2d vector:
+                = C1-CASE1: norm_type = None
+                    Compute |vec| = sqrt(u**2 + v**2)
+
+        """
+        if self.classification == '2d vector':
+            # CLASSIFICATION 1
+            if norm_type is None:
+                # C1-CASE1 : by default, we compute |vec| = sqrt(u**2 + v**2)
+                U, V = self._val_dict_list
+                norm_scalar_val_dict = {}
+                for r in U:
+                    u = U[r]
+                    v = V[r]
+                    norm_scalar_val_dict[r] = np.sqrt(u ** 2 + v ** 2)
+                return self.__class__(self._coo_dict_list, [norm_scalar_val_dict, ])
+            else:
+                raise NotImplementedError(f"norm_type={norm_type} not implemented for 2d vector (rws-dds).")
+        else:
+            raise NotImplementedError(f"norm not implemented for classification={self.classification}.")
+
     @property
     def square(self):
         """"""
@@ -550,11 +640,11 @@ class DDSRegionWiseStructured(Frozen):
         else:
             raise NotImplementedError()
 
-    def value(self, x, y):
-        r"""return the value of me at the coordinate (x, y)"""
+    def value(self, *coo):
+        r"""return the value of me at the coordinate (*coo)"""
         if self.classification == '2d scalar':
             itp = self.interpolate()
-            value = itp(x, y)
+            value = itp(*coo)
             return value[0]
         else:
             raise NotImplementedError()

@@ -70,12 +70,14 @@ def _preparation_m2n2k2(degree):
     """"""
     p, btype = MseHttGreatMeshOrthogonalRectangleElement.degree_parser(degree)
 
-    key = str(p) + btype
+    key = str(p) + str(btype)
     if key in _cache_rd222_dp_:
         return _cache_rd222_dp_[key]
 
     quad_degree = (p[0] + 2, p[1] + 2)
-    nodes = [quadrature(_, category=btype).quad[0] for _ in p]
+    nodes = list()
+    for _, bt in zip(p, btype):
+        nodes.append(quadrature(_, bt).quad[0])
     num_basis = p[0] * p[1]
     quad_nodes, quad_weights = quadrature(quad_degree, category='Gauss').quad
     magic_factor = 0.25

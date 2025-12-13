@@ -42,6 +42,8 @@ def ___to_330_orthogonal_hexahedron___(element, ff_local_cochain, degree):
     r""""""
 
     p, btype = element.degree_parser(degree)
-    nodes = [quadrature(_, btype).quad[0] for _ in p]
+    nodes = list()
+    for _, bt in zip(p, btype):
+        nodes.append(quadrature(_, bt).quad[0])
     _, _, _, u, v, w = ___rc331_orthogonal_hexahedron___(element, degree, ff_local_cochain, *nodes, ravel=True)
     return u, v, w

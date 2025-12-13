@@ -12,7 +12,7 @@ class MseHttCochain(Frozen):
     r""""""
 
     def __init__(self, f):
-        """"""
+        r""""""
         self._f = f
         if f._is_base():
             self._newest_t = None
@@ -24,14 +24,14 @@ class MseHttCochain(Frozen):
 
     @staticmethod
     def _parse_t(t):
-        """To make time safer."""
+        r"""To make time safer."""
         assert t is not None, f"time is None!"
         assert isinstance(t, (int, float)), f"time must be int or float."
         return round(t, 8)  # to make it safer.
 
     @property
     def newest(self):
-        """the largest (not the last) time instant added to the cochain."""
+        r"""the largest (not the last) time instant added to the cochain."""
         rf = self._f
 
         if rf._is_base():
@@ -50,7 +50,7 @@ class MseHttCochain(Frozen):
             return self._f._base.cochain.times
 
     def _set(self, t, cochain):
-        """add to cochain at `t` to be cochain."""
+        r"""add to cochain at `t` to be cochain."""
         rf = self._f
 
         if rf._is_base():
@@ -87,52 +87,71 @@ class MseHttCochain(Frozen):
         else:
             rf._base.cochain._set(t, cochain)
 
-    def clean(self, what=None):
-        """Clean instances for particular time instants in cochain."""
+    def clean(self, what=None, t=None):
+        r"""Clean instances for particular time instants in cochain.
+
+        Parameters
+        ----------
+        what :
+            What to clean.
+
+        t :
+            We clean the particular cochain for time `t`.
+
+        """
         rf = self._f
 
         if rf._is_base():
-            new_tcd = {}
-            if what is None:  # clear all t except the newest t
-                newest_t = self._newest_t
-                if newest_t is None:
-                    pass
-                else:
-                    new_tcd[newest_t] = self._tcd[newest_t]
-
-            elif isinstance(what, (int, float)):
-                what = int(what)
-                if what < 0:  # clean all cochain except the largest `what` ones.
-                    leave_amount = -what
-                    keys = list(self._tcd.keys())
-                    keys.sort()
-                    if len(keys) <= leave_amount:
-                        new_tcd = self._tcd
-                    else:
-                        keys = keys[what:]
-                        for key in keys:
-                            new_tcd[key] = self._tcd[key]
-                else:
-                    raise NotImplementedError(f"cannot clean {what}! Use a negative integer.")
-
-            elif what == 'all':
+            if t is None:
                 new_tcd = {}
+                if what is None:  # clear all t except the newest t
+                    newest_t = self._newest_t
+                    if newest_t is None:
+                        pass
+                    else:
+                        new_tcd[newest_t] = self._tcd[newest_t]
 
-            else:
-                raise NotImplementedError(f"cannot clean {what}!")
+                elif isinstance(what, (int, float)):
+                    what = int(what)
+                    if what < 0:  # clean all cochain except the largest `what` ones.
+                        leave_amount = -what
+                        keys = list(self._tcd.keys())
+                        keys.sort()
+                        if len(keys) <= leave_amount:
+                            new_tcd = self._tcd
+                        else:
+                            keys = keys[what:]
+                            for key in keys:
+                                new_tcd[key] = self._tcd[key]
+                    else:
+                        raise NotImplementedError(f"cannot clean {what}! Use a negative integer.")
 
-            self._tcd = new_tcd
+                elif what == 'all':
+                    new_tcd = {}
 
-            if len(new_tcd) == 0:
-                self._newest_t = None
-            else:
-                self._newest_t = max(list(self._tcd.keys()))
+                else:
+                    raise NotImplementedError(f"cannot clean {what}!")
+
+                self._tcd = new_tcd
+
+                if len(new_tcd) == 0:
+                    self._newest_t = None
+                else:
+                    self._newest_t = max(list(self._tcd.keys()))
+
+            else:  # we receive a `t`. Then no matter what is `what`, we clean the particular cochain for time `t`.
+                t = self._parse_t(t)
+
+                if t in self._tcd:
+                    del self._tcd[t]
+                else:
+                    pass
 
         else:
-            rf._base.cochain.clean(what=what)
+            rf._base.cochain.clean(what=what, t=t)
 
     def __getitem__(self, t):
-        """Return the cochain at time `t`."""
+        r"""Return the cochain at time `t`."""
         if t is None:
             t = self.newest
         else:
@@ -146,7 +165,7 @@ class MseHttCochain(Frozen):
             return rf._base.cochain[t]
 
     def __contains__(self, t):
-        """if rf has cochain at time`t`?"""
+        r"""if rf has cochain at time`t`?"""
         t = self._parse_t(t)
         rf = self._f
         if rf._is_base():
@@ -155,14 +174,14 @@ class MseHttCochain(Frozen):
             return t in rf._base.cochain._tcd
 
     def __len__(self):
-        """How many valid time instants save in self._tcd."""
+        r"""How many valid time instants save in self._tcd."""
         if self._f._is_base():
             return len(self._tcd)
         else:
             return len(self._f._base.cochain._tcd)
 
     def __iter__(self):
-        """iteration over all time instants in tcd."""
+        r"""iteration over all time instants in tcd."""
         if self._f._is_base():
             for t in self._tcd:
                 yield t
@@ -177,7 +196,7 @@ class MseHttCochain(Frozen):
 
     @property
     def gathering_matrix(self):
-        """"""
+        r""""""
         rf = self._f
         if rf._is_base():
             if self._gm is None:
@@ -196,7 +215,7 @@ class MseHttCochain(Frozen):
             return rf._base.cochain.gathering_matrix
 
     def static_vec(self, t):
-        """"""
+        r""""""
         assert isinstance(t, (int, float)), f"t={t} is wrong."
         if t in self:
             return MseHttStaticCochainVector(self._f, t, self[t].___cochain_caller___, self.gathering_matrix)
@@ -206,16 +225,16 @@ class MseHttCochain(Frozen):
 
     @property
     def dynamic_vec(self):
-        """"""
+        r""""""
         return MseHttDynamicCochainVector(self._f, self._callable_cochain)
 
     def _callable_cochain(self, *args, **kwargs):
-        """"""
+        r""""""
         t = self._ati_time_caller(*args, **kwargs)
         return self.static_vec(t)
 
     def _ati_time_caller(self, *args, **kwargs):
-        """"""
+        r""""""
         if self._f._is_base():
             t = args[0]
             assert isinstance(t, (int, float)), f"for general root-form, I receive a real number!"

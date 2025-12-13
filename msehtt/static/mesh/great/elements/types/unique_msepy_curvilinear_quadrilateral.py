@@ -132,10 +132,10 @@ class MseHttGreatMeshUniqueMsepyCurvilinearQuadrilateralElement(MseHttGreatMeshB
         y = np.array([0, 0, -1, 1])
         x, y = self.ct.mapping(x, y)
         return {
-            0: r"%.7f-%.7f" % (x[0], y[0]),
-            1: r"%.7f-%.7f" % (x[1], y[1]),
-            2: r"%.7f-%.7f" % (x[2], y[2]),
-            3: r"%.7f-%.7f" % (x[3], y[3]),
+            0: r"%.7f-%.7f" % (round(x[0], 7), round(y[0], 7)),
+            1: r"%.7f-%.7f" % (round(x[1], 7), round(y[1], 7)),
+            2: r"%.7f-%.7f" % (round(x[2], 7), round(y[2], 7)),
+            3: r"%.7f-%.7f" % (round(x[3], 7), round(y[3], 7)),
         }
 
     @property
@@ -191,7 +191,7 @@ class MseHttGreatMeshUniqueMsepyCurvilinearQuadrilateralElement(MseHttGreatMeshB
                     x = X[i][j]
                     y = Y[i][j]
                     v = V[i][j]
-                    key = "%.7f-%.7f" % (x, y)
+                    key = "%.7f-%.7f" % (round(x, 7), round(y, 7))
                     data_dict[key] = (x, y, v)
 
         elif dtype == '2d-vector':
@@ -202,7 +202,7 @@ class MseHttGreatMeshUniqueMsepyCurvilinearQuadrilateralElement(MseHttGreatMeshB
                     y = Y[i][j]
                     u = U[i][j]
                     v = V[i][j]
-                    key = "%.7f-%.7f" % (x, y)
+                    key = "%.7f-%.7f" % (round(x, 7), round(y, 7))
                     data_dict[key] = (x, y, u, v)
         else:
             raise NotImplementedError()
@@ -212,10 +212,10 @@ class MseHttGreatMeshUniqueMsepyCurvilinearQuadrilateralElement(MseHttGreatMeshB
             for j in range(data_density - 1):
                 cell_list.append((
                     [
-                        "%.7f-%.7f" % (X[i][j], Y[i][j]),
-                        "%.7f-%.7f" % (X[i + 1][j], Y[i + 1][j]),
-                        "%.7f-%.7f" % (X[i + 1][j + 1], Y[i + 1][j + 1]),
-                        "%.7f-%.7f" % (X[i][j + 1], Y[i][j + 1]),
+                        "%.7f-%.7f" % (round(X[i][j], 7), round(Y[i][j], 7)),
+                        "%.7f-%.7f" % (round(X[i + 1][j], 7), round(Y[i + 1][j], 7)),
+                        "%.7f-%.7f" % (round(X[i + 1][j + 1], 7), round(Y[i + 1][j + 1], 7)),
+                        "%.7f-%.7f" % (round(X[i][j + 1], 7), round(Y[i][j + 1], 7)),
                     ], 4, 9)
                 )
 
@@ -314,7 +314,8 @@ class MseHttGreatMeshUniqueMsepyCurvilinearQuadrilateralElementFace(Frozen):
         return self._ct
 
 
-from phyem.msehtt.static.mesh.great.elements.types.orthogonal_rectangle import MseHttGreatMeshOrthogonalRectangleElementFaceCT
+from phyem.msehtt.static.mesh.great.elements.types.orthogonal_rectangle import (
+    MseHttGreatMeshOrthogonalRectangleElementFaceCT)
 
 
 class MseHttGreatMeshUniqueMsepyCurvilinearQuadrilateralElementFaceCT(

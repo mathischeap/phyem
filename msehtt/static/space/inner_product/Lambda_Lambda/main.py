@@ -3,7 +3,8 @@
 """
 
 from phyem.tools.frozen import Frozen
-from phyem.msehtt.static.space.inner_product.Lambda_Lambda.IP_LL_m2n2k1 import ___Lambda_ip_Lambda_over_SameTPM_m2n2k1___
+from phyem.msehtt.static.space.inner_product.Lambda_Lambda.IP_LL_m2n2k1 import (
+    ___Lambda_ip_Lambda_over_SameTPM_m2n2k1___)
 
 
 class MseHttSpace_Lambda_ip_Lambda(Frozen):

@@ -3,7 +3,8 @@ r"""
 """
 
 from phyem.tools.frozen import Frozen
-from phyem.msehtt.static.mesh.great.elements.types.orthogonal_rectangle import MseHttGreatMeshOrthogonalRectangleElement
+from phyem.msehtt.static.mesh.great.elements.types.orthogonal_rectangle import (
+    MseHttGreatMeshOrthogonalRectangleElement)
 from phyem.msehtt.static.mesh.great.elements.types.unique_msepy_curvilinear_quadrilateral import (
     MseHttGreatMeshUniqueMsepyCurvilinearQuadrilateralElement)
 from phyem.msehtt.static.mesh.great.elements.types.unique_msepy_curvilinear_triangle import (
@@ -11,7 +12,8 @@ from phyem.msehtt.static.mesh.great.elements.types.unique_msepy_curvilinear_tria
 from phyem.msehtt.static.mesh.great.elements.types.unique_curvilinear_quad import UniqueCurvilinearQuad
 from phyem.msehtt.static.mesh.great.elements.types.unique_curvilinear_triangle import Unique_Curvilinear_Triangle
 
-from phyem.msehtt.static.mesh.great.elements.types.orthogonal_hexahedron import MseHttGreatMeshOrthogonalHexahedronElement
+from phyem.msehtt.static.mesh.great.elements.types.orthogonal_hexahedron import (
+    MseHttGreatMeshOrthogonalHexahedronElement)
 
 from phyem.msehtt.static.mesh.great.elements.types.vtu_5_triangle import Vtu5Triangle
 from phyem.msehtt.static.mesh.great.elements.types.vtu_8_pixel import Vtu8Pixel

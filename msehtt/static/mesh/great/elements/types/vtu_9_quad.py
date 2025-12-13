@@ -70,7 +70,11 @@ class Vtu9Quad(MseHttGreatMeshBaseElement):
 
         d = angle(parameters[0], parameters[2])
         dist = distance(parameters[0], parameters[2])
-        self._metric_signature = f"9:a%.2f" % a + "b%.2f" % b + "c%.2f" % c + "d%.3f" % d + "dis%.5f" % dist
+        self._metric_signature = (f"9:a%.2f" % round(a, 2) +
+                                  "b%.2f" % round(b, 2) +
+                                  "c%.2f" % round(c, 2) +
+                                  "d%.3f" % round(d, 3) +
+                                  "dis%.5f" % round(dist, 5))
         self._polygon = None
 
         super().__init__()
@@ -214,10 +218,10 @@ class Vtu9Quad(MseHttGreatMeshBaseElement):
         y = np.array([0, 0, -1, 1])
         x, y = self.ct.mapping(x, y)
         return {
-            0: r"%.7f-%.7f" % (x[0], y[0]),
-            1: r"%.7f-%.7f" % (x[1], y[1]),
-            2: r"%.7f-%.7f" % (x[2], y[2]),
-            3: r"%.7f-%.7f" % (x[3], y[3]),
+            0: r"%.7f-%.7f" % (round(x[0], 7), round(y[0], 7)),
+            1: r"%.7f-%.7f" % (round(x[1], 7), round(y[1], 7)),
+            2: r"%.7f-%.7f" % (round(x[2], 7), round(y[2], 7)),
+            3: r"%.7f-%.7f" % (round(x[3], 7), round(y[3], 7)),
         }
 
     @property
@@ -239,17 +243,17 @@ class Vtu9Quad(MseHttGreatMeshBaseElement):
         for j in range(sy):
             for i in range(sx):
                 x, y = X[i, j], Y[i, j]
-                key = f"%.7f-%.7f" % (x, y)
+                key = f"%.7f-%.7f" % (round(x, 7), round(y, 7))
                 coo_dict[key] = (x, y)
         cell_list = list()
         for j in range(sy - 1):
             for i in range(sx - 1):
                 cell_list.append((
                     [
-                        f"%.7f-%.7f" % (X[i, j], Y[i, j]),
-                        f"%.7f-%.7f" % (X[i+1, j], Y[i+1, j]),
-                        f"%.7f-%.7f" % (X[i, j+1], Y[i, j+1]),
-                        f"%.7f-%.7f" % (X[i+1, j+1], Y[i+1, j+1]),
+                        f"%.7f-%.7f" % (round(X[i, j], 7), round(Y[i, j], 7)),
+                        f"%.7f-%.7f" % (round(X[i+1, j], 7), round(Y[i+1, j], 7)),
+                        f"%.7f-%.7f" % (round(X[i, j+1], 7), round(Y[i, j+1], 7)),
+                        f"%.7f-%.7f" % (round(X[i+1, j+1], 7), round(Y[i+1, j+1], 7)),
                     ], 4, 8)  # for this element, VTK_PIXEL cell (No. 8)!
                 )
         return coo_dict, cell_list
@@ -281,7 +285,7 @@ class Vtu9Quad(MseHttGreatMeshBaseElement):
                     x = X[i][j]
                     y = Y[i][j]
                     v = V[i][j]
-                    key = "%.7f-%.7f" % (x, y)
+                    key = "%.7f-%.7f" % (round(x, 7), round(y, 7))
                     data_dict[key] = (x, y, v)
 
         elif dtype == '2d-vector':
@@ -292,7 +296,7 @@ class Vtu9Quad(MseHttGreatMeshBaseElement):
                     y = Y[i][j]
                     u = U[i][j]
                     v = V[i][j]
-                    key = "%.7f-%.7f" % (x, y)
+                    key = "%.7f-%.7f" % (round(x, 7), round(y, 7))
                     data_dict[key] = (x, y, u, v)
         else:
             raise NotImplementedError()
@@ -302,10 +306,10 @@ class Vtu9Quad(MseHttGreatMeshBaseElement):
             for j in range(data_density - 1):
                 cell_list.append((
                     [
-                        "%.7f-%.7f" % (X[i][j], Y[i][j]),
-                        "%.7f-%.7f" % (X[i + 1][j], Y[i + 1][j]),
-                        "%.7f-%.7f" % (X[i + 1][j + 1], Y[i + 1][j + 1]),
-                        "%.7f-%.7f" % (X[i][j + 1], Y[i][j + 1]),
+                        "%.7f-%.7f" % (round(X[i][j], 7), round(Y[i][j], 7)),
+                        "%.7f-%.7f" % (round(X[i + 1][j], 7), round(Y[i + 1][j], 7)),
+                        "%.7f-%.7f" % (round(X[i + 1][j + 1], 7), round(Y[i + 1][j + 1], 7)),
+                        "%.7f-%.7f" % (round(X[i][j + 1], 7), round(Y[i][j + 1], 7)),
                     ], 4, 9)
                 )
 
@@ -326,6 +330,11 @@ class Vtu9Quad(MseHttGreatMeshBaseElement):
         assert isinstance(x, (int, float)) and isinstance(y, (int, float)), f"I must receive coordinates of a point."
         point = Point2(x, y)
         return whether_point_in_polygon(point, self.polygon)
+
+    @property
+    def geometry(self):
+        r"""We return a polygon object of this orthogonal rectangle element."""
+        return self.polygon
 
 
 from phyem.msehtt.static.mesh.great.elements.types.base import MseHttGreatMeshBaseElementCooTrans

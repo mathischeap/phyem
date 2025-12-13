@@ -67,10 +67,18 @@ tasks = [
     "adaptive/Poisson2",
     ("adaptive/trf_tests", 5),  # means we can use at most 5 ranks.
 
+    "multigrid/cochain_passing_2",
+    "multigrid/cochain_passing_3",
     "multigrid/Poisson2",
+    "multigrid/Poisson2_N",
+    "multigrid/Poisson2_V",
     "multigrid/Poisson3",
     "multigrid/Poisson2_periodic",
     "multigrid/PNPNS_decoupled_linearized",
+
+    "customized_nodes/cus_nodes_base2",
+    "customized_nodes/cus_nodes_base3",
+
 ]
 
 for task in tasks:

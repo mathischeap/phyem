@@ -124,7 +124,7 @@ def _msepy_data_preparation(d_, degree):
     """
 
     p, btype = MseHttGreatMeshOrthogonalHexahedronElement.degree_parser(degree)
-    key = d_ + str(p) + btype
+    key = d_ + str(p) + str(btype)
 
     if key in _cache331_data_:
         data = _cache331_data_[key]
@@ -132,7 +132,10 @@ def _msepy_data_preparation(d_, degree):
         quad_degree = [_ + 2 for _ in p]
         quad_nodes, quad_weights = quadrature(tuple(quad_degree), 'Gauss').quad
         quad_num_nodes = [len(quad_nodes_i) for quad_nodes_i in quad_nodes]
-        nodes = [quadrature(_, btype).quad[0] for _ in p]
+
+        nodes = list()
+        for _, bt in zip(p, btype):
+            nodes.append(quadrature(_, bt).quad[0])
 
         sbn0 = nodes[0]
         sbn1 = nodes[1]

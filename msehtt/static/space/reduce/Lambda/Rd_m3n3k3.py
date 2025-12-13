@@ -58,21 +58,24 @@ def ___rd333_msepy_quadrilateral___(element, cf_t, degree):
 
 
 _cache_rd333_dp_ = {}
-from phyem.msehtt.static.mesh.great.elements.types.orthogonal_hexahedron import MseHttGreatMeshOrthogonalHexahedronElement
+from phyem.msehtt.static.mesh.great.elements.types.orthogonal_hexahedron import (
+    MseHttGreatMeshOrthogonalHexahedronElement)
 
 
 def _preparation_m3n3k3(degree):
     """"""
     p, btype = MseHttGreatMeshOrthogonalHexahedronElement.degree_parser(degree)
 
-    key = str(p) + btype
+    key = str(p) + str(btype)
     if key in _cache_rd333_dp_:
         return _cache_rd333_dp_[key]
 
     quad_degree = [_ + 1 for _ in p]
     quad_nodes, quad_weights = quadrature(tuple(quad_degree), 'Gauss').quad
 
-    nodes = [quadrature(_, btype).quad[0] for _ in p]
+    nodes = list()
+    for _, bt in zip(p, btype):
+        nodes.append(quadrature(_, bt).quad[0])
     num_basis = p[0] * p[1] * p[2]
 
     xi = np.zeros((num_basis, quad_degree[0] + 1, quad_degree[1] + 1, quad_degree[2] + 1))

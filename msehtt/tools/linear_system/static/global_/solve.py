@@ -100,6 +100,11 @@ class MseHttLinearSystemSolve(Frozen):
                 X0_ = list()
 
                 for x0i in x0:
+                    if x0i.__class__.__name__ == 'MseHtt_MultiGrid_Form':
+                        x0i = x0i.get_level()
+                    else:
+                        pass
+
                     if x0i.__class__ is MseHttForm:
                         # we receive a msehtt root form: we use its newest cochain to replace its place in x0.
                         gms.append(x0i.cochain.gathering_matrix)
@@ -109,7 +114,7 @@ class MseHttLinearSystemSolve(Frozen):
                             vec = x0i.cochain.static_vec(x0i.cochain.newest)
                         X0_.append(vec)
                     else:
-                        raise NotImplementedError()
+                        raise NotImplementedError(x0i.__class__.__name__)
 
                 x0 = concatenate(X0_, gms).assemble(vtype='gathered', mode='replace')
 

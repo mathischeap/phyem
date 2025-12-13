@@ -7,6 +7,7 @@ from phyem.tools.frozen import Frozen
 from phyem.src.config import COMM, MASTER_RANK, RANK
 from phyem.msehtt.static.form.cochain.vector.static import MseHttStaticCochainVector
 from phyem.msehtt.tools.vector.static.local import MseHttStaticLocalVector
+from phyem.msehtt.tools.vector.static.global_gathered import MseHttGlobalVectorGathered
 
 from phyem.msehtt.static.space.num_local_dofs.Lambda.num_local_dofs_m2n2k1 import num_local_dofs__Lambda__m2n2k1_inner
 from phyem.msehtt.static.space.num_local_dofs.Lambda.num_local_dofs_m2n2k1 import num_local_dofs__Lambda__m2n2k1_outer
@@ -56,11 +57,20 @@ class MseHttTimeInstantCochain(Frozen):
             self._ctype = 'static-local-vector'
             self._cochain = cochain
 
+        elif cochain.__class__ is MseHttGlobalVectorGathered:
+            assert cochain._gm == self._gm, f"gm must match."
+            local_cochain_dict = {}
+            for e in self:
+                local_dofs = self._gm[e]
+                local_cochain_dict[e] = cochain.V[local_dofs]
+            self._cochain = local_cochain_dict
+            self._ctype = 'dict'
+
         else:
             raise NotImplementedError(cochain.__class__.__name__)
 
     def __getitem__(self, e):
-        """"""
+        """Return the cochain of element #e."""
         assert e in self._gm, f"element #{e} is not a rank element."
 
         if self._ctype == 'dict':
@@ -223,6 +233,34 @@ class MseHttTimeInstantCochain(Frozen):
         else:
             raise NotImplementedError(other.__class__)
 
+    def __iadd__(self, other):
+        r"""add `other` to my cochain, i.e. `+=` operator.
+
+        So, dislike __add__ which returns, for example, a static-local-vector. This will add to myself. So this
+        has to return self whose cochain data is changed.
+        """
+        if other.__class__ is MseHttStaticCochainVector:
+            assert other._gm == self._gm, f"gathering matrices do not match."
+            data_dict = {}
+            for e in self:
+                data_dict[e] = self[e] + other[e]
+            self._receive(data_dict)
+
+        elif other.__class__ is MseHttGlobalVectorGathered:
+            if other._gm is None:
+                assert other.shape == (self._gm._num_global_dofs, ), f"shape does not match."
+            else:
+                assert other._gm == self._gm, f"gathering matrices do not match."
+            data_dict = {}
+            for e in self:
+                data_dict[e] = self[e] + other.V[self._gm[e]]
+            self._receive(data_dict)
+
+        else:
+            raise NotImplementedError(f"msehtt-cochain-instant class += operator not coded for {other}.")
+
+        return self
+
     def __sub__(self, other):
         """self - other"""
         if other.__class__ is self.__class__:
@@ -248,10 +286,22 @@ class MseHttTimeInstantCochain(Frozen):
         cochain_dict = {}
         for e in self:
             cochain_dict[e] = self[e]
-        _1d_vec = self._gm.assemble(cochain_dict)
+        _1d_vec = self._gm.assemble(cochain_dict, mode='replace')
 
         homogenous_local_dict = {}
         for e in self:
             homogenous_local_dict[e] = _1d_vec[self._gm[e]]
 
         self._receive(homogenous_local_dict)
+
+    @property
+    def gathered_global_vector(self):
+        r"""Do not cache me.
+
+        Return this cochain as a global gathered vector.
+        """
+        cochain_dict = {}
+        for e in self:
+            cochain_dict[e] = self[e]
+        _1d_vec = self._gm.assemble(cochain_dict, mode='replace')
+        return MseHttGlobalVectorGathered(_1d_vec, gm=self._gm)

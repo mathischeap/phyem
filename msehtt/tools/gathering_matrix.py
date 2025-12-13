@@ -490,8 +490,8 @@ class MseHttGatheringMatrix(Frozen):
 
             vec = np.zeros(self.num_global_dofs)
             if RANK == MASTER_RANK:
-                for Data, Gm in zip(DATA, GM):
-                    for i in Gm:
+                for Data, Gm in zip(DATA, GM):  # go through all GM and data in ranks
+                    for i in Gm:      # go through all elements.
                         gm = Gm[i]
                         dt = Data[i]
                         assert len(gm) == len(dt), \
@@ -525,3 +525,59 @@ class MseHttGatheringMatrix(Frozen):
                     f"must make use of all data of element #{i}."
 
             return x_individuals
+
+    def merge(self, *objs):
+        r"""We merge multiple objs according to self._gms into a single obj."""
+        types = list()
+        for obj in objs:
+            types.append(obj.__class__.__name__)
+
+        if all([_ == types[0] for _ in types]):
+            homogeneous_types = True
+        else:
+            homogeneous_types = False
+
+        if homogeneous_types:
+            obj_type = types[0]
+            if obj_type == 'MseHttGlobalVectorGathered':
+                return self._merge_msehtt_gathered_global_vectors(*objs)
+            else:
+                raise NotImplementedError()
+        else:
+            raise NotImplementedError()
+
+    def _merge_msehtt_gathered_global_vectors(self, *vectors):
+        r"""We merge multiple msehtt_gathered_global_vectors according to self._gms into a single
+        msehtt_gathered_global_vectors.
+        """
+        assert len(vectors) == self._composite, \
+            f"I can only merge {self._composite} vectors. But I receive {len(vectors)} vectors."
+
+        for i, vec in enumerate(vectors):
+            assert vec.__class__.__name__ == 'MseHttGlobalVectorGathered', \
+                f"vec[{i}] = {vec} is not a msehtt_gathered_global_vectors."
+
+            gm = self._gms[i]
+            if vec._gm is None:
+                assert vec.shape == (gm._num_global_dofs, ), f"vec[{i}] shape wrong."
+            else:
+                assert self._gms[i] == vec._gm, f"vec[{i}] gathering matrix does not match."
+
+        data_dict_list = []
+        for i, gm in enumerate(self._gms):
+            V = vectors[i]._V
+            data_dict = {}
+            for e in self:
+                data_dict[e] = V[gm[e]]
+            data_dict_list.append(data_dict)
+
+        total_value_dict = {}
+        for e in self:
+            values = list()
+            for D in data_dict_list:
+                values.append(D[e])
+            total_value_dict[e] = np.concatenate(values)
+
+        merger_array = self.assemble(total_value_dict, mode='replace')
+        return vectors[0].__class__(merger_array, gm=self)
+    

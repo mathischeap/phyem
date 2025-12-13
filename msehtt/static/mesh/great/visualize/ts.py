@@ -163,7 +163,7 @@ class MseHttGreatMeshVisualize_TS_Hierarchy(Frozen):
             if saveto is not None and saveto != '':
                 plt.savefig(saveto, bbox_inches='tight', pad_inches=pad_inches)
             else:
-                from src.config import _setting, _pr_cache
+                from phyem.src.config import _setting, _pr_cache
                 if _setting['pr_cache']:
                     _pr_cache(fig, filename='msehtt_elements')
                 else:

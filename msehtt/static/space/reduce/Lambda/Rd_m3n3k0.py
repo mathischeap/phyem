@@ -30,7 +30,9 @@ def reduce_Lambda__m3n3k0(cf_t, tpm, degree, element_range=None):
 def ___330_msepy_quadrilateral___(element, cf_t, degree):
     """"""
     p, btype = element.degree_parser(degree)
-    nodes = [quadrature(_, btype).quad[0] for _ in p]
+    nodes = list()
+    for _, bt in zip(p, btype):
+        nodes.append(quadrature(_, bt).quad[0])
     xi, et, sg = np.meshgrid(*nodes, indexing='ij')
     xi = xi.ravel('F')
     et = et.ravel('F')

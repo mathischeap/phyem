@@ -621,12 +621,12 @@ class MseHttGreatMeshElements(Frozen):
                     if face_nodes in pool_position:
                         pool_position[face_nodes].append(position)
                     else:
-                        pool_position[face_nodes] = [position]
+                        pool_position[face_nodes] = [position, ]
 
                     if face_nodes in pool_value:
                         pool_value[face_nodes].append(value)
                     else:
-                        pool_value[face_nodes] = [value]
+                        pool_value[face_nodes] = [value, ]
 
                     if face_nodes in pool_gm:
                         assert gm_face == pool_gm[face_nodes], \

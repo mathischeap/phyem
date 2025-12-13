@@ -149,13 +149,13 @@ class MseHttGreatMeshBaseElement(Frozen):
             X, Y = self.ct.mapping(___xi2___, ___et2___)
             signature = list()
             for x, y in zip(X, Y):
-                signature.append("({:.4f},{:.4f})".format(x, y))
+                signature.append("({:.4f},{:.4f})".format(round(x, 4), round(y, 4)))
             signature = ''.join(signature)
         elif self.m() == self.n() == 3:  # 3d element in 3d space
             X, Y, Z = self.ct.mapping(___xi3___, ___et3___, ___sg3___)
             signature = list()
             for x, y, z in zip(X, Y, Z):
-                signature.append("({:.3f},{:.3f},{:.3f})".format(x, y, z))
+                signature.append("({:.3f},{:.3f},{:.3f})".format(round(x, 3), round(y, 3), round(z, 3)))
             signature = ''.join(signature)
         else:
             raise NotImplementedError((self.m(), self.n()))
@@ -391,11 +391,12 @@ class MseHttGreatMeshBaseElement(Frozen):
                 assert degree >= 1, f'Must be'
                 if m == n == 2:
                     p = (degree, degree)
+                    dtype = ('Lobatto', 'Lobatto')
                 elif m == n == 3:
                     p = (degree, degree, degree)
+                    dtype = ('Lobatto', 'Lobatto', 'Lobatto')
                 else:
                     raise NotImplementedError()
-                dtype = 'Lobatto'
 
             elif isinstance(degree, (list, tuple)) and all([isinstance(_, int) for _ in degree]):
                 # receive a list or tuple of integers.
@@ -403,12 +404,89 @@ class MseHttGreatMeshBaseElement(Frozen):
                 if m == n == 2:
                     assert len(degree) == 2, f"degree={degree} is invalid for m == n == 2."
                     p = tuple(degree)
+                    dtype = ('Lobatto', 'Lobatto')
                 elif m == n == 3:
                     assert len(degree) == 3, f"degree={degree} is invalid for m == n == 3."
                     p = tuple(degree)
+                    dtype = ('Lobatto', 'Lobatto', 'Lobatto')
                 else:
                     raise NotImplementedError(f"degree_parser for m={m}, n={n} not implemented")
-                dtype = 'Lobatto'
+
+            elif isinstance(degree, (list, tuple)):
+                # degree is a list or tuple
+                if len(degree) == m == n == 2:
+                    degree0, degree1 = degree
+                    if (all([isinstance(_, (int, float)) for _ in degree0]) and
+                            all([isinstance(_, (int, float)) for _ in degree1])):
+                        # degree is like:
+                        #       degree = (
+                        #           [1, 2, 3, 3, 2, 1],
+                        #           [1, 2, 2, 2, 1],
+                        #       )
+                        # Then we will set p = (6, 5), dtype='customize@1-2-3-3-2-1=1-2-2-2-1'
+                        # This means we have customized degrees. And we set the distribution of nodes to be
+                        # for example, along xi-direction, if we have nodes
+                        #   xi_0, xi_1, xi_2, xi_3, xi_4, xi_5, xi_6
+                        #   and xi_1 - xi_0 = 1 * d, then we will have
+                        #   xi_2 - xi_1 = 2 * d
+                        #   xi_3 - xi_2 = 3 * d
+                        #   xi_4 - xi_3 = 3 * d
+                        #   xi_5 - xi_4 = 2 * d
+                        #   xi_6 - xi_5 = 1 * d
+                        assert all([_ > 0 for _ in degree0])
+                        assert all([_ > 0 for _ in degree1])
+                        px = len(degree0)
+                        py = len(degree1)
+                        total_x = sum(degree0)
+                        total_y = sum(degree1)
+                        percentage_x = []
+                        percentage_y = []
+                        for d in degree0:
+                            percentage_x.append('%.13f' % (d / total_x))
+                        for d in degree1:
+                            percentage_y.append('%.13f' % (d / total_y))
+                        p = (px, py)
+                        dtype = (
+                            'CUS-NODES@' + '-'.join(percentage_x),
+                            'CUS-NODES@' + '-'.join(percentage_y),
+                        )
+                    else:
+                        raise NotImplementedError()
+
+                elif len(degree) == m == n == 3:
+                    degree0, degree1, degree2 = degree
+                    if (all([isinstance(_, (int, float)) for _ in degree0]) and
+                            all([isinstance(_, (int, float)) for _ in degree1]) and
+                            all([isinstance(_, (int, float)) for _ in degree2])):
+                        assert all([_ > 0 for _ in degree0])
+                        assert all([_ > 0 for _ in degree1])
+                        assert all([_ > 0 for _ in degree2])
+                        px = len(degree0)
+                        py = len(degree1)
+                        pz = len(degree2)
+                        total_x = sum(degree0)
+                        total_y = sum(degree1)
+                        total_z = sum(degree2)
+                        percentage_x = []
+                        percentage_y = []
+                        percentage_z = []
+                        for d in degree0:
+                            percentage_x.append('%.13f' % (d / total_x))
+                        for d in degree1:
+                            percentage_y.append('%.13f' % (d / total_y))
+                        for d in degree2:
+                            percentage_z.append('%.13f' % (d / total_z))
+                        p = (px, py, pz)
+                        dtype = (
+                            'CUS-NODES@' + '-'.join(percentage_x),
+                            'CUS-NODES@' + '-'.join(percentage_y),
+                            'CUS-NODES@' + '-'.join(percentage_z),
+                        )
+                    else:
+                        raise NotImplementedError()
+
+                else:
+                    raise NotImplementedError()
 
             else:
                 raise NotImplementedError(f"degree={degree} of type <{degree.__class__.__name__}> "
@@ -429,6 +507,11 @@ class MseHttGreatMeshBaseElement(Frozen):
     def _generate_vtk_data_for_form(self, indicator, element_cochain, degree, data_density):
         r""""""
         raise NotImplementedError()
+
+    @property
+    def geometry(self):
+        r"""We return a geometric object of the same shape as this element."""
+        raise NotImplementedError(f"geometry for element of type=<{self._etype()}> is not implemented!")
 
 
 # ============ ELEMENT CT =====================================================================================

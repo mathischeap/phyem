@@ -130,6 +130,7 @@ class MseHtt_StaticForm_Dofs_Visualize_Matplot(Frozen):
         for dof in coo_info:
             ref_coo, phy_coo = coo_info[dof]
             coo.append(phy_coo)
+
         coo = np.array(coo).T
         plt.scatter(*coo, color='k', marker='o')
 
@@ -151,7 +152,7 @@ class MseHtt_StaticForm_Dofs_Visualize_Matplot(Frozen):
         if saveto is not None and saveto != '':
             plt.savefig(saveto, bbox_inches='tight', pad_inches=pad_inches)
         else:
-            from src.config import _setting, _pr_cache
+            from phyem.src.config import _setting, _pr_cache
             if _setting['pr_cache']:
                 _pr_cache(fig, filename='msehtt_elements')
             else:

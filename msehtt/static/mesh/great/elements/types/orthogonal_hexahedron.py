@@ -48,7 +48,9 @@ class MseHttGreatMeshOrthogonalHexahedronElement(MseHttGreatMeshBaseElement):
         """"""
         origin_x, origin_y, origin_z = parameters['origin']
         delta_x, delta_y, delta_z = parameters['delta']
-        self._metric_signature = f"OR:x%.5f" % delta_x + "y%.5f" % delta_y + "y%.5f" % delta_z
+        self._metric_signature = (f"OR:x%.5f" % round(delta_x, 5) +
+                                  "y%.5f" % round(delta_y, 5) +
+                                  "y%.5f" % round(delta_z, 5))
         super().__init__()
         self._index = element_index
         self._parameters = parameters
@@ -144,7 +146,7 @@ class MseHttGreatMeshOrthogonalHexahedronElement(MseHttGreatMeshBaseElement):
             for j in range(sy):
                 for i in range(sx):
                     x, y, z = X[i, j, k], Y[i, j, k], Z[i, j, k]
-                    key = f"%.7f-%.7f-%.7f" % (x, y, z)
+                    key = f"%.7f-%.7f-%.7f" % (round(x, 7), round(y, 7), round(z, 7))
                     coo_dict[key] = (x, y, z)
         cell_list = list()
         for k in range(sz - 1):
@@ -152,14 +154,30 @@ class MseHttGreatMeshOrthogonalHexahedronElement(MseHttGreatMeshBaseElement):
                 for i in range(sx - 1):
                     cell_list.append((
                         [
-                            f"%.7f-%.7f-%.7f" % (X[i, j, k], Y[i, j, k], Z[i, j, k]),
-                            f"%.7f-%.7f-%.7f" % (X[i+1, j, k], Y[i+1, j, k], Z[i+1, j, k]),
-                            f"%.7f-%.7f-%.7f" % (X[i+1, j+1, k], Y[i+1, j+1, k], Z[i+1, j+1, k]),
-                            f"%.7f-%.7f-%.7f" % (X[i, j+1, k], Y[i, j+1, k], Z[i, j+1, k]),
-                            f"%.7f-%.7f-%.7f" % (X[i, j, k+1], Y[i, j, k+1], Z[i, j, k+1]),
-                            f"%.7f-%.7f-%.7f" % (X[i+1, j, k+1], Y[i+1, j, k+1], Z[i+1, j, k+1]),
-                            f"%.7f-%.7f-%.7f" % (X[i+1, j+1, k+1], Y[i+1, j+1, k+1], Z[i+1, j+1, k+1]),
-                            f"%.7f-%.7f-%.7f" % (X[i, j+1, k+1], Y[i, j+1, k+1], Z[i, j+1, k+1]),
+                            f"%.7f-%.7f-%.7f" % (round(X[i, j, k], 7),
+                                                 round(Y[i, j, k], 7),
+                                                 round(Z[i, j, k], 7)),
+                            f"%.7f-%.7f-%.7f" % (round(X[i+1, j, k], 7),
+                                                 round(Y[i+1, j, k], 7),
+                                                 round(Z[i+1, j, k], 7)),
+                            f"%.7f-%.7f-%.7f" % (round(X[i+1, j+1, k], 7),
+                                                 round(Y[i+1, j+1, k], 7),
+                                                 round(Z[i+1, j+1, k], 7)),
+                            f"%.7f-%.7f-%.7f" % (round(X[i, j+1, k], 7),
+                                                 round(Y[i, j+1, k], 7),
+                                                 round(Z[i, j+1, k], 7)),
+                            f"%.7f-%.7f-%.7f" % (round(X[i, j, k+1], 7),
+                                                 round(Y[i, j, k+1], 7),
+                                                 round(Z[i, j, k+1], 7)),
+                            f"%.7f-%.7f-%.7f" % (round(X[i+1, j, k+1], 7),
+                                                 round(Y[i+1, j, k+1], 7),
+                                                 round(Z[i+1, j, k+1], 7)),
+                            f"%.7f-%.7f-%.7f" % (round(X[i+1, j+1, k+1], 7),
+                                                 round(Y[i+1, j+1, k+1], 7),
+                                                 round(Z[i+1, j+1, k+1], 7)),
+                            f"%.7f-%.7f-%.7f" % (round(X[i, j+1, k+1], 7),
+                                                 round(Y[i, j+1, k+1], 7),
+                                                 round(Z[i, j+1, k+1], 7)),
                         ], 8, 12)  # for this element, VTK_HEXAHEDRON cell (No. 12)!
                     )
         return coo_dict, cell_list
@@ -197,7 +215,7 @@ class MseHttGreatMeshOrthogonalHexahedronElement(MseHttGreatMeshBaseElement):
                         y = Y[i, j, k]
                         z = Z[i, j, k]
                         v = V[i, j, k]
-                        key = "%.7f-%.7f-%.7f" % (x, y, z)
+                        key = "%.7f-%.7f-%.7f" % (round(x, 7), round(y, 7), round(z, 7))
                         data_dict[key] = (x, y, z, v)
 
         elif dtype == '3d-vector':
@@ -211,7 +229,7 @@ class MseHttGreatMeshOrthogonalHexahedronElement(MseHttGreatMeshBaseElement):
                         u = U[i, j, k]
                         v = V[i, j, k]
                         w = W[i, j, k]
-                        key = "%.7f-%.7f-%.7f" % (x, y, z)
+                        key = "%.7f-%.7f-%.7f" % (round(x, 7), round(y, 7), round(z, 7))
                         data_dict[key] = (x, y, z, u, v, w)
         else:
             raise NotImplementedError()
@@ -223,14 +241,30 @@ class MseHttGreatMeshOrthogonalHexahedronElement(MseHttGreatMeshBaseElement):
                 for k in range(data_density - 1):
                     cell_list.append((
                         [
-                            "%.7f-%.7f-%.7f" % (X[i, j, k], Y[i, j, k], Z[i, j, k]),
-                            "%.7f-%.7f-%.7f" % (X[i+1, j, k], Y[i+1, j, k], Z[i+1, j, k]),
-                            "%.7f-%.7f-%.7f" % (X[i, j+1, k], Y[i, j+1, k], Z[i, j+1, k]),
-                            "%.7f-%.7f-%.7f" % (X[i+1, j+1, k], Y[i+1, j+1, k], Z[i+1, j+1, k]),
-                            "%.7f-%.7f-%.7f" % (X[i, j, k+1], Y[i, j, k+1], Z[i, j, k+1]),
-                            "%.7f-%.7f-%.7f" % (X[i+1, j, k+1], Y[i+1, j, k+1], Z[i+1, j, k+1]),
-                            "%.7f-%.7f-%.7f" % (X[i, j+1, k+1], Y[i, j+1, k+1], Z[i, j+1, k+1]),
-                            "%.7f-%.7f-%.7f" % (X[i+1, j+1, k+1], Y[i+1, j+1, k+1], Z[i+1, j+1, k+1]),
+                            "%.7f-%.7f-%.7f" % (round(X[i, j, k], 7),
+                                                round(Y[i, j, k], 7),
+                                                round(Z[i, j, k], 7)),
+                            "%.7f-%.7f-%.7f" % (round(X[i+1, j, k], 7),
+                                                round(Y[i+1, j, k], 7),
+                                                round(Z[i+1, j, k], 7)),
+                            "%.7f-%.7f-%.7f" % (round(X[i, j+1, k], 7),
+                                                round(Y[i, j+1, k], 7),
+                                                round(Z[i, j+1, k], 7)),
+                            "%.7f-%.7f-%.7f" % (round(X[i+1, j+1, k], 7),
+                                                round(Y[i+1, j+1, k], 7),
+                                                round(Z[i+1, j+1, k], 7)),
+                            "%.7f-%.7f-%.7f" % (round(X[i, j, k+1], 7),
+                                                round(Y[i, j, k+1], 7),
+                                                round(Z[i, j, k+1], 7)),
+                            "%.7f-%.7f-%.7f" % (round(X[i+1, j, k+1], 7),
+                                                round(Y[i+1, j, k+1], 7),
+                                                round(Z[i+1, j, k+1], 7)),
+                            "%.7f-%.7f-%.7f" % (round(X[i, j+1, k+1], 7),
+                                                round(Y[i, j+1, k+1], 7),
+                                                round(Z[i, j+1, k+1], 7)),
+                            "%.7f-%.7f-%.7f" % (round(X[i+1, j+1, k+1], 7),
+                                                round(Y[i+1, j+1, k+1], 7),
+                                                round(Z[i+1, j+1, k+1], 7)),
                         ], 8, 11)   # VTK_VOXEL cell
                     )
 

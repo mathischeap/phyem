@@ -58,6 +58,7 @@ __all__ = [
 
     'geometries',
 
+    'mgs',  # multi-grid-scheme file
 ]
 
 
@@ -166,3 +167,5 @@ from phyem.tools.miscellaneous.php import php
 import phyem.tools.miscellaneous.pickle_ as pk
 
 import phyem.tools.miscellaneous.geometries.main as geometries
+
+from phyem.tools.miscellaneous.multigrid_scheme import MultiGridSchemeConfig as mgs

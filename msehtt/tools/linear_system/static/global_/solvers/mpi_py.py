@@ -11,10 +11,35 @@ class LinerSystemSolverDivergenceError(Exception):
     """Raise when we try to define new attribute for a frozen object."""
 
 
+___beta_cache___ = {}
+
+
+def ___cache_beta___(key, beta):
+    r""""""
+    if RANK != MASTER_RANK:
+        pass
+    else:
+        if key == '':
+            pass
+        else:
+            if key in ___beta_cache___:
+                pass
+            else:
+                ___beta_cache___[key] = []
+            ___beta_cache___[key].append(float(beta))
+
+
+def ___clean_cache___():
+    keys = list(___beta_cache___.keys())
+    for key in keys:
+        del ___beta_cache___[key]
+
+
 def gmres(
         A, b, x0,
         atol=1e-5,
-        restart=75, maxiter=30
+        restart=75, maxiter=30,
+        beta_cache_key='',
 ):
     r"""
 
@@ -28,6 +53,8 @@ def gmres(
         should be satisfied. The default is ``atol=1e-5.``
     restart
     maxiter
+    beta_cache_key : str
+        If it is not '', we will cache the beta-error to `___beta_cache___[beta_cache_key]`.
 
     Returns
     -------
@@ -45,7 +72,10 @@ def gmres(
     Time_start = MPI.Wtime()
     A = A.M                 # A is a shell of the distributed global matrix; A.M is csc or csr.
     f = b.V                 # b is a shell of the distributed global vector; b.V is a 1d np.ndarray.
-    x0 = x0.V               # x0 is a shell of the gathered global vector, x0； x0.V is a 1d np.ndarray.
+    if isinstance(x0, (int, float)) and x0 == 0:
+        x0 = np.zeros(A.shape[1])
+    else:
+        x0 = x0.V               # x0 is a shell of the gathered global vector, x0； x0.V is a 1d np.ndarray.
 
     shape0, shape1 = A.shape
     assert f.shape[0] == x0.shape[0] == shape0 == shape1, "Ax=f shape dis-match."
@@ -97,7 +127,7 @@ def gmres(
         else:
             pass
         BETA.append(beta)
-
+        ___cache_beta___(beta_cache_key, beta)
         JUDGE, stop_iteration, info, JUDGE_explanation = _check_stop_criterion_(BETA, atol, ITER, maxiter)
         if stop_iteration:
             break
@@ -206,6 +236,7 @@ def lgmres(
         A, b, x0,
         atol=1e-5,
         inner_m=75, outer_k=15, maxiter=30,
+        beta_cache_key='',
 ):
     """
 
@@ -220,6 +251,8 @@ def lgmres(
     inner_m
     outer_k
     maxiter
+    beta_cache_key : str
+        If it is not '', we will cache the beta-error to `___beta_cache___[beta_cache_key]`.
 
     Returns
     -------
@@ -239,7 +272,10 @@ def lgmres(
     Time_start = MPI.Wtime()
     A = A.M                 # A is a shell of the distributed global matrix; A.M is csc or csr.
     f = b.V                 # b is a shell of the distributed global vector; b.V is a 1d np.ndarray.
-    x0 = x0.V               # x0 is a shell of the gathered global vector, x0； x0.V is a 1d np.ndarray.
+    if isinstance(x0, (int, float)) and x0 == 0:
+        x0 = np.zeros(A.shape[1])
+    else:
+        x0 = x0.V               # x0 is a shell of the gathered global vector, x0； x0.V is a 1d np.ndarray.
 
     shape0, shape1 = A.shape
     assert f.shape[0] == x0.shape[0] == shape0 == shape1, "Ax=f shape dis-match."
@@ -307,10 +343,7 @@ def lgmres(
         else:
             pass
         BETA.append(beta)
-
-        # if RANK == MASTER_RANK:
-        #     print(beta, flush=True)
-
+        ___cache_beta___(beta_cache_key, beta)
         JUDGE, stop_iteration, info, JUDGE_explanation = _check_stop_criterion_(
             BETA, atol, ITER, maxiter)
 
