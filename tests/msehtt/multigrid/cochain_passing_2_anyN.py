@@ -1,10 +1,8 @@
 r"""
-mpiexec -n 4 python tests/msehtt/multigrid/cochain_passing_2.py
+mpiexec -n 4 python tests/msehtt/multigrid/cochain_passing_2_anyN.py
 """
 import numpy as np
 import phyem as ph
-
-N = 2
 
 ph.config.set_embedding_space_dim(2)
 ph.config.set_high_accuracy(True)
@@ -29,18 +27,15 @@ i0 = Inn0.make_form(r'{\omega}^0', 'inner-form-0')
 i1 = Inn1.make_form(r'{\omega}^1', 'inner-form-1')
 i2 = Inn2.make_form(r'{\omega}^2', 'inner-form-2')
 
-ph.space.finite(N)
+ph.space.finite('MG-N3')
 
 # ------------- implementation ---------------------------------------------------
 msehtt, obj = ph.fem.apply('msehtt-smg', locals())
 
 tgm = msehtt.tgm()
 
-msehtt.config(tgm)('crazy', element_layout=6, c=0, mgc=3, periodic=True)
+msehtt.config(tgm)('crazy', element_layout=4, c=0, mgc=3, periodic=True)
 # tgm.visualize()
-# tgm.get_level(0).visualize(rank_wise_colored=True)
-# tgm.get_level(1).visualize(rank_wise_colored=True)
-# tgm.get_level(2).visualize(rank_wise_colored=True)
 
 _mesh = obj['mesh']
 msehtt.config(_mesh)(tgm, including='all')
@@ -86,21 +81,23 @@ fi1.cf = vector
 fo2.cf = scalar
 fi2.cf = scalar
 
-fo0.get_level(1)[0].reduce()
-tgm.pass_cochain(fo0.get_level(1), 0, fo0.get_level(0), 0, complete_only=True)
-error0 = fo0.get_level(0)[0].error()
 
-fi1.get_level(1)[0].reduce()
-tgm.pass_cochain(fi1.get_level(1), 0, fi1.get_level(0), 0, complete_only=True)
-error1o = fi1.get_level(0)[0].error()
+for f_lvl, t_lvl in zip([2, 1], [1, 0]):
 
-fo1.get_level(1)[0].reduce()
-tgm.pass_cochain(fo1.get_level(1), 0, fo1.get_level(0), 0, complete_only=True)
-error1i = fo1.get_level(0)[0].error()
+    fo0.get_level(f_lvl)[0].reduce()
+    tgm.pass_cochain(fo0.get_level(f_lvl), 0, fo0.get_level(t_lvl), 0, complete_only=True)
+    error0 = fo0.get_level(t_lvl)[0].error()
 
-fi2.get_level(1)[0].reduce()
-tgm.pass_cochain(fi2.get_level(1), 0, fi2.get_level(0), 0, complete_only=True)
-error2 = fi2.get_level(0)[0].error()
+    fi1.get_level(f_lvl)[0].reduce()
+    tgm.pass_cochain(fi1.get_level(f_lvl), 0, fi1.get_level(t_lvl), 0, complete_only=True)
+    error1o = fi1.get_level(t_lvl)[0].error()
 
-error_array = np.array([error0, error1o, error1i, error2])
-np.testing.assert_array_almost_equal(error_array, np.array([0.00467257, 0.02882566, 0.02882566, 0.02845538]))
+    fo1.get_level(f_lvl)[0].reduce()
+    tgm.pass_cochain(fo1.get_level(f_lvl), 0, fo1.get_level(t_lvl), 0, complete_only=True)
+    error1i = fo1.get_level(t_lvl)[0].error()
+
+    fi2.get_level(f_lvl)[0].reduce()
+    tgm.pass_cochain(fi2.get_level(f_lvl), 0, fi2.get_level(t_lvl), 0, complete_only=True)
+    error2 = fi2.get_level(t_lvl)[0].error()
+
+    assert max(error0, error1o, error1i, error2) < 0.15

@@ -39,6 +39,14 @@ def polynomials_on_nodes(nodes):
         polynomials = _OneDimPolynomial(NODES)
         _cache_polynomials_on_nodes_[nodes] = polynomials
         return polynomials
+    elif isinstance(nodes, str) and nodes[:3] == 'nd@':
+        if nodes in _cache_polynomials_on_nodes_:
+            return _cache_polynomials_on_nodes_[nodes]
+        NODES = Quadrature.___PRIVATE_compute_NodeDistribution___(nodes)[0]
+        polynomials = _OneDimPolynomial(NODES)
+        _cache_polynomials_on_nodes_[nodes] = polynomials
+        return polynomials
+
     else:
         raise NotImplementedError(f"polynomials_on_nodes not implemented for nodes={nodes}.")
 

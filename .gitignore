@@ -64,6 +64,7 @@ _watching/
 _task/
 __phcache__/
 _local_tests/
+tests/
 .doctrees/
 doctest/
 doctrees/

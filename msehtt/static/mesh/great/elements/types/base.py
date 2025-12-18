@@ -5,6 +5,10 @@ import numpy as np
 
 from phyem.tools.frozen import Frozen
 from phyem.src.spaces.main import _degree_str_maker
+from phyem.src.config import ___modify_multigrid_degree_indicator___
+
+from phyem.msehtt.static.mesh.great.elements.types.degree_parsers.uniform_multigrid import (
+    ___parse_uniform_multigrid_degree___)
 
 from phyem.msehtt.static.space.basis_function.Lambda.bf_m2n2k0 import ___bf220_msepy_quadrilateral___
 from phyem.msehtt.static.space.basis_function.Lambda.bf_m2n2k1 import ___bf221o_outer_msepy_quadrilateral___
@@ -371,22 +375,22 @@ class MseHttGreatMeshBaseElement(Frozen):
     @classmethod
     def degree_parser(cls, degree, m=None, n=None):
         r""""""
-        key = cls.__name__ + ':' + _degree_str_maker(degree)
+        if m is None:
+            m = cls.m()
+        else:
+            pass
+
+        if n is None:
+            n = cls.n()
+        else:
+            pass
+
+        key = cls.__name__ + f':{m}:{n}:' + _degree_str_maker(degree)
 
         if key in ___degree_cache_pool___:
             return ___degree_cache_pool___[key]
 
         else:
-            if m is None:
-                m = cls.m()
-            else:
-                pass
-
-            if n is None:
-                n = cls.n()
-            else:
-                pass
-
             if isinstance(degree, int):
                 assert degree >= 1, f'Must be'
                 if m == n == 2:
@@ -423,7 +427,7 @@ class MseHttGreatMeshBaseElement(Frozen):
                         #           [1, 2, 3, 3, 2, 1],
                         #           [1, 2, 2, 2, 1],
                         #       )
-                        # Then we will set p = (6, 5), dtype='customize@1-2-3-3-2-1=1-2-2-2-1'
+                        # Then we will set p = (6, 5), dtype='CUS-NODES@1-2-3-3-2-1=1-2-2-2-1'
                         # This means we have customized degrees. And we set the distribution of nodes to be
                         # for example, along xi-direction, if we have nodes
                         #   xi_0, xi_1, xi_2, xi_3, xi_4, xi_5, xi_6
@@ -485,6 +489,40 @@ class MseHttGreatMeshBaseElement(Frozen):
                     else:
                         raise NotImplementedError()
 
+                else:
+                    raise NotImplementedError()
+
+            elif isinstance(degree, str) and degree[:2] == 'MG':
+                # We receive a degree for multigrid implementation.
+                # And along all directions, we use this degree.
+                MG_degree, lvl_degree_parameters = degree.split(___modify_multigrid_degree_indicator___)
+                lvl_degree_parameters = lvl_degree_parameters.split('=')
+                parameters = {}
+                for parameter in lvl_degree_parameters:
+                    _key, value = parameter.split(':')
+                    parameters[_key] = value
+                refining_method = parameters['method']
+                if refining_method == 'uniform':
+                    degree, nodes = ___parse_uniform_multigrid_degree___(MG_degree, parameters)
+                else:
+                    raise NotImplementedError(
+                        f"degree parser for MG refining method = {refining_method} is not implemented")
+
+                assert len(nodes) == degree + 1
+                np.testing.assert_almost_equal(nodes[0], -1)
+                np.testing.assert_almost_equal(nodes[-1], 1)
+
+                NODES = []
+                for node in nodes:
+                    NODES.append(str(round(node, 13)))
+                dtype = 'nd@' + '='.join(NODES)
+
+                if m == n == 2:
+                    p = (degree, degree)
+                    dtype = (dtype, dtype)
+                elif m == n == 3:
+                    p = (degree, degree, degree)
+                    dtype = (dtype, dtype, dtype)
                 else:
                     raise NotImplementedError()
 

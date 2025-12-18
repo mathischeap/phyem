@@ -551,3 +551,5 @@ _nonlinear_ap_test_form_repr = {
     'sym': r' \wr ',
     'lin': ' >=~=< ',
 }
+
+___modify_multigrid_degree_indicator___ = '*<-MG->*'

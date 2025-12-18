@@ -3,7 +3,7 @@ r"""
 """
 import numpy as np
 
-from phyem.tests.samples._base_2d import _TwoDimensionalConditionBase
+from phyem.tools.samples._base_2d import _TwoDimensionalConditionBase
 from phyem.tools.quadrature import Quadrature
 from phyem.tools.functions.time_space._2d.wrappers.vector import T2dVector
 from phyem.tools.functions.time_space._2d.wrappers.scalar import T2dScalar

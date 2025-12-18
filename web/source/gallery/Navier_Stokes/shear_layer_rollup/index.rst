@@ -3,7 +3,7 @@
 Shear layer rollup
 ==================
 
-.. automodule:: phyem.tests.samples.iniCond_shear_layer_rollup
+.. automodule:: phyem.tools.samples.iniCond_shear_layer_rollup
     :undoc-members:
 
 .. figure:: t048.png

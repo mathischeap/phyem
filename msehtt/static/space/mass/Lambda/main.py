@@ -19,15 +19,9 @@ class MseHttSpace_MASS_Lambda(Frozen):
         m = self._space.m
         n = self._space.n
         k = self._space.abstract.k
-        orientation = self._space.orientation
         indicator = f"m{m}n{n}k{k}"
         path = self.__repr__().split('main.')[0][1:] + f"mass_{indicator}"
         module = import_module(path)
-        if hasattr(module, 'mass_Lambda__' + indicator):
-            return getattr(module, 'mass_Lambda__' + indicator)(
-                self._space.tpm, degree, cochain,
-            )
-        else:
-            return getattr(module, 'mass_Lambda__' + indicator + f"_{orientation}")(
-                self._space.tpm, degree, cochain,
-            )
+        return getattr(module, 'mass_Lambda__' + indicator)(
+            self._space.tpm, degree, cochain,
+        )

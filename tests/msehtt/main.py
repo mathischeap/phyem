@@ -13,7 +13,7 @@ if len(sys.argv) == 1:
     use_ranks = 5
 else:
     use_ranks = int(sys.argv[1])
-    assert 1 < use_ranks <= 12, f"use_ranks={use_ranks} is wrong. It should be a integer in [1, 12]."
+    assert 1 <= use_ranks <= 12, f"use_ranks={use_ranks} is wrong. It should be an integer in [1, 12]."
 
 print(rf"Starting <<<msehtt.tests>>> with {use_ranks} ranks....")
 exec_cmd = f"mpiexec -n {use_ranks} python "
@@ -40,6 +40,7 @@ for i in range(7):
 
 tasks = [
     "solvers",
+    "gathering_matrix_and_vectors",
     "msepy2_base",
     "msepy3_base",
     "msepy3_base_curvilinear",
@@ -68,6 +69,7 @@ tasks = [
     ("adaptive/trf_tests", 5),  # means we can use at most 5 ranks.
 
     "multigrid/cochain_passing_2",
+    "multigrid/cochain_passing_2_anyN",
     "multigrid/cochain_passing_3",
     "multigrid/Poisson2",
     "multigrid/Poisson2_N",

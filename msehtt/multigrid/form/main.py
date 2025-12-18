@@ -114,6 +114,27 @@ class MseHtt_MultiGrid_Form(Frozen):
         r"""Return the msehtt manifold."""
         return self._manifold
 
+    def ___make_multigrid_level_degree_modifier___(self, lvl):
+        r"""When the degree on levels are different (could be different p or dtype), we will use this
+        method to find the correct degree modifier which will be sent to forms on particular levels.
+
+        Then, when we parse the degree of a particular form, we will study the degree modifier (appended
+        at the end of the degree) to finally get a correct p and dtype.
+        """
+        degree = self.degree
+        if isinstance(degree, str) and degree[:2] == 'MG':
+            tgm = self._tgm
+            refining_method =tgm._configuration['method']
+            if refining_method == 'uniform':
+                parameters = tgm._configuration['parameters']
+                rff = parameters['rff']
+                max_levels = parameters['max-levels']
+                return f"lvl:{lvl}=method:uniform=rff:{rff}=max_levels:{max_levels}"
+            else:
+                raise NotImplementedError()
+        else:
+            return None
+
     def get_level(self, lvl=None):
         r"""Return the msehtt form on the lvl-th level."""
         if lvl is None:
@@ -124,7 +145,11 @@ class MseHtt_MultiGrid_Form(Frozen):
             return self._levels[lvl]
         else:
             if self._is_base():
+
+                mg_lvl_degree_modifier = self.___make_multigrid_level_degree_modifier___(lvl)
+
                 lvl_base_form = MseHttForm(self.abstract)
+                lvl_base_form.___modify_mg_level_degree___(mg_lvl_degree_modifier)
                 lvl_base_form._tgm = self.tgm.get_level(lvl)
                 lvl_base_form._tpm = self.tpm.get_level(lvl)
                 lvl_base_form._manifold = self.manifold
@@ -139,6 +164,7 @@ class MseHtt_MultiGrid_Form(Frozen):
                     assert ats.__class__.__name__ == "AbstractTimeSequence"
                     assert ati.__class__.__name__ == "AbstractTimeInstant"
                     prf = MseHttForm(multi_great_particular_form.abstract)
+                    prf.___modify_mg_level_degree___(mg_lvl_degree_modifier)
 
                     prf._pAti_form['base_form'] = lvl_base_form
                     prf._pAti_form['ats'] = ats

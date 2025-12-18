@@ -39,6 +39,7 @@ def quadrature(p, category):
 
 
 ___cus_nodes_cache___ = {}
+___NodeDistributionCache___ = {}
 
 
 class Quadrature(object):
@@ -68,6 +69,8 @@ class Quadrature(object):
         else:
             for cat in _category_:
                 if cat[:10] == 'CUS-NODES@':
+                    pass
+                elif cat[:3] == 'nd@':
                     pass
                 else:
                     raise Exception(f"quad category = {_category_} wrong.")
@@ -116,6 +119,9 @@ class Quadrature(object):
                 edge_partition = ci[10:].split('-')
                 assert self.p[i] == len(edge_partition), \
                     f"p={self.p[i]} does not match category={ci}."
+            elif ci[:3] == 'nd@':  # node distribution
+                nodes = ci[3:].split('=')
+                assert self.p[i] == len(nodes) - 1, f"p={self.p[i]} does not match category={ci}."
 
             else:
                 raise Exception(f"category[{i}] = {ci} is not valid.")
@@ -175,6 +181,9 @@ class Quadrature(object):
                     _quad_ = getattr(self, '___PRIVATE_compute_' + cat + '___')(self.p[0])
                 elif cat[:10] == 'CUS-NODES@':
                     _quad_ = self.___PRIVATE_compute_CUS_NODES___(cat)
+                elif cat[:3] == 'nd@':
+                    _quad_ = self.___PRIVATE_compute_NodeDistribution___(cat)
+
                 else:
                     raise NotImplementedError(f"compute quad for category ={cat} not implemented")
             else:
@@ -185,6 +194,8 @@ class Quadrature(object):
                         nodes, weights = getattr(self, '___PRIVATE_compute_' + cat + '___')(self.p[i])
                     elif cat[:10] == 'CUS-NODES@':
                         nodes, weights = self.___PRIVATE_compute_CUS_NODES___(cat)
+                    elif cat[:3] == 'nd@':
+                        nodes, weights = self.___PRIVATE_compute_NodeDistribution___(cat)
                     else:
                         raise NotImplementedError(f"compute quad for category ={cat} not implemented")
                     _quad_[0].append(nodes)
@@ -282,6 +293,21 @@ class Quadrature(object):
         ___cus_nodes_cache___[partition] = np.array(nodes), None
         # weights are None, do not use these nodes for numerical quadrature.
         return ___cus_nodes_cache___[partition]
+
+    @classmethod
+    def ___PRIVATE_compute_NodeDistribution___(cls, nd):
+        r""""""
+        if nd in ___NodeDistributionCache___:
+            return ___NodeDistributionCache___[nd]
+        else:
+            pass
+        assert nd[:3] == "nd@", f"node distribution={nd} is wrong."
+        nodes = nd[3:].split('=')
+        nodes = np.array([float(_) for _ in nodes])
+        np.testing.assert_almost_equal(nodes[0], -1)
+        np.testing.assert_almost_equal(nodes[-1], 1)
+        ___NodeDistributionCache___[nd] = nodes, None
+        return ___NodeDistributionCache___[nd]
 
     @staticmethod
     def ___PRIVATE_legendre_prime___(x, n):

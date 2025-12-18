@@ -623,6 +623,24 @@ class MseHttGreatMesh(Frozen):
                  f"Element nodes must be indexed with integers ONLY "
                  f"(while elements themselves can be indexed with else).")
 
+        # ------------- a final check of the element distribution ---------------------------------
+        assert len(element_type_dict) == len(element_parameter_dict) == len(element_map_dict), f"must be!"
+        num_local_elements = len(element_type_dict)
+        num_local_elements = COMM.gather(num_local_elements, root=MASTER_RANK)
+        if RANK == MASTER_RANK:
+            if all([_ > 0 for _ in num_local_elements]):
+                pass
+            else:  # do a re-distribution
+                empty_ranks = []
+                for r, _ in enumerate(num_local_elements):
+                    if _ == 0:
+                        empty_ranks.append(r)
+                    else:
+                        pass
+                raise Exception(rf"RANKS {empty_ranks} have no elements.")
+        else:
+            pass
+
         # ----------- do triangle/tetrahedron-split----------------------------------------------
         # noinspection PySimplifyBooleanCheck
         if ts is False:
@@ -730,7 +748,7 @@ class MseHttGreatMesh(Frozen):
     @staticmethod
     def _check_elements(element_type_dict, element_parameter_dict, element_map_dict):
         r""""""
-        assert len(element_type_dict) > 0, (f"I need at least one element, right? Likely that there are "
+        assert len(element_type_dict) > 0, (f"RANK#{RANK}: I need at least one element, right? Likely that there are "
                                             f"more ranks than elements. Reduce SIZE.")
         assert len(element_type_dict) == len(element_parameter_dict) == len(element_map_dict), f"must be!"
         for i in element_type_dict:
@@ -769,7 +787,7 @@ class MseHttGreatMesh(Frozen):
                         element_distribution[rank] = [e]
                 else:
                     if self._msepy_manifold is not None:
-                        if num_total_elements < 4 * SIZE:
+                        if num_total_elements <= 4 * SIZE:
                             rank_indices = np.array_split(range(num_total_elements), SIZE)
                             elements_indices = list(self._global_element_type_dict.keys())
                             for rank, indices in enumerate(rank_indices):
@@ -784,6 +802,9 @@ class MseHttGreatMesh(Frozen):
                                 end = int(start + take_num_piles * num_elements_each_pile) + 1
                                 element_distribution[rank] = elements_indices[start:end]
                                 start = end
+
+                        for rank in element_distribution:
+                            assert len(element_distribution[rank]) > 0, f"RANK#{rank} gets no element."
 
                     else:
                         element_distribution = ___Naive_element_distribution___(

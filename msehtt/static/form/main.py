@@ -7,6 +7,7 @@ import pickle
 
 from phyem.tools.frozen import Frozen
 from phyem.src.form.main import Form
+from phyem.src.config import ___modify_multigrid_degree_indicator___
 from phyem.src.config import RANK, MASTER_RANK, SIZE, COMM
 from phyem.msehtt.tools.matrix.static.local import MseHttStaticLocalMatrix
 from phyem.msehtt.static.form.cf import MseHttStaticFormCF
@@ -136,6 +137,20 @@ class MseHttForm(Frozen):
             raise NotImplementedError(f"cannot do: {self.__class__} + {other.__class__}")
 
     # ======================================================================================================
+
+    def ___modify_mg_level_degree___(self, modify_key):
+        r""""""
+        if modify_key is None:
+            pass  # do nothing
+        else:
+            assert isinstance(self._degree, str), f"to modify degree, for now, we only accept str degree."
+            if ___modify_multigrid_degree_indicator___ in self._degree:
+                raise Exception(f"degree = {self._degree} already has a msehtt-mg-degree-modifier.")
+            else:
+                assert isinstance(modify_key, str), f"modify_key={modify_key} wrong. It must be a string."
+            assert ___modify_multigrid_degree_indicator___ not in modify_key
+            new_degree = self._degree + ___modify_multigrid_degree_indicator___ + modify_key
+            self._degree = new_degree
 
     @property
     def degree(self):

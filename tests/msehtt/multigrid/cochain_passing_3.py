@@ -20,7 +20,6 @@ S1 = ph.space.new('Lambda', 1, orientation='outer')
 S2 = ph.space.new('Lambda', 2, orientation='outer')
 S3 = ph.space.new('Lambda', 3, orientation='outer')
 
-
 f0 = S0.make_form(r'\tilde{\omega}^0', 'outer-form-0')
 f1 = S1.make_form(r'\tilde{\omega}^1', 'outer-form-1')
 f2 = S2.make_form(r'\tilde{\omega}^2', 'outer-form-2')

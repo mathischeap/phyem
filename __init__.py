@@ -78,7 +78,7 @@ from phyem.src.mesh import _list_meshes as list_meshes
 
 from phyem.src.form.main import _clear_forms as clear_forms
 
-import phyem.tests.samples.main as samples
+import phyem.tools.samples.main as samples
 
 from phyem.src.manifold import manifold
 from phyem.src.manifold import find_manifold
