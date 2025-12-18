@@ -78,7 +78,7 @@ ph_cache_test.phc
 make.bat
 Makefile
 
-# Translations
+# Translations /
 *.mo
 *.pot
 
