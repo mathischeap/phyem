@@ -10,6 +10,7 @@ from phyem.src.config import RANK, MASTER_RANK, COMM
 from phyem.msehtt.static.mesh.partial.elements.cfl import MseHtt_PartialMesh_Elements_CFL_condition
 from phyem.msehtt.static.mesh.partial.elements.rws import MseHtt_PartialMesh_Elements_ExportTo_DDS_RWS_Grouped
 from phyem.msehtt.static.mesh.partial.elements.compute import PartialMesh_Elements_Compute
+from phyem.msehtt.static.mesh.partial.elements.integrate import PartialMesh_Elements_Integrate
 
 
 class MseHttElementsPartialMesh(Frozen):
@@ -28,6 +29,7 @@ class MseHttElementsPartialMesh(Frozen):
         self._cfl = None
         self._rws = None
         self._compute = None
+        self._integrate = None
 
         self.___cache0___ = {}
 
@@ -73,6 +75,12 @@ class MseHttElementsPartialMesh(Frozen):
         if self._compute is None:
             self._compute = PartialMesh_Elements_Compute(self)
         return self._compute
+
+    @property
+    def integrate(self):
+        if self._integrate is None:
+            self._integrate = PartialMesh_Elements_Integrate(self)
+        return self._integrate
 
     @property
     def visualize(self):

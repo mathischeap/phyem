@@ -32,7 +32,7 @@ def spsolve(A, b, clean=False):  # I receive shells of A and b in order to have 
     # x = COMM.bcast(x, root=MASTER_RANK)
     # ====================================
     t_cost = time() - t_start
-    t_cost = MyTimer.seconds2dhms(t_cost)
+    t_cost = MyTimer.seconds2dhmsm(t_cost)
     message = f"Linear system of shape: {A.shape} <direct solver costs: {t_cost}> "
     info = {
         'total cost': t_cost,

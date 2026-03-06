@@ -66,6 +66,14 @@ class MseHttTimeInstantCochain(Frozen):
             self._cochain = local_cochain_dict
             self._ctype = 'dict'
 
+        elif cochain.__class__ is self.__class__:
+            assert cochain._gm == self._gm, f"gm must match."
+            local_cochain_dict = {}
+            for e in self:
+                local_cochain_dict[e] = cochain[e]
+            self._cochain = local_cochain_dict
+            self._ctype = 'dict'
+
         else:
             raise NotImplementedError(cochain.__class__.__name__)
 

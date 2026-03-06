@@ -20,8 +20,6 @@ from phyem.tools.numerical.time_space._2d.partial_derivative_as_functions import
     NumericalPartialDerivativeTxyFunctions, NumericalPartialDerivativeTxy
 
 
-
-
 # noinspection PyUnusedLocal
 def _0_function(t, x, y):
     return np.zeros_like(x)

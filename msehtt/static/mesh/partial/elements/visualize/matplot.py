@@ -5,14 +5,14 @@ from phyem.tools.frozen import Frozen
 from phyem.src.config import RANK, MASTER_RANK, COMM
 from phyem.msehtt.static.mesh.great.visualize.matplot import MseHttGreatMeshVisualizeMatplot
 
-import matplotlib.pyplot as plt
-import matplotlib
-plt.rcParams.update({
-    "text.usetex": True,
-    "font.family": "DejaVu Sans",
-    "text.latex.preamble": r"\usepackage{amsmath, amssymb}",
-})
-matplotlib.use('TkAgg')
+# import matplotlib.pyplot as plt
+# import matplotlib
+# plt.rcParams.update({
+#     "text.usetex": True,
+#     "font.family": "DejaVu Sans",
+#     "text.latex.preamble": r"\usepackage{amsmath, amssymb}",
+# })
+# matplotlib.use('TkAgg')
 
 
 class MseHttElementsPartialMeshVisualizeMatplot(Frozen):

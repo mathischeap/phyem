@@ -65,6 +65,8 @@ class MseHttGreatMeshBaseElement(Frozen):
         self._faces = None
         self._edges = None
         self._dof_reverse_info = {}
+        self._compute_metric_bf_cache_key_ = True
+        self._metric_bf_cache_key_ = None
         self._freeze()
 
     @property
@@ -370,7 +372,14 @@ class MseHttGreatMeshBaseElement(Frozen):
     @property
     def edges(self):
         r""""""
-        return NotImplementedError(f"edges not implemented")
+        raise NotImplementedError(f"edges not implemented")
+
+    @property
+    def nodes(self):
+        r"""Return a dict whose keys are nodes (the indices in element map)and values are coordinates of the
+        nodes.
+        """
+        raise NotImplementedError(f"nodes not implemented for element type: {self.etype}.")
 
     @classmethod
     def degree_parser(cls, degree, m=None, n=None):
@@ -550,6 +559,36 @@ class MseHttGreatMeshBaseElement(Frozen):
     def geometry(self):
         r"""We return a geometric object of the same shape as this element."""
         raise NotImplementedError(f"geometry for element of type=<{self._etype()}> is not implemented!")
+
+    def metric_bf_cache_key(self):
+        r"""A cache key for this element taking element mapping metric and bf reverse info into account.
+
+        Return None if the cache key is unique else return a string.
+        """
+        if self._compute_metric_bf_cache_key_:
+            if isinstance(self.metric_signature, int):
+                pass
+            else:
+                assert isinstance(self.metric_signature, str), \
+                    f"metric-signature must be int or str, not {type(self.metric_signature)}"
+                if len(self.dof_reverse_info) == 0:
+                    self._metric_bf_cache_key_ = self.metric_signature
+                else:
+                    reverse_KEYs = []
+                    reverse_VALs = []
+                    for reverse_key in self.dof_reverse_info:
+                        reverse_KEYs.append(reverse_key)
+                    reverse_KEYs.sort()
+                    for reverse_key in reverse_KEYs:
+                        reverse_VALs.append(str(self.dof_reverse_info[reverse_key]))
+                    reverse_KEYs = '*'.join(reverse_KEYs)
+                    reverse_VALs = '-'.join(reverse_VALs)
+                    cache_key = self.metric_signature + ':' + reverse_KEYs + '>' + reverse_VALs
+                    self._metric_bf_cache_key_ = cache_key
+            self._compute_metric_bf_cache_key_ = False
+        else:
+            pass
+        return self._metric_bf_cache_key_
 
 
 # ============ ELEMENT CT =====================================================================================

@@ -121,8 +121,12 @@ class MseHttForm(Frozen):
         if other.__class__ is self.__class__:
             if self._ftype == 'regular' and other._ftype == 'IMPLEMENTATION':
                 return ___regular_sub_or_add_IMPLEMENTATION___(self, '-', other)
+            elif self._ftype == 'IMPLEMENTATION' and other._ftype == 'regular':
+                return other - self
+            elif self._ftype == 'IMPLEMENTATION' and other._ftype == 'IMPLEMENTATION':
+                return ___IMPLEMENTATION_sub_or_add_IMPLEMENTATION___(self, '-', other)
             else:
-                raise NotImplementedError()
+                raise NotImplementedError(self._ftype, other._ftype)
         else:
             raise NotImplementedError(f"cannot do: {self.__class__} - {other.__class__}")
 
@@ -131,8 +135,12 @@ class MseHttForm(Frozen):
         if other.__class__ is self.__class__:
             if self._ftype == 'regular' and other._ftype == 'IMPLEMENTATION':
                 return ___regular_sub_or_add_IMPLEMENTATION___(self, '+', other)
+            elif self._ftype == 'IMPLEMENTATION' and other._ftype == 'regular':
+                return other + self
+            elif self._ftype == 'IMPLEMENTATION' and other._ftype == 'IMPLEMENTATION':
+                return ___IMPLEMENTATION_sub_or_add_IMPLEMENTATION___(self, '+', other)
             else:
-                raise NotImplementedError()
+                raise NotImplementedError(self._ftype, other._ftype)
         else:
             raise NotImplementedError(f"cannot do: {self.__class__} + {other.__class__}")
 
@@ -674,7 +682,7 @@ class MseHttForm(Frozen):
 
 
 def ___regular_sub_or_add_IMPLEMENTATION___(rgf, sub_or_add, IMf):
-    r"""regular form - IMPLEMENTATION form, return an IMPLEMENTATION form."""
+    r"""regular form -/+ IMPLEMENTATION form, return an IMPLEMENTATION form."""
     assert rgf._ftype == 'regular', f'must be!'
     assert IMf._ftype == 'IMPLEMENTATION', f'must be!'
 
@@ -710,6 +718,59 @@ def ___regular_sub_or_add_IMPLEMENTATION___(rgf, sub_or_add, IMf):
 
         cc0 = rgf.cochain
         cc1 = IMf.cochain
+        for t in cc0:
+            if t in cc1:
+                ccI0 = cc0[t]
+                ccI1 = cc1[t]
+                if sub:
+                    _ = ccI0 - ccI1
+                else:
+                    _ = ccI0 + ccI1
+                SUBf.cochain._set(t, _)
+
+        return SUBf
+
+    else:
+        raise NotImplementedError()
+
+
+def ___IMPLEMENTATION_sub_or_add_IMPLEMENTATION___(f0, sub_or_add, f1):
+    r"""IMPLEMENTATION form -/+ IMPLEMENTATION form, return an IMPLEMENTATION form."""
+    assert f0._ftype == 'IMPLEMENTATION', f'must be!'
+    assert f1._ftype == 'IMPLEMENTATION', f'must be!'
+
+    if sub_or_add == '-':
+        sub = True
+    elif sub_or_add == '+':
+        sub = False
+    else:
+        raise Exception()
+
+    s0 = f0.space
+    s1 = f1.space
+    assert s0._imn_ == s1._imn_, f"The two forms have different spaces. {s0._imn_} != {s1._imn_}."
+    assert f0.degree == f1.degree, f"degree must be "
+    indicator = s0._imn_[0]
+    if indicator == 'Lambda':
+        k0, k1 = s0.abstract.k, s1.abstract.k
+        o0, o1 = s0.abstract.orientation, s1.abstract.orientation
+        assert k0 == k1 and o0 == o1, \
+            f"the k and orientation are different; k0={k0}, k1={k1}, o0={o0}, o1={o1}"
+        SUBf = MseHttForm(
+            None,
+            SPECIAL={
+                'KEY': 'IMPLEMENTATION',
+                'degree': f0.degree
+            }
+        )
+        assert SUBf._ftype == 'IMPLEMENTATION', f'must be!'
+        SUBf.space = f1.space
+        SUBf._tpm = f0._tpm
+        SUBf._tgm = f0._tgm
+        SUBf._manifold = f0._manifold
+
+        cc0 = f0.cochain
+        cc1 = f1.cochain
         for t in cc0:
             if t in cc1:
                 ccI0 = cc0[t]

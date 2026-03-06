@@ -28,6 +28,7 @@ class MseHttFormStaticCopy(Frozen):
         self._f = f
         self._t = t
         self._field = None
+        self._special = None
         self._freeze()
 
     def __repr__(self):
@@ -79,8 +80,42 @@ class MseHttFormStaticCopy(Frozen):
     def cf(self):
         return self._f.cf[self._t]
 
-    def error(self, error_type='L2'):
-        """"""
+    def error(self, error_type='L2', etype='L2'):
+        r"""
+        Parameters
+        ----------
+        error_type :
+        etype :
+
+        """
+        if error_type == 'L2' and etype != 'L2':
+            # we provide etype
+            error_type = etype
+        else:
+            pass
+
+        if error_type != 'L2':
+            space_str_indicator = self._f.space.str_indicator
+            if error_type == 'Hdiv':
+                assert space_str_indicator in ('m3n3k2', 'm2n2k1_outer')
+                error_type = 'H1'
+            elif error_type == 'Hcurl':
+                if space_str_indicator == 'm3n3k1':
+                    pass
+                elif space_str_indicator == 'm2n2k0':
+                    orientation = self._f.space.orientation
+                    if orientation == 'outer':
+                        pass
+                    else:
+                        raise Exception()
+                else:
+                    raise Exception()
+                error_type = 'H1'
+            else:
+                pass
+        else:
+            pass
+
         if error_type == 'L2':
             return self._f.error(self.cf, self.cochain, error_type=error_type)
 
@@ -225,6 +260,13 @@ class MseHttFormStaticCopy(Frozen):
         r""""""
         return ___MseHtt_Static_Form_Copy_Numeric___(self._f, self._t)
 
+    @property
+    def special(self):
+        r"""Collection of all special properties and methods."""
+        if self._special is None:
+            self._special = _MseHttStaticCopySpecial_(self)
+        return self._special
+
 
 class ___MseHtt_Static_Form_Copy_Numeric___(Frozen):
     """"""
@@ -327,3 +369,42 @@ class ___MseHtt_Static_Form_Copy_Numeric___(Frozen):
 
         else:
             raise NotImplementedError(dtype)
+
+
+class _MseHttStaticCopySpecial_(Frozen):
+    r""""""
+    def __init__(self, sf):
+        r""""""
+        self._sf = sf
+        self._f = sf._f
+        self._freeze()
+
+    def chemical_energy(self, quad_degree=3):
+        r"""Compute integral of {p * (ln p - 1)}"""
+        quad_nodes, quad_weights = quadrature(quad_degree, 'Gauss').quad
+        space = self._f.space
+        if space.str_indicator == 'm2n2k0':
+            quad_nodes = [quad_nodes, quad_nodes]
+            quad_weights = [quad_weights, quad_weights]
+        else:
+            raise NotImplementedError()
+
+        elements = self._f.tpm.composition
+        reconstruction = self._sf.reconstruct(*quad_nodes)
+        xyz, V = reconstruction
+        assert len(V) == 1, f"we must have a scalar"
+        V = V[0]
+        ENERGY = []
+        for e in V:
+            element = elements[e]
+            val = V[e]
+            val = val * (np.log(val) - 1)
+            J = element.ct.Jacobian(*quad_nodes)
+            energy = np.einsum(
+                'ij, i, j -> ',
+                J * val, *quad_weights,
+                optimize='optimal'
+            )
+            ENERGY.append(energy)
+        ENERGY = sum(ENERGY)
+        return COMM.allreduce(ENERGY, op=MPI.SUM)

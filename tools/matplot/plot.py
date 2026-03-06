@@ -24,7 +24,7 @@ def __matplot__(
         xlabel=None, ylabel=None, label_size=16,
         xlabel_pad=None, ylabel_pad=None,
         # ticks
-        tick_style: [] = "sci", xticks=None, yticks=None, tick_direction='in',
+        tick_style="sci", xticks=None, yticks=None, tick_direction='in',
         tick_size=16, tick_pad=6, minor_tick_length=4, major_tick_length=8,
 
         labelleft=True,
@@ -296,7 +296,10 @@ def __matplot__(
         tx.set_fontsize(tick_size)
 
         if not y_scientific:
+            # noinspection PyUnresolvedReferences
             ax.get_yaxis().get_major_formatter().set_scientific(y_scientific)
+        else:
+            pass
 
     if scatter is None:
         pass

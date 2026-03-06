@@ -155,6 +155,7 @@ class T3dVector(TimeSpaceFunctionBase):
         else:
             self.mesh = mesh
 
+        self._Laplacian = None
         self._freeze()
 
     def __call__(self, t, x, y, z):
@@ -397,6 +398,13 @@ class T3dVector(TimeSpaceFunctionBase):
 
         return self.__class__(v0, v1, v2)
 
+    @property
+    def Laplacian(self):
+        r""" Laplacian(A) = grad (div A) - curl ( curl(A) )."""
+        if self._Laplacian is None:
+            self._Laplacian = self.divergence.gradient - self.curl.curl
+        return self._Laplacian
+
     def convection_by(self, u):
         """We compute (u cdot nabla) of self where u is another t3d vector.
 
@@ -408,7 +416,7 @@ class T3dVector(TimeSpaceFunctionBase):
         -------
 
         """
-        assert u.__class__.__name__ == "t3dVector", f"I need a t3dVector."
+        assert u.__class__.__name__ == "T3dVector", f"I need a T3dVector."
 
         if self._du_dx is None:
             v0px = self._NPD0_('x')

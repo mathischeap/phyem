@@ -42,7 +42,10 @@ __all__ = [
     "ManufacturedSolution_Hall_MHD3_NullPoints",     # Null Points in [-1, 1]^3
 
     "Manufactured_Solution_PNPNS_2D_PeriodicDomain1",
+    "Manufactured_Solution_PNPNS_3D_PeriodicDomain1",
     "Manufactured_Solution_PNPNS_2D_InitialDiscontinuousConcentrations",
+    "Manufactured_Solution_PNPNS_2D_InitialDiscontinuousConcentrations_Diagonal",
+    "InitialCondition_PNPNS_2D_Conservation1",
 ]
 
 
@@ -84,5 +87,9 @@ from phyem.tools.samples.manuSolution_Hall_MHD import ManufacturedSolution_Hall_
 from phyem.tools.samples.manuSolution_Hall_MHD import ManufacturedSolution_Hall_MHD3_NullPoints
 
 from phyem.tools.samples.manuSolution_PNPNS2 import Manufactured_Solution_PNPNS_2D_PeriodicDomain1
+from phyem.tools.samples.manuSolution_PNPNS3 import Manufactured_Solution_PNPNS_3D_PeriodicDomain1
 from phyem.tools.samples.iniCond_PNPNS_InitialDiscontinuousConcentrations import (
     Manufactured_Solution_PNPNS_2D_InitialDiscontinuousConcentrations)
+from phyem.tools.samples.iniCond_PNPNS_InitialDiscontinuousConcentrations import (
+    Manufactured_Solution_PNPNS_2D_InitialDiscontinuousConcentrations_Diagonal)
+from phyem.tools.samples.iniCond_PNPNS2 import InitialCondition_PNPNS_2D_Conservation1

@@ -64,10 +64,7 @@ __all__ = [
 
 def test():
     r"""Run the tests to valid your installation."""
-    print(f"TEST TASK 1: tests for `msepy` implementation ...\n")
-    # noinspection PyUnresolvedReferences
-    import tests.msepy.main   # this automatically run all tests for the implementation `msepy`
-    # so far, `msepy` is the only implementation released.
+    import phyem.tools.environment  # to test the environment is correctly configured.
 
 
 import phyem.src.config as config

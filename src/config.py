@@ -58,6 +58,7 @@ _setting = {
     "pr_cache_current_folder": 'current',  # we cache where in particular?
     "high_accuracy": True,  # influence sparsity of some matrices.
     "auto_cleaning": True,  # automatic memory saving
+    "reconstructing_mass_matrices": False,  # If True, we use reconstruction matrices for mass matrix.
 }
 
 
@@ -113,6 +114,14 @@ def set_pr_cache(_bool):
     """
     assert isinstance(_bool, bool), f"give me True or False"
     _setting['pr_cache'] = _bool
+
+
+def set_reconstructing_mass_matrices(_bool):
+    r"""If `set_reconstructing_mass_matrices`, we will use reconstruction matrices
+    for computing mass matrices.
+    """
+    assert isinstance(_bool, bool), f"give me True or False"
+    _setting['reconstructing_mass_matrices'] = _bool
 
 
 def set_auto_cleaning(_bool_or_factor):

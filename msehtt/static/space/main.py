@@ -218,6 +218,21 @@ class MseHttSpace(Frozen):
             raise NotImplementedError(indicator)
 
     @property
+    def dtype(self):
+        r"""The data type for element in this space."""
+        str_indicator = self.str_indicator
+        if str_indicator in ('m2n2k0', 'm2n2k2'):
+            return '2d-scalar'
+        elif str_indicator in ('m2n2k1_inner', 'm2n2k1_outer'):
+            return '2d-vector'
+        elif str_indicator in ('m3n3k0', 'm3n3k3'):
+            return '3d-scalar'
+        elif str_indicator in ('m3n3k1', 'm3n3k2'):
+            return '3d-vector'
+        else:
+            raise NotImplementedError(str_indicator)
+
+    @property
     def orientation(self):
         """The orientation I am."""
         return self.abstract.orientation

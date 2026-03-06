@@ -361,6 +361,7 @@ class _TrStarRf0DualPairingTrS1(Frozen):
 
         else:
             # rf0 of <tr star rf0 | ~> must be an abstract (base) form, take ``t`` from its ati.
+            # noinspection PyCallingNonCallable
             t = self._ati(**kwargs)()
 
         return t

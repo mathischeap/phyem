@@ -78,6 +78,24 @@ class MseHttGreatMeshOrthogonalHexahedronElement(MseHttGreatMeshBaseElement):
     def _etype(cls):
         return 'orthogonal hexahedron'
 
+    @property
+    def nodes(self):
+        r"""Return a dict whose keys are nodes (the indices in element map)and values are coordinates of the
+        nodes.
+        """
+        x0, y0, z0 = self._parameters['origin']
+        dx, dy, dz = self._parameters['delta']
+        return {
+            self._map[0]: (x0, y0, z0),
+            self._map[1]: (x0+dx, y0, z0),
+            self._map[2]: (x0, y0+dy, z0),
+            self._map[3]: (x0+dx, y0+dy, z0),
+            self._map[4]: (x0, y0, z0+dz),
+            self._map[5]: (x0+dx, y0, z0+dz),
+            self._map[6]: (x0, y0+dy, z0+dz),
+            self._map[7]: (x0+dx, y0+dy, z0+dz),
+        }
+
     @classmethod
     def _find_element_center_coo(cls, parameters):
         r""""""

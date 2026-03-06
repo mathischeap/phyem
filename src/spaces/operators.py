@@ -108,6 +108,22 @@ def convect(s1, s2):
 
             else:
                 raise NotImplementedError(k1, k2, s1.orientation, s2.orientation)
+
+        elif m == n == 3:  # on 3d mesh in 3d space.
+            k1 = s1.k
+            k2 = s2.k
+
+            if k1 == 2 and k2 == 0:
+                # a vector convect a scalar. For example vec(u)· V p
+                return s2
+
+            elif k1 == 2 and k2 == 2:
+                # a vector convect another vector. For example vec(u)· V vec(u)
+                return s2
+
+            else:
+                raise NotImplementedError(k1, k2)
+
         else:
             raise NotImplementedError()
 

@@ -149,6 +149,17 @@ class Iterator(Frozen):
             test_range = [test_range, ]
         else:
             pass
+
+        assert len(test_range) >= 1, f"test_range = {test_range} is illegal. Its length must >= 1."
+
+        if show_info:
+            if RANK == MASTER_RANK:
+                print(f"\n [T~T] TESTS with a range: {test_range}\n", flush=True)
+            else:
+                pass
+        else:
+            pass
+
         for args in test_range:
             if show_info:
                 if RANK == MASTER_RANK:

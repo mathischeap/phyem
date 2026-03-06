@@ -9,7 +9,7 @@ from scipy.sparse import isspmatrix_csc, isspmatrix_csr
 
 from phyem.tools.frozen import Frozen
 from phyem.src.config import COMM, RANK, MASTER_RANK, MPI
-# from phyem.scipy.sparse import csc_matrix, csr_matrix
+# from scipy.sparse import csc_matrix, csr_matrix
 from phyem.msehtt.tools.gathering_matrix import MseHttGatheringMatrix
 
 

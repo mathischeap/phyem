@@ -139,6 +139,17 @@ class Vtu5Triangle(MseHttGreatMeshBaseElement):
             self._faces = _VTU5_Triangle_Faces_(self)
         return self._faces
 
+    @property
+    def nodes(self):
+        r"""Return a dict whose keys are nodes (the indices in element map)and values are coordinates of the
+        nodes.
+        """
+        return {
+            self._map[0]: self._parameters[0],
+            self._map[1]: self._parameters[1],
+            self._map[2]: self._parameters[2],
+        }
+
     def ___face_representative_str___(self):
         r""""""
         x = np.array([0, 1, 0])

@@ -54,29 +54,20 @@ class AdB_ip_dC(MseHttTrilinearBase):
 
     def _generate_data_(self):
         """"""
-        if isinstance(self._A.degree, (float, int)):
-            quad_degree_A = self._A.degree
-        else:
-            raise NotImplementedError(f"cannot find a quad degree from form-A degree = {self._A.degree}")
-        if isinstance(self._B.degree, (float, int)):
-            quad_degree_B = self._B.degree
-        else:
-            raise NotImplementedError(f"cannot find a quad degree from form-B degree = {self._B.degree}")
-        if isinstance(self._C.degree, (float, int)):
-            quad_degree_C = self._C.degree
-        else:
-            raise NotImplementedError(f"cannot find a quad degree from form-C degree = {self._C.degree}")
-
-        quad_degree = int(max([quad_degree_A, quad_degree_B, quad_degree_C]) * 1.5) + 1
-
+        from phyem.msehtt.static.mesh.great.elements.types.base import MseHttGreatMeshBaseElement
+        pA, _ = MseHttGreatMeshBaseElement.degree_parser(self._A.degree, m=self._tpm.abstract.m, n=self._tpm.abstract.n)
+        pB, _ = MseHttGreatMeshBaseElement.degree_parser(self._B.degree, m=self._tpm.abstract.m, n=self._tpm.abstract.n)
+        pC, _ = MseHttGreatMeshBaseElement.degree_parser(self._C.degree, m=self._tpm.abstract.m, n=self._tpm.abstract.n)
+        quad_p = int(max([max(pA), max(pB), max(pC)]) * 1.5) + 1
         if self._tpm.abstract.m == self._tpm.abstract.n == 2:
             indicator = 'm2n2'
-            quad = quadrature((quad_degree, quad_degree), category='Gauss')
+            quad_p = (quad_p, quad_p)
         elif self._tpm.abstract.m == self._tpm.abstract.n == 3:
             indicator = 'm3n3'
-            quad = quadrature((quad_degree, quad_degree, quad_degree), category='Gauss')
+            quad_p = (quad_p, quad_p, quad_p)
         else:
             raise NotImplementedError()
+        quad = quadrature(quad_p, category='Gauss')
 
         quad_nodes = quad.quad_nodes
         qw_ravel = quad.quad_weights_ravel
@@ -113,30 +104,7 @@ class AdB_ip_dC(MseHttTrilinearBase):
         elements = self._tpm.composition
         for e in elements:
             element = elements[e]
-            metric_signature = element.metric_signature
-            etype = element.etype
-
-            if etype in (
-                    "orthogonal rectangle",
-                    "unique msepy curvilinear quadrilateral",
-                    "orthogonal hexahedron",
-            ):
-                cache_key = metric_signature
-
-            elif etype == 9:
-                reverse_info = element.dof_reverse_info
-                if 'm2n2k1_outer' in reverse_info:
-                    reverse_key_outer = str(reverse_info['m2n2k1_outer'])
-                else:
-                    reverse_key_outer = ''
-                if 'm2n2k1_inner' in reverse_info:
-                    reverse_key_inner = str(reverse_info['m2n2k1_inner'])
-                else:
-                    reverse_key_inner = ''
-                cache_key = metric_signature + '-' + reverse_key_outer + ':' + reverse_key_inner
-
-            else:
-                raise NotImplementedError()
+            cache_key = element.metric_bf_cache_key()
 
             if isinstance(cache_key, str) and cache_key in _cache_:
                 _3d_data[e] = _cache_[cache_key]

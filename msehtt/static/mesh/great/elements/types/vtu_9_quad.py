@@ -229,6 +229,18 @@ class Vtu9Quad(MseHttGreatMeshBaseElement):
         r""""""
         raise Exception(f"vtu quad element has no edges.")
 
+    @property
+    def nodes(self):
+        r"""Return a dict whose keys are nodes (the indices in element map)and values are coordinates of the
+        nodes.
+        """
+        return {
+            self._map[0]: self._parameters[0],
+            self._map[1]: self._parameters[1],
+            self._map[2]: self._parameters[2],
+            self._map[3]: self._parameters[3],
+        }
+
     def ___edge_representative_str___(self):
         r""""""
         raise Exception(f"vtu quad element has no edges.")

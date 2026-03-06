@@ -186,6 +186,11 @@ class MseHttStaticLocalMatrix(Frozen):
         -------
 
         """
+        if i in self:
+            pass
+        else:
+            return None
+
         M = self[i].toarray()
         if threshold is None:
             pass
@@ -571,6 +576,14 @@ def bmat(A_2d_list):
     for Ai_ in A_2d_list:
         assert isinstance(Ai_, (list, tuple)), f"bmat must apply to 2d list or tuple."
     col_shape = len(A_2d_list[0])
+    for _ in A_2d_list[1:]:
+        assert col_shape == len(_), f"must be a 2d list. Entries of rows are different now!"
+
+    # DO NOT do this, we shild the matrix even when row_shape == col_shape == 1.
+    # if row_shape == col_shape == 1:
+    #     return A_2d_list[0][0]
+    # else:
+    #     pass
 
     row_gms = [None for _ in range(row_shape)]
     col_gms = [None for _ in range(col_shape)]
@@ -589,13 +602,13 @@ def bmat(A_2d_list):
                 if row_gms[i] is None:
                     row_gms[i] = row_gm_i
                 else:
-                    assert row_gms[i] is row_gm_i, f"by construction, this must be the case as we only construct" \
+                    assert row_gms[i] == row_gm_i, f"by construction, this must be the case as we only construct" \
                                                    f"gathering matrix once and store only once copy somewhere!"
 
                 if col_gms[j] is None:
                     col_gms[j] = col_gm_j
                 else:
-                    assert col_gms[j] is col_gm_j, f"by construction, this must be the case as we only construct" \
+                    assert col_gms[j] == col_gm_j, f"by construction, this must be the case as we only construct" \
                                                    f"gathering matrix once and store only once copy somewhere!"
 
     chain_row_gm = MseHttGatheringMatrix(row_gms)
@@ -631,9 +644,8 @@ class _MseHttStaticLocalMatrixBmat(Frozen):
                 else:
                     data[r][c] = Arc[i]  # All customizations take effect!
 
-        return sp_bmat(
-            data, format='csr'
-        )
+        # noinspection PyTypeChecker
+        return sp_bmat(data, format='csr')
 
     def cache_key(self, i):
         r"""Do this in real time."""
@@ -671,12 +683,12 @@ class MseHttStaticLocalMatrixAssemble(Frozen):
         self._M = M
         self._freeze()
 
-    def __call__(self, format='csc', cache=None, threshold=None, customizations=None):
+    def __call__(self, FORMAT='csc', cache=None, threshold=None, customizations=None):
         r"""
 
         Parameters
         ----------
-        format :
+        FORMAT :
         cache :
             We can manually cache the assembled matrix by set ``cache`` to be a string. When next time
             it sees the same `cache` it will return the cached matrix from the cache.
@@ -700,14 +712,14 @@ class MseHttStaticLocalMatrixAssemble(Frozen):
             pass
         else:
             return self.___customized_call___(
-                format, threshold, customizations,
+                FORMAT, threshold, customizations,
             )
 
         if cache is None:
             pass
         else:
             assert isinstance(cache, str), f"cache must a string."
-            cache_key = format + cache + str(threshold)
+            cache_key = FORMAT + cache + str(threshold)
             if cache == 'unique':
                 pass
             else:
@@ -759,9 +771,9 @@ class MseHttStaticLocalMatrixAssemble(Frozen):
             COL.extend(col)
             DAT.extend(data)
 
-        if format == 'csc':
+        if FORMAT == 'csc':
             SPA_MATRIX = csc_matrix
-        elif format == 'csr':
+        elif FORMAT == 'csr':
             SPA_MATRIX = csr_matrix
         else:
             raise Exception
@@ -783,12 +795,12 @@ class MseHttStaticLocalMatrixAssemble(Frozen):
 
         return A
 
-    def ___customized_call___(self, format, threshold, customizations):
+    def ___customized_call___(self, FORMAT, threshold, customizations):
         r""" Here, we will do some customizations to the assembled A matrix.
 
         Parameters
         ----------
-        format
+        FORMAT
         threshold
         customizations :
 
@@ -804,13 +816,13 @@ class MseHttStaticLocalMatrixAssemble(Frozen):
                 ith_unknown, global_dof = cus[1], cus[2]
                 # the place of the new `1` entry is the `global_dof` of `ith_unknown`.
                 return self.___new_EndZeroRowCol_with_a_one_for_global_dof___(
-                    format, threshold, ith_unknown, global_dof
+                    FORMAT, threshold, ith_unknown, global_dof
                 )
 
             elif indicator == "new_EndZeroRowCol_with_a_one_for_local_dof":
                 ith_unknown, element_index, local_dof = cus[1], cus[2], cus[3]
                 return self.___new_EndZeroRowCol_with_a_one_for_local_dof___(
-                    format, threshold, ith_unknown, element_index, local_dof
+                    FORMAT, threshold, ith_unknown, element_index, local_dof
                 )
             else:
                 raise NotImplementedError(
@@ -822,7 +834,7 @@ class MseHttStaticLocalMatrixAssemble(Frozen):
             )
 
     def ___new_EndZeroRowCol_with_a_one_for_global_dof___(
-            self, format, threshold,
+            self, FORMAT, threshold,
             ith_unknown, global_dof
     ):
         r"""When the assembling only have one customization and this customization is to
@@ -831,7 +843,7 @@ class MseHttStaticLocalMatrixAssemble(Frozen):
 
         Parameters
         ----------
-        format
+        FORMAT
         threshold
         ith_unknown
         global_dof
@@ -842,18 +854,18 @@ class MseHttStaticLocalMatrixAssemble(Frozen):
         """
         gm_col = self._M._gm_col
         place = gm_col.find_global_numbering_of_ith_composition_global_dof(ith_unknown, global_dof)
-        return self._new_EndZeroRowCol_with_a_one_(format, threshold, place)
+        return self._new_EndZeroRowCol_with_a_one_(FORMAT, threshold, place)
 
     def ___new_EndZeroRowCol_with_a_one_for_local_dof___(
-            self, format, threshold,
+            self, FORMAT, threshold,
             ith_unknown, element_index, local_dof
     ):
         r""""""
         gm_col = self._M._gm_col
         place = gm_col.find_global_numbering_of_ith_composition_local_dof(ith_unknown, element_index, local_dof)
-        return self._new_EndZeroRowCol_with_a_one_(format, threshold, place)
+        return self._new_EndZeroRowCol_with_a_one_(FORMAT, threshold, place)
 
-    def _new_EndZeroRowCol_with_a_one_(self, format, threshold, place):
+    def _new_EndZeroRowCol_with_a_one_(self, FORMAT, threshold, place):
         r""""""
 
         gm_row = self._M._gm_row
@@ -899,9 +911,9 @@ class MseHttStaticLocalMatrixAssemble(Frozen):
             COL.extend(col)
             DAT.extend(data)
 
-        if format == 'csc':
+        if FORMAT == 'csc':
             SPA_MATRIX = csc_matrix
-        elif format == 'csr':
+        elif FORMAT == 'csr':
             SPA_MATRIX = csr_matrix
         else:
             raise Exception

@@ -117,25 +117,6 @@ class MseHttVtuInterface(Frozen):
                             all_coo, self._global_element_map_dict
                         )
 
-                    # elif num_total_elements < 3 * SIZE:
-                    #     rank_indices = np.array_split(range(num_total_elements), SIZE)
-                    #     elements_indices = list(self._global_element_type_dict.keys())
-                    #     for rank, indices in enumerate(rank_indices):
-                    #         low, upper = min(indices), max(indices) + 1
-                    #         element_distribution[rank] = elements_indices[low:upper]
-                    #
-                    # else:
-                    #     num_piles = 3 * (SIZE - 1) + 1
-                    #     num_elements_each_pile = num_total_elements / num_piles  # OK to be decimal
-                    #
-                    #     elements_indices = list(self._global_element_type_dict.keys())
-                    #     start = 0
-                    #     for rank in range(SIZE):
-                    #         take_num_piles = 1 if rank == MASTER_RANK else 3
-                    #         end = int(start + take_num_piles * num_elements_each_pile) + 1
-                    #         element_distribution[rank] = elements_indices[start:end]
-                    #         start = end
-
                 else:
                     raise NotImplementedError(f'vif distribution method = {distribution_method}')
 

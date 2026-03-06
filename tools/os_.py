@@ -65,7 +65,7 @@ def listdir(folder_name):
     if RANK == MASTER_RANK:
         return os.listdir(folder_name)
     else:
-        pass
+        return None
 
 
 def empty_dir(folder_name):

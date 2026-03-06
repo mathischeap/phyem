@@ -6,7 +6,7 @@ import numpy as np
 from phyem.tools.frozen import Frozen
 from phyem.msehtt.static.mesh.great.elements.types.base import MseHttGreatMeshBaseElement
 
-from phyem.tools.miscellaneous.geometries.m2n2 import Point2, Polygon2
+from phyem.tools.miscellaneous.geometries.m2n2 import Point2, Polygon2, whether_point_in_polygon
 
 from phyem.msehtt.static.space.reconstruct.Lambda.Rc_m2n2k2 import ___rc222_msepy_quadrilateral___
 from phyem.msehtt.static.space.reconstruct.Lambda.Rc_m2n2k1 import ___rc221i_msepy_quadrilateral___
@@ -70,6 +70,20 @@ class MseHttGreatMeshOrthogonalRectangleElement(MseHttGreatMeshBaseElement):
     def _etype(cls):
         r""""""
         return 'orthogonal rectangle'
+
+    @property
+    def nodes(self):
+        r"""Return a dict whose keys are nodes (the indices in element map)and values are coordinates of the
+        nodes.
+        """
+        x0, y0 = self._parameters['origin']
+        dx, dy = self._parameters['delta']
+        return {
+            self._map[0]: (x0, y0),
+            self._map[1]: (x0+dx, y0),
+            self._map[2]: (x0, y0+dy),
+            self._map[3]: (x0+dx, y0+dy),
+        }
 
     @classmethod
     def _find_element_center_coo(cls, parameters):
@@ -264,6 +278,12 @@ class MseHttGreatMeshOrthogonalRectangleElement(MseHttGreatMeshBaseElement):
     def geometry(self):
         r"""We return a polygon object of this orthogonal rectangle element."""
         return self.polygon
+
+    def _whether_coo_in_me_(self, x, y):
+        r""""""
+        assert isinstance(x, (int, float)) and isinstance(y, (int, float)), f"I must receive coordinates of a point."
+        point = Point2(x, y)
+        return whether_point_in_polygon(point, self.polygon)
 
 
 # ============ ELEMENT CT =====================================================================================

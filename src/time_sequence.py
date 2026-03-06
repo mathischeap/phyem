@@ -2,6 +2,7 @@
 r"""
 """
 import traceback
+import numpy as np
 
 from phyem.tools.frozen import Frozen
 from phyem.src.config import RANK, MASTER_RANK
@@ -11,6 +12,11 @@ from phyem.src.config import _abstract_time_interval_default_sym_repr
 from phyem.src.config import _abstract_time_sequence_default_lin_repr
 from phyem.src.config import _check_sym_repr
 from phyem.src.form.parameters import constant_scalar
+
+from phyem.tools.miscellaneous.ndarray_cache import ndarray_key_comparer, add_to_ndarray_cache
+
+
+_kt_range_cache_ = {}
 
 _global_abstract_time_sequence = dict()
 _global_abstract_time_interval = dict()
@@ -50,6 +56,21 @@ class AbstractTimeSequence(Frozen):
         assert class_id in _implemented_specific_time_sequences, f"Time sequence {class_id} is not implemented yet."
         class_body = _implemented_specific_time_sequences[class_id]
         self._object = class_body(*args, **kwargs)
+
+    @property
+    def total_steps(self):
+        r""""""
+        return self._object.total_steps
+
+    def k_range(self, time_range):
+        r"""
+        Given a range of time slots, we return a range of k (must be integer > 0) for the
+        `time_range`.
+
+        the sequence of the returned k_range must be increasing. So it is corresponding to increasingly
+        sorted time_range.
+        """
+        return self._object.k_range(time_range)
 
     def __getitem__(self, k):
         """return t[k], not return t=k."""
@@ -162,14 +183,17 @@ class TimeSequence(Frozen):
     def pr(self, **kwargs):
         raise Exception(f'{self} cannot be printed.')
 
+    @property
+    def total_steps(self):
+        raise NotImplementedError(f"pls implement total step for {self.__class__}")
+
 
 class FunctionTimeSequence(TimeSequence):
-    """
-
+    r"""
     """
 
     def __init__(self, t0, func, step_interval=1):
-        """
+        r"""
 
         Parameters
         ----------
@@ -184,7 +208,6 @@ class FunctionTimeSequence(TimeSequence):
         super().__init__()
         self._t_0 = t0
         self._melt()
-
         self._step_interval = step_interval
         self._step_sequence = [0, ]
         self._time_sequence = [t0, ]
@@ -244,6 +267,270 @@ class FunctionTimeSequence(TimeSequence):
             return TimeInstant(time)
 
 
+class LinearTimeSequence(TimeSequence):
+    r""""""
+    def __init__(self, t0_tmax, min_time_interval, max_time_interval=None, num_increasing_steps=None):
+        r"""This time sequence works as follows:
+
+        - The first time step (t0 -> t1) is of the min time interval `min_time_interval`, i.e.,
+        t1 - t0 = `min_time_interval`.
+
+        - From the second time step, the interval is increasing. And the increased amount is
+        a constant, saying `CIT`.
+
+        So the total time of the increasing part is
+            total_increasing_time = (min_time_interval + max_time_interval) * num_increasing_steps / 2
+
+        As a result, we must have
+        t0 = t0
+        t1 = t0 + min_time_interval
+        t[num_increasing_steps] = t0 + total_increasing_time
+
+        dt[1] = min_time_interval
+        dt[num_increasing_steps] = max_time_interval
+
+        Delta_dt = (max_time_interval - min_time_interval) / (num_increasing_steps - 1)
+        dt[k] = min_time_interval + Delta_dt * (k-1)
+
+        And if dt[k] > max_time_interval:
+            dt[k] = max_time_interval
+
+        for example:
+            t0 = 0
+            min_time_interval = 1
+            max_time_interval = 3
+            num_increasing_steps = 3
+
+        Then the sequence is:
+        k:     1    2    3    4    5    6      ....
+        t:  0,   1,   3,   6,   9,   12,   15, ....
+        dt:    1    2    3    3    3     3     ....
+
+        """
+        super().__init__()
+        t0, t_max = t0_tmax
+        assert t0 < t_max
+        self._t_0 = t0
+        self._t_max = t_max
+        if max_time_interval is None:
+            max_time_interval = min_time_interval
+        else:
+            assert num_increasing_steps is not None, f"pls provide num_increasing_steps."
+
+        self._melt()
+        if max_time_interval == min_time_interval:
+            # constant interval
+            self._constant_interval_ = True
+            self._min_dt = min_time_interval
+        else:
+            self._constant_interval_ = False
+            assert 0 < min_time_interval < max_time_interval
+            assert isinstance(num_increasing_steps, (int, float)) and num_increasing_steps >= 2
+            assert num_increasing_steps % 1 == 0
+            num_increasing_steps = int(num_increasing_steps)
+
+            total_increasing_time = (min_time_interval + max_time_interval) * num_increasing_steps / 2
+            Delta_dt = (max_time_interval - min_time_interval) / (num_increasing_steps - 1)
+
+            self._min_dt = min_time_interval
+            self._max_dt = max_time_interval
+            self._i_steps = num_increasing_steps
+            self.___t__num_increasing_steps____ = t0 + total_increasing_time
+            self.___Delta_dt___ = Delta_dt
+
+        self._total_steps = None
+        self.___ending_time___ = self[self.total_steps]._t
+        self.___ending_time_str___ = '%.8f' % self.___ending_time___
+        self._last_dt = None
+        self._time_range_cache_ = None
+        self._k_range_cache_ = []
+        self._freeze()
+
+    def k_range(self, time_range):
+        r"""
+        Given a range of time slots, we return a range of k (must be integer > 0) for the
+        `time_range`.
+
+        the sequence of the returned k_range must be increasing. So it is corresponding to increasingly
+        sorted time_range.
+        """
+        if isinstance(time_range, (int, float)):
+            time_range = [time_range, ]
+        elif isinstance(time_range, (list, tuple)):
+            pass
+        else:
+            raise Exception(f"pls put time_range in a list or tuple.")
+
+        ARRAYs = [np.array(time_range), ]
+        check_str = f"{len(time_range)}"
+        cached, data = ndarray_key_comparer(
+            _kt_range_cache_,
+            ARRAYs,
+            check_str=check_str
+        )
+
+        if cached:
+            return data
+        else:
+            pass
+
+        time_range = list(time_range)
+        time_range.sort()
+
+        min_diff = np.min(np.abs(np.diff(time_range)))
+        assert min_diff > 1e-8, f"have repeated time in time_range={time_range}."
+
+        ___last_dt___ = self._last_dt
+
+        assert time_range[0] >= self[1]._t - 1e-8, f"lower bound of time_range is smaller than t[1]."
+        assert time_range[-1] <= self[self.total_steps]._t + 1e-8, f"upper bound of time_range is larger than t_max."
+
+        k_range = []
+        i = 0
+        break_point = len(time_range) - 1
+        for k in range(1, self.total_steps+1):
+            tk = self[k]._t
+            ct = time_range[i]
+            lb = ct - 1e-8
+            up = ct + 1e-8
+            if tk < lb:
+                pass
+            elif tk < up:
+                k_range.append(k)
+                if i == break_point:
+                    break
+                else:
+                    i += 1
+            else:
+                raise Exception(f"cannot find an integer k for time={ct}.")
+
+        self._last_dt = ___last_dt___
+
+        add_to_ndarray_cache(
+            _kt_range_cache_,
+            ARRAYs,
+            k_range,
+            check_str=check_str,
+            maximum=3,
+        )
+        return k_range
+
+    @property
+    def total_steps(self):
+        r""""""
+        if self._total_steps is None:
+            if self._constant_interval_:
+                steps = int(self._t_max // self._min_dt)
+                remaining = self._t_max % self._min_dt
+                self._total_steps = steps if remaining < 1e-8 else steps + 1
+            else:
+                if self._t_max < self.___t__num_increasing_steps____ - 1e-8:
+                    k = 0
+                    t = self._t_0
+                    while self._t_max - t > 1e-8:
+                        k += 1
+                        t = self[k]._t
+                    self._total_steps = k
+                elif self._t_max < self.___t__num_increasing_steps____ + 1e-8:
+                    self._total_steps = self._i_steps
+                else:
+                    constant_time = self._t_max - self.___t__num_increasing_steps____
+                    steps = int(constant_time // self._max_dt)
+                    remaining = constant_time % self._max_dt
+                    constant_steps = steps if remaining < 1e-8 else steps + 1
+                    self._total_steps = self._i_steps + constant_steps
+                assert abs(self[self._i_steps]._t - self.___t__num_increasing_steps____) < 1e-8
+                assert abs(self[1]._t - self._t_0 - self._min_dt) < 1e-8
+                assert abs(self[self._i_steps]._t - self[self._i_steps - 1]._t - self._max_dt) < 1e-8
+
+            assert self[self._total_steps - 1]._t < self._t_max
+            assert self[self._total_steps]._t >= self._t_max
+
+        return self._total_steps
+
+    def __getitem__(self, k):
+        """return t[k], not return t=k.
+        """
+        if self._constant_interval_:
+            t = self._t_0 + k * self._min_dt
+            dt = self._min_dt
+        else:
+            if k < 0:
+                raise Exception()
+            elif k == 0:
+                t = self._t_0
+                dt = self._min_dt
+            elif k < self._i_steps:
+
+                if abs(round(k) - k) < 1e-8:  #  an integer k.
+                    k = round(k)
+                    t = self._t_0 + self._min_dt * k + k * (k - 1) * self.___Delta_dt___ / 2
+
+                    tmk1 = self[k-1]._t
+                    dt =  t - tmk1
+
+                else:
+                    floor = np.floor(k)
+                    ft = self[floor]._t
+                    ct = self[np.ceil(k)]._t
+                    dt = ct - ft
+                    t = ft + dt * (k - floor)
+
+            elif k == self._i_steps:
+                t = self.___t__num_increasing_steps____
+                dt = self._max_dt
+            else:  # k > self._i_steps
+                t = self.___t__num_increasing_steps____ + (k - self._i_steps) * self._max_dt
+                dt = self._max_dt
+
+        self._last_dt = (k, t, dt)
+        return TimeInstant(t)
+
+    def __repr__(self):
+        super_repr = super().__repr__().split('object')[1]
+        if self._constant_interval_:
+            return (f"<LinearTimeSequence $ CONSTANT ({self.t_0}, {self.t_max}) @ "
+                    f"dt={self._min_dt}") + super_repr
+        else:
+            return (f"<LinearTimeSequence ({self.t_0}, {self.t_max}) @ "
+                    f"min_dt={self._min_dt}, "
+                    f"max_dt={self._max_dt}, "
+                    f"num_increasing_steps={self._i_steps}") + super_repr
+
+
+    def info(self):
+        """info myself in the console."""
+        if RANK == MASTER_RANK:
+            if self._last_dt is None:
+                k = 'None'
+                t = 'None'
+                dt = 'None'
+            else:
+                k, t, dt = self._last_dt
+                t = r'%.8f' % t
+                dt = r'%.8f' % dt
+
+            if self._constant_interval_:
+                print(
+                    f"=linear=: {self.t_0} : dt={self._min_dt} @ "
+                    f"[k={k}, t={t}] "
+                    f"{self.total_steps} : {self._t_max}({self.___ending_time_str___})",
+                    flush=True
+                )
+            else:
+                print(
+                    f"=linear=: {self.t_0} : dt[{self._min_dt}~{self._i_steps}~{self._max_dt}] @ "
+                    f"[k={k}, t={t}, dt={dt}] "
+                    f"{self.total_steps} : {self._t_max}({self.___ending_time_str___})",
+                    flush=True
+                )
+        else:
+            pass
+
+    def pr(self, obj=None):
+        """print this interval time sequence together."""
+
+
 class ConstantTimeSequence(TimeSequence):
     """Steps are all equal. And can be valid only on defined instants.
 
@@ -277,6 +564,10 @@ class ConstantTimeSequence(TimeSequence):
         self._n = n
         self._allowed_reminder = [round(1*i/factor, 8) for i in range(factor)]
         self._freeze()
+
+    @property
+    def total_steps(self):
+        return self._k_max
 
     @property
     def dt(self):
@@ -331,9 +622,9 @@ class ConstantTimeSequence(TimeSequence):
 
     def pr(self, obj=None):
         """print this constant interval time sequence together with an object."""
-        from src.config import RANK, MASTER_RANK
+        from phyem.src.config import RANK, MASTER_RANK
         if RANK != MASTER_RANK:
-            return
+            return None
         else:
             pass
 
@@ -382,7 +673,7 @@ class ConstantTimeSequence(TimeSequence):
             print('Constant time sequence plot warning: too many time instants to be plotted, '
                   f'the figure will be messy, plotting cancelled. Reduce time steps {len(major_nodes)-1} '
                   f'to <=5.')
-            return
+            return None
         else:
             pass
 
@@ -458,7 +749,7 @@ class ConstantTimeSequence(TimeSequence):
                 )
             # ----- save -----------------------------------------------------
             plt.tight_layout()
-            from src.config import _setting, _pr_cache
+            from phyem.src.config import _setting, _pr_cache
             if _setting['pr_cache']:
                 _pr_cache(fig, filename='constantTimeSequence')
             else:
@@ -472,6 +763,7 @@ class ConstantTimeSequence(TimeSequence):
                 self,
                 time_instant_hierarchy
             )
+            return None
 
 
 class TimeInstantError(Exception):
@@ -702,13 +994,14 @@ class AbstractTimeInterval(Frozen):
 _implemented_specific_time_sequences = {
     'constant': ConstantTimeSequence,
     'function': FunctionTimeSequence,
+    'linear': LinearTimeSequence,
 }
 
 
 if __name__ == '__main__':
     # python src/time_sequence.py
-    from doctest import testmod
-    testmod()
+    # from doctest import testmod
+    # testmod()
 
     # ct = ConstantTimeSequence([0, 100, 100], 2)
     # t0 = ct[0]
@@ -735,14 +1028,24 @@ if __name__ == '__main__':
 
     def func():
         """"""
-        dt = random()
+        dt = 1
         return dt
-
 
     at = AbstractTimeSequence()
     t1 = at['k']
-    at.specify('function', 0, func)
-
-    print(t1(k=1)())
-    print(t1(k=2)())
-    print(t1(k=3)(), t1(k=2.5)())
+    # at.specify('constant', [0, 1, 10], 2)
+    # # at.specify('function', 0, func)
+    # at.pr()
+    # print(t1(k=1)())
+    # print(t1(k=2)())
+    # print(t1(k=3)(), t1(k=2.5)())
+    at.specify('linear', [0, 1], .1, .2, 4)
+    # print(at._object)
+    # # at.pr()
+    for k in range(at.total_steps+1):
+        print(f'k = {k},', 'tk =', t1(k=k)())
+        at._object.info()
+    # t_range = [0.1, 0.8, 1, 0.4]
+    # a = at.k_range(t_range)
+    # b = at.k_range(t_range)
+    # print(a is b)

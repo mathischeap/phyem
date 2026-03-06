@@ -14,6 +14,10 @@ from phyem.msehtt.tools.vector.static.local import MseHttStaticLocalVector
 
 _cache_2entries_LogAB_ = {}
 
+_local_setting_ = {
+    'positive_threshold' : 0,
+}
+
 
 class LogAB(NonlinearTwoEntriesBase):
     r""""""
@@ -116,6 +120,13 @@ class StaticVectorCaller(Frozen):
             A_co_e = gA_cochain[e]
             RA = rmA[0][e]
             VA = RA @ A_co_e
+
+            pt = _local_setting_['positive_threshold']
+            if pt == 0:
+                pass
+            else:
+                VA[VA < pt] = pt
+
             log_VA = log_func(VA)
             RB = rmB[0][e]
             vec_e = np.einsum('q, qk, q -> k', log_VA, RB, qw_ravel * detJ, optimize='optimal')
@@ -126,7 +137,6 @@ class StaticVectorCaller(Frozen):
     def _time_caller_(self, *args, **kwargs):
         r""""""
         return self._gA.cochain._ati_time_caller(*args, **kwargs)
-
 
     # def _make_matrix_data(self):
     #     """"""

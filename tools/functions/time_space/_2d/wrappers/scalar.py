@@ -13,6 +13,8 @@ from phyem.tools.quadrature import quadrature
 from phyem.tools.numerical.time_space._2d.partial_derivative_as_functions import \
     NumericalPartialDerivativeTxyFunctions, NumericalPartialDerivativeTxy
 
+from phyem.tools.functions.time_space._2d.constant import cfg_t
+
 from phyem.tools.functions.time_space._2d.wrappers.helpers.scalar_add import t2d_ScalarAdd
 from phyem.tools.functions.time_space._2d.wrappers.helpers.scalar_sub import t2d_ScalarSub
 from phyem.tools.functions.time_space._2d.wrappers.helpers.scalar_neg import t2d_ScalarNeg
@@ -54,6 +56,14 @@ class T2dScalar(TimeSpaceFunctionBase):
             If it is provided, we can check and plot self using this mesh.
 
         """
+        if isinstance(s, (int, float)):
+            if s == 0:
+                s = ___0_func2___
+            else:
+                s = cfg_t(s)
+        else:
+            pass
+
         super().__init__(steady, allowed_time_range=allowed_time_range)
         self._s_ = s
         self.__NPD__ = None

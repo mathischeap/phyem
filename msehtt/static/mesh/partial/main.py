@@ -78,6 +78,11 @@ class MseHttMeshPartial(Frozen):
         return self.composition.compute
 
     @property
+    def integrate(self):
+        """Integrate something on this partial mesh."""
+        return self.composition.integrate
+
+    @property
     def visualize(self):
         """Call the visualization scheme of the composition."""
         return self.composition.visualize

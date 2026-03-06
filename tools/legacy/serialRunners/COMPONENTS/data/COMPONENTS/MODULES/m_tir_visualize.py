@@ -284,7 +284,11 @@ class MITRVisualize:
             else:
                 plt.xticks(xticks)
         if yticks is not None:
-            plt.yticks(yticks)
+            if isinstance(yticks, dict):  # we are configuring the minor ticks and their labels.
+                ytick_para = yticks
+                ax.set_yticks(ytick_para['yticks'], labels=ytick_para['labels'], minor=ytick_para['minor'])
+            else:
+                plt.yticks(yticks)
 
         if title is None: 
             if len(res2plot) == 1:

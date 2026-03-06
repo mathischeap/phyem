@@ -67,7 +67,7 @@ class MyTimer(ABC):
 
     @classmethod
     def seconds2dhmsm(cls, seconds):
-        """We convert float: seconds to str: '[dd:hh:mm:ss]'."""
+        """We convert float: seconds to str: '[dd:hh:mm:ss.sss]'."""
         ms = (seconds - int(seconds)) * 1000
         days = int(seconds / 86400)
         SECONDS = seconds - 86400 * days

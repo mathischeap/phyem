@@ -16,12 +16,28 @@ class MseHtt_From_InterpolateCopy(Frozen):
         )
         self._freeze()
 
+    @property
+    def degree(self):
+        """The degree of the general form."""
+        return self._f.degree
+
     def _find_cochain_at_arbitrary_time_instant(self, f, t, extrapolate=False):
         """"""
+        t = f.cochain._parse_t(t)
+
         exact_cochain_times = list(f.cochain._tcd.keys())
         exact_cochain_times.sort()
-        if len(exact_cochain_times) <= 1:
+
+        if len(exact_cochain_times) < 1:
             raise Exception(f"not enough cochain to interpolate.")
+
+        elif len(exact_cochain_times) == 1:
+            the_existing_time = exact_cochain_times[0]
+            if the_existing_time == t:
+                return f.cochain[t]
+            else:
+                raise Exception(f"not enough cochain to interpolate.")
+
         else:
             if t < exact_cochain_times[0]:
                 assert extrapolate, f"t < lower bound time, must turn on extrapolate."
@@ -40,7 +56,7 @@ class MseHtt_From_InterpolateCopy(Frozen):
                 assert lower_bound != upper_bound, f"must be!"
                 delta_lower = t - lower_bound
                 total_delta = upper_bound - lower_bound
-                delta = delta_lower / total_delta
+                delta = float(delta_lower / total_delta)
                 lower_cochain = f.cochain[lower_bound]
                 upper_cochain = f.cochain[upper_bound]
                 cochain = lower_cochain + delta * (upper_cochain - lower_cochain)
@@ -54,3 +70,17 @@ class MseHtt_From_InterpolateCopy(Frozen):
     def cochain(self):
         r""""""
         return self._cochain
+
+    def norm(self, norm_type='L2'):
+        """
+
+        Parameters
+        ----------
+        norm_type :
+            ``L2_norm``: ((self, self)_{tpm}) ** 0.5
+
+        Returns
+        -------
+
+        """
+        return float(self._f.norm(self.cochain, norm_type=norm_type, component_wise=False))

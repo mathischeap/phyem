@@ -1,0 +1,396 @@
+# -*- coding: utf-8 -*-
+r"""
+"""
+from numpy import sin, cos, exp, zeros_like
+
+from phyem.tools.frozen import Frozen
+from phyem.tools.functions.time_space._3d.wrappers.scalar import T3dScalar
+from phyem.tools.functions.time_space._3d.wrappers.vector import T3dVector
+
+
+# noinspection PyUnusedLocal
+def ___zero___(t, x, y, z):
+    r""""""
+    return zeros_like(x)
+
+
+# ------------------------------------------------------------------------------------------------
+# ------------ #1, periodic, in [0, 2pi]^3 -------------------------------------------------------
+# ------------------------------------------------------------------------------------------------
+
+
+class Manufactured_Solution_PNPNS_3D_PeriodicDomain1(Frozen):
+    """The Domain must be [0, 2pi]^3 and is periodic."""
+
+    def __init__(self, epsilon=1, shift=3, mesh=None):
+        """
+
+        Parameters
+        ----------
+
+        """
+        self._epsilon = epsilon
+        self._shift = shift
+        self._velocity = None
+        self._static_pressure = None
+        self._pci = None
+        self._esp = None
+
+        self._n = None                    # concentration of positively charged ions
+        self._mu_ = None                  # mu = ln p + psi
+        self._nu_ = None                  # nu = ln n - psi
+        self._delta_ = None               # delta = ln p
+        self._theta_ = None               # theta = ln n
+        self._tau_ = None                 # tau = d(mu) = mu.gradient
+        self._chi_ = None                 # chi = d(nu) = nu.gradient
+        self._phi_ = None                 # modified pressure = total pressure - p - n
+
+        self._pTau_ = None                # p * tau
+        self._nChi_ = None                # n * chi
+
+        self._mesh = mesh
+        self._freeze()
+
+    @staticmethod
+    def _u(t, x, y, z):
+        r""""""
+        return sin(x) * cos(y) * sin(z) * exp(t)
+
+    @staticmethod
+    def _ut(t, x, y, z):
+        r""""""
+        return sin(x) * cos(y) * sin(z) * exp(t)
+
+    @staticmethod
+    def _ux(t, x, y, z):
+        r""""""
+        return cos(x) * cos(y) * sin(z) * exp(t)
+
+    @staticmethod
+    def _uy(t, x, y, z):
+        r""""""
+        return - sin(x) * sin(y) * sin(z) * exp(t)
+
+    @staticmethod
+    def _uz(t, x, y, z):
+        r""""""
+        return sin(x) * cos(y) * cos(z) * exp(t)
+
+    @staticmethod
+    def _v(t, x, y, z):
+        r""""""
+        return cos(x) * sin(y) * sin(z) * exp(t)
+
+    @staticmethod
+    def _vt(t, x, y, z):
+        r""""""
+        return cos(x) * sin(y) * sin(z) * exp(t)
+
+    @staticmethod
+    def _vx(t, x, y, z):
+        r""""""
+        return - sin(x) * sin(y) * sin(z) * exp(t)
+
+    @staticmethod
+    def _vy(t, x, y, z):
+        r""""""
+        return cos(x) * cos(y) * sin(z) * exp(t)
+
+    @staticmethod
+    def _vz(t, x, y, z):
+        r""""""
+        return cos(x) * sin(y) * cos(z) * exp(t)
+
+    @staticmethod
+    def _w(t, x, y, z):
+        r""""""
+        return 2 * cos(x) * cos(y) * cos(z) * exp(t)
+
+    # noinspection PyUnusedLocal
+    @staticmethod
+    def _wt(t, x, y, z):
+        r""""""
+        return 2 * cos(x) * cos(y) * cos(z) * exp(t)
+
+    @staticmethod
+    def _wx(t, x, y, z):
+        r""""""
+        return - 2 * sin(x) * cos(y) * cos(z) * exp(t)
+
+    @staticmethod
+    def _wy(t, x, y, z):
+        r""""""
+        return - 2 * cos(x) * sin(y) * cos(z) * exp(t)
+
+    @staticmethod
+    def _wz(t, x, y, z):
+        r""""""
+        return - 2 * cos(x) * cos(y) * sin(z) * exp(t)
+
+    @staticmethod
+    def _sp(t, x, y, z):
+        r"""Static pressure."""
+        return sin(x) * sin(y) * sin(z) * exp(t)
+
+    @staticmethod
+    def _sp_t(t, x, y, z):
+        r"""d/dt of Static pressure."""
+        return sin(x) * sin(y) * sin(z) * exp(t)
+
+    @staticmethod
+    def _sp_x(t, x, y, z):
+        r"""d/dx of Static pressure."""
+        return cos(x) * sin(y) * sin(z) * exp(t)
+
+    @staticmethod
+    def _sp_y(t, x, y, z):
+        r"""d/dy of Static pressure."""
+        return sin(x) * cos(y) * sin(z) * exp(t)
+
+    @staticmethod
+    def _sp_z(t, x, y, z):
+        r"""d/dy of Static pressure."""
+        return sin(x) * sin(y) * cos(z) * exp(t)
+
+    def _p(self, t, x, y, z):
+        r"""concentration of positively charged ions."""
+        return (cos(x) * sin(y) * sin(z) + self._shift) * exp(t)
+
+    def _pt(self, t, x, y, z):
+        r"""d/dt of concentration of positively charged ions."""
+        return (cos(x) * sin(y) * sin(z) + self._shift) * exp(t)
+
+    @staticmethod
+    def _px(t, x, y, z):
+        r"""d/dx of concentration of positively charged ions."""
+        return - sin(x) * sin(y) * sin(z) * exp(t)
+
+    @staticmethod
+    def _py(t, x, y, z):
+        r"""d/dy of concentration of positively charged ions."""
+        return cos(x) * cos(y) * sin(z) * exp(t)
+
+    @staticmethod
+    def _pz(t, x, y, z):
+        r"""d/dz of concentration of positively charged ions."""
+        return cos(x) * sin(y) * cos(z) * exp(t)
+
+    @staticmethod
+    def _psi(t, x, y, z):
+        r"""electrostatic potential"""
+        return sin(x) * sin(y) * sin(z) * exp(t)
+
+    @staticmethod
+    def _psi_t(t, x, y, z):
+        r"""d/dt of electrostatic potential"""
+        return sin(x) * sin(y) * sin(z) * exp(t)
+
+    @staticmethod
+    def _psi_tt(t, x, y, z):
+        r"""dd/dtdt of electrostatic potential"""
+        return sin(x) * sin(y) * sin(z) * exp(t)
+
+    @staticmethod
+    def _psi_x(t, x, y, z):
+        return cos(x) * sin(y) * sin(z) * exp(t)
+
+    @staticmethod
+    def _psi_xx(t, x, y, z):
+        return - sin(x) * sin(y) * sin(z) * exp(t)
+
+    @staticmethod
+    def _psi_xy(t, x, y, z):
+        return cos(x) * cos(y) * sin(z) * exp(t)
+
+    @staticmethod
+    def _psi_xz(t, x, y, z):
+        return cos(x) * sin(y) * cos(z) * exp(t)
+
+    @staticmethod
+    def _psi_y(t, x, y, z):
+        return sin(x) * cos(y) * sin(z) * exp(t)
+
+    @staticmethod
+    def _psi_yx(t, x, y, z):
+        return cos(x) * cos(y) * sin(z) * exp(t)
+
+    @staticmethod
+    def _psi_yy(t, x, y, z):
+        return - sin(x) * sin(y) * sin(z) * exp(t)
+
+    @staticmethod
+    def _psi_yz(t, x, y, z):
+        return sin(x) * cos(y) * cos(z) * exp(t)
+
+    @staticmethod
+    def _psi_z(t, x, y, z):
+        return sin(x) * sin(y) * cos(z) * exp(t)
+
+    @staticmethod
+    def _psi_zx(t, x, y, z):
+        return cos(x) * sin(y) * cos(z) * exp(t)
+
+    @staticmethod
+    def _psi_zy(t, x, y, z):
+        return sin(x) * cos(y) * cos(z) * exp(t)
+
+    @staticmethod
+    def _psi_zz(t, x, y, z):
+        return - sin(x) * sin(y) * sin(z) * exp(t)
+
+    @property
+    def p(self):
+        r"""concentration of positively charged ions."""
+        if self._pci is None:
+            self._pci = T3dScalar(  # concentration of positively charged ions
+                self._p,
+                derivative=[self._pt, self._px, self._py, self._pz],
+                mesh=self._mesh,
+            )
+        return self._pci
+
+    @property
+    def n(self):
+        r"""concentration of negatively charged ions."""
+        if self._n is None:
+            self._n = self.p + self._epsilon * self.psi.Laplacian
+        return self._n
+
+    @property
+    def psi(self):
+        r"""electrostatic potential"""
+        if self._esp is None:
+            self._esp = T3dScalar(  # electrostatic potential
+                self._psi,
+                derivative=[self._psi_t, self._psi_x, self._psi_y, self._psi_z],
+                second_derivative=[
+                    self._psi_tt,
+                    self._psi_xx, self._psi_xy, self._psi_xz,
+                    self._psi_yx, self._psi_yy, self._psi_yz,
+                    self._psi_zx, self._psi_zy, self._psi_zz,
+                ],
+                mesh=self._mesh,
+            )
+        return self._esp
+
+    @property
+    def mu(self):
+        r"""mu = ln p + psi"""
+        if self._mu_ is None:
+            self._mu_ = self.p.log() + self.psi
+        return self._mu_
+
+    @property
+    def nu(self):
+        r"""nu = ln n - psi"""
+        if self._nu_ is None:
+            self._nu_ = self.n.log() - self.psi
+        return self._nu_
+
+    @property
+    def delta(self):
+        r"""mu = ln p + psi"""
+        if self._delta_ is None:
+            self._delta_ = self.p.log()
+        return self._delta_
+
+    @property
+    def theta(self):
+        r"""nu = ln n - psi"""
+        if self._theta_ is None:
+            self._theta_ = self.n.log()
+        return self._theta_
+
+    @property
+    def tau(self):
+        r"""mu = ln p + psi"""
+        if self._tau_ is None:
+            self._tau_ = self.mu.gradient
+        return self._tau_
+
+    @property
+    def chi(self):
+        r"""nu = ln n - psi"""
+        if self._chi_ is None:
+            self._chi_ = self.nu.gradient
+        return self._chi_
+
+    @property
+    def pTau(self):
+        r"""p * tau"""
+        if self._pTau_ is None:
+            self._pTau_ = self.p * self.tau
+        return self._pTau_
+
+    @property
+    def nChi(self):
+        r"""n * chi"""
+        if self._nChi_ is None:
+            self._nChi_ = self.n * self.chi
+        return self._nChi_
+
+    @property
+    def u(self):
+        """fluid velocity field"""
+        if self._velocity is None:
+            self._velocity = T3dVector(
+                self._u, self._v, self._w,
+                Jacobian_matrix=(
+                    [self._ux, self._uy, self._uz],
+                    [self._vx, self._vy, self._vz],
+                    [self._wx, self._wy, self._wz],
+                ),
+                time_derivative=[self._ut, self._vt, self._wt],
+                mesh=self._mesh,
+            )
+        return self._velocity
+
+    @property
+    def omega(self):
+        return self.u.curl
+
+    @property
+    def phi(self):
+        r"""modified pressure = total pressure - p - n"""
+        if self._phi_ is None:
+            self._phi_ = self.total_pressure - self.p - self.n
+        return self._phi_
+
+    @property
+    def static_pressure(self):
+        if self._static_pressure is None:
+            self._static_pressure = T3dScalar(  # static pressure
+                self._sp,
+                derivative=[self._sp_t, self._sp_x, self._sp_y, self._sp_z],
+                mesh=self._mesh,
+            )
+        return self._static_pressure
+
+    @property
+    def total_pressure(self):
+        return self.static_pressure + 0.5 * (self.u.dot(self.u))
+
+    @property
+    def div_u(self):
+        r"""divergence of velocity."""
+        return self.u.divergence
+
+    @property
+    def source_f(self):
+        """source term of momentum equation; body force."""
+        return (self.u.time_derivative + self.u.convection_by(self.u) - self.u.Laplacian
+                + self.static_pressure.gradient + (self.p - self.n) * self.psi.gradient)
+
+    @property
+    def source_p(self):
+        r"""source term of p-evolution equation."""
+        return (self.p.time_derivative + self.u.dot(self.p.gradient) -
+                (self.p.gradient + self.p * self.psi.gradient).divergence)
+
+    @property
+    def source_n(self):
+        r"""source term of p-evolution equation."""
+        return (self.n.time_derivative + self.u.dot(self.n.gradient) -
+                (self.n.gradient - self.n * self.psi.gradient).divergence)
+
+# ====================================================================================================

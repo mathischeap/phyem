@@ -282,14 +282,14 @@ class Quadrature(object):
         assert partition[:10] == "CUS-NODES@", f"partition={partition} is wrong."
         edge_partition = [float(_) for _ in partition[10:].split('-')]
         assert math.isclose(sum(edge_partition), 1, abs_tol=1e-12), f"partition error too large, wrong!"
-        current_at = -1
-        nodes = [-1, ]
+        current_at = -1.
+        nodes = [-1., ]
         for par in edge_partition:
             edge = 2 * par
             nodes.append(current_at + edge)
             current_at += edge
         assert math.isclose(current_at, 1, abs_tol=1e-12), f"partition error too large, wrong!"
-        nodes[-1] = 1
+        nodes[-1] = 1.
         ___cus_nodes_cache___[partition] = np.array(nodes), None
         # weights are None, do not use these nodes for numerical quadrature.
         return ___cus_nodes_cache___[partition]

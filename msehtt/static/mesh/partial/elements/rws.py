@@ -44,5 +44,6 @@ class MseHtt_PartialMesh_Elements_ExportTo_DDS_RWS_Grouped(Frozen):
                 return dds_rws_grouped
             else:
                 dds_rws_grouped.saveto(saveto)
+                return None
         else:
-            pass
+            return None

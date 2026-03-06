@@ -70,6 +70,19 @@ class UniqueCurvilinearQuad(MseHttGreatMeshBaseElement):
     def _etype(cls):
         return 'unique curvilinear quad'
 
+    @property
+    def nodes(self):
+        r"""Return a dict whose keys are nodes (the indices in element map)and values are coordinates of the
+        nodes.
+        """
+        mp = self._mp
+        return {
+            self._map[0]: mp(-1, -1),
+            self._map[1]: mp(1, -1),
+            self._map[2]: mp(1, 1),
+            self._map[3]: mp(-1, 1),
+        }
+
     @classmethod
     def _find_element_center_coo(cls, parameters):
         r""""""

@@ -124,7 +124,7 @@ class MseHtt_MultiGrid_Form(Frozen):
         degree = self.degree
         if isinstance(degree, str) and degree[:2] == 'MG':
             tgm = self._tgm
-            refining_method =tgm._configuration['method']
+            refining_method = tgm._configuration['method']
             if refining_method == 'uniform':
                 parameters = tgm._configuration['parameters']
                 rff = parameters['rff']

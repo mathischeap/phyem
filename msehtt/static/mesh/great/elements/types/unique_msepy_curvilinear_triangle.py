@@ -101,6 +101,18 @@ class MseHtt_GreatMesh_Unique_Msepy_Curvilinear_Triangle_Element(MseHttGreatMesh
         return 'unique msepy curvilinear triangle'
 
     @property
+    def nodes(self):
+        r"""Return a dict whose keys are nodes (the indices in element map)and values are coordinates of the
+        nodes.
+        """
+        mp = self._ct.mapping
+        return {
+            self._map[0]: mp(-1, -1),
+            self._map[1]: mp(1, -1),
+            self._map[2]: mp(1, 1),
+        }
+
+    @property
     def metric_signature(self):
         """return int when it is unique."""
         return id(self)

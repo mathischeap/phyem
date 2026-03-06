@@ -1,7 +1,11 @@
 # -*- coding: utf-8 -*-
 r"""
 """
+from phyem.src.config import RANK, MASTER_RANK, COMM, SIZE
 from phyem.tools.frozen import Frozen
+from phyem.tools.os_ import isfile
+from phyem.tools.read import read
+from phyem.tools.dds.region_wise_structured import DDSRegionWiseStructured
 from phyem.src.spaces.operators import _d_to_vc, _d_ast_to_vc
 from phyem.tools.functions.time_space._2d.wrappers.scalar import T2dScalar
 from phyem.tools.functions.time_space._2d.wrappers.vector import T2dVector
@@ -41,6 +45,30 @@ class MseHttStaticFormCF(Frozen):
                     raise Exception()
             else:
                 raise NotImplementedError()
+
+        elif isinstance(_field, str):
+            if isfile(_field):  # we will read the file and interpolate it as a continuous field.
+                for r in range(SIZE):
+                    if r == RANK:
+                        file_data = read(_field, root=RANK)
+                    else:pass
+                    COMM.barrier()
+
+                # noinspection PyUnboundLocalVariable
+                if isinstance(file_data, DDSRegionWiseStructured):
+                    file_data_type = 'dds-rws'
+                else:
+                    raise Exception()
+
+                if file_data_type == 'dds-rws':
+                    # noinspection PyUnboundLocalVariable
+                    _field = file_data.time_space_function(method='nearest')
+                else:
+                    raise NotImplementedError(f"{_field} is a file dir, but I do not know what type it is.")
+
+            else:
+                raise NotImplementedError(f"CANNOT parser cf from str {_field}")
+
         else:
             pass
         self._field = _field

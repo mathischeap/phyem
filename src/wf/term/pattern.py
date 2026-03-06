@@ -1138,6 +1138,46 @@ def _inner_simpler_pattern_examiner_scalar_valued_forms(factor, f0, f1, extra_in
                         'C': C,
                     }
 
+        # !!! {NEW PATTERN} !!! :  (AB, C) -------------------------------------------------------
+        multi_lin = _global_operator_lin_repr_setting['multi']
+        existing0 = multi_lin in f0._lin_repr
+        amount0 = f0._lin_repr.count(multi_lin)
+        if f1.is_root() and existing0 and amount0 == 1:
+            A_lin, B_lin = f0._lin_repr.split(multi_lin)
+            A = _find_form(A_lin)
+            B = _find_form(B_lin)
+            if A.is_root() and B.is_root():
+                if 'known-forms' in extra_info:
+                    kfs = extra_info['known-forms']
+                    if isinstance(kfs, (list, tuple)) and (A in kfs) and (B in kfs):
+                        return _simple_patterns['(**, C)'], {
+                            'A': A,  # root-scalar-form-0
+                            'B': B,  # root-scalar-form-1
+                            'C': f1,
+                        }
+                    elif A is kfs:
+                        return _simple_patterns['(*B, C)'], {
+                            'A': A,  # root-scalar-form-0
+                            'B': B,  # root-scalar-form-1
+                            'C': f1,
+                        }
+                    elif B is kfs:
+                        return _simple_patterns['(A*, C)'], {
+                            'A': A,  # root-scalar-form-0
+                            'B': B,  # root-scalar-form-1
+                            'C': f1,
+                        }
+                    else:
+                        raise Exception()
+
+                else:
+                    # nonlinear
+                    return _simple_patterns['(AB, C)'], {
+                        'A': A,  # root-scalar-form-0
+                        'B': B,  # root-scalar-form-1
+                        'C': f1,
+                    }
+
         # ! END ! =================================================================================
 
         return '', None

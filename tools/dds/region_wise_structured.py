@@ -4,11 +4,15 @@ r"""
 import pickle
 import numpy as np
 from scipy.interpolate import LinearNDInterpolator
+from scipy.interpolate import NearestNDInterpolator
 
 from phyem.tools.frozen import Frozen
 from phyem.tools.matplot.contour import contour, contourf
 from phyem.tools.matplot.quiver import quiver
-from phyem.src.config import RANK, MASTER_RANK
+from phyem.tools.functions.time_space._2d.wrappers.scalar import T2dScalar
+from phyem.tools.functions.time_space._3d.wrappers.scalar import T3dScalar
+from phyem.tools.functions.time_space._2d.wrappers.vector import T2dVector
+from phyem.tools.functions.time_space._3d.wrappers.vector import T3dVector
 
 
 class DDSRegionWiseStructured(Frozen):
@@ -41,7 +45,6 @@ class DDSRegionWiseStructured(Frozen):
 
     def __init__(self, coo_dict_list, val_dict_list):
         """"""
-        assert RANK == MASTER_RANK, f"only use this class in the master rank please."
         space_dim = len(coo_dict_list)
 
         assert isinstance(coo_dict_list[0], dict), f"put coordinates in a dict please."
@@ -106,7 +109,7 @@ class DDSRegionWiseStructured(Frozen):
     # --------- save & read ------------------------------------------------------------------------------
 
     def saveto(self, filename):
-        """"""
+        r""""""
         data_dict = {
             'key': 'dds-rws',
             'coo_dict_list': self._coo_dict_list,
@@ -120,7 +123,6 @@ class DDSRegionWiseStructured(Frozen):
     @classmethod
     def read(cls, filename):
         """"""
-        assert RANK == MASTER_RANK, f"Can only read dds-rws in the master rank!"
         with open(filename, 'rb') as inputs:
             data = pickle.load(inputs)
         inputs.close()
@@ -132,7 +134,7 @@ class DDSRegionWiseStructured(Frozen):
     # -- properties --------------------------------------------------------------------------
     @property
     def dtype(self):
-        """'scalar', 'vector', 'tensor' or so on."""
+        r"""'scalar', 'vector', 'tensor' or so on."""
         if self._dtype is None:
             if self._value_shape == 1:
                 self._dtype = 'scalar'
@@ -147,12 +149,12 @@ class DDSRegionWiseStructured(Frozen):
 
     @property
     def ndim(self):
-        """dimensions of the space."""
+        r"""dimensions of the space."""
         return self._space_dim
 
     @property
     def classification(self):
-        """"""
+        r""""""
         if (self.ndim, self.dtype) == (2, 'scalar'):
             return '2d scalar'
         elif (self.ndim, self.dtype) == (2, 'vector'):
@@ -163,6 +165,34 @@ class DDSRegionWiseStructured(Frozen):
             return '3d vector'
         else:
             raise NotImplementedError()
+
+    def time_space_function(self, method='nearest'):
+        r"""Return a steady time-space function representing self."""
+        component_wise_itp = self.interpolate(method=method, component_wise=True)
+
+        if self.classification == '2d scalar':
+            time_space_func = ___TRIVIAL_TIME___(component_wise_itp[0])
+            return T2dScalar(time_space_func, steady=True)
+
+        elif self.classification == '3d scalar':
+            time_space_func = ___TRIVIAL_TIME___(component_wise_itp[0])
+            return T3dScalar(time_space_func, steady=True)
+
+        elif self.classification == '2d vector':
+            u, v = component_wise_itp
+            u = ___TRIVIAL_TIME___(u)
+            v = ___TRIVIAL_TIME___(v)
+            return T2dVector(u, v, steady=True)
+
+        elif self.classification == '3d vector':
+            u, v, w = component_wise_itp
+            u = ___TRIVIAL_TIME___(u)
+            v = ___TRIVIAL_TIME___(v)
+            w = ___TRIVIAL_TIME___(w)
+            return T3dVector(u, v, w, steady=True)
+
+        else:
+            raise NotImplementedError(f"time_space_function for dds-rws not implemented.")
 
     # --------- COMPUTATION ---------------------------------------------------------------------------------------
     def maximum(self, absolute=True, component_wise=True):
@@ -669,14 +699,34 @@ class DDSRegionWiseStructured(Frozen):
                 val = component[region_name].ravel('F')
                 values[i].extend(val)
         xyz = np.array(xyz).T
-        if component_wise:
-            raise NotImplementedError()
+
+        if method == 'linear':
+            METHOD = LinearNDInterpolator
+        elif method == 'nearest':
+            METHOD = NearestNDInterpolator
         else:
-            values = np.array(values).T
-            if method == 'linear':
-                itp = LinearNDInterpolator(xyz, values)
+            raise NotImplementedError()
+
+        if component_wise:
+            if self.classification in ('2d scalar', '3d scalar'):
+                return [METHOD(xyz, values[0]), ]
+            elif self.classification == '2d vector':
+                return [
+                    METHOD(xyz, values[0]),
+                    METHOD(xyz, values[1]),
+                ]
+            elif self.classification == '3d vector':
+                return [
+                    METHOD(xyz, values[0]),
+                    METHOD(xyz, values[1]),
+                    METHOD(xyz, values[2]),
+                ]
             else:
                 raise NotImplementedError()
+
+        else:
+            values = np.array(values).T
+            itp = METHOD(xyz, values)
             return itp
 
     # ---------------- STREAM FUNCTION ---------------------------------------------------------------------------
@@ -1027,6 +1077,7 @@ class DDSRegionWiseStructured(Frozen):
 
 # ================================================================================================================
 
+
 def _find_shape(list_of_dict):
     """"""
     d = list()
@@ -1037,3 +1088,15 @@ def _find_shape(list_of_dict):
         else:
             list_of_dict = list_of_dict[0]
     return d
+
+
+class ___TRIVIAL_TIME___(Frozen):
+    r""""""
+    def __init__(self, space_func):
+        r""""""
+        self._sf =space_func
+        self._freeze()
+
+    def __call__(self, t, *args):
+        _ = t
+        return self._sf(*args)

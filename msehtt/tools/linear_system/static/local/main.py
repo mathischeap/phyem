@@ -20,6 +20,8 @@ from phyem.msehtt.tools.linear_system.static.local.customize import MseHttStatic
 
 from phyem.msehtt.tools.linear_system.static.local.solve import MseHtt_Local_LinearSystem_Solve
 
+from phyem.tools.linear_system.local.main import General_Local_Linear_System
+
 
 class MseHttStaticLocalLinearSystem(Frozen):
     """"""
@@ -402,6 +404,15 @@ class MseHttStaticLocalLinearSystem(Frozen):
             plt.show(block=_setting['block'])
 
         return fig
+
+    def general(self):
+        r"""Return the general form of this local linear system."""
+        return General_Local_Linear_System(
+            [[self._A._mA, ], ],
+            [self._b._vb, ],
+            [self._A._mA._gm_row, ],
+            col_gms=[self._A._mA._gm_col, ]
+        )  # can only do it this way, otherwise all the customizations will take no effects.
 
 
 class _AAA(Frozen):

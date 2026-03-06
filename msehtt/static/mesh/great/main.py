@@ -44,6 +44,7 @@ class MseHttGreatMesh(Frozen):
             self._global_element_type_dict = None
             self._global_element_map_dict = None
             self._element_distribution = None  # {rank: element_indices}
+            self._element_nodes_on_periodic_boundaries_ = None
         else:
             pass
         self.selfcheck()
@@ -665,6 +666,14 @@ class MseHttGreatMesh(Frozen):
             element_map_dict
         )
 
+        # ------------- check elements -------------------------------------------------------------
+        # Before making cracks, we must have all nodes at different coordinates. We check this here
+        self.___element_nodes_coo_check___(
+            element_type_dict,
+            element_parameter_dict,
+            element_map_dict
+        )
+
         # ----------- making cracks in the domain --------------------------------------------
         element_type_dict, element_parameter_dict, element_map_dict = self._make_crack(
             crack_config,
@@ -753,6 +762,73 @@ class MseHttGreatMesh(Frozen):
         assert len(element_type_dict) == len(element_parameter_dict) == len(element_map_dict), f"must be!"
         for i in element_type_dict:
             assert i in element_parameter_dict and i in element_map_dict, f"must be!"
+
+    def ___element_nodes_coo_check___(self, element_type_dict, element_parameter_dict, element_map_dict):
+        r"""The should  be done before making cracks. We must have all element nodes at different coordinates."""
+        element_node_coo_dict = {}
+        element_distributor = MseHttGreatMeshElementDistributor()
+        if self._msepy_manifold is not None:   # we are configuring from a msepy mesh (manifold).
+            for i in element_type_dict:
+                element = element_distributor(
+                    i, element_type_dict[i], element_parameter_dict[i], element_map_dict[i],
+                    msepy_manifold=self._msepy_manifold,
+                )
+
+                for node in element.nodes:
+                    coo = element.nodes[node]
+                    if node in element_node_coo_dict:
+                        for II, JJ in zip(coo, element_node_coo_dict[node]):
+                            diff = abs(II - JJ)
+                            if diff < 1e-8:
+                                pass
+                            elif diff >= 0.1:  # could be periodic boundary nodes
+                                pass
+                            else:
+                                raise Exception(f"{coo} != {element_node_coo_dict[node]}")
+                    else:
+                        element_node_coo_dict[node] = coo
+
+        else:
+            for i in element_type_dict:
+                element = element_distributor(
+                    i, element_type_dict[i], element_parameter_dict[i], element_map_dict[i]
+                )
+
+                for node in element.nodes:
+                    coo = element.nodes[node]
+                    if node in element_node_coo_dict:
+                        for II, JJ in zip(coo, element_node_coo_dict[node]):
+                            diff = abs(II - JJ)
+                            if diff < 1e-8:
+                                pass
+                            elif diff >= 0.1:  # could be periodic boundary nodes
+                                pass
+                            else:
+                                raise Exception(f"{coo} != {element_node_coo_dict[node]}")
+                    else:
+                        element_node_coo_dict[node] = coo
+
+        element_node_coo_dict = COMM.gather(element_node_coo_dict, root=MASTER_RANK)
+        if RANK == MASTER_RANK:
+            pool_dict = {}
+            element_nodes_on_periodic_boundaries = []
+            for DICT in element_node_coo_dict:
+                for node in DICT:
+                    coo = DICT[node]
+                    if node in pool_dict:
+                        for II, JJ in zip(coo, pool_dict[node]):
+                            diff = abs(II - JJ)
+                            if diff < 1e-8:
+                                pass
+                            elif diff >= 0.1:  # could be periodic boundary nodes
+                                element_nodes_on_periodic_boundaries.append(node)
+                            else:
+                                raise Exception(f"{coo} != {pool_dict[node]}")
+                    else:
+                        pool_dict[node] = coo
+            self._element_nodes_on_periodic_boundaries_ = set(element_nodes_on_periodic_boundaries)
+        else:
+            pass
 
     def _distribute_elements_to_ranks(
             self,
