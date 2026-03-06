@@ -62,9 +62,10 @@ __all__ = [
 ]
 
 
-def test():
+def env():
     r"""Run the tests to valid your installation."""
-    import phyem.tools.environment  # to test the environment is correctly configured.
+    import phyem.tools.environment as env  # to test the environment is correctly configured.
+    print("PHYEM ENVIRONMENT", env)
 
 
 import phyem.src.config as config
