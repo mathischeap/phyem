@@ -43,6 +43,7 @@ except ModuleNotFoundError:  # no `mpi4py` installed.
     COMM = None
     RANK = 0
     SIZE: int = 1
+    MPI = 0
 
 MASTER_RANK: int = 0  # DO NOT change this
 
