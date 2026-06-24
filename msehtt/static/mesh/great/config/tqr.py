@@ -99,9 +99,10 @@ class MseHtt_TQR_config(Frozen):
             raise NotImplementedError()
 
     def _element_layout_equivalent_to_ts_factor(self, ts_factor):
-        r"""The element_layout is a positive integer. So we do a triangular splitting using this integer as the
-         factor.
-         """
+        r"""The element_layout is a positive integer.
+        So we do a triangular/quad splitting using this integer as the
+        factor.
+        """
         element_type_dict = {}
         element_parameter_dict = {}
         element_map_dict = {}

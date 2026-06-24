@@ -278,7 +278,9 @@ def lgmres(
         x0 = x0.V               # x0 is a shell of the gathered global vector, x0； x0.V is a 1d np.ndarray.
 
     shape0, shape1 = A.shape
-    assert f.shape[0] == x0.shape[0] == shape0 == shape1, "Ax=f shape dis-match."
+    assert f.shape[0] == x0.shape[0] == shape0 == shape1, \
+        (f"Ax=f shape dis-match. "
+         f"A({shape0}, {shape1})= B({f.shape[0]},) for x0({x0.shape[0]},)")
 
     ITER = 0
     BETA = None

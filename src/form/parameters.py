@@ -151,6 +151,7 @@ class ConstantScalar0Form(Frozen):
         else:
             assert self.value is not None, f"pls first set a value for {self}"
             assert callable(self.value), f"if value is not a number, it must be callable."
+            # noinspection PyCallingNonCallable
             return self.value(*args, **kwargs)
 
     def __eq__(self, other):
@@ -231,6 +232,7 @@ def _find_root_scalar_parameter(lin_repr):
             return sp
         else:
             pass
+    return None
 
 
 def _factor_parser(factor):

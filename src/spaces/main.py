@@ -199,6 +199,12 @@ __all__ = [
     '_VarSetting_A_astB_ip_dtC',                    # (AB, dC); linear, B given, matrix, C test form
     '_VarSetting_astA_astB_ip_dtC',                 # (AB, dC); A and B given, vector, C test form
 
+    # (A dB, C) ---------------------------------------------------------------------
+    '_VarSetting_AdB_ip_C',                        # (A dB, C) nonlinear; A, B, C all unknown
+    '_VarSetting_astAdB_ip_tC',                    # (A dB, C); linear, A given, matrix, C test form
+    '_VarSetting_AdastB_ip_tC',                    # (A dB, C); linear, B given, matrix, C test form
+    '_VarSetting_astAdastB_ip_tC',                 # (A dB, C); A and B given, vector, C test form
+
     # (A d(B), d(C)) ------------------------------------------------------------------
     '_VarSetting_A_d_B_ip_dC',                      # (A d(B), dC) nonlinear; A, B, C all unknown
     '_VarSetting_astA_d_B_ip_dtC',                  # (A d(B), dC) linear, A given, matrix, C test form
@@ -431,6 +437,30 @@ _VarSetting_astA_astB_ip_dtC = [         # A and B given; C test form; vector
     r"\mathsf{V}_{\left( {A} \ast {B} ,\mathrm{d}\mathsf{t}\right)}^{\left[\mathsf{t}\right]}",
     _sep.join(["X*X,d_:", "[{A}]", "[{B}]", "[{C}]"]),
 ]
+
+
+# (A dB, C) -----------------------------------------------------------------------------------------
+_VarSetting_AdB_ip_C = [               # nonlinear
+    r"\left(\cdot \ast \mathrm{d}\cdot,\cdot\right)",
+    _sep.join(["(_*d_,_):", "[{A}]", "[{B}]", "[{C}]"]),
+]
+
+_VarSetting_astAdB_ip_tC = [         # A given; C test form; matrix
+    # r"M{A}",
+    r"\mathsf{M}_{\left({A} \ast \mathrm{d}\circ ,\mathsf{t}\right)}^{\left[\mathsf{t},\circ\right]}",
+    _sep.join(["(X*d_,_):", "[{A}]", "[{B}]", "[{C}]"]),
+]
+
+_VarSetting_AdastB_ip_tC = [         # B given; C test form; matrix
+    r"\mathsf{M}_{\left( \circ \ast \mathrm{d} {B} ,\mathsf{t}\right)}^{\left[\mathsf{t},\circ\right]}",
+    _sep.join(["(_*dX,_):", "[{A}]", "[{B}]", "[{C}]"]),
+]
+
+_VarSetting_astAdastB_ip_tC = [         # A and B given; C test form; vector
+    r"\mathsf{V}_{\left( {A} \ast \mathrm{d} {B} ,\mathsf{t}\right)}^{\left[\mathsf{t}\right]}",
+    _sep.join(["(X*dX,_):", "[{A}]", "[{B}]", "[{C}]"]),
+]
+
 
 # (A d(B), d(C)) -----------------------------------------------------------------------------------------
 _VarSetting_A_d_B_ip_dC = [               # nonlinear

@@ -162,7 +162,10 @@ plt.rcParams.update({
     "font.family": "DejaVu Sans",
     "text.latex.preamble": r"\usepackage{amsmath, amssymb}",
 })
-matplotlib.use('TkAgg')
+try:
+    matplotlib.use('TkAgg')
+except ImportError:
+    matplotlib.use('Agg')
 
 from phyem.tools.frozen import Frozen
 from phyem.src.config import _global_lin_repr_setting, _non_root_lin_sep
@@ -937,6 +940,7 @@ class PartialDifferentialEquations(Frozen):
                                         raw_weak_term = inner(the_form, tfs[i], factor=root_factor, method=test_method)
 
                                 else:
+                                    # raw_weak_term = inner(term, tfs[i], method=test_method)
                                     raise NotImplementedError(front_form_lin_repr, the_end_form)
 
                             else:

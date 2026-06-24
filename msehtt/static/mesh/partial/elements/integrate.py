@@ -445,7 +445,6 @@ class PartialMesh_Elements_Integrate(Frozen):
         else:
             raise NotImplementedError(f"{space_A}, {space_B}.")
 
-
     def ___element_wise_AB___(self, A, B):
         r"""
         Return a dictionary whose keys are local element indices and values are the
@@ -476,7 +475,6 @@ class PartialMesh_Elements_Integrate(Frozen):
 
         else:
             raise NotImplementedError(f"{space_A}, {space_B}.")
-
 
     def ___A_ast_vector___(self, A, B):
         r"""REturn a vector for: A is given, and we return a ditionary of vector D. And

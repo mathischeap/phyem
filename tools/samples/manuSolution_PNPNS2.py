@@ -16,14 +16,27 @@ from phyem.tools.functions.time_space._2d.wrappers.vector import T2dVector
 class Manufactured_Solution_PNPNS_2D_PeriodicDomain1(Frozen):
     """The Domain must be [0, 2pi]^2 and is periodic."""
 
-    def __init__(self, epsilon=1, shift=3, mesh=None):
+    def __init__(self, epsilon=1, Co=1, Re=1, Pe=1, shift=3, mesh=None):
         """
 
         Parameters
         ----------
 
+        Re :
+            Reynolds number
+        Co :
+            Coulomb-driven number
+        Pe :
+            Pélect number
+        epsilon :
+            the ratio of Debye length to the characteristic length.
+
         """
         self._epsilon = epsilon
+        self._Co = Co
+        self._Re = Re
+        self._Pe = Pe
+
         self._shift = shift
         self._velocity = None
         self._static_pressure = None
@@ -302,19 +315,33 @@ class Manufactured_Solution_PNPNS_2D_PeriodicDomain1(Frozen):
     @property
     def source_f(self):
         """source term of momentum equation; body force."""
-        return (self.u.time_derivative + self.u.convection_by(self.u) - self.u.Laplacian
-                + self.static_pressure.gradient + (self.p - self.n) * self.psi.gradient)
+        return (self.u.time_derivative + self.u.convection_by(self.u) - (1 / self._Re) * self.u.Laplacian
+                + self.static_pressure.gradient + self._Co * (self.p - self.n) * self.psi.gradient)
 
     @property
     def source_p(self):
         r"""source term of p-evolution equation."""
         return (self.p.time_derivative + self.u.dot(self.p.gradient) -
-                (self.p.gradient + self.p * self.psi.gradient).divergence)
+                (1 / self._Pe) * (self.p.gradient + self.p * self.psi.gradient).divergence)
 
     @property
     def source_n(self):
         r"""source term of p-evolution equation."""
         return (self.n.time_derivative + self.u.dot(self.n.gradient) -
-                (self.n.gradient - self.n * self.psi.gradient).divergence)
+                (1 / self._Pe) * (self.n.gradient - self.n * self.psi.gradient).divergence)
 
 # ====================================================================================================
+
+
+
+# ------------------------------------------------------------------------------------------------
+# ------------ #2, in [0, 2pi]^2 -------------------------------------------------------
+# ------------------------------------------------------------------------------------------------
+
+
+class Manufactured_Solution_PNPNS_2D_Domain1(Frozen):
+    """The Domain must be [0, 2pi]^2.
+
+
+    """
+

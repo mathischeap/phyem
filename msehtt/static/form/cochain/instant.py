@@ -313,3 +313,12 @@ class MseHttTimeInstantCochain(Frozen):
             cochain_dict[e] = self[e]
         _1d_vec = self._gm.assemble(cochain_dict, mode='replace')
         return MseHttGlobalVectorGathered(_1d_vec, gm=self._gm)
+
+    def threshold(self, threshold):
+        r"""Go through all cochain values. If the value is lower than threshold, we make it equal to threshold."""
+        cochain_dict = {}
+        for e in self:
+            current_cochain_value = self[e]
+            current_cochain_value[current_cochain_value < threshold] = threshold
+            cochain_dict[e] = current_cochain_value
+        self._receive(cochain_dict)

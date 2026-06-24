@@ -6,6 +6,7 @@ from phyem.msehtt.static.space.gathering_matrix.main import MseHttSpaceGathering
 from phyem.msehtt.static.space.reduce.main import MseHttSpaceReduce
 from phyem.msehtt.static.space.reconstruct.main import MseHttSpaceReconstruct
 from phyem.msehtt.static.space.mass_matrix.main import MseHttSpaceMassMatrix
+from phyem.msehtt.static.space.wedge_matrix.main import MseHttSpace_Wedge_Matrix
 from phyem.msehtt.static.space.local_dofs.main import MseHttSpace_Local_Dofs
 from phyem.msehtt.static.space.error.main import MseHttSpaceError
 from phyem.msehtt.static.space.incidence_matrix.main import MseHttSpaceIncidenceMatrix
@@ -83,6 +84,7 @@ class MseHttSpace(Frozen):
         self._rd = None
         self._rc = None
         self._mm = None
+        self._wm = None
         self._im = None
         self._LDofs = None
         self._error = None
@@ -269,6 +271,12 @@ class MseHttSpace(Frozen):
         if self._mm is None:
             self._mm = MseHttSpaceMassMatrix(self)
         return self._mm
+
+    @property
+    def wedge_matrix(self):
+        if self._wm is None:
+            self._wm = MseHttSpace_Wedge_Matrix(self)
+        return self._wm
 
     @property
     def local_dofs(self):

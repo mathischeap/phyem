@@ -30,7 +30,7 @@ class CsvFilerVisualize(Frozen):
 
         """
         if RANK != MASTER_RANK:
-            return
+            return None
 
         if isinstance(column_x, str):
             assert column_x in self._filer_.columns, f"column_x = {column_x} is not valid."
@@ -98,7 +98,7 @@ class CsvFilerVisualize(Frozen):
 
         """
         if RANK != MASTER_RANK:
-            return
+            return None
 
         if isinstance(column_x, str):
             assert column_x in self._filer_.columns, f"column_x = {column_x} is not valid."
@@ -136,7 +136,7 @@ class CsvFilerVisualize(Frozen):
 
         """
         if RANK != MASTER_RANK:
-            return
+            return None
 
         if isinstance(column_x, str):
             assert column_x in self._filer_.columns, f"column_x = {column_x} is not valid."

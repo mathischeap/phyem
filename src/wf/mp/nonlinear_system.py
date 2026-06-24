@@ -8,7 +8,10 @@ plt.rcParams.update({
     "font.family": "DejaVu Sans",
     "text.latex.preamble": r"\usepackage{amsmath, amssymb}",
 })
-matplotlib.use('TkAgg')
+try:
+    matplotlib.use('TkAgg')
+except ImportError:
+    matplotlib.use('Agg')
 
 from phyem.tools.frozen import Frozen
 from phyem.tools.miscellaneous.latex_bmatrix_to_array import bmatrix_to_array

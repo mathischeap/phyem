@@ -42,7 +42,7 @@ class MseHttNonlinearSystemNewtonRaphsonSolve(Frozen):
         _x0 = _X0
         # ==========================================================================================
 
-        if all([_.__class__ is MseHttForm for _ in _x0]):   # providing all MsePyRootForm
+        if all([_.__class__ is MseHttForm for _ in _x0]):   # providing all MseHttRootForm
             # use the newest cochains.
             cochain = list()
 

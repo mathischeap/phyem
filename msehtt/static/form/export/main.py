@@ -29,7 +29,7 @@ class MseHtt_Static_Form_Export(Frozen):
 
     def vtk(self, filename, ddf=1):
         r""""""
-        from tools.vtk_.msehtt_form_static_copy import ___ph_vtk_msehtt_static_copy___
+        from phyem.tools.vtk_.msehtt_form_static_copy import ___ph_vtk_msehtt_static_copy___
         ___ph_vtk_msehtt_static_copy___(filename, self._f[self._t], ddf=ddf)
 
     def tsf(self, filename, ddf=1):

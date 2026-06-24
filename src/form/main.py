@@ -117,7 +117,11 @@ plt.rcParams.update({
     "font.family": "DejaVu Sans",
     "text.latex.preamble": r"\usepackage{amsmath}"
 })
-matplotlib.use('TkAgg')
+
+try:
+    matplotlib.use('TkAgg')
+except ImportError:
+    matplotlib.use('Agg')
 
 from phyem.tools.frozen import Frozen
 from phyem.src.config import _global_lin_repr_setting
@@ -407,7 +411,7 @@ class Form(Frozen):
         return codifferential(self)
 
     def x(self, other, form_space=None):
-        r"""
+        r"""Cross product.
 
         Parameters
         ----------
@@ -614,6 +618,46 @@ class Form(Frozen):
     def __mul__(self, other):
         """self * other"""
         raise NotImplementedError()
+
+        # space_type, m, n, value_type = self.representing()
+        # if space_type == 'Lambda':
+        #     k = self.space.k
+        #     if k == 0:  # 0-form,
+        #         # a scalar-valued 0-form * other form, return a form of the same type as the other form
+        #         assert self.is_root()
+        #         if other.__class__.__name__ == 'Form':
+        #
+        #             lr0 = self._lin_repr
+        #             sr0 = self._sym_repr
+        #
+        #             lr1 = other._lin_repr
+        #             sr1 = other._sym_repr
+        #
+        #             operator_lin = _global_operator_lin_repr_setting['multiply']
+        #
+        #             if other.is_root():
+        #                 lr = lr0 + operator_lin + lr1
+        #                 sr = sr0 + sr1
+        #             else:
+        #
+        #                 lr = lr0 + operator_lin + r'\{' + lr1 + r'\}'
+        #                 sr = sr0 + r'\left(' + sr1 + r'\right)'
+        #
+        #             f = Form(
+        #                 other.space,  # space
+        #                 sr,  # symbolic representation
+        #                 lr,  # linguistic representation
+        #                 False,  # not a root-form anymore.
+        #             )
+        #             return f
+        #
+        #         else:
+        #             raise NotImplementedError()
+        #
+        #     else:
+        #         raise NotImplementedError()
+        # else:
+        #     raise NotImplementedError()
 
     def __rmul__(self, other):
         """other * self"""

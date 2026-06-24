@@ -189,7 +189,10 @@ class MseHttDynamicLinearSystem(Frozen):
             "font.family": "DejaVu Sans",
             "text.latex.preamble": r"\usepackage{amsmath, amssymb}",
         })
-        matplotlib.use('TkAgg')
+        try:
+            matplotlib.use('TkAgg')
+        except ImportError:
+            matplotlib.use('Agg')
 
         assert self._A is not None, \
             f"dynamic linear system initialized but not applied, do '.apply()' firstly."

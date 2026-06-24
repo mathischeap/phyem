@@ -8,8 +8,24 @@ from phyem.src.config import RANK, MASTER_RANK, COMM
 from phyem.msehtt.static.mesh.partial.elements.main import MseHttElementsPartialMesh
 
 
-def ___ph_vtk_msehtt_static_copy___(filename, *forms, ddf=1):
-    """"""
+def ___ph_vtk_msehtt_static_copy___(filename, *forms, ddf=1, local_element_range=None):
+    """
+    Parameters
+    ----------
+    filename
+    *forms
+    ddf
+    local_element_range :
+        Indicate the local element indices.
+
+        We will only collect the vtk information in these local elements. Since it is "local",
+        it will be different in different ranks. And locally, the index must be valid. That is
+        why we did the check.
+
+    Returns
+    -------
+
+    """
     tpm = None
     for form in forms:
         if tpm is None:
@@ -18,7 +34,16 @@ def ___ph_vtk_msehtt_static_copy___(filename, *forms, ddf=1):
             assert tpm is form.tpm, f"forms save in one file must be in the same tpm."
 
     assert tpm.composition.__class__ is MseHttElementsPartialMesh
-    elements = tpm.composition
+    if local_element_range is None:
+        element_range = tpm.composition
+    elif isinstance(local_element_range, (list, tuple)):
+        # contains all element indices
+        for e in local_element_range:
+            assert e in tpm.composition, f"element_range {e} not in tpm.composition."
+        element_range = local_element_range
+    else:
+        raise NotImplementedError()
+
     # ndim = tpm.abstract.n
     # num_global_elements = elements._num_global_elements
 
@@ -48,8 +73,8 @@ def ___ph_vtk_msehtt_static_copy___(filename, *forms, ddf=1):
         indicator = space.str_indicator
         degree = form._f.degree
         dtype = None
-        for element_index in elements:
-            element = elements[element_index]
+        for element_index in element_range:
+            element = tpm.composition[element_index]
             element_cochain = form.cochain[element_index]
             data_dict, cell_list, element_dtype = element._generate_vtk_data_for_form(
                 indicator, element_cochain, degree, data_density)

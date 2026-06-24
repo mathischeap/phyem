@@ -245,6 +245,12 @@ from time import time
 from phyem.tools.miscellaneous.timer import MyTimer
 
 
+___info_print_cache___ = {
+    'last_count': 0,
+    'last_time': -1.,
+}
+
+
 def info(*others_2b_printed):
     """We print the info, as much as possible, of the current msepy implementation."""
     # -- first we print the newest time of the cochain (if there is) of each form.
@@ -252,6 +258,21 @@ def info(*others_2b_printed):
         return None
     else:
         pass
+
+    if len(others_2b_printed) == 0:
+        M = 0
+        OTP = []
+    else:
+        m = others_2b_printed[0]
+
+        if isinstance(m, int):
+            M = m
+            OTP = others_2b_printed[1:]
+        else:
+            M = 0
+            OTP = others_2b_printed
+
+    tbp = []
 
     count = _info_cache['info_count']
     old_time = _info_cache['info_time']
@@ -266,37 +287,64 @@ def info(*others_2b_printed):
         pass
     new_time = time()
     total_cost = new_time - start_time
-    print(f'==msehtt== [{count}] {MyTimer.current_time()} -after- %.2f(s)'
-          f', total: {MyTimer.seconds2dhms(total_cost)} <----' % (new_time - old_time))
-    print(f"~) Form with newest cochain @ --------- ")
+    tbp.append(f'==msehtt== [{count}] {MyTimer.current_time()} -after- %.2f(s), '
+               f'total: {MyTimer.seconds2dhms(total_cost)} <----' % (new_time - old_time))
+    tbp.append(f"~) Form with newest cochain @ --------- ")
     forms = base['forms']
     for form_sym in forms:
         form = forms[form_sym]
         if form._is_base():
             newest_time = form.cochain.newest
             if newest_time is not None:
-                print('{:>20} @ {:<30}'.format(form.abstract._pure_lin_repr, newest_time))
+                tbp.append('{:>20} @ {:<30}'.format(form.abstract._pure_lin_repr, newest_time))
         else:
             pass
-    print(f"\n~) Existing time sequences --------- ")
+    tbp.append(f"\n~) Existing time sequences --------- ")
     from phyem.src.time_sequence import _global_abstract_time_sequence
     for ats_lin in _global_abstract_time_sequence:
         ats = _global_abstract_time_sequence[ats_lin]
-        ats.info()
+        _ = ats.info(return_str=True)
+        if _ is None:
+            pass
+        else:
+            tbp.append(_)
 
-    print(f"\n~) Meshes:")
+    tbp.append(f"\n~) Meshes:")
     meshes = base['meshes']
     for mesh_repr in meshes:
         mesh = meshes[mesh_repr]
-        mesh.info()
+        _ = mesh.info(return_str=True)
+        if _ is None:
+            pass
+        else:
+            tbp.append(_)
 
-    print(f"\n~) Others: ~~~~")
-    for i, other in enumerate(others_2b_printed):
-        print(f"  {i}) -> {other}\n")
+    tbp.append(f"\n~) Others: ~~~~")
+    for i, other in enumerate(OTP):
+        tbp.append(f"  {i}) -> {other}\n")
 
-    print('\n\n', flush=True)
+    tbp.append('\n\n')
     _info_cache['info_count'] = count + 1
     _info_cache['info_time'] = new_time
+
+    if M == 0:  # info every single time
+        tbp = '\n'.join(tbp)
+        print(tbp, flush=True)
+    else:
+        time_gap = 60 * M
+        if ___info_print_cache___['last_time'] == -1:
+            ___info_print_cache___['last_time'] = old_time - time_gap - 1
+        else:
+            pass
+        last_count = ___info_print_cache___['last_count']
+        last_time = ___info_print_cache___['last_time']
+        if (count - last_count) >= M or (new_time - last_time) > time_gap:
+            tbp = '\n'.join(tbp)
+            print(tbp, flush=True)
+            ___info_print_cache___['last_count'] = count
+            ___info_print_cache___['last_time'] = new_time
+        else:
+            pass
     return None
 
 

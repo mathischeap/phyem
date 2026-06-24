@@ -8,7 +8,10 @@ plt.rcParams.update({
     "font.family": "DejaVu Sans",
     "text.latex.preamble": r"\usepackage{amsmath}"
 })
-matplotlib.use('TkAgg')
+try:
+    matplotlib.use('TkAgg')
+except ImportError:
+    matplotlib.use('Agg')
 
 from types import FunctionType
 

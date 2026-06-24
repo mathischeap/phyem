@@ -38,4 +38,4 @@ class AbstractNonlinearOperator(Frozen):
             else:
                 raise NotImplementedError()
         else:
-            pass
+            raise NotImplementedError()

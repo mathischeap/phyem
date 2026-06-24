@@ -13,7 +13,10 @@ if RANK == MASTER_RANK:
         "font.family": "DejaVu Sans",
         "text.latex.preamble": r"\usepackage{amsmath, amssymb}",
     })
-    matplotlib.use('TkAgg')
+    try:
+        matplotlib.use('TkAgg')
+    except ImportError:
+        matplotlib.use('Agg')
 
 else:
     pass

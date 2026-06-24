@@ -74,10 +74,26 @@ def _inner_simpler_pattern_examiner_scalar_valued_forms(factor, f0, f1, extra_in
             if bf0 is None:
                 pass
             elif bf0.is_root() and f1.is_root():
-                return _simple_patterns['(log-e *, B)'], {
-                    'rsf0': bf0,   # root-scalar-form-0
-                    'rsf1': f1,    # root-scalar-form-1
-                }
+
+                if 'known-forms' in extra_info:
+                    known_forms = extra_info['known-forms']
+
+                    if isinstance(known_forms, (list, tuple)) and len(known_forms) == 1:
+                        known_forms = known_forms[0]
+                    else:
+                        pass
+
+                    if known_forms is bf0:
+                        return _simple_patterns['(log-e *, B)'], {
+                            'rsf0': bf0,   # root-scalar-form-0
+                            'rsf1': f1,    # root-scalar-form-1
+                        }
+                    else:
+                        pass
+
+                else:  # nonlinear (log-e of root-sf0, root-sf1); both root-sf0, root-sf1 are unknown.
+                    pass
+
             else:
                 pass
 
@@ -1173,6 +1189,94 @@ def _inner_simpler_pattern_examiner_scalar_valued_forms(factor, f0, f1, extra_in
                 else:
                     # nonlinear
                     return _simple_patterns['(AB, C)'], {
+                        'A': A,  # root-scalar-form-0
+                        'B': B,  # root-scalar-form-1
+                        'C': f1,
+                    }
+
+        # NEW PATTERN :   (A ^ (dB), C) ----------------------------------------------------------
+        lin_wedge = _global_operator_lin_repr_setting['wedge']
+        existing_wedge = lin_wedge in f0._lin_repr
+        existing_d = lin_d in f0._lin_repr
+        amount_wedge = f0._lin_repr.count(lin_wedge)
+        amount_d = f0._lin_repr.count(lin_d)
+        if f1.is_root() and existing_wedge and amount_wedge == 1 and existing_d and amount_d == 1:
+            A_lin, dB_lin = f0._lin_repr.split(lin_wedge)
+            A = _find_form(A_lin)
+            dB = _find_form(dB_lin)
+            B = _find_form(dB._lin_repr, upon=d)
+
+            if A.is_root() and B.is_root():
+                if 'known-forms' in extra_info:
+                    kfs = extra_info['known-forms']
+                    if isinstance(kfs, (list, tuple)) and (A in kfs) and (B in kfs):
+                        return _simple_patterns['(*^(d*), C)'], {
+                            'A': A,  # root-scalar-form-0
+                            'B': B,  # root-scalar-form-1
+                            'C': f1,
+                        }
+                    elif A is kfs:
+                        return _simple_patterns['(*^(dB), C)'], {
+                            'A': A,  # root-scalar-form-0
+                            'B': B,  # root-scalar-form-1
+                            'C': f1,
+                        }
+                    elif B is kfs:
+                        return _simple_patterns['(A^(d*), C)'], {
+                            'A': A,  # root-scalar-form-0
+                            'B': B,  # root-scalar-form-1
+                            'C': f1,
+                        }
+                    else:
+                        raise Exception(A, B, kfs)
+                else:
+                    # nonlinear
+                    return _simple_patterns['(A^(dB), C)'], {
+                        'A': A,  # root-scalar-form-0
+                        'B': B,  # root-scalar-form-1
+                        'C': f1,
+                    }
+
+        # ! END ! =================================================================================
+
+        # NEW PATTERN : (A dB, C) ----------------------------------------------------------
+        multi_lin = _global_operator_lin_repr_setting['multi']
+        existing_multi = multi_lin in f0._lin_repr
+        amount_multi = f0._lin_repr.count(multi_lin)
+        existing_d = lin_d in f0._lin_repr
+        amount_d = f0._lin_repr.count(lin_d)
+        if f1.is_root() and existing_multi and amount_multi == 1 and existing_d and amount_d == 1:
+            A_lin, dB_lin = f0._lin_repr.split(multi_lin)
+            A = _find_form(A_lin)
+            dB = _find_form(dB_lin)
+            B = _find_form(dB._lin_repr, upon=d)
+
+            if A.is_root() and B.is_root():
+                if 'known-forms' in extra_info:
+                    kfs = extra_info['known-forms']
+                    if isinstance(kfs, (list, tuple)) and (A in kfs) and (B in kfs):
+                        return _simple_patterns['(* d*, C)'], {
+                            'A': A,  # root-scalar-form-0
+                            'B': B,  # root-scalar-form-1
+                            'C': f1,
+                        }
+                    elif A is kfs:
+                        return _simple_patterns['(* dB, C)'], {
+                            'A': A,  # root-scalar-form-0
+                            'B': B,  # root-scalar-form-1
+                            'C': f1,
+                        }
+                    elif B is kfs:
+                        return _simple_patterns['(A d*, C)'], {
+                            'A': A,  # root-scalar-form-0
+                            'B': B,  # root-scalar-form-1
+                            'C': f1,
+                        }
+                    else:
+                        raise Exception(A, B, kfs)
+                else:
+                    # nonlinear
+                    return _simple_patterns['(A dB, C)'], {
                         'A': A,  # root-scalar-form-0
                         'B': B,  # root-scalar-form-1
                         'C': f1,

@@ -8,7 +8,10 @@ plt.rcParams.update({
     "font.family": "DejaVu Sans",
     "text.latex.preamble": r"\usepackage{amsmath}"
 })
-matplotlib.use('TkAgg')
+try:
+    matplotlib.use('TkAgg')
+except ImportError:
+    matplotlib.use('Agg')
 
 _global_wf_terms = dict()
 
@@ -735,7 +738,7 @@ class L2InnerProductTerm(_WeakFormulationTerm):
         s1 = f1.space
         super().__init__(f0, f1, factor=factor)
         if s0.__class__ is ScalarValuedFormSpace and s1.__class__ is ScalarValuedFormSpace:
-            assert s0 == s1, f"spaces dis-match. {s0} and {s1}"   # mesh consistence checked here.
+            assert s0 == s1, f"spaces dis-match. {s0} of {f0} and {s1} of {f1}"   # mesh consistence checked here.
             over_ = self._mesh.manifold._sym_repr
         elif s0.__class__ is BundleValuedFormSpace and s1.__class__ is BundleValuedFormSpace:
             assert s0 == s1, f"spaces dis-match. {s0} and {s1}"   # mesh consistence checked here.

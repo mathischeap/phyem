@@ -6,7 +6,12 @@ import matplotlib
 import matplotlib.pyplot as plt
 from matplotlib import cm
 
-matplotlib.use('TkAgg')
+
+try:
+    matplotlib.use('TkAgg')
+except ImportError:
+    matplotlib.use('Agg')
+
 plt.rcParams.update({
     "font.family": "DejaVu sans",
 })

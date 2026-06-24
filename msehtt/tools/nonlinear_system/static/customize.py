@@ -100,7 +100,7 @@ class MseHttStaticNonlinearSystemCustomize(Frozen):
         )
 
     def add_additional_constrain__fix_a_global_dof(self, ith_unknown, global_dof, insert_place=-1):
-        r"""We all one additional constrain that says: the global dof of `ith_unknown` unknown will keep same.
+        r"""We add one additional constrain that says: the global dof of `ith_unknown` unknown will keep same.
         So, it will equal to the value of its initial guess.
 
         This is different to `fixed_global_dofs_for_unknown` since we will add a row and a column to the

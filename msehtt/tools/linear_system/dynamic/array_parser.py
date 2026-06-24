@@ -62,6 +62,10 @@ def msehtt_root_array_parser(dls, array_lin_repr):
                 _VarSetting_boundary_dp_vector):
             A, _ti = PARSER.Parse__trStar_rf0_dp_tr_s1_vector(dls, *info_indicators)
 
+        elif type_indicator == PARSER._find_indicator(
+                _VarSetting_dp_matrix):
+            A, _ti = PARSER.Parse__W_matrix(*info_indicators)
+
         # ------------ (A x B, C) ----------------------------------------------------------------
         elif type_indicator == PARSER._find_indicator(
                        _VarSetting_astA_x_astB_ip_tC):
@@ -164,6 +168,19 @@ def msehtt_root_array_parser(dls, array_lin_repr):
 
         elif type_indicator == PARSER._find_indicator(
                        _VarSetting_astA_d_astB_dp_tC):
+            A, _ti = PARSER.Parse__astA_d_astB_dp_tC(*info_indicators)
+
+        # ------------- (A dB, C)------------------------------------------------------------------
+        elif type_indicator == PARSER._find_indicator(
+                       _VarSetting_astAdB_ip_tC):
+            A, _ti = PARSER.Parse__astA_d_B_dp_tC(*info_indicators)
+
+        elif type_indicator == PARSER._find_indicator(
+                       _VarSetting_AdastB_ip_tC):
+            A, _ti = PARSER.Parse__A_d_astB_dp_tC(*info_indicators)
+
+        elif type_indicator == PARSER._find_indicator(
+                       _VarSetting_astAdastB_ip_tC):
             A, _ti = PARSER.Parse__astA_d_astB_dp_tC(*info_indicators)
 
         # ------------- (AB, C) ------------------------------------------------------------------

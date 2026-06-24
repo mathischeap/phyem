@@ -285,6 +285,7 @@ class MseHttStaticLocalLinearSystem(Frozen):
             b = diag @ b
         else:
             raise NotImplementedError(f"preconditioner={preconditioner}")
+
         return MseHttLinearSystem(A, b)
 
     @property

@@ -116,7 +116,7 @@ class ManufacturedSolution_Hall_MHD3_0(Frozen):
     It is periodic in this domain.
     """
 
-    def __init__(self, c=1, Rm=1, Rf=1, eta=1):
+    def __init__(self, c=1, Rm=1, Rf=1, h=1):
         """
 
         Parameters
@@ -130,7 +130,7 @@ class ManufacturedSolution_Hall_MHD3_0(Frozen):
         self._c = c
         self._Rm = Rm
         self._Rf = Rf
-        self._eta = eta
+        self._h = h
 
         self._u = T3dVector(ux, uy, uz)
         self._P = T3dScalar(_P_function)
@@ -153,8 +153,8 @@ class ManufacturedSolution_Hall_MHD3_0(Frozen):
         return self._Rf
 
     @property
-    def eta(self):
-        return self._eta
+    def h(self):
+        return self._h
 
     @property
     def u(self):
@@ -198,14 +198,14 @@ class ManufacturedSolution_Hall_MHD3_0(Frozen):
     def m(self):
         """electric source.
 
-        (1/Rm)j - E - u x B + eta * j x B = m
+        (1/Rm)j - E - u x B + h * j x B = m
         """
         if self._m is None:
             self._m = (
                 (1 / self.Rm) * self.j
                 - self.E
                 - self.u.cross_product(self.B)
-                + self.eta * (self.j.cross_product(self.B))
+                + self.h * (self.j.cross_product(self.B))
             )
         return self._m
 
@@ -330,7 +330,7 @@ class ManufacturedSolution_Hall_MHD3_1(ManufacturedSolution_Hall_MHD3_0):
     It is for vanishing b.c. uxn =0, P=0, Bxn = 0 on whole boundary.
     """
 
-    def __init__(self, c=1, Rm=1, Rf=1, eta=1):
+    def __init__(self, c=1, Rm=1, Rf=1, h=1):
         r"""
 
         Parameters
@@ -341,7 +341,7 @@ class ManufacturedSolution_Hall_MHD3_1(ManufacturedSolution_Hall_MHD3_0):
         Rf :
 
         """
-        super().__init__(c=c, Rm=Rm, Rf=Rf, eta=eta)
+        super().__init__(c=c, Rm=Rm, Rf=Rf, h=h)
         self._melt()
 
         self._u = T3dVector(ux1, uy1, uz1)
@@ -360,7 +360,7 @@ class ManufacturedSolution_Hall_MHD3_2(ManufacturedSolution_Hall_MHD3_0):
 
     It is for vanishing b.c. uxn =0, P=0, Exn = 0 on whole boundary.
     """
-    def __init__(self, c=1, Rm=1, Rf=1, eta=1):
+    def __init__(self, c=1, Rm=1, Rf=1, h=1):
         r"""
 
         Parameters
@@ -371,7 +371,7 @@ class ManufacturedSolution_Hall_MHD3_2(ManufacturedSolution_Hall_MHD3_0):
         Rf :
 
         """
-        super().__init__(c=c, Rm=Rm, Rf=Rf, eta=eta)
+        super().__init__(c=c, Rm=Rm, Rf=Rf, h=h)
         self._melt()
 
         self._u = T3dVector(ux1, uy1, uz1)
@@ -459,7 +459,7 @@ class ManufacturedSolution_Hall_MHD3_3(ManufacturedSolution_Hall_MHD3_0):
 
     It is for vanishing b.c. omega x n = 0, P = 0, B x n = 0 on whole boundary.
     """
-    def __init__(self, c=1, Rm=1, Rf=1, eta=1):
+    def __init__(self, c=1, Rm=1, Rf=1, h=1):
         r"""
 
         Parameters
@@ -470,7 +470,7 @@ class ManufacturedSolution_Hall_MHD3_3(ManufacturedSolution_Hall_MHD3_0):
         Rf :
 
         """
-        super().__init__(c=c, Rm=Rm, Rf=Rf, eta=eta)
+        super().__init__(c=c, Rm=Rm, Rf=Rf, h=h)
         self._melt()
 
         self._u = T3dVector(Ux1, Uy1, Uz1)
@@ -599,7 +599,7 @@ class ManufacturedSolution_Hall_MHD3_4_TemporalAccuracy(ManufacturedSolution_Hal
 
     It is for vanishing b.c. uxn =0, P=0, Bxn = 0 on whole boundary for TEMPORAL convergence test.
     """
-    def __init__(self, c=1, Rm=1, Rf=1, eta=1):
+    def __init__(self, c=1, Rm=1, Rf=1, h=1):
         r"""
 
         Parameters
@@ -610,7 +610,7 @@ class ManufacturedSolution_Hall_MHD3_4_TemporalAccuracy(ManufacturedSolution_Hal
         Rf :
 
         """
-        super().__init__(c=c, Rm=Rm, Rf=Rf, eta=eta)
+        super().__init__(c=c, Rm=Rm, Rf=Rf, h=h)
         self._melt()
 
         self._u = T3dVector(T4_u, T4_v, T4_w)
@@ -633,12 +633,12 @@ class ManufacturedSolution_Hall_MHD3_Conservation0(Frozen):
 
     It is used for conservation tests.
     """
-    def __init__(self, c=1, Rm=1, Rf=1, eta=1):
+    def __init__(self, c=1, Rm=1, Rf=1, h=1):
         r""""""
         self._c_ = c
         self._Rm_ = Rm
         self._Rf_ = Rf
-        self._eta_ = eta
+        self._h_ = h
         self._u_init_ = None
         self._w_init_ = None
         self._B_init_ = None
@@ -710,13 +710,13 @@ class ManufacturedSolution_Hall_MHD3_Conservation0(Frozen):
     def E_initial_condition(self):
         """E initial condition.
 
-        (1/Rm)j - u x B + eta * j x B = E
+        (1/Rm)j - u x B + h * j x B = E
         """
         if self._E_init_ is None:
             self._E_init_ = (
                 (1 / self._Rm_) * self.j_initial_condition
                 - self.u_initial_condition.cross_product(self.B_initial_condition)
-                + self._eta_ * (self.j_initial_condition.cross_product(self.B_initial_condition))
+                + self._h_ * (self.j_initial_condition.cross_product(self.B_initial_condition))
             )
         return self._E_init_
 
@@ -752,12 +752,12 @@ class ManufacturedSolution_Hall_MHD3_NullPoints(Frozen):
     r"""See Section 4.4 of [A LINEARLY IMPLICIT SPECTRAL SCHEME FOR THE THREE-DIMENSIONAL HALL-MHD SYSTEM]
 
     """
-    def __init__(self, c=1, Rm=1, Rf=1, eta=1):
+    def __init__(self, c=1, Rm=1, Rf=1, h=1):
         r""""""
         self._c_ = c
         self._Rm_ = Rm
         self._Rf_ = Rf
-        self._eta_ = eta
+        self._h_ = h
         self._u_init_ = None
         self._w_init_ = None
         self._B_init_ = None
@@ -806,13 +806,13 @@ class ManufacturedSolution_Hall_MHD3_NullPoints(Frozen):
     def E_initial_condition(self):
         """E initial condition.
 
-        (1/Rm)j - u x B + eta * j x B = E
+        (1/Rm)j - u x B + h * j x B = E
         """
         if self._E_init_ is None:
             self._E_init_ = (
                 (1 / self._Rm_) * self.j_initial_condition
                 - self.u_initial_condition.cross_product(self.B_initial_condition)
-                + self._eta_ * (self.j_initial_condition.cross_product(self.B_initial_condition))
+                + self._h_ * (self.j_initial_condition.cross_product(self.B_initial_condition))
             )
         return self._E_init_
 

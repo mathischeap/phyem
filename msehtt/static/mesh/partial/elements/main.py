@@ -38,13 +38,18 @@ class MseHttElementsPartialMesh(Frozen):
 
         self._freeze()
 
-    def info(self, additional_info=''):
+    def info(self, additional_info='', return_str=False):
         """info self."""
-        print(
+        tbp = (
             f"{additional_info}"
             f"msehtt-partial-elements {self._tpm.abstract._sym_repr}: "
             f"{self._num_global_elements} elements"
         )
+        if return_str:
+            return tbp
+        else:
+            print(tbp)
+            return None
 
     @property
     def ___is_msehtt_partial_elements_mesh___(self):
@@ -329,3 +334,56 @@ class MseHttElementsPartialMesh(Frozen):
         self.___cache0___[str_key] = RETURN
 
         return RETURN
+
+    def find_local_element_indices_in_a_subdomain(self, subdomain_indicator, anchor='center'):
+        r"""
+        Parameters
+        ----------
+        subdomain_indicator
+        anchor
+            We use what to define the location of an element?
+        """
+        element_index_range = []
+
+        if (isinstance(subdomain_indicator, (list, tuple))
+                and len(subdomain_indicator) == 3
+                and subdomain_indicator[0] in ('<', '>')
+                and subdomain_indicator[1] in ('x', 'y', 'z')
+                and isinstance(subdomain_indicator[2], (int, float))):
+            # the indicator is like: ('<', 'x', 5), then we find all indices of elements who are at the left of x=5.
+
+            if anchor == 'center':
+                sign = subdomain_indicator[0]
+                xyz = subdomain_indicator[1]
+                limit = subdomain_indicator[2]
+                for e in self:
+                    element = self[e]
+                    center = element._find_element_center_coo(element.parameters)
+                    if xyz == 'x':
+                        center = center[0]
+                    elif xyz == 'y':
+                        center = center[1]
+                    elif xyz == 'z':
+                        center = center[2]
+                    else:
+                        raise Exception()
+
+                    if sign == '<':
+                        in_or_not = center < limit
+                    elif sign == '>':
+                        in_or_not = center > limit
+                    else:
+                        raise Exception()
+
+                    if in_or_not:
+                        element_index_range.append(e)
+                    else:
+                        pass
+
+            else:
+                raise Exception()
+
+        else:
+            raise NotImplementedError()
+
+        return element_index_range

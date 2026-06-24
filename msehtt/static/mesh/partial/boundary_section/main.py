@@ -36,13 +36,18 @@ class MseHttBoundarySectionPartialMesh(Frozen):
         self._find_cache_ = {}  # cache all!
         self._freeze()
 
-    def info(self, additional_info=''):
+    def info(self, additional_info='', return_str=False):
         r"""info self."""
-        print(
+        tbp = (
             f"{additional_info}"
             f"msehtt-boundary-section {self._tpm.abstract._sym_repr}: "
             f"{self._num_global_faces} faces"
         )
+        if return_str:
+            return tbp
+        else:
+            print(tbp)
+            return None
 
     def __repr__(self):
         r""""""

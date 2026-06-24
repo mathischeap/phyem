@@ -412,6 +412,7 @@ _global_operator_lin_repr_setting = {  # coded operators
     'Cross_Product': r"-$\mathsf{X}$-",
     'CrossProduct': r"-$\mathrm{x}$-",
     'crossProduct': r"-$\mathsf{x}$-",
+
     'convect': r"$\cdot\nabla$",
     'tensor_product': r"$\otimes$",
 
@@ -441,6 +442,7 @@ _global_operator_sym_repr_setting = {  # coded operators
     'Cross_Product': r"{\mathsf{X}}",
     'CrossProduct': r"{\mathrm{x}}",
     'crossProduct': r"{\mathsf{x}}",
+
     'tensor_product': r"{\otimes}",
     'convect': r"{\cdot\nabla}",
 
@@ -529,10 +531,20 @@ _wf_term_default_simple_patterns = {   # use only str to represent a simple patt
     '(A*, d(C))': r"(rf $\ast$ krf, d rf)",
     '(**, d(C))': r"(krf $\ast$ krf, d rf)",
 
+    '(A dB, C)': r"(rf $\ast$ d-rf, rf)",
+    '(* dB, C)': r"(krf $\ast$ d-rf, rf)",
+    '(A d*, C)': r"(rf $\ast$ d-krf, rf)",
+    '(* d*, C)': r"(krf $\ast$ d-krf, rf)",
+
     '(A d(B), d(C))': r"(rf $\ast$ d(rf), d rf)",
     '(* d(B), d(C))': r"(krf $\ast$ d(rf), d rf)",
     '(A d(*), d(C))': r"(rf $\ast$ d(krf), d rf)",
     '(* d(*), d(C))': r"(krf $\ast$ d(krf), d rf)",
+
+    '(A^(dB), C)': r"(rf wedge d-rf, rf)",
+    '(*^(dB), C)': r"(krf wedge d-rf, rf)",
+    '(A^(d*), C)': r"(rf wedge d-krf, rf)",
+    '(*^(d*), C)': r"(krf wedge d-krf, rf)",
 
     '(A, BC)': r"(rf, rf $\ast$ rf)",
     '(*, BC)': r"(krf, rf $\ast$ rf)",

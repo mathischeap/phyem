@@ -10,6 +10,12 @@ import numpy as np
 import matplotlib.pyplot as plt
 import matplotlib
 
+try:
+    matplotlib.use('TkAgg')
+except ImportError:
+    matplotlib.use('Agg')
+
+
 from phyem.tools.frozen import Frozen
 from phyem.tools.miscellaneous.timer import MyTimer
 from phyem.src.config import RANK, MASTER_RANK
@@ -160,7 +166,7 @@ class IteratorMonitor(Frozen):
 
         RDF = self._iterator_.RDF.iloc[indices]
 
-        matplotlib.use('Agg')  # make sure we use the right backend.
+        # matplotlib.use('Agg')  # make sure we use the right backend.
 
         plt.rc('text', usetex=False)
 
@@ -523,7 +529,10 @@ class IteratorMonitor(Frozen):
             pass
 
         plt.close(fig)
-        matplotlib.use('TkAgg')  # make sure we use the right backend.
+        # try:
+        #     matplotlib.use('TkAgg')  # make sure we use the right backend.
+        # except ImportError:
+        #     pass
 
     def _select_reasonable_amount_of_data(self, max_num, last_num=1):
         """To report RDF, we do not report all, we make a selection.

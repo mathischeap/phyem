@@ -5,7 +5,7 @@ r"""
 __version__ = '1.0.3'
 
 __all__ = [
-    'test',
+    # 'test',
     'config',
 
     'tools',
@@ -59,13 +59,15 @@ __all__ = [
     'geometries',
 
     'mgs',  # multi-grid-scheme file
+
+    'composite',
 ]
 
 
 def env():
     r"""Run the tests to valid your installation."""
-    import phyem.tools.environment as env  # to test the environment is correctly configured.
-    print("PHYEM ENVIRONMENT", env)
+    import phyem.tools.environment as _env  # to test the environment is correctly configured.
+    print("PHYEM ENVIRONMENT", _env)
 
 
 import phyem.src.config as config
@@ -121,7 +123,7 @@ from phyem.tools.dds.saving_api import _rws_grouped_saving as rws
 
 
 def ws(file_dir, write_dir, source='source'):
-    r""""""
+    r"""write source"""
     assert file_dir is not None and write_dir is not None, f"provide both file and and write dir"
     if config.RANK == config.MASTER_RANK:
         with open(file_dir, 'r') as file:
@@ -167,3 +169,26 @@ import phyem.tools.miscellaneous.pickle_ as pk
 import phyem.tools.miscellaneous.geometries.main as geometries
 
 from phyem.tools.miscellaneous.multigrid_scheme import MultiGridSchemeConfig as mgs
+
+
+from phyem.msehtt.tools.linear_system.static.local.main import MseHttStaticLocalLinearSystem
+from phyem.msehtt.tools.linear_system.static.local_composite.main import MseHtt_Static_Local_Composite_LinearSystem
+
+from phyem.msehtt.tools.nonlinear_system.static.main import MseHttStaticNonLinearSystem
+from phyem.msehtt.tools.nonlinear_system.static_composite.main import MseHtt_Static_Composite_NonLinear_System
+
+
+def composite(*objs, condlist=None):
+    r"""To composite multiple objects into one object."""
+    obj_names = []
+    for obj in objs:
+        obj_names.append(obj.__class__.__name__)
+
+    if len(obj_names) >= 2 and all([_ == MseHttStaticLocalLinearSystem.__name__ for _ in obj_names]):
+        return MseHtt_Static_Local_Composite_LinearSystem(*objs, condlist=condlist)
+
+    elif len(obj_names) >= 2 and all([_ == MseHttStaticNonLinearSystem.__name__ for _ in obj_names]):
+        return MseHtt_Static_Composite_NonLinear_System(*objs, condlist=condlist)
+
+    else:
+        raise NotImplementedError(objs)

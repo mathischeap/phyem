@@ -4,7 +4,10 @@ r"""
 import numpy as np
 import matplotlib.pyplot as plt
 import matplotlib
-matplotlib.use('TkAgg')
+try:
+    matplotlib.use('TkAgg')
+except ImportError:
+    matplotlib.use('Agg')
 
 from phyem.tools.frozen import Frozen
 from phyem.src.config import RANK, MASTER_RANK

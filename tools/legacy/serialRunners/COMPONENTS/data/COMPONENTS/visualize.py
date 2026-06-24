@@ -9,6 +9,13 @@ Aerodynamics, AE
 TU Delft
 """
 import matplotlib.pyplot as plt
+import matplotlib
+
+try:
+    matplotlib.use('TkAgg')
+except ImportError:
+    matplotlib.use('Agg')
+
 
 from phyem.tools.miscellaneous.timer import MyTimer
 from phyem.tools.frozen import Frozen

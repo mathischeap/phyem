@@ -2,7 +2,6 @@
 r"""
 """
 import numpy as np
-from numpy import diff
 import matplotlib.pyplot as plt
 from scipy.sparse import isspmatrix_csr, isspmatrix_csc, csc_matrix, csr_matrix
 from scipy.sparse import linalg as sp_spa_linalg
@@ -748,7 +747,7 @@ class MseHttStaticLocalMatrixAssemble(Frozen):
             else:
                 data[np.abs(data) < threshold] = 0.
 
-            nums: list = list(diff(indptr))
+            nums: list = list(np.diff(indptr))
             row = []
             col = []
 
@@ -888,7 +887,7 @@ class MseHttStaticLocalMatrixAssemble(Frozen):
             else:
                 data[np.abs(data) < threshold] = 0.
 
-            nums: list = list(diff(indptr))
+            nums: list = list(np.diff(indptr))
             row = []
             col = []
 

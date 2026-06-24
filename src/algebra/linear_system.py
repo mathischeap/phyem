@@ -10,7 +10,10 @@ plt.rcParams.update({
     "font.family": "DejaVu Sans",
     "text.latex.preamble": r"\usepackage{amsmath, amssymb}",
 })
-matplotlib.use('TkAgg')
+try:
+    matplotlib.use('TkAgg')
+except ImportError:
+    matplotlib.use('Agg')
 
 
 class BlockMatrix(Frozen):
@@ -90,7 +93,7 @@ class BlockMatrix(Frozen):
         """"""
         from src.config import RANK, MASTER_RANK
         if RANK != MASTER_RANK:
-            return
+            return None
         else:
             pass
 
@@ -170,7 +173,7 @@ class BlockColVector(Frozen):
         """"""
         from src.config import RANK, MASTER_RANK
         if RANK != MASTER_RANK:
-            return
+            return None
         else:
             symbolic = r"$" + self._pr_text() + r"$"
             fig = plt.figure(figsize=figsize)
@@ -292,7 +295,7 @@ class LinearSystem(Frozen):
         """pr"""
         from src.config import RANK, MASTER_RANK
         if RANK != MASTER_RANK:
-            return
+            return None
         else:
             symbolic = r"$" + self._pr_text() + r"$"
             fig = plt.figure(figsize=figsize)

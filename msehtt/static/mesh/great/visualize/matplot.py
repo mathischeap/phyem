@@ -9,7 +9,10 @@ plt.rcParams.update({
     "font.family": "DejaVu Sans",
     "text.latex.preamble": r"\usepackage{amsmath, amssymb}",
 })
-matplotlib.use('TkAgg')
+try:
+    matplotlib.use('TkAgg')
+except ImportError:
+    matplotlib.use('Agg')
 
 from phyem.tools.frozen import Frozen
 from phyem.src.config import RANK, MASTER_RANK, COMM, SIZE
@@ -29,6 +32,7 @@ class MseHttGreatMeshVisualizeMatplot(Frozen):
         internal_grid=False,
         rank_wise_colored=False,
         quality=False,
+        distribution=None,
         **kwargs
     ):
         r"""
@@ -39,6 +43,25 @@ class MseHttGreatMeshVisualizeMatplot(Frozen):
         internal_grid
         rank_wise_colored
         quality
+        distribution :
+            If distribution is not None, we must receive a dict `distribution` whose keys are element indices,
+            whose values are integers which indicate different colors. For example,
+
+            distribution = {
+                0: 0,
+                1: 0,
+                2: 0,
+                3: 1,
+                4: 1,
+                5: 2,
+                6: 2,
+                'ABC': 2,
+                ...
+            }
+            Then elements 0, 1, 2 will be colored with colors[0], elements 3, 4, 'ABC', will be colored with colors[1],
+            and so on.
+
+            For elements not in this dict, no colors to be used for them.
 
         """
         if quality:
@@ -69,6 +92,16 @@ class MseHttGreatMeshVisualizeMatplot(Frozen):
                 mesh_data_Lines = self._tgm.visualize._generate_element_outline_data(
                     ddf=ddf, internal_grid=internal_grid)
                 mesh_data_Lines = COMM.gather(mesh_data_Lines, root=MASTER_RANK)
+
+        if distribution is not None:
+            distributions = COMM.gather(distribution, root=MASTER_RANK)
+
+            if RANK == MASTER_RANK:
+                distribution = dict()
+                for dis in distributions:
+                    distribution.update(dis)
+            else:
+                pass
 
         if RANK != MASTER_RANK:
             return None
@@ -104,6 +137,22 @@ class MseHttGreatMeshVisualizeMatplot(Frozen):
                         element_distribution=self._tgm._element_distribution,
                         **kwargs
                     )
+                elif distribution is not None:
+                    Element_Distribution = {}
+                    for element_index in distribution:
+                        color_index = distribution[element_index]
+                        if color_index not in Element_Distribution:
+                            Element_Distribution[color_index] = list()
+                        else:
+                            pass
+                        Element_Distribution[color_index].append(element_index)
+
+                    return self._plot_2d_great_mesh_in_2d_space_rank_wise(
+                        data,
+                        element_distribution=Element_Distribution,
+                        **kwargs
+                    )
+
                 else:
 
                     return self._plot_2d_great_mesh_in_2d_space(
@@ -137,6 +186,8 @@ class MseHttGreatMeshVisualizeMatplot(Frozen):
             aspect='equal',
             usetex=True,
 
+            axis=True,
+
             labelsize=12,
 
             ticksize=12,
@@ -150,7 +201,7 @@ class MseHttGreatMeshVisualizeMatplot(Frozen):
             title=None,  # None or custom
             data_only=False,
 
-            pad_inches=0
+            pad_inches=0,
     ):
         r"""
 
@@ -160,6 +211,9 @@ class MseHttGreatMeshVisualizeMatplot(Frozen):
         figsize
         aspect
         usetex
+
+        axis
+
         labelsize
         ticksize
         xticks
@@ -181,6 +235,7 @@ class MseHttGreatMeshVisualizeMatplot(Frozen):
         """
         plt.rc('text', usetex=usetex)
         fig, ax = plt.subplots(figsize=figsize)
+        # noinspection PyTypeChecker
         ax.set_aspect(aspect)
         ax.spines['top'].set_visible(True)
         ax.spines['right'].set_visible(True)
@@ -196,6 +251,11 @@ class MseHttGreatMeshVisualizeMatplot(Frozen):
         ax.tick_params(labelsize=ticksize)
         plt.tick_params(axis='both', which='minor', direction='out', length=minor_tick_length)
         plt.tick_params(axis='both', which='major', direction='out', length=major_tick_length)
+
+        if axis:
+            pass
+        else:
+            ax.axis('off')
 
         if xlim is not None:
             plt.xlim(xlim)
@@ -277,6 +337,7 @@ class MseHttGreatMeshVisualizeMatplot(Frozen):
         r""""""
         plt.rc('text', usetex=usetex)
         fig, ax = plt.subplots(figsize=figsize)
+        # noinspection PyTypeChecker
         ax.set_aspect(aspect)
         ax.spines['top'].set_visible(True)
         ax.spines['right'].set_visible(True)
@@ -459,8 +520,11 @@ class MseHttGreatMeshVisualizeMatplot(Frozen):
                     break
                 else:
                     pass
-            fill_color = colors(in_rank)
-            ax.fill(x_sequence, y_sequence, color=fill_color)
+            if in_rank == -1:
+                pass
+            else:
+                fill_color = colors(in_rank)
+                ax.fill(x_sequence, y_sequence, color=fill_color)
 
         # deal with title -----------------------------------------------
         if title is None:
@@ -513,6 +577,7 @@ class MseHttGreatMeshVisualizeMatplot(Frozen):
             cls,
             line_data,
             figsize=(10, 6),
+            axis=True,
             labelsize=12,
             ticksize=12,
             aspect='equal',
@@ -538,6 +603,12 @@ class MseHttGreatMeshVisualizeMatplot(Frozen):
         # noinspection PyUnresolvedReferences
         ax.yaxis._axinfo["grid"]['color'] = (1, 1, 1, 0)
         ax.zaxis._axinfo["grid"]['color'] = (1, 1, 1, 0)
+
+        if axis:
+            pass
+        else:
+            ax.axis('off')
+
         ax.tick_params(labelsize=ticksize)
         ax.set_xlabel(r'$x$', fontsize=labelsize)
         ax.set_ylabel(r'$y$', fontsize=labelsize)
@@ -603,3 +674,23 @@ class MseHttGreatMeshVisualizeMatplot(Frozen):
             plt.close()
 
             return None
+
+    def distribution(self, distribution_dict):
+        r"""Here, we receive a dict `distribution_dict` whose keys are element indices, whose values are
+        integers which indicate different colors. For example,
+
+        distribution_dict = {
+            0: 0,
+            1: 0,
+            2: 0,
+            3: 1,
+            4: 1,
+            5: 2,
+            6: 2,
+            ...
+        }
+        Then elements 0, 1, 2 will be colored with colors[0], elements 3, 4 will be colored with colors[1], and so on.
+
+        For elements not in this dict, no colors to be used for them.
+
+        """

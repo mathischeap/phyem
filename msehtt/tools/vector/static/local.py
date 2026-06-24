@@ -73,7 +73,8 @@ class MseHttStaticLocalVectorAssemble(Frozen):
         else:
             return self._deal_with_customizations_(RETURN, customizations, vtype, mode)
 
-    def _deal_with_customizations_(self, RETURN, customizations, vtype, mode):
+    @staticmethod
+    def _deal_with_customizations_(RETURN, customizations, vtype, mode):
         r""""""
         if len(customizations) == 1:
             cus = customizations[0]
@@ -209,7 +210,7 @@ class MseHttStaticLocalVector(Frozen):
             yield i
 
     def __contains__(self, i):
-        """If i is a rank element?"""
+        """If it is a rank element?"""
         return i in self._gm
 
     def __len__(self):

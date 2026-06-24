@@ -29,14 +29,19 @@ class MseHttMeshPartial(Frozen):
         self._composition = None
         self._freeze()
 
-    def info(self, additional_info=''):
+    def info(self, additional_info='', return_str=False):
         """info self."""
         try:
             composition = self.composition
         except EmptyCompositionError:
-            print(f"Mesh not-configured: {self.abstract._sym_repr}.")
+            tbr = f"Mesh not-configured: {self.abstract._sym_repr}."
+            if return_str:
+                return tbr
+            else:
+                print(tbr)
+                return None
         else:
-            composition.info(additional_info=additional_info)
+            return composition.info(additional_info=additional_info, return_str=return_str)
 
     @property
     def ___is_msehtt_partial_mesh___(self):

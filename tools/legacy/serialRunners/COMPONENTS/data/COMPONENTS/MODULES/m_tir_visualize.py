@@ -11,6 +11,13 @@ import numpy as np
 # import pandas as pd
 import matplotlib.pyplot as plt
 import matplotlib
+
+try:
+    matplotlib.use('TkAgg')
+except ImportError:
+    matplotlib.use('Agg')
+
+
 # from matplotlib import cm
 from typing import List
 plt.rcParams.update({

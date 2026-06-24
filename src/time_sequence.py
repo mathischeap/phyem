@@ -17,6 +17,7 @@ from phyem.tools.miscellaneous.ndarray_cache import ndarray_key_comparer, add_to
 
 
 _kt_range_cache_ = {}
+_constant_kt_range_cache_ = {}
 
 _global_abstract_time_sequence = dict()
 _global_abstract_time_interval = dict()
@@ -93,13 +94,13 @@ class AbstractTimeSequence(Frozen):
         """=="""
         return self is other
 
-    def info(self):
+    def info(self, return_str=False):
         """Info myself in the console."""
         if self._object is None:
             if RANK == MASTER_RANK:
                 print('abstract' + self._lin_repr)
         else:
-            self._object.info()
+            return self._object.info(return_str=return_str)
 
     @staticmethod
     def _is_abstract_time_sequence():
@@ -218,15 +219,22 @@ class FunctionTimeSequence(TimeSequence):
         super_repr = super().__repr__().split('object')[1]
         return f"<FunctionTimeSequence" + super_repr
 
-    def info(self):
+    def info(self, return_str=False):
         """info myself in the console."""
         if RANK == MASTER_RANK:
-            print(f" =function= t0: {self._t_0};"
-                  f" step_interval: {self._step_interval};"
-                  f" now@step{self._step_sequence[-1]},"
-                  f" time %.5f." % self._time_sequence[-1])
+            tbp = (f" =function= t0: {self._t_0};"
+                   f" step_interval: {self._step_interval};"
+                   f" now@step{self._step_sequence[-1]},"
+                   f" time %.5f." % self._time_sequence[-1])
+
+            if return_str:
+                return tbp
+            else:
+                print(tbp)
+                return None
+
         else:
-            pass
+            return None
 
     def __getitem__(self, k):
         """"""
@@ -404,6 +412,7 @@ class LinearTimeSequence(TimeSequence):
             else:
                 raise Exception(f"cannot find an integer k for time={ct}.")
 
+        assert len(k_range) == len(time_range), f"Must be!"
         self._last_dt = ___last_dt___
 
         add_to_ndarray_cache(
@@ -462,12 +471,12 @@ class LinearTimeSequence(TimeSequence):
                 dt = self._min_dt
             elif k < self._i_steps:
 
-                if abs(round(k) - k) < 1e-8:  #  an integer k.
+                if abs(round(k) - k) < 1e-8:  # an integer k.
                     k = round(k)
                     t = self._t_0 + self._min_dt * k + k * (k - 1) * self.___Delta_dt___ / 2
-
-                    tmk1 = self[k-1]._t
-                    dt =  t - tmk1
+                    # tmk1 = self[k-1]._t
+                    tmk1 = self._t_0 + self._min_dt * (k - 1) + (k - 1) * (k - 2) * self.___Delta_dt___ / 2
+                    dt = t - tmk1
 
                 else:
                     floor = np.floor(k)
@@ -497,8 +506,7 @@ class LinearTimeSequence(TimeSequence):
                     f"max_dt={self._max_dt}, "
                     f"num_increasing_steps={self._i_steps}") + super_repr
 
-
-    def info(self):
+    def info(self, return_str=False):
         """info myself in the console."""
         if RANK == MASTER_RANK:
             if self._last_dt is None:
@@ -511,21 +519,26 @@ class LinearTimeSequence(TimeSequence):
                 dt = r'%.8f' % dt
 
             if self._constant_interval_:
-                print(
+                tbp = (
                     f"=linear=: {self.t_0} : dt={self._min_dt} @ "
                     f"[k={k}, t={t}] "
-                    f"{self.total_steps} : {self._t_max}({self.___ending_time_str___})",
-                    flush=True
+                    f"{self.total_steps} : {self._t_max}({self.___ending_time_str___})"
                 )
             else:
-                print(
+                tbp = (
                     f"=linear=: {self.t_0} : dt[{self._min_dt}~{self._i_steps}~{self._max_dt}] @ "
                     f"[k={k}, t={t}, dt={dt}] "
-                    f"{self.total_steps} : {self._t_max}({self.___ending_time_str___})",
-                    flush=True
+                    f"{self.total_steps} : {self._t_max}({self.___ending_time_str___})"
                 )
+
+            if return_str:
+                return tbp
+            else:
+                print(tbp, flush=True)
+                return None
+
         else:
-            pass
+            return None
 
     def pr(self, obj=None):
         """print this interval time sequence together."""
@@ -568,6 +581,53 @@ class ConstantTimeSequence(TimeSequence):
     @property
     def total_steps(self):
         return self._k_max
+
+    def k_range(self, time_range):
+        r"""
+        Given a range of time slots, we return a range of k (must be integer > 0) for the
+        `time_range`.
+
+        the sequence of the returned k_range must be increasing. So it is corresponding to increasingly
+        sorted time_range.
+        """
+
+        if isinstance(time_range, (int, float)):
+            time_range = [time_range, ]
+        elif isinstance(time_range, (list, tuple)):
+            pass
+        else:
+            raise Exception(f"pls put time_range in a list or tuple.")
+
+        ARRAYs = [np.array(time_range), ]
+        check_str = f"{len(time_range)}"
+        cached, data = ndarray_key_comparer(
+            _constant_kt_range_cache_,
+            ARRAYs,
+            check_str=check_str
+        )
+
+        if cached:
+            return data
+        else:
+            pass
+
+        k_range = []
+        for t in time_range:
+            k = round((t - self._t_0) / self._dt, 10)
+            if k > 0 and abs(k % 1) < 1e-10:
+                k_range.append(int(k))
+            else:
+                raise Exception(f"the found k={k} for time slot {t} is not a positive integer.")
+
+        add_to_ndarray_cache(
+            _constant_kt_range_cache_,
+            ARRAYs,
+            k_range,
+            check_str=check_str,
+            maximum=3,
+        )
+
+        return k_range
 
     @property
     def dt(self):
@@ -612,13 +672,18 @@ class ConstantTimeSequence(TimeSequence):
             f"@ k_max={self._k_max}, dt={self._dt}, factor={self._factor}" + \
             super_repr
 
-    def info(self):
+    def info(self, return_str=False):
         """info myself in the console."""
         if RANK == MASTER_RANK:
-            print(f" =constant= {self._t_0} -> ... -> {self._k_max} * " +
-                  f"%.5f -> ... -> {self.t_max}." % self._dt)
+            tbp = (f" =constant= {self._t_0} -> ... -> {self._k_max} * " +
+                   f"%.5f -> ... -> {self.t_max}." % self._dt)
+            if return_str:
+                return tbp
+            else:
+                print(tbp)
+                return None
         else:
-            pass
+            return None
 
     def pr(self, obj=None):
         """print this constant interval time sequence together with an object."""
@@ -636,7 +701,10 @@ class ConstantTimeSequence(TimeSequence):
             "font.family": "DejaVu Sans",
             "text.latex.preamble": r"\usepackage{amsmath, amssymb}",
         })
-        matplotlib.use('TkAgg')
+        try:
+            matplotlib.use('TkAgg')
+        except ImportError:
+            matplotlib.use('Agg')
 
         # ----------- we make data of the time sequence ----------
         time_instant_hierarchy = {}

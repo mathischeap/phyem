@@ -5,6 +5,11 @@ import numpy as np
 import matplotlib
 import matplotlib.pyplot as plt
 
+try:
+    matplotlib.use('TkAgg')
+except ImportError:
+    matplotlib.use('Agg')
+
 
 def quiver(
         X, Y, U, V,
@@ -82,8 +87,7 @@ def quiver(
         ZERO_FIELD = False
 
     # -------------------------------------------------------------------------
-    if saveto is not None:
-        matplotlib.use('TkAgg')
+
     plt.rc('text', usetex=usetex)
     plt.rcParams.update({
         "font.family": "Times New Roman"

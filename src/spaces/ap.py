@@ -79,6 +79,13 @@ __all__ = [
     '_VarPar_astA_astB_ip_dtC',
     # ==========================================================================================
 
+    # -------- (A dB, C) ------------------------------------------------------------------------
+    '_VarPar_AdB_ip_C',
+    '_VarPar_astAdB_ip_tC',
+    '_VarPar_AdastB_ip_tC',
+    '_VarPar_astAdastB_ip_tC',
+    # ==========================================================================================
+
     # -------- (A d(B), dC) ------------------------------------------------------------------------
     '_VarPar_A_d_B_ip_dC',               # (A d(B), dC) nonlinear; A, B, C all unknown
     '_VarPar_astA_d_B_ip_dtC',           # (A d(B), dC) linear, A given, matrix, C test form
@@ -848,6 +855,90 @@ def _VarPar_A_astB_ip_dtC(A, gB, tC):
 def _VarPar_astA_astB_ip_dtC(gA, gB, tC):
     r"""(AB, dC); linear (vector), A and B given, C test form."""
     sym, lin = _VarSetting_astA_astB_ip_dtC[:2]
+
+    sym = sym.replace(r'{A}', gA._sym_repr)
+    sym = sym.replace(r'{B}', gB._sym_repr)
+
+    lin = lin.replace('{A}', gA._pure_lin_repr)
+    lin = lin.replace('{B}', gB._pure_lin_repr)
+    lin = lin.replace('{C}', tC._pure_lin_repr)
+
+    s0 = tC.space
+    d0 = tC._degree
+    str_d0 = _degree_str_maker(d0)
+
+    shape0 = s0._sym_repr + _default_space_degree_repr + str_d0
+
+    shape = (shape0, 1)
+    ra = _root_array(sym, lin, shape)
+    return ra
+
+
+# --------- (A dB, C) -------------------------------------------------------------------------------
+def _VarPar_AdB_ip_C(A, B, C):
+    r"""(A dB, C); nonlinear, A, B, C are all unknown."""
+    sym, lin = _VarSetting_AdB_ip_C[:2]
+
+    sym += rf"\left({A._sym_repr}, {B._sym_repr}, {C._sym_repr}\right)"
+    lin = lin.replace('{A}', A._pure_lin_repr)
+    lin = lin.replace('{B}', B._pure_lin_repr)
+    lin = lin.replace('{C}', C._pure_lin_repr)
+
+    mda = AbstractNonlinearOperator(sym, lin)
+    return mda
+
+
+def _VarPar_astAdB_ip_tC(gA, B, tC):
+    r"""(A dB, C); linear (matrix), A given, C test form."""
+    sym, lin = _VarSetting_astAdB_ip_tC[:2]
+    sym = sym.replace(r'{A}', gA._sym_repr)
+
+    lin = lin.replace('{A}', gA._pure_lin_repr)
+    lin = lin.replace('{B}', B._pure_lin_repr)
+    lin = lin.replace('{C}', tC._pure_lin_repr)
+
+    s0 = tC.space
+    s1 = B.space
+    d0 = tC._degree
+    d1 = B._degree
+    str_d0 = _degree_str_maker(d0)
+    str_d1 = _degree_str_maker(d1)
+
+    shape0 = s0._sym_repr + _default_space_degree_repr + str_d0
+    shape1 = s1._sym_repr + _default_space_degree_repr + str_d1
+
+    shape = (shape0, shape1)
+    ra = _root_array(sym, lin, shape)
+    return ra
+
+
+def _VarPar_AdastB_ip_tC(A, gB, tC):
+    r"""(A dB, C); linear (matrix), B given, C test form."""
+    sym, lin = _VarSetting_AdastB_ip_tC[:2]
+    sym = sym.replace(r'{B}', gB._sym_repr)
+
+    lin = lin.replace('{A}', A._pure_lin_repr)
+    lin = lin.replace('{B}', gB._pure_lin_repr)
+    lin = lin.replace('{C}', tC._pure_lin_repr)
+
+    s0 = tC.space
+    s1 = A.space
+    d0 = tC._degree
+    d1 = A._degree
+    str_d0 = _degree_str_maker(d0)
+    str_d1 = _degree_str_maker(d1)
+
+    shape0 = s0._sym_repr + _default_space_degree_repr + str_d0
+    shape1 = s1._sym_repr + _default_space_degree_repr + str_d1
+
+    shape = (shape0, shape1)
+    ra = _root_array(sym, lin, shape)
+    return ra
+
+
+def _VarPar_astAdastB_ip_tC(gA, gB, tC):
+    r"""(A dB, C); linear (vector), A and B given, C test form."""
+    sym, lin = _VarSetting_astAdastB_ip_tC[:2]
 
     sym = sym.replace(r'{A}', gA._sym_repr)
     sym = sym.replace(r'{B}', gB._sym_repr)

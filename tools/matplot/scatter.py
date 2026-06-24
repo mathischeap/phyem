@@ -5,7 +5,12 @@ import matplotlib
 import matplotlib.pyplot as plt
 import numpy as np
 
-matplotlib.use('TkAgg')
+
+try:
+    matplotlib.use('TkAgg')
+except ImportError:
+    matplotlib.use('Agg')
+
 plt.rcParams.update({
     "font.family": "DejaVu sans",
 })
@@ -56,15 +61,6 @@ def scatter(
         z = {0: z}
 
     # - config matplotlib -------------------------------------------------------------------------1
-    if saveto is not None:
-        matplotlib.use('Agg')
-
-    plt.rcParams.update({
-        "text.usetex": usetex,
-        "font.family": "DejaVu sans",
-        # "font.serif": "Times New Roman",
-    })
-
     if usetex:
         plt.rcParams['text.latex.preamble'] = r"\usepackage{amsmath}"
 

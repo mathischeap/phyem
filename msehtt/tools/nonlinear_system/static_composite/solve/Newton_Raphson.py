@@ -1,0 +1,471 @@
+
+import numpy as np
+from time import time
+
+from phyem.tools.frozen import Frozen
+
+from phyem.msehtt.static.form.main import MseHttForm
+from phyem.msehtt.tools.vector.static.local import MseHttStaticLocalVector
+
+from phyem.msehtt.tools.matrix.static.local import MseHttStaticLocalMatrix
+from phyem.msehtt.tools.linear_system.static.local.main import MseHttStaticLocalLinearSystem
+
+from phyem.msehtt.tools.linear_system.static.local_composite.main import MseHtt_Static_Local_Composite_LinearSystem
+
+from phyem.msehtt.tools.nonlinear_system.static.solve.Newton_Raphson import _check_stop_criterion_
+
+from phyem.msehtt.adaptive.form.main import MseHtt_Adaptive_TopForm
+
+
+class MseHtt_Composite_NonlinearSystem_NewtonRaphson_Solve(Frozen):
+    r""""""
+
+    def __init__(self, composite_nls):
+        """"""
+        self._Cnls = composite_nls
+        self._static_nonlinear_systems = composite_nls._static_nonlinear_systems
+        self._system_usage_dict = composite_nls.system_usage_dict
+        self._x0 = None
+        self._freeze()
+
+    @property
+    def x0(self):
+        """the initial guess for iterative solvers."""
+        if self._x0 is None:
+            raise Exception(f"x0 is None, first set it.")
+        return self._x0
+
+    @x0.setter
+    def x0(self, _x0):
+        """"""
+        # -- for adaptive forms: use their current generations ------------------------------------
+        _X0 = list()
+        for _ in _x0:
+            if isinstance(_, MseHtt_Adaptive_TopForm):
+                _X0.append(_.current)
+            else:
+                _X0.append(_)
+        _x0 = _X0
+        # ==========================================================================================
+
+        if all([_.__class__ is MseHttForm for _ in _x0]):   # providing all MseHttRootForm
+            # use the newest cochains.
+            cochain = list()
+
+            for f in _x0:
+                newest_time = f.cochain.newest
+                if newest_time is None:  # no newest cochain at all.
+                    # then use 0-cochain
+                    local_cochain = MseHttStaticLocalVector(0, f.cochain.gathering_matrix)
+                else:
+                    local_cochain = f.cochain[newest_time]
+                cochain.append(local_cochain)
+
+        else:
+            raise NotImplementedError()
+
+        # for ebc in self._nls.___essential_bc_record___:
+        #     place, condition, time, f, ith_unknown = ebc
+        #     new_cochain_i = {}
+        #     # noinspection PyUnresolvedReferences
+        #     raw_cochain_i = cochain[ith_unknown]
+        #     local_dofs = place.find_dofs(f, local=True)
+        #     # noinspection PyTestUnpassedFixture
+        #     local_cochain = f.reduce(condition @ time)
+        #     for element in f.cochain.gathering_matrix:
+        #         if element in local_dofs:
+        #             local_vector = raw_cochain_i[element].copy()
+        #             element_local_dofs = local_dofs[element]
+        #             local_vector[element_local_dofs] = local_cochain[element][element_local_dofs]
+        #             new_cochain_i[element] = local_vector
+        #         else:
+        #             new_cochain_i[element] = raw_cochain_i[element]
+        #     cochain[ith_unknown] = new_cochain_i
+
+        self._x0 = cochain   # a list of the local cochains.
+
+    def __call__(
+            self,
+            x0, atol=1e-4, maxiter=5,  # args for the outer Newton method.
+            preconditioner=False,
+            threshold=None,
+            # for the inner solver below ------------------------------------------------
+            inner_solver_scheme='spsolve',
+            inner_solver_kwargs=None  # args for the inner linear solver.
+    ):
+        r"""
+
+        Parameters
+        ----------
+        x0 :
+            The initial guess. Usually be a list of forms. We will parse x0 from the newest cochain of
+            these forms.
+        atol :
+            Outer Newton iterations stop when norm(dx) < atol.
+        maxiter :
+            Outer Newton iterations stop when ITER > maxiter.
+        preconditioner :
+        threshold :
+        inner_solver_scheme :
+        inner_solver_kwargs :
+
+        Returns
+        -------
+
+        """
+        static_nonlinear_systems = self._Cnls._static_nonlinear_systems
+
+        t_start = time()
+
+        if inner_solver_kwargs is None:
+            inner_solver_kwargs = dict()
+        else:
+            pass
+
+        # parse x0 from the given x0, usually a list of forms.
+        self.x0 = x0
+
+        # initialize the variables ---------------------------------------------------------------- 1
+
+        x0 = self.x0
+        ITER = 0
+        message = ''
+        BETA = list()
+
+        # --------------- iterations start --------------------------------------------------
+        t_iteration_start = time()
+
+        for sns in static_nonlinear_systems:
+            # ------ some customizations need to be applied here --------------------------------
+            for nonlinear_customization in sns.customize._nonlinear_customizations:
+                indicator = nonlinear_customization['customization_indicator']
+
+                # ----------------------------------------------------------------------
+                if indicator == 'set_x0_for_unknown':
+                    assert nonlinear_customization['take-effect'] == 0  # it takes no effect yet.
+                    nonlinear_customization['take-effect'] = 1   # it takes fully effect here!
+                    ith_unknown = nonlinear_customization['ith_unknown']
+                    global_dofs = nonlinear_customization['global_dofs']
+                    global_cochain = nonlinear_customization['global_cochain']
+                    xi = x0[ith_unknown]
+                    new_xi = {}
+                    gm = sns._x[ith_unknown]._f.cochain.gathering_matrix
+                    local_positions = gm.find_rank_locations_of_global_dofs(global_dofs)
+                    for i, dof in enumerate(global_dofs):
+                        cochain = global_cochain[i]
+                        rank_positions = local_positions[dof]
+                        for position in rank_positions:
+                            element, local_numbering = position
+                            if element not in new_xi:
+                                new_xi[element] = xi[element].copy()
+                            else:
+                                pass
+                            new_xi[element][local_numbering] = cochain
+                    for e in xi:
+                        if e not in new_xi:
+                            new_xi[e] = xi[e]
+                        else:
+                            pass
+                    x0[ith_unknown] = MseHttStaticLocalVector(new_xi, gm)
+                # ------------------------------------------------------------------------
+                else:
+                    pass
+
+        # -- start the Newton iterations ----------------------------------------------------
+        xi = x0
+        while 1:
+            ITER += 1
+
+            itmV = xi  # send xi to intermediate values
+
+            LS = list()
+            CUS_LinearSystem_Assembler = list()
+            SEL_values_of_res_x_rule_keys = list()
+
+            for sns in static_nonlinear_systems:
+                # --- evaluate blocks of the left-hand-side matrix with xi ---------------------------- 2
+
+                S0, S1 = sns.shape
+                LHS = [[None for _ in range(S1)] for _ in range(S0)]
+
+                for i in range(S0):
+
+                    if i in sns._nonlinear_terms:
+                        NTi = sns._nonlinear_terms[i]
+                        NSi = sns._nonlinear_signs[i]
+                    else:
+                        NTi = None
+                        NSi = None
+
+                    test_form = sns.test_forms[i]
+
+                    for j in range(S1):
+
+                        # __________ we first find the linear term from A ______________________ 3
+
+                        linear_term = sns._A[i][j]
+                        if linear_term is not None:
+                            assert linear_term.__class__ is MseHttStaticLocalMatrix, \
+                                f"A linear term [{i}][{j}] must be a {MseHttStaticLocalMatrix}."
+                            assert LHS[i][j] is None, f"LHS[i][j] must be untouched yet!"
+                            LHS[i][j] = linear_term
+                        else:
+                            pass
+
+                        # __ we then look at the nonlinear terms to find the contributions ____ 4
+
+                        if NTi is None:
+                            pass
+
+                        else:
+                            unknown_form = sns.unknowns[j]
+
+                            for term, sign in zip(NTi, NSi):
+                                assert test_form in term.correspondence
+                                if unknown_form in term.correspondence:
+
+                                    known_pairs = list()
+
+                                    for cp in term.correspondence:
+                                        if cp not in (unknown_form, test_form):
+
+                                            itmV_cp = None
+                                            for k, uk in enumerate(sns.unknowns):
+                                                if cp == uk:
+                                                    itmV_cp = itmV[k]
+                                                    break
+                                                else:
+                                                    pass
+
+                                            known_pairs.append(
+                                                [cp, itmV_cp]
+                                            )
+                                        else:
+                                            pass
+
+                                    contribution_2_Aij = term._derivative_contribution(
+                                        test_form,
+                                        unknown_form,
+                                        *known_pairs
+                                    )
+
+                                    assert contribution_2_Aij.__class__ is MseHttStaticLocalMatrix, \
+                                        (f"contribution of nonlinear term to linear system must be a "
+                                         f"{MseHttStaticLocalMatrix}.")
+
+                                    if sign == '+':
+                                        pass
+                                    else:
+                                        contribution_2_Aij = - contribution_2_Aij
+
+                                    # we have found a nonlinear contribution for lhs[i][j], add it to it.
+                                    LHS[i][j] += contribution_2_Aij
+
+                                else:
+                                    pass
+
+                f = sns.evaluate_f(itmV, neg=True)  # notice the neg here!
+
+                x = list()
+                for uk in sns.unknowns:
+                    x.append(uk._f.cochain.static_vec(uk._t))
+
+                ls = MseHttStaticLocalLinearSystem(LHS, x, f)
+
+                customizations_to_be_handled_by_LinearSystem_Assembler = list()
+                select_values_of_res_x_rule_keys = list()
+                # a list of values that define how to clean x before sending it to unknowns
+
+                # adopt customizations: important ------------------------------------------ 2
+                for nonlinear_customization in sns.customize._nonlinear_customizations:
+                    indicator = nonlinear_customization['customization_indicator']
+
+                    # ------------------------------------------------------------
+                    if indicator == "fixed_global_dofs_for_unknown":
+                        if ITER == 1:
+                            assert nonlinear_customization['take-effect'] == 0
+                            nonlinear_customization['take-effect'] = 1
+                        else:
+                            assert nonlinear_customization['take-effect'] == 1
+                        ith_unknown = nonlinear_customization['ith_unknown']
+                        global_dofs = nonlinear_customization['global_dofs']
+                        A = ls.A._A
+                        b = ls.b._b
+                        Ai_ = A[ith_unknown]
+                        bi = b[ith_unknown]
+                        for j, Aij in enumerate(Ai_):
+                            if ith_unknown != j:
+                                Aij.customize.zero_rows(global_dofs)
+                            else:
+                                Aij.customize.identify_rows(global_dofs)
+                        bi.customize.set_values(global_dofs, 0)
+
+                    # -------------------------------------------------------------
+                    elif indicator == "add_additional_constrain__fix_a_global_dof":
+                        if ITER == 1:
+                            assert nonlinear_customization['take-effect'] == 0
+                            nonlinear_customization['take-effect'] = 1
+                        else:
+                            assert nonlinear_customization['take-effect'] == 1
+
+                        ith_unknown = nonlinear_customization['ith_unknown']
+                        global_dof = nonlinear_customization['global_dof']
+                        insert_place = nonlinear_customization['insert_place']
+
+                        if insert_place == -1:
+                            customizations_to_be_handled_by_LinearSystem_Assembler.append(
+                                {
+                                    'A': ['new_EndZeroRowCol_with_a_one_for_global_dof', ith_unknown, global_dof],
+                                    'b': ['add_a_value_at_the_end', 0],
+                                }
+                            )
+                            select_values_of_res_x_rule_keys.append("InsertPlaceEnd")
+                        else:
+                            raise NotImplementedError()
+
+                    # -------------------------------------------------------------
+                    else:
+                        pass
+
+                LS.append(ls)
+                if not customizations_to_be_handled_by_LinearSystem_Assembler:
+                    CUS_LinearSystem_Assembler.append(None)
+                else:
+                    CUS_LinearSystem_Assembler.append(customizations_to_be_handled_by_LinearSystem_Assembler)
+
+                if not select_values_of_res_x_rule_keys:
+                    SEL_values_of_res_x_rule_keys.append(None)
+                else:
+                    SEL_values_of_res_x_rule_keys.append(select_values_of_res_x_rule_keys)
+                # ================================================================================
+
+            # -----------------------------------------------------------------------------------------
+            if (all([_ is None for _ in CUS_LinearSystem_Assembler]) and
+                    all([_ is None for _ in SEL_values_of_res_x_rule_keys])):
+                # no customizations for assembler
+
+                composite_ls = MseHtt_Static_Local_Composite_LinearSystem(
+                    *LS, condlist=self._Cnls.condlist
+                )
+
+                als = composite_ls.assemble(
+                    preconditioner=preconditioner,
+                    threshold=threshold,
+                )
+
+                if inner_solver_scheme in ('spsolve', 'direct'):
+                    solve_x0 = None
+                else:
+                    solve_x0 = 0
+
+                results = als.solve(inner_solver_scheme, x0=solve_x0, **inner_solver_kwargs)
+
+                x, LSm = results[:2]
+
+                LS[0].x.update(x)
+                beta = np.sum(x ** 2) ** 0.5
+
+                BETA.append(beta)
+                JUDGE, stop_iteration, convergence_info, JUDGE_explanation = _check_stop_criterion_(
+                    BETA, atol, ITER, maxiter
+                )
+
+                xi1 = list()
+                for i, _xi in enumerate(xi):
+                    dx = LS[0].x._x[i]
+                    xi1.append(_xi + dx)
+
+                if stop_iteration:
+                    break
+                else:
+                    xi = xi1
+            else:  # we have particular customization for the assembled global system.
+                customizations_to_be_handled_by_LinearSystem_Assembler = CUS_LinearSystem_Assembler[0]
+                select_values_of_res_x_rule_keys = SEL_values_of_res_x_rule_keys[0]
+                for i, _ in enumerate(CUS_LinearSystem_Assembler[1:]):
+                    # make sure that all customization after assembling are same.
+                    assert _ == customizations_to_be_handled_by_LinearSystem_Assembler
+                    assert select_values_of_res_x_rule_keys == SEL_values_of_res_x_rule_keys[i]
+
+                composite_ls = MseHtt_Static_Local_Composite_LinearSystem(
+                    *LS, condlist=self._Cnls.condlist
+                )
+
+                als = composite_ls.assemble(
+                    preconditioner=preconditioner,
+                    threshold=threshold,
+                    customizations=customizations_to_be_handled_by_LinearSystem_Assembler,
+                )
+
+                if inner_solver_scheme in ('spsolve', 'direct'):
+                    solve_x0 = None
+                else:
+                    solve_x0 = 0
+
+                results = als.solve(inner_solver_scheme, x0=solve_x0, **inner_solver_kwargs)
+
+                x, LSm = results[:2]
+
+                if len(select_values_of_res_x_rule_keys) == 1:
+                    # we have received a list of a single value that says how we clean x.
+                    if select_values_of_res_x_rule_keys[0] == 'InsertPlaceEnd':
+                        # we have received a list: ['InsertPlaceEnd', ], this means we just need to drop the last value.
+                        # So we just drop the last value of x.
+                        x = x[:-1]
+                    else:
+                        raise NotImplementedError(select_values_of_res_x_rule_keys)
+                else:
+                    raise NotImplementedError(
+                        f"For select_values_of_res_x_rule_keys={select_values_of_res_x_rule_keys}, not coded yet."
+                    )
+
+                LS[0].x.update(x)
+                beta = np.sum(x ** 2) ** 0.5
+
+                BETA.append(beta)
+                JUDGE, stop_iteration, convergence_info, JUDGE_explanation = _check_stop_criterion_(
+                    BETA, atol, ITER, maxiter
+                )
+
+                xi1 = list()
+                for i, _xi in enumerate(xi):
+                    dx = LS[0].x._x[i]
+                    xi1.append(_xi + dx)
+
+                if stop_iteration:
+                    break
+                else:
+                    xi = xi1
+
+        # ------ Newton iteration completed xi1 is the solution. --------------------------------------------
+        x = xi1
+        num_nonlinear_terms = []
+        for sns in static_nonlinear_systems:
+            for k, uk in enumerate(sns.unknowns):
+                uk.cochain = x[k]  # results sent to the unknowns.
+                # Important since yet they are occupied by dx
+            num_nonlinear_terms.append(sns._num_nonlinear_terms)
+
+        t_iteration_end = time()
+        Ta = t_iteration_end - t_start
+        TiT = t_iteration_end - t_iteration_start
+
+        message += f"<Composite Nonlinear Solver>" \
+            f" = [RegularNewtonRaphson: {als.solve.A.shape}]" \
+            f" of {tuple(num_nonlinear_terms)} nonlinear terms: " \
+            f"atol={atol}, maxiter={maxiter} + Linear solver: {inner_solver_scheme} " \
+            f"args: {inner_solver_kwargs}" \
+            f" -> [ITER: {ITER}]" \
+            f" = [beta: %.4e]" \
+            f" = [{convergence_info}-{JUDGE_explanation}]" \
+            f" -> nLS solving costs %.2f, each ITER cost %.2f" % (beta, Ta, TiT / ITER) \
+            + '\n(-*-) Last Linear Solver Message:(-*-)\n' + LSm + '\n'
+
+        info = {
+            'total cost': Ta,
+            'convergence info': convergence_info,
+            'iteration cost': TiT / ITER,
+            'residuals': BETA,
+        }
+
+        return x, message, info

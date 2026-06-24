@@ -6,6 +6,16 @@ import matplotlib
 from matplotlib import cm
 import numpy as np
 
+try:
+    matplotlib.use('TkAgg')
+except ImportError:
+    matplotlib.use('Agg')
+
+plt.rcParams.update({
+    "text.usetex": True,
+    "font.family": "DejaVu sans",
+})
+
 
 def __matplot__(
         plot_type,
@@ -113,14 +123,6 @@ def __matplot__(
 
     """
     # - config matplotlib -------------------------------------------------------------------------1
-    if saveto is not None:
-        matplotlib.use('Agg')
-
-    plt.rcParams.update({
-        "text.usetex": usetex,
-        "font.family": "DejaVu sans",
-        # "font.serif": "Times New Roman",
-    })
 
     if usetex:
         plt.rcParams['text.latex.preamble'] = r"\usepackage{amsmath, amssymb}"

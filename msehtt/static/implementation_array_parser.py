@@ -26,6 +26,7 @@ _indicator_templates = {}
 _setting_ = {
     'base': dict(),
     '_cache_M_': {},
+    '_cache_W_': {},
 }
 
 
@@ -204,6 +205,35 @@ def Parse__M_matrix(space, str_degree0, str_degree1):
             raise NotImplementedError()
 
         _setting_['_cache_M_'][key] = RETURN
+        return RETURN
+
+
+def Parse__W_matrix(space0, space1, str_degree0, str_degree1):
+    r"""Wedge matrix <f0|f1>."""
+    degree0 = _str_degree_parser(str_degree0)
+    degree1 = _str_degree_parser(str_degree1)
+    space0 = _find_space_through_pure_lin_repr(space0)
+    space1 = _find_space_through_pure_lin_repr(space1)
+    key = (id(space0), id(space1), str_degree0, str_degree1)
+    if key in _setting_['_cache_W_']:
+        return _setting_['_cache_W_'][key]
+    else:
+        gm0 = space0.gathering_matrix(degree0)
+        gm1 = space1.gathering_matrix(degree1)
+        w, cache_key_dict = space0.wedge_matrix(degree0, space1, degree1)
+        M = MseHttStaticLocalMatrix(  # make a new copy every single time.
+            w,
+            gm0,
+            gm1,
+            cache_key=cache_key_dict,
+            signature=(
+                space0.__repr__() + '=' + _degree_str_maker(degree0) +
+                '+W+' +
+                space1.__repr__() + '=' + _degree_str_maker(degree1)
+            )
+        )
+        RETURN = M, None  # time_indicator is None, mean M is same at all time.
+        _setting_['_cache_W_'][key] = RETURN
         return RETURN
 
 

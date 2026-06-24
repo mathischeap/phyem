@@ -459,6 +459,15 @@ class Iterator(Frozen):
             self._RDF = None
 
         # -------------------------------------------------------------------------------
+        RANGES = []
+        for rg in ranges:  # parse ranges
+            if hasattr(rg, '_is_abstract_time_sequence') and rg._is_abstract_time_sequence():
+                RANGES.append(range(1, rg.total_steps + 1))
+            else:
+                RANGES.append(rg)
+        ranges = tuple(RANGES)
+
+        # -------------------------------------------------------------------------------
         num_iterations = None
         for i, rg in enumerate(ranges):
             assert hasattr(rg, '__iter__'), f"{i}th range={rg} is not iterable."
